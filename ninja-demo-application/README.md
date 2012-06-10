@@ -30,8 +30,6 @@ DONE:
 -- serve Ò/me/{id}Ó, with when content(Òjson xyzÓ);
 
 TODOS:
-- how to develop modules in an efficient way
-==> http://maven.apache.org/plugins/maven-war-plugin/overlays.html ninja-demo-module
 - test test test
 - default error handling 404 => 505 etc...
 - generic renderer for output (render xyz)...
@@ -88,7 +86,5 @@ TODOS:
 - benchmarking of framework
 - itaree pattern? thread consumption on jetty, tomcat, netty?
 - etag support?
-
-
 
 

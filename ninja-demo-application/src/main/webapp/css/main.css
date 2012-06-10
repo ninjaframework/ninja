@@ -1,0 +1,19 @@
+@charset "UTF-8";
+/* CSS Document */
+html,body {
+	background: white;
+}
+
+a {
+	text-decoration: none;
+	outline: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+p {
+	margin: 10px 0;
+	line-height: 16px;
+}
