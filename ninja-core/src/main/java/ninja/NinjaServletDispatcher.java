@@ -22,7 +22,7 @@ public class NinjaServletDispatcher implements Filter {
 
 	public void init(FilterConfig filterConfig) throws ServletException {
 		
-		 injector = Guice.createInjector(new Configuration());		 
+		 injector = Guice.createInjector(new conf.Configuration());		 
 		 ninja = injector.getInstance(Ninja.class);
 
 	}

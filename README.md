@@ -4,16 +4,17 @@ GOALS:
 - provide a rails, play like java only framework
 - stateless to the max, no server side session
 - productivity is king - reloads must be ultra fast
-- should run on any war container (tomcat, jetty)
+- should run on any war container (tomcat, jetty), but also on netty (async)
 - should run on gae, heroku, cloudbees
 - formidable test support + integration selenium tests
-- configuratino of complete app with guice
+- configuration of complete app with guice
 - full eclipse support
 - full maven integration
 - don't use magic
 -- no bytecode enhancement
 -- no reflection (or only a minimal amount)
-- not dependend on serlvet api. should eg also run on netty
+- not dependent on serlvet api. should eg also run on netty
+- archetype for simple project generation out of the box
 - working security subsystem
 
 DONE:
@@ -27,7 +28,7 @@ DONE:
 - routes file, just with a java router...
 - filling of freemarker templates with content
 - router flexible routes todo (with {})
--- serve Ò/me/{id}Ó, with when content(Òjson xyzÓ);
+-- serve "/me/{id}", with when content("json xyz");
 
 TODOS:
 - how to develop modules in an efficient way
@@ -48,7 +49,7 @@ TODOS:
 - how to integrate plugins
 -- especially when they provide views
 -- need for a plugins.java? or is configuration.java okay?
-- Routes.java => can it be bound automaticaaly in default location? conf.Rotues?
+- Routes.java => can it be bound automatically in default location? conf.Rotues?
 - support for 3rd party compiler plugns
 => closure
 => dart
@@ -57,10 +58,10 @@ TODOS:
 - doctest support...
 -- testing and generating a documentation must be part of the framework...
 -- documentation of written restful api for instance must be a breeze.
-- internationalisation properties AND templates...
+- internationalization properties AND templates...
 -- make sure i18n is derived from request language
 
-- freemarker example with parent und included refinement... => reuse of html É. => ending should be ftl.html
+- freemarker example with parent and included refinement... => reuse of html. => ending should be ftl.html
 => http://richardbarabe.wordpress.com/category/web-development/template-system/freemarker/
 - scheduled jobs
 -- gae? with .xml config?

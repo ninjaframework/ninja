@@ -1,6 +1,8 @@
 package controllers;
 
 import ninja.Context;
+import ninja.FilterWith;
+import ninja.SecureFilter;
 import ninja.Tuple;
 
 import com.google.inject.Inject;
@@ -19,11 +21,6 @@ public class ApplicationController {
 
 	}
 	
-	public void redirect(Context context) {
-		
-		context.redirect("/technique");
-		
-	}
 
 	public void index(Context context) {
 		
@@ -34,7 +31,7 @@ public class ApplicationController {
 		Tuple<String, String> tuple = new Tuple<String, String>("id", id);
 		Tuple<String, String> tuple2 = new Tuple<String, String>("name", name);
 
-		context.render(tuple, tuple2);
+		context.html(tuple, tuple2);
 
 	}
 
@@ -50,13 +47,14 @@ public class ApplicationController {
 
 		Tuple<String, String> tuple2 = new Tuple<String, String>("leniort", leniort);
 		
-		context.render(tuple, tuple2);
+		context.html(tuple, tuple2);
 
 	}
 
+	@FilterWith(SecureFilter.class)
 	public void technique(Context context) {
 
-		context.render();
+		context.html();
 
 	}
 

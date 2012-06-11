@@ -15,7 +15,7 @@ public class SecondController {
 		person.name = "zeeess name";
 		
 		//render
-		context.renderJson(person);
+		context.json(person);
 	}
 
 }

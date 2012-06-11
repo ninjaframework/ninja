@@ -2,11 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>ninja</groupId>
 	<artifactId>ninja-demo-application</artifactId>
 	<packaging>war</packaging>
-	<version>0.1-SNAPSHOT</version>
 	<name>ninja demo application</name>
+
+	<parent>
+		<groupId>ninja</groupId>
+		<artifactId>ninja</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
 
 	<build>
 
@@ -25,7 +29,7 @@
 				<configuration>
 					<contextPath>/</contextPath>
 					<scanIntervalSeconds>1</scanIntervalSeconds>
-					<reload>manual</reload>
+					<reload>automatic</reload>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
 							<port>8080</port>
@@ -38,13 +42,12 @@
 	</build>
 
 	<dependencies>
-		<!-- Gson: Java to Json conversion -->
 		<dependency>
 			<groupId>ninja</groupId>
 			<artifactId>ninja-core</artifactId>
 			<version>0.1-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
+		<!-- Gson: Java to Json conversion -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
