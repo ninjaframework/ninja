@@ -25,7 +25,6 @@ public class NinjaImpl implements Ninja {
 
 		this.router = router;
 		this.injector = injector;
-		System.out.println("path is: " + pathToViewNotFound);
 		this.pathToViewNotFound = pathToViewNotFound;
 
 	}

@@ -13,17 +13,50 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 
+/**
+ * A simple servlet that allows us to run Ninja inside any servlet container.
+ * 
+ * @author ra
+ * 
+ */
 public class NinjaServletDispatcher implements Filter {
 
+	/**
+	 * Main injector for the class.
+	 */
 	Injector injector;
-	
+
+	/**
+	 * Our implementation for Ninja. Handles the complete lifecycle of the app.
+	 * Dispatches routes. Applies filters and so on.
+	 */
 	Ninja ninja;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
-		
-		 injector = Guice.createInjector(new conf.Configuration());		 
-		 ninja = injector.getInstance(Ninja.class);
+
+		try {
+			// By convention the initial configuration has to be placed in a
+			// guice module in conf.Configuration.
+			Class clazz = Class.forName("conf.Configuration");
+
+			// Create a new instance
+			Module configuration = (Module) clazz.newInstance();
+
+			// And let the injector generate all instances and stuff:
+			injector = Guice.createInjector(configuration);
+
+			// And that's our nicely configured main handler for the framework:
+			ninja = injector.getInstance(Ninja.class);
+
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -33,18 +66,24 @@ public class NinjaServletDispatcher implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 
+		// We generate a Ninja compatible context element
 		Context context = injector.getProvider(Context.class).get();
-		
+
+		// And populate it
 		context.setHttpServletRequest(request);
 		context.setHttpServletResponse(response);
-		
+
+		// And invoke ninja on it.
+		// Ninja handles all defined routes, filters and much more:
 		ninja.invoke(context);
 
 	}
 
 	public void destroy() {
 
-		System.out.println("destroy...");
+		// We don't need the injector and ninja any more. Destroy!
+		injector = null;
+		ninja = null;
 
 	}
 

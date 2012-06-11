@@ -3,8 +3,6 @@ package ninja;
 import java.util.Map;
 
 public interface Router {
-
-	public Route route(String uri);
 	
 	public Route getRouteFor(String uri);
 
@@ -18,5 +16,17 @@ public interface Router {
 	 * @return
 	 */
 	public Route getRouteFor(String uri, Map<String, String> parameterMap);
+	
+	///////////////////////////////////////////////////////////////////////////
+	// convenience methods to use the route in a DSL like way
+	// router.GET().route("/index").with(.....)
+	///////////////////////////////////////////////////////////////////////////
+	public Route GET();
+	public Route POST();	
+	public Route PUT();
+	public Route DELETE();
+	
+	public Route OPTIONS();
+	
 
 }

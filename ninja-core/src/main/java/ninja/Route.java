@@ -10,15 +10,15 @@ public interface Route {
 
 	public Route PUT();
 
-	public Route DELTE();
+	public Route DELETE();
 
 	public Route OPTION();
+	
+	public Route route(String uri);
 
 	public void with(Class controller, String controllerMethod);
 
 	public String getUrl();
-
-	public void setUrl(String url);
 
 	public void invoke(Context context);
 

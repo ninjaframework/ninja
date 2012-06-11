@@ -1,6 +1,7 @@
 ninja - a web framework
 =======================
-GOALS:
+GOALS
+-----
 - provide a rails, play like java only framework
 - stateless to the max, no server side session
 - productivity is king - reloads must be ultra fast
@@ -17,7 +18,8 @@ GOALS:
 - archetype for simple project generation out of the box
 - working security subsystem
 
-DONE:
+DONE
+----
 - simple freemarker templating working in /views/controller/index.ftl.html
 - simple json support via renderJson(object) in context
 - controller works
@@ -29,12 +31,16 @@ DONE:
 - filling of freemarker templates with content
 - router flexible routes todo (with {})
 -- serve "/me/{id}", with when content("json xyz");
-
-TODOS:
 - how to develop modules in an efficient way
 ==> http://maven.apache.org/plugins/maven-war-plugin/overlays.html ninja-demo-module
-- test test test
+===> use ln for that...
 - default error handling 404 => 505 etc...
+==> using status(HTTP_STATUS) on context
+
+TODOS
+-----
+- test test test
+- logging subsystem working
 - generic renderer for output (render xyz)...
 - filter for nice error stacktraces in TEST mode...
 - .gitignore when creating new maven projet

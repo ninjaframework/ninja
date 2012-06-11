@@ -5,25 +5,50 @@ import ninja.Router;
 import com.google.inject.Inject;
 
 import controllers.ApplicationController;
-import controllers.SecondController;
+import controllers.FilterController;
+import controllers.InjectionExampleController;
+import controllers.JsonController;
 
-public class Routes {	
-	
+public class Routes {
+
 	@Inject
 	public Routes(Router router) {
+
+		///////////////////////////////////////////////////////////////////////
+		// some default functions
+		///////////////////////////////////////////////////////////////////////
+		//simply render a page:
+		router.GET().route("/")
+				.with(ApplicationController.class, "index");
+
+		//render a page with variable route parts:
+		router.GET().route("/user/{id}/{name}/userDashboard")
+				.with(ApplicationController.class, "userDashboard");
+
+		//redirect back to /
+		router.GET().route("/redirect")
+				.with(ApplicationController.class, "redirect");
+
 		
-		//FIXME => is there a better way to route files => so that eclipse can jump
-		//right into index method?
-		router.route("/cathrin/{id}/test/{name}").    GET().with(ApplicationController.class, "index");
+		///////////////////////////////////////////////////////////////////////
+		// Json support
+		///////////////////////////////////////////////////////////////////////
+		router.GET().route("/json")
+				.with(JsonController.class, "json");
 		
-		router.route("/cathrin/{nachricht}/{leniort}").          GET().with(ApplicationController.class, "cathrin");		
-		router.route("/technique").     GET().with(ApplicationController.class, "technique");
-				
-		router.route("/redirect").   GET().with(ApplicationController.class,      "redirect");
+		///////////////////////////////////////////////////////////////////////
+		// Route filtering example:
+		///////////////////////////////////////////////////////////////////////
+		router.GET().route("/filter")
+				.with(FilterController.class, "filter");
 		
-		router.route("/second/json").   GET().with(SecondController.class,      "second");
 		
-		
+		///////////////////////////////////////////////////////////////////////
+		// Route filtering example:
+		///////////////////////////////////////////////////////////////////////
+		router.GET().route("/injection")
+				.with(InjectionExampleController.class, "injection");
+
 	}
 
 }

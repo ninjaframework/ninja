@@ -6,10 +6,10 @@ import ninja.Context;
 import com.google.inject.Singleton;
 
 @Singleton
-public class SecondController {
+public class JsonController {
 
 
-	public void second(Context context) {
+	public void json(Context context) {
 				
 		Person person = new Person();
 		person.name = "zeeess name";

@@ -21,16 +21,7 @@ public class RouterImpl implements Router {
 		allRoutes = new ArrayList<Route>();
 	}
 
-	public Route route(String url) {
-
-		Route route = routeProvider.get();
-		route.setUrl(url);
-
-		allRoutes.add(route);
-
-		return route;
-	}
-
+	@Override
 	public Route getRouteFor(String uri) {
 
 		for (Route route : allRoutes) {
@@ -46,10 +37,52 @@ public class RouterImpl implements Router {
 
 	}
 	
+	@Override
 	public Route getRouteFor(String uri, Map<String, String> parameterMap) {
 
 		throw new UnsupportedOperationException();
 
+	}
+
+	@Override
+	public Route GET() {
+		
+		Route route = routeProvider.get().GET();
+		allRoutes.add(route);
+		
+		return route;
+	}
+
+	@Override
+	public Route POST() {
+		Route route = routeProvider.get().POST();
+		allRoutes.add(route);
+		
+		return route;
+	}
+
+	@Override
+	public Route PUT() {
+		Route route = routeProvider.get().PUT();
+		allRoutes.add(route);
+		
+		return route;
+	}
+
+	@Override
+	public Route DELETE() {
+		Route route = routeProvider.get().DELETE();
+		allRoutes.add(route);
+		
+		return route;
+	}
+
+	@Override
+	public Route OPTIONS() {
+		Route route = routeProvider.get().OPTION();
+		allRoutes.add(route);
+		
+		return route;
 	}
 
 
