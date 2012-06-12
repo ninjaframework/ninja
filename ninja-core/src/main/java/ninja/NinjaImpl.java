@@ -64,7 +64,7 @@ public class NinjaImpl implements Ninja {
 
 					FilterWith filterWith = (FilterWith) annotation;
 
-					Filter filter = injector.getInstance(filterWith.value());
+					Filter filter = (Filter) injector.getInstance(filterWith.value());
 
 					filter.filter(null);
 
