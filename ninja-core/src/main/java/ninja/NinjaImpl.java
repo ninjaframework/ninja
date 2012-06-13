@@ -99,7 +99,7 @@ public class NinjaImpl implements Ninja {
 					
 					for (Class filterClass : filters) {
 						
-						Filter filter = injector.getInstance(filterClass);
+						Filter filter = (Filter) injector.getInstance(filterClass);
 						
 						filter.filter(context);
 						
