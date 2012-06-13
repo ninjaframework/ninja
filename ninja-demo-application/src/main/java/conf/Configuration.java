@@ -14,7 +14,6 @@ public class Configuration extends AbstractModule {
 		// start the framework
 		install(new ninja.Configuration());	
 		
-		
 		// some additional bindings for the application:
 		bind(GreetingService.class).to(GreetingServiceImpl.class);
 		

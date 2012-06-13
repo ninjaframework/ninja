@@ -5,9 +5,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
+/**
+ * A simple annotation that let's you put a filter
+ * on a controller method.
+ * 
+ * The filter will then be executed before the controller method is executed.
+ * 
+ * Please check out also {@link Filter}.
+ * 
+ * @author ra
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface FilterWith {
-	Class value();
+	Class[] value();
 }

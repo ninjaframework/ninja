@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface Context {
 
-	public enum HTTP_STATUS {
+	enum HTTP_STATUS {
 		notFound404, ok200, forbidden403, teapot418
 	}
 

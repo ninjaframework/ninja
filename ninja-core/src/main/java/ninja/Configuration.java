@@ -4,6 +4,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 
+/**
+ * The basic configuration of the main ninja framework.
+ * 
+ * @author ra
+ *
+ */
 public class Configuration extends AbstractModule {
 
 	public void configure() {

@@ -10,14 +10,14 @@ import com.google.inject.name.Named;
 
 public class NinjaImpl implements Ninja {
 
-	public final String NINJA_LOGO = " _______  .___ _______        ____.  _____   \n"
-			+ " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
-			+ " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
-			+ "/    |    \\   /    |    \\/\\__|    /    |    \\\n"
-			+ "\\____|__  /___\\____|__  /\\________\\____|__  /\n"
-			+ "     web\\/framework   \\/                  \\/v0.1 \n";
+	private final String NINJA_LOGO = " _______  .___ _______        ____.  _____   \n"
+	        + " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
+	        + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
+	        + "/    |    \\   /    |    \\/\\__|    /    |    \\\n"
+	        + "\\____|__  /___\\____|__  /\\________\\____|__  /\n"
+	        + "     web\\/framework   \\/                  \\/ \n";
 
-	Router router;
+	private final Router router;
 	private final Injector injector;
 
 	// something like views/notFound404.ftl.html
@@ -25,8 +25,9 @@ public class NinjaImpl implements Ninja {
 	private final String pathToViewNotFound;
 
 	@Inject
-	public NinjaImpl(Router router, Injector injector,
-			@Named("template404") String pathToViewNotFound) {
+	public NinjaImpl(Router router,
+	                 Injector injector,
+	                 @Named("template404") String pathToViewNotFound) {
 
 		this.router = router;
 		this.injector = injector;
@@ -44,17 +45,17 @@ public class NinjaImpl implements Ninja {
 	public void invoke(Context context) {
 
 		Route route = router.getRouteFor(context.getHttpServletRequest()
-				.getServletPath());
+		        .getServletPath());
 
 		if (route != null) {
-			//process annotations (filters)
+			// process annotations (filters)
 			boolean continueExecution = processAnnotations(route, context);
 
-			//If we are allowed to continue we execute
-			//the route itself.
+			// If we are allowed to continue we execute
+			// the route itself.
 			//
-			//It might be for instance that a user is not authenticated and
-			//therefore the route itself is not allowed to be executed.
+			// It might be for instance that a user is not authenticated and
+			// therefore the route itself is not allowed to be executed.
 			if (continueExecution) {
 				route.invoke(context);
 
@@ -62,7 +63,7 @@ public class NinjaImpl implements Ninja {
 		} else {
 			// throw a 404 "not found" because we did not find the route
 			context.status(HTTP_STATUS.notFound404)
-					.template(pathToViewNotFound).html();
+			        .template(pathToViewNotFound).html();
 
 		}
 
@@ -88,19 +89,25 @@ public class NinjaImpl implements Ninja {
 
 		try {
 			for (Annotation annotation : controller.getMethod(controllerMethod,
-					Context.class).getAnnotations()) {
+			        Context.class).getAnnotations()) {
 
 				if (annotation.annotationType().equals(FilterWith.class)) {
 
 					FilterWith filterWith = (FilterWith) annotation;
-
-					Filter filter = (Filter) injector.getInstance(filterWith.value());
-
-					filter.filter(context);
-
-					if (!filter.continueExecution()) {
-						continueExecution = false;
-						break;
+					
+					Class [] filters = filterWith.value();
+					
+					for (Class filterClass : filters) {
+						
+						Filter filter = injector.getInstance(filterClass);
+						
+						filter.filter(context);
+						
+						if (!filter.continueExecution()) {
+							continueExecution = false;
+							break;
+						}
+						
 					}
 
 				}

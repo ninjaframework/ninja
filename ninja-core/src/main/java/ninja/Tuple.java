@@ -1,5 +1,13 @@
 package ninja;
 
+/**
+ * That's just a simple tuple. Nothing to see here...
+ * 
+ * @author ra
+ *
+ * @param <X>
+ * @param <Y>
+ */
 public class Tuple<X, Y> {
 
 	private X x;

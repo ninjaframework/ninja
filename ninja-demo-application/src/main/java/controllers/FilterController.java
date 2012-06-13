@@ -5,12 +5,10 @@ import javax.servlet.http.Cookie;
 import ninja.Context;
 import ninja.FilterWith;
 import ninja.SecureFilter;
-import ninja.Tuple;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import etc.GreetingService;
+import filters.LoggerFilter;
 import filters.TeaPotFilter;
 
 @Singleton
@@ -45,9 +43,19 @@ public class FilterController {
 		context.html();
 
 	}
-	
-	
-	@FilterWith(TeaPotFilter.class)
+	/**
+	 * Really cool. We are using two filters on the method.
+	 * 
+	 * Filters are executed sequentially. First the LoggerFilter then the
+	 * TeaPotFilter.
+	 * 
+	 * The TeaPotFilter changes completely the output and the status.
+	 * 
+	 * @param context
+	 */
+	@FilterWith({
+		LoggerFilter.class, 
+		TeaPotFilter.class})
 	public void teapot(Context context) {
 		
 		//this will never be executed. Have a look at the TeaPotFilter.class!

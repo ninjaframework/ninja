@@ -16,7 +16,9 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
- * A simple servlet that allows us to run Ninja inside any servlet container.
+ * A simple servlet filter that allows us to run Ninja inside any servlet container.
+ * 
+ * This dispatcher targets Servlet 2.5.
  * 
  * @author ra
  * 
