@@ -1,0 +1,12 @@
+<#macro myLayout title="Layout example">
+<html>
+<head>
+<title>${title}</title>
+</head>
+<body>
+<#include "header.ftl.html"/> 
+<#nested/> 
+<#include "footer.ftl.html"/>
+</body>
+</html>
+</#macro>

@@ -45,6 +45,9 @@ GOALS
 
 TODOS
 -----
+- bootstrap integration into nija-demo-application
+- form validation and bootstrap post etc
+- less and external minimizer...
 - test test test
 - logging subsystem working
 - generic renderer for output (render xyz)...

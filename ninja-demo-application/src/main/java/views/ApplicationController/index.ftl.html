@@ -1,6 +1,7 @@
-<html>
-<title>Welcome to the demo page</title>
-<body>
+<#import "../layout/defaultLayout.ftl.html" as layout>
+
+<@layout.myLayout "Home page">
+
 	<h1>Welcome to the index page</h1>
 	<p>Currently the demo app covers the following topics</p>
 	<h2>Standard behavior</h2>
@@ -32,10 +33,7 @@
 		</li>
 	</ul>
 
-
-</body>
-</html>
-
+</@layout.myLayout>
 
 
 
