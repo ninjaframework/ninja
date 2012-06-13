@@ -8,8 +8,30 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
 
+/**
+ * Main implementation of the ninja framework.
+ * 
+ * Roughly works in the following order:
+ * 
+ * - Gets a request
+ * 
+ * - Searches for a matching route
+ * 
+ * - Applies filters
+ * 
+ * - Executes matching controller
+ * 
+ * - Returns result
+ * 
+ * @author ra
+ * 
+ */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class NinjaImpl implements Ninja {
 
+	/**
+	 * The most important thing: A cool logo.
+	 */
 	private final String NINJA_LOGO = " _______  .___ _______        ____.  _____   \n"
 	        + " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
 	        + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
@@ -33,14 +55,16 @@ public class NinjaImpl implements Ninja {
 		this.injector = injector;
 		this.pathToViewNotFound = pathToViewNotFound;
 
+		// This system out println is intended.
 		System.out.println(NINJA_LOGO);
 
 	}
 
 	/**
-	 * I want to get a session request etc pp...
+	 * I do all the main work.
 	 * 
-	 * @param uri
+	 * @param Context
+	 *            context
 	 */
 	public void invoke(Context context) {
 
@@ -49,7 +73,7 @@ public class NinjaImpl implements Ninja {
 
 		if (route != null) {
 			// process annotations (filters)
-			boolean continueExecution = processAnnotations(route, context);
+			boolean continueExecution = doApplyFilers(route, context);
 
 			// If we are allowed to continue we execute
 			// the route itself.
@@ -70,18 +94,20 @@ public class NinjaImpl implements Ninja {
 	}
 
 	/**
-	 * Processes the FilterWith annotations on top of a router method.
+	 * Processes the FilterWith annotation on top of a router method.
 	 * 
-	 * If a filter breaks the execution this method will return "false".
+	 * If a filter breaks the execution this method will return "false". It will
+	 * also stop further executing all remaining filter.
 	 * 
-	 * Therefore the code in the route itself will NOT be executed.
+	 * Therefore the code in the route itself should not be executed.
 	 * 
 	 * @param route
 	 * @param context
 	 * @return
 	 */
-	public boolean processAnnotations(Route route, Context context) {
+    public boolean doApplyFilers(Route route, Context context) {
 
+		// default value... continue that execution
 		boolean continueExecution = true;
 
 		Class controller = route.getController();
@@ -94,20 +120,22 @@ public class NinjaImpl implements Ninja {
 				if (annotation.annotationType().equals(FilterWith.class)) {
 
 					FilterWith filterWith = (FilterWith) annotation;
-					
-					Class [] filters = filterWith.value();
-					
+
+					Class[] filters = filterWith.value();
+
 					for (Class filterClass : filters) {
+
 						
-						Filter filter = (Filter) injector.getInstance(filterClass);
-						
+                        Filter filter = (Filter) injector
+						        .getInstance(filterClass);
+
 						filter.filter(context);
-						
+
 						if (!filter.continueExecution()) {
 							continueExecution = false;
 							break;
 						}
-						
+
 					}
 
 				}

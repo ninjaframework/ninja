@@ -16,7 +16,7 @@ public class RouteImpl implements Route {
 	public enum HTTP_METHOD {
 		GET, POST, PUT, DELETE, OPTION
 	}
-	
+
 	private HTTP_METHOD http_method;
 
 	private String uri;
@@ -98,7 +98,7 @@ public class RouteImpl implements Route {
 			applicationController = injector.getInstance(controller);
 
 			Method method = applicationController.getClass().getMethod(
-			    controllerMethod, Context.class);
+			        controllerMethod, Context.class);
 			method.invoke(applicationController, context);
 
 		} catch (IllegalAccessException e) {

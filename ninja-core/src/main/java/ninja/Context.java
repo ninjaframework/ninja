@@ -10,6 +10,7 @@ public interface Context {
 	}
 
 	// final methods:
+	
 	void html(Tuple<String, String>... tuples);
 
 	void json(Object object);

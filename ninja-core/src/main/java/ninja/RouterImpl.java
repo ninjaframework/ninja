@@ -18,7 +18,7 @@ public class RouterImpl implements Router {
 
 		this.routeProvider = routeProvider;
 
-		allRoutes = new ArrayList<Route>();
+		this.allRoutes = new ArrayList<Route>();
 	}
 
 	@Override

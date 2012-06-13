@@ -33,7 +33,7 @@ public class ContextImpl implements Context {
 
 		this.router = router;
 		
-		httpStatus = HTTP_STATUS.ok200;
+		this.httpStatus = HTTP_STATUS.ok200;
 	}
 
 	public void setHttpServletRequest(HttpServletRequest httpServletRequest) {

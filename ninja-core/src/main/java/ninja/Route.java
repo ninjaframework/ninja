@@ -2,31 +2,31 @@ package ninja;
 
 import java.util.Map;
 
-public interface Route {
+interface Route {
 
-	public Route GET();
+	Route GET();
 
-	public Route POST();
+	Route POST();
 
-	public Route PUT();
+	Route PUT();
 
-	public Route DELETE();
+	Route DELETE();
 
-	public Route OPTION();
-	
-	public Route route(String uri);
+	Route OPTION();
 
-	public void with(Class controller, String controllerMethod);
+	Route route(String uri);
 
-	public String getUrl();
+	void with(Class controller, String controllerMethod);
 
-	public void invoke(Context context);
+	String getUrl();
+
+	void invoke(Context context);
 
 	Class getController();
 
 	String getControllerMethod();
 
-	public boolean matches(String uri);
+	boolean matches(String uri);
 
 	Map<String, String> getParameters(String uri);
 

@@ -28,13 +28,13 @@ public class NinjaServletDispatcher implements Filter {
 	/**
 	 * Main injector for the class.
 	 */
-	Injector injector;
+	private Injector injector;
 
 	/**
 	 * Our implementation for Ninja. Handles the complete lifecycle of the app.
 	 * Dispatches routes. Applies filters and so on.
 	 */
-	Ninja ninja;
+	private Ninja ninja;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
 
