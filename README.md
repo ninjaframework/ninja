@@ -76,8 +76,7 @@ TODOS
 - internationalization properties AND templates...
 -- make sure i18n is derived from request language
 
-- freemarker example with parent and included refinement... => reuse of html. => ending should be ftl.html
-=> http://richardbarabe.wordpress.com/category/web-development/template-system/freemarker/
+
 - scheduled jobs
 -- gae? with .xml config?
 
@@ -109,6 +108,8 @@ TODOS
 
 DONE
 ----
+- freemarker example with parent and included refinement... => reuse of html. => ending should be ftl.html
+=> http://richardbarabe.wordpress.com/category/web-development/template-system/freemarker/
 - simple freemarker templating working in /views/controller/index.ftl.html
 - simple json support via renderJson(object) in context
 - controller works
