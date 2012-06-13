@@ -2,7 +2,7 @@ package ninja;
 
 import java.util.Map;
 
-interface Route {
+public interface Route {
 
 	Route GET();
 
