@@ -16,18 +16,18 @@ public class RouteImpl implements Route {
 	public enum HTTP_METHOD {
 		GET, POST, PUT, DELETE, OPTION
 	}
-
+	
 	private HTTP_METHOD http_method;
 
 	private String uri;
 
-	List<UriTokenPart> parts;
+	private List<UriTokenPart> parts;
 
 	private Class controller;
 
 	private String controllerMethod;
 
-	Injector injector;
+	private Injector injector;
 
 	@Inject
 	public RouteImpl(Injector injector) {

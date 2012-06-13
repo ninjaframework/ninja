@@ -35,9 +35,11 @@ public class SecureFilterTest {
 		// make sure continue is set to false when we got no cookies:
 		when(context.getHttpServletRequest()).thenReturn(httpServletRequest);
 		when(httpServletRequest.getCookies()).thenReturn(null);
-		
+
+		// filter that
 		secureFilter.filter(context);
-		
+
+		// and we expect a false from the secure filter...
 		assertFalse(secureFilter.continueExecution());
 	}
 

@@ -1,8 +1,13 @@
-ninja - a web framework
-=======================
+     _______  .___ _______        ____.  _____   
+     \      \ |   |\      \      |    | /  _  \  
+     /   |   \|   |/   |   \     |    |/  /_\  \ 
+    /    |    \   /    |    \/\__|    /    |    \
+    \____|__  /___\____|__  /\________\____|__  /
+         web\/framework   \/                  \/ 
+        
 GOALS
 -----
-- provide a rails, play like java only framework
+- provide a rails, play-framework like java only framework
 - stateless to the max, no server side session
 - productivity is king - reloads must be ultra fast
 - should run on any war container (tomcat, jetty), but also on netty (async)
@@ -16,7 +21,9 @@ GOALS
 -- no reflection (or only a minimal amount)
 - not dependent on serlvet api. should eg also run on netty
 - archetype for simple project generation out of the box
-- working security subsystem
+- working security subsystem (client side session crypto key'ed)
+- framework completely interfaced for supersimple and fast mocked testing
+
 
 DONE
 ----
