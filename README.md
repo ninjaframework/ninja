@@ -5,6 +5,10 @@
     \____|__  /___\____|__  /\________\____|__  /
          web\/framework   \/                  \/ 
         
+Ninja - web framework
+=====================
+CI at: https://buildhive.cloudbees.com/job/reyez/job/ninja/
+
 GOALS
 -----
 - provide a rails, play-framework like java only framework
@@ -24,25 +28,6 @@ GOALS
 - working security subsystem (client side session crypto key'ed)
 - framework completely interfaced for supersimple and fast mocked testing
 
-
-DONE
-----
-- simple freemarker templating working in /views/controller/index.ftl.html
-- simple json support via renderJson(object) in context
-- controller works
-- simple router configuration works
-- displaying of pages works
-- auto reloading feature of jetty and guice works fast!
-- guice like routes filter...
-- routes file, just with a java router...
-- filling of freemarker templates with content
-- router flexible routes todo (with {})
--- serve "/me/{id}", with when content("json xyz");
-- how to develop modules in an efficient way
-==> http://maven.apache.org/plugins/maven-war-plugin/overlays.html ninja-demo-module
-===> use ln for that...
-- default error handling 404 => 505 etc...
-==> using status(HTTP_STATUS) on context
 
 TODOS
 -----
@@ -104,5 +89,24 @@ TODOS
 - etag support?
 
 
+
+DONE
+----
+- simple freemarker templating working in /views/controller/index.ftl.html
+- simple json support via renderJson(object) in context
+- controller works
+- simple router configuration works
+- displaying of pages works
+- auto reloading feature of jetty and guice works fast!
+- guice like routes filter...
+- routes file, just with a java router...
+- filling of freemarker templates with content
+- router flexible routes todo (with {})
+-- serve "/me/{id}", with when content("json xyz");
+- how to develop modules in an efficient way
+==> http://maven.apache.org/plugins/maven-war-plugin/overlays.html ninja-demo-module
+===> use ln for that...
+- default error handling 404 => 505 etc...
+==> using status(HTTP_STATUS) on context
 
 
