@@ -98,7 +98,7 @@ public class RouteImpl implements Route {
 			applicationController = injector.getInstance(controller);
 
 			Method method = applicationController.getClass().getMethod(
-					controllerMethod, Context.class);
+			    controllerMethod, Context.class);
 			method.invoke(applicationController, context);
 
 		} catch (IllegalAccessException e) {
@@ -236,10 +236,10 @@ public class RouteImpl implements Route {
 
 	@Override
 	public Route route(String uri) {
-		//init raw uri and the parts for matching:
+		// init raw uri and the parts for matching:
 		this.uri = uri;
 		this.parts = parseUriToken(uri);
-		
+
 		return this;
 	}
 

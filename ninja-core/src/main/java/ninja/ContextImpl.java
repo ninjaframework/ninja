@@ -171,10 +171,14 @@ public class ContextImpl implements Context {
 	 */
 	private void setStatusOnResponse(HTTP_STATUS httpStatus) {
 		
-		if (httpStatus.equals(HTTP_STATUS.notFound_404)) {
-			httpServletResponse.setStatus(404);
-		} else if (httpStatus.equals(HTTP_STATUS.ok200)) {
+		if (httpStatus.equals(HTTP_STATUS.ok200)) {
 			httpServletResponse.setStatus(200);
+		} else if (httpStatus.equals(HTTP_STATUS.notFound404)) {
+			httpServletResponse.setStatus(404);
+		}  else if (httpStatus.equals(HTTP_STATUS.forbidden403)) {
+			httpServletResponse.setStatus(403);
+		} else if(httpStatus.equals(HTTP_STATUS.teapot418)) {
+			httpServletResponse.setStatus(418);
 		}
 		
 	}

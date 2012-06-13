@@ -31,34 +31,40 @@
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 		</dependency>
-		
+
 		<!-- Servlet api is used to run Ninja inside servlet containers -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 		</dependency>
-		
+
 		<!-- We use gson for rendering jsons: -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.1</version>
-            <scope>compile</scope>
-        </dependency>
-        
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.1</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- freemarker is our templating engine: -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.16</version>
 		</dependency>
-		
+
 		<!-- Testing is mainly done by mockito: -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

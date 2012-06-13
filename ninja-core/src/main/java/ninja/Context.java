@@ -4,17 +4,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface Context {
-	
+
 	public enum HTTP_STATUS {
-		notFound_404, ok200
+		notFound404, ok200, forbidden403, teapot418
 	}
-	
-	//final methods:
-	void html(Tuple<String, String>... tuples);	
-	void json(Object object);	
+
+	// final methods:
+	void html(Tuple<String, String>... tuples);
+
+	void json(Object object);
+
 	void redirect(String url);
-	
-	
+
 	Context template(String explicitTemplateName);
 
 	void setHttpServletRequest(HttpServletRequest httServletRequest);
@@ -26,9 +27,7 @@ public interface Context {
 	HttpServletResponse getHttpServletResponse();
 
 	Context status(HTTP_STATUS httpStatus);
-	
-	String getPathParameter(String key);
-	
 
+	String getPathParameter(String key);
 
 }

@@ -22,8 +22,8 @@ public class Configuration extends AbstractModule {
 		// bind the error views to their real templates
 		// => can be later customized by user. but default views should be ok
 		// for now.
-		bind(String.class).annotatedWith(Names.named("template404"))
-				.toInstance("views/notFound404.ftl.html");
+		bind(String.class).annotatedWith(Names.named("template404")).toInstance(
+		    "views/notFound404.ftl.html");
 
 	}
 

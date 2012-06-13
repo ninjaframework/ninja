@@ -36,7 +36,7 @@ public class RouterImpl implements Router {
 		return null;
 
 	}
-	
+
 	@Override
 	public Route getRouteFor(String uri, Map<String, String> parameterMap) {
 
@@ -46,10 +46,10 @@ public class RouterImpl implements Router {
 
 	@Override
 	public Route GET() {
-		
+
 		Route route = routeProvider.get().GET();
 		allRoutes.add(route);
-		
+
 		return route;
 	}
 
@@ -57,7 +57,7 @@ public class RouterImpl implements Router {
 	public Route POST() {
 		Route route = routeProvider.get().POST();
 		allRoutes.add(route);
-		
+
 		return route;
 	}
 
@@ -65,7 +65,7 @@ public class RouterImpl implements Router {
 	public Route PUT() {
 		Route route = routeProvider.get().PUT();
 		allRoutes.add(route);
-		
+
 		return route;
 	}
 
@@ -73,7 +73,7 @@ public class RouterImpl implements Router {
 	public Route DELETE() {
 		Route route = routeProvider.get().DELETE();
 		allRoutes.add(route);
-		
+
 		return route;
 	}
 
@@ -81,10 +81,8 @@ public class RouterImpl implements Router {
 	public Route OPTIONS() {
 		Route route = routeProvider.get().OPTION();
 		allRoutes.add(route);
-		
+
 		return route;
 	}
-
-
 
 }
