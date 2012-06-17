@@ -54,7 +54,6 @@ For version 0.2 - "basics"
 -- prettify.css from googlecode for code...
 - make templating system modular (ftl optional, as well as jsons)
 - make rendering better with
-- 
 
 For version 0.3 - "security"
 - session cookie there with signing...
