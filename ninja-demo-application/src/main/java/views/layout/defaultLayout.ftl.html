@@ -1,11 +1,47 @@
 <#macro myLayout title="Layout example">
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
 <title>${title}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Le styles -->
+<link href="assets/bootstrap.css" rel="stylesheet">
+<link href="assets/bootstrap-responsive.css" rel="stylesheet">
+
 </head>
+<html>
+
+
 <body>
-<#include "header.ftl.html"/> 
-<#nested/> 
+
+	<!-- Navbar
+    ================================================== -->
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse"
+					data-target=".nav-collapse">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="brand" href="./">Ninja</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active"><a href="./">Index</a></li>
+						<li class=""><a href="./bootrap">Examples</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<#include "header.ftl.html"/>
+
+<#nested/>
+
 <#include "footer.ftl.html"/>
 </body>
 </html>

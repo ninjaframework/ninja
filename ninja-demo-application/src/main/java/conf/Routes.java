@@ -1,5 +1,6 @@
 package conf;
 
+import ninja.PublicController;
 import ninja.Router;
 
 import com.google.inject.Inject;
@@ -19,6 +20,7 @@ public class Routes {
 		// /////////////////////////////////////////////////////////////////////
 		// simply render a page:
 		router.GET().route("/").with(ApplicationController.class, "index");
+		router.GET().route("/bootstrap").with(ApplicationController.class, "bootstrap");
 
 		// render a page with variable route parts:
 		router.GET().route("/user/{id}/{name}/userDashboard")
@@ -44,6 +46,8 @@ public class Routes {
 		// /////////////////////////////////////////////////////////////////////
 		router.GET().route("/injection")
 				.with(InjectionExampleController.class, "injection");
+		
+		router.GET().route("/assets/{stuff}").with(PublicController.class, "serve");
 
 	}
 

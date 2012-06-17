@@ -65,11 +65,14 @@ public class NinjaServletDispatcher implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse resp,
 	        FilterChain chain) throws IOException, ServletException {
 
+
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 
 		// We generate a Ninja compatible context element
 		Context context = injector.getProvider(Context.class).get();
+		
+
 
 		// And populate it
 		context.setHttpServletRequest(request);

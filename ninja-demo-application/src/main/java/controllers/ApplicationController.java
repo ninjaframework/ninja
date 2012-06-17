@@ -13,6 +13,14 @@ import etc.GreetingService;
 @Singleton
 public class ApplicationController {
 
+	public void bootstrap(Context context) {
+		// Default rendering is simple by convention
+		// This renders the page in views/ApplicationController/index.ftl.html
+		context.html();
+
+	}
+	
+	
 	public void index(Context context) {
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html

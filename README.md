@@ -22,7 +22,6 @@ documentation inside the classes.
 
 
 
-
 GOALS
 -----
 - provide a rails, play-framework like java only framework
@@ -41,6 +40,77 @@ GOALS
 - archetype for simple project generation out of the box
 - working security subsystem (client side session crypto key'ed)
 - framework completely interfaced for supersimple and fast mocked testing
+
+
+
+Next big steps
+--------------
+
+For version 0.2 - "basics"
+- Augment the router with support for catchall routes and routes that contain regex parameters
+- Complete the AssetsController
+-- supply correct response codes for files (txt/css, pictures, js etc pp)
+- integrate bootstrap and make demo application nice
+-- prettify.css from googlecode for code...
+- make templating system modular (ftl optional, as well as jsons)
+- make rendering better with
+- 
+
+For version 0.3 - "security"
+- session cookie there with signing...
+- flash cookie support there
+- login logout module there
+
+For version 0.4 - "html forms support" 
+- demo app extending via forms validation and xsrf support
+- maybe reverse routing in templates...
+
+For version 0.5 - "test subsystem support"
+- isdev isprod istest modes integrated into app...
+- testsystem is there
+- fluentlenium maybe
+- selenium testcases
+- integration test and tests run nicely in maven
+- support for verify tests in mockito so that frontend tests become ultrafast...
+
+For version 0.6 - "internationalization support"
+- make sure properties support works
+
+For version 0.7 - Tomcat, Jetty, Heroku, Cloudbees, App Engine support
+- check if stuff runs on third party hosts...
+- make sure mappings are correct in all containers.
+- Improve interoperability (eg /assets, /views and so on...)
+
+
+For version 0.8
+- Performance
+
+
+For version 0.9
+- gwt bridge
+
+
+Already done:
+-------------
+version 0.1
+- freemarker example with parent and included refinement... => reuse of html. => ending should be ftl.html
+=> http://richardbarabe.wordpress.com/category/web-development/template-system/freemarker/
+- simple freemarker templating working in /views/controller/index.ftl.html
+- simple json support via renderJson(object) in context
+- controller works
+- simple router configuration works
+- displaying of pages works
+- auto reloading feature of jetty and guice works fast!
+- guice like routes filter...
+- routes file, just with a java router...
+- filling of freemarker templates with content
+- router flexible routes todo (with {})
+-- serve "/me/{id}", with when content("json xyz");
+- how to develop modules in an efficient way
+==> http://maven.apache.org/plugins/maven-war-plugin/overlays.html ninja-demo-module
+===> use ln for that...
+- default error handling 404 => 505 etc...
+==> using status(HTTP_STATUS) on context
 
 
 TODOS
@@ -64,8 +134,9 @@ TODOS
 - how to integrate plugins
 -- especially when they provide views
 -- need for a plugins.java? or is configuration.java okay?
-- Routes.java => can it be bound automatically in default location? conf.Rotues?
-- support for 3rd party compiler plugns
+- Routes.java => can it be bound automatically in default location? conf.Routes?
+- caching of routes matching and binding to controllers for faster stuff...
+- support for 3rd party compiler plugins
 => closure
 => dart
 - context negotiation? needed?

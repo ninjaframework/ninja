@@ -54,6 +54,13 @@
 			<version>2.3.16</version>
 		</dependency>
 
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>12.0</version>
+		</dependency>
+
 		<!-- Testing is mainly done by mockito: -->
 		<dependency>
 			<groupId>org.mockito</groupId>
