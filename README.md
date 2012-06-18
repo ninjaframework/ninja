@@ -52,8 +52,7 @@ For version 0.2 - "basics"
 -- supply correct response codes for files (txt/css, pictures, js etc pp)
 - integrate bootstrap and make demo application nice
 -- prettify.css from googlecode for code...
-- make templating system modular (ftl optional, as well as jsons)
-- make rendering better with
+- make templating system modular (ftl optional, as well as jsons) DONE
 
 For version 0.3 - "security"
 - session cookie there with signing...

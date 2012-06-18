@@ -1,5 +1,7 @@
 package ninja;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,12 +12,15 @@ public interface Context {
 	}
 
 	// final methods:
+	void html();
 	
-	void html(Tuple<String, String>... tuples);
+	void html(Map<String, String> map);
 
 	void json(Object object);
 
 	void redirect(String url);
+
+	void setContentType(String contentType);
 
 	Context template(String explicitTemplateName);
 
@@ -30,5 +35,7 @@ public interface Context {
 	Context status(HTTP_STATUS httpStatus);
 
 	String getPathParameter(String key);
+
+	String getTemplateName();
 
 }

@@ -1,19 +1,16 @@
 package controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ninja.Context;
-import ninja.FilterWith;
-import ninja.SecureFilter;
-import ninja.Tuple;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import etc.GreetingService;
 
 @Singleton
 public class ApplicationController {
 
-	public void bootstrap(Context context) {
+	public void examples(Context context) {
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
 		context.html();
@@ -34,12 +31,13 @@ public class ApplicationController {
 		String id = context.getPathParameter("id");				
 		String name = context.getPathParameter("name");
 
+		Map<String, String> map = new HashMap<String, String>();
 		//generate tuples
-		Tuple<String, String> tuple = new Tuple<String, String>("id", id);
-		Tuple<String, String> tuple2 = new Tuple<String, String>("name", name);
+		map.put("id", id);
+		map.put("name", name);
 
 		//and render page with both parameters:
-		context.html(tuple, tuple2);
+		context.html(map);
 
 	}
 

@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ninja.template.TemplateEngineManagerImpl;
+
+import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-@SuppressWarnings("rawtypes")
 public class RouteImpl implements Route {
 
 	public enum HTTP_METHOD {

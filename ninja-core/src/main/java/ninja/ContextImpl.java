@@ -1,19 +1,16 @@
 package ninja;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-import com.google.inject.Inject;
+import ninja.template.TemplateEngine;
+import ninja.template.TemplateEngineManager;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import com.google.inject.Inject;
 
 public class ContextImpl implements Context {
 
@@ -25,14 +22,20 @@ public class ContextImpl implements Context {
 
 	// * if set this template is used. otherwise the default mapping **/
 	private String templateName = null;
-	
+
 	private HTTP_STATUS httpStatus;
 
+	public String contentType;
+
+	private final TemplateEngineManager templateEngineManager;
+
 	@Inject
-	public ContextImpl(Router router) {
+	public ContextImpl(Router router,
+	                   TemplateEngineManager templateEngineManager) {
 
 		this.router = router;
-		
+		this.templateEngineManager = templateEngineManager;
+
 		this.httpStatus = HTTP_STATUS.ok200;
 	}
 
@@ -57,7 +60,7 @@ public class ContextImpl implements Context {
 	public HttpServletResponse getHttpServletResponse() {
 		return this.httpServletResponse;
 	}
-	
+
 	@Override
 	public Context template(String explicitTemplateName) {
 		this.templateName = explicitTemplateName;
@@ -69,7 +72,6 @@ public class ContextImpl implements Context {
 		this.httpStatus = httpStatus;
 		return this;
 	}
-	
 
 	@Override
 	public String getPathParameter(String key) {
@@ -78,7 +80,7 @@ public class ContextImpl implements Context {
 		Route route = router.getRouteFor(httpServletRequest.getServletPath());
 
 		return route.getParameters(httpServletRequest.getServletPath())
-				.get(key);
+		        .get(key);
 
 	}
 
@@ -93,94 +95,65 @@ public class ContextImpl implements Context {
 		}
 
 	}
+	
+	@Override
+	public void html() {
+		html(new HashMap<String, String>());
+	}
 
 	@Override
-	public void html(Tuple<String, String>... tuples) {
-		
+	public void html(Map<String, String> map) {
+		setContentType(ContentTypes.TEXT_HTML);
 		setStatusOnResponse(httpStatus);
 		
-		//compute default route if view is not set explicitly
-		if (templateName == null) {
-
-			Route route = router.getRouteFor(httpServletRequest
-					.getServletPath());
-
-			templateName = String.format("views/%s/%s.ftl.html",
-					route.getController().getSimpleName(),
-					route.getControllerMethod());
-		}
-
-		// 1st => determine which
-
-		Configuration cfg = new Configuration();
-		// Specify the data source where the template files come from.
-		// Here I set a file directory for it:
-		try {
-
-			cfg.setClassForTemplateLoading(this.getClass(), "/");
-			Template freemarkerTemplate = cfg.getTemplate(templateName);
-
-			// convert tuples:
-
-			Map<String, String> map = new HashMap<String, String>();
-
-			for (Tuple<String, String> tuple : tuples) {
-				map.put(tuple.getX(), tuple.getY());
-
-			}
-
-			Writer out = new OutputStreamWriter(
-					httpServletResponse.getOutputStream());
-
-			freemarkerTemplate.process(map, out);
-
-			out.flush();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		TemplateEngine templateEngine 
+			= templateEngineManager.getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
+		
+		templateEngine.invoke(this, map);
 
 	}
 
 	@Override
 	public void json(Object object) {
-		
-		setStatusOnResponse(httpStatus);
-		
-		
-		Gson gson = new Gson();
-		String json = gson.toJson(object);
 
-		try {
-			httpServletResponse.getOutputStream().print(json);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		setContentType(ContentTypes.APPLICATION_JSON);
+		setStatusOnResponse(httpStatus);
+
+		TemplateEngine templateEngine = templateEngineManager
+		        .getTemplateEngineForContentType(ContentTypes.APPLICATION_JSON);
+
+		templateEngine.invoke(this, object);
 
 	}
-	
 
-
-	
-	
 	/**
 	 * set status on response finally...
+	 * 
 	 * @param httpStatus
 	 */
 	private void setStatusOnResponse(HTTP_STATUS httpStatus) {
-		
+
 		if (httpStatus.equals(HTTP_STATUS.ok200)) {
 			httpServletResponse.setStatus(200);
 		} else if (httpStatus.equals(HTTP_STATUS.notFound404)) {
 			httpServletResponse.setStatus(404);
-		}  else if (httpStatus.equals(HTTP_STATUS.forbidden403)) {
+		} else if (httpStatus.equals(HTTP_STATUS.forbidden403)) {
 			httpServletResponse.setStatus(403);
-		} else if(httpStatus.equals(HTTP_STATUS.teapot418)) {
+		} else if (httpStatus.equals(HTTP_STATUS.teapot418)) {
 			httpServletResponse.setStatus(418);
 		}
-		
+
 	}
+
+	@Override
+	public void setContentType(String contentType) {
+		httpServletResponse.setContentType(contentType);
+
+	}
+
+	@Override
+    public String getTemplateName() {
+	    return templateName;
+    }
 
 }
