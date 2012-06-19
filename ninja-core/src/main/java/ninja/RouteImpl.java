@@ -1,15 +1,16 @@
 package ninja;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import ninja.template.TemplateEngineManagerImpl;
-
-import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -22,8 +23,6 @@ public class RouteImpl implements Route {
 	private HTTP_METHOD http_method;
 
 	private String uri;
-
-	private List<UriTokenPart> parts;
 
 	private Class controller;
 
@@ -128,107 +127,27 @@ public class RouteImpl implements Route {
 	 */
 	public boolean matches(String uri) {
 
-		if (uri.equals(this.uri)) {
-			return true;
-		}
+		Pattern pattern = Pattern.compile(convertRawUriToRegex(this.uri));
+		Matcher matcher = pattern.matcher(uri);
 
-		String[] givenParts = uri.split("/");
+		return matcher.matches();
 
-		if (parts.size() != givenParts.length) {
-			return false;
-		}
-		// Scan through the Url to check if all corresponding
-		// parts match.
-		for (int i = 0; i < givenParts.length; i++) {
-			if (!parts.get(i).matches(givenParts[i])) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	// /////////////////////////////////////////////////////////////////////////
-	// support for nicely parsing and comparing routes
-	// like /person/{name}/{john}
-	// Idea from James' implementation at gwt-platform project
-	// /////////////////////////////////////////////////////////////////////////
-
-	private interface UriTokenPart {
-		boolean matches(String part);
-
-		String getParameterName();
-	}
-
-	private static class ParameterizedUriPart implements UriTokenPart {
-		private final String parameterName;
-
-		private ParameterizedUriPart(String parameterName) {
-			this.parameterName = parameterName;
-		}
-
-		/**
-		 * As this is a dynamic part everything is allowed to match.
-		 * 
-		 * For instance a route like: /user/{userId}/dashboard matches both: -
-		 * /user/sara/dashboard - /user/bob/dashboard
-		 */
-		@Override
-		public boolean matches(String part) {
-			return true;
-		}
-
-		@Override
-		public String getParameterName() {
-			return parameterName;
-		}
-	}
-
-	private static class StaticUriTokenPart implements UriTokenPart {
-		private final String partName;
-
-		private StaticUriTokenPart(String partName) {
-			this.partName = partName;
-		}
-
-		@Override
-		public boolean matches(String part) {
-			return partName.equals(part);
-		}
-
-		@Override
-		public String getParameterName() {
-			return null;
-		}
-	}
-
-	private static List<UriTokenPart> parseUriToken(String uri) {
-		List<UriTokenPart> parts = new ArrayList<UriTokenPart>();
-		for (String part : uri.split("/")) {
-			if (part.matches("\\{.*\\}")) {
-				String parameterName = part.substring(1, part.length() - 1);
-				parts.add(new ParameterizedUriPart(parameterName));
-			} else {
-				parts.add(new StaticUriTokenPart(part));
-			}
-		}
-
-		return parts;
 	}
 
 	@Override
 	public Map<String, String> getParameters(String uri) {
 
+		List<String> parameterNames = doParseParameters(this.uri);
+
 		Map<String, String> map = new HashMap<String, String>();
 
-		String[] givenParts = uri.split("/");
+		String rawRouteAsRegex = convertRawUriToRegex(this.uri);
+		Pattern p = Pattern.compile(rawRouteAsRegex);
+		Matcher m = p.matcher(uri);
 
-		// Store all parameters.
-		for (int i = 0; i < givenParts.length; i++) {
-			String parameterName = parts.get(i).getParameterName();
-			// Store if this part is a parameter meaning != null.
-			if (parameterName != null) {
-				map.put(parameterName, givenParts[i]);
+		if (m.matches()) {
+			for (int i = 1; i < m.groupCount() + 1; i++) {
+				map.put(parameterNames.get(i - 1), m.group(i));
 			}
 		}
 
@@ -240,9 +159,35 @@ public class RouteImpl implements Route {
 	public Route route(String uri) {
 		// init raw uri and the parts for matching:
 		this.uri = uri;
-		this.parts = parseUriToken(uri);
 
 		return this;
+	}
+
+	public List<String> doParseParameters(String rawRoute) {
+
+		List<String> list = new ArrayList<String>();
+
+		Pattern p = Pattern.compile("\\{(.*?)\\}");
+		Matcher m = p.matcher(rawRoute);
+		
+		while (m.find()) {
+			list.add(m.group(1));
+		}
+
+		return list;
+
+	}
+
+	/**
+	 * Gets a raw uri like /{name}/id/* and returns /(.*)/id/*
+	 * 
+	 * @return
+	 */
+	public String convertRawUriToRegex(String rawUri) {
+
+		String result = rawUri.replaceAll("\\{.*?\\}", "(.*?)");
+		return result;
+
 	}
 
 }

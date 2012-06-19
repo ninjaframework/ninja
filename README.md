@@ -47,12 +47,12 @@ Next big steps
 --------------
 
 For version 0.2 - "basics"
-- Augment the router with support for catchall routes and routes that contain regex parameters
+- DONE: Augment the router with support for catchall routes and routes that contain regex parameters
 - Complete the AssetsController
 -- supply correct response codes for files (txt/css, pictures, js etc pp)
 - integrate bootstrap and make demo application nice
 -- prettify.css from googlecode for code...
-- make templating system modular (ftl optional, as well as jsons) DONE
+- DONE: make templating system modular (ftl optional, as well as jsons) DONE
 
 For version 0.3 - "security"
 - session cookie there with signing...
