@@ -5,10 +5,15 @@ import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
 
+import ninja.Context.HTTP_STATUS;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import freemarker.template.Template;
 
 public class SecureFilterTest {
 
@@ -34,6 +39,9 @@ public class SecureFilterTest {
 
 		// make sure continue is set to false when we got no cookies:
 		when(context.getHttpServletRequest()).thenReturn(httpServletRequest);
+		when(context.status(Mockito.any(HTTP_STATUS.class))).thenReturn(context);
+		when(context.template(Mockito.anyString())).thenReturn(context);
+		
 		when(httpServletRequest.getCookies()).thenReturn(null);
 
 		// filter that
