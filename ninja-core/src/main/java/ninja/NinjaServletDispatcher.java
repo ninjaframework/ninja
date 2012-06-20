@@ -65,6 +65,7 @@ public class NinjaServletDispatcher implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse resp,
 	        FilterChain chain) throws IOException, ServletException {
 
+		
 
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
@@ -73,10 +74,10 @@ public class NinjaServletDispatcher implements Filter {
 		Context context = injector.getProvider(Context.class).get();
 		
 
-
 		// And populate it
 		context.setHttpServletRequest(request);
 		context.setHttpServletResponse(response);
+
 
 		// And invoke ninja on it.
 		// Ninja handles all defined routes, filters and much more:

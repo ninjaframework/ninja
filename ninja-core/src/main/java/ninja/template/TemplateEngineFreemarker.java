@@ -41,7 +41,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		if (templateName == null) {
 
 			Route route = router.getRouteFor(context.getHttpServletRequest()
-			        .getServletPath());
+			        .getPathInfo());
 
 			templateName = String.format("views/%s/%s.ftl.html", route
 			        .getController().getSimpleName(), route

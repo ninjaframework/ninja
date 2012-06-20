@@ -69,7 +69,8 @@ public class NinjaImpl implements Ninja {
 	public void invoke(Context context) {
 
 		Route route = router.getRouteFor(context.getHttpServletRequest()
-		        .getServletPath());
+		        .getPathInfo());
+		
 
 		if (route != null) {
 			// process annotations (filters)
