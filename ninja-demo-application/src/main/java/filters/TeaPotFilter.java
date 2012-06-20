@@ -20,7 +20,7 @@ public class TeaPotFilter implements Filter {
 	public void filter(Context context) {
 
 		context.status(HTTP_STATUS.teapot418)
-				.template("/views/TeaPotFilter/TeaPot.ftl.html").html();
+				.template("/views/TeaPotFilter/TeaPot.ftl.html").renderHtml();
 
 	}
 

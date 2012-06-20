@@ -15,7 +15,7 @@ public class JsonController {
 		person.name = "zeeess name";
 		
 		//render
-		context.json(person);
+		context.renderJson(person);
 	}
 
 }

@@ -11,12 +11,7 @@ public interface Context {
 		notFound404, ok200, forbidden403, teapot418
 	}
 
-	// final methods:
-	void html();
-	
-	void html(Map<String, String> map);
 
-	void json(Object object);
 
 	void redirect(String url);
 
@@ -37,5 +32,24 @@ public interface Context {
 	String getPathParameter(String key);
 
 	String getTemplateName();
+
+	///////////////////////////////////////////////////////////////////////////
+	// Generic methods to finish a request (rendering any content)
+	///////////////////////////////////////////////////////////////////////////
+	void render();
+	
+	void render(ContentTypes contentType, Object object);
+	
+	void render(ContentTypes contentType);
+	
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Convenience Methods to render a specific type. Html, Json and maybe Xml
+	///////////////////////////////////////////////////////////////////////////
+	void renderHtml();
+	
+	void renderHtml(Object object);
+
+	void renderJson(Object object);
 
 }

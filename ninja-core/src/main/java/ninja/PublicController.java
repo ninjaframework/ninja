@@ -3,6 +3,8 @@ package ninja;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import ninja.Context.HTTP_STATUS;
 
@@ -18,28 +20,45 @@ import com.google.inject.Singleton;
 @Singleton
 public class PublicController {
 
+	/** Used as seen by http request */
+	final String PUBLIC_PREFIX = "/assets/";
+
+	/** Used for storing files locally */
+	final String ASSETS_PREFIX = "assets/";
+
 	public void serve(Context context) {
 
-		File file = new File(context.getHttpServletRequest().getRequestURI());
+		String finalName = context.getHttpServletRequest().getRequestURI()
+		        .replaceFirst(PUBLIC_PREFIX, "");
 
-		System.out.println(this.getClass().getClassLoader().getResourceAsStream("assets/bootstrap.css"));
 		
-		try {
-	        ByteStreams.copy(
-	        		this.getClass().getClassLoader().getResourceAsStream("assets/bootstrap.css"), 
-	        		context
-	                .getHttpServletResponse().getOutputStream());
-        } catch (FileNotFoundException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-        } catch (IOException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-        }
-		System.out.println("file is: " + file.getAbsolutePath());
-		// Default rendering is simple by convention
-		// This renders the page in views/ApplicationController/index.ftl.html
-		context.status(HTTP_STATUS.ok200);
+		InputStream inputStream = this.getClass().getClassLoader()
+		        .getResourceAsStream(ASSETS_PREFIX + finalName);
+		
+		// check if stream exists. if not print a notfound exception
+		if (inputStream == null) {
+			
+			context.status(HTTP_STATUS.notFound404);
+			context.render();
+
+		} else {
+
+			try {
+				ByteStreams.copy(this.getClass().getClassLoader()
+				        .getResourceAsStream(ASSETS_PREFIX + finalName),
+				        context.getHttpServletResponse().getOutputStream());
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// Default rendering is simple by convention
+			// This renders the page in
+			// views/ApplicationController/index.ftl.html
+			context.status(HTTP_STATUS.ok200);
+		}
 
 	}
 

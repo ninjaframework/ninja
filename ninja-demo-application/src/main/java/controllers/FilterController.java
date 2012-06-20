@@ -40,7 +40,7 @@ public class FilterController {
 			}
 		}
 
-		context.html();
+		context.renderHtml();
 
 	}
 	/**

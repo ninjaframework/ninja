@@ -66,9 +66,9 @@ For version 0.4 - "html forms support"
 For version 0.5 - "test subsystem support"
 - isdev isprod istest modes integrated into app...
 - testsystem is there
-- fluentlenium maybe
-- selenium testcases
-- integration test and tests run nicely in maven
+- DONE fluentlenium maybe
+- DONE selenium testcases
+- DONE integration test and tests run nicely in maven
 - support for verify tests in mockito so that frontend tests become ultrafast...
 
 For version 0.6 - "internationalization support"

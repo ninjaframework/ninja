@@ -47,7 +47,7 @@ public class Routes {
 		router.GET().route("/injection")
 				.with(InjectionExampleController.class, "injection");
 		
-		router.GET().route("/assets/{stuff}").with(PublicController.class, "serve");
+		router.GET().route("/assets/.*").with(PublicController.class, "serve");
 
 	}
 

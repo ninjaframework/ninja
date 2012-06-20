@@ -67,9 +67,10 @@ public class NinjaImpl implements Ninja {
 	 *            context
 	 */
 	public void invoke(Context context) {
+		
 
 		Route route = router.getRouteFor(context.getHttpServletRequest()
-		        .getPathInfo());
+		        .getRequestURI());
 		
 
 		if (route != null) {
@@ -88,7 +89,7 @@ public class NinjaImpl implements Ninja {
 		} else {
 			// throw a 404 "not found" because we did not find the route
 			context.status(HTTP_STATUS.notFound404)
-			        .template(pathToViewNotFound).html();
+			        .template(pathToViewNotFound).renderHtml();
 
 		}
 

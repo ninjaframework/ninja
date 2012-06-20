@@ -23,11 +23,9 @@ public class RouterImpl implements Router {
 
 	@Override
 	public Route getRouteFor(String uri) {
-		System.out.println("pathinput is: " + uri);
 		
 		for (Route route : allRoutes) {
 
-			System.out.println("route is: " + route.getUrl());
 			if (route.matches(uri)) {
 
 				return route;

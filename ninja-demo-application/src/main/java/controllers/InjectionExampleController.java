@@ -36,7 +36,7 @@ public class InjectionExampleController {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("greeting", greeter.hello());
 		
-		context.html(map);
+		context.renderHtml(map);
 
 	}
 

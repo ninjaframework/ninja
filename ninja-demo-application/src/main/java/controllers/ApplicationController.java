@@ -13,7 +13,7 @@ public class ApplicationController {
 	public void examples(Context context) {
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
-		context.html();
+		context.renderHtml();
 
 	}
 	
@@ -21,7 +21,7 @@ public class ApplicationController {
 	public void index(Context context) {
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
-		context.html();
+		context.renderHtml();
 
 	}
 	
@@ -37,7 +37,7 @@ public class ApplicationController {
 		map.put("name", name);
 
 		//and render page with both parameters:
-		context.html(map);
+		context.renderHtml(map);
 
 	}
 

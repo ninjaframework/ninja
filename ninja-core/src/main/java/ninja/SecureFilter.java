@@ -30,7 +30,7 @@ public class SecureFilter implements Filter {
 					
 				} else {
 
-					context.status(HTTP_STATUS.forbidden403).template("/views/forbidden403.ftl.html").html();
+					context.status(HTTP_STATUS.forbidden403).template("/views/forbidden403.ftl.html").renderHtml();
 					
 					continueExecution = false;
 					break;

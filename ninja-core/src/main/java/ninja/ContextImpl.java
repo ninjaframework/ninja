@@ -2,7 +2,6 @@ package ninja;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -95,26 +94,46 @@ public class ContextImpl implements Context {
 		}
 
 	}
-	
+
 	@Override
-	public void html() {
-		html(new HashMap<String, String>());
+    public void render() {
+
+		setContentType(contentType);
+		setStatusOnResponse(httpStatus);
+
 	}
 
 	@Override
-	public void html(Map<String, String> map) {
+    public void render(ContentTypes contentType) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+    public void render(ContentTypes contentType, Object object) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void renderHtml() {
+		renderHtml(new HashMap<String, String>());
+	}
+
+	@Override
+	public void renderHtml(Object object) {
 		setContentType(ContentTypes.TEXT_HTML);
 		setStatusOnResponse(httpStatus);
-		
-		TemplateEngine templateEngine 
-			= templateEngineManager.getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
-		
-		templateEngine.invoke(this, map);
+
+		TemplateEngine templateEngine = templateEngineManager
+		        .getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
+
+		templateEngine.invoke(this, object);
 
 	}
 
 	@Override
-	public void json(Object object) {
+	public void renderJson(Object object) {
 
 		setContentType(ContentTypes.APPLICATION_JSON);
 		setStatusOnResponse(httpStatus);
@@ -152,8 +171,8 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-    public String getTemplateName() {
-	    return templateName;
-    }
+	public String getTemplateName() {
+		return templateName;
+	}
 
 }
