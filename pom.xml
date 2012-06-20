@@ -10,6 +10,7 @@
 
 	<modules>
 		<module>ninja-core</module>
+		<module>ninja-core-test</module>
 		<module>ninja-demo-application</module>
 		<module>ninja-demo-module</module>
 	</modules>
