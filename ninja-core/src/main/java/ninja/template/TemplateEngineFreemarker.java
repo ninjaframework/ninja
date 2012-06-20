@@ -15,22 +15,23 @@ import freemarker.template.Template;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
 
+	private String FILE_SUFFIX = ".ftl.html";
 	private final Router router;
 
 	@Inject
 	TemplateEngineFreemarker(Router router) {
 		this.router = router;
-		
-	}	
-	
+
+	}
+
 	@Override
 	public void invoke(Context context, Object object) {
 
 		Map map;
-		
+
 		if (!(object instanceof Map)) {
 			throw new RuntimeException(
-			        "Freemarker Templating engine can only render Map of Strings...");
+					"Freemarker Templating engine can only render Map of Strings...");
 
 		} else {
 			map = (Map) object;
@@ -41,11 +42,10 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		if (templateName == null) {
 
 			Route route = router.getRouteFor(context.getHttpServletRequest()
-			        .getRequestURI());
+					.getRequestURI());
 
-			templateName = String.format("views/%s/%s.ftl.html", route
-			        .getController().getSimpleName(), route
-			        .getControllerMethod());
+			templateName = String.format("views/%s/%s%s", route.getController()
+					.getSimpleName(), route.getControllerMethod(), FILE_SUFFIX);
 		}
 
 		// 1st => determine which
@@ -60,9 +60,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 			// convert tuples:
 
-
-			Writer out = new OutputStreamWriter(
-			        context.getHttpServletResponse().getOutputStream());
+			Writer out = new OutputStreamWriter(context
+					.getHttpServletResponse().getOutputStream());
 
 			freemarkerTemplate.process(map, out);
 
@@ -72,6 +71,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+
+	@Override
+	public String getSuffixOfTemplatingEngine() {
+		return FILE_SUFFIX;
 
 	}
 

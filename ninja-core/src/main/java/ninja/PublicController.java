@@ -1,10 +1,10 @@
 package ninja;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+
+import javax.activation.MimetypesFileTypeMap;
 
 import ninja.Context.HTTP_STATUS;
 
@@ -34,6 +34,7 @@ public class PublicController {
 		
 		InputStream inputStream = this.getClass().getClassLoader()
 		        .getResourceAsStream(ASSETS_PREFIX + finalName);
+		
 		
 		// check if stream exists. if not print a notfound exception
 		if (inputStream == null) {

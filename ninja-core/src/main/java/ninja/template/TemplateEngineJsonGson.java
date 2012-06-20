@@ -22,4 +22,10 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 	    
     }
 
+	@Override
+	public String getSuffixOfTemplatingEngine() {
+		//does not use disk based templates...
+		return null;
+	}
+
 }

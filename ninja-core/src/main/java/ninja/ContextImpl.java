@@ -98,20 +98,20 @@ public class ContextImpl implements Context {
 	@Override
     public void render() {
 
+		render(null);
+
+	}
+
+	@Override
+    public void render(Object object) {
+		
 		setContentType(contentType);
 		setStatusOnResponse(httpStatus);
 
-	}
+		TemplateEngine templateEngine = templateEngineManager
+		        .getTemplateEngineForContentType(contentType);
 
-	@Override
-    public void render(ContentTypes contentType) {
-		throw new UnsupportedOperationException();
-
-	}
-
-	@Override
-    public void render(ContentTypes contentType, Object object) {
-		throw new UnsupportedOperationException();
+		templateEngine.invoke(this, object);
 
 	}
 

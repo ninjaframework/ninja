@@ -35,16 +35,16 @@ public interface Context {
 
 	///////////////////////////////////////////////////////////////////////////
 	// Generic methods to finish a request (rendering any content)
+	// either the content has been set manually using setContentType or
+	// the result is generated using content negotiation
 	///////////////////////////////////////////////////////////////////////////
 	void render();
 	
-	void render(ContentTypes contentType, Object object);
-	
-	void render(ContentTypes contentType);
-	
+	void render(Object object);	
 	
 	///////////////////////////////////////////////////////////////////////////
 	// Convenience Methods to render a specific type. Html, Json and maybe Xml
+	// Uses no content negotation whatsoever
 	///////////////////////////////////////////////////////////////////////////
 	void renderHtml();
 	

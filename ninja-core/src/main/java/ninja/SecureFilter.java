@@ -16,6 +16,7 @@ public class SecureFilter implements Filter {
 		// if we got no cookies we break:
 		if (cookies == null) {
 			continueExecution = false;
+			context.status(HTTP_STATUS.forbidden403).template("/views/forbidden403.ftl.html").renderHtml();
 			
 		} else {
 			
