@@ -54,11 +54,18 @@
 
 		</dependency>
 
-
+        <!-- A very nice abstraction for making selenum tests: -->
 		<dependency>
 			<groupId>org.fluentlenium</groupId>
 			<artifactId>fluentlenium-core</artifactId>
 			<version>0.6.0</version>
+		</dependency>
+        
+        <!--HttpCient is used to mainly test low level Json Apis -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.1.1</version>
 		</dependency>
 
 	</dependencies>
