@@ -51,5 +51,12 @@ public interface Context {
 	void renderHtml(Object object);
 
 	void renderJson(Object object);
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Allows to get the nicely parsed content of the request.
+	// For instance if the content is a json you could simply get the json
+	// as Java object.
+	///////////////////////////////////////////////////////////////////////////
+	<T> T parseBody(Class<T> classOfT);	
 
 }

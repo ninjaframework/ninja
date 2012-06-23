@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface Router {
 
-	public Route getRouteFor(String uri);
+	public Route getRouteFor(String httpMethod, String uri);
 
 	/**
 	 * If route contains parameters like so: /{user}/dashboard parameterMap must
@@ -14,7 +14,7 @@ public interface Router {
 	 * @param parameterMap
 	 * @return
 	 */
-	public Route getRouteFor(String uri, Map<String, String> parameterMap);
+	public Route getRouteFor(String httpMethod, String uri, Map<String, String> parameterMap);
 
 	// /////////////////////////////////////////////////////////////////////////
 	// convenience methods to use the route in a DSL like way

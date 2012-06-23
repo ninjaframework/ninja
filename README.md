@@ -46,18 +46,12 @@ GOALS
 Next big steps
 --------------
 
-For version 0.2 - "basics"
-- DONE: Augment the router with support for catchall routes and routes that contain regex parameters
-- Complete the AssetsController
--- supply correct response codes for files (txt/css, pictures, js etc pp)
-- integrate bootstrap and make demo application nice
--- prettify.css from googlecode for code...
-- DONE: make templating system modular (ftl optional, as well as jsons) DONE
+
 
 For version 0.3 - "security"
 - session cookie there with signing...
 - flash cookie support there
-- login logout module there
+- login logout module there (casino)
 
 For version 0.4 - "html forms support" 
 - demo app extending via forms validation and xsrf support
@@ -82,11 +76,21 @@ For version 0.7 - Tomcat, Jetty, Heroku, Cloudbees, App Engine support
 
 For version 0.8
 - Performance
-
+- appengine support
+- mongo support
+- sql support via mybatis
+- migrations support (carbon5 or mybatis migrations)
 
 For version 0.9
 - gwt bridge
 
+For version 1.0
+- install script to install maven AND ninja
+- maven archetype for ninja
+
+
+For 2.0
+- long polling connections (async support)
 
 Already done:
 -------------
@@ -111,8 +115,26 @@ version 0.1
 ==> using status(HTTP_STATUS) on context
 
 
+For version 0.2 - "basics"
+- DONE: Augment the router with support for catchall routes and routes that contain regex parameters
+- DONE: Complete the AssetsController
+-- DONE (right now managed by container) supply correct response codes for files (txt/css, pictures, js etc pp)
+- DONE integrate bootstrap and make demo application nice
+-- DONE prettify.css from googlecode for code...
+- DONE: make templating system modular (ftl optional, as well as jsons) DONE
+- DONE put post parser
+
+
+
 TODOS
 -----
+- oauth support
+- ws support
+- global filters => ninja router?
+- pdf rendering?
+- subdomains in ninja?
+- results as "results object?
+- call static methods in an even better way...
 - bootstrap integration into nija-demo-application
 - form validation and bootstrap post etc
 - less and external minimizer...

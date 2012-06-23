@@ -6,6 +6,8 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.bodyparser.BodyParserEngine;
+import ninja.bodyparser.BodyParserEngineManager;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 
@@ -28,12 +30,16 @@ public class ContextImpl implements Context {
 
 	private final TemplateEngineManager templateEngineManager;
 
+	private final BodyParserEngineManager bodyParserEngineManager;
+
 	@Inject
 	public ContextImpl(Router router,
-	                   TemplateEngineManager templateEngineManager) {
+	                   TemplateEngineManager templateEngineManager,
+	                   BodyParserEngineManager bodyParserEngineManager) {
 
 		this.router = router;
 		this.templateEngineManager = templateEngineManager;
+		this.bodyParserEngineManager = bodyParserEngineManager;
 
 		this.httpStatus = HTTP_STATUS.ok200;
 	}
@@ -76,7 +82,9 @@ public class ContextImpl implements Context {
 	public String getPathParameter(String key) {
 
 		// FIXME: not really efficient...
-		Route route = router.getRouteFor(httpServletRequest.getServletPath());
+		Route route = router.getRouteFor(
+				httpServletRequest.getMethod(),
+				httpServletRequest.getServletPath());
 
 		return route.getParameters(httpServletRequest.getServletPath())
 		        .get(key);
@@ -96,15 +104,15 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-    public void render() {
+	public void render() {
 
 		render(null);
 
 	}
 
 	@Override
-    public void render(Object object) {
-		
+	public void render(Object object) {
+
 		setContentType(contentType);
 		setStatusOnResponse(httpStatus);
 
@@ -173,6 +181,20 @@ public class ContextImpl implements Context {
 	@Override
 	public String getTemplateName() {
 		return templateName;
+	}
+
+	@Override
+	public <T> T parseBody(Class<T> classOfT) {
+
+		BodyParserEngine bodyParserEngine = bodyParserEngineManager
+		        .getBodyParserEngineForContentType(ContentTypes.APPLICATION_JSON);
+
+		if (bodyParserEngine == null) {
+			return null;
+		}
+
+		return bodyParserEngine.invoke(this, classOfT);
+
 	}
 
 }

@@ -6,11 +6,11 @@
 	<packaging>jar</packaging>
 	<name>ninja web framework test utilities</name>
 
-	<parent>
-		<groupId>ninja</groupId>
-		<artifactId>ninja</artifactId>
-		<version>0.1-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>ninja</groupId>
+        <artifactId>ninja</artifactId>
+        <version>0.2-SNAPSHOT</version>
+    </parent>
 
 	<build>
 		<plugins>

@@ -26,7 +26,7 @@ public interface Route {
 
 	String getControllerMethod();
 
-	boolean matches(String uri);
+	boolean matches(String httpMethod, String uri);
 
 	Map<String, String> getParameters(String uri);
 

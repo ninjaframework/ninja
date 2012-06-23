@@ -10,7 +10,7 @@ public class ExampleIntegrationTest extends NinjaIntegrationFluentLeniumTest {
 	@Test
 	public void testThatStaticAssetsWork() {
 
-		goTo("http://localhost:8080/assets/bootstrap.css");
+		goTo("http://localhost:8080/assets/css/bootstrap.css");
 
 		assertTrue(pageSource().contains("Bootstrap"));
 
@@ -19,7 +19,7 @@ public class ExampleIntegrationTest extends NinjaIntegrationFluentLeniumTest {
 	@Test
 	public void testThatInvalidStaticAssetsAreNotFound() {
 
-		goTo("http://localhost:8080/assets/INVALID_FILE");
+		goTo("http://localhost:8080/assets/css/INVALID_FILE");
 		
 		assertTrue(pageSource().isEmpty());
 		
@@ -32,7 +32,7 @@ public class ExampleIntegrationTest extends NinjaIntegrationFluentLeniumTest {
 
 		goTo("http://localhost:8080/");
 
-		assertTrue(pageSource().contains("placeholder"));
+		assertTrue(pageSource().contains("Ninja web framework"));
 
 	}
 	
@@ -41,7 +41,7 @@ public class ExampleIntegrationTest extends NinjaIntegrationFluentLeniumTest {
 
 		goTo("http://localhost:8080/examples");
 
-		assertTrue(pageSource().contains("placeholder"));
+		assertTrue(pageSource().contains("Examples"));
 
 	}
 

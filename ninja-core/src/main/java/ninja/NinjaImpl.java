@@ -26,18 +26,18 @@ import com.google.inject.name.Named;
  * @author ra
  * 
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class NinjaImpl implements Ninja {
 
 	/**
 	 * The most important thing: A cool logo.
 	 */
 	private final String NINJA_LOGO = " _______  .___ _______        ____.  _____   \n"
-	        + " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
-	        + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
-	        + "/    |    \\   /    |    \\/\\__|    /    |    \\\n"
-	        + "\\____|__  /___\\____|__  /\\________\\____|__  /\n"
-	        + "     web\\/framework   \\/                  \\/ \n";
+			+ " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
+			+ " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
+			+ "/    |    \\   /    |    \\/\\__|    /    |    \\\n"
+			+ "\\____|__  /___\\____|__  /\\________\\____|__  /\n"
+			+ "     web\\/framework   \\/                  \\/ \n";
 
 	private final Router router;
 	private final Injector injector;
@@ -47,9 +47,8 @@ public class NinjaImpl implements Ninja {
 	private final String pathToViewNotFound;
 
 	@Inject
-	public NinjaImpl(Router router,
-	                 Injector injector,
-	                 @Named("template404") String pathToViewNotFound) {
+	public NinjaImpl(Router router, Injector injector,
+			@Named("template404") String pathToViewNotFound) {
 
 		this.router = router;
 		this.injector = injector;
@@ -57,7 +56,6 @@ public class NinjaImpl implements Ninja {
 
 		// This system out println is intended.
 		System.out.println(NINJA_LOGO);
-
 	}
 
 	/**
@@ -68,10 +66,10 @@ public class NinjaImpl implements Ninja {
 	 */
 	public void invoke(Context context) {
 		
+		String httpMethod = context.getHttpServletRequest().getMethod();
 
-		Route route = router.getRouteFor(context.getHttpServletRequest()
-		        .getRequestURI());
-		
+		Route route = router.getRouteFor(httpMethod, context.getHttpServletRequest()
+				.getRequestURI());
 
 		if (route != null) {
 			// process annotations (filters)
@@ -89,7 +87,7 @@ public class NinjaImpl implements Ninja {
 		} else {
 			// throw a 404 "not found" because we did not find the route
 			context.status(HTTP_STATUS.notFound404)
-			        .template(pathToViewNotFound).renderHtml();
+					.template(pathToViewNotFound).renderHtml();
 
 		}
 
@@ -107,7 +105,7 @@ public class NinjaImpl implements Ninja {
 	 * @param context
 	 * @return
 	 */
-    public boolean doApplyFilers(Route route, Context context) {
+	public boolean doApplyFilers(Route route, Context context) {
 
 		// default value... continue that execution
 		boolean continueExecution = true;
@@ -117,7 +115,7 @@ public class NinjaImpl implements Ninja {
 
 		try {
 			for (Annotation annotation : controller.getMethod(controllerMethod,
-			        Context.class).getAnnotations()) {
+					Context.class).getAnnotations()) {
 
 				if (annotation.annotationType().equals(FilterWith.class)) {
 
@@ -127,9 +125,8 @@ public class NinjaImpl implements Ninja {
 
 					for (Class filterClass : filters) {
 
-						
-                        Filter filter = (Filter) injector
-						        .getInstance(filterClass);
+						Filter filter = (Filter) injector
+								.getInstance(filterClass);
 
 						filter.filter(context);
 

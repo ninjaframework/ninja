@@ -14,11 +14,7 @@ import com.google.inject.Injector;
 
 public class RouteImpl implements Route {
 
-	public enum HTTP_METHOD {
-		GET, POST, PUT, DELETE, OPTION
-	}
-
-	private HTTP_METHOD http_method;
+	private String httpMethod;
 
 	private String uri;
 
@@ -35,31 +31,31 @@ public class RouteImpl implements Route {
 
 	@Override
 	public Route GET() {
-		http_method = HTTP_METHOD.GET;
+		httpMethod = "GET";
 		return this;
 	}
 
 	@Override
 	public Route POST() {
-		http_method = HTTP_METHOD.POST;
+		httpMethod = "POST";
 		return this;
 	}
 
 	@Override
 	public Route PUT() {
-		http_method = HTTP_METHOD.PUT;
+		httpMethod = "PUT";
 		return this;
 	}
 
 	@Override
 	public Route DELETE() {
-		http_method = HTTP_METHOD.DELETE;
+		httpMethod = "DELETE";
 		return this;
 	}
 
 	@Override
 	public Route OPTION() {
-		http_method = HTTP_METHOD.OPTION;
+		httpMethod = "OPTION";
 		return this;
 	}
 
@@ -123,12 +119,18 @@ public class RouteImpl implements Route {
 	 * matches /index to /index or /me/1 to /person/{id}
 	 * 
 	 */
-	public boolean matches(String uri) {
+	@Override
+	public boolean matches(String httpMethod, String uri) {
+		
+		if (this.httpMethod.equalsIgnoreCase(httpMethod)) {
+		
+			Pattern pattern = Pattern.compile(convertRawUriToRegex(this.uri));
+			Matcher matcher = pattern.matcher(uri);
 
-		Pattern pattern = Pattern.compile(convertRawUriToRegex(this.uri));
-		Matcher matcher = pattern.matcher(uri);
-
-		return matcher.matches();
+			return matcher.matches();
+		} else {
+			return false;
+		}
 
 	}
 

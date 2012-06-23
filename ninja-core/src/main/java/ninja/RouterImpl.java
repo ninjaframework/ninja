@@ -22,11 +22,11 @@ public class RouterImpl implements Router {
 	}
 
 	@Override
-	public Route getRouteFor(String uri) {
+	public Route getRouteFor(String httpMethod, String uri) {
 		
 		for (Route route : allRoutes) {
 
-			if (route.matches(uri)) {
+			if (route.matches(httpMethod, uri)) {
 
 				return route;
 			}
@@ -38,7 +38,7 @@ public class RouterImpl implements Router {
 	}
 
 	@Override
-	public Route getRouteFor(String uri, Map<String, String> parameterMap) {
+	public Route getRouteFor(String httpMethod, String uri, Map<String, String> parameterMap) {
 
 		throw new UnsupportedOperationException();
 

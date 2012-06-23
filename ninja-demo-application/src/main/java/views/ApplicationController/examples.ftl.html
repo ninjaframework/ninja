@@ -1,37 +1,48 @@
-<#import "../layout/defaultLayout.ftl.html" as layout>
+<#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout
+"Home page">
 
-<@layout.myLayout "Home page">
+<header class="jumbotron subhead">
+	<h1>Examples</h1>
+	<p class="lead">Ninja can do a lot for you. In the following some
+	code samples that show the power of Ninja.</p>
+</header>
 
-	<h1>Welcome to the index page</h1>
-	<p>Currently the demo app covers the following topics</p>
-	<h2>Standard behavior</h2>
-	<ul>
-		<li>A default route like this one: <a href="/">/</a></li>
-		<li>A parameterized route like: <a
-			href="/user/12345/john_user/userDashboard">/user/{id}/{name}/userDashboard</a></li>
-		<li>A redirect at /redirects back to index... <a href="/redirect">/redirect</a></li>
-	</ul>
+<hr>
+
+<h2>Standard behavior</h2>
+<ul>
+	<li>A default route like this one: <a href="/">/</a></li>
+	<li>A parameterized route like: <a
+		href="/user/12345/john_user/userDashboard">/user/{id}/{name}/userDashboard</a></li>
+	<li>A redirect at /redirects back to index... <a href="/redirect">/redirect</a></li>
+</ul>
 
 
-	<h2>Rendering jsons</h2>
-	<ul>
-		<li>As seen here: <a href="/json">/json</a></li>
-	</ul>
+<pre class="prettyprint linenums">
+... and some code in the future ;)
+</pre>
 
-	<h2>Filtering</h2>
-	<ul>
-		<li>A working security filter can be found at: <a href="/filter">/filter</a></li>
-		<li>A filter that generates output, changes the status and
-			disallows further execution of the filter chain:<a href="/teapot">/teapot</a>
-		</li>
-	</ul>
 
-	<h2>Injection</h2>
-	<ul>
-		<li>Injection of services is important and can be done easily.
-			Check out: Not yet completed. <a href="/injection">/injection</a>
-		</li>
-	</ul>
+<h2>Rendering jsons</h2>
+<ul>
+	<li>As seen here GET <a href="/person">/person</a></li>
+	<li>As seen here POST <a href="/person">/person</a> parses the body and displays the result.</li>
+</ul>
+
+<h2>Filtering</h2>
+<ul>
+	<li>A working security filter can be found at: <a href="/filter">/filter</a></li>
+	<li>A filter that generates output, changes the status and
+		disallows further execution of the filter chain:<a href="/teapot">/teapot</a>
+	</li>
+</ul>
+
+<h2>Injection</h2>
+<ul>
+	<li>Injection of services is important and can be done easily.
+		Check out: Not yet completed. <a href="/injection">/injection</a>
+	</li>
+</ul>
 
 </@layout.myLayout>
 

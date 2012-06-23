@@ -41,8 +41,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		// compute default route if view is not set explicitly
 		if (templateName == null) {
 
-			Route route = router.getRouteFor(context.getHttpServletRequest()
-					.getRequestURI());
+			Route route = router.getRouteFor(
+					context.getHttpServletRequest().getMethod(),
+					context.getHttpServletRequest().getRequestURI());
 
 			templateName = String.format("views/%s/%s%s", route.getController()
 					.getSimpleName(), route.getControllerMethod(), FILE_SUFFIX);

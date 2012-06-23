@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import controllers.ApplicationController;
 import controllers.FilterController;
 import controllers.InjectionExampleController;
-import controllers.JsonController;
+import controllers.PersonController;
 
 public class Routes {
 
@@ -23,17 +23,16 @@ public class Routes {
 		router.GET().route("/examples").with(ApplicationController.class, "examples");
 
 		// render a page with variable route parts:
-		router.GET().route("/user/{id}/{name}/userDashboard")
-				.with(ApplicationController.class, "userDashboard");
+		router.GET().route("/user/{id}/{name}/userDashboard").with(ApplicationController.class, "userDashboard");
 
 		// redirect back to /
-		router.GET().route("/redirect")
-				.with(ApplicationController.class, "redirect");
+		router.GET().route("/redirect").with(ApplicationController.class, "redirect");
 
 		// /////////////////////////////////////////////////////////////////////
 		// Json support
 		// /////////////////////////////////////////////////////////////////////
-		router.GET().route("/json").with(JsonController.class, "json");
+		router.GET().route("/person").with(PersonController.class, "getPerson");
+		router.POST().route("/person").with(PersonController.class, "postPerson");
 
 		// /////////////////////////////////////////////////////////////////////
 		// Route filtering example:
@@ -44,8 +43,7 @@ public class Routes {
 		// /////////////////////////////////////////////////////////////////////
 		// Route filtering example:
 		// /////////////////////////////////////////////////////////////////////
-		router.GET().route("/injection")
-				.with(InjectionExampleController.class, "injection");
+		router.GET().route("/injection").with(InjectionExampleController.class, "injection");
 		
 		router.GET().route("/assets/.*").with(PublicController.class, "serve");
 

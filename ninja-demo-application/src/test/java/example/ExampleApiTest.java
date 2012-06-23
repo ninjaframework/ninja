@@ -11,7 +11,7 @@ public class ExampleApiTest extends NinjaApiTest {
 	@Test
 	public void testThatStaticAssetsWork() {
 
-		String apiCallResult = NinjaApiTestHelper.makeJsonRequest("http://localhost:8080/json");
+		String apiCallResult = NinjaApiTestHelper.makeJsonRequest("http://localhost:8080/person");
 		
 		assertEquals("{\"name\":\"zeeess name\"}", apiCallResult);
 
