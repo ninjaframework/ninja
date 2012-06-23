@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>ninja</groupId>
 			<artifactId>ninja-core</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 		</dependency>
 		<!-- Gson: Java to Json conversion -->
 		<dependency>
@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>ninja</groupId>
 			<artifactId>ninja-core-test</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<version>0.2-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
