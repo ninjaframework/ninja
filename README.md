@@ -46,8 +46,6 @@ GOALS
 Next big steps
 --------------
 
-
-
 For version 0.3 - "security"
 - session cookie there with signing...
 - flash cookie support there

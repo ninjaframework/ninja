@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.session.FlashCookie;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 
@@ -31,32 +32,35 @@ public class ContextImpl implements Context {
 	private final TemplateEngineManager templateEngineManager;
 
 	private final BodyParserEngineManager bodyParserEngineManager;
+	
+	private final FlashCookie flashCookie;
 
 	@Inject
 	public ContextImpl(Router router,
 	                   TemplateEngineManager templateEngineManager,
-	                   BodyParserEngineManager bodyParserEngineManager) {
+	                   BodyParserEngineManager bodyParserEngineManager,
+	                   FlashCookie flashCookie) {
 
 		this.router = router;
 		this.templateEngineManager = templateEngineManager;
 		this.bodyParserEngineManager = bodyParserEngineManager;
+		this.flashCookie = flashCookie;
 
 		this.httpStatus = HTTP_STATUS.ok200;
 	}
-
-	public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
+	
+	public void init(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		this.httpServletRequest = httpServletRequest;
-
-	}
-
-	public void setHttpServletResponse(HttpServletResponse httpServletResponse) {
 		this.httpServletResponse = httpServletResponse;
-
+		
+		//init flash scope:
+		flashCookie.init(this);
+		
+		//init session scope:
+		
 	}
+	
 
-	public void setHttServletResponse(HttpServletResponse httServletResponse) {
-		this.httpServletResponse = httServletResponse;
-	}
 
 	public HttpServletRequest getHttpServletRequest() {
 		return httpServletRequest;
@@ -113,8 +117,7 @@ public class ContextImpl implements Context {
 	@Override
 	public void render(Object object) {
 
-		setContentType(contentType);
-		setStatusOnResponse(httpStatus);
+		finalizeResponseHeaders(contentType);
 
 		TemplateEngine templateEngine = templateEngineManager
 		        .getTemplateEngineForContentType(contentType);
@@ -130,8 +133,7 @@ public class ContextImpl implements Context {
 
 	@Override
 	public void renderHtml(Object object) {
-		setContentType(ContentTypes.TEXT_HTML);
-		setStatusOnResponse(httpStatus);
+		finalizeResponseHeaders(ContentTypes.TEXT_HTML);
 
 		TemplateEngine templateEngine = templateEngineManager
 		        .getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
@@ -143,14 +145,21 @@ public class ContextImpl implements Context {
 	@Override
 	public void renderJson(Object object) {
 
-		setContentType(ContentTypes.APPLICATION_JSON);
-		setStatusOnResponse(httpStatus);
+		finalizeResponseHeaders(ContentTypes.APPLICATION_JSON);
 
 		TemplateEngine templateEngine = templateEngineManager
 		        .getTemplateEngineForContentType(ContentTypes.APPLICATION_JSON);
 
 		templateEngine.invoke(this, object);
 
+	}
+	
+	private void finalizeResponseHeaders(String contentType) {
+		setContentType(contentType);
+		setStatusOnResponse(httpStatus);
+		
+		flashCookie.save(this);		
+		
 	}
 
 	/**
@@ -195,6 +204,11 @@ public class ContextImpl implements Context {
 
 		return bodyParserEngine.invoke(this, classOfT);
 
+	}
+
+	@Override
+	public FlashCookie getFlashCookie() {
+		return flashCookie;
 	}
 
 }

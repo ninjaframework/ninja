@@ -1,27 +1,23 @@
 package ninja;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import ninja.session.FlashCookie;
 
 public interface Context {
 
 	enum HTTP_STATUS {
 		notFound404, ok200, forbidden403, teapot418
 	}
-
-
+	
+	FlashCookie getFlashCookie();
 
 	void redirect(String url);
 
 	void setContentType(String contentType);
 
 	Context template(String explicitTemplateName);
-
-	void setHttpServletRequest(HttpServletRequest httServletRequest);
-
-	void setHttpServletResponse(HttpServletResponse httpServletResponse);
 
 	HttpServletRequest getHttpServletRequest();
 

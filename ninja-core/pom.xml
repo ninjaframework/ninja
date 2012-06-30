@@ -61,6 +61,13 @@
 			<version>12.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+
 		<!-- Testing is mainly done by mockito: -->
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -74,6 +81,9 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+
+
 
 	</dependencies>
 
