@@ -5,6 +5,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
 
+import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 public class Crypto {
@@ -17,6 +18,7 @@ public class Crypto {
 	 * 
 	 * @param secret the secret to use for signing.
 	 */
+	@Inject
 	public Crypto(@Named("secret") String secret) {
 		this.secret = secret;
 

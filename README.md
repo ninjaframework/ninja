@@ -47,9 +47,19 @@ Next big steps
 --------------
 
 For version 0.3 - "security"
-- session cookie there with signing...
-- flash cookie support there
+- session cookie there with signing
+- flash cookie support
+-- test: keep
+-- test: now
+-- test: clear
+-- DONE: basic support
 - login logout module there (casino)
+GENERAL:
+- conf file with secure token and or other stuff...
+- cookies: expires support
+- secure cooke support / https support
+- transmit cookie always on/off
+- showcase application with flash cookie
 
 For version 0.4 - "html forms support" 
 - demo app extending via forms validation and xsrf support
@@ -89,6 +99,11 @@ For version 1.0
 
 For 2.0
 - long polling connections (async support)
+
+
+To discuss:
+- should sessions be active for a finite time, or should they refresh themselves automatically?
+
 
 Already done:
 -------------

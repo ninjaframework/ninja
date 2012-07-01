@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
+import ninja.session.SessionCookie;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class ContextImpl implements Context {
 
@@ -32,35 +34,46 @@ public class ContextImpl implements Context {
 	private final TemplateEngineManager templateEngineManager;
 
 	private final BodyParserEngineManager bodyParserEngineManager;
-	
+
 	private final FlashCookie flashCookie;
 
-	@Inject
-	public ContextImpl(Router router,
-	                   TemplateEngineManager templateEngineManager,
-	                   BodyParserEngineManager bodyParserEngineManager,
-	                   FlashCookie flashCookie) {
+	private final SessionCookie sessionCookie;
 
-		this.router = router;
-		this.templateEngineManager = templateEngineManager;
+	private final Integer sessionExpireTime;
+
+	private final Boolean sessionSendOnlyIfChanged;
+
+	@Inject
+	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
+			FlashCookie flashCookie, Router router,
+			SessionCookie sessionCookie,
+			TemplateEngineManager templateEngineManager,
+			@Named("sessionExpireTime") Integer sessionExpireTime,
+			@Named("sessionSendOnlyIfChanged") Boolean sessionSendOnlyIfChanged) {
+
 		this.bodyParserEngineManager = bodyParserEngineManager;
 		this.flashCookie = flashCookie;
+		this.router = router;
+		this.sessionCookie = sessionCookie;
+		this.templateEngineManager = templateEngineManager;
+		this.sessionExpireTime = sessionExpireTime;
+		this.sessionSendOnlyIfChanged = sessionSendOnlyIfChanged;
 
 		this.httpStatus = HTTP_STATUS.ok200;
 	}
-	
-	public void init(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+
+	public void init(HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse) {
 		this.httpServletRequest = httpServletRequest;
 		this.httpServletResponse = httpServletResponse;
-		
-		//init flash scope:
-		flashCookie.init(this);
-		
-		//init session scope:
-		
-	}
-	
 
+		// init flash scope:
+		flashCookie.init(this);
+
+		// init session scope:
+		sessionCookie.init(this, sessionExpireTime, sessionSendOnlyIfChanged);
+
+	}
 
 	public HttpServletRequest getHttpServletRequest() {
 		return httpServletRequest;
@@ -86,12 +99,11 @@ public class ContextImpl implements Context {
 	public String getPathParameter(String key) {
 
 		// FIXME: not really efficient...
-		Route route = router.getRouteFor(
-				httpServletRequest.getMethod(),
+		Route route = router.getRouteFor(httpServletRequest.getMethod(),
 				httpServletRequest.getServletPath());
 
 		return route.getParameters(httpServletRequest.getServletPath())
-		        .get(key);
+				.get(key);
 
 	}
 
@@ -120,7 +132,7 @@ public class ContextImpl implements Context {
 		finalizeResponseHeaders(contentType);
 
 		TemplateEngine templateEngine = templateEngineManager
-		        .getTemplateEngineForContentType(contentType);
+				.getTemplateEngineForContentType(contentType);
 
 		templateEngine.invoke(this, object);
 
@@ -136,7 +148,7 @@ public class ContextImpl implements Context {
 		finalizeResponseHeaders(ContentTypes.TEXT_HTML);
 
 		TemplateEngine templateEngine = templateEngineManager
-		        .getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
+				.getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
 
 		templateEngine.invoke(this, object);
 
@@ -148,18 +160,19 @@ public class ContextImpl implements Context {
 		finalizeResponseHeaders(ContentTypes.APPLICATION_JSON);
 
 		TemplateEngine templateEngine = templateEngineManager
-		        .getTemplateEngineForContentType(ContentTypes.APPLICATION_JSON);
+				.getTemplateEngineForContentType(ContentTypes.APPLICATION_JSON);
 
 		templateEngine.invoke(this, object);
 
 	}
-	
+
 	private void finalizeResponseHeaders(String contentType) {
 		setContentType(contentType);
 		setStatusOnResponse(httpStatus);
-		
-		flashCookie.save(this);		
-		
+
+		flashCookie.save(this);
+		sessionCookie.save(this);
+
 	}
 
 	/**
@@ -196,7 +209,7 @@ public class ContextImpl implements Context {
 	public <T> T parseBody(Class<T> classOfT) {
 
 		BodyParserEngine bodyParserEngine = bodyParserEngineManager
-		        .getBodyParserEngineForContentType(ContentTypes.APPLICATION_JSON);
+				.getBodyParserEngineForContentType(ContentTypes.APPLICATION_JSON);
 
 		if (bodyParserEngine == null) {
 			return null;

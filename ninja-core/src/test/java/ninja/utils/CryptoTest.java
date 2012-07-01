@@ -1,4 +1,4 @@
-package ninja;
+package ninja.utils;
 
 import static org.junit.Assert.assertEquals;
 

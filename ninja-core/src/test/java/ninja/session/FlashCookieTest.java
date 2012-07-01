@@ -1,4 +1,4 @@
-package ninja;
+package ninja.session;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.Context;
 import ninja.session.FlashCookie;
 
 import org.junit.Before;

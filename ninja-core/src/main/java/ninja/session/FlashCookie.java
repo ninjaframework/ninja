@@ -35,8 +35,8 @@ public class FlashCookie {
 		Cookie[] cookies = context.getHttpServletRequest().getCookies();
 
 		Cookie flashCookie = CookieHelper.getCookie(
-		        ninja.session.Cookie.COOKIE_PREFIX
-		                + ninja.session.Cookie.FLASH_SUFFIX, cookies);
+		        ninja.session.NinjaConstant.COOKIE_PREFIX
+		                + ninja.session.NinjaConstant.FLASH_SUFFIX, cookies);
 
 		if (flashCookie != null) {
 			String flashData;
@@ -59,12 +59,12 @@ public class FlashCookie {
 		System.out.println("saving context!");
 		if (outgoingFlashCookieData.isEmpty()) {
 
-			if (CookieHelper.getCookie(ninja.session.Cookie.COOKIE_PREFIX
-			        + ninja.session.Cookie.FLASH_SUFFIX, context
+			if (CookieHelper.getCookie(ninja.session.NinjaConstant.COOKIE_PREFIX
+			        + ninja.session.NinjaConstant.FLASH_SUFFIX, context
 			        .getHttpServletRequest().getCookies()) != null) {
 
-				Cookie cookie = new Cookie(ninja.session.Cookie.COOKIE_PREFIX
-				        + ninja.session.Cookie.FLASH_SUFFIX, "");
+				Cookie cookie = new Cookie(ninja.session.NinjaConstant.COOKIE_PREFIX
+				        + ninja.session.NinjaConstant.FLASH_SUFFIX, "");
 				cookie.setPath("/");
 				cookie.setSecure(false);
 				cookie.setMaxAge(0);
@@ -89,8 +89,8 @@ public class FlashCookie {
 				}
 				String flashData = URLEncoder.encode(flash.toString(), "utf-8");
 
-				Cookie cookie = new Cookie(ninja.session.Cookie.COOKIE_PREFIX
-				        + ninja.session.Cookie.FLASH_SUFFIX, flashData);
+				Cookie cookie = new Cookie(ninja.session.NinjaConstant.COOKIE_PREFIX
+				        + ninja.session.NinjaConstant.FLASH_SUFFIX, flashData);
 				cookie.setPath("/");
 				cookie.setSecure(false);
 				cookie.setMaxAge(0);
