@@ -1,21 +1,22 @@
 package ninja.session;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.net.URLDecoder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.Context;
-import ninja.session.SessionCookie;
 import ninja.utils.Crypto;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -110,7 +111,7 @@ public class SessionCookieTest {
 	}
 
 	@Test
-	public void testSessionCookieSettingWorks() {
+	public void testSessionCookieSettingWorks() throws Exception {
 		// setup this testmethod
 		// empty cookies
 		Cookie[] emptyCookies = new Cookie[0];
@@ -137,19 +138,65 @@ public class SessionCookieTest {
 		assertEquals("NINJA_SESSION", cookieCaptor.getValue().getName());
 
 		// assert some stuff...
-		// Make sure the message is there and the delimiter "-" is okay...
-		// Also make sure that the timestamp ___TS is there...
-		assertTrue(cookieCaptor.getValue().getValue()
-		        .contains("-%00hello%3Asession%21%00%00___TS"));
+		// Make sure that sign is valid:
+		String cookieString = cookieCaptor.getValue().getValue();
+		
+		String cookieFromSign = cookieString.substring(cookieString.indexOf("-") + 1);
 
-		// Make sure the cookie does not start with "-" => therefore there is
-		// the crypto
-		// stuff at the beginning...
-		assertFalse(cookieCaptor.getValue().getValue().startsWith("-"));
+		String computedSign = crypto.signHmacSha1(cookieFromSign);
+		
+		assertEquals(computedSign, cookieString.substring(0, cookieString.indexOf("-")));
+		
+		// Make sure that cookie contains timestamp
+		assertTrue(cookieString.contains("___TS"));	
 
-		// Make sure the cookie ends with %00 correctly:
-		assertTrue(cookieCaptor.getValue().getValue().endsWith("%00"));
+	}
+	
+	@Test
+	public void testThatCookieSavingAndInitingWorks() {
+		
+		// setup this testmethod
+		// empty cookies
+		Cookie[] emptyCookies = new Cookie[0];
 
+		// that will be returned by the httprequest...
+		when(context.getHttpServletRequest().getCookies()).thenReturn(
+		        emptyCookies);
+
+		SessionCookie sessionCookie = new SessionCookie(crypto);
+
+		sessionCookie
+		        .init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
+
+		sessionCookie.put("key1", "value1");
+		sessionCookie.put("key2", "value2");
+		sessionCookie.put("key3", "value3");
+
+		// put nothing => intentionally to check if no session cookie will be
+		// saved
+		sessionCookie.save(context);
+
+		// a cookie will be set
+		verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+		
+		//now we simulate a new request => the session storage will generate a new cookie:
+		Cookie[] newSessionCookies = new Cookie[1];
+		newSessionCookies[0] = new Cookie(cookieCaptor.getValue().getName(), cookieCaptor.getValue().getValue());
+		
+		// that will be returned by the httprequest...
+		when(context.getHttpServletRequest().getCookies()).thenReturn(
+				newSessionCookies);
+
+
+		//init new session from that cookie:
+		SessionCookie sessionCookie2 = new SessionCookie(crypto);
+		sessionCookie2.init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
+		
+		assertEquals("value1", sessionCookie2.get("key1"));
+		assertEquals("value2", sessionCookie2.get("key2"));
+		assertEquals("value3", sessionCookie2.get("key3"));
+		
 	}
 
 }

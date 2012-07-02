@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 public class SessionCookie {
 
 	// => from config in the future...
-	private Integer sessionExpireTime;
+	private Integer sessionExpireTimeInMs;
 
 	private Boolean sessionSendOnlyIfChanged;
 
@@ -57,10 +57,10 @@ public class SessionCookie {
 	 * 
 	 * @param context
 	 */
-	public void init(Context context, Integer sessionExpireTime,
+	public void init(Context context, Integer sessionExpireTimeInMs,
 	        Boolean sessionSendOnlyIfChanged) {
 
-		this.sessionExpireTime = sessionExpireTime;
+		this.sessionExpireTimeInMs = sessionExpireTimeInMs;
 		this.sessionSendOnlyIfChanged = sessionSendOnlyIfChanged;
 
 		try {
@@ -99,7 +99,7 @@ public class SessionCookie {
 
 				}
 
-				if (sessionExpireTime != null) {
+				if (sessionExpireTimeInMs != null) {
 					// Make sure session contains valid timestamp
 
 					if (!data.containsKey(TIMESTAMP_KEY)) {
@@ -116,18 +116,18 @@ public class SessionCookie {
 
 					// Everything's alright => prolong session
 					data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis()
-					        + sessionExpireTime * 1000);
+					        + sessionExpireTimeInMs);
 				}
 			} else {
 				// This is a new session => we are setting the timestamp:
-				if (sessionExpireTime != null) {
+				if (sessionExpireTimeInMs != null) {
 					data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis()
-					        + sessionExpireTime * 1000);
+					        + sessionExpireTimeInMs);
 				}
 			}
 
 		} catch (Exception e) {
-			throw new RuntimeException("Corrupted HTTP session");
+			throw new RuntimeException("Corrupted HTTP session", e);
 		}
 	}
 
@@ -162,7 +162,7 @@ public class SessionCookie {
 	public void save(Context context) {
 
 		if (!sessionDataHasBeenChanged && sessionSendOnlyIfChanged
-		        && sessionExpireTime == null) {
+		        && sessionExpireTimeInMs == null) {
 			// Nothing changed and no cookie-expire, consequently send nothing
 			// back.
 			return;
@@ -202,23 +202,24 @@ public class SessionCookie {
 
 			String sign = crypto.signHmacSha1(sessionData);
 
-			if (sessionExpireTime == null) {
+			Cookie cookie;			
+			
+			if (sessionExpireTimeInMs == null) {
 
-				Cookie cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
+				cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
 				        + NinjaConstant.SESSION_SUFFIX, sign + "-"
 				        + sessionData);
-				context.getHttpServletResponse().addCookie(cookie);
 
 			} else {
 
-				Cookie cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
+				cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
 				        + NinjaConstant.SESSION_SUFFIX, sign + "-"
 				        + sessionData);
-				cookie.setMaxAge(sessionExpireTime);
-
-				context.getHttpServletResponse().addCookie(cookie);
+				cookie.setMaxAge(sessionExpireTimeInMs);
 
 			}
+			
+			context.getHttpServletResponse().addCookie(cookie);
 
 		} catch (Exception e) {
 			throw new RuntimeException("Session serializationProblem", e);

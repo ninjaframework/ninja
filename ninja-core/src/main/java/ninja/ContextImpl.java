@@ -39,7 +39,7 @@ public class ContextImpl implements Context {
 
 	private final SessionCookie sessionCookie;
 
-	private final Integer sessionExpireTime;
+	private final Integer sessionExpireTimeInMs;
 
 	private final Boolean sessionSendOnlyIfChanged;
 
@@ -48,7 +48,7 @@ public class ContextImpl implements Context {
 			FlashCookie flashCookie, Router router,
 			SessionCookie sessionCookie,
 			TemplateEngineManager templateEngineManager,
-			@Named("sessionExpireTime") Integer sessionExpireTime,
+			@Named("sessionExpireTimeInMs") Integer sessionExpireTimeInMs,
 			@Named("sessionSendOnlyIfChanged") Boolean sessionSendOnlyIfChanged) {
 
 		this.bodyParserEngineManager = bodyParserEngineManager;
@@ -56,7 +56,7 @@ public class ContextImpl implements Context {
 		this.router = router;
 		this.sessionCookie = sessionCookie;
 		this.templateEngineManager = templateEngineManager;
-		this.sessionExpireTime = sessionExpireTime;
+		this.sessionExpireTimeInMs = sessionExpireTimeInMs;
 		this.sessionSendOnlyIfChanged = sessionSendOnlyIfChanged;
 
 		this.httpStatus = HTTP_STATUS.ok200;
@@ -71,7 +71,7 @@ public class ContextImpl implements Context {
 		flashCookie.init(this);
 
 		// init session scope:
-		sessionCookie.init(this, sessionExpireTime, sessionSendOnlyIfChanged);
+		sessionCookie.init(this, sessionExpireTimeInMs, sessionSendOnlyIfChanged);
 
 	}
 

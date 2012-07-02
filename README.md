@@ -48,12 +48,15 @@ Next big steps
 
 For version 0.3 - "security"
 - session cookie there with signing
+-- OTW
+-- todo: extensible testing...
+-- app.conf file with secret, expiry and so on...
 - flash cookie support
 -- test: keep
 -- test: now
 -- test: clear
 -- DONE: basic support
-- login logout module there (casino)
+
 GENERAL:
 - conf file with secure token and or other stuff...
 - cookies: expires support
@@ -61,9 +64,11 @@ GENERAL:
 - transmit cookie always on/off
 - showcase application with flash cookie
 
+
 For version 0.4 - "html forms support" 
 - demo app extending via forms validation and xsrf support
 - maybe reverse routing in templates...
+- login logout module for security (casino)
 
 For version 0.5 - "test subsystem support"
 - isdev isprod istest modes integrated into app...

@@ -26,7 +26,7 @@ public class Configuration extends AbstractModule {
 		bind(String.class).annotatedWith(Names.named("secret")).toInstance("sddasdasdadad");
 		
 		//for flash and session cookies
-		bind(Integer.class).annotatedWith(Names.named("sessionExpireTime")).toInstance(100000);
+		bind(Integer.class).annotatedWith(Names.named("sessionExpireTimeInMs")).toInstance(100000);
 		bind(Boolean.class).annotatedWith(Names.named("sessionSendOnlyIfChanged")).toInstance(true);
 		
 	}
