@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.session.FlashCookie;
+import ninja.session.SessionCookie;
 
 public interface Context {
 
@@ -12,6 +13,8 @@ public interface Context {
 	}
 	
 	FlashCookie getFlashCookie();
+	
+	SessionCookie getSessionCookie();
 
 	void redirect(String url);
 

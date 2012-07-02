@@ -163,6 +163,7 @@ public class SessionCookie {
 
 		if (!sessionDataHasBeenChanged && sessionSendOnlyIfChanged
 		        && sessionExpireTimeInMs == null) {
+			
 			// Nothing changed and no cookie-expire, consequently send nothing
 			// back.
 			return;
@@ -222,7 +223,7 @@ public class SessionCookie {
 			context.getHttpServletResponse().addCookie(cookie);
 
 		} catch (Exception e) {
-			throw new RuntimeException("Session serializationProblem", e);
+			throw new RuntimeException("Session serialization problem", e);
 		}
 
 	}

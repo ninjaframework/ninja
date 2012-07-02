@@ -27,6 +27,8 @@ public class Routes {
 
 		// redirect back to /
 		router.GET().route("/redirect").with(ApplicationController.class, "redirect");
+		
+		router.GET().route("/session").with(ApplicationController.class, "session");
 
 		// /////////////////////////////////////////////////////////////////////
 		// Json support

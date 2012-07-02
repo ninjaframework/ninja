@@ -1,4 +1,4 @@
-package ninja;
+  package ninja;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -222,6 +222,11 @@ public class ContextImpl implements Context {
 	@Override
 	public FlashCookie getFlashCookie() {
 		return flashCookie;
+	}
+
+	@Override
+	public SessionCookie getSessionCookie() {
+		return sessionCookie;
 	}
 
 }

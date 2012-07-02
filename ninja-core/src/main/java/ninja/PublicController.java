@@ -43,7 +43,11 @@ public class PublicController {
 			context.render();
 
 		} else {
-
+			//finalize header:
+			context.status(HTTP_STATUS.ok200);
+			context.getSessionCookie().save(context);
+			context.getFlashCookie().save(context);
+			
 			try {
 				ByteStreams.copy(this.getClass().getClassLoader()
 				        .getResourceAsStream(ASSETS_PREFIX + finalName),
@@ -55,10 +59,7 @@ public class PublicController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// Default rendering is simple by convention
-			// This renders the page in
-			// views/ApplicationController/index.ftl.html
-			context.status(HTTP_STATUS.ok200);
+			
 		}
 
 	}

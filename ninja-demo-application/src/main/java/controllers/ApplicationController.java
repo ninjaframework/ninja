@@ -46,6 +46,13 @@ public class ApplicationController {
 		context.redirect("/");
 
 	}
+	
+	public void session(Context context) {
+		context.getSessionCookie().put("username", "kevin");
+		
+		context.renderHtml(context.getSessionCookie().getData());
+
+	}
 
 
 }

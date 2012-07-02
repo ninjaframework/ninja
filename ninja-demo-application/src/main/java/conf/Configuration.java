@@ -1,34 +1,36 @@
 package conf;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.name.Names;
-
+import ninja.utils.ConfigurableModule;
 import etc.GreetingService;
 import etc.GreetingServiceImpl;
 
-public class Configuration extends AbstractModule {
+public class Configuration extends ConfigurableModule {
 
 	protected void configure() {
+		// /////////////////////////////////////////////////////////////////////
+		// Default setup:
+		// /////////////////////////////////////////////////////////////////////
 		// load platform specific routes:
 		bind(Routes.class).asEagerSingleton();
-		
+
 		// start the framework
-		install(new ninja.Configuration());	
-		
+		install(new ninja.Configuration());
+
+		// /////////////////////////////////////////////////////////////////////
+		// Some guice bindings
+		// /////////////////////////////////////////////////////////////////////
 		// some additional bindings for the application:
 		bind(GreetingService.class).to(GreetingServiceImpl.class);
-			
-		
-		/////
-		// stuff that will go into a .conf file soon... (now done as guice annotation...):
-		
-		// for the Crypto class:
-		bind(String.class).annotatedWith(Names.named("secret")).toInstance("sddasdasdadad");
-		
-		//for flash and session cookies
-		bind(Integer.class).annotatedWith(Names.named("sessionExpireTimeInMs")).toInstance(100000);
-		bind(Boolean.class).annotatedWith(Names.named("sessionSendOnlyIfChanged")).toInstance(true);
-		
+
+		// /////////////////////////////////////////////////////////////////////
+		// Setting of ninja variables for startup:
+		// /////////////////////////////////////////////////////////////////////
+		setProperty("secret", "ssdasdasdasd");
+
+		// for flash and session cookies
+		setProperty("sessionExpireTimeInMs", 100000);
+		setProperty("sessionSendOnlyIfChanged", true);
+
 	}
 
 }

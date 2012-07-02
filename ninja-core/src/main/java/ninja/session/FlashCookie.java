@@ -31,7 +31,6 @@ public class FlashCookie {
 
 	public void init(Context context) {
 		// get flash cookie:
-		System.out.println("initing flash context!");
 		Cookie[] cookies = context.getHttpServletRequest().getCookies();
 
 		Cookie flashCookie = CookieHelper.getCookie(
@@ -56,7 +55,6 @@ public class FlashCookie {
 
 	public void save(Context context) {
 
-		System.out.println("saving context!");
 		if (outgoingFlashCookieData.isEmpty()) {
 
 			if (CookieHelper.getCookie(ninja.session.NinjaConstant.COOKIE_PREFIX

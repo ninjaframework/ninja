@@ -188,7 +188,6 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 				newSessionCookies);
 
-
 		//init new session from that cookie:
 		SessionCookie sessionCookie2 = new SessionCookie(crypto);
 		sessionCookie2.init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
