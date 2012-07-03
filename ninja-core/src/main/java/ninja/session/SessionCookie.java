@@ -13,19 +13,34 @@ import javax.servlet.http.Cookie;
 import ninja.Context;
 import ninja.utils.CookieHelper;
 import ninja.utils.Crypto;
+import ninja.utils.NinjaConstant;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  * Session Cookie... Mostly an adaption of Play1's excellent cookie system that
  * in turn is based on the new client side rails cookies.
  */
 public class SessionCookie {
+	
+	/**
+	 * Simple interface that holds configuration names of parameters.
+	 * Is used in guice module to set configuration parameters.
+	 */
+	public interface Config {		
+		String sessionExpireTimeInMs = "sessionExpireTimeInMs";
+		String sessionSendOnlyIfChanged = "sessionSendOnlyIfChanged";
+		String sessionTransferredOverHttpsOnly = "sessionTransferredOverHttpsOnly";	
+	}
+	
 
 	// => from config in the future...
 	private Integer sessionExpireTimeInMs;
 
 	private Boolean sessionSendOnlyIfChanged;
+
+	private Boolean sessionTransferredOverHttpsOnly;
 
 	private Pattern sessionParser = Pattern
 	        .compile("\u0000([^:]*):([^\u0000]*)\u0000");
@@ -47,8 +62,16 @@ public class SessionCookie {
 	private final Crypto crypto;
 
 	@Inject
-	public SessionCookie(Crypto crypto) {
+	public SessionCookie(
+			Crypto crypto,
+			@Named(Config.sessionExpireTimeInMs) Integer sessionExpireTimeInMs,
+			@Named(Config.sessionSendOnlyIfChanged) Boolean sessionSendOnlyIfChanged,
+			@Named(Config.sessionTransferredOverHttpsOnly) Boolean sessionTransferredOverHttpsOnly) {
+		
 		this.crypto = crypto;
+		this.sessionExpireTimeInMs = sessionExpireTimeInMs;
+		this.sessionSendOnlyIfChanged = sessionSendOnlyIfChanged;
+		this.sessionTransferredOverHttpsOnly = sessionTransferredOverHttpsOnly;
 
 	}
 
@@ -57,18 +80,14 @@ public class SessionCookie {
 	 * 
 	 * @param context
 	 */
-	public void init(Context context, Integer sessionExpireTimeInMs,
-	        Boolean sessionSendOnlyIfChanged) {
-
-		this.sessionExpireTimeInMs = sessionExpireTimeInMs;
-		this.sessionSendOnlyIfChanged = sessionSendOnlyIfChanged;
+	public void init(Context context) {
 
 		try {
 
 			// get the cookie that contains session information:
 			Cookie cookie = CookieHelper.getCookie(
-			        ninja.session.NinjaConstant.COOKIE_PREFIX
-			                + ninja.session.NinjaConstant.SESSION_SUFFIX,
+			        ninja.utils.NinjaConstant.COOKIE_PREFIX
+			                + ninja.utils.NinjaConstant.SESSION_SUFFIX,
 			        context.getHttpServletRequest().getCookies());
 
 			// check that the cookie is not empty:
@@ -163,7 +182,7 @@ public class SessionCookie {
 
 		if (!sessionDataHasBeenChanged && sessionSendOnlyIfChanged
 		        && sessionExpireTimeInMs == null) {
-			
+
 			// Nothing changed and no cookie-expire, consequently send nothing
 			// back.
 			return;
@@ -203,23 +222,14 @@ public class SessionCookie {
 
 			String sign = crypto.signHmacSha1(sessionData);
 
-			Cookie cookie;			
+			Cookie cookie;
+
+			cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
+			        + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
 			
-			if (sessionExpireTimeInMs == null) {
+			cookie.setMaxAge(sessionExpireTimeInMs);
+			cookie.setSecure(sessionTransferredOverHttpsOnly);
 
-				cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
-				        + NinjaConstant.SESSION_SUFFIX, sign + "-"
-				        + sessionData);
-
-			} else {
-
-				cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
-				        + NinjaConstant.SESSION_SUFFIX, sign + "-"
-				        + sessionData);
-				cookie.setMaxAge(sessionExpireTimeInMs);
-
-			}
-			
 			context.getHttpServletResponse().addCookie(cookie);
 
 		} catch (Exception e) {

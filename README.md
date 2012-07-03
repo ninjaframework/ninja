@@ -46,23 +46,7 @@ GOALS
 Next big steps
 --------------
 
-For version 0.3 - "security"
-- session cookie there with signing
--- OTW
--- todo: extensible testing...
--- app.conf file with secret, expiry and so on...
-- flash cookie support
--- test: keep
--- test: now
--- test: clear
--- DONE: basic support
 
-GENERAL:
-- conf file with secure token and or other stuff...
-- cookies: expires support
-- secure cooke support / https support
-- transmit cookie always on/off
-- showcase application with flash cookie
 
 
 For version 0.4 - "html forms support" 
@@ -141,6 +125,24 @@ For version 0.2 - "basics"
 -- DONE prettify.css from googlecode for code...
 - DONE: make templating system modular (ftl optional, as well as jsons) DONE
 - DONE put post parser
+
+For version 0.3 - "security"
+- session cookie there with signing
+-- DONE todo: extensible testing...
+-- DONE cookie gets only transferred when changed
+-- DONE app.conf file with secret, expiry and so on...
+- flash cookie support
+-- DONE test: keep
+-- DONE test: now
+-- DONE test: clear
+-- DONE: basic support
+
+GENERAL:
+- DONE... conf file with secure token and or other stuff...
+- DONE cookies: expires support
+- DONE secure cooke support / https support
+- DONE transmit cookie always on/off
+- DONE showcase application with flash cookie
 
 
 
@@ -237,3 +239,11 @@ DONE
 ==> using status(HTTP_STATUS) on context
 
 
+
+Random issues for v1.0
+----------------------
+- Optional<xyz> for get parameter in context => not null
+- remove dependency on servlet (httprequest, response, cookie etcpp)
+- sessionexpiry => prolong session when hit server or only when valid for 2 weeks in total (google way)...
+- init methds should become assisted injects...
+- implement session that cannot be read by javascript (servlet 3.0 etc pp)

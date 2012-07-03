@@ -10,23 +10,23 @@ import com.google.inject.name.Named;
 
 public class Crypto {
 
-	private final String secret;
+	private final String applicationSecret;
 
 	/**
 	 * Secret is a secret key. Usually something like:
 	 * "Fxu6U5BTGIJZ06c8bD1xkhHc3Ct5JZXlst8tJ1K5uJJPaLdceDo6CUz0iWpjjQUY".
 	 * 
-	 * @param secret the secret to use for signing.
+	 * @param applicationSecret the secret to use for signing.
 	 */
 	@Inject
-	public Crypto(@Named("secret") String secret) {
-		this.secret = secret;
+	public Crypto(@Named(NinjaConstant.applicationSecret) String applicationSecret) {
+		this.applicationSecret = applicationSecret;
 
 	}
 
 	public String signHmacSha1(String message) {
 
-		return signHmacSha1(message, secret);
+		return signHmacSha1(message, applicationSecret);
 
 	}
 

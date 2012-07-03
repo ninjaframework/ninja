@@ -92,6 +92,9 @@ public class FlashCookieTest {
 		assertEquals("NINJA_FLASH" , cookieCaptor.getValue().getName());
 		assertEquals("%00hello%3AflashScope%00" , cookieCaptor.getValue().getValue());
 		
+		assertEquals(1, flashCookie.currentFlashCookieData.size());
+		assertEquals(1, flashCookie.outgoingFlashCookieData.size());
+		
 	}
 	
 	
@@ -128,6 +131,100 @@ public class FlashCookieTest {
 		//the new flash messages must be there..
 		//but the old has disappeared (flashScope):
 		assertEquals("%00another+message%3Ais+there...%00%00yet+another+message%3Ais+there...%00" , cookieCaptor.getValue().getValue());
+		assertEquals(3, flashCookie.currentFlashCookieData.size());
+		assertEquals(2, flashCookie.outgoingFlashCookieData.size());
+	}
+	
+	
+	@Test
+	public void testThatFlashCookieClearWorks() {
+		//setup this testmethod
+		//empty cookies
+		Cookie [] oneCookie = new Cookie [1];
+		
+		Cookie cookie = new Cookie("NINJA_FLASH", "%00hello%3AflashScope%00");
+		oneCookie[0] = cookie;
+		
+		//that will be returned by the httprequest...
+		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
+		
+		FlashCookie flashCookie = new FlashCookie();
+		
+		flashCookie.init(context);
+		
+		//make sure the old cookue gets parsed:
+		assertEquals("flashScope", flashCookie.get("hello"));
+		
+		flashCookie.put("funny new flash message", "is there...");
+		
+		//now test clearCurrentFlashCookieData
+		flashCookie.clearCurrentFlashCookieData();
+		
+		assertEquals(0, flashCookie.currentFlashCookieData.size());
+		assertEquals(1, flashCookie.outgoingFlashCookieData.size());
+		
+	}
+	
+	@Test
+	public void testThatFlashCookieClearOfOutgoingWorks() {
+		//setup this testmethod
+		//empty cookies
+		Cookie [] oneCookie = new Cookie [1];
+		
+		Cookie cookie = new Cookie("NINJA_FLASH", "%00hello%3AflashScope%00");
+		oneCookie[0] = cookie;
+		
+		//that will be returned by the httprequest...
+		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
+		
+		FlashCookie flashCookie = new FlashCookie();
+		
+		flashCookie.init(context);
+		
+		//make sure the old cookue gets parsed:
+		assertEquals("flashScope", flashCookie.get("hello"));
+		
+		flashCookie.put("funny new flash message", "is there...");
+		
+		//now test clearCurrentFlashCookieData
+		flashCookie.discard();
+		
+		assertEquals(2, flashCookie.currentFlashCookieData.size());
+		assertEquals(0, flashCookie.outgoingFlashCookieData.size());
+		
+	}
+	
+	
+	@Test
+	public void testThatFlashCookieKeepWorks() {
+		//setup this testmethod
+		//empty cookies
+		Cookie [] oneCookie = new Cookie [1];
+		
+		Cookie cookie = new Cookie("NINJA_FLASH", "%00hello%3AflashScope%00");
+		oneCookie[0] = cookie;
+		
+		//that will be returned by the httprequest...
+		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
+		
+		FlashCookie flashCookie = new FlashCookie();
+		
+		flashCookie.init(context);
+		
+		//make sure the old cookue gets parsed:
+		assertEquals("flashScope", flashCookie.get("hello"));
+		
+		
+		//make sure outgoing is 0		
+		assertEquals(1, flashCookie.currentFlashCookieData.size());
+		assertEquals(0, flashCookie.outgoingFlashCookieData.size());
+		
+		//now call keep. 
+		flashCookie.keep();
+		//=> now both queues must be 1
+		assertEquals(1, flashCookie.currentFlashCookieData.size());
+		assertEquals(1, flashCookie.outgoingFlashCookieData.size());
+		
 		
 	}
 

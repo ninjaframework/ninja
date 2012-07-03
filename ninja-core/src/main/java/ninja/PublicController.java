@@ -4,8 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.activation.MimetypesFileTypeMap;
-
 import ninja.Context.HTTP_STATUS;
 
 import com.google.common.io.ByteStreams;

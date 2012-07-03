@@ -9,14 +9,14 @@
 	<parent>
 		<groupId>ninja</groupId>
 		<artifactId>ninja</artifactId>
-		<version>0.2-SNAPSHOT</version>
+		<version>0.4-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>ninja</groupId>
 			<artifactId>ninja-core</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

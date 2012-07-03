@@ -1,4 +1,4 @@
-package ninja.session;
+package ninja.utils;
 
 public interface NinjaConstant {
 	
@@ -13,8 +13,14 @@ public interface NinjaConstant {
 	 * in cookies like "NINJA_FLASH */
 	final String FLASH_SUFFIX = "_FLASH";
 	
+	/** used as spacer for instance in session cookie */
 	final String UNI_CODE_NULL_ENTITY = "\u0000";
 	
+	/** yea. utf-8 */
 	final String UTF_8 = "utf-8";
+	
+	final String applicationSecret = "applicationSecret";
+	
+	
 
 }

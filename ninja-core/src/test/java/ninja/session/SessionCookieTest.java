@@ -44,6 +44,8 @@ public class SessionCookieTest {
 
 	private Boolean sessionSendOnlyIfChanged = true;
 
+	private Boolean sessionTransferredOverHttpsOnly = true;
+
 	@Before
 	public void setUp() {
 
@@ -68,10 +70,11 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto);
+		SessionCookie sessionCookie = new SessionCookie(crypto,
+		        sessionExpiryTime, sessionSendOnlyIfChanged,
+		        sessionTransferredOverHttpsOnly);
 
-		sessionCookie
-		        .init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
+		sessionCookie.init(context);
 
 		// put nothing => empty session will not be sent as we send only changed
 		// stuff...
@@ -97,10 +100,11 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto);
+		SessionCookie sessionCookie = new SessionCookie(crypto,
+		        sessionExpiryTime, sessionSendOnlyIfChanged,
+		        sessionTransferredOverHttpsOnly);
 
-		sessionCookie
-		        .init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
+		sessionCookie.init(context);
 
 		// put nothing => intentionally to check if no flash cookie will be
 		// saved
@@ -120,10 +124,11 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto);
+		SessionCookie sessionCookie = new SessionCookie(crypto,
+		        sessionExpiryTime, sessionSendOnlyIfChanged,
+		        sessionTransferredOverHttpsOnly);
 
-		sessionCookie
-		        .init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
+		sessionCookie.init(context);
 
 		sessionCookie.put("hello", "session!");
 
@@ -140,21 +145,22 @@ public class SessionCookieTest {
 		// assert some stuff...
 		// Make sure that sign is valid:
 		String cookieString = cookieCaptor.getValue().getValue();
-		
-		String cookieFromSign = cookieString.substring(cookieString.indexOf("-") + 1);
+
+		String cookieFromSign = cookieString.substring(cookieString
+		        .indexOf("-") + 1);
 
 		String computedSign = crypto.signHmacSha1(cookieFromSign);
-		
-		assertEquals(computedSign, cookieString.substring(0, cookieString.indexOf("-")));
-		
+
+		assertEquals(computedSign,
+		        cookieString.substring(0, cookieString.indexOf("-")));
+
 		// Make sure that cookie contains timestamp
-		assertTrue(cookieString.contains("___TS"));	
+		assertTrue(cookieString.contains("___TS"));
 
 	}
 	
 	@Test
-	public void testThatCookieSavingAndInitingWorks() {
-		
+	public void testHttpsOnlyWorks() throws Exception {
 		// setup this testmethod
 		// empty cookies
 		Cookie[] emptyCookies = new Cookie[0];
@@ -163,10 +169,79 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto);
+		SessionCookie sessionCookie = new SessionCookie(crypto,
+		        sessionExpiryTime, sessionSendOnlyIfChanged,
+		        sessionTransferredOverHttpsOnly);
 
-		sessionCookie
-		        .init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
+		sessionCookie.init(context);
+
+		sessionCookie.put("hello", "session!");
+
+		// put nothing => intentionally to check if no session cookie will be
+		// saved
+		sessionCookie.save(context);
+
+		// a cookie will be set
+		verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+		// verify some stuff on the set cookie
+		assertEquals(true, cookieCaptor.getValue().getSecure());
+
+	}
+	
+	
+	@Test
+	public void testNoHttpsOnlyWorks() throws Exception {
+		// setup this testmethod
+		// empty cookies
+		Cookie[] emptyCookies = new Cookie[0];
+		
+		
+		sessionTransferredOverHttpsOnly = false;
+
+		// that will be returned by the httprequest...
+		when(context.getHttpServletRequest().getCookies()).thenReturn(
+		        emptyCookies);
+
+		SessionCookie sessionCookie = new SessionCookie(crypto,
+		        sessionExpiryTime, sessionSendOnlyIfChanged,
+		        sessionTransferredOverHttpsOnly);
+
+		sessionCookie.init(context);
+
+		sessionCookie.put("hello", "session!");
+
+		// put nothing => intentionally to check if no session cookie will be
+		// saved
+		sessionCookie.save(context);
+
+		// a cookie will be set
+		verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+		// verify some stuff on the set cookie
+		assertEquals(false, cookieCaptor.getValue().getSecure());
+
+	}
+	
+	
+	
+
+	@Test
+	public void testThatCookieSavingAndInitingWorks() {
+
+		// setup this testmethod
+		// empty cookies
+		Cookie[] emptyCookies = new Cookie[0];
+
+		// that will be returned by the httprequest...
+		when(context.getHttpServletRequest().getCookies()).thenReturn(
+		        emptyCookies);
+
+		SessionCookie sessionCookie = new SessionCookie(crypto,
+		        sessionExpiryTime, sessionSendOnlyIfChanged,
+		        sessionTransferredOverHttpsOnly);
+
+		sessionCookie.init(context);
 
 		sessionCookie.put("key1", "value1");
 		sessionCookie.put("key2", "value2");
@@ -179,23 +254,26 @@ public class SessionCookieTest {
 		// a cookie will be set
 		verify(httpServletResponse).addCookie(cookieCaptor.capture());
 
-		
-		//now we simulate a new request => the session storage will generate a new cookie:
+		// now we simulate a new request => the session storage will generate a
+		// new cookie:
 		Cookie[] newSessionCookies = new Cookie[1];
-		newSessionCookies[0] = new Cookie(cookieCaptor.getValue().getName(), cookieCaptor.getValue().getValue());
-		
+		newSessionCookies[0] = new Cookie(cookieCaptor.getValue().getName(),
+		        cookieCaptor.getValue().getValue());
+
 		// that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
-				newSessionCookies);
+		        newSessionCookies);
 
-		//init new session from that cookie:
-		SessionCookie sessionCookie2 = new SessionCookie(crypto);
-		sessionCookie2.init(context, sessionExpiryTime, sessionSendOnlyIfChanged);
-		
+		// init new session from that cookie:
+		SessionCookie sessionCookie2 = new SessionCookie(crypto,
+		        sessionExpiryTime, sessionSendOnlyIfChanged,
+		        sessionTransferredOverHttpsOnly);
+		sessionCookie2.init(context);
+
 		assertEquals("value1", sessionCookie2.get("key1"));
 		assertEquals("value2", sessionCookie2.get("key2"));
 		assertEquals("value3", sessionCookie2.get("key3"));
-		
+
 	}
 
 }

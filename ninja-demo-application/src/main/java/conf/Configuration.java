@@ -1,6 +1,8 @@
 package conf;
 
+import ninja.session.SessionCookie;
 import ninja.utils.ConfigurableModule;
+import ninja.utils.NinjaConstant;
 import etc.GreetingService;
 import etc.GreetingServiceImpl;
 
@@ -25,11 +27,12 @@ public class Configuration extends ConfigurableModule {
 		// /////////////////////////////////////////////////////////////////////
 		// Setting of ninja variables for startup:
 		// /////////////////////////////////////////////////////////////////////
-		setProperty("secret", "ssdasdasdasd");
+		setProperty(NinjaConstant.applicationSecret, "sdfsdfsdfsfsdfsdfsdfsdfsdfsdfsfsdfsdf");
 
 		// for flash and session cookies
-		setProperty("sessionExpireTimeInMs", 100000);
-		setProperty("sessionSendOnlyIfChanged", true);
+		setProperty(SessionCookie.Config.sessionExpireTimeInMs, 200000);
+		setProperty(SessionCookie.Config.sessionSendOnlyIfChanged, true);
+		setProperty(SessionCookie.Config.sessionTransferredOverHttpsOnly, false);
 
 	}
 
