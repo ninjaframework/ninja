@@ -13,6 +13,7 @@
 		<module>ninja-core-test</module>
 		<module>ninja-demo-application</module>
 		<module>ninja-demo-module</module>
+        <module>ninja-module-loginlogout</module>
 	</modules>
 
 </project>

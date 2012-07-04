@@ -1,4 +1,4 @@
-  package ninja;
+package ninja;
 
 import java.io.IOException;
 import java.util.HashMap;

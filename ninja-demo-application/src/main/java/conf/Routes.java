@@ -1,6 +1,6 @@
 package conf;
 
-import ninja.PublicController;
+import ninja.AssetsController;
 import ninja.Router;
 
 import com.google.inject.Inject;
@@ -12,6 +12,16 @@ import controllers.PersonController;
 
 public class Routes {
 
+	/**
+	 * Through using the @Inject we are getting the router. 
+	 * Using a (almost) nice DSL we can configure the router.
+	 * 
+	 * The second argument NinjaModuleDemoRouter contains
+	 * all routes of a submodule. By simply injecting it we activate the routes.
+	 * 
+	 * @param router The default router of this application
+	 * @param rideOn This is a router of a submodule.
+	 */
 	@Inject
 	public Routes(Router router) {
 
@@ -47,7 +57,8 @@ public class Routes {
 		// /////////////////////////////////////////////////////////////////////
 		router.GET().route("/injection").with(InjectionExampleController.class, "injection");
 		
-		router.GET().route("/assets/.*").with(PublicController.class, "serve");
+		
+		router.GET().route("/assets/.*").with(AssetsController.class, "serve");
 
 	}
 

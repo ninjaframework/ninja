@@ -2,6 +2,13 @@ package ninja.utils;
 
 public interface NinjaConstant {
 	
+	///////////////////////////////////////////////////
+	// The basic directories used in all convention 
+	// over configuration operations:
+	String VIEWS_DIR = "views";
+	String CONTROLLERS_DIR = "controllers";
+	String MODELS_DIR = "models";
+	
 	/** prefix used for all Ninja cookies. */
 	final String COOKIE_PREFIX = "NINJA";
 	

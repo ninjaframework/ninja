@@ -2,6 +2,8 @@ package ninja;
 
 import java.util.Map;
 
+import com.google.inject.ImplementedBy;
+
 public interface Route {
 
 	Route GET();

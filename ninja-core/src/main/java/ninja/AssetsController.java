@@ -16,7 +16,7 @@ import com.google.inject.Singleton;
  * 
  */
 @Singleton
-public class PublicController {
+public class AssetsController {
 
 	/** Used as seen by http request */
 	final String PUBLIC_PREFIX = "/assets/";
@@ -28,11 +28,9 @@ public class PublicController {
 
 		String finalName = context.getHttpServletRequest().getRequestURI()
 		        .replaceFirst(PUBLIC_PREFIX, "");
-
 		
 		InputStream inputStream = this.getClass().getClassLoader()
-		        .getResourceAsStream(ASSETS_PREFIX + finalName);
-		
+		        .getResourceAsStream(ASSETS_PREFIX + finalName);		
 		
 		// check if stream exists. if not print a notfound exception
 		if (inputStream == null) {

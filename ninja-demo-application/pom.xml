@@ -55,6 +55,12 @@
 			<artifactId>ninja-core</artifactId>
 			<version>0.4-SNAPSHOT</version>
 		</dependency>
+        <dependency>
+			<groupId>ninja</groupId>
+			<artifactId>ninja-module-loginlogout</artifactId>
+			<version>0.4-SNAPSHOT</version>
+		</dependency>
+        
 		<!-- Gson: Java to Json conversion -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

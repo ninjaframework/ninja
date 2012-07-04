@@ -46,13 +46,19 @@ GOALS
 Next big steps
 --------------
 
-
-
-
 For version 0.4 - "html forms support" 
-- demo app extending via forms validation and xsrf support
-- maybe reverse routing in templates...
 - login logout module for security (casino)
+-- check methods in route if they are okay
+-- make submodules work in casino
+-- map assets of submodules to main module...
+-- Application class? that binds routes?
+-- something like global? => also add filters here...
+-- => also add plugins here...
+-- what does the routes binding? => maybe done in dispatcher?
+- demo app extending via forms validation and xsrf support
+-- xsrf suppor should be in login logout module
+-- forms and so on should also be in login logout module...
+- maybe reverse routing in templates...
 
 For version 0.5 - "test subsystem support"
 - isdev isprod istest modes integrated into app...
