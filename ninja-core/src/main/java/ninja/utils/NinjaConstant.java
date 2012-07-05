@@ -26,7 +26,13 @@ public interface NinjaConstant {
 	/** yea. utf-8 */
 	final String UTF_8 = "utf-8";
 	
+	/** Used to verify client side cookie for instance. */
 	final String applicationSecret = "applicationSecret";
+	
+	/** In many situations the server cannot know its own name. So
+	 * You can set using that variable.
+	 */
+	final String serverName = "serverName";
 	
 	
 

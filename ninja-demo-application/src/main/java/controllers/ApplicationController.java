@@ -13,11 +13,17 @@ import com.google.inject.Singleton;
 @Singleton
 public class ApplicationController {
     
+    /**
+     * This is the system wide logger. You can still use any config you like.
+     * Or create your own custom logger.
+     * 
+     * But often this is just a simple solution:
+     */
     @Inject
     public Logger logger;
 
 	public void examples(Context context) {
-	    logger.info("in example");
+	    logger.info("In example");
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
 		context.renderHtml();

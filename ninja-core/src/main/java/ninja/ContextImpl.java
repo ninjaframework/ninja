@@ -14,7 +14,6 @@ import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class ContextImpl implements Context {
 

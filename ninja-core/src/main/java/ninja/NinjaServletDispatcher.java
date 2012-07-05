@@ -1,6 +1,8 @@
 package ninja;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,6 +12,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import ninja.application.ApplicationRoutes;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -38,19 +42,40 @@ public class NinjaServletDispatcher implements Filter {
 
 	public void init(FilterConfig filterConfig) throws ServletException {
 
-		try {
-			// By convention the initial configuration has to be placed in a
-			// guice module in conf.Configuration.
-			Class clazz = Class.forName("conf.Configuration");
-
-			// Create a new instance
-			Module configuration = (Module) clazz.newInstance();
+		try {		    
+		    List<Module> modulesToLoad = new ArrayList<Module>();  
+		    
+			// Get base configuration of Ninja:
+			Class ninjaConfigurationClass = Class.forName("ninja.Configuration");
+			Module ninjaConfiguration = (Module) ninjaConfigurationClass.newInstance();
+			modulesToLoad.add(ninjaConfiguration);
+			
+			// Load main application module:
+			if (doesClassExist("conf.Configuration")) {
+			    Class applicationConfigurationClass = Class.forName("conf.Configuration");
+	            Module applicationConfiguration = (Module) applicationConfigurationClass.newInstance();
+	            modulesToLoad.add(applicationConfiguration);
+			}
+			
 
 			// And let the injector generate all instances and stuff:
-			injector = Guice.createInjector(configuration);
+			injector = Guice.createInjector(modulesToLoad);
 
 			// And that's our nicely configured main handler for the framework:
 			ninja = injector.getInstance(Ninja.class);
+			
+			
+	         // Init routes
+            if (doesClassExist("conf.Routes")) {
+                Class clazz = Class.forName("conf.Routes");
+                ApplicationRoutes applicationRoutes = (ApplicationRoutes) injector.getInstance(clazz);
+                
+                Router router = injector.getInstance(Router.class);
+                
+                applicationRoutes.init(router);
+                
+            }
+	
 
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -90,6 +115,26 @@ public class NinjaServletDispatcher implements Filter {
 		injector = null;
 		ninja = null;
 
+	}
+	
+	/**
+	 * TODO => I want to live somewhere else...
+	 * 
+	 * 
+	 */
+	private boolean doesClassExist(String nameWithPackage) {
+	    
+	    boolean exists = false;
+	    
+	    try {
+            Class.forName(nameWithPackage, false, this.getClass().getClassLoader());
+            exists = true;
+        } catch (ClassNotFoundException e) {
+            exists = false;
+        }
+	    
+	    return exists;
+	    
 	}
 
 }

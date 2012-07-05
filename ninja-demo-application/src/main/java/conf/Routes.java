@@ -1,19 +1,27 @@
 package conf;
 
-import ninja.AssetsController;
-import ninja.Router;
-
 import com.google.inject.Inject;
 
+import ninja.AssetsController;
+import ninja.Router;
+import ninja.application.ApplicationRoutes;
+import ninja.utils.NinjaProperties;
 import controllers.ApplicationController;
 import controllers.FilterController;
 import controllers.InjectionExampleController;
 import controllers.PersonController;
 
-public class Routes {
+public class Routes implements ApplicationRoutes {
+    
+    private NinjaProperties ninjaProperties;
+
+    @Inject
+    public Routes(NinjaProperties ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+  
+    }
 
 	/**
-	 * Through using the @Inject we are getting the router. 
 	 * Using a (almost) nice DSL we can configure the router.
 	 * 
 	 * The second argument NinjaModuleDemoRouter contains
@@ -22,8 +30,8 @@ public class Routes {
 	 * @param router The default router of this application
 	 * @param rideOn This is a router of a submodule.
 	 */
-	@Inject
-	public Routes(Router router) {
+    @Override
+	public void init(Router router) {
 
 		// /////////////////////////////////////////////////////////////////////
 		// some default functions

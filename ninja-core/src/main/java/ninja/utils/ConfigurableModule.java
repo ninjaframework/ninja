@@ -1,5 +1,6 @@
 package ninja.utils;
 
+import com.google.common.base.Optional;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
@@ -10,7 +11,7 @@ import com.google.inject.name.Names;
  * something like @Named("myProperty") String myProperty.
  * 
  * Simply set it via:
- * setProperty("myProperty", "value"). 
+ * setProperty("myProperty", "value").
  * 
  * That's it.
  * 
@@ -18,26 +19,32 @@ import com.google.inject.name.Names;
  * can be made here...
  * 
  * @author ra
- *
+ * 
  */
 public abstract class ConfigurableModule extends AbstractModule {
-	
-	protected void setProperty(String key, Integer value) {
 
-		bind(Integer.class).annotatedWith(Names.named(key)).toInstance(value);
+    protected void setProperty(String key, Integer value) {
 
-	}
+        bind(Integer.class).annotatedWith(Names.named(key)).toInstance(value);
 
-	protected void setProperty(String key, String value) {
+    }
 
-		bind(String.class).annotatedWith(Names.named(key)).toInstance(value);
+    protected void setProperty(String key, String value) {
 
-	}
+        bind(String.class).annotatedWith(Names.named(key)).toInstance(value);
 
-	protected void setProperty(String key, Boolean value) {
+    }
 
-		bind(Boolean.class).annotatedWith(Names.named(key)).toInstance(value);
+    protected void setProperty(String key, Boolean value) {
 
-	}
+        bind(Boolean.class).annotatedWith(Names.named(key)).toInstance(value);
+
+    }
+
+    protected void setProperty(String key, Optional<?> value) {
+
+        bind(Optional.class).annotatedWith(Names.named(key)).toInstance(value);
+
+    }
 
 }

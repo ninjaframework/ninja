@@ -9,14 +9,6 @@ import etc.GreetingServiceImpl;
 public class Configuration extends ConfigurableModule {
 
 	protected void configure() {
-		// /////////////////////////////////////////////////////////////////////
-		// Default setup:
-		// /////////////////////////////////////////////////////////////////////
-		// load platform specific routes:
-		bind(Routes.class).asEagerSingleton();
-
-		// start the framework
-		install(new ninja.Configuration());
 
 		// /////////////////////////////////////////////////////////////////////
 		// Some guice bindings
