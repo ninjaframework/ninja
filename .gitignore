@@ -9,3 +9,5 @@ target
 # the ninja framework in the main demo application
 # but - we don't want that link in git
 ninja-demo-application/src/main/java/ninja
+ninja-demo-application/src/main/java/ninjaModuleDemo
+

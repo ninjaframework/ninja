@@ -5,12 +5,19 @@ import java.util.Map;
 
 import ninja.Context;
 
+import org.slf4j.Logger;
+
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ApplicationController {
+    
+    @Inject
+    public Logger logger;
 
 	public void examples(Context context) {
+	    logger.info("in example");
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
 		context.renderHtml();
@@ -26,7 +33,6 @@ public class ApplicationController {
 	}
 	
 	public void userDashboard(Context context) {
-		
 		//get parameters from context:
 		String id = context.getPathParameter("id");				
 		String name = context.getPathParameter("name");

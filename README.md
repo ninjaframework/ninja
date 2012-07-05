@@ -41,6 +41,11 @@ GOALS
 - working security subsystem (client side session crypto key'ed)
 - framework completely interfaced for supersimple and fast mocked testing
 
+NON-GOALS v1.0
+--------------
+- we don't want to focus on async operations in this call. Yes we'll resources while waiting and
+  having some threads blocked. But we are alright as Ninja can scale anyway.
+
 
 
 Next big steps
