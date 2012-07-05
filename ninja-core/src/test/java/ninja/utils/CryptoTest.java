@@ -1,20 +1,27 @@
 package ninja.utils;
 
 import static org.junit.Assert.assertEquals;
-
-import ninja.utils.Crypto;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class CryptoTest {
+	
+	@Mock
+	private NinjaProperties ninjaProperties;
 	
 	private Crypto crypto;
 	
 	@Before
 	public void setup() {
+		MockitoAnnotations.initMocks(this);
 		
-		crypto = new Crypto("Fxu6U5BTGIJZ06c8bD1xkhHc3Ct5JZXlst8tJ1K5uJJPaLdceDo6CUz0iWpjjQUY");
+		when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret)).thenReturn("Fxu6U5BTGIJZ06c8bD1xkhHc3Ct5JZXlst8tJ1K5uJJPaLdceDo6CUz0iWpjjQUY");
+		
+		crypto = new Crypto(ninjaProperties);
 	}
 	
 	@Test

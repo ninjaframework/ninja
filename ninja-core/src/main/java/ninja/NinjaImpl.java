@@ -1,5 +1,6 @@
 package ninja;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 
 import ninja.Context.HTTP_STATUS;
@@ -90,6 +91,17 @@ public class NinjaImpl implements Ninja {
 					.template(pathToViewNotFound).renderHtml();
 
 		}
+		
+		// We have finished this cycle. We close the streams by force:
+		try {
+			context.getHttpServletResponse().getOutputStream().close();
+			context.getHttpServletResponse().getWriter().close();
+			
+		} catch (Exception e) {
+			//forget the exception if there is one...
+		}
+		
+		
 
 	}
 

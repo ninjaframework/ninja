@@ -14,9 +14,9 @@ import ninja.Context;
 import ninja.utils.CookieHelper;
 import ninja.utils.Crypto;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 /**
  * Session Cookie... Mostly an adaption of Play1's excellent cookie system that
@@ -35,7 +35,6 @@ public class SessionCookie {
 	}
 	
 
-	// => from config in the future...
 	private Integer sessionExpireTimeInMs;
 
 	private Boolean sessionSendOnlyIfChanged;
@@ -64,14 +63,14 @@ public class SessionCookie {
 	@Inject
 	public SessionCookie(
 			Crypto crypto,
-			@Named(Config.sessionExpireTimeInMs) Integer sessionExpireTimeInMs,
-			@Named(Config.sessionSendOnlyIfChanged) Boolean sessionSendOnlyIfChanged,
-			@Named(Config.sessionTransferredOverHttpsOnly) Boolean sessionTransferredOverHttpsOnly) {
+			NinjaProperties ninjaProperties) {
 		
 		this.crypto = crypto;
-		this.sessionExpireTimeInMs = sessionExpireTimeInMs;
-		this.sessionSendOnlyIfChanged = sessionSendOnlyIfChanged;
-		this.sessionTransferredOverHttpsOnly = sessionTransferredOverHttpsOnly;
+		
+		//read configuration stuff:
+		this.sessionExpireTimeInMs = ninjaProperties.getInteger(Config.sessionExpireTimeInMs);
+		this.sessionSendOnlyIfChanged = ninjaProperties.getBoolean(Config.sessionSendOnlyIfChanged);
+		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBoolean(Config.sessionTransferredOverHttpsOnly);
 
 	}
 

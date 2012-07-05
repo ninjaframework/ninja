@@ -70,6 +70,7 @@ public class NinjaServletDispatcher implements Filter {
                 Class clazz = Class.forName("conf.Routes");
                 ApplicationRoutes applicationRoutes = (ApplicationRoutes) injector.getInstance(clazz);
                 
+                //System.out.println("init routes");
                 Router router = injector.getInstance(Router.class);
                 
                 applicationRoutes.init(router);

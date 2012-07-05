@@ -29,8 +29,6 @@
                     <configuration>
                         <source>1.6</source>
                         <target>1.6</target>
-                        <fork>true</fork>
-                        <compilerVersion>1.6</compilerVersion>
                     </configuration>
                 </plugin>
             </plugins>

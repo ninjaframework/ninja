@@ -1,25 +1,14 @@
 package conf;
 
-import com.google.inject.Inject;
-
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
-import ninja.utils.NinjaProperties;
 import controllers.ApplicationController;
 import controllers.FilterController;
 import controllers.InjectionExampleController;
 import controllers.PersonController;
 
 public class Routes implements ApplicationRoutes {
-    
-    private NinjaProperties ninjaProperties;
-
-    @Inject
-    public Routes(NinjaProperties ninjaProperties) {
-        this.ninjaProperties = ninjaProperties;
-  
-    }
 
 	/**
 	 * Using a (almost) nice DSL we can configure the router.

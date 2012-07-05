@@ -6,14 +6,26 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
 
 public class RouteImplTest {
+	
+	@Mock
+	Logger logger;
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+	}
 
 	@Test
 	public void testBasicGETRoute() {
 
-		Route route1 = new RouteImpl(null);
+		Route route1 = new RouteImpl(null, logger);
 		route1.GET().route("/index");
 
 		assertTrue(route1.matches("GET", "/index"));
@@ -23,7 +35,7 @@ public class RouteImplTest {
 	@Test
 	public void testBasicPOSTRoute() {
 
-		Route route1 = new RouteImpl(null);
+		Route route1 = new RouteImpl(null, logger);
 		route1.POST().route("/index");
 
 		assertTrue(route1.matches("POST", "/index"));
@@ -33,7 +45,7 @@ public class RouteImplTest {
 	@Test
 	public void testBasicPUTRoute() {
 
-		Route route1 = new RouteImpl(null);
+		Route route1 = new RouteImpl(null, logger);
 		route1.PUT().route("/index");
 
 		assertTrue(route1.matches("PUT", "/index"));
@@ -43,7 +55,7 @@ public class RouteImplTest {
 	@Test
 	public void testBasicRoutes() {
 
-		Route route1 = new RouteImpl(null);
+		Route route1 = new RouteImpl(null, logger);
 		route1.OPTION().route("/index");
 
 		assertTrue(route1.matches("OPTION", "/index"));
@@ -53,7 +65,7 @@ public class RouteImplTest {
 	@Test
 	public void testBasicRoutesWithRegex() {
 
-		Route route1 = new RouteImpl(null);
+		Route route1 = new RouteImpl(null, logger);
 		route1.GET().route("/.*");
 
 		// make sure the route catches everything:
@@ -70,7 +82,7 @@ public class RouteImplTest {
 		// /////////////////////////////////////////////////////////////////////
 		// One parameter:
 		// /////////////////////////////////////////////////////////////////////
-		Route route1 = new RouteImpl(null);
+		Route route1 = new RouteImpl(null, logger);
 		route1.GET().route("/{name}/dashboard");
 
 		assertFalse(route1.matches("GET","/dashboard"));
@@ -85,7 +97,7 @@ public class RouteImplTest {
 		// /////////////////////////////////////////////////////////////////////
 		// More parameters
 		// /////////////////////////////////////////////////////////////////////
-		route1 = new RouteImpl(null);
+		route1 = new RouteImpl(null, logger);
 		route1.GET().route("/{name}/{id}/dashboard");
 
 		assertFalse(route1.matches("GET","/dashboard"));
@@ -105,7 +117,7 @@ public class RouteImplTest {
 
 		// test that parameter parsing works in conjunction with
 		// regex expressions...
-		Route route1 = new RouteImpl(null);
+		Route route1 = new RouteImpl(null, logger);
 		route1.GET().route("/John/{id}/.*");
 		assertTrue(route1.matches("GET","/John/20/dashboard"));
 		Map<String, String> map = route1.getParameters("/John/20/dashboard");

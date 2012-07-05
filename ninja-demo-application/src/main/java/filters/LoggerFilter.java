@@ -1,8 +1,11 @@
 package filters;
 
+import org.slf4j.Logger;
+
 import ninja.Context;
 import ninja.Filter;
-import ninja.Context.HTTP_STATUS;
+
+import com.google.inject.Inject;
 
 /**
  * Just a simple demo filter that changes exemplifies two things 1. Change the
@@ -15,11 +18,19 @@ import ninja.Context.HTTP_STATUS;
  * 
  */
 public class LoggerFilter implements Filter {
+	
+	private final Logger logger;
+
+	@Inject
+	public LoggerFilter(Logger logger) {
+		this.logger = logger;
+		
+	}
 
 	@Override
 	public void filter(Context context) {
 
-		System.out.println("[ninjalog] got request from: " +context.getHttpServletRequest().getRequestURI());
+		logger.info("Got request from : " + context.getHttpServletRequest().getRequestURI());
 
 	}
 

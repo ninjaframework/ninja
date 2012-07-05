@@ -1,12 +1,11 @@
 package conf;
 
-import ninja.session.SessionCookie;
-import ninja.utils.ConfigurableModule;
-import ninja.utils.NinjaConstant;
+import com.google.inject.AbstractModule;
+
 import etc.GreetingService;
 import etc.GreetingServiceImpl;
 
-public class Configuration extends ConfigurableModule {
+public class Configuration extends AbstractModule {
 
 	protected void configure() {
 
@@ -15,16 +14,6 @@ public class Configuration extends ConfigurableModule {
 		// /////////////////////////////////////////////////////////////////////
 		// some additional bindings for the application:
 		bind(GreetingService.class).to(GreetingServiceImpl.class);
-
-		// /////////////////////////////////////////////////////////////////////
-		// Setting of ninja variables for startup:
-		// /////////////////////////////////////////////////////////////////////
-		setProperty(NinjaConstant.applicationSecret, "sdfsdfsdfsfsdfsdfsdfsdfsdfsdfsfsdfsdf");
-
-		// for flash and session cookies
-		setProperty(SessionCookie.Config.sessionExpireTimeInMs, 200000);
-		setProperty(SessionCookie.Config.sessionSendOnlyIfChanged, true);
-		setProperty(SessionCookie.Config.sessionTransferredOverHttpsOnly, false);
 
 	}
 
