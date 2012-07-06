@@ -6,12 +6,14 @@ import ninja.NinjaApiTestHelper;
 
 import org.junit.Test;
 
+
 public class ExampleApiTest extends NinjaApiTest {
+
 
 	@Test
 	public void testThatStaticAssetsWork() {
 
-		String apiCallResult = NinjaApiTestHelper.makeJsonRequest("http://localhost:8080/person");
+		String apiCallResult = NinjaApiTestHelper.makeJsonRequest(getServerAddress() + "/person");
 		
 		assertEquals("{\"name\":\"zeeess name\"}", apiCallResult);
 

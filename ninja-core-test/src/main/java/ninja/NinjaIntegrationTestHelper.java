@@ -1,6 +1,8 @@
 package ninja;
 
-import org.junit.BeforeClass;
+import java.io.IOException;
+import java.net.ServerSocket;
+
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -9,14 +11,17 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 
-public abstract class NinjaIntegrationTestHelper {
+public class NinjaIntegrationTestHelper {
 
-	final static int port = 8080;
-
-	public static void startup() {
-
-		try {
-			Server server = new Server();
+	private final int port;
+	private final Server server;
+	
+	public NinjaIntegrationTestHelper() {
+		
+		this.port = findAvailablePort(1000, 10000);
+		server = new Server();
+		
+		try {			
 			Connector con = new SelectChannelConnector();
 			con.setPort(port);
 			server.addConnector(con);
@@ -30,11 +35,26 @@ public abstract class NinjaIntegrationTestHelper {
 		} catch (Exception ex) {
 			System.err.println(ex);
 		}
-	}
+    }
+	
 
 	public String getServerAddress() {
 
 		return "http://localhost:" + port + "/";
+	}
+	
+	
+	private static int findAvailablePort(int min, int max) {
+	    for (int port = min; port < max; port++) {
+	        try {
+	            new ServerSocket(port).close();
+	            return port;
+	        } catch (IOException e) {
+	            // Must already be taken
+	        }
+	    }
+	    throw new IllegalStateException("Could not find available port in range "
+	            + min + " to " + max);
 	}
 
 }

@@ -1,13 +1,19 @@
 package ninja;
 
-import org.junit.BeforeClass;
 
 public class NinjaApiTest {
 
-	@BeforeClass
-	public static void startup() {
-
-		NinjaIntegrationTestHelper.startup();
+	NinjaIntegrationTestHelper ninjaIntegrationTestHelper;
+	
+	public NinjaApiTest() {
+	    System.out.println("in constructor :)");
+	    ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
+    }
+	
+	
+	public String getServerAddress() {
+		return ninjaIntegrationTestHelper.getServerAddress();
 	}
+	
 
 }
