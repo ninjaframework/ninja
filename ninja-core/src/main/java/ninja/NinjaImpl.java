@@ -1,6 +1,5 @@
 package ninja;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 
 import ninja.Context.HTTP_STATUS;
