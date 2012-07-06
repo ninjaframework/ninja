@@ -24,28 +24,22 @@ documentation inside the classes.
 
 GOALS
 -----
-- provide a rails, play-framework like java only framework
-- stateless to the max, no server side session
-- productivity is king - reloads must be ultra fast
-- should run on any war container (tomcat, jetty), but also on netty (async)
-- should run on gae, heroku, cloudbees
-- formidable test support + integration selenium tests
-- configuration of complete app with guice
-- full eclipse support
-- full maven integration
-- don't use magic
--- no bytecode enhancement
--- no reflection (or only a minimal amount)
-- not dependent on serlvet api. should eg also run on netty
-- archetype for simple project generation out of the box
-- working security subsystem (client side session crypto key'ed)
-- framework completely interfaced for supersimple and fast mocked testing
+- Be the best! Make the best web framework for the java language
+- Scalability! Ninja is state-less. Sessions are client-side.
+- Productivity! Making changes must be ultrafast.
+- Testability! Excellent test support + integration selenium tests.
+
+More specifically:
+- Tooling! Ninja is a 1A IDE citizen (Eclipse and Intellij love us).
+- Dependency Injection! Yes. Ninja will is built on DI. For many many good reasons.
+- Compatability! Ninja will run on any war container (tomcat, jetty) but also on netty. And also on any provider. From App Engine to Heroku to Cloudbees.
+- Simple management! We are using maven to get dependencies and much more right.
+- No magic! We won't use bytecode enhancement.
 
 NON-GOALS v1.0
 --------------
-- we don't want to focus on async operations in this call. Yes we'll resources while waiting and
-  having some threads blocked. But we are alright as Ninja can scale anyway.
-
+- Async operations. We don't want to focus on async operations for v1.0. While we have a good
+ idea how we can make async work really well it is not the focus for v.1.0
 
 
 Next big steps
@@ -258,3 +252,6 @@ Random issues for v1.0
 - sessionexpiry => prolong session when hit server or only when valid for 2 weeks in total (google way)...
 - init methds should become assisted injects...
 - implement session that cannot be read by javascript (servlet 3.0 etc pp)
+- archetype for simple project generation out of the box
+- Make sure Ninja (and the produced war) runs on tomcat, jetty app engine...
+- working security subsystem (client side session crypto key'ed)
