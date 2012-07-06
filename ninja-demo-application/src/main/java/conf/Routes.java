@@ -9,7 +9,7 @@ import controllers.InjectionExampleController;
 import controllers.PersonController;
 
 public class Routes implements ApplicationRoutes {
-
+	
 	/**
 	 * Using a (almost) nice DSL we can configure the router.
 	 * 
@@ -21,8 +21,8 @@ public class Routes implements ApplicationRoutes {
 	 */
     @Override
 	public void init(Router router) {
-
-		// /////////////////////////////////////////////////////////////////////
+    	
+    	// /////////////////////////////////////////////////////////////////////
 		// some default functions
 		// /////////////////////////////////////////////////////////////////////
 		// simply render a page:
