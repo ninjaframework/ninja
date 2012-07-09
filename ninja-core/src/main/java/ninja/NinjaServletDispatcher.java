@@ -40,6 +40,7 @@ public class NinjaServletDispatcher implements Filter {
 		NinjaBootup ninjaBootup = new NinjaBootup();
 		injector = ninjaBootup.getInjector();
 		ninja = injector.getInstance(Ninja.class);
+        ninja.start();
 
 
 	}
@@ -68,6 +69,7 @@ public class NinjaServletDispatcher implements Filter {
 
 	public void destroy() {
 
+        ninja.shutdown();
 		// We don't need the injector and ninja any more. Destroy!
 		injector = null;
 		ninja = null;

@@ -11,6 +11,8 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 
+import static org.junit.Assert.fail;
+
 public class NinjaIntegrationTestHelper {
 
 	private final int port;
@@ -33,7 +35,7 @@ public class NinjaIntegrationTestHelper {
 			        "/*", Handler.ALL);
 			server.start();
 		} catch (Exception ex) {
-			System.err.println(ex);
+            throw new RuntimeException(ex);
 		}
     }
 	
@@ -42,7 +44,14 @@ public class NinjaIntegrationTestHelper {
 
 		return "http://localhost:" + port + "/";
 	}
-	
+
+    public void shutdown() {
+        try {
+            server.stop();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 	
 	private static int findAvailablePort(int min, int max) {
 	    for (int port = min; port < max; port++) {

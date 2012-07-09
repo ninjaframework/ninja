@@ -1,8 +1,12 @@
 package ninja;
 
 import org.fluentlenium.adapter.FluentTest;
+import org.junit.After;
+import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import javax.naming.NameNotFoundException;
 
 public abstract class NinjaIntegrationFluentLeniumTest extends FluentTest {
 
@@ -10,9 +14,10 @@ public abstract class NinjaIntegrationFluentLeniumTest extends FluentTest {
 	
 	public NinjaIntegrationTestHelper ninjaIntegrationTestHelper;
 	
-	public NinjaIntegrationFluentLeniumTest() {
-		ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
-	}
+    @Before
+    public void startupServer() {
+        ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
+    }
 	
 	
     @Override
@@ -22,6 +27,11 @@ public abstract class NinjaIntegrationFluentLeniumTest extends FluentTest {
     
     public String getServerAddress() {
     	return ninjaIntegrationTestHelper.getServerAddress();
+    }
+
+    @After
+    public void shutdownServer() {
+        ninjaIntegrationTestHelper.shutdown();
     }
 
 }
