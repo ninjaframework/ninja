@@ -12,7 +12,17 @@ public interface Context {
 		notFound404, ok200, forbidden403, teapot418
 	}
 	
-	FlashCookie getFlashCookie();
+	/**
+	 * Returns the uri as seen by the server.
+	 * 
+	 * http://example.com/index would return
+	 * "/index".
+	 * 
+	 * @return the uri as seen by the server
+	 */
+    String getRequestUri();
+
+    FlashCookie getFlashCookie();
 	
 	SessionCookie getSessionCookie();
 
