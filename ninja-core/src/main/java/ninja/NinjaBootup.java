@@ -13,7 +13,7 @@ import com.google.inject.Module;
 
 public class NinjaBootup {
     
-    private final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Configuration";
+    private final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
     private final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
 	
 	/**

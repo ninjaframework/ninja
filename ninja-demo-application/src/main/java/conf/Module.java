@@ -6,7 +6,7 @@ import controllers.UdpPingController;
 import etc.GreetingService;
 import etc.GreetingServiceImpl;
 
-public class Configuration extends AbstractModule {
+public class Module extends AbstractModule {
 
 	protected void configure() {
 
