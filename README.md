@@ -247,6 +247,7 @@ DONE
 
 Random issues for v1.0
 ----------------------
+- regex inside parameters like in play1: GET   /files/{<[a-z0-9/\.]*>name}               Application.download(name)
 - Optional<xyz> for get parameter in context => not null
 - remove dependency on servlet (httprequest, response, cookie etcpp)
 - sessionexpiry => prolong session when hit server or only when valid for 2 weeks in total (google way)...

@@ -9,6 +9,7 @@ import ninja.Route;
 import ninja.Router;
 import ninja.utils.NinjaConstant;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import freemarker.template.Configuration;
@@ -29,8 +30,11 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 	public void invoke(Context context, Object object) {
 
 		Map map;
-
-		if (!(object instanceof Map)) {
+		
+		//if the object is null we simply render an empty map...
+		if (object == null) {
+		    map = Maps.newHashMap();
+		} else if (!(object instanceof Map)) {
 			throw new RuntimeException(
 					"Freemarker Templating engine can only render Map of Strings...");
 
@@ -71,6 +75,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 			// some/package/views/ControllerName/templateName.ftl.html
 			templateName = String.format("%sviews/%s/%s%s", parentControllerPackageAsPath, controller
 					.getSimpleName(), route.getControllerMethod(), FILE_SUFFIX);
+			
 		}
 
 		// 1st => determine which
