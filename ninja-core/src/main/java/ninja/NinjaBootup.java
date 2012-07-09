@@ -8,6 +8,8 @@ import ninja.application.ApplicationRoutes;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import ninja.lifecycle.LifecycleService;
+import ninja.lifecycle.LifecycleSupport;
 
 public class NinjaBootup {
 	
@@ -19,24 +21,27 @@ public class NinjaBootup {
 	public NinjaBootup() {
 		try {		    
 		    List<Module> modulesToLoad = new ArrayList<Module>();  
-		    
+
+            // Bind lifecycle support
+            modulesToLoad.add(LifecycleSupport.getModule());
+
 			// Get base configuration of Ninja:
 			Class ninjaConfigurationClass = Class.forName("ninja.Configuration");
 			Module ninjaConfiguration = (Module) ninjaConfigurationClass.newInstance();
 			modulesToLoad.add(ninjaConfiguration);
-			
+
 			// Load main application module:
 			if (doesClassExist("conf.Configuration")) {
 			    Class applicationConfigurationClass = Class.forName("conf.Configuration");
 	            Module applicationConfiguration = (Module) applicationConfigurationClass.newInstance();
 	            modulesToLoad.add(applicationConfiguration);
 			}
-			
+
 
 			// And let the injector generate all instances and stuff:
 			injector = Guice.createInjector(modulesToLoad);
-			
-			
+
+
 	         // Init routes
             if (doesClassExist("conf.Routes")) {
                 Class clazz = Class.forName("conf.Routes");
@@ -66,7 +71,10 @@ public class NinjaBootup {
 		return injector;
 		
 	}
-	
+
+    public void shutdown() {
+        injector.getInstance(LifecycleService.class).stop();
+    }
 	
 	
 	/**

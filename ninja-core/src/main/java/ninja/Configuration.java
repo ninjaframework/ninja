@@ -28,11 +28,10 @@ public class Configuration extends AbstractModule {
 		bind(Ninja.class).to(NinjaImpl.class).in(Singleton.class);
 
 		bind(Context.class).to(ContextImpl.class);
-		
-		
+
+
 		//provide logging
 		bind(Logger.class).toProvider(LoggerProvider.class);
-		
 
 		// bind the error views to their real templates
 		// => can be later customized by user. but default views should be ok
