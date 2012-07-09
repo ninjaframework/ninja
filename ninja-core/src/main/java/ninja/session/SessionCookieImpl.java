@@ -145,7 +145,7 @@ public class SessionCookieImpl implements SessionCookie {
 	@Override
 	public String getId() {
 		if (!data.containsKey(ID_KEY)) {
-			data.put(ID_KEY, ninja.utils.Codec.UUID());
+			data.put(ID_KEY, UUID.randomUUID().toString());
 		}
 		return data.get(ID_KEY);
 
