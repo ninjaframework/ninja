@@ -30,7 +30,7 @@ public class LoggerFilter implements Filter {
 	@Override
 	public void filter(Context context) {
 
-		logger.info("Got request from : " + context.getHttpServletRequest().getRequestURI());
+		logger.info("Got request from : " + context.getRequestUri());
 
 	}
 
