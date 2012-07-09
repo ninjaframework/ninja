@@ -1,17 +1,8 @@
 package ninja.session;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.Cookie;
-
 import ninja.Context;
-import ninja.utils.CookieHelper;
+
+import com.google.inject.ImplementedBy;
 
 /**
  * Flash scope:
@@ -21,154 +12,38 @@ import ninja.utils.CookieHelper;
  * 
  * Please note also that flash cookies are not signed.
  */
-public class FlashCookie {
+@ImplementedBy(FlashCookieImpl.class)
+public interface FlashCookie {
 
-	private Pattern flashParser = Pattern
-	        .compile("\u0000([^:]*):([^\u0000]*)\u0000");
+	public void init(Context context);
 
-	Map<String, String> currentFlashCookieData = new HashMap<String, String>();
-	Map<String, String> outgoingFlashCookieData = new HashMap<String, String>();
+	public void save(Context context);
 
-	public void init(Context context) {
-		// get flash cookie:
-		Cookie[] cookies = context.getHttpServletRequest().getCookies();
+	public void put(String key, String value);
 
-		Cookie flashCookie = CookieHelper.getCookie(
-		        ninja.utils.NinjaConstant.COOKIE_PREFIX
-		                + ninja.utils.NinjaConstant.FLASH_SUFFIX, cookies);
+	public void put(String key, Object value);
 
-		if (flashCookie != null) {
-			String flashData;
-			try {
-				flashData = URLDecoder.decode(flashCookie.getValue(), "utf-8");
+	public void now(String key, String value);
 
-				Matcher matcher = flashParser.matcher(flashData);
-				while (matcher.find()) {
-					currentFlashCookieData.put(matcher.group(1), matcher.group(2));
-				}
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-		}
+	public void error(String value, Object... args);
 
-	}
+	public void success(String value, Object... args);
 
-	public void save(Context context) {
+	public void discard(String key);
 
-		if (outgoingFlashCookieData.isEmpty()) {
+	public void discard();
 
-			if (CookieHelper.getCookie(ninja.utils.NinjaConstant.COOKIE_PREFIX
-			        + ninja.utils.NinjaConstant.FLASH_SUFFIX, context
-			        .getHttpServletRequest().getCookies()) != null) {
+	public void keep(String key);
 
-				Cookie cookie = new Cookie(ninja.utils.NinjaConstant.COOKIE_PREFIX
-				        + ninja.utils.NinjaConstant.FLASH_SUFFIX, "");
-				cookie.setPath("/");
-				cookie.setSecure(false);
-				cookie.setMaxAge(0);
+	public void keep();
 
-				context.getHttpServletResponse().addCookie(cookie);
+	public String get(String key);
 
-			}
+	public boolean remove(String key);
 
-			return;
+	public void clearCurrentFlashCookieData();
 
-		}
+	public boolean contains(String key);
 
-		else {
-			try {
-				StringBuilder flash = new StringBuilder();
-				for (String key : outgoingFlashCookieData.keySet()) {
-					flash.append("\u0000");
-					flash.append(key);
-					flash.append(":");
-					flash.append(outgoingFlashCookieData.get(key));
-					flash.append("\u0000");
-				}
-				String flashData = URLEncoder.encode(flash.toString(), "utf-8");
-
-				Cookie cookie = new Cookie(ninja.utils.NinjaConstant.COOKIE_PREFIX
-				        + ninja.utils.NinjaConstant.FLASH_SUFFIX, flashData);
-				cookie.setPath("/");
-				cookie.setSecure(false);
-				cookie.setMaxAge(0);
-
-				context.getHttpServletResponse().addCookie(cookie);
-
-			} catch (Exception e) {
-				System.err.println(e);
-			}
-		}
-	}
-
-	public void put(String key, String value) {
-		if (key.contains(":")) {
-			throw new IllegalArgumentException(
-			        "Character ':' is invalid in a flash key.");
-		}
-		currentFlashCookieData.put(key, value);
-		outgoingFlashCookieData.put(key, value);
-	}
-
-	public void put(String key, Object value) {
-		if (value == null) {
-			put(key, (String) null);
-		}
-		put(key, value + "");
-	}
-
-	public void now(String key, String value) {
-		if (key.contains(":")) {
-			throw new IllegalArgumentException(
-			        "Character ':' is invalid in a flash key.");
-		}
-		currentFlashCookieData.put(key, value);
-	}
-
-	public void error(String value, Object... args) {
-		put("error", String.format(value, args));
-	}
-
-	public void success(String value, Object... args) {
-		put("success", String.format(value, args));
-	}
-
-	public void discard(String key) {
-		outgoingFlashCookieData.remove(key);
-	}
-
-	public void discard() {
-		outgoingFlashCookieData.clear();
-	}
-
-	public void keep(String key) {
-		if (currentFlashCookieData.containsKey(key)) {
-			outgoingFlashCookieData.put(key, currentFlashCookieData.get(key));
-		}
-	}
-
-	public void keep() {
-		outgoingFlashCookieData.putAll(currentFlashCookieData);
-	}
-
-	public String get(String key) {
-		return currentFlashCookieData.get(key);
-	}
-
-	public boolean remove(String key) {
-		return currentFlashCookieData.remove(key) != null;
-	}
-
-	public void clearCurrentFlashCookieData() {
-		currentFlashCookieData.clear();
-	}
-
-	public boolean contains(String key) {
-		return currentFlashCookieData.containsKey(key);
-	}
-
-	@Override
-	public String toString() {
-		return currentFlashCookieData.toString();
-	}
+	public String toString();
 }

@@ -51,9 +51,9 @@ public class SessionCookieTest {
 		when(context.getHttpServletResponse()).thenReturn(httpServletResponse);
 		
 
-		when(ninjaProperties.getInteger(SessionCookie.Config.sessionExpireTimeInMs)).thenReturn(10000);
-		when(ninjaProperties.getBoolean(SessionCookie.Config.sessionSendOnlyIfChanged)).thenReturn(true);
-		when(ninjaProperties.getBoolean(SessionCookie.Config.sessionTransferredOverHttpsOnly)).thenReturn(true);
+		when(ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInMs)).thenReturn(10000);
+		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged)).thenReturn(true);
+		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly)).thenReturn(true);
 		
 		when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret)).thenReturn("secret");
 		
@@ -73,7 +73,7 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto,
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
 				ninjaProperties);
 
 		sessionCookie.init(context);
@@ -92,7 +92,7 @@ public class SessionCookieTest {
 
 		// Something we want to test
 		// Session will be sent always. EVEN if it is empty:
-		when(ninjaProperties.getBoolean(SessionCookie.Config.sessionSendOnlyIfChanged)).thenReturn(false);
+		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged)).thenReturn(false);
 
 		// setup this testmethod
 		// empty cookies
@@ -102,7 +102,7 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto,
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
 		        ninjaProperties);
 
 		sessionCookie.init(context);
@@ -125,7 +125,7 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto,
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
 		        ninjaProperties);
 
 		sessionCookie.init(context);
@@ -169,7 +169,7 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto,
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
 		        ninjaProperties);
 
 		sessionCookie.init(context);
@@ -196,13 +196,13 @@ public class SessionCookieTest {
 		Cookie[] emptyCookies = new Cookie[0];
 		
 
-		when(ninjaProperties.getBoolean(SessionCookie.Config.sessionTransferredOverHttpsOnly)).thenReturn(false);
+		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly)).thenReturn(false);
 
 		// that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto,
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
 		        ninjaProperties);
 
 		sessionCookie.init(context);
@@ -235,7 +235,7 @@ public class SessionCookieTest {
 		when(context.getHttpServletRequest().getCookies()).thenReturn(
 		        emptyCookies);
 
-		SessionCookie sessionCookie = new SessionCookie(crypto,
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
 		        ninjaProperties);
 
 		sessionCookie.init(context);
@@ -262,7 +262,7 @@ public class SessionCookieTest {
 		        newSessionCookies);
 
 		// init new session from that cookie:
-		SessionCookie sessionCookie2 = new SessionCookie(crypto,
+		SessionCookie sessionCookie2 = new SessionCookieImpl(crypto,
 		        ninjaProperties);
 		
 		sessionCookie2.init(context);

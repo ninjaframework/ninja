@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.Context;
-import ninja.session.FlashCookie;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +54,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(emptyCookies);
 		
-		FlashCookie flashCookie = new FlashCookie();
+		FlashCookie flashCookie = new FlashCookieImpl();
 		
 		flashCookie.init(context);
 		
@@ -76,7 +75,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(emptyCookies);
 		
-		FlashCookie flashCookie = new FlashCookie();
+		FlashCookie flashCookie = new FlashCookieImpl();
 		
 		flashCookie.init(context);
 		
@@ -92,8 +91,8 @@ public class FlashCookieTest {
 		assertEquals("NINJA_FLASH" , cookieCaptor.getValue().getName());
 		assertEquals("%00hello%3AflashScope%00" , cookieCaptor.getValue().getValue());
 		
-		assertEquals(1, flashCookie.currentFlashCookieData.size());
-		assertEquals(1, flashCookie.outgoingFlashCookieData.size());
+		assertEquals(1, ((FlashCookieImpl) flashCookie).currentFlashCookieData.size());
+		assertEquals(1, ((FlashCookieImpl) flashCookie).outgoingFlashCookieData.size());
 		
 	}
 	
@@ -110,7 +109,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookie();
+		FlashCookie flashCookie = new FlashCookieImpl();
 		
 		flashCookie.init(context);
 		
@@ -131,8 +130,8 @@ public class FlashCookieTest {
 		//the new flash messages must be there..
 		//but the old has disappeared (flashScope):
 		assertEquals("%00another+message%3Ais+there...%00%00yet+another+message%3Ais+there...%00" , cookieCaptor.getValue().getValue());
-		assertEquals(3, flashCookie.currentFlashCookieData.size());
-		assertEquals(2, flashCookie.outgoingFlashCookieData.size());
+		assertEquals(3, ((FlashCookieImpl) flashCookie).currentFlashCookieData.size());
+		assertEquals(2, ((FlashCookieImpl) flashCookie).outgoingFlashCookieData.size());
 	}
 	
 	
@@ -148,7 +147,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookie();
+		FlashCookie flashCookie = new FlashCookieImpl();
 		
 		flashCookie.init(context);
 		
@@ -160,8 +159,8 @@ public class FlashCookieTest {
 		//now test clearCurrentFlashCookieData
 		flashCookie.clearCurrentFlashCookieData();
 		
-		assertEquals(0, flashCookie.currentFlashCookieData.size());
-		assertEquals(1, flashCookie.outgoingFlashCookieData.size());
+		assertEquals(0, ((FlashCookieImpl) flashCookie).currentFlashCookieData.size());
+		assertEquals(1, ((FlashCookieImpl) flashCookie).outgoingFlashCookieData.size());
 		
 	}
 	
@@ -177,7 +176,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookie();
+		FlashCookie flashCookie = new FlashCookieImpl();
 		
 		flashCookie.init(context);
 		
@@ -189,8 +188,8 @@ public class FlashCookieTest {
 		//now test clearCurrentFlashCookieData
 		flashCookie.discard();
 		
-		assertEquals(2, flashCookie.currentFlashCookieData.size());
-		assertEquals(0, flashCookie.outgoingFlashCookieData.size());
+		assertEquals(2, ((FlashCookieImpl) flashCookie).currentFlashCookieData.size());
+		assertEquals(0, ((FlashCookieImpl) flashCookie).outgoingFlashCookieData.size());
 		
 	}
 	
@@ -207,7 +206,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookie();
+		FlashCookie flashCookie = new FlashCookieImpl();
 		
 		flashCookie.init(context);
 		
@@ -216,14 +215,14 @@ public class FlashCookieTest {
 		
 		
 		//make sure outgoing is 0		
-		assertEquals(1, flashCookie.currentFlashCookieData.size());
-		assertEquals(0, flashCookie.outgoingFlashCookieData.size());
+		assertEquals(1, ((FlashCookieImpl) flashCookie).currentFlashCookieData.size());
+		assertEquals(0, ((FlashCookieImpl) flashCookie).outgoingFlashCookieData.size());
 		
 		//now call keep. 
 		flashCookie.keep();
 		//=> now both queues must be 1
-		assertEquals(1, flashCookie.currentFlashCookieData.size());
-		assertEquals(1, flashCookie.outgoingFlashCookieData.size());
+		assertEquals(1, ((FlashCookieImpl) flashCookie).currentFlashCookieData.size());
+		assertEquals(1, ((FlashCookieImpl) flashCookie).outgoingFlashCookieData.size());
 		
 		
 	}
