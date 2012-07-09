@@ -17,4 +17,13 @@ public interface Ninja {
 	 */
 	void invoke(Context context);
 
+    /**
+     * Start the Ninja Framework
+     */
+    void start();
+
+    /**
+     * Stop the Ninja Framework
+     */
+    void shutdown();
 }
