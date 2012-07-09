@@ -30,6 +30,19 @@ public interface Context {
 
 	void setContentType(String contentType);
 
+	/**
+	 * Th explicitTemplateName is a fully qualified name of a template
+	 * from the root of the package. It includes the suffix of
+	 * a template (eg ftl.html).
+	 * 
+	 * An example is:
+	 * "/views/forbidden403.ftl.html"
+	 * or
+	 * "/views/ApplicationController/index.ftl.html"
+	 * 
+	 * @param explicitTemplateName is something like "/views/ApplicationController/index.ftl.html"
+	 * @return the very same Context for chaining.
+	 */
 	Context template(String explicitTemplateName);
 
 	HttpServletRequest getHttpServletRequest();
