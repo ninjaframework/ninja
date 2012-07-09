@@ -1,12 +1,9 @@
 package conf;
 
+import controllers.*;
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
-import controllers.ApplicationController;
-import controllers.FilterController;
-import controllers.InjectionExampleController;
-import controllers.PersonController;
 
 public class Routes implements ApplicationRoutes {
 	
@@ -17,7 +14,6 @@ public class Routes implements ApplicationRoutes {
 	 * all routes of a submodule. By simply injecting it we activate the routes.
 	 * 
 	 * @param router The default router of this application
-	 * @param rideOn This is a router of a submodule.
 	 */
     @Override
 	public void init(Router router) {
@@ -43,7 +39,12 @@ public class Routes implements ApplicationRoutes {
 		router.GET().route("/person").with(PersonController.class, "getPerson");
 		router.POST().route("/person").with(PersonController.class, "postPerson");
 
-		// /////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////
+        // Lifecycle support
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/udpcount").with(UdpPingController.class, "getCount");
+
+        // /////////////////////////////////////////////////////////////////////
 		// Route filtering example:
 		// /////////////////////////////////////////////////////////////////////
 		router.GET().route("/filter").with(FilterController.class, "filter");
@@ -56,7 +57,6 @@ public class Routes implements ApplicationRoutes {
 		
 		
 		router.GET().route("/assets/.*").with(AssetsController.class, "serve");
-
 	}
 
 }

@@ -7,6 +7,7 @@ import ninja.Context.HTTP_STATUS;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
+import ninja.lifecycle.LifecycleService;
 
 /**
  * Main implementation of the ninja framework.
@@ -41,17 +42,19 @@ public class NinjaImpl implements Ninja {
 
 	private final Router router;
 	private final Injector injector;
+    private final LifecycleService lifecycleService;
 
 	// something like views/notFound404.ftl.html
 	// => named so the user can change it to path she likes
 	private final String pathToViewNotFound;
 
 	@Inject
-	public NinjaImpl(Router router, Injector injector,
+	public NinjaImpl(Router router, Injector injector, LifecycleService lifecycleService,
 			@Named("template404") String pathToViewNotFound) {
 
 		this.router = router;
 		this.injector = injector;
+        this.lifecycleService = lifecycleService;
 		this.pathToViewNotFound = pathToViewNotFound;
 
 		// This system out println is intended.
@@ -61,7 +64,7 @@ public class NinjaImpl implements Ninja {
 	/**
 	 * I do all the main work.
 	 * 
-	 * @param Context
+	 * @param context
 	 *            context
 	 */
 	public void invoke(Context context) {
@@ -112,9 +115,9 @@ public class NinjaImpl implements Ninja {
 	 * 
 	 * Therefore the code in the route itself should not be executed.
 	 * 
-	 * @param route
-	 * @param context
-	 * @return
+	 * @param route The route
+	 * @param context The context
+	 * @return If execution should continue
 	 */
 	public boolean doApplyFilers(Route route, Context context) {
 
@@ -163,4 +166,13 @@ public class NinjaImpl implements Ninja {
 
 	}
 
+    @Override
+    public void start() {
+        lifecycleService.start();
+    }
+
+    @Override
+    public void shutdown() {
+        lifecycleService.stop();
+    }
 }
