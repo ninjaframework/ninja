@@ -189,6 +189,13 @@ public interface Context {
     void addCookie(Cookie cookie);
 
     /**
+     * Unset the cookie with the given name
+     *
+     * @param name The name of the cookie to unset
+     */
+    void unsetCookie(String name);
+
+    /**
      * Get the name of the template that will be rendered for this request
      *
      * @param suffix The default suffix to add if computing the template name by convention

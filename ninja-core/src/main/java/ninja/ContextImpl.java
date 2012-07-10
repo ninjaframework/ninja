@@ -175,6 +175,11 @@ public class ContextImpl implements Context {
     }
 
     @Override
+    public void unsetCookie(String name) {
+        httpServletResponse.addCookie(new Cookie(name, null));
+    }
+
+    @Override
 	public void redirect(String url) {
 
 		try {
