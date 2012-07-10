@@ -3,6 +3,7 @@ package ninja;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 
@@ -11,9 +12,9 @@ public interface Context {
 	enum HTTP_STATUS {
 		notFound404, ok200, forbidden403, teapot418
 	}
-	
+
 	FlashCookie getFlashCookie();
-	
+
 	SessionCookie getSessionCookie();
 
 	void redirect(String url);
@@ -56,6 +57,16 @@ public interface Context {
 	// For instance if the content is a json you could simply get the json
 	// as Java object.
 	///////////////////////////////////////////////////////////////////////////
-	<T> T parseBody(Class<T> classOfT);	
+	<T> T parseBody(Class<T> classOfT);
+
+    /**
+     * Indicate that this request will be handled asynchronously
+     */
+    void handleAsync();
+
+    /**
+     * Indicate that request processing of an async request is complete
+     */
+    void requestComplete();
 
 }

@@ -15,7 +15,7 @@ public interface Ninja {
 	 * Please ninja framwork - handle this context...
 	 * @param context
 	 */
-	void invoke(Context context);
+	void invoke(ContextImpl context);
 
     /**
      * Start the Ninja Framework
