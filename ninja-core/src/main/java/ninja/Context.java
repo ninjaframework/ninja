@@ -174,6 +174,21 @@ public interface Context {
     Map<String, String> getHeaders();
 
     /**
+     * Get the cookie value from the request, if defined
+     *
+     * @param name The name of the cookie
+     * @return The cookie value, or null if the cookie was not found
+     */
+    String getCookieValue(String name);
+
+    /**
+     * Set a cookie
+     *
+     * @param cookie the cookie to set
+     */
+    void addCookie(Cookie cookie);
+
+    /**
      * Get the name of the template that will be rendered for this request
      *
      * @param suffix The default suffix to add if computing the template name by convention
