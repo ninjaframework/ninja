@@ -263,3 +263,5 @@ Random issues for v1.0
 - think about void controller methods => returning a result instead of calling void render(...) protects from creating multiple responses and creating problems...
 - complete enum with status codes and give it int parameter to avoid the nasty huge if cascade in ContextImpl#setStatusOnResponse(...)
 - use Optional<...> as return type for all methods that migth return null, e.g. Context#getPathParameter(...) 
+- create convenience methods in Context for setting a status and rendering a message, e.g. Context#notFound(String) or Context#ok(dto)
+
