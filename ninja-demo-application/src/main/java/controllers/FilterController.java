@@ -1,6 +1,5 @@
 package controllers;
 
-import javax.servlet.http.Cookie;
 
 import ninja.Context;
 import ninja.FilterWith;
@@ -10,6 +9,8 @@ import com.google.inject.Singleton;
 
 import filters.LoggerFilter;
 import filters.TeaPotFilter;
+
+import javax.servlet.http.Cookie;
 
 @Singleton
 public class FilterController {

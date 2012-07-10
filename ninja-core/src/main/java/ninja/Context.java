@@ -207,4 +207,15 @@ public interface Context {
 	 * @return The parsed request or null if something went wrong.
 	 */
 	<T> T parseBody(Class<T> classOfT);
+
+    /**
+     * Indicate that this request will be handled asynchronously
+     */
+    void handleAsync();
+
+    /**
+     * Indicate that request processing of an async request is complete
+     */
+    void requestComplete();
+
 }

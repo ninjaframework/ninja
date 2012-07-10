@@ -8,13 +8,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.Iterables;
+import ninja.async.AsyncStrategy;
+import ninja.async.AsyncStrategyFactoryHolder;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
-import ninja.session.FlashCookieImpl;
 import ninja.session.SessionCookie;
-import ninja.session.SessionCookieImpl;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 
@@ -34,6 +33,9 @@ public class ContextImpl implements Context {
 	private HTTP_STATUS httpStatus;
 
 	public String contentType;
+
+    private AsyncStrategy asyncStrategy;
+    private final Object asyncLock = new Object();
 
 	private final TemplateEngineManager templateEngineManager;
 
@@ -190,6 +192,7 @@ public class ContextImpl implements Context {
 
 		templateEngine.invoke(this, object);
 
+
 	}
 
 	private void finalizeResponseHeaders(String contentType) {
@@ -261,4 +264,34 @@ public class ContextImpl implements Context {
         return getHttpServletRequest().getRequestURI();
     }
 
+    @Override
+    public void handleAsync() {
+        synchronized (asyncLock) {
+            if (asyncStrategy == null) {
+                asyncStrategy = AsyncStrategyFactoryHolder.INSTANCE.createStrategy(httpServletRequest);
+                asyncStrategy.handleAsync();
+            }
+        }
+    }
+
+    @Override
+    public void requestComplete() {
+        synchronized (asyncLock) {
+            if (asyncStrategy == null) {
+                throw new IllegalStateException("Request complete called on non async request");
+            }
+            asyncStrategy.requestComplete();
+        }
+    }
+
+    /**
+     * Used to indicate that the controller has finished executing
+     */
+    public void controllerReturned() {
+        synchronized (asyncLock) {
+            if (asyncStrategy != null) {
+                asyncStrategy.controllerReturned();
+            }
+        }
+    }
 }

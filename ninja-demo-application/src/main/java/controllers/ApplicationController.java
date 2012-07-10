@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.i18n.Lang;
 
 import org.slf4j.Logger;
 
@@ -21,9 +22,13 @@ public class ApplicationController {
      */
     @Inject
     public Logger logger;
+    
+    @Inject
+    Lang lang;
 
 	public void examples(Context context) {
-	    logger.info("In example");
+	    System.out.println("lang: " + lang.get("hello2"));
+	    logger.info("In example ");
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
 		context.renderHtml();

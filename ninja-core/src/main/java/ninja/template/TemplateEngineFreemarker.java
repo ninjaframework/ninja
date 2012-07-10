@@ -19,10 +19,14 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 	private String FILE_SUFFIX = ".ftl.html";
 	private final Router router;
+	
+	private Configuration cfg;
 
 	@Inject
 	TemplateEngineFreemarker(Router router) {
 		this.router = router;
+		cfg = new Configuration();
+        cfg.setClassForTemplateLoading(this.getClass(), "/");
 
 	}
 
@@ -48,8 +52,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 			Route route = router.getRouteFor(
 					context.getHttpServletRequest().getMethod(),
-					context.getHttpServletRequest().getRequestURI());
-			
+					context.getHttpServletRequest().getRequestURI());			
 			
 			Class controller = route.getController();
 			
@@ -80,12 +83,11 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 		// 1st => determine which
 
-		Configuration cfg = new Configuration();
+		
 		// Specify the data source where the template files come from.
 		// Here I set a file directory for it:
 		try {
 
-			cfg.setClassForTemplateLoading(this.getClass(), "/");
 			Template freemarkerTemplate = cfg.getTemplate(templateName);
 
 			// convert tuples:
