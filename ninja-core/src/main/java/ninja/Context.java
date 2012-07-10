@@ -1,5 +1,7 @@
 package ninja;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -7,8 +9,6 @@ import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-
-import java.util.Map;
 
 public interface Context {
 
@@ -112,6 +112,16 @@ public interface Context {
      * @return The path parameter, or null if no such path parameter is defined
      */
 	String getPathParameter(String key);
+
+	/**
+	 * Get the path parameter for the given key and convert it to Integer.
+	 * 
+	 * @param key
+	 *            the key of the path parameter
+	 * @return the numeric path parameter, or null of no such path parameter is
+	 *         defined, or if it cannot be parsed to int
+	 */
+	Integer getPathParameterNumeric(String key);
 
     /**
      * Get the parameter with the given key from the request.  The parameter may either be a query parameter, or in the
