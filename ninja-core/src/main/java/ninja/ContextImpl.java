@@ -9,6 +9,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+
 import ninja.async.AsyncStrategy;
 import ninja.async.AsyncStrategyFactoryHolder;
 import ninja.bodyparser.BodyParserEngine;
@@ -48,14 +50,19 @@ public class ContextImpl implements Context {
 
 	private final SessionCookie sessionCookie;
 
+	private final Logger logger;
+
 	@Inject
-	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
+	public ContextImpl(
+			BodyParserEngineManager bodyParserEngineManager,
 			FlashCookie flashCookie,
+			Logger logger,
 			SessionCookie sessionCookie,
 			TemplateEngineManager templateEngineManager) {
 
 		this.bodyParserEngineManager = bodyParserEngineManager;
 		this.flashCookie = flashCookie;
+		this.logger = logger;
 		this.sessionCookie = sessionCookie;
 		this.templateEngineManager = templateEngineManager;
 
@@ -185,8 +192,7 @@ public class ContextImpl implements Context {
 		try {
 			httpServletResponse.sendRedirect(url);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error while calling redirect on the context", e);
 		}
 
 	}
