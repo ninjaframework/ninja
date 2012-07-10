@@ -59,6 +59,11 @@ public class Routes implements ApplicationRoutes {
         // Async example:
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/async").with(AsyncController.class, "asyncEcho");
+        
+        // /////////////////////////////////////////////////////////////////////
+        // I18n:
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/i18n").with(I18nController.class, "index");
 
         router.GET().route("/assets/.*").with(AssetsController.class, "serve");
 	}
