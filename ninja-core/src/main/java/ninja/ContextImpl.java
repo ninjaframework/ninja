@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,6 +17,7 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
+import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
 
 import com.google.inject.Inject;
@@ -160,6 +162,16 @@ public class ContextImpl implements Context {
             headers.put(name, httpServletRequest.getHeader(name));
         }
         return headers;
+    }
+
+    @Override
+    public String getCookieValue(String name) {
+        return CookieHelper.getCookieValue(name, httpServletRequest.getCookies());
+    }
+
+    @Override
+    public void addCookie(ninja.Cookie cookie) {
+        httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
     }
 
     @Override

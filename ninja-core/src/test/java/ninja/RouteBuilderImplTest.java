@@ -6,16 +6,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import com.google.inject.Injector;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class RouteBuilderImplTest {
-	
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-	}
+
+    @Mock
+    Injector injector;
 
 	@Test
 	public void testBasicGETRoute() {
@@ -23,7 +26,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(null).matches("GET", "/index"));
+		assertTrue(routeBuilder.buildRoute(injector).matches("GET", "/index"));
 
 	}
 	
@@ -33,7 +36,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.POST().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(null).matches("POST", "/index"));
+		assertTrue(routeBuilder.buildRoute(injector).matches("POST", "/index"));
 
 	}
 	
@@ -43,7 +46,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.PUT().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(null).matches("PUT", "/index"));
+		assertTrue(routeBuilder.buildRoute(injector).matches("PUT", "/index"));
 
 	}
 	
@@ -53,7 +56,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.OPTION().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(null).matches("OPTION", "/index"));
+		assertTrue(routeBuilder.buildRoute(injector).matches("OPTION", "/index"));
 
 	}
 
@@ -63,7 +66,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/.*");
 
-        Route route = routeBuilder.buildRoute(null);
+        Route route = routeBuilder.buildRoute(injector);
 		// make sure the route catches everything:
 		assertTrue(route.matches("GET", "/index"));
 		assertTrue(route.matches("GET","/stylesheet.css"));
@@ -81,7 +84,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/{name}/dashboard");
 
-        Route route = routeBuilder.buildRoute(null);
+        Route route = routeBuilder.buildRoute(injector);
         assertFalse(route.matches("GET","/dashboard"));
 
 		assertTrue(route.matches("GET","/John/dashboard"));
@@ -96,7 +99,7 @@ public class RouteBuilderImplTest {
 		// /////////////////////////////////////////////////////////////////////
 		routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/{name}/{id}/dashboard");
-        route = routeBuilder.buildRoute(null);
+        route = routeBuilder.buildRoute(injector);
 
         assertFalse(route.matches("GET","/dashboard"));
 
@@ -117,7 +120,7 @@ public class RouteBuilderImplTest {
 		// regex expressions...
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/John/{id}/.*");
-        Route route = routeBuilder.buildRoute(null);
+        Route route = routeBuilder.buildRoute(injector);
         assertTrue(route.matches("GET","/John/20/dashboard"));
 		Map<String, String> map = route.getParameters("/John/20/dashboard");
 		assertEquals(1, map.entrySet().size());

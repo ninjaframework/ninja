@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import com.google.inject.Injector;
 import org.slf4j.LoggerFactory;
 
-public class RouteBuilderImpl implements RouteBuilder {
+class RouteBuilderImpl implements RouteBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(RouteBuilder.class);
 
@@ -92,7 +92,7 @@ public class RouteBuilderImpl implements RouteBuilder {
      */
     public Route buildRoute(Injector injector) {
         // Calculate filters
-        List<Class<? extends Filter>> filters = new ArrayList<Class<? extends Filter>>();
+        LinkedList<Class<? extends Filter>> filters = new LinkedList<Class<? extends Filter>>();
         if (controllerMethod != null) {
             filters.addAll(calculateFiltersForClass(controller));
             FilterWith filterWith = controllerMethod.getAnnotation(FilterWith.class);
@@ -100,7 +100,19 @@ public class RouteBuilderImpl implements RouteBuilder {
                 filters.addAll(Arrays.asList(filterWith.value()));
             }
         }
-        return new Route(injector, httpMethod, uri, controller, controllerMethod, filters);
+        return new Route(httpMethod, uri, controller, controllerMethod,
+                buildFilterChain(injector, filters, controller, controllerMethod));
+    }
+
+    private FilterChain buildFilterChain(Injector injector, LinkedList<Class<? extends Filter>> filters,
+            Class<?> controller, Method controllerMethod) {
+        if (filters.isEmpty()) {
+            return new FilterChainEnd(injector.getProvider(controller), controllerMethod);
+        } else {
+            Class<? extends Filter> filter = filters.pop();
+            return new FilterChainImpl(injector.getProvider(filter),
+                    buildFilterChain(injector, filters, controller, controllerMethod));
+        }
     }
 
     private Set<Class<? extends Filter>> calculateFiltersForClass(Class controller) {

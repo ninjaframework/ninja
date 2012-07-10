@@ -3,6 +3,7 @@ package filters;
 import ninja.Context;
 import ninja.Filter;
 import ninja.Context.HTTP_STATUS;
+import ninja.FilterChain;
 
 /**
  * Just a simple demo filter that changes exemplifies two things 1. Change the
@@ -17,16 +18,10 @@ import ninja.Context.HTTP_STATUS;
 public class TeaPotFilter implements Filter {
 
 	@Override
-	public void filter(Context context) {
+	public void filter(FilterChain chain, Context context) {
 
 		context.status(HTTP_STATUS.teapot418)
 				.template("/views/TeaPotFilter/TeaPot.ftl.html").renderHtml();
 
 	}
-
-	@Override
-	public boolean continueExecution() {
-		return false;
-	}
-
 }

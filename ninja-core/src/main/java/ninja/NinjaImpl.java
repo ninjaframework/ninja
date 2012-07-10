@@ -1,7 +1,5 @@
 package ninja;
 
-import java.lang.annotation.Annotation;
-
 import ninja.Context.HTTP_STATUS;
 
 import com.google.inject.Inject;
@@ -77,56 +75,13 @@ public class NinjaImpl implements Ninja {
         context.setRoute(route);
 
 		if (route != null) {
-			// process annotations (filters)
-			boolean continueExecution = doApplyFilers(route, context);
-
-			// If we are allowed to continue we execute
-			// the route itself.
-			//
-			// It might be for instance that a user is not authenticated and
-			// therefore the route itself is not allowed to be executed.
-			if (continueExecution) {
-				route.invoke(context);
-                context.controllerReturned();
-			}
+            route.getFilterChain().next(context);
 		} else {
 			// throw a 404 "not found" because we did not find the route
 			context.status(HTTP_STATUS.notFound404)
 					.template(pathToViewNotFound).renderHtml();
-
 		}
 	}
-
-	/**
-	 * Processes the FilterWith annotation on top of a router method.
-	 * 
-	 * If a filter breaks the execution this method will return "false". It will
-	 * also stop further executing all remaining filter.
-	 * 
-	 * Therefore the code in the route itself should not be executed.
-	 * 
-	 * @param route The route
-	 * @param context The context
-	 * @return If execution should continue
-	 */
-	public boolean doApplyFilers(Route route, Context context) {
-
-		// default value... continue that execution
-		boolean continueExecution = true;
-
-        for (Class<? extends Filter> filterClass : route.getFilters()) {
-            Filter filter = injector.getInstance(filterClass);
-            filter.filter(context);
-            if (!filter.continueExecution()) {
-                continueExecution = false;
-                break;
-            }
-
-        }
-		return continueExecution;
-	}
-
-
 
     @Override
     public void start() {

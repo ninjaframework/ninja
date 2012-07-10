@@ -1,9 +1,7 @@
 package ninja;
 
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Injector;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,24 +14,22 @@ import java.util.regex.Pattern;
  * A route
  */
 public class Route {
-    private final Injector injector;
     private final String httpMethod;
     private final String uri;
     private final Class controllerClass;
     private final Method controllerMethod;
-    private final List<Class<? extends Filter>> filters;
+    private final FilterChain filterChain;
 
     private final List<String> parameterNames;
     private final Pattern regex;
 
-    public Route(Injector injector, String httpMethod, String uri, Class controllerClass, Method controllerMethod,
-            List<Class<? extends Filter>> filters) {
-        this.injector = injector;
+    public Route(String httpMethod, String uri, Class controllerClass, Method controllerMethod,
+            FilterChain filterChain) {
         this.httpMethod = httpMethod;
         this.uri = uri;
         this.controllerClass = controllerClass;
         this.controllerMethod = controllerMethod;
-        this.filters = ImmutableList.copyOf(filters);
+        this.filterChain = filterChain;
 
         parameterNames = ImmutableList.copyOf(doParseParameters(uri));
         regex = Pattern.compile(convertRawUriToRegex(uri));
@@ -55,34 +51,12 @@ public class Route {
         return controllerClass;
     }
 
-    public List<Class<? extends Filter>> getFilters() {
-        return filters;
+    public FilterChain getFilterChain() {
+        return filterChain;
     }
 
     public Method getControllerMethod() {
         return controllerMethod;
-    }
-
-    public void invoke(Context context) {
-        try {
-
-            Object applicationController = injector.getInstance(controllerClass);
-            controllerMethod.invoke(applicationController, context);
-
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            } else {
-                throw new RuntimeException(e.getCause());
-            }
-        }
-
     }
 
     /**

@@ -1,5 +1,6 @@
 package filters;
 
+import ninja.FilterChain;
 import org.slf4j.Logger;
 
 import ninja.Context;
@@ -28,15 +29,10 @@ public class LoggerFilter implements Filter {
 	}
 
 	@Override
-	public void filter(Context context) {
+	public void filter(FilterChain chain, Context context) {
 
 		logger.info("Got request from : " + context.getRequestUri());
-
-	}
-
-	@Override
-	public boolean continueExecution() {
-		return true;
+        chain.next(context);
 	}
 
 }

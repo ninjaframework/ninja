@@ -246,7 +246,9 @@ DONE
 
 
 Random issues for v1.0
-----------------------
+---------------------- 
+- better caching for i18n => especially for the hashmaps
+- better ordering of i18n resourbundle fallbacks. the fallback for german is french? does not make sense...
 - content negotiation: make use of ordering of content responses and use all of them. not only one.
 - regex inside parameters like in play1: GET   /files/{<[a-z0-9/\.]*>name}               Application.download(name)
 - Optional<xyz> for get parameter in context => not null
@@ -262,3 +264,4 @@ Random issues for v1.0
 - complete enum with status codes and give it int parameter to avoid the nasty huge if cascade in ContextImpl#setStatusOnResponse(...)
 - use Optional<...> as return type for all methods that migth return null, e.g. Context#getPathParameter(...) 
 - create convenience methods in Context for setting a status and rendering a message, e.g. Context#notFound(String) or Context#ok(dto)
+
