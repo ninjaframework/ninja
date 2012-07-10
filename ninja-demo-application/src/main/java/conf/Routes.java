@@ -54,9 +54,13 @@ public class Routes implements ApplicationRoutes {
 		// Route filtering example:
 		// /////////////////////////////////////////////////////////////////////
 		router.GET().route("/injection").with(InjectionExampleController.class, "injection");
-		
-		
-		router.GET().route("/assets/.*").with(AssetsController.class, "serve");
+
+        // /////////////////////////////////////////////////////////////////////
+        // Async example:
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/async").with(AsyncController.class, "asyncEcho");
+
+        router.GET().route("/assets/.*").with(AssetsController.class, "serve");
 	}
 
 }

@@ -24,8 +24,8 @@
         <!-- Servlet api is used to run Ninja inside servlet containers -->
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <!-- We use gson for rendering jsons: -->

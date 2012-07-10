@@ -67,7 +67,7 @@ public class NinjaImpl implements Ninja {
 	 * @param context
 	 *            context
 	 */
-	public void invoke(Context context) {
+	public void invoke(ContextImpl context) {
 		
 		String httpMethod = context.getHttpServletRequest().getMethod();
 
@@ -85,7 +85,7 @@ public class NinjaImpl implements Ninja {
 			// therefore the route itself is not allowed to be executed.
 			if (continueExecution) {
 				route.invoke(context);
-
+                context.controllerReturned();
 			}
 		} else {
 			// throw a 404 "not found" because we did not find the route
@@ -93,18 +93,6 @@ public class NinjaImpl implements Ninja {
 					.template(pathToViewNotFound).renderHtml();
 
 		}
-		
-		// We have finished this cycle. We close the streams by force:
-		try {
-			context.getHttpServletResponse().getOutputStream().close();
-			context.getHttpServletResponse().getWriter().close();
-			
-		} catch (Exception e) {
-			//forget the exception if there is one...
-		}
-		
-		
-
 	}
 
 	/**
