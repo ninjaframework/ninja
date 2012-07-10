@@ -17,7 +17,6 @@ public class UTF8Control extends Control {
         // The below is a copy of the default implementation.
         String bundleName = toBundleName(baseName, locale);
         String resourceName = toResourceName(bundleName, "properties");
-        System.out.println("loading... resouce name: " + resourceName);
         ResourceBundle bundle = null;
         InputStream stream = null;
         if (reload) {

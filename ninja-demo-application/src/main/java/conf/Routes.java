@@ -1,9 +1,15 @@
 package conf;
 
-import controllers.*;
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
+import controllers.ApplicationController;
+import controllers.AsyncController;
+import controllers.FilterController;
+import controllers.I18nController;
+import controllers.InjectionExampleController;
+import controllers.PersonController;
+import controllers.UdpPingController;
 
 public class Routes implements ApplicationRoutes {
 	
