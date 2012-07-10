@@ -1,6 +1,11 @@
 package ninja;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +16,10 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.template.TemplateEngineManager;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -36,12 +43,17 @@ public class ContextImplTest {
     
     @Mock
     private HttpServletResponse httpServletResponse;
-    
+
+    private ContextImpl context;
+
+    @Before
+    public void setUp() {
+        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie, templateEngineManager);
+    }
+
     @Test
     public void testGetRequestUri() {
         
-        //make a new context (all mocks)
-        ContextImpl context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie, templateEngineManager);
         //say the httpServletRequest to return a certain value:
         when(httpServletRequest.getRequestURI()).thenReturn("/index");
         
@@ -50,8 +62,24 @@ public class ContextImplTest {
         
         //make sure this is correct
         assertEquals("/index", context.getRequestUri());
-        
-        
+    }
+
+    @Test
+    public void testAddCookie() {
+        Cookie cookie = Cookie.builder("cookie", "yum").setDomain("domain").build();
+        context.init(httpServletRequest, httpServletResponse);
+        context.addCookie(cookie);
+
+        ArgumentCaptor<javax.servlet.http.Cookie> cookieCaptor = ArgumentCaptor.forClass(javax.servlet.http.Cookie.class);
+        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+        javax.servlet.http.Cookie result = cookieCaptor.getValue();
+        assertThat(result.getName(), equalTo("cookie"));
+        assertThat(result.getValue(), equalTo("yum"));
+        assertThat(result.getPath(), nullValue());
+        assertThat(result.getSecure(), equalTo(false));
+        assertThat(result.getMaxAge(), equalTo(-1));
+
     }
 
 }

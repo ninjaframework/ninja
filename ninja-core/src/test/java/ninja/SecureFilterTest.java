@@ -2,6 +2,8 @@ package ninja;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import ninja.Context.HTTP_STATUS;
 import ninja.session.SessionCookie;
@@ -22,6 +24,8 @@ public class SecureFilterTest {
     @Mock
     private SessionCookie sessionCookie;
 
+    @Mock FilterChain filterChain;
+
     SecureFilter secureFilter;
 
     @Before
@@ -39,10 +43,9 @@ public class SecureFilterTest {
         when(context.getSessionCookie()).thenReturn(null);
 
         // filter that
-        secureFilter.filter(context);
+        secureFilter.filter(filterChain, context);
 
-        // and we expect a false from the secure filter...
-        assertFalse(secureFilter.continueExecution());
+        verifyZeroInteractions(filterChain);
     }
     
     @Test
@@ -52,10 +55,9 @@ public class SecureFilterTest {
         when(sessionCookie.get("username")).thenReturn(null);
         
         // filter that
-        secureFilter.filter(context);
+        secureFilter.filter(filterChain, context);
 
-        // and we expect a false from the secure filter...
-        assertFalse(secureFilter.continueExecution());
+        verifyZeroInteractions(filterChain);
     }
 
     @Test
@@ -65,10 +67,9 @@ public class SecureFilterTest {
         when(sessionCookie.get("username")).thenReturn("myname");
         
         // filter that
-        secureFilter.filter(context);
+        secureFilter.filter(filterChain, context);
 
-        // and we expect a false from the secure filter...
-        assertTrue(secureFilter.continueExecution());
+        verify(filterChain).next(context);
     }
 
 }
