@@ -246,7 +246,7 @@ DONE
 
 
 Random issues for v1.0
-----------------------
+---------------------- 
 - content negotiation: make use of ordering of content responses and use all of them. not only one.
 - regex inside parameters like in play1: GET   /files/{<[a-z0-9/\.]*>name}               Application.download(name)
 - Optional<xyz> for get parameter in context => not null
@@ -258,3 +258,6 @@ Random issues for v1.0
 - Make sure Ninja (and the produced war) runs on tomcat, jetty app engine...
 - working security subsystem (client side session crypto key'ed)
 - allow routes to save content type they are responsible for..
+- think about void controller methods => returning a result instead of calling void render(...) protects from creating multiple responses and creating problems...
+- complete enum with status codes and give it int parameter to avoid the nasty huge if cascade in ContextImpl#setStatusOnResponse(...)
+- use Optional<...> as return type for all methods that migth return null, e.g. Context#getPathParameter(...) 

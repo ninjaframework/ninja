@@ -16,9 +16,9 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
+import ninja.utils.NinjaConstant;
 
 import com.google.inject.Inject;
-import ninja.utils.NinjaConstant;
 
 public class ContextImpl implements Context {
 
@@ -104,9 +104,42 @@ public class ContextImpl implements Context {
 	}
 
     @Override
+    public Integer getPathParameterNumeric(String key) {
+        String parameter = getPathParameter(key);
+
+        try {
+            return Integer.parseInt(parameter);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
     public String getParameter(String key) {
         return httpServletRequest.getParameter(key);
     }
+
+	@Override
+	public String getParameter(String key, String defaultValue) {
+		String parameter = getParameter(key);
+
+		if (parameter == null) {
+			parameter = defaultValue;
+		}
+
+		return parameter;
+	}
+
+	@Override
+	public Integer getParameterNumeric(String key, Integer defaultValue) {
+		String parameter = getParameter(key);
+
+		try {
+			return Integer.parseInt(parameter);
+		} catch (Exception e) {
+			return defaultValue;
+		}
+	}
 
     @Override
     public Map<String, String[]> getParameters() {
