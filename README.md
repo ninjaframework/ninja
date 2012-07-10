@@ -68,7 +68,7 @@ For version 0.5 - "test subsystem support"
 - support for verify tests in mockito so that frontend tests become ultrafast...
 
 For version 0.6 - "internationalization support"
-- make sure properties support works
+DONE - make sure properties support works
 
 For version 0.7 - Tomcat, Jetty, Heroku, Cloudbees, App Engine support
 - check if stuff runs on third party hosts...
