@@ -23,9 +23,9 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
 	@Override
 	public TemplateEngine getTemplateEngineForContentType(String contentType) {
 
-		if (contentType.equals(ContentTypes.TEXT_HTML)) {
+		if (ContentTypes.TEXT_HTML.equals(contentType)) {
 			return templateEngineFreemarker;
-		} else if(contentType.equals(ContentTypes.APPLICATION_JSON)) {
+		} else if (ContentTypes.APPLICATION_JSON.equals(contentType)) {
 			return templateEngineJsonGson;
 		} else return null;
 

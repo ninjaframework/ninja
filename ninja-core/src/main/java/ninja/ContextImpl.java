@@ -18,6 +18,7 @@ import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 
 import com.google.inject.Inject;
+import ninja.utils.NinjaConstant;
 
 public class ContextImpl implements Context {
 
@@ -25,10 +26,10 @@ public class ContextImpl implements Context {
 
 	private HttpServletResponse httpServletResponse;
 
-	private Router router;
+    private Route route;
 
 	// * if set this template is used. otherwise the default mapping **/
-	private String templateName = null;
+	private String templateOverride = null;
 
 	private HTTP_STATUS httpStatus;
 
@@ -47,13 +48,12 @@ public class ContextImpl implements Context {
 
 	@Inject
 	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
-			FlashCookie flashCookie, Router router,
+			FlashCookie flashCookie,
 			SessionCookie sessionCookie,
 			TemplateEngineManager templateEngineManager) {
 
 		this.bodyParserEngineManager = bodyParserEngineManager;
 		this.flashCookie = flashCookie;
-		this.router = router;
 		this.sessionCookie = sessionCookie;
 		this.templateEngineManager = templateEngineManager;
 
@@ -73,6 +73,10 @@ public class ContextImpl implements Context {
 
 	}
 
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
 	public HttpServletRequest getHttpServletRequest() {
 		return httpServletRequest;
 	}
@@ -83,7 +87,7 @@ public class ContextImpl implements Context {
 
 	@Override
 	public Context template(String explicitTemplateName) {
-		this.templateName = explicitTemplateName;
+		this.templateOverride = explicitTemplateName;
 		return this;
 	}
 
@@ -95,14 +99,8 @@ public class ContextImpl implements Context {
 
 	@Override
 	public String getPathParameter(String key) {
-
-		// FIXME: not really efficient...
-		Route route = router.getRouteFor(httpServletRequest.getMethod(),
-				httpServletRequest.getServletPath());
-
 		return route.getParameters(httpServletRequest.getServletPath())
 				.get(key);
-
 	}
 
     @Override
@@ -155,15 +153,16 @@ public class ContextImpl implements Context {
 
 		finalizeResponseHeaders(contentType);
 
-		TemplateEngine templateEngine = templateEngineManager
-				.getTemplateEngineForContentType(contentType);
+        if (contentType != null) {
+            TemplateEngine templateEngine = templateEngineManager
+                    .getTemplateEngineForContentType(contentType);
 
-        if (templateEngine == null) {
-            throw new IllegalArgumentException("No template engine found for content type " + contentType);
+            if (templateEngine == null) {
+                throw new IllegalArgumentException("No template engine found for content type " + contentType);
+            }
+
+            templateEngine.invoke(this, object);
         }
-
-		templateEngine.invoke(this, object);
-
 	}
 
 	@Override
@@ -196,7 +195,9 @@ public class ContextImpl implements Context {
 	}
 
 	private void finalizeResponseHeaders(String contentType) {
-		setContentType(contentType);
+        if (contentType != null) {
+            setContentType(contentType);
+        }
 		setStatusOnResponse(httpStatus);
 
 		flashCookie.save(this);
@@ -231,8 +232,34 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-	public String getTemplateName() {
-		return templateName;
+	public String getTemplateName(String suffix) {
+        if (templateOverride == null) {
+            Class controller = route.getControllerClass();
+
+            // Calculate the correct path of the template.
+            // We always assume the template in the subdir "views"
+
+            // 1) If we are in the main project => /views/ControllerName/templateName.ftl.html
+            // 2) If we are in a plugin / subproject
+            //    => some/packages/submoduleName/views/ControllerName/templateName.ftl.html
+
+            // So let's calculate the parent package of the controller:
+            String controllerPackageName = controller.getPackage().getName();
+            // This results in something like controllers or some.package.controllers
+
+            // Let's remove "controllers" so we cat all parent packages:
+            String parentPackageOfController = controllerPackageName.replaceAll(NinjaConstant.CONTROLLERS_DIR, "");
+
+            // And now we rewrite everything from "." notation to directories /
+            String parentControllerPackageAsPath = parentPackageOfController.replaceAll("\\.", "/");
+
+
+            // and the final path of the controller will be something like:
+            // some/package/views/ControllerName/templateName.ftl.html
+            return String.format("%sviews/%s/%s%s", parentControllerPackageAsPath, controller
+                    .getSimpleName(), route.getControllerMethod().getName(), suffix);
+        }
+		return templateOverride;
 	}
 
 	@Override

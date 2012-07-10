@@ -28,9 +28,6 @@ public class ContextImplTest {
     @Mock
     private FlashCookie flashCookie;
     
-    @Mock 
-    private Router router;
-    
     @Mock
     private BodyParserEngineManager bodyParserEngineManager;    
     
@@ -44,7 +41,7 @@ public class ContextImplTest {
     public void testGetRequestUri() {
         
         //make a new context (all mocks)
-        ContextImpl context = new ContextImpl(bodyParserEngineManager, flashCookie, router, sessionCookie, templateEngineManager);   
+        ContextImpl context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie, templateEngineManager);
         //say the httpServletRequest to return a certain value:
         when(httpServletRequest.getRequestURI()).thenReturn("/index");
         
