@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ninja.Context;
@@ -27,7 +28,7 @@ public class ApplicationController {
     Lang lang;
 
 	public void examples(Context context) {
-	    System.out.println("lang: " + lang.get("hello2"));
+	    System.out.println("lang: " + lang.get("hello2", Locale.CANADA, "Joe"));
 	    logger.info("In example ");
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html

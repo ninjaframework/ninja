@@ -39,6 +39,11 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		} else {
 			map = (Map) object;
 		}
+		
+		////////////////////////////////////////////////////////////
+		// Determine the language to show:
+		//System.out.println("locale is: " + context.getHttpServletRequest().getLocale());		
+		
 
 		String templateName = context.getTemplateName(FILE_SUFFIX);
 
