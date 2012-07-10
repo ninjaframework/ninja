@@ -253,6 +253,10 @@ public class ContextImpl implements Context {
 			httpServletResponse.setStatus(403);
 		} else if (httpStatus.equals(HTTP_STATUS.teapot418)) {
 			httpServletResponse.setStatus(418);
+		} else if (httpStatus.equals(HTTP_STATUS.badRequest400)) {
+			httpServletResponse.setStatus(400);
+		} else if (httpStatus.equals(HTTP_STATUS.noContent204)) {
+			httpServletResponse.setStatus(204);
 		}
 
 	}
