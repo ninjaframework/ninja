@@ -132,6 +132,26 @@ public interface Context {
      */
     String getParameter(String key);
 
+	/**
+	 * Same like {@link #getParameter(String)}, but returns given defaultValue
+	 * instead of null in case parameter cannot be found
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	String getParameter(String key, String defaultValue);
+
+	/**
+	 * Same like {@link #getParameter(String, String)}, but converts the
+	 * parameter to Integer if found.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	Integer getParameterNumeric(String key, Integer defaultValue);
+
     /**
      * Get all the parameters from the request
      *
