@@ -1,11 +1,14 @@
 package ninja;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Iterables;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
@@ -100,7 +103,33 @@ public class ContextImpl implements Context {
 
 	}
 
-	@Override
+    @Override
+    public String getParameter(String key) {
+        return httpServletRequest.getParameter(key);
+    }
+
+    @Override
+    public Map<String, String[]> getParameters() {
+        return httpServletRequest.getParameterMap();
+    }
+
+    @Override
+    public String getHeader(String name) {
+        return httpServletRequest.getHeader(name);
+    }
+
+    @Override
+    public Map<String, String> getHeaders() {
+        Map<String, String> headers = new HashMap<String, String>();
+        Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
+        while (enumeration.hasMoreElements()) {
+            String name = enumeration.nextElement();
+            headers.put(name, httpServletRequest.getHeader(name));
+        }
+        return headers;
+    }
+
+    @Override
 	public void redirect(String url) {
 
 		try {
@@ -126,6 +155,10 @@ public class ContextImpl implements Context {
 
 		TemplateEngine templateEngine = templateEngineManager
 				.getTemplateEngineForContentType(contentType);
+
+        if (templateEngine == null) {
+            throw new IllegalArgumentException("No template engine found for content type " + contentType);
+        }
 
 		templateEngine.invoke(this, object);
 
