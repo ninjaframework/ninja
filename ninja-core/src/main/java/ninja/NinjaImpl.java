@@ -74,6 +74,8 @@ public class NinjaImpl implements Ninja {
 		Route route = router.getRouteFor(httpMethod, context.getHttpServletRequest()
 				.getRequestURI());
 
+        context.setRoute(route);
+
 		if (route != null) {
 			// process annotations (filters)
 			boolean continueExecution = doApplyFilers(route, context);
@@ -112,47 +114,19 @@ public class NinjaImpl implements Ninja {
 		// default value... continue that execution
 		boolean continueExecution = true;
 
-		Class controller = route.getController();
-		String controllerMethod = route.getControllerMethod();
+        for (Class<? extends Filter> filterClass : route.getFilters()) {
+            Filter filter = injector.getInstance(filterClass);
+            filter.filter(context);
+            if (!filter.continueExecution()) {
+                continueExecution = false;
+                break;
+            }
 
-		try {
-			for (Annotation annotation : controller.getMethod(controllerMethod,
-					Context.class).getAnnotations()) {
-
-				if (annotation.annotationType().equals(FilterWith.class)) {
-
-					FilterWith filterWith = (FilterWith) annotation;
-
-					Class[] filters = filterWith.value();
-
-					for (Class filterClass : filters) {
-
-						Filter filter = (Filter) injector
-								.getInstance(filterClass);
-
-						filter.filter(context);
-
-						if (!filter.continueExecution()) {
-							continueExecution = false;
-							break;
-						}
-
-					}
-
-				}
-
-			}
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+        }
 		return continueExecution;
-
 	}
+
+
 
     @Override
     public void start() {

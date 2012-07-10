@@ -2,89 +2,89 @@ package ninja;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.google.inject.Injector;
 
 public class RouterImpl implements Router {
 
-	private List<Route> allRoutes;
+	private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<RouteBuilderImpl>();
+    private final Injector injector;
 
-	private Provider<Route> routeProvider;
+    private List<Route> routes;
 
-	@Inject
-	public RouterImpl(
-			Provider<Route> routeProvider) {
+    @Inject
+    public RouterImpl(Injector injector) {
+        this.injector = injector;
+    }
 
-		this.routeProvider = routeProvider;
-		this.allRoutes = new ArrayList<Route>();
-
-	}
-
-	@Override
+    @Override
 	public Route getRouteFor(String httpMethod, String uri) {
+        if (routes == null) {
+            throw new IllegalStateException("Attempt to get route when routes not compiled");
+        }
 
-		for (Route route : allRoutes) {
-
+		for (Route route : routes) {
 			if (route.matches(httpMethod, uri)) {
-
 				return route;
 			}
-
 		}
 
 		return null;
 
 	}
 
+    public void compileRoutes() {
+        if (routes != null) {
+            throw new IllegalStateException("Routes already compiled");
+        }
+        List<Route> routes = new ArrayList<Route>();
+        for (RouteBuilderImpl routeBuilder : allRouteBuilders) {
+            routes.add(routeBuilder.buildRoute(injector));
+        }
+        this.routes = ImmutableList.copyOf(routes);
+    }
+
 	@Override
-	public Route getRouteFor(String httpMethod, String uri,
-			Map<String, String> parameterMap) {
+	public RouteBuilder GET() {
 
-		throw new UnsupportedOperationException();
+		RouteBuilderImpl routeBuilder = new RouteBuilderImpl().GET();
+		allRouteBuilders.add(routeBuilder);
 
+		return routeBuilder;
 	}
 
 	@Override
-	public Route GET() {
+	public RouteBuilder POST() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().POST();
+		allRouteBuilders.add(routeBuilder);
 
-		Route route = routeProvider.get().GET();
-		allRoutes.add(route);
-
-		return route;
+		return routeBuilder;
 	}
 
 	@Override
-	public Route POST() {
-		Route route = routeProvider.get().POST();
-		allRoutes.add(route);
+	public RouteBuilder PUT() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().PUT();
+		allRouteBuilders.add(routeBuilder);
 
-		return route;
+		return routeBuilder;
 	}
 
 	@Override
-	public Route PUT() {
-		Route route = routeProvider.get().PUT();
-		allRoutes.add(route);
+	public RouteBuilder DELETE() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().DELETE();
+		allRouteBuilders.add(routeBuilder);
 
-		return route;
+		return routeBuilder;
 	}
 
 	@Override
-	public Route DELETE() {
-		Route route = routeProvider.get().DELETE();
-		allRoutes.add(route);
+	public RouteBuilder OPTIONS() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().OPTION();
+		allRouteBuilders.add(routeBuilder);
 
-		return route;
-	}
-
-	@Override
-	public Route OPTIONS() {
-		Route route = routeProvider.get().OPTION();
-		allRoutes.add(route);
-
-		return route;
+		return routeBuilder;
 	}
 
 }

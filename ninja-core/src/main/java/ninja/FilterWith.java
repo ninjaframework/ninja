@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * A simple annotation that let's you put a filter
- * on a controller method.
+ * on a controller method or class.
  * 
  * The filter will then be executed before the controller method is executed.
  * 
@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface FilterWith {
 	Class<? extends Filter>[] value();
 }

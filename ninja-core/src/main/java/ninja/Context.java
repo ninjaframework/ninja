@@ -146,9 +146,10 @@ public interface Context {
     /**
      * Get the name of the template that will be rendered for this request
      *
+     * @param suffix The default suffix to add if computing the template name by convention
      * @return The name of the template to be rendered
      */
-	String getTemplateName();
+	String getTemplateName(String suffix);
 
     /**
      * Render the result stored in this context

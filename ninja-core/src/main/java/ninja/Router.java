@@ -1,33 +1,34 @@
 package ninja;
 
-import java.util.Map;
-
 public interface Router {
 
+    /**
+     * Get the route for the given method and URI
+     *
+     * @param httpMethod The method
+     * @param uri The URI
+     * @return The route
+     */
 	public Route getRouteFor(String httpMethod, String uri);
 
-	/**
-	 * If route contains parameters like so: /{user}/dashboard parameterMap must
-	 * contain user.
-	 * 
-	 * @param uri
-	 * @param parameterMap
-	 * @return
-	 */
-	public Route getRouteFor(String httpMethod, String uri, Map<String, String> parameterMap);
+    /**
+     * Compile all the routes that have been registered with the router.  This should be called
+     * once, during initialisation, before the application starts serving requests.
+     */
+    public void compileRoutes();
 
 	// /////////////////////////////////////////////////////////////////////////
 	// convenience methods to use the route in a DSL like way
 	// router.GET().route("/index").with(.....)
 	// /////////////////////////////////////////////////////////////////////////
-	public Route GET();
+	public RouteBuilder GET();
 
-	public Route POST();
+	public RouteBuilder POST();
 
-	public Route PUT();
+	public RouteBuilder PUT();
 
-	public Route DELETE();
+	public RouteBuilder DELETE();
 
-	public Route OPTIONS();
+	public RouteBuilder OPTIONS();
 
 }
