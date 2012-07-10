@@ -20,38 +20,22 @@ import ninja.Context.HTTP_STATUS;
  */
 public class SecureFilter implements Filter {
 
-    /** 
-     * A simple variable that will be returned when the filter is asked if
-     * it breaks the filter chain.
-     */
-    boolean continueExecution = true;
-    
     /** If a username is saved we assume the session is valid */
     public final String USERNAME = "username";
 
     @Override
-    public void filter(Context context) {
+    public void filter(FilterChain chain, Context context) {
 
         // if we got no cookies we break:
         if (context.getSessionCookie() == null
                 || context.getSessionCookie().get(USERNAME) == null) {
             
-            continueExecution = false;           
-            
             context.status(HTTP_STATUS.forbidden403).template("/views/forbidden403.ftl.html")
                     .renderHtml();
 
         } else {
-
-            // continue... everything is fine :)
-            continueExecution = true;
+            chain.next(context);
         }
 
     }
-
-    @Override
-    public boolean continueExecution() {
-        return continueExecution;
-    }
-
 }

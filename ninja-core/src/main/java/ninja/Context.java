@@ -219,4 +219,6 @@ public interface Context {
      */
     void requestComplete();
 
+    void controllerReturned();
+
 }
