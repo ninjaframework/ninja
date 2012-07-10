@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -269,6 +268,8 @@ public class ContextImpl implements Context {
 			httpServletResponse.setStatus(400);
 		} else if (httpStatus.equals(HTTP_STATUS.noContent204)) {
 			httpServletResponse.setStatus(204);
+		} else if (httpStatus.equals(HTTP_STATUS.created201)) {
+			httpServletResponse.setStatus(201);
 		}
 
 	}

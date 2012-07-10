@@ -13,7 +13,7 @@ import ninja.session.SessionCookie;
 public interface Context {
 
 	enum HTTP_STATUS {
-        notFound404, ok200, forbidden403, teapot418, badRequest400, noContent204
+        notFound404, ok200, forbidden403, teapot418, badRequest400, noContent204, created201
 	}
 
 	/**
