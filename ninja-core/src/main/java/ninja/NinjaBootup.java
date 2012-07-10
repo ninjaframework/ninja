@@ -54,7 +54,7 @@ public class NinjaBootup {
                 Router router = injector.getInstance(Router.class);
                 
                 applicationRoutes.init(router);
-                
+                router.compileRoutes();
             }
 	
 

@@ -5,12 +5,9 @@ import java.io.Writer;
 import java.util.Map;
 
 import ninja.Context;
-import ninja.Route;
-import ninja.Router;
 import ninja.utils.NinjaConstant;
 
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -18,13 +15,10 @@ import freemarker.template.Template;
 public class TemplateEngineFreemarker implements TemplateEngine {
 
 	private String FILE_SUFFIX = ".ftl.html";
-	private final Router router;
-	
+
 	private Configuration cfg;
 
-	@Inject
-	TemplateEngineFreemarker(Router router) {
-		this.router = router;
+	TemplateEngineFreemarker() {
 		cfg = new Configuration();
         cfg.setClassForTemplateLoading(this.getClass(), "/");
 
@@ -46,40 +40,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 			map = (Map) object;
 		}
 
-		String templateName = context.getTemplateName();
-		// compute default route if view is not set explicitly
-		if (templateName == null) {
-
-			Route route = router.getRouteFor(
-					context.getHttpServletRequest().getMethod(),
-					context.getHttpServletRequest().getRequestURI());			
-			
-			Class controller = route.getController();
-			
-			// Calculate the correct path of the template.
-			// We always assume the template in the subdir "views"
-			
-			// 1) If we are in the main project => /views/ControllerName/templateName.ftl.html
-			// 2) If we are in a plugin / subproject
-			//    => some/packages/submoduleName/views/ControllerName/templateName.ftl.html
-			
-			// So let's calculate the parent package of the controller:
-			String controllerPackageName = controller.getPackage().getName();
-			// This results in something like controllers or some.package.controllers
-			
-			// Let's remove "controllers" so we cat all parent packages:
-			String parentPackageOfController = controllerPackageName.replaceAll(NinjaConstant.CONTROLLERS_DIR, "");
-			
-			// And now we rewrite everything from "." notation to directories /
-			String parentControllerPackageAsPath = parentPackageOfController.replaceAll("\\.", "/");
-			
-			
-			// and the final path of the controller will be something like:
-			// some/package/views/ControllerName/templateName.ftl.html
-			templateName = String.format("%sviews/%s/%s%s", parentControllerPackageAsPath, controller
-					.getSimpleName(), route.getControllerMethod(), FILE_SUFFIX);
-			
-		}
+		String templateName = context.getTemplateName(FILE_SUFFIX);
 
 		// 1st => determine which
 

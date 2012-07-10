@@ -21,7 +21,7 @@ public class Configuration extends AbstractModule {
 		System.setProperty("file.encoding", "utf-8");
 
 		// general classes for servlet container:
-		bind(Route.class).to(RouteImpl.class);
+		bind(RouteBuilder.class).to(RouteBuilderImpl.class);
 
 		bind(Router.class).to(RouterImpl.class).in(Singleton.class);
 
