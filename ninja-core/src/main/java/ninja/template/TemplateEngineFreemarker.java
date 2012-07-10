@@ -2,12 +2,15 @@ package ninja.template;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.i18n.Lang;
 import ninja.utils.NinjaConstant;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -18,7 +21,11 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 	private Configuration cfg;
 
-	TemplateEngineFreemarker() {
+	private final Lang lang;
+
+	@Inject
+	TemplateEngineFreemarker(Lang lang) {
+		this.lang = lang;
 		cfg = new Configuration();
         cfg.setClassForTemplateLoading(this.getClass(), "/");
 
@@ -40,14 +47,18 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 			map = (Map) object;
 		}
 		
-		////////////////////////////////////////////////////////////
-		// Determine the language to show:
-		//System.out.println("locale is: " + context.getHttpServletRequest().getLocale());		
 		
+		// provide all i18n templates to freemarker engine:
+		// they will be usually prefixed by a "i18n."
+		// therefore your have to call ${i18n.mytext}
+		Locale locale = context.getHttpServletRequest().getLocale();		
+		Map<String, String> i18nMap = lang.getAll(locale);		
+		map.putAll(i18nMap);
+
+
 
 		String templateName = context.getTemplateName(FILE_SUFFIX);
 
-		// 1st => determine which
 
 		
 		// Specify the data source where the template files come from.

@@ -1,9 +1,15 @@
 package conf;
 
-import controllers.*;
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
+import controllers.ApplicationController;
+import controllers.AsyncController;
+import controllers.FilterController;
+import controllers.I18nController;
+import controllers.InjectionExampleController;
+import controllers.PersonController;
+import controllers.UdpPingController;
 
 public class Routes implements ApplicationRoutes {
 	
@@ -59,6 +65,11 @@ public class Routes implements ApplicationRoutes {
         // Async example:
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/async").with(AsyncController.class, "asyncEcho");
+        
+        // /////////////////////////////////////////////////////////////////////
+        // I18n:
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/i18n").with(I18nController.class, "index");
 
         router.GET().route("/assets/.*").with(AssetsController.class, "serve");
 	}
