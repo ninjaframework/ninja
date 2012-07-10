@@ -7,32 +7,31 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
+import com.google.inject.Binder;
+import com.google.inject.name.Names;
 import org.slf4j.Logger;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class NinjaPropertiesImpl implements NinjaProperties {
-	
+    private static final Logger log = LoggerFactory.getLogger(NinjaPropertiesImpl.class);
 	private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
-	private Properties allCurrentNinjaProperties;
+	private final Properties allCurrentNinjaProperties;
 
-	private String mode = "dev";
+	private final String mode;
 
-	private final Logger logger;
-
-	@Inject
-	public NinjaPropertiesImpl(Logger logger) {
-
-		this.logger = logger;
+	public NinjaPropertiesImpl() {
 		this.allCurrentNinjaProperties = new Properties();
 
 		// get system variables... load application conf files...
 		if (System.getProperty("mode") != null) {
 			mode = System.getProperty("mode");
-		}
+		} else {
+            mode = "dev";
+        }
 
 		// 1. load application.conf
 		Properties applicationProperties = loadPropertiesInUtf8("conf/application.conf");
@@ -55,7 +54,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		String value = get(key);
 
 		if (value == null) {
-			logger.error(String.format(ERROR_KEY_NOT_FOUND, key));
+			log.error(String.format(ERROR_KEY_NOT_FOUND, key));
 			throw new RuntimeException(String.format(ERROR_KEY_NOT_FOUND, key));
 		} else {
 			return value;
@@ -89,7 +88,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		Integer value = getInteger(key);
 
 		if (value == null) {
-			logger.error(String.format(ERROR_KEY_NOT_FOUND, key));
+			log.error(String.format(ERROR_KEY_NOT_FOUND, key));
 			throw new RuntimeException(String.format(ERROR_KEY_NOT_FOUND, key));
 		} else {
 			return value;
@@ -105,7 +104,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		Boolean value = getBoolean(key);
 
 		if (value == null) {
-			logger.error(String.format(ERROR_KEY_NOT_FOUND, key));
+			log.error(String.format(ERROR_KEY_NOT_FOUND, key));
 			throw new RuntimeException(String.format(ERROR_KEY_NOT_FOUND, key));
 		} else {
 			return value;
@@ -132,6 +131,10 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		}
 
 	}
+
+    public void bindProperties(Binder binder) {
+        Names.bindProperties(binder, allCurrentNinjaProperties);
+    }
 
 	/**
 	 * This properties loader uses UTF-8... that's important...

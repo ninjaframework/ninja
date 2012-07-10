@@ -2,6 +2,8 @@ package ninja;
 
 import ninja.utils.LoggerProvider;
 
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
 import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
@@ -38,6 +40,12 @@ public class Configuration extends AbstractModule {
 		// for now.
 		bind(String.class).annotatedWith(Names.named("template404")).toInstance(
 		    "views/notFound404.ftl.html");
+
+        // Bind the configuration into Guice
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();
+        ninjaProperties.bindProperties(binder());
+        bind(NinjaProperties.class).toInstance(ninjaProperties);
+
 
 	}
 
