@@ -247,6 +247,8 @@ DONE
 
 Random issues for v1.0
 ---------------------- 
+- better caching for i18n => especially for the hashmaps
+- better ordering of i18n resourbundle fallbacks. the fallback for german is french? does not make sense...
 - content negotiation: make use of ordering of content responses and use all of them. not only one.
 - regex inside parameters like in play1: GET   /files/{<[a-z0-9/\.]*>name}               Application.download(name)
 - Optional<xyz> for get parameter in context => not null
