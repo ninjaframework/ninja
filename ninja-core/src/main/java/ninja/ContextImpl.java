@@ -193,6 +193,7 @@ public class ContextImpl implements Context {
 
 	@Override
 	public void setContentType(String contentType) {
+	    this.contentType = contentType;
 		httpServletResponse.setContentType(contentType);
 
 	}
@@ -225,6 +226,11 @@ public class ContextImpl implements Context {
 	public SessionCookie getSessionCookie() {
 		return sessionCookie;
 	}
+
+    @Override
+    public String getRequestUri() {
+        return getHttpServletRequest().getRequestURI();
+    }
 
     @Override
     public void handleAsync() {

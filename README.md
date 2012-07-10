@@ -55,7 +55,7 @@ For version 0.4 - "html forms support"
 -- => also add plugins here...
 -- what does the routes binding? => maybe done in dispatcher?
 - demo app extending via forms validation and xsrf support
--- xsrf suppor should be in login logout module
+-- xsrf support should be in login logout module
 -- forms and so on should also be in login logout module...
 - maybe reverse routing in templates...
 
@@ -247,6 +247,8 @@ DONE
 
 Random issues for v1.0
 ----------------------
+- content negotiation: make use of ordering of content responses and use all of them. not only one.
+- regex inside parameters like in play1: GET   /files/{<[a-z0-9/\.]*>name}               Application.download(name)
 - Optional<xyz> for get parameter in context => not null
 - remove dependency on servlet (httprequest, response, cookie etcpp)
 - sessionexpiry => prolong session when hit server or only when valid for 2 weeks in total (google way)...
@@ -255,4 +257,4 @@ Random issues for v1.0
 - archetype for simple project generation out of the box
 - Make sure Ninja (and the produced war) runs on tomcat, jetty app engine...
 - working security subsystem (client side session crypto key'ed)
-- allow routes to save content type they are responsible for...
+- allow routes to save content type they are responsible for..

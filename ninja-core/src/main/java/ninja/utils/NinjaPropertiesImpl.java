@@ -27,7 +27,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	public NinjaPropertiesImpl(Logger logger) {
 
 		this.logger = logger;
-		allCurrentNinjaProperties = new Properties();
+		this.allCurrentNinjaProperties = new Properties();
 
 		// get system variables... load application conf files...
 		if (System.getProperty("mode") != null) {
@@ -35,7 +35,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		}
 
 		// 1. load application.conf
-		Properties applicationProperties = loadProperties("conf/application.conf");
+		Properties applicationProperties = loadPropertiesInUtf8("conf/application.conf");
 
 		// please add them:
 		allCurrentNinjaProperties.putAll(getAllPropertiesOfThatMode(
@@ -139,7 +139,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	 * @param classLoaderUrl
 	 * @return
 	 */
-	private Properties loadProperties(String classLoaderUrl) {
+	private Properties loadPropertiesInUtf8(String classLoaderUrl) {
 		Properties props = new Properties();
 		URL resource = getClass().getClassLoader().getResource(classLoaderUrl);
 
@@ -157,13 +157,11 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	}
 
 	/**
-	 * This method does two things.
-	 * 
 	 * Of course we want to have environments. By default ninja supports 3
 	 * modes: - "test" - "dev" - "prod"
 	 * 
 	 * We are using one application.conf file containing all relevant
-	 * configuration properties. As conventions you have to use "%" when
+	 * configuration properties. As convention you have to use "%" when
 	 * prefixing a property.
 	 * 
 	 * For instance if we are in mode "test" This: myproperty = funk is
@@ -179,7 +177,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		// We therefore do two passes
 		// Pass 1: Add all non % arguments
 		// Pass 2: Add all % arguments matching this mode
-		// Pass 2: Add all % arguments matching this mode
+		// => therefore matching % arguments will override the original ones
 		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 
 			if (!entry.getKey().toString().startsWith("%")) {

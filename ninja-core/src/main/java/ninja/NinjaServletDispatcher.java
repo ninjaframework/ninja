@@ -35,13 +35,11 @@ public class NinjaServletDispatcher implements Filter {
 	private Ninja ninja;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
-
 		
 		NinjaBootup ninjaBootup = new NinjaBootup();
 		injector = ninjaBootup.getInjector();
 		ninja = injector.getInstance(Ninja.class);
         ninja.start();
-
 
 	}
 

@@ -8,14 +8,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
-	
-
 	private final BodyParserEngineJson bodyParserEngineJson;
 
 	@Inject
 	public BodyParserEngineManagerImpl(BodyParserEngineJson bodyParserEngineJson) {
 		this.bodyParserEngineJson = bodyParserEngineJson;
-
 
 	}
 

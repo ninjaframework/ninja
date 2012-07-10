@@ -1,54 +1,74 @@
 package ninja;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-
-import javax.servlet.http.HttpServletRequest;
-
 import ninja.Context.HTTP_STATUS;
+import ninja.session.SessionCookie;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import freemarker.template.Template;
-
+@RunWith(MockitoJUnitRunner.class)
 public class SecureFilterTest {
 
-	@Mock
-	private Context context;
+    @Mock
+    private Context context;
+    
+    @Mock
+    private SessionCookie sessionCookie;
 
-	@Mock
-	HttpServletRequest httpServletRequest;
+    SecureFilter secureFilter;
 
-	SecureFilter secureFilter;
+    @Before
+    public void setup() {
+        secureFilter = new SecureFilter();
 
-	@Before
-	public void setup() {
+        when(context.status(Mockito.any(HTTP_STATUS.class))).thenReturn(context);
+        when(context.template(Mockito.anyString())).thenReturn(context);
+        
+    }
 
-		MockitoAnnotations.initMocks(this);
+    @Test
+    public void testSecureFilter() {
 
-		secureFilter = new SecureFilter();
+        when(context.getSessionCookie()).thenReturn(null);
 
-	}
+        // filter that
+        secureFilter.filter(context);
 
-	@Test
-	public void testSecureFilter() {
+        // and we expect a false from the secure filter...
+        assertFalse(secureFilter.continueExecution());
+    }
+    
+    @Test
+    public void testSessionIsNotReturingWhenUserNameMissing() {
 
-		// make sure continue is set to false when we got no cookies:
-		when(context.getHttpServletRequest()).thenReturn(httpServletRequest);
-		when(context.status(Mockito.any(HTTP_STATUS.class))).thenReturn(context);
-		when(context.template(Mockito.anyString())).thenReturn(context);
-		
-		when(httpServletRequest.getCookies()).thenReturn(null);
+        when(context.getSessionCookie()).thenReturn(sessionCookie);
+        when(sessionCookie.get("username")).thenReturn(null);
+        
+        // filter that
+        secureFilter.filter(context);
 
-		// filter that
-		secureFilter.filter(context);
+        // and we expect a false from the secure filter...
+        assertFalse(secureFilter.continueExecution());
+    }
 
-		// and we expect a false from the secure filter...
-		assertFalse(secureFilter.continueExecution());
-	}
+    @Test
+    public void testWorkingSessionWhenUsernameIsThere() {
+
+        when(context.getSessionCookie()).thenReturn(sessionCookie);
+        when(sessionCookie.get("username")).thenReturn("myname");
+        
+        // filter that
+        secureFilter.filter(context);
+
+        // and we expect a false from the secure filter...
+        assertTrue(secureFilter.continueExecution());
+    }
 
 }
