@@ -1,9 +1,5 @@
 package controllers;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import ninja.Context;
 import ninja.i18n.Lang;
 

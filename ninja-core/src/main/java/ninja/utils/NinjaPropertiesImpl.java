@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.google.inject.Binder;
+import com.google.inject.Inject;
 import com.google.inject.name.Names;
 import org.slf4j.Logger;
 
@@ -20,9 +21,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
 	private final Properties allCurrentNinjaProperties;
+	
+	private final String NINJA_EXTERNAL_CONF = "ninjaExternalConf";
 
 	private final String mode;
 
+	@Inject
 	public NinjaPropertiesImpl() {
 		this.allCurrentNinjaProperties = new Properties();
 
@@ -36,9 +40,23 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		// 1. load application.conf
 		Properties applicationProperties = loadPropertiesInUtf8("conf/application.conf");
 
-		// please add them:
+		// 2. Add all properties that are relevant for this mode:
 		allCurrentNinjaProperties.putAll(getAllPropertiesOfThatMode(
 		        applicationProperties, mode));
+		
+		// 3. load an external configuration file:
+		// get system variables... load application conf files...
+		if (System.getProperty(NINJA_EXTERNAL_CONF) != null) {
+			
+			String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
+			
+			Properties externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
+			
+			allCurrentNinjaProperties.putAll(externalConfiguration);
+			
+		}
+		
+		//bindProperties(binder);
 
 	}
 
@@ -149,11 +167,9 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		try {
 			props.load(new InputStreamReader(resource.openStream(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Unsupported encoding while loading configuration file" + e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Could not find configuration file. Was looking for " + classLoaderUrl + " " + e);
 		}
 
 		return props;

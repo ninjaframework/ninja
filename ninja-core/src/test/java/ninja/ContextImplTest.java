@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextImplTest {
@@ -43,12 +44,15 @@ public class ContextImplTest {
     
     @Mock
     private HttpServletResponse httpServletResponse;
+    
+    @Mock 
+    private Logger logger;
 
     private ContextImpl context;
 
     @Before
     public void setUp() {
-        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie, templateEngineManager);
+        context = new ContextImpl(bodyParserEngineManager, flashCookie, logger, sessionCookie, templateEngineManager);
     }
 
     @Test

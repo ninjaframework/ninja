@@ -85,16 +85,32 @@ public interface Context {
 
     /**
      * Get the underlying HTTP servlet request
+     * 
+     * @Deprecated because it directly refers to the servlet api.
+     * And usually we don't want that.
+     * 
+     * If you are missing something you cannot find in context please
+     * suggest it. getHttpServletResponse will be removed at some point.
      *
      * @return The HTTP servlet request
      */
+	@Deprecated
 	HttpServletRequest getHttpServletRequest();
 
     /**
      * Get the underlying HTTP servlet response
+     * 
+     * @Deprecated because it directly refers to the servlet api.
+     * And usually we don't want that.
+     * 
+     * If you are missing something you cannot find in context please
+     * suggest it. getHttpServletResponse will be removed at some point.
      *
      * @return The HTTP servlet response
+     * 
+
      */
+	@Deprecated
 	HttpServletResponse getHttpServletResponse();
 
     /**
@@ -187,6 +203,13 @@ public interface Context {
      * @param cookie the cookie to set
      */
     void addCookie(Cookie cookie);
+
+    /**
+     * Unset the cookie with the given name
+     *
+     * @param name The name of the cookie to unset
+     */
+    void unsetCookie(String name);
 
     /**
      * Get the name of the template that will be rendered for this request
