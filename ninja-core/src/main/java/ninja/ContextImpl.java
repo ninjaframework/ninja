@@ -114,7 +114,7 @@ public class ContextImpl implements Context {
 	}
 
     @Override
-    public Integer getPathParameterNumeric(String key) {
+    public Integer getPathParameterAsInteger(String key) {
         String parameter = getPathParameter(key);
 
         try {
@@ -141,7 +141,7 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-	public Integer getParameterNumeric(String key, Integer defaultValue) {
+	public Integer getParameterAsInteger(String key, Integer defaultValue) {
 		String parameter = getParameter(key);
 
 		try {

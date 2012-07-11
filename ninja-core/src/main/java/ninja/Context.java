@@ -127,25 +127,7 @@ public interface Context {
      * @return This context
      */
 	Context status(HTTP_STATUS httpStatus);
-
-    /**
-     * Get the path parameter for the given key
-     *
-     * @param key The key of the path parameter
-     * @return The path parameter, or null if no such path parameter is defined
-     */
-	String getPathParameter(String key);
-
-	/**
-	 * Get the path parameter for the given key and convert it to Integer.
-	 * 
-	 * @param key
-	 *            the key of the path parameter
-	 * @return the numeric path parameter, or null of no such path parameter is
-	 *         defined, or if it cannot be parsed to int
-	 */
-	Integer getPathParameterNumeric(String key);
-
+	
     /**
      * Get the parameter with the given key from the request.  The parameter may either be a query parameter, or in the
      * case of form submissions, may be a form parameter
@@ -164,7 +146,25 @@ public interface Context {
 	 * @return
 	 */
 	String getParameter(String key, String defaultValue);
+	
+    /**
+     * Get the path parameter for the given key
+     *
+     * @param key The key of the path parameter
+     * @return The path parameter, or null if no such path parameter is defined
+     */
+	String getPathParameter(String key);
 
+	/**
+	 * Get the path parameter for the given key and convert it to Integer.
+	 * 
+	 * @param key
+	 *            the key of the path parameter
+	 * @return the numeric path parameter, or null of no such path parameter is
+	 *         defined, or if it cannot be parsed to int
+	 */
+	Integer getPathParameterAsInteger(String key);
+	
 	/**
 	 * Same like {@link #getParameter(String, String)}, but converts the
 	 * parameter to Integer if found.
@@ -173,7 +173,7 @@ public interface Context {
 	 * @param defaultValue
 	 * @return
 	 */
-	Integer getParameterNumeric(String key, Integer defaultValue);
+	Integer getParameterAsInteger(String key, Integer defaultValue);
 
     /**
      * Get all the parameters from the request
