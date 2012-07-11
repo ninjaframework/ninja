@@ -247,6 +247,7 @@ DONE
 
 Random issues for v1.0
 ---------------------- 
+- documentation for external properties config...
 - better caching for i18n => especially for the hashmaps
 - better ordering of i18n resourbundle fallbacks. the fallback for german is french? does not make sense...
 - content negotiation: make use of ordering of content responses and use all of them. not only one.

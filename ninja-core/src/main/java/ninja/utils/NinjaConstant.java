@@ -9,8 +9,13 @@ public interface NinjaConstant {
     String CONTROLLERS_DIR = "controllers";
     String MODELS_DIR = "models";
 
-    /** prefix used for all Ninja cookies. */
-    final String COOKIE_PREFIX = "NINJA";
+    /** 
+     * Prefix used for all Ninja cookies. 
+     * 
+     * Make sure you set the prefix in your application.conf file.
+     * 
+     * */
+    final String applicationCookiePrefix = "applicationCookiePrefix";
 
     /**
      * Suffix used for Ninja cookies. Usually results

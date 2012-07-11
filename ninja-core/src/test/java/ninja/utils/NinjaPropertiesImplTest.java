@@ -3,16 +3,14 @@ package ninja.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 
 public class NinjaPropertiesImplTest {
 
@@ -135,6 +133,37 @@ public class NinjaPropertiesImplTest {
         @Inject
         @Named("applicationSecret")
         public String applicationSecret;
+    }
+    
+    
+    @Test
+    public void testLoadingOfExternalConfFile() {
+
+    	//we can set an external conf file by setting the following system property:
+    	System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/heroku.conf");
+    	
+    	//instantiate the properties:
+    	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();   	
+    	
+    	//we expect that the original application secret gets overwritten:
+		assertEquals("secretForHeroku", ninjaProperties.get("applicationSecret"));
+		
+		//and make sure other properties of heroku.conf get loaded as well:
+		assertEquals("some special parameter", ninjaProperties.get("heroku.special.property"));    	
+    	
+    }
+    
+    
+    @Test(expected = RuntimeException.class)
+    public void testExernalConfigLoadingBreaksWhenFileDoesNotExist() {
+
+    	//we can set an external conf file by setting the following system property:
+    	System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/non_existing.conf");
+    	
+    	//instantiate the properties:
+    	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();   	
+    	
+    	//now a runtime exception must be thrown.
     }
 
 

@@ -12,6 +12,10 @@ import javax.servlet.http.Cookie;
 
 import ninja.Context;
 import ninja.utils.CookieHelper;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
+
+import com.google.inject.Inject;
 
 /**
  * Flash scope:
@@ -26,16 +30,23 @@ public class FlashCookieImpl implements FlashCookie {
 	private Pattern flashParser = Pattern
 	        .compile("\u0000([^:]*):([^\u0000]*)\u0000");
 
-	Map<String, String> currentFlashCookieData = new HashMap<String, String>();
-	Map<String, String> outgoingFlashCookieData = new HashMap<String, String>();
-
+	protected Map<String, String> currentFlashCookieData = new HashMap<String, String>();
+	protected Map<String, String> outgoingFlashCookieData = new HashMap<String, String>();
+	
+	private String applicationCookiePrefix;
+	
+	@Inject
+	public FlashCookieImpl(NinjaProperties ninjaProperties) {
+		this.applicationCookiePrefix = ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix);
+	}
+	
 	@Override
 	public void init(Context context) {
 		// get flash cookie:
 		Cookie[] cookies = context.getHttpServletRequest().getCookies();
 
 		Cookie flashCookie = CookieHelper.getCookie(
-		        ninja.utils.NinjaConstant.COOKIE_PREFIX
+				applicationCookiePrefix
 		                + ninja.utils.NinjaConstant.FLASH_SUFFIX, cookies);
 
 		if (flashCookie != null) {
@@ -59,11 +70,11 @@ public class FlashCookieImpl implements FlashCookie {
 
 		if (outgoingFlashCookieData.isEmpty()) {
 
-			if (CookieHelper.getCookie(ninja.utils.NinjaConstant.COOKIE_PREFIX
+			if (CookieHelper.getCookie(applicationCookiePrefix
 			        + ninja.utils.NinjaConstant.FLASH_SUFFIX, context
 			        .getHttpServletRequest().getCookies()) != null) {
 
-				Cookie cookie = new Cookie(ninja.utils.NinjaConstant.COOKIE_PREFIX
+				Cookie cookie = new Cookie(applicationCookiePrefix
 				        + ninja.utils.NinjaConstant.FLASH_SUFFIX, "");
 				cookie.setPath("/");
 				cookie.setSecure(false);
@@ -89,7 +100,7 @@ public class FlashCookieImpl implements FlashCookie {
 				}
 				String flashData = URLEncoder.encode(flash.toString(), "utf-8");
 
-				Cookie cookie = new Cookie(ninja.utils.NinjaConstant.COOKIE_PREFIX
+				Cookie cookie = new Cookie(applicationCookiePrefix
 				        + ninja.utils.NinjaConstant.FLASH_SUFFIX, flashData);
 				cookie.setPath("/");
 				cookie.setSecure(false);

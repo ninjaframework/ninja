@@ -114,7 +114,7 @@ public class ContextImpl implements Context {
 	}
 
     @Override
-    public Integer getPathParameterNumeric(String key) {
+    public Integer getPathParameterAsInteger(String key) {
         String parameter = getPathParameter(key);
 
         try {
@@ -139,9 +139,14 @@ public class ContextImpl implements Context {
 
 		return parameter;
 	}
+	
+	@Override
+	public Integer getParameterAsInteger(String key) {
+		return getParameterAsInteger(key, null);
+	}
 
 	@Override
-	public Integer getParameterNumeric(String key, Integer defaultValue) {
+	public Integer getParameterAsInteger(String key, Integer defaultValue) {
 		String parameter = getParameter(key);
 
 		try {
@@ -419,4 +424,6 @@ public class ContextImpl implements Context {
     public Writer getWriter() throws IOException {
         return httpServletResponse.getWriter();
     }
+
+
 }

@@ -7,24 +7,29 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Optional;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.name.Names;
-import org.slf4j.Logger;
-
 import com.google.inject.Singleton;
-import org.slf4j.LoggerFactory;
+import com.google.inject.name.Names;
 
 @Singleton
 public class NinjaPropertiesImpl implements NinjaProperties {
-    private static final Logger log = LoggerFactory.getLogger(NinjaPropertiesImpl.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(NinjaPropertiesImpl.class);
 	private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
 	private final Properties allCurrentNinjaProperties;
-	
-	private final String NINJA_EXTERNAL_CONF = "ninjaExternalConf";
 
 	private final String mode;
+
+	// we are using a private logger in this case as NinjaPropertiesImpl is NOT
+	// loaded
+	// by guice.
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Inject
 	public NinjaPropertiesImpl() {
@@ -34,29 +39,35 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		if (System.getProperty("mode") != null) {
 			mode = System.getProperty("mode");
 		} else {
-            mode = "dev";
-        }
+			mode = "dev";
+		}
 
 		// 1. load application.conf
-		Properties applicationProperties = loadPropertiesInUtf8("conf/application.conf");
+		Optional<Properties> applicationProperties = loadPropertiesInUtf8(CONF_FILE_LOCATION_BY_CONVENTION);
 
+		if (!applicationProperties.isPresent()) {
+			throw new RuntimeException("No basic configuration file found. Please make sure you got a file called: " + CONF_FILE_LOCATION_BY_CONVENTION);
+		}
+		
 		// 2. Add all properties that are relevant for this mode:
 		allCurrentNinjaProperties.putAll(getAllPropertiesOfThatMode(
-		        applicationProperties, mode));
-		
+				applicationProperties.get(), mode));
+
 		// 3. load an external configuration file:
 		// get system variables... load application conf files...
 		if (System.getProperty(NINJA_EXTERNAL_CONF) != null) {
-			
+
 			String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
+
+			Optional<Properties> externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
 			
-			Properties externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
-			
-			allCurrentNinjaProperties.putAll(externalConfiguration);
-			
+			if (!applicationProperties.isPresent()) {
+				throw new RuntimeException("A system property called " + NINJA_EXTERNAL_CONF + " was set. But the correspinding file cannot be found. Make sure it is visible to this application and on the classpath.");
+			}
+
+			allCurrentNinjaProperties.putAll(externalConfiguration.get());
+
 		}
-		
-		//bindProperties(binder);
 
 	}
 
@@ -69,7 +80,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		return allCurrentNinjaProperties.getProperty(key);
 
 	}
-	
+
 	@Override
 	public String getOrDie(String key) {
 
@@ -81,7 +92,6 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		} else {
 			return value;
 		}
-
 
 	}
 
@@ -103,7 +113,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		}
 
 	}
-	
+
 	@Override
 	public Integer getIntegerOrDie(String key) {
 
@@ -117,8 +127,6 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		}
 
 	}
-	
-	
 
 	@Override
 	public Boolean getBooleanOrDie(String key) {
@@ -154,9 +162,9 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	}
 
-    public void bindProperties(Binder binder) {
-        Names.bindProperties(binder, allCurrentNinjaProperties);
-    }
+	public void bindProperties(Binder binder) {
+		Names.bindProperties(binder, allCurrentNinjaProperties);
+	}
 
 	/**
 	 * This properties loader uses UTF-8... that's important...
@@ -164,19 +172,24 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	 * @param classLoaderUrl
 	 * @return
 	 */
-	private Properties loadPropertiesInUtf8(String classLoaderUrl) {
+	private Optional<Properties> loadPropertiesInUtf8(String classLoaderUrl) {
 		Properties props = new Properties();
 		URL resource = getClass().getClassLoader().getResource(classLoaderUrl);
 
 		try {
 			props.load(new InputStreamReader(resource.openStream(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			System.err.println("Unsupported encoding while loading configuration file" + e);
+			props = null;
+			logger.error("Unsupported encoding while loading configuration file", e);
 		} catch (IOException e) {
-			System.err.println("Could not find configuration file. Was looking for " + classLoaderUrl + " " + e);
+			props = null;
+			logger.error("Could not find configuration file. Was looking for " + classLoaderUrl, e);
+		} catch (NullPointerException e) {
+			props = null;
+			logger.error("Could not find configuration file. Was looking for " + classLoaderUrl, e);
 		}
 
-		return props;
+		return Optional.fromNullable(props);
 	}
 
 	/**
@@ -192,7 +205,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	 * 
 	 */
 	private Properties getAllPropertiesOfThatMode(Properties properties,
-	        String mode) {
+			String mode) {
 
 		Properties returnProtperties = new Properties();
 
@@ -224,11 +237,11 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 					String keyToReplace = "%" + mode + "\\.";
 
 					String newKeyName = entry.getKey().toString()
-					        .replaceFirst(keyToReplace, "");
+							.replaceFirst(keyToReplace, "");
 
 					returnProtperties.put(newKeyName, entry.getValue());
 				} // else do nothing... that's a property I don't want to
-				  // use....
+					// use....
 
 			}
 		}
