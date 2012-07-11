@@ -69,12 +69,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 			// convert tuples:
 
-			Writer out = new OutputStreamWriter(context
-					.getHttpServletResponse().getOutputStream());
+			freemarkerTemplate.process(map, context.getWriter());
 
-			freemarkerTemplate.process(map, out);
-
-			out.flush();
+			context.getWriter().flush();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -88,5 +85,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		return FILE_SUFFIX;
 
 	}
-	
+
+    @Override
+    public String getContentType() {
+        return "text/html";
+    }
 }

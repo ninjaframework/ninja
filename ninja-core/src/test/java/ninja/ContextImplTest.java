@@ -83,7 +83,6 @@ public class ContextImplTest {
         assertThat(result.getPath(), nullValue());
         assertThat(result.getSecure(), equalTo(false));
         assertThat(result.getMaxAge(), equalTo(-1));
-
     }
 
 }

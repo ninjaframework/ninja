@@ -1,6 +1,6 @@
 package ninja;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,6 +103,7 @@ public class ContextImpl implements Context {
 	@Override
 	public Context status(HTTP_STATUS httpStatus) {
 		this.httpStatus = httpStatus;
+        httpServletResponse.setStatus(httpStatus.code);
 		return this;
 	}
 
@@ -214,6 +215,21 @@ public class ContextImpl implements Context {
                     .getTemplateEngineForContentType(contentType);
 
             if (templateEngine == null) {
+                if (object instanceof String) {
+                    // Simply write it out
+                    try {
+                        getWriter().write((String) object);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if (object instanceof byte[]) {
+                    // Simply write it out
+                    try {
+                        getOutputStream().write((byte[]) object);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 throw new IllegalArgumentException("No template engine found for content type " + contentType);
             }
 
@@ -287,10 +303,10 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-	public void setContentType(String contentType) {
+	public ContextImpl setContentType(String contentType) {
 	    this.contentType = contentType;
 		httpServletResponse.setContentType(contentType);
-
+        return this;
 	}
 
 	@Override
@@ -382,5 +398,25 @@ public class ContextImpl implements Context {
                 asyncStrategy.controllerReturned();
             }
         }
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return httpServletRequest.getInputStream();
+    }
+
+    @Override
+    public BufferedReader getReader() throws IOException {
+        return httpServletRequest.getReader();
+    }
+
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+        return httpServletResponse.getOutputStream();
+    }
+
+    @Override
+    public Writer getWriter() throws IOException {
+        return httpServletResponse.getWriter();
     }
 }
