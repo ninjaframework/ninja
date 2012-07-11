@@ -49,6 +49,8 @@ public class SessionCookieImpl implements SessionCookie {
 
 	private final Crypto crypto;
 
+	private String applicationCookiePrefix;
+	
 	@Inject
 	public SessionCookieImpl(
 			Crypto crypto,
@@ -60,7 +62,7 @@ public class SessionCookieImpl implements SessionCookie {
 		this.sessionExpireTimeInMs = ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInMs);
 		this.sessionSendOnlyIfChanged = ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged);
 		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly);
-
+		this.applicationCookiePrefix = ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix);
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class SessionCookieImpl implements SessionCookie {
 
 			// get the cookie that contains session information:
 			Cookie cookie = CookieHelper.getCookie(
-			        ninja.utils.NinjaConstant.COOKIE_PREFIX
+					applicationCookiePrefix
 			                + ninja.utils.NinjaConstant.SESSION_SUFFIX,
 			        context.getHttpServletRequest().getCookies());
 
@@ -184,13 +186,13 @@ public class SessionCookieImpl implements SessionCookie {
 		if (isEmpty()) {
 			// The session is empty: delete the cookie
 			Cookie sessionCookie = CookieHelper.getCookie(
-			        NinjaConstant.COOKIE_PREFIX + NinjaConstant.SESSION_SUFFIX,
+					applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
 			        context.getHttpServletRequest().getCookies());
 
 			if (sessionCookie != null || !sessionSendOnlyIfChanged) {
 
 				Cookie emptySessionCookie = new Cookie(
-				        NinjaConstant.COOKIE_PREFIX
+						applicationCookiePrefix
 				                + NinjaConstant.SESSION_SUFFIX, null);
 
 				context.getHttpServletResponse().addCookie(emptySessionCookie);
@@ -217,7 +219,7 @@ public class SessionCookieImpl implements SessionCookie {
 
 			Cookie cookie;
 
-			cookie = new Cookie(NinjaConstant.COOKIE_PREFIX
+			cookie = new Cookie(applicationCookiePrefix
 			        + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
 			
 			cookie.setMaxAge(sessionExpireTimeInMs);

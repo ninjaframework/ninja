@@ -10,15 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.Context;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FlashCookieTest {
 	
 	@Mock
@@ -33,14 +37,16 @@ public class FlashCookieTest {
 	@Captor
 	private ArgumentCaptor<Cookie> cookieCaptor;
 	
+	@Mock
+	private NinjaProperties ninjaProperties;
+	
 	@Before
 	public void setUp() {
 		
-		MockitoAnnotations.initMocks(this);
-		
 		when(context.getHttpServletRequest()).thenReturn(httpServletRequest);
 		when(context.getHttpServletResponse()).thenReturn(httpServletResponse);
-
+		
+		when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn("NINJA");
 		
 	}
 	
@@ -54,7 +60,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(emptyCookies);
 		
-		FlashCookie flashCookie = new FlashCookieImpl();
+		FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 		
 		flashCookie.init(context);
 		
@@ -75,7 +81,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(emptyCookies);
 		
-		FlashCookie flashCookie = new FlashCookieImpl();
+		FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 		
 		flashCookie.init(context);
 		
@@ -109,7 +115,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookieImpl();
+		FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 		
 		flashCookie.init(context);
 		
@@ -147,7 +153,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookieImpl();
+		FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 		
 		flashCookie.init(context);
 		
@@ -176,7 +182,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookieImpl();
+		FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 		
 		flashCookie.init(context);
 		
@@ -206,7 +212,7 @@ public class FlashCookieTest {
 		//that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(oneCookie);
 		
-		FlashCookie flashCookie = new FlashCookieImpl();
+		FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 		
 		flashCookie.init(context);
 		
@@ -225,6 +231,17 @@ public class FlashCookieTest {
 		assertEquals(1, ((FlashCookieImpl) flashCookie).outgoingFlashCookieData.size());
 		
 		
+	}
+	
+	public void testThatCorrectMethodOfNinjaPropertiesIsUsedSoThatStuffBreaksWhenPropertyIsAbsent() {
+		
+		//we did not set the cookie prefix
+		when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn(null);
+		
+		//stuff must break => ...
+		FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+		
+		verify(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix));
 	}
 
 }

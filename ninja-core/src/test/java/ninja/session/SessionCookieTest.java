@@ -17,12 +17,15 @@ import ninja.utils.NinjaProperties;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SessionCookieTest {
 
 	@Mock
@@ -45,8 +48,6 @@ public class SessionCookieTest {
 	@Before
 	public void setUp() {
 
-		MockitoAnnotations.initMocks(this);
-
 		when(context.getHttpServletRequest()).thenReturn(httpServletRequest);
 		when(context.getHttpServletResponse()).thenReturn(httpServletResponse);
 		
@@ -56,6 +57,8 @@ public class SessionCookieTest {
 		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly)).thenReturn(true);
 		
 		when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret)).thenReturn("secret");
+		
+		when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn("NINJA");
 		
 		
 		crypto = new Crypto(ninjaProperties);
@@ -271,6 +274,18 @@ public class SessionCookieTest {
 		assertEquals("value2", sessionCookie2.get("key2"));
 		assertEquals("value3", sessionCookie2.get("key3"));
 
+	}
+	
+	
+	public void testThatCorrectMethodOfNinjaPropertiesIsUsedSoThatStuffBreaksWhenPropertyIsAbsent() {
+		
+		//we did not set the cookie prefix
+		when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn(null);
+		
+		//stuff must break => ...
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto, ninjaProperties);
+		
+		verify(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix));
 	}
 
 }
