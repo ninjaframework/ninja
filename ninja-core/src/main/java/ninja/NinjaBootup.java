@@ -10,11 +10,12 @@ import ninja.lifecycle.LifecycleSupport;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import ninja.scheduler.SchedulerSupport;
 
 public class NinjaBootup {
     
-    private final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
-    private final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
+    private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
+    private static final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
 	
 	/**
 	 * Main injector for the class.
@@ -27,6 +28,8 @@ public class NinjaBootup {
 
             // Bind lifecycle support
             modulesToLoad.add(LifecycleSupport.getModule());
+            // Scheduling support
+            modulesToLoad.add(SchedulerSupport.getModule());
 
 			// Get base configuration of Ninja:
 			Class ninjaConfigurationClass = Configuration.class;
