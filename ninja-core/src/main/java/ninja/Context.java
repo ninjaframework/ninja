@@ -66,8 +66,9 @@ public interface Context {
 	 * call render() on text/html and the html render engine will be used.
 	 * 
 	 * @param contentType examples are "application/json" or "text/html".
+     * @return This context
 	 */
-	void setContentType(String contentType);
+	Context setContentType(String contentType);
 
 	/**
 	 * Th explicitTemplateName is a fully qualified name of a template

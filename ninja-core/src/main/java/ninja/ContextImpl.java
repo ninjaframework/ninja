@@ -302,10 +302,10 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-	public void setContentType(String contentType) {
+	public ContextImpl setContentType(String contentType) {
 	    this.contentType = contentType;
 		httpServletResponse.setContentType(contentType);
-
+        return this;
 	}
 
 	@Override
