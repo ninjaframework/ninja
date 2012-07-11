@@ -147,6 +147,26 @@ public interface Context {
 	 */
 	String getParameter(String key, String defaultValue);
 	
+	/**
+	 * Same like {@link #getParameter(String)}, but converts the
+	 * parameter to Integer if found.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	Integer getParameterAsInteger(String key);
+	
+	/**
+	 * Same like {@link #getParameter(String, String)}, but converts the
+	 * parameter to Integer if found.
+	 * 
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	Integer getParameterAsInteger(String key, Integer defaultValue);
+	
     /**
      * Get the path parameter for the given key
      *
@@ -164,16 +184,6 @@ public interface Context {
 	 *         defined, or if it cannot be parsed to int
 	 */
 	Integer getPathParameterAsInteger(String key);
-	
-	/**
-	 * Same like {@link #getParameter(String, String)}, but converts the
-	 * parameter to Integer if found.
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	Integer getParameterAsInteger(String key, Integer defaultValue);
 
     /**
      * Get all the parameters from the request

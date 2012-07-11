@@ -139,6 +139,11 @@ public class ContextImpl implements Context {
 
 		return parameter;
 	}
+	
+	@Override
+	public Integer getParameterAsInteger(String key) {
+		return getParameterAsInteger(key, null);
+	}
 
 	@Override
 	public Integer getParameterAsInteger(String key, Integer defaultValue) {
@@ -419,4 +424,6 @@ public class ContextImpl implements Context {
     public Writer getWriter() throws IOException {
         return httpServletResponse.getWriter();
     }
+
+
 }
