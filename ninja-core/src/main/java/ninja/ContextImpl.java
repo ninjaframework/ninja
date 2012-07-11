@@ -9,8 +9,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-
 import ninja.async.AsyncStrategy;
 import ninja.async.AsyncStrategyFactoryHolder;
 import ninja.bodyparser.BodyParserEngine;
@@ -21,6 +19,8 @@ import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
+
+import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 
@@ -295,6 +295,8 @@ public class ContextImpl implements Context {
 			httpServletResponse.setStatus(400);
 		} else if (httpStatus.equals(HTTP_STATUS.noContent204)) {
 			httpServletResponse.setStatus(204);
+		} else if (httpStatus.equals(HTTP_STATUS.created201)) {
+			httpServletResponse.setStatus(201);
 		}
 
 	}
