@@ -5,10 +5,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
 
 import ninja.async.AsyncStrategy;
 import ninja.async.AsyncStrategyFactoryHolder;
@@ -20,6 +19,8 @@ import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
+
+import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 
