@@ -1,12 +1,15 @@
 package ninjaModuleDemo.controllers;
 
 import ninja.Context;
+import ninja.Result;
+import ninja.Results;
 
 public class ApplicationController {
 	
-	public void registration(Context context) {
+	public Result registration(Context context) {
 		System.out.println("render json!");
-		context.renderHtml();
+		
+		return Results.html();
 		
 	}
 

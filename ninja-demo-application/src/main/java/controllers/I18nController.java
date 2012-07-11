@@ -1,6 +1,8 @@
 package controllers;
 
 import ninja.Context;
+import ninja.Result;
+import ninja.Results;
 import ninja.i18n.Lang;
 
 import org.slf4j.Logger;
@@ -23,10 +25,10 @@ public class I18nController {
     @Inject
     Lang lang;
 
-	public void index(Context context) {
+	public Result index(Context context) {
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
-		context.renderHtml();
+		return Results.html();
 
 	}
 	

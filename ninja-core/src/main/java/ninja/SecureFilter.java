@@ -24,17 +24,17 @@ public class SecureFilter implements Filter {
     public final String USERNAME = "username";
 
     @Override
-    public void filter(FilterChain chain, Context context) {
+    public Result filter(FilterChain chain, Context context) {
 
         // if we got no cookies we break:
         if (context.getSessionCookie() == null
                 || context.getSessionCookie().get(USERNAME) == null) {
             
-            context.status(HTTP_STATUS.forbidden403).template("/views/forbidden403.ftl.html")
-                    .renderHtml();
+        	
+        	return Results.html().status(403).template("/views/forbidden403.ftl.html");
 
         } else {
-            chain.next(context);
+            return chain.next(context);
         }
 
     }

@@ -21,5 +21,5 @@ public interface Filter {
      * @param filterChain The filter chain
      * @param context The context
 	 */
-	void filter(FilterChain filterChain, Context context);
+	Result filter(FilterChain filterChain, Context context);
 }

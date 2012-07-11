@@ -60,7 +60,7 @@ public interface Context {
 	 * 
 	 * @param url The url to redirect to
 	 */
-	void redirect(String url);
+	//Result redirect(String url);
 
 	/**
 	 * Set the response content type.
@@ -74,7 +74,7 @@ public interface Context {
 	 * @param contentType examples are "application/json" or "text/html".
      * @return This context
 	 */
-	Context setContentType(String contentType);
+	//Context setContentType(String contentType);
 
 	/**
 	 * Th explicitTemplateName is a fully qualified name of a template
@@ -89,7 +89,7 @@ public interface Context {
 	 * @param explicitTemplateName is something like "/views/ApplicationController/index.ftl.html"
 	 * @return the very same Context for chaining.
 	 */
-	Context template(String explicitTemplateName);
+	//Context template(String explicitTemplateName);
 
     /**
      * Get the underlying HTTP servlet request
@@ -126,7 +126,7 @@ public interface Context {
      * @param httpStatus The status code
      * @return This context
      */
-	Context status(HTTP_STATUS httpStatus);
+	//Context status(HTTP_STATUS httpStatus);
 	
     /**
      * Get the parameter with the given key from the request.  The parameter may either be a query parameter, or in the
@@ -219,14 +219,14 @@ public interface Context {
      *
      * @param cookie the cookie to set
      */
-    void addCookie(Cookie cookie);
+    //void addCookie(Cookie cookie);
 
     /**
      * Unset the cookie with the given name
      *
      * @param name The name of the cookie to unset
      */
-    void unsetCookie(String name);
+    //void unsetCookie(String name);
 
     /**
      * Get the name of the template that will be rendered for this request
@@ -239,7 +239,7 @@ public interface Context {
     /**
      * Render the result stored in this context
      */
-	void render();
+	//Result render();
 
     /**
      * Render the given object, using the appropriate template engine for the content type
@@ -247,7 +247,7 @@ public interface Context {
      * @param object The object to render
      * @throws IllegalArgumentException If no template engine could be found for the content type
      */
-    void render(Object object);
+	//Result render(Object object);
 
     ///////////////////////////////////////////////////////////////////////////
 	// Convenience Methods to render a specific type. Html, Json and maybe Xml
@@ -257,7 +257,7 @@ public interface Context {
 	 * Renders something as text/html. Either uses a predefined template or
 	 * the template determined by auto configuration.
 	 */
-	void renderHtml();
+	//Result renderHtml();
 
 	/**
 	 * Renders this object. Most likely the render engine will take a Map.
@@ -266,7 +266,7 @@ public interface Context {
 	 * 
 	 * @param object The object to render as Html
 	 */
-	void renderHtml(Object object);
+	//Result renderHtml(Object object);
 
 	/**
 	 * Render the object as json. Uses the underlying Json implementation.
@@ -275,7 +275,7 @@ public interface Context {
 	 * 
 	 * @param object The object to render as Json
 	 */
-	void renderJson(Object object);
+	//Result renderJson(Object object);
 	
 	///////////////////////////////////////////////////////////////////////////
 	// Allows to get the nicely parsed content of the request.
@@ -305,6 +305,8 @@ public interface Context {
     void requestComplete();
 
     void controllerReturned();
+    
+    void finalizeHeaders(Result result);
 
     /**
      * Get the input stream to read the request.

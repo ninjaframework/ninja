@@ -1,6 +1,8 @@
 package controllers;
 
 import ninja.Context;
+import ninja.Result;
+import ninja.Results;
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 import org.slf4j.Logger;
@@ -59,7 +61,7 @@ public class UdpPingController {
         serverSocket = null;
     }
 
-    public void getCount(Context ctx) {
-        ctx.renderJson(count.get());
+    public Result getCount(Context ctx) {
+    	return Results.json(count.get());
     }
 }

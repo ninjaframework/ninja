@@ -9,5 +9,5 @@ public interface FilterChain {
      *
      * @param context The context for the request
      */
-    void next(Context context);
+    Result next(Context context);
 }

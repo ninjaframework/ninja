@@ -15,7 +15,7 @@ class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public void next(Context context) {
-        filterProvider.get().filter(next, context);
+    public Result next(Context context) {
+        return filterProvider.get().filter(next, context);
     }
 }

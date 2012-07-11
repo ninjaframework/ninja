@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.Result;
+import ninja.Results;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,12 +33,12 @@ public class InjectionExampleController {
 
 	}
 
-	public void injection(Context context) {
+	public Result injection(Context context) {
 
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("greeting", greeter.hello());
 		
-		context.renderHtml(map);
+		return Results.html().render(map);
 
 	}
 

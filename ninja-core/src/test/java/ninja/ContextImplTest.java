@@ -79,17 +79,25 @@ public class ContextImplTest {
     public void testAddCookie() {
         Cookie cookie = Cookie.builder("cookie", "yum").setDomain("domain").build();
         context.init(httpServletRequest, httpServletResponse);
-        context.addCookie(cookie);
+        //context.addCookie(cookie);
 
+        //generate an arbitrary result:
+        Result result = Results.html();
+        result.addCookie(cookie);
+        
+        //finalize the headers => the cookies must be copied over to the servletcookies
+        context.finalizeHeaders(result);
+
+        //and verify the stuff:
         ArgumentCaptor<javax.servlet.http.Cookie> cookieCaptor = ArgumentCaptor.forClass(javax.servlet.http.Cookie.class);
         verify(httpServletResponse).addCookie(cookieCaptor.capture());
 
-        javax.servlet.http.Cookie result = cookieCaptor.getValue();
-        assertThat(result.getName(), equalTo("cookie"));
-        assertThat(result.getValue(), equalTo("yum"));
-        assertThat(result.getPath(), nullValue());
-        assertThat(result.getSecure(), equalTo(false));
-        assertThat(result.getMaxAge(), equalTo(-1));
+        javax.servlet.http.Cookie resultCookie = cookieCaptor.getValue();
+        assertThat(resultCookie.getName(), equalTo("cookie"));
+        assertThat(resultCookie.getValue(), equalTo("yum"));
+        assertThat(resultCookie.getPath(), nullValue());
+        assertThat(resultCookie.getSecure(), equalTo(false));
+        assertThat(resultCookie.getMaxAge(), equalTo(-1));
     }
     
     

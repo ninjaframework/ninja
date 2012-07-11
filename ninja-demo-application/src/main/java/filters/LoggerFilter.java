@@ -1,10 +1,11 @@
 package filters;
 
-import ninja.FilterChain;
-import org.slf4j.Logger;
-
 import ninja.Context;
 import ninja.Filter;
+import ninja.FilterChain;
+import ninja.Result;
+
+import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 
@@ -29,10 +30,10 @@ public class LoggerFilter implements Filter {
 	}
 
 	@Override
-	public void filter(FilterChain chain, Context context) {
+	public Result filter(FilterChain chain, Context context) {
 
 		logger.info("Got request from : " + context.getRequestUri());
-        chain.next(context);
+        return chain.next(context);
 	}
 
 }

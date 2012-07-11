@@ -24,7 +24,11 @@ public class SecureFilterTest {
     @Mock
     private SessionCookie sessionCookie;
 
-    @Mock FilterChain filterChain;
+    @Mock 
+    private FilterChain filterChain;
+    
+    @Mock 
+    private Result result;
 
     SecureFilter secureFilter;
 
@@ -32,9 +36,6 @@ public class SecureFilterTest {
     public void setup() {
         secureFilter = new SecureFilter();
 
-        when(context.status(Mockito.any(HTTP_STATUS.class))).thenReturn(context);
-        when(context.template(Mockito.anyString())).thenReturn(context);
-        
     }
 
     @Test

@@ -2,8 +2,9 @@ package filters;
 
 import ninja.Context;
 import ninja.Filter;
-import ninja.Context.HTTP_STATUS;
 import ninja.FilterChain;
+import ninja.Result;
+import ninja.Results;
 
 /**
  * Just a simple demo filter that changes exemplifies two things 1. Change the
@@ -18,10 +19,9 @@ import ninja.FilterChain;
 public class TeaPotFilter implements Filter {
 
 	@Override
-	public void filter(FilterChain chain, Context context) {
+	public Result filter(FilterChain chain, Context context) {
 
-		context.status(HTTP_STATUS.teapot418)
-				.template("/views/TeaPotFilter/TeaPot.ftl.html").renderHtml();
+		return Results.html().status(418).template("/views/TeaPotFilter/TeaPot.ftl.html");
 
 	}
 }

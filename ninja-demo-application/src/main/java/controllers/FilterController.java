@@ -1,16 +1,18 @@
 package controllers;
 
 
+import javax.servlet.http.Cookie;
+
 import ninja.Context;
 import ninja.FilterWith;
+import ninja.Result;
+import ninja.Results;
 import ninja.SecureFilter;
 
 import com.google.inject.Singleton;
 
 import filters.LoggerFilter;
 import filters.TeaPotFilter;
-
-import javax.servlet.http.Cookie;
 
 @Singleton
 public class FilterController {
@@ -24,7 +26,7 @@ public class FilterController {
 	 * @param context
 	 */
 	@FilterWith(SecureFilter.class)
-	public void filter(Context context) {
+	public Result filter(Context context) {
 
 		context.getHttpServletResponse().addCookie(
 				new Cookie("myname", "myvalue"));
@@ -41,7 +43,7 @@ public class FilterController {
 			}
 		}
 
-		context.renderHtml();
+		return Results.html();
 
 	}
 	/**
@@ -57,9 +59,10 @@ public class FilterController {
 	@FilterWith({
 		LoggerFilter.class, 
 		TeaPotFilter.class})
-	public void teapot(Context context) {
+	public Result teapot(Context context) {
 		
 		//this will never be executed. Have a look at the TeaPotFilter.class!
+		return Results.html();
 		
 	}
 

@@ -1,12 +1,14 @@
 package controllers;
 
-import ninja.Context;
-import ninja.lifecycle.Dispose;
-
-import javax.inject.Singleton;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+import javax.inject.Singleton;
+
+import ninja.Context;
+import ninja.Result;
+import ninja.Results;
+import ninja.lifecycle.Dispose;
 
 /**
  * Asynchronous controller
@@ -15,16 +17,21 @@ import java.util.concurrent.TimeUnit;
 public class AsyncController {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
-    public void asyncEcho(final Context ctx) {
-        ctx.handleAsync();
-        executorService.schedule(new Runnable() {
-            @Override
-            public void run() {
-                ctx.status(Context.HTTP_STATUS.ok200);
-                ctx.renderJson(ctx.getHttpServletRequest().getParameter("message"));
-                ctx.requestComplete();
-            }
-        }, Long.parseLong(ctx.getHttpServletRequest().getParameter("timeout")), TimeUnit.MILLISECONDS);
+    public Result asyncEcho(final Context ctx) {
+    	
+    	return Results.TODO();
+//        ctx.handleAsync();
+//        executorService.schedule(new Runnable() {
+//            @Override
+//            public void run() {
+//            	ctx.requestComplete();
+//            	return Results.json(ctx.getHttpServletRequest().getParameter("message"));
+//            	
+//                ctx.status(Context.HTTP_STATUS.ok200);
+//                ctx.renderJson(ctx.getHttpServletRequest().getParameter("message"));
+//                
+//            }
+//        }, Long.parseLong(ctx.getHttpServletRequest().getParameter("timeout")), TimeUnit.MILLISECONDS);
     }
 
     @Dispose

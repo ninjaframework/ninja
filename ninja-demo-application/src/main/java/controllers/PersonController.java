@@ -2,23 +2,25 @@ package controllers;
 
 import models.Person;
 import ninja.Context;
+import ninja.Result;
+import ninja.Results;
 
 import com.google.inject.Singleton;
 
 @Singleton
 public class PersonController {
 
-	public void getPerson(Context context) {
+	public Result getPerson(Context context) {
 
 		//simply render a json as result:
 		Person person = new Person();
 		person.name = "zeeess name";
 
 		// render
-		context.renderJson(person);
+		return Results.json(person);
 	}
 
-	public void postPerson(Context context) {
+	public Result postPerson(Context context) {
 
 		//parsing a request body into a java value is simple:
 		Person person = context.parseBody(Person.class);
@@ -27,7 +29,7 @@ public class PersonController {
 
 		// okay... we simply render the parsed object again as json
 		// usually we would save something into a db or so..
-		context.renderJson(person);
+		return Results.json(person);
 	}
 
 }

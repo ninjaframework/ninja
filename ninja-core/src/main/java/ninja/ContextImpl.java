@@ -1,11 +1,14 @@
 package ninja;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +18,6 @@ import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
@@ -30,7 +32,7 @@ public class ContextImpl implements Context {
 
 	private HttpServletResponse httpServletResponse;
 
-    private Route route;
+	private Route route;
 
 	// * if set this template is used. otherwise the default mapping **/
 	private String templateOverride = null;
@@ -39,8 +41,8 @@ public class ContextImpl implements Context {
 
 	public String contentType;
 
-    private AsyncStrategy asyncStrategy;
-    private final Object asyncLock = new Object();
+	private AsyncStrategy asyncStrategy;
+	private final Object asyncLock = new Object();
 
 	private final TemplateEngineManager templateEngineManager;
 
@@ -53,10 +55,8 @@ public class ContextImpl implements Context {
 	private final Logger logger;
 
 	@Inject
-	public ContextImpl(
-			BodyParserEngineManager bodyParserEngineManager,
-			FlashCookie flashCookie,
-			Logger logger,
+	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
+			FlashCookie flashCookie, Logger logger,
 			SessionCookie sessionCookie,
 			TemplateEngineManager templateEngineManager) {
 
@@ -82,9 +82,9 @@ public class ContextImpl implements Context {
 
 	}
 
-    public void setRoute(Route route) {
-        this.route = route;
-    }
+	public void setRoute(Route route) {
+		this.route = route;
+	}
 
 	public HttpServletRequest getHttpServletRequest() {
 		return httpServletRequest;
@@ -94,18 +94,18 @@ public class ContextImpl implements Context {
 		return this.httpServletResponse;
 	}
 
-	@Override
-	public Context template(String explicitTemplateName) {
-		this.templateOverride = explicitTemplateName;
-		return this;
-	}
+	// @Override
+	// public Context template(String explicitTemplateName) {
+	// this.templateOverride = explicitTemplateName;
+	// return this;
+	// }
 
-	@Override
-	public Context status(HTTP_STATUS httpStatus) {
-		this.httpStatus = httpStatus;
-        httpServletResponse.setStatus(httpStatus.code);
-		return this;
-	}
+	// @Override
+	// public Context status(HTTP_STATUS httpStatus) {
+	// this.httpStatus = httpStatus;
+	// httpServletResponse.setStatus(httpStatus.code);
+	// return this;
+	// }
 
 	@Override
 	public String getPathParameter(String key) {
@@ -113,21 +113,21 @@ public class ContextImpl implements Context {
 				.get(key);
 	}
 
-    @Override
-    public Integer getPathParameterAsInteger(String key) {
-        String parameter = getPathParameter(key);
+	@Override
+	public Integer getPathParameterAsInteger(String key) {
+		String parameter = getPathParameter(key);
 
-        try {
-            return Integer.parseInt(parameter);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+		try {
+			return Integer.parseInt(parameter);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-    @Override
-    public String getParameter(String key) {
-        return httpServletRequest.getParameter(key);
-    }
+	@Override
+	public String getParameter(String key) {
+		return httpServletRequest.getParameter(key);
+	}
 
 	@Override
 	public String getParameter(String key, String defaultValue) {
@@ -139,7 +139,7 @@ public class ContextImpl implements Context {
 
 		return parameter;
 	}
-	
+
 	@Override
 	public Integer getParameterAsInteger(String key) {
 		return getParameterAsInteger(key, null);
@@ -156,192 +156,189 @@ public class ContextImpl implements Context {
 		}
 	}
 
-    @Override
-    public Map<String, String[]> getParameters() {
-        return httpServletRequest.getParameterMap();
-    }
+	@Override
+	public Map<String, String[]> getParameters() {
+		return httpServletRequest.getParameterMap();
+	}
 
-    @Override
-    public String getHeader(String name) {
-        return httpServletRequest.getHeader(name);
-    }
+	@Override
+	public String getHeader(String name) {
+		return httpServletRequest.getHeader(name);
+	}
 
-    @Override
-    public Map<String, String> getHeaders() {
-        Map<String, String> headers = new HashMap<String, String>();
-        Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
-        while (enumeration.hasMoreElements()) {
-            String name = enumeration.nextElement();
-            headers.put(name, httpServletRequest.getHeader(name));
-        }
-        return headers;
-    }
-
-    @Override
-    public String getCookieValue(String name) {
-        return CookieHelper.getCookieValue(name, httpServletRequest.getCookies());
-    }
-
-    @Override
-    public void addCookie(ninja.Cookie cookie) {
-        httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
-    }
-
-    @Override
-    public void unsetCookie(String name) {
-        httpServletResponse.addCookie(new Cookie(name, null));
-    }
-
-    @Override
-	public void redirect(String url) {
-
-		try {
-			httpServletResponse.sendRedirect(url);
-		} catch (IOException e) {
-			logger.error("Error while calling redirect on the context", e);
+	@Override
+	public Map<String, String> getHeaders() {
+		Map<String, String> headers = new HashMap<String, String>();
+		Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
+		while (enumeration.hasMoreElements()) {
+			String name = enumeration.nextElement();
+			headers.put(name, httpServletRequest.getHeader(name));
 		}
-
+		return headers;
 	}
 
 	@Override
-	public void render() {
-
-		render(null);
-
+	public String getCookieValue(String name) {
+		return CookieHelper.getCookieValue(name,
+				httpServletRequest.getCookies());
 	}
 
-	@Override
-	public void render(Object object) {
+	// @Override
+	// public void addCookie(ninja.Cookie cookie) {
+	// httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
+	// }
+	//
+	// @Override
+	// public void unsetCookie(String name) {
+	// httpServletResponse.addCookie(new Cookie(name, null));
+	// }
 
-		finalizeResponseHeaders(contentType);
+	// @Override
+	// public Result render() {
+	//
+	// return render(null);
+	//
+	// }
 
-        if (contentType != null) {
-            TemplateEngine templateEngine = templateEngineManager
-                    .getTemplateEngineForContentType(contentType);
+	// @Override
+	// public Result render(Object object) {
+	//
+	// finalizeResponseHeaders(contentType);
+	//
+	// if (contentType != null) {
+	// TemplateEngine templateEngine = templateEngineManager
+	// .getTemplateEngineForContentType(contentType);
+	//
+	// if (templateEngine == null) {
+	// if (object instanceof String) {
+	// // Simply write it out
+	// try {
+	// getWriter().write((String) object);
+	// } catch (IOException e) {
+	// throw new RuntimeException(e);
+	// }
+	// } else if (object instanceof byte[]) {
+	// // Simply write it out
+	// try {
+	// getOutputStream().write((byte[]) object);
+	// } catch (IOException e) {
+	// throw new RuntimeException(e);
+	// }
+	// }
+	// throw new
+	// IllegalArgumentException("No template engine found for content type " +
+	// contentType);
+	// }
+	//
+	// templateEngine.invoke(this, object);
+	// }
+	// }
 
-            if (templateEngine == null) {
-                if (object instanceof String) {
-                    // Simply write it out
-                    try {
-                        getWriter().write((String) object);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else if (object instanceof byte[]) {
-                    // Simply write it out
-                    try {
-                        getOutputStream().write((byte[]) object);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                throw new IllegalArgumentException("No template engine found for content type " + contentType);
-            }
+	// @Override
+	// public void renderHtml() {
+	// renderHtml(new HashMap<String, String>());
+	// }
+	//
+	// @Override
+	// public Result renderHtml(Object object) {
+	// finalizeResponseHeaders(ContentTypes.TEXT_HTML);
+	//
+	// TemplateEngine templateEngine = templateEngineManager
+	// .getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
+	//
+	// templateEngine.invoke(this, object);
+	//
+	// }
 
-            templateEngine.invoke(this, object);
-        }
-	}
+	// @Override
+	// public Result renderJson(Object object) {
+	//
+	// finalizeResponseHeaders(ContentTypes.APPLICATION_JSON);
+	//
+	// TemplateEngine templateEngine = templateEngineManager
+	// .getTemplateEngineForContentType(ContentTypes.APPLICATION_JSON);
+	//
+	// templateEngine.invoke(this, object);
+	//
+	//
+	// }
 
-	@Override
-	public void renderHtml() {
-		renderHtml(new HashMap<String, String>());
-	}
+	// private void finalizeResponseHeaders(String contentType) {
+	// if (contentType != null) {
+	// setContentType(contentType);
+	// }
+	// setStatusOnResponse(httpStatus);
+	//
+	// flashCookie.save(this);
+	// sessionCookie.save(this);
+	//
+	// }
 
-	@Override
-	public void renderHtml(Object object) {
-		finalizeResponseHeaders(ContentTypes.TEXT_HTML);
+	// /**
+	// * set status on response finally...
+	// *
+	// * @param httpStatus
+	// */
+	// private void setStatusOnResponse(HTTP_STATUS httpStatus) {
+	//
+	// if (httpStatus.equals(HTTP_STATUS.ok200)) {
+	// httpServletResponse.setStatus(200);
+	// } else if (httpStatus.equals(HTTP_STATUS.notFound404)) {
+	// httpServletResponse.setStatus(404);
+	// } else if (httpStatus.equals(HTTP_STATUS.forbidden403)) {
+	// httpServletResponse.setStatus(403);
+	// } else if (httpStatus.equals(HTTP_STATUS.teapot418)) {
+	// httpServletResponse.setStatus(418);
+	// } else if (httpStatus.equals(HTTP_STATUS.badRequest400)) {
+	// httpServletResponse.setStatus(400);
+	// } else if (httpStatus.equals(HTTP_STATUS.noContent204)) {
+	// httpServletResponse.setStatus(204);
+	// } else if (httpStatus.equals(HTTP_STATUS.created201)) {
+	// httpServletResponse.setStatus(201);
+	// }
+	//
+	// }
 
-		TemplateEngine templateEngine = templateEngineManager
-				.getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
-
-		templateEngine.invoke(this, object);
-
-	}
-
-	@Override
-	public void renderJson(Object object) {
-
-		finalizeResponseHeaders(ContentTypes.APPLICATION_JSON);
-
-		TemplateEngine templateEngine = templateEngineManager
-				.getTemplateEngineForContentType(ContentTypes.APPLICATION_JSON);
-
-		templateEngine.invoke(this, object);
-
-
-	}
-
-	private void finalizeResponseHeaders(String contentType) {
-        if (contentType != null) {
-            setContentType(contentType);
-        }
-		setStatusOnResponse(httpStatus);
-
-		flashCookie.save(this);
-		sessionCookie.save(this);
-
-	}
-
-	/**
-	 * set status on response finally...
-	 * 
-	 * @param httpStatus
-	 */
-	private void setStatusOnResponse(HTTP_STATUS httpStatus) {
-
-		if (httpStatus.equals(HTTP_STATUS.ok200)) {
-			httpServletResponse.setStatus(200);
-		} else if (httpStatus.equals(HTTP_STATUS.notFound404)) {
-			httpServletResponse.setStatus(404);
-		} else if (httpStatus.equals(HTTP_STATUS.forbidden403)) {
-			httpServletResponse.setStatus(403);
-		} else if (httpStatus.equals(HTTP_STATUS.teapot418)) {
-			httpServletResponse.setStatus(418);
-		} else if (httpStatus.equals(HTTP_STATUS.badRequest400)) {
-			httpServletResponse.setStatus(400);
-		} else if (httpStatus.equals(HTTP_STATUS.noContent204)) {
-			httpServletResponse.setStatus(204);
-		} else if (httpStatus.equals(HTTP_STATUS.created201)) {
-			httpServletResponse.setStatus(201);
-		}
-
-	}
-
-	@Override
-	public ContextImpl setContentType(String contentType) {
-	    this.contentType = contentType;
-		httpServletResponse.setContentType(contentType);
-        return this;
-	}
+	// @Override
+	// public ContextImpl setContentType(String contentType) {
+	// this.contentType = contentType;
+	// httpServletResponse.setContentType(contentType);
+	// return this;
+	// }
 
 	@Override
 	public String getTemplateName(String suffix) {
-        if (templateOverride == null) {
-            Class controller = route.getControllerClass();
+		if (templateOverride == null) {
+			Class controller = route.getControllerClass();
 
-            // Calculate the correct path of the template.
-            // We always assume the template in the subdir "views"
+			// Calculate the correct path of the template.
+			// We always assume the template in the subdir "views"
 
-            // 1) If we are in the main project => /views/ControllerName/templateName.ftl.html
-            // 2) If we are in a plugin / subproject
-            //    => some/packages/submoduleName/views/ControllerName/templateName.ftl.html
+			// 1) If we are in the main project =>
+			// /views/ControllerName/templateName.ftl.html
+			// 2) If we are in a plugin / subproject
+			// =>
+			// some/packages/submoduleName/views/ControllerName/templateName.ftl.html
 
-            // So let's calculate the parent package of the controller:
-            String controllerPackageName = controller.getPackage().getName();
-            // This results in something like controllers or some.package.controllers
+			// So let's calculate the parent package of the controller:
+			String controllerPackageName = controller.getPackage().getName();
+			// This results in something like controllers or
+			// some.package.controllers
 
-            // Let's remove "controllers" so we cat all parent packages:
-            String parentPackageOfController = controllerPackageName.replaceAll(NinjaConstant.CONTROLLERS_DIR, "");
+			// Let's remove "controllers" so we cat all parent packages:
+			String parentPackageOfController = controllerPackageName
+					.replaceAll(NinjaConstant.CONTROLLERS_DIR, "");
 
-            // And now we rewrite everything from "." notation to directories /
-            String parentControllerPackageAsPath = parentPackageOfController.replaceAll("\\.", "/");
+			// And now we rewrite everything from "." notation to directories /
+			String parentControllerPackageAsPath = parentPackageOfController
+					.replaceAll("\\.", "/");
 
-
-            // and the final path of the controller will be something like:
-            // some/package/views/ControllerName/templateName.ftl.html
-            return String.format("%sviews/%s/%s%s", parentControllerPackageAsPath, controller
-                    .getSimpleName(), route.getControllerMethod().getName(), suffix);
-        }
+			// and the final path of the controller will be something like:
+			// some/package/views/ControllerName/templateName.ftl.html
+			return String.format("%sviews/%s/%s%s",
+					parentControllerPackageAsPath, controller.getSimpleName(),
+					route.getControllerMethod().getName(), suffix);
+		}
 		return templateOverride;
 	}
 
@@ -369,61 +366,77 @@ public class ContextImpl implements Context {
 		return sessionCookie;
 	}
 
-    @Override
-    public String getRequestUri() {
-        return getHttpServletRequest().getRequestURI();
-    }
+	@Override
+	public String getRequestUri() {
+		return getHttpServletRequest().getRequestURI();
+	}
 
-    @Override
-    public void handleAsync() {
-        synchronized (asyncLock) {
-            if (asyncStrategy == null) {
-                asyncStrategy = AsyncStrategyFactoryHolder.INSTANCE.createStrategy(httpServletRequest);
-                asyncStrategy.handleAsync();
-            }
-        }
-    }
+	@Override
+	public void handleAsync() {
+		synchronized (asyncLock) {
+			if (asyncStrategy == null) {
+				asyncStrategy = AsyncStrategyFactoryHolder.INSTANCE
+						.createStrategy(httpServletRequest);
+				asyncStrategy.handleAsync();
+			}
+		}
+	}
 
-    @Override
-    public void requestComplete() {
-        synchronized (asyncLock) {
-            if (asyncStrategy == null) {
-                throw new IllegalStateException("Request complete called on non async request");
-            }
-            asyncStrategy.requestComplete();
-        }
-    }
+	@Override
+	public void requestComplete() {
+		synchronized (asyncLock) {
+			if (asyncStrategy == null) {
+				throw new IllegalStateException(
+						"Request complete called on non async request");
+			}
+			asyncStrategy.requestComplete();
+		}
+	}
 
-    /**
-     * Used to indicate that the controller has finished executing
-     */
-    public void controllerReturned() {
-        synchronized (asyncLock) {
-            if (asyncStrategy != null) {
-                asyncStrategy.controllerReturned();
-            }
-        }
-    }
+	/**
+	 * Used to indicate that the controller has finished executing
+	 */
+	public void controllerReturned() {
+		synchronized (asyncLock) {
+			if (asyncStrategy != null) {
+				asyncStrategy.controllerReturned();
+			}
+		}
+	}
 
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return httpServletRequest.getInputStream();
-    }
+	@Override
+	public InputStream getInputStream() throws IOException {
+		return httpServletRequest.getInputStream();
+	}
 
-    @Override
-    public BufferedReader getReader() throws IOException {
-        return httpServletRequest.getReader();
-    }
+	@Override
+	public BufferedReader getReader() throws IOException {
+		return httpServletRequest.getReader();
+	}
 
-    @Override
-    public OutputStream getOutputStream() throws IOException {
-        return httpServletResponse.getOutputStream();
-    }
+	@Override
+	public OutputStream getOutputStream() throws IOException {
+		return httpServletResponse.getOutputStream();
+	}
 
-    @Override
-    public Writer getWriter() throws IOException {
-        return httpServletResponse.getWriter();
-    }
+	@Override
+	public Writer getWriter() throws IOException {
+		return httpServletResponse.getWriter();
+	}
 
+	@Override
+	public void finalizeHeaders(Result result) {
+		httpServletResponse.setContentType(contentType);
+		httpServletResponse.setStatus(result.getStatusCode());
+
+		flashCookie.save(this);
+		sessionCookie.save(this);
+		
+		for (ninja.Cookie cookie : result.getCookies()) {
+			httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
+			
+		}
+
+	}
 
 }

@@ -6,31 +6,38 @@ import java.lang.reflect.Method;
 
 /**
  * The end of the filter chain
- *
+ * 
  * @author James Roper
  */
 class FilterChainEnd implements FilterChain {
-    private final Provider<?> controllerProvider;
-    private final Method method;
+	private final Provider<?> controllerProvider;
+	private final Method method;
 
-    FilterChainEnd(Provider<?> controllerProvider, Method method) {
-        this.controllerProvider = controllerProvider;
-        this.method = method;
-    }
+	FilterChainEnd(Provider<?> controllerProvider, Method method) {
+		this.controllerProvider = controllerProvider;
+		this.method = method;
+	}
 
-    @Override
-    public void next(Context context) {
-        try {
-            method.invoke(controllerProvider.get(), context);
-            context.controllerReturned();
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            } else {
-                throw new RuntimeException(e.getCause());
-            }
-        }
-    }
+	@Override
+	public Result next(Context context) {
+
+		Result result = null;
+
+		try {
+			result = (Result) method.invoke(controllerProvider.get(), context);
+
+			context.controllerReturned();
+
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			if (e.getCause() instanceof RuntimeException) {
+				throw (RuntimeException) e.getCause();
+			} else {
+				throw new RuntimeException(e.getCause());
+			}
+		}
+
+		return result;
+	}
 }

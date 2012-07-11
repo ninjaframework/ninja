@@ -1,10 +1,11 @@
 package controllers;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.Result;
+import ninja.Results;
 import ninja.i18n.Lang;
 
 import org.slf4j.Logger;
@@ -27,23 +28,23 @@ public class ApplicationController {
     @Inject
     Lang lang;
 
-	public void examples(Context context) {
+	public Result examples(Context context) {
 	    logger.info("In example ");
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
-		context.renderHtml();
+		return Results.html();
 
 	}
 	
 	
-	public void index(Context context) {
+	public Result index(Context context) {
 		// Default rendering is simple by convention
 		// This renders the page in views/ApplicationController/index.ftl.html
-		context.renderHtml();
+		return Results.html();
 
 	}
 	
-	public void userDashboard(Context context) {
+	public Result userDashboard(Context context) {
 		//get parameters from context:
 		String id = context.getPathParameter("id");				
 		String name = context.getPathParameter("name");
@@ -54,20 +55,20 @@ public class ApplicationController {
 		map.put("name", name);
 
 		//and render page with both parameters:
-		context.renderHtml(map);
+		return Results.html().render(map);
 
 	}
 
-	public void redirect(Context context) {
+	public Result redirect(Context context) {
 		// Redirects back to the main page somply call redirect
-		context.redirect("/");
+		return Results.redirect("/");
 
 	}
 	
-	public void session(Context context) {
+	public Result session(Context context) {
 		context.getSessionCookie().put("username", "kevin");
 		
-		context.renderHtml(context.getSessionCookie().getData());
+		return Results.html().render(context.getSessionCookie().getData());
 
 	}
 
