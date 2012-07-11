@@ -1,5 +1,6 @@
 package ninja;
 
+import java.io.*;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -107,8 +108,7 @@ public interface Context {
      * suggest it. getHttpServletResponse will be removed at some point.
      *
      * @return The HTTP servlet response
-     * 
-
+     *
      */
 	@Deprecated
 	HttpServletResponse getHttpServletResponse();
@@ -288,5 +288,41 @@ public interface Context {
     void requestComplete();
 
     void controllerReturned();
+
+    /**
+     * Get the input stream to read the request.
+     *
+     * Must not be used if getReader has been called.
+     *
+     * @return The input stream
+     */
+    InputStream getInputStream() throws IOException;
+
+    /**
+     * Get the reader to read the request.
+     *
+     * Must not be used if getInputStream has been called.
+     *
+     * @return The reader
+     */
+    BufferedReader getReader() throws IOException;
+
+    /**
+     * Get the output stream to write the response.
+     *
+     * Must not be used if getWriter has been called.
+     *
+     * @return The output stream
+     */
+    OutputStream getOutputStream() throws IOException;
+
+    /**
+     * Get the writer to write the response.
+     *
+     * Must not be used if getOutputStream has been called.
+     *
+     * @return The writer
+     */
+    Writer getWriter() throws IOException;
 
 }

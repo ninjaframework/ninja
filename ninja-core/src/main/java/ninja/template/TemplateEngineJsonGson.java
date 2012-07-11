@@ -15,7 +15,7 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 		String json = gson.toJson(object);
 		
 		try {
-			context.getHttpServletResponse().getOutputStream().print(json);
+			context.getWriter().write(json);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -28,4 +28,8 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 		return null;
 	}
 
+    @Override
+    public String getContentType() {
+        return "application/json";
+    }
 }
