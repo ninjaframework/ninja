@@ -103,6 +103,7 @@ public class ContextImpl implements Context {
 	@Override
 	public Context status(HTTP_STATUS httpStatus) {
 		this.httpStatus = httpStatus;
+        httpServletResponse.setStatus(httpStatus.code);
 		return this;
 	}
 

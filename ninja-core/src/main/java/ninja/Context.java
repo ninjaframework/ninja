@@ -14,8 +14,14 @@ import ninja.session.SessionCookie;
 public interface Context {
 
 	enum HTTP_STATUS {
-        notFound404, ok200, forbidden403, teapot418, badRequest400, noContent204, created201
-	}
+        notFound404(404), ok200(200), forbidden403(403), teapot418(418), badRequest400(400),
+        noContent204(204), created201(201);
+        public final int code;
+
+        private HTTP_STATUS(int code) {
+            this.code = code;
+        }
+    }
 
 	/**
 	 * Returns the uri as seen by the server.
