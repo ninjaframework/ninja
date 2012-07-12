@@ -383,25 +383,23 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-	public void requestComplete() {
+	public void returnResultAsync(Result result) {
 		synchronized (asyncLock) {
-			if (asyncStrategy == null) {
-				throw new IllegalStateException(
-						"Request complete called on non async request");
-			}
-			asyncStrategy.requestComplete();
+            handleAsync();
+			asyncStrategy.returnResultAsync(result);
 		}
 	}
 
 	/**
 	 * Used to indicate that the controller has finished executing
 	 */
-	public void controllerReturned() {
+	public Result controllerReturned() {
 		synchronized (asyncLock) {
 			if (asyncStrategy != null) {
-				asyncStrategy.controllerReturned();
+				return asyncStrategy.controllerReturned();
 			}
 		}
+        return null;
 	}
 
 	@Override

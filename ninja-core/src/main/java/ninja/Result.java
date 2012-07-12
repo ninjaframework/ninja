@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 public class Result {
 	
 	public static int SC_200_OK = 200;
+	public static int SC_204_NO_CONTENT = 204;
 	
 	//for redirects:
 	public static int SC_300_MULTIPLE_CHOICES = 300;
@@ -17,6 +18,8 @@ public class Result {
 	public static int SC_303_SEE_OTHER = 303;
 	public static int SC_307_TEMPORARY_REDIRECT = 307;
 	
+	public static int SC_400_BAD_REQUEST = 400;
+	public static int SC_403_FORBIDDEN = 403;
 	public static int SC_404_NOT_FOUND = 404;
 	
 	public static int SC_501_NOT_IMPLEMENTED = 501;
