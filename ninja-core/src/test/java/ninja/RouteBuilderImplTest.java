@@ -138,4 +138,12 @@ public class RouteBuilderImplTest {
 
 	}
 
+    @Test
+    public void testParametersDontCrossSlashes() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/blah/{id}");
+        Route route = routeBuilder.buildRoute(injector);
+        assertFalse(route.matches("GET", "/blah/someid/sub"));
+    }
+
 }

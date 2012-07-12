@@ -107,6 +107,6 @@ public class Route {
      * @return The regex
      */
     private static String convertRawUriToRegex(String rawUri) {
-        return "^" + rawUri.replaceAll("\\{.*?\\}", "(.*?)") + "$";
+        return rawUri.replaceAll("\\{.*?\\}", "([^/]*?)");
     }
 }
