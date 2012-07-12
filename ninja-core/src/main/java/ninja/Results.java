@@ -10,6 +10,10 @@ public class Results {
 		
 	}
 
+    public static Result ok() {
+        return status(Result.SC_200_OK);
+    }
+
     public static Result notFound() {
         return status(Result.SC_404_NOT_FOUND);
     }
@@ -25,6 +29,10 @@ public class Results {
     public static Result noContent() {
         return status(Result.SC_204_NO_CONTENT);
     }
+
+	public static Result internalServerError() {
+		return status(Result.SC_500_INTERNAL_SERVER_ERROR);
+	}
 
     public static Result redirect(String url) {
 		
