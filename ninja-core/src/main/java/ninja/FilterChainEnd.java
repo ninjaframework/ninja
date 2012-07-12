@@ -21,12 +21,17 @@ class FilterChainEnd implements FilterChain {
 	@Override
 	public Result next(Context context) {
 
-		Result result = null;
+		Result result;
 
 		try {
 			result = (Result) method.invoke(controllerProvider.get(), context);
 
-			context.controllerReturned();
+            if (result instanceof AsyncResult) {
+                Result newResult = context.controllerReturned();
+                if (newResult != null) {
+                    result = newResult;
+                }
+            }
 
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);

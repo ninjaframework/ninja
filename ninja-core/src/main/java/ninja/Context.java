@@ -302,9 +302,9 @@ public interface Context {
     /**
      * Indicate that request processing of an async request is complete
      */
-    void requestComplete();
+    void returnResultAsync(Result result);
 
-    void controllerReturned();
+    Result controllerReturned();
     
     void finalizeHeaders(Result result);
 

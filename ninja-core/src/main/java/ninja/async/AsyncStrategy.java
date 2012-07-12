@@ -1,10 +1,12 @@
 package ninja.async;
 
+import ninja.Result;
+
 /**
  * The strategy for async handling
  */
 public interface AsyncStrategy {
     void handleAsync();
-    void controllerReturned();
-    void requestComplete();
+    Result controllerReturned();
+    void returnResultAsync(Result result);
 }

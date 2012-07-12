@@ -1,5 +1,7 @@
 package ninja.async;
 
+import ninja.Result;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -18,12 +20,13 @@ public class Servlet3AsyncStrategy implements AsyncStrategy {
     }
 
     @Override
-    public void controllerReturned() {
-        // Do nothing
+    public Result controllerReturned() {
+        return null;
     }
 
     @Override
-    public void requestComplete() {
+    public void returnResultAsync(Result result) {
+
         request.getAsyncContext().complete();
     }
 }
