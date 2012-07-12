@@ -285,7 +285,7 @@ public class SessionCookieTest {
 		//stuff must break => ...
 		SessionCookie sessionCookie = new SessionCookieImpl(crypto, ninjaProperties);
 		
-		verify(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix));
+		verify(ninjaProperties).getOrDie(NinjaConstant.applicationCookiePrefix);
 	}
 
 	@Test
