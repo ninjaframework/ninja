@@ -122,33 +122,36 @@ public class NinjaImpl implements Ninja {
 			
 			context.finalizeHeaders(result);
 
-			TemplateEngine templateEngine = templateEngineManager
-					.getTemplateEngineForContentType(result.getContentType());
+            if (result.getContentType() != null) {
+                TemplateEngine templateEngine = templateEngineManager
+                        .getTemplateEngineForContentType(result.getContentType());
 
-			if (templateEngine == null) {
-				if (result.getRenderable() instanceof String) {
-					// Simply write it out
-					try {
-						context.getWriter().write(
-								(String) result.getRenderable());
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				} else if (result.getRenderable() instanceof byte[]) {
-					// Simply write it out
-					try {
-						context.getOutputStream().write(
-								(byte[]) result.getRenderable());
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}
-				throw new IllegalArgumentException(
-						"No template engine found for content type "
-								+ result.getContentType());
-			}
-
-			templateEngine.invoke(context, result.getRenderable());
+                if (templateEngine == null) {
+                    if (result.getRenderable() instanceof String) {
+                        // Simply write it out
+                        try {
+                            context.getWriter().write(
+                                    (String) result.getRenderable());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (result.getRenderable() instanceof byte[]) {
+                        // Simply write it out
+                        try {
+                            context.getOutputStream().write(
+                                    (byte[]) result.getRenderable());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (result.getRenderable() != null) {
+                        throw new IllegalArgumentException(
+                                "No template engine found for content type "
+                                        + result.getContentType());
+                    }
+                } else {
+                    templateEngine.invoke(context, result.getRenderable());
+                }
+            }
 		}
 
 	}
