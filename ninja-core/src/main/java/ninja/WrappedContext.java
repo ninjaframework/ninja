@@ -115,6 +115,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public void asyncRequestComplete() {
+        wrapped.asyncRequestComplete();
+    }
+
+    @Override
     public Result controllerReturned() {
         return wrapped.controllerReturned();
     }

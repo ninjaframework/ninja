@@ -198,14 +198,19 @@ public interface Context {
 	<T> T parseBody(Class<T> classOfT);
 
     /**
-     * Indicate that this request will be handled asynchronously
+     * Indicate that this request is going to be handled asynchronously
      */
     void handleAsync();
 
     /**
-     * Indicate that request processing of an async request is complete
+     * Indicate that request processing of an async request is complete.
      */
     void returnResultAsync(Result result);
+
+    /**
+     * Indicate that processing this request is complete.
+     */
+    void asyncRequestComplete();
 
     Result controllerReturned();
     

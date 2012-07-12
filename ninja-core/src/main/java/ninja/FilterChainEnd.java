@@ -27,6 +27,8 @@ class FilterChainEnd implements FilterChain {
 			result = (Result) method.invoke(controllerProvider.get(), context);
 
             if (result instanceof AsyncResult) {
+                // Make sure handle async has been called
+                context.handleAsync();
                 Result newResult = context.controllerReturned();
                 if (newResult != null) {
                     result = newResult;
