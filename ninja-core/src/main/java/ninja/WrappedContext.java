@@ -1,0 +1,150 @@
+package ninja;
+
+import ninja.session.FlashCookie;
+import ninja.session.SessionCookie;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.Map;
+
+/**
+ * A wrapped context.  Useful if filters want to modify the context before sending
+ * it on.
+ *
+ * @author James Roper
+ */
+public class WrappedContext implements Context {
+    private final Context wrapped;
+
+    public WrappedContext(Context wrapped) {
+        this.wrapped = wrapped;
+    }
+
+    @Override
+    public String getRequestUri() {
+        return wrapped.getRequestUri();
+    }
+
+    @Override
+    public FlashCookie getFlashCookie() {
+        return wrapped.getFlashCookie();
+    }
+
+    @Override
+    public SessionCookie getSessionCookie() {
+        return wrapped.getSessionCookie();
+    }
+
+    @Override
+    @Deprecated
+    public HttpServletRequest getHttpServletRequest() {
+        return wrapped.getHttpServletRequest();
+    }
+
+    @Override
+    @Deprecated
+    public HttpServletResponse getHttpServletResponse() {
+        return wrapped.getHttpServletResponse();
+    }
+
+    @Override
+    public String getParameter(String key) {
+        return wrapped.getParameter(key);
+    }
+
+    @Override
+    public String getParameter(String key, String defaultValue) {
+        return wrapped.getParameter(key, defaultValue);
+    }
+
+    @Override
+    public Integer getParameterAsInteger(String key) {
+        return wrapped.getParameterAsInteger(key);
+    }
+
+    @Override
+    public Integer getParameterAsInteger(String key, Integer defaultValue) {
+        return wrapped.getParameterAsInteger(key, defaultValue);
+    }
+
+    @Override
+    public String getPathParameter(String key) {
+        return wrapped.getPathParameter(key);
+    }
+
+    @Override
+    public Integer getPathParameterAsInteger(String key) {
+        return wrapped.getPathParameterAsInteger(key);
+    }
+
+    @Override
+    public Map<String, String[]> getParameters() {
+        return wrapped.getParameters();
+    }
+
+    @Override
+    public String getHeader(String name) {
+        return wrapped.getHeader(name);
+    }
+
+    @Override
+    public Map<String, String> getHeaders() {
+        return wrapped.getHeaders();
+    }
+
+    @Override
+    public String getCookieValue(String name) {
+        return wrapped.getCookieValue(name);
+    }
+
+    @Override
+    public String getTemplateName(String suffix) {
+        return wrapped.getTemplateName(suffix);
+    }
+
+    @Override
+    public <T> T parseBody(Class<T> classOfT) {
+        return wrapped.parseBody(classOfT);
+    }
+
+    @Override
+    public void handleAsync() {
+        wrapped.handleAsync();
+    }
+
+    @Override
+    public void returnResultAsync(Result result) {
+        wrapped.returnResultAsync(result);
+    }
+
+    @Override
+    public Result controllerReturned() {
+        return wrapped.controllerReturned();
+    }
+
+    @Override
+    public void finalizeHeaders(Result result) {
+        wrapped.finalizeHeaders(result);
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return wrapped.getInputStream();
+    }
+
+    @Override
+    public BufferedReader getReader() throws IOException {
+        return wrapped.getReader();
+    }
+
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+        return wrapped.getOutputStream();
+    }
+
+    @Override
+    public Writer getWriter() throws IOException {
+        return wrapped.getWriter();
+    }
+}
