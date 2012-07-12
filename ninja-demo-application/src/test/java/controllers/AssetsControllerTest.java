@@ -6,13 +6,17 @@ import java.util.Map;
 
 import ninja.NinjaApiTest;
 import ninja.NinjaApiTestHelper;
+import ninja.utils.MimeTypes;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
 public class AssetsControllerTest extends NinjaApiTest {
+	
 	@Test
 	public void testThatSettingOfMimeTypeWorks() {
 		
