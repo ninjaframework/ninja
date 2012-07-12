@@ -35,7 +35,6 @@ public class AssetsController {
 	}
 	
 	public Result serve(Context context) {
-		System.out.println("mime type is");
 		Object renderable = new Renderable() {
 			
 			@Override
@@ -58,7 +57,6 @@ public class AssetsController {
 						result.status(200);
 						
 						String mimeType = mimeTypes.getContentType(context, finalName);
-						System.out.println("mime type is: " + mimeType);
 						if (!mimeType.isEmpty()) {
 							result.contentType(mimeType);
 						}
