@@ -71,6 +71,10 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	}
 
+    public boolean isDev() {
+        return "dev".equals(mode);
+    }
+
 	@Override
 	public String get(String key) {
 		return allCurrentNinjaProperties.getProperty(key);

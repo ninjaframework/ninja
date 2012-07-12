@@ -78,4 +78,10 @@ public interface NinjaProperties {
 	 */
 	String getOrDie(String key);
 
+    /**
+     * Whether we are in dev mode
+     *
+     * @return True if we are in dev mode
+     */
+    boolean isDev();
 }
