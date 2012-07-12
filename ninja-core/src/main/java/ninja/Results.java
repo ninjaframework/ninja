@@ -26,6 +26,10 @@ public class Results {
         return status(Result.SC_204_NO_CONTENT);
     }
 
+	public static Result internalServerError() {
+		return status(Result.SC_500_INTERNAL_SERVER_ERROR);
+	}
+
     public static Result redirect(String url) {
 		
 		Result result = status(Result.SC_307_TEMPORARY_REDIRECT);
