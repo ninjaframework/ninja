@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import ninja.Context;
+import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.utils.NoEscapeString;
 
@@ -24,19 +25,22 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 	private final Lang lang;
 
+    private final TemplateEngineHelper templateEngineHelper;
+
 	@Inject
-	TemplateEngineFreemarker(Lang lang) {
+	TemplateEngineFreemarker(Lang lang, TemplateEngineHelper templateEngineHelper) {
 		this.lang = lang;
-		cfg = new Configuration();
+        this.templateEngineHelper = templateEngineHelper;
+        cfg = new Configuration();
         cfg.setClassForTemplateLoading(this.getClass(), "/");
 
 	}
 
 	@Override
-	public void invoke(Context context, Object object) {
+	public void invoke(Context context, Result result) {
 
 		Map map;
-		
+		Object object = result.getRenderable();
 		//if the object is null we simply render an empty map...
 		if (object == null) {
 		    map = Maps.newHashMap();
@@ -56,14 +60,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		Map<String, String> i18nMap = lang.getAll(locale);		
 		map.putAll(i18nMap);
 
-		
-		//escape the mapped strings.
+		String templateName = templateEngineHelper.getTemplateForResult(context.getRoute(),
+                result, FILE_SUFFIX);
 
-
-		String templateName = context.getTemplateName(FILE_SUFFIX);
-
-
-		
 		// Specify the data source where the template files come from.
 		// Here I set a file directory for it:
 		try {
@@ -80,12 +79,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-	}
-
-	@Override
-	public String getSuffixOfTemplatingEngine() {
-		return FILE_SUFFIX;
 
 	}
 

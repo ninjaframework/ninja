@@ -149,7 +149,7 @@ public class NinjaImpl implements Ninja {
                                         + result.getContentType());
                     }
                 } else {
-                    templateEngine.invoke(context, result.getRenderable());
+                    templateEngine.invoke(context, result);
                 }
             }
 		}

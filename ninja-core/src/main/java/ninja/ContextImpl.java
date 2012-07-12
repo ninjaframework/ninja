@@ -157,42 +157,6 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-	public String getTemplateName(String suffix) {
-		if (templateOverride == null) {
-			Class controller = route.getControllerClass();
-
-			// Calculate the correct path of the template.
-			// We always assume the template in the subdir "views"
-
-			// 1) If we are in the main project =>
-			// /views/ControllerName/templateName.ftl.html
-			// 2) If we are in a plugin / subproject
-			// =>
-			// some/packages/submoduleName/views/ControllerName/templateName.ftl.html
-
-			// So let's calculate the parent package of the controller:
-			String controllerPackageName = controller.getPackage().getName();
-			// This results in something like controllers or
-			// some.package.controllers
-
-			// Let's remove "controllers" so we cat all parent packages:
-			String parentPackageOfController = controllerPackageName
-					.replaceAll(NinjaConstant.CONTROLLERS_DIR, "");
-
-			// And now we rewrite everything from "." notation to directories /
-			String parentControllerPackageAsPath = parentPackageOfController
-					.replaceAll("\\.", "/");
-
-			// and the final path of the controller will be something like:
-			// some/package/views/ControllerName/templateName.ftl.html
-			return String.format("%sviews/%s/%s%s",
-					parentControllerPackageAsPath, controller.getSimpleName(),
-					route.getControllerMethod().getName(), suffix);
-		}
-		return templateOverride;
-	}
-
-	@Override
 	public <T> T parseBody(Class<T> classOfT) {
 
 		BodyParserEngine bodyParserEngine = bodyParserEngineManager
@@ -294,4 +258,8 @@ public class ContextImpl implements Context {
 
 	}
 
+    @Override
+    public Route getRoute() {
+        return route;
+    }
 }

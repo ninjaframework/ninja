@@ -99,11 +99,6 @@ public class WrappedContext implements Context {
     }
 
     @Override
-    public String getTemplateName(String suffix) {
-        return wrapped.getTemplateName(suffix);
-    }
-
-    @Override
     public <T> T parseBody(Class<T> classOfT) {
         return wrapped.parseBody(classOfT);
     }
@@ -146,5 +141,10 @@ public class WrappedContext implements Context {
     @Override
     public Writer getWriter() throws IOException {
         return wrapped.getWriter();
+    }
+
+    @Override
+    public Route getRoute() {
+        return wrapped.getRoute();
     }
 }

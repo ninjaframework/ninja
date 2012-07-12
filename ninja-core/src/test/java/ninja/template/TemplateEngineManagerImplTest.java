@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import ninja.ContentTypes;
 import ninja.Context;
+import ninja.Result;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -43,11 +44,7 @@ public class TemplateEngineManagerImplTest {
     }
 
     public static abstract class MockTemplateEngine implements TemplateEngine {
-        public void invoke(Context context, Object object) {
-        }
-
-        public String getSuffixOfTemplatingEngine() {
-            return null;
+        public void invoke(Context context, Result result) {
         }
     }
 

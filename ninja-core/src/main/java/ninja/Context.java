@@ -13,16 +13,6 @@ import ninja.session.SessionCookie;
 
 public interface Context {
 
-	enum HTTP_STATUS {
-        notFound404(404), ok200(200), forbidden403(403), teapot418(418), badRequest400(400),
-        noContent204(204), created201(201);
-        public final int code;
-
-        private HTTP_STATUS(int code) {
-            this.code = code;
-        }
-    }
-
 	/**
 	 * Returns the uri as seen by the server.
 	 * 
@@ -55,42 +45,6 @@ public interface Context {
      */
 	SessionCookie getSessionCookie();
 
-	/**
-	 * Simply redirect to another url.
-	 * 
-	 * @param url The url to redirect to
-	 */
-	//Result redirect(String url);
-
-	/**
-	 * Set the response content type.
-	 * 
-	 * The content type is usually also important because the rendering engine
-	 * uses that contentType to determein which engine to chose.
-	 * 
-	 * call render() on application/json and the json render engine will be used
-	 * call render() on text/html and the html render engine will be used.
-	 * 
-	 * @param contentType examples are "application/json" or "text/html".
-     * @return This context
-	 */
-	//Context setContentType(String contentType);
-
-	/**
-	 * Th explicitTemplateName is a fully qualified name of a template
-	 * from the root of the package. It includes the suffix of
-	 * a template (eg ftl.html).
-	 * 
-	 * An example is:
-	 * "/views/forbidden403.ftl.html"
-	 * or
-	 * "/views/ApplicationController/index.ftl.html"
-	 * 
-	 * @param explicitTemplateName is something like "/views/ApplicationController/index.ftl.html"
-	 * @return the very same Context for chaining.
-	 */
-	//Context template(String explicitTemplateName);
-
     /**
      * Get the underlying HTTP servlet request
      * 
@@ -120,14 +74,6 @@ public interface Context {
 	@Deprecated
 	HttpServletResponse getHttpServletResponse();
 
-    /**
-     * Set the status code for the response
-     *
-     * @param httpStatus The status code
-     * @return This context
-     */
-	//Context status(HTTP_STATUS httpStatus);
-	
     /**
      * Get the parameter with the given key from the request.  The parameter may either be a query parameter, or in the
      * case of form submissions, may be a form parameter
@@ -214,69 +160,6 @@ public interface Context {
      */
     String getCookieValue(String name);
 
-    /**
-     * Set a cookie
-     *
-     * @param cookie the cookie to set
-     */
-    //void addCookie(Cookie cookie);
-
-    /**
-     * Unset the cookie with the given name
-     *
-     * @param name The name of the cookie to unset
-     */
-    //void unsetCookie(String name);
-
-    /**
-     * Get the name of the template that will be rendered for this request
-     *
-     * @param suffix The default suffix to add if computing the template name by convention
-     * @return The name of the template to be rendered
-     */
-	String getTemplateName(String suffix);
-
-    /**
-     * Render the result stored in this context
-     */
-	//Result render();
-
-    /**
-     * Render the given object, using the appropriate template engine for the content type
-     *
-     * @param object The object to render
-     * @throws IllegalArgumentException If no template engine could be found for the content type
-     */
-	//Result render(Object object);
-
-    ///////////////////////////////////////////////////////////////////////////
-	// Convenience Methods to render a specific type. Html, Json and maybe Xml
-	// Uses no content negotation whatsoever
-	///////////////////////////////////////////////////////////////////////////
-	/**
-	 * Renders something as text/html. Either uses a predefined template or
-	 * the template determined by auto configuration.
-	 */
-	//Result renderHtml();
-
-	/**
-	 * Renders this object. Most likely the render engine will take a Map.
-	 * The default rendering engine is Freemarker. And Fremarker
-	 * will take a map of objects.
-	 * 
-	 * @param object The object to render as Html
-	 */
-	//Result renderHtml(Object object);
-
-	/**
-	 * Render the object as json. Uses the underlying Json implementation.
-	 * By default we are using Gson. And Gson is accepting any Object and will
-	 * transform it into a Json response.
-	 * 
-	 * @param object The object to render as Json
-	 */
-	//Result renderJson(Object object);
-	
 	///////////////////////////////////////////////////////////////////////////
 	// Allows to get the nicely parsed content of the request.
 	// For instance if the content is a json you could simply get the json
@@ -343,5 +226,12 @@ public interface Context {
      * @return The writer
      */
     Writer getWriter() throws IOException;
+
+    /**
+     * Get the route for this context
+     *
+     * @return The route
+     */
+    Route getRoute();
 
 }
