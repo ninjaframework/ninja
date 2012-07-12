@@ -43,7 +43,13 @@ public interface SessionCookie {
 	 */
 	public String get(String key);
 
-	public void remove(String key);
+	/**
+	 * Removes the value of the key and returns the value or null.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String remove(String key);
 
 	public void clear();
 	/**

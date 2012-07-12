@@ -271,11 +271,12 @@ public class SessionCookieImpl implements SessionCookie {
 	}
     
     @Override
-	public void remove(String key) {
+	public String remove(String key) {
 
 		sessionDataHasBeenChanged = true;
+		String result = get(key);
 		data.remove(key);
-
+		return result;
 	}
 
     @Override
