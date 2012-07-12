@@ -10,6 +10,7 @@ import ninja.i18n.Lang;
 
 import org.slf4j.Logger;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -70,6 +71,21 @@ public class ApplicationController {
 		
 		return Results.html().render(context.getSessionCookie().getData());
 
+	}
+	
+	public Result htmlEscaping(Context context) {
+		
+		//just an example of html escaping in action.
+		//just visit /htmlEscaping and check out the source
+		//all problematic characters will be escaped 
+		String maliciousJavascript = "<a javascript:alert(\"Hello!\");";
+		
+		Map<String, String> renderMap = Maps.newHashMap();
+		renderMap.put("maliciousJavascript", maliciousJavascript);
+		
+		return Results.html(renderMap);
+		
+		
 	}
 
 

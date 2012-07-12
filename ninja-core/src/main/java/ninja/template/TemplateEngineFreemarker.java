@@ -27,16 +27,18 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 	
 	private final TemplateEngineHelper templateEngineHelper;
 
-
 	private final Logger logger;
 
 	@Inject
-	TemplateEngineFreemarker(Lang lang, Logger logger, TemplateEngineHelper templateEngineHelper) {
+	TemplateEngineFreemarker(Lang lang, Logger logger, TemplateEngineHelper templateEngineHelper, TemplateEngineManager templateEngineManager) {
 		this.lang = lang;
 		this.logger = logger;
 		this.templateEngineHelper = templateEngineHelper;
 		cfg = new Configuration();
 		cfg.setClassForTemplateLoading(this.getClass(), "/");
+		
+		//we are going to enable html escaping by default using this template loader:
+		cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg.getTemplateLoader()));
 	}
     
 
@@ -58,8 +60,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 		} else {
 			map = (Map) object;
-		}
-		
+		}		
 		
 		// provide all i18n templates to freemarker engine:
 		// they will be usually prefixed by a "i18n."
@@ -94,26 +95,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     @Override
     public String getContentType() {
         return "text/html";
-    }
-    
-    private Map escpaeStringsInMap(Map<String, String> map) {
-    	
-    	Map<String, String> returnMap = Maps.newHashMap();
-    	
-    	for (Entry<String, String> entry : map.entrySet()) {
-    		
-    		//String value = entry.getValue();
-    		//if (value instanceof NoEscapeString) {
-    			returnMap.put(entry.getKey(), entry.getValue());
-    		//} else {
-    			//returnMap.put(entry.getKey(), HtmlEscapersentry.getValue());
-    			
-    		//}
-    		
-    	}
-    	
-    	return map;
-    	
     }
 
 	@Override

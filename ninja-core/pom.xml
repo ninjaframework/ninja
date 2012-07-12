@@ -71,12 +71,11 @@
             <version>1.0.4</version>
         </dependency>
         
-        <!--  Used mainly for escaping html. Can be removed when -->
-        <!-- Guava gets support for htmlescaping... -->
+        <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
         </dependency>
 
 

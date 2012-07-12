@@ -17,6 +17,12 @@ public class NinjaApiTest {
         ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
     }
 
+    /**
+     * Something like http://localhost:8080/ 
+     * 
+     * Will contain trailing slash!
+     * @return
+     */
     public String getServerAddress() {
 		return ninjaIntegrationTestHelper.getServerAddress();
 	}

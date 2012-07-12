@@ -38,6 +38,8 @@ public class Routes implements ApplicationRoutes {
 		router.GET().route("/redirect").with(ApplicationController.class, "redirect");
 		
 		router.GET().route("/session").with(ApplicationController.class, "session");
+		
+		router.GET().route("/htmlEscaping").with(ApplicationController.class, "htmlEscaping");
 
 		// /////////////////////////////////////////////////////////////////////
 		// Json support
