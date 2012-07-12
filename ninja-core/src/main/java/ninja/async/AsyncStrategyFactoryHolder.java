@@ -1,5 +1,6 @@
 package ninja.async;
 
+import ninja.utils.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,15 +20,17 @@ public class AsyncStrategyFactoryHolder {
             HttpServletRequest.class.getMethod("startAsync");
             factory = new AsyncStrategyFactory() {
                 @Override
-                public AsyncStrategy createStrategy(HttpServletRequest request) {
-                    return new Servlet3AsyncStrategy(request);
+                public AsyncStrategy createStrategy(HttpServletRequest request,
+                        ResultHandler resultHandler) {
+                    return new Servlet3AsyncStrategy(resultHandler, request);
                 }
             };
         } catch (NoSuchMethodException e) {
             log.warn("Servlet 3 container not detected, async controllers will block");
             factory = new AsyncStrategyFactory() {
                 @Override
-                public AsyncStrategy createStrategy(HttpServletRequest request) {
+                public AsyncStrategy createStrategy(HttpServletRequest request,
+                        ResultHandler resultHandler) {
                     return new BlockingAsyncStrategy();
                 }
             };

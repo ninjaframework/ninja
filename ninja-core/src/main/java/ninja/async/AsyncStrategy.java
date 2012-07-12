@@ -1,5 +1,6 @@
 package ninja.async;
 
+import ninja.Context;
 import ninja.Result;
 
 /**
@@ -8,5 +9,5 @@ import ninja.Result;
 public interface AsyncStrategy {
     void handleAsync();
     Result controllerReturned();
-    void returnResultAsync(Result result);
+    void returnResultAsync(Result result, Context context);
 }

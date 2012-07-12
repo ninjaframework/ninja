@@ -1,5 +1,6 @@
 package ninja.async;
 
+import ninja.Context;
 import ninja.Result;
 
 import java.util.concurrent.CountDownLatch;
@@ -26,7 +27,7 @@ public class BlockingAsyncStrategy implements AsyncStrategy {
     }
 
     @Override
-    public void returnResultAsync(Result result) {
+    public void returnResultAsync(Result result, Context context) {
         this.result.set(result);
         requestCompleteLatch.countDown();
     }

@@ -3,8 +3,6 @@ package ninja;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,11 +18,11 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.CookieHelper;
-import ninja.utils.NinjaConstant;
 import ninja.utils.ResponseStreams;
 import ninja.utils.ResponseStreamsServlet;
 
 import com.google.inject.Inject;
+import ninja.utils.ResultHandler;
 
 public class ContextImpl implements Context {
 
@@ -47,15 +45,18 @@ public class ContextImpl implements Context {
 	private final FlashCookie flashCookie;
 
 	private final SessionCookie sessionCookie;
+    private final ResultHandler resultHandler;
 
 	@Inject
 	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
-			FlashCookie flashCookie, SessionCookie sessionCookie) {
+            FlashCookie flashCookie, SessionCookie sessionCookie,
+            ResultHandler resultHandler) {
 
 		this.bodyParserEngineManager = bodyParserEngineManager;
 		this.flashCookie = flashCookie;
 		this.sessionCookie = sessionCookie;
-	}
+        this.resultHandler = resultHandler;
+    }
 
 	public void init(HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) {
@@ -187,12 +188,11 @@ public class ContextImpl implements Context {
 		return getHttpServletRequest().getRequestURI();
 	}
 
-	@Override
 	public void handleAsync() {
 		synchronized (asyncLock) {
 			if (asyncStrategy == null) {
 				asyncStrategy = AsyncStrategyFactoryHolder.INSTANCE
-						.createStrategy(httpServletRequest);
+						.createStrategy(httpServletRequest, resultHandler);
 				asyncStrategy.handleAsync();
 			}
 		}
@@ -202,19 +202,22 @@ public class ContextImpl implements Context {
 	public void returnResultAsync(Result result) {
 		synchronized (asyncLock) {
 			handleAsync();
-			asyncStrategy.returnResultAsync(result);
+			asyncStrategy.returnResultAsync(result, this);
 		}
 	}
 
-	/**
+    @Override
+    public void asyncRequestComplete() {
+        returnResultAsync(null);
+    }
+
+    /**
 	 * Used to indicate that the controller has finished executing
 	 */
 	public Result controllerReturned() {
-		synchronized (asyncLock) {
-			if (asyncStrategy != null) {
-				return asyncStrategy.controllerReturned();
-			}
-		}
+        if (asyncStrategy != null) {
+            return asyncStrategy.controllerReturned();
+        }
 		return null;
 	}
 
@@ -230,7 +233,9 @@ public class ContextImpl implements Context {
 
 	@Override
 	public ResponseStreams finalizeHeaders(Result result) {
-		httpServletResponse.setContentType(contentType);
+        if (contentType != null) {
+            httpServletResponse.setContentType(contentType);
+        }
 		httpServletResponse.setStatus(result.getStatusCode());
 
 		flashCookie.save(this);

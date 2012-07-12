@@ -16,6 +16,7 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 
+import ninja.utils.ResultHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,11 +48,14 @@ public class ContextImplTest {
     @Mock
     private Route route;
 
+    @Mock
+    private ResultHandler resultHandler;
+
     private ContextImpl context;
 
     @Before
     public void setUp() {
-        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie);
+        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie, resultHandler);
     }
 
     @Test
