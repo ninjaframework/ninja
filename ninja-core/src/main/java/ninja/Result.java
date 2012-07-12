@@ -70,8 +70,20 @@ public class Result {
 	 * Sets the content type
 	 * 
 	 * @param contentType
+	 * @Deprecated => please use contentType(...)
 	 */
+	@Deprecated
 	public Result setContentType(String contentType) {
+		this.contentType = contentType;
+		return this;
+	}
+	
+	/**
+	 * Sets the content type
+	 * 
+	 * @param contentType
+	 */
+	public Result contentType(String contentType) {
 		this.contentType = contentType;
 		return this;
 	}

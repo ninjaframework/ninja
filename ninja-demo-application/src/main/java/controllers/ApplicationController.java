@@ -60,7 +60,7 @@ public class ApplicationController {
 	}
 
 	public Result redirect(Context context) {
-		// Redirects back to the main page somply call redirect
+		// Redirects back to the main page simply call redirect
 		return Results.redirect("/");
 
 	}
