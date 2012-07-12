@@ -1,7 +1,5 @@
 package ninja;
 
-import ninja.Context.HTTP_STATUS;
-
 /**
  * A simple default implementation of a SecureFilter.
  * 
@@ -31,7 +29,7 @@ public class SecureFilter implements Filter {
                 || context.getSessionCookie().get(USERNAME) == null) {
             
         	
-        	return Results.html().status(403).template("/views/forbidden403.ftl.html");
+        	return Results.forbidden().html().template("/views/forbidden403.ftl.html");
 
         } else {
             return chain.next(context);

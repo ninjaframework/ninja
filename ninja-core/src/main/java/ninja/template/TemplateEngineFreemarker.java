@@ -24,17 +24,22 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 	private Configuration cfg;
 
 	private final Lang lang;
+	
+	private final TemplateEngineHelper templateEngineHelper;
+
 
 	private final Logger logger;
 
 	@Inject
-	TemplateEngineFreemarker(Lang lang, Logger logger) {
+	TemplateEngineFreemarker(Lang lang, Logger logger, TemplateEngineHelper templateEngineHelper) {
 		this.lang = lang;
 		this.logger = logger;
+		this.templateEngineHelper = templateEngineHelper;
 		cfg = new Configuration();
-        cfg.setClassForTemplateLoading(this.getClass(), "/");
-
+		cfg.setClassForTemplateLoading(this.getClass(), "/");
 	}
+    
+
 
 	@Override
 	public void invoke(Context context, Result result) {
@@ -44,7 +49,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		ResponseStreams responseStreams = context.finalizeHeaders(result);
 		
 		Map map;
-		
 		//if the object is null we simply render an empty map...
 		if (object == null) {
 		    map = Maps.newHashMap();
@@ -64,14 +68,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		Map<String, String> i18nMap = lang.getAll(locale);		
 		map.putAll(i18nMap);
 
-		
-		//escape the mapped strings.
+		String templateName = templateEngineHelper.getTemplateForResult(context.getRoute(),
+                result, FILE_SUFFIX);
 
-
-		String templateName = context.getTemplateName(FILE_SUFFIX);
-
-
-		
 		// Specify the data source where the template files come from.
 		// Here I set a file directory for it:
 		try {
@@ -89,12 +88,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 			// TODO Auto-generated catch block
 			logger.error("Error while writing out Gson Json", e);
 		} 
-
-	}
-
-	@Override
-	public String getSuffixOfTemplatingEngine() {
-		return FILE_SUFFIX;
 
 	}
 
@@ -122,4 +115,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     	return map;
     	
     }
+
+	@Override
+	public String getSuffixOfTemplatingEngine() {
+		return FILE_SUFFIX;
+	}
 }

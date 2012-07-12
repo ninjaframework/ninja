@@ -1,8 +1,7 @@
 package ninja.template;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Result;
@@ -11,8 +10,9 @@ import ninja.utils.LoggerProvider;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class TemplateEngineManagerImplTest {
 
@@ -48,10 +48,12 @@ public class TemplateEngineManagerImplTest {
 
     public static abstract class MockTemplateEngine implements TemplateEngine {
         public void invoke(Context context, Result result) {
+
         }
 
         public String getSuffixOfTemplatingEngine() {
             return null;
+
         }
     }
 

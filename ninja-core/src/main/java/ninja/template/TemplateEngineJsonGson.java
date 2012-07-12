@@ -2,11 +2,11 @@ package ninja.template;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-
 import ninja.Context;
 import ninja.Result;
 import ninja.utils.ResponseStreams;
+
+import org.slf4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
@@ -33,7 +33,7 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 		
 		
 		Gson gson = new Gson();
-		String json = gson.toJson(object);
+		String json = gson.toJson(result.getRenderable());
 		
 		try {
 			responseStreams.getWriter().write(json);
@@ -46,14 +46,15 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 	    
     }
 
-	@Override
-	public String getSuffixOfTemplatingEngine() {
-		//does not use disk based templates...
-		return null;
-	}
-
     @Override
     public String getContentType() {
         return Result.APPLICATON_JSON;
     }
+
+
+	@Override
+	public String getSuffixOfTemplatingEngine() {
+		//intentionally returns null...
+		return null;
+	}
 }

@@ -9,7 +9,7 @@ public interface TemplateEngine {
      * Render the given object to the given context
      *
      * @param context The context to render to
-     * @param object  The object to render
+     * @param result  The result to render
      */
     public void invoke(Context context, Result result);
 

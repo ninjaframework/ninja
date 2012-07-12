@@ -133,7 +133,6 @@ public class NinjaImpl implements Ninja {
 
 					result.contentType(Result.TEXT_HTML);
 				}
-				
 
 			}
 
@@ -181,6 +180,7 @@ public class NinjaImpl implements Ninja {
 									+ result.getContentType());
 				}
 			}
+
 
 		}
 
