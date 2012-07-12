@@ -22,6 +22,7 @@ public class Result {
 	public static int SC_403_FORBIDDEN = 403;
 	public static int SC_404_NOT_FOUND = 404;
 	
+	public static int SC_500_INTERNAL_SERVER_ERROR = 500;
 	public static int SC_501_NOT_IMPLEMENTED = 501;
 	
 	

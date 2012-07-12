@@ -9,8 +9,20 @@ public class Results {
 		return result;
 		
 	}
-	
-	public static Result redirect(String url) {
+
+    public static Result notFound() {
+        return status(Result.SC_404_NOT_FOUND);
+    }
+
+    public static Result forbidden() {
+        return status(Result.SC_403_FORBIDDEN);
+    }
+
+    public static Result noContent() {
+        return status(Result.SC_204_NO_CONTENT);
+    }
+
+    public static Result redirect(String url) {
 		
 		Result result = status(Result.SC_307_TEMPORARY_REDIRECT);
 		result.addHeader(Result.LOCATION, url);
