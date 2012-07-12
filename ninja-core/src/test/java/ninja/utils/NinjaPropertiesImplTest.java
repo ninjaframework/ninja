@@ -22,13 +22,13 @@ public class NinjaPropertiesImplTest {
 	public void testSkippingThroughModesWorks() {
 
 		// check that mode tests works:
-		System.setProperty("mode", "test");
+		System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
 		NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl();
 		assertEquals("test_testproperty",
 		        ninjaPropertiesImpl.get("testproperty"));
 
 		// check that mode dev works:
-		System.setProperty("mode", "dev");
+		System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_DEV);
 		ninjaPropertiesImpl = new NinjaPropertiesImpl();
 		assertEquals("dev_testproperty",
 		        ninjaPropertiesImpl.get("testproperty"));
@@ -36,7 +36,7 @@ public class NinjaPropertiesImplTest {
 
 		// remove property => we expect that the dev property is used as default
 		// value
-		System.clearProperty("mode");
+		System.clearProperty(NinjaConstant.MODE_KEY_NAME);
 		ninjaPropertiesImpl = new NinjaPropertiesImpl();
 		assertEquals("dev_testproperty",
 		        ninjaPropertiesImpl.get("testproperty"));
@@ -44,14 +44,14 @@ public class NinjaPropertiesImplTest {
 
 		// and in a completely different mode with no "%"-prefixed key the
 		// default value use used
-		System.setProperty("mode", "prod");
+		System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_PROD);
 		ninjaPropertiesImpl = new NinjaPropertiesImpl();
 		assertEquals("testproperty_without_prefix",
 		        ninjaPropertiesImpl.get("testproperty"));
 		assertEquals("secret", ninjaPropertiesImpl.get("applicationSecret"));
 
 		// tear down
-		System.clearProperty("mode");
+		System.clearProperty(NinjaConstant.MODE_KEY_NAME);
 
 	}
 	

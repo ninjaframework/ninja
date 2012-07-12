@@ -84,4 +84,18 @@ public interface NinjaProperties {
      * @return True if we are in dev mode
      */
     boolean isDev();
+    
+    /**
+     * Whether we are in test mode
+     *
+     * @return True if we are in test mode
+     */
+    boolean isTest();
+    
+    /**
+     * Whether we are in prod mode
+     *
+     * @return True if we are in prod mode
+     */
+    boolean isProd();
 }

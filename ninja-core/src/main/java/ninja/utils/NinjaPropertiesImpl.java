@@ -18,13 +18,31 @@ import com.google.inject.name.Names;
 
 @Singleton
 public class NinjaPropertiesImpl implements NinjaProperties {
+
+	Mode mode;
+
+	private enum Mode {
+		prod(NinjaConstant.MODE_PROD), dev(NinjaConstant.MODE_DEV), test(
+				NinjaConstant.MODE_TEST);
+
+		private String mode;
+
+		Mode(String mode) {
+			this.mode = mode;
+		}
+
+		public String toString() {
+			return mode;
+		}
+	}
+
 	private static final Logger log = LoggerFactory
 			.getLogger(NinjaPropertiesImpl.class);
 	private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
 	private final Properties allCurrentNinjaProperties;
 
-	private final String mode;
+	// private final String mode;
 
 	// we are using a private logger in this case as NinjaPropertiesImpl is NOT
 	// loaded
@@ -36,22 +54,40 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		this.allCurrentNinjaProperties = new Properties();
 
 		// get system variables... load application conf files...
-		if (System.getProperty("mode") != null) {
-			mode = System.getProperty("mode");
-		} else {
-			mode = "dev";
+		String modeFromGetSystemProperty = System
+				.getProperty(NinjaConstant.MODE_KEY_NAME);
+
+		// initially we are in dev mode.
+		mode = Mode.dev;
+
+		// if the user specified something we set the mode accordingly:
+		if (modeFromGetSystemProperty != null) {
+
+			if (modeFromGetSystemProperty.equals(NinjaConstant.MODE_TEST)) {
+				mode = Mode.test;
+			} else if (modeFromGetSystemProperty
+					.equals(NinjaConstant.MODE_PROD)) {
+				mode = Mode.prod;
+			}
+
+			// else dev as set before...
+
 		}
+
+		System.out.println("modename: " + mode);
 
 		// 1. load application.conf
 		Optional<Properties> applicationProperties = loadPropertiesInUtf8(CONF_FILE_LOCATION_BY_CONVENTION);
 
 		if (!applicationProperties.isPresent()) {
-			throw new RuntimeException("No basic configuration file found. Please make sure you got a file called: " + CONF_FILE_LOCATION_BY_CONVENTION);
+			throw new RuntimeException(
+					"No basic configuration file found. Please make sure you got a file called: "
+							+ CONF_FILE_LOCATION_BY_CONVENTION);
 		}
-		
+
 		// 2. Add all properties that are relevant for this mode:
 		allCurrentNinjaProperties.putAll(getAllPropertiesOfThatMode(
-				applicationProperties.get(), mode));
+				applicationProperties.get(), mode.name()));
 
 		// 3. load an external configuration file:
 		// get system variables... load application conf files...
@@ -60,9 +96,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 			String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
 
 			Optional<Properties> externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
-			
+
 			if (!applicationProperties.isPresent()) {
-				throw new RuntimeException("A system property called " + NINJA_EXTERNAL_CONF + " was set. But the correspinding file cannot be found. Make sure it is visible to this application and on the classpath.");
+				throw new RuntimeException(
+						"A system property called "
+								+ NINJA_EXTERNAL_CONF
+								+ " was set. But the correspinding file cannot be found. Make sure it is visible to this application and on the classpath.");
 			}
 
 			allCurrentNinjaProperties.putAll(externalConfiguration.get());
@@ -70,10 +109,6 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		}
 
 	}
-
-    public boolean isDev() {
-        return "dev".equals(mode);
-    }
 
 	@Override
 	public String get(String key) {
@@ -180,13 +215,16 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 			props.load(new InputStreamReader(resource.openStream(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			props = null;
-			logger.error("Unsupported encoding while loading configuration file", e);
+			logger.error(
+					"Unsupported encoding while loading configuration file", e);
 		} catch (IOException e) {
 			props = null;
-			logger.error("Could not find configuration file. Was looking for " + classLoaderUrl, e);
+			logger.error("Could not find configuration file. Was looking for "
+					+ classLoaderUrl, e);
 		} catch (NullPointerException e) {
 			props = null;
-			logger.error("Could not find configuration file. Was looking for " + classLoaderUrl, e);
+			logger.error("Could not find configuration file. Was looking for "
+					+ classLoaderUrl, e);
 		}
 
 		return Optional.fromNullable(props);
@@ -207,7 +245,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	private Properties getAllPropertiesOfThatMode(Properties properties,
 			String mode) {
 
-		Properties returnProtperties = new Properties();
+		Properties returnProperties = new Properties();
 
 		// The hashmap we get from properties is not ordered.
 		// We therefore do two passes
@@ -217,7 +255,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 
 			if (!entry.getKey().toString().startsWith("%")) {
-				returnProtperties.put(entry.getKey(), entry.getValue());
+				returnProperties.put(entry.getKey(), entry.getValue());
 
 			}
 		}
@@ -239,15 +277,29 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 					String newKeyName = entry.getKey().toString()
 							.replaceFirst(keyToReplace, "");
 
-					returnProtperties.put(newKeyName, entry.getValue());
+					returnProperties.put(newKeyName, entry.getValue());
 				} // else do nothing... that's a property I don't want to
 					// use....
 
 			}
 		}
 
-		return returnProtperties;
+		return returnProperties;
 
+	}
+
+	@Override
+	public boolean isProd() {
+		return (mode.equals(Mode.prod));
+	}
+
+	public boolean isDev() {
+		return (mode.equals(Mode.dev));
+	}
+
+	@Override
+	public boolean isTest() {
+		return (mode.equals(Mode.test));
 	}
 
 }

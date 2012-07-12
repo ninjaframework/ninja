@@ -1,10 +1,10 @@
-<#import "../layout/defaultLayout.ftl.html" as layout> 
-<@layout.myLayout "Home page">
+<#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout
+"Home page">
 
 <header class="jumbotron subhead">
 	<h1>Examples</h1>
 	<p class="lead">Ninja can do a lot for you. In the following some
-	code samples that show the power of Ninja.</p>
+		code samples that show the power of Ninja.</p>
 </header>
 
 <hr>
@@ -26,7 +26,9 @@
 <h2>Rendering jsons</h2>
 <ul>
 	<li>As seen here GET <a href="/person">/person</a></li>
-	<li>As seen here POST <a href="/person">/person</a> parses the body and displays the result.</li>
+	<li>As seen here POST <a href="/person">/person</a> parses the
+		body and displays the result.
+	</li>
 </ul>
 
 <h2>Filtering</h2>
@@ -46,26 +48,38 @@
 
 <h2>Session support</h2>
 <ul>
-    <li>The default mode of Ninja is to store the session as signed cookie on the client side.
-    Check out <a href="/session">/session</a>
-    </li>
+	<li>The default mode of Ninja is to store the session as signed
+		cookie on the client side. Check out <a href="/session">/session</a>
+	</li>
 </ul>
 
 <h2>Flash cookie support</h2>
 <ul>
-    <li>To transmit small bits of information from one request to another Ninja supports
-    so called flash cookies. They transmit eg a error message from one request to another.
-    Usually flash cookies only live for one request: <a href="/TODO">/TODO</a>
-    </li>
+	<li>To transmit small bits of information from one request to
+		another Ninja supports so called flash cookies. They transmit eg a
+		error message from one request to another. Usually flash cookies only
+		live for one request: <a href="/TODO">/TODO</a>
+	</li>
 </ul>
 
 
 <h2>Internationalization</h2>
 <ul>
-    <li>To transmit small bits of information from one request to another Ninja supports
-    so called flash cookies. They transmit eg a error message from one request to another.
-    Usually flash cookies only live for one request: <a href="/i18n">/i18n</a>
-    </li>
+	<li>To transmit small bits of information from one request to
+		another Ninja supports so called flash cookies. They transmit eg a
+		error message from one request to another. Usually flash cookies only
+		live for one request: <a href="/i18n">/i18n</a>
+	</li>
+</ul>
+
+
+<h2>Html Escaping</h2>
+<ul>
+	<li>By default all html templates are escaped. This eliminates a
+		lot of vulnerabilities due to javascript injection attacks. Check out
+		the following page and have a look in the source code. The html stuff
+		is escaped in the source... <a href="/htmlEscaping">/htmlEscaping</a>
+	</li>
 </ul>
 
 </@layout.myLayout>

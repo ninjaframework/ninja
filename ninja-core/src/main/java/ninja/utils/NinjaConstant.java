@@ -1,6 +1,16 @@
 package ninja.utils;
 
 public interface NinjaConstant {
+	
+    // /////////////////////////////////////////////////
+    // The 3 basic modes for ninja.
+	// they should be set as system property: -Dmode=test
+	// and so on
+	String MODE_KEY_NAME = "mode";
+	//and the values for the modes:
+	String MODE_TEST = "test";
+	String MODE_DEV = "dev";
+	String MODE_PROD = "prod";
 
     // /////////////////////////////////////////////////
     // The basic directories used in all convention
