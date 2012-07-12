@@ -3,18 +3,19 @@ package ninja.template;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+
+import org.slf4j.Logger;
 
 import ninja.Context;
+import ninja.Result;
 import ninja.i18n.Lang;
-import ninja.utils.NoEscapeString;
+import ninja.utils.ResponseStreams;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.utility.HtmlEscape;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
 
@@ -24,17 +25,24 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 	private final Lang lang;
 
+	private final Logger logger;
+
 	@Inject
-	TemplateEngineFreemarker(Lang lang) {
+	TemplateEngineFreemarker(Lang lang, Logger logger) {
 		this.lang = lang;
+		this.logger = logger;
 		cfg = new Configuration();
         cfg.setClassForTemplateLoading(this.getClass(), "/");
 
 	}
 
 	@Override
-	public void invoke(Context context, Object object) {
+	public void invoke(Context context, Result result) {
 
+		Object object = result.getRenderable();
+		
+		ResponseStreams responseStreams = context.finalizeHeaders(result);
+		
 		Map map;
 		
 		//if the object is null we simply render an empty map...
@@ -72,14 +80,15 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
 			// convert tuples:
 
-			freemarkerTemplate.process(map, context.getWriter());
+			freemarkerTemplate.process(map, responseStreams.getWriter());
 
-			context.getWriter().flush();
+			responseStreams.getWriter().flush();			
+			responseStreams.getWriter().close();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			logger.error("Error while writing out Gson Json", e);
+		} 
 
 	}
 

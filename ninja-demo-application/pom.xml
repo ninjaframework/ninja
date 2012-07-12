@@ -14,18 +14,30 @@
 
 	<build>
 		<plugins>
-			<plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>8.1.4.v20120524</version>
-				<configuration>
-                    <webApp>
-                        <contextPath>/</contextPath>
-                    </webApp>
-					<scanIntervalSeconds>1</scanIntervalSeconds>
-				</configuration>
-			</plugin>
+<!-- 			<plugin> -->
+<!--                 <groupId>org.mortbay.jetty</groupId> -->
+<!--                 <artifactId>jetty-maven-plugin</artifactId> -->
+<!--                 <version>8.1.4.v20120524</version> -->
+<!-- 				<configuration> -->
+<!--                     <webApp> -->
+<!--                         <contextPath>/</contextPath> -->
+<!--                     </webApp> -->
+<!-- 					<scanIntervalSeconds>1</scanIntervalSeconds> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
 
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.22</version>
+                <configuration>
+                    <contextPath>/</contextPath>
+                    <scanIntervalSeconds>1</scanIntervalSeconds>
+                    <reload>automatic</reload>
+                </configuration>
+            </plugin>
+            
 
 		</plugins>
 

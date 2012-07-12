@@ -21,6 +21,8 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
+import ninja.utils.ResponseStreams;
+import ninja.utils.ResponseStreamsServlet;
 
 import com.google.inject.Inject;
 
@@ -263,17 +265,7 @@ public class ContextImpl implements Context {
 	}
 
 	@Override
-	public OutputStream getOutputStream() throws IOException {
-		return httpServletResponse.getOutputStream();
-	}
-
-	@Override
-	public Writer getWriter() throws IOException {
-		return httpServletResponse.getWriter();
-	}
-
-	@Override
-	public void finalizeHeaders(Result result) {
+	public ResponseStreams finalizeHeaders(Result result) {
 		httpServletResponse.setContentType(contentType);
 		httpServletResponse.setStatus(result.getStatusCode());
 
@@ -291,7 +283,18 @@ public class ContextImpl implements Context {
 					.convertNinjaCookieToServletCookie(cookie));
 
 		}
+		
+		//possibly
+		ResponseStreamsServlet responseStreamsServlet = new ResponseStreamsServlet();
+		responseStreamsServlet.init(httpServletResponse);
+		
+		return (ResponseStreams) responseStreamsServlet;
 
+	}
+
+	@Override
+	public String getRequestContentType() {
+		return httpServletRequest.getContentType();
 	}
 
 }

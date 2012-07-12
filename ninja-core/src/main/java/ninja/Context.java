@@ -10,6 +10,7 @@ import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
+import ninja.utils.ResponseStreams;
 
 public interface Context {
 
@@ -22,6 +23,15 @@ public interface Context {
             this.code = code;
         }
     }
+	
+	/**
+	 * Content type of the request we got.
+	 * Important for content negotiation...
+	 * 
+	 * @return the content type of the incoming request.
+	 * 
+	 */
+	String getRequestContentType();
 
 	/**
 	 * Returns the uri as seen by the server.
@@ -306,7 +316,15 @@ public interface Context {
 
     Result controllerReturned();
     
-    void finalizeHeaders(Result result);
+    /**
+     * Finalizing the headers copies all stuff into the headers. 
+     * 
+     * After finalizing the headers you can access the responseStreams.
+     * 
+     * @param result
+     * @return
+     */
+    ResponseStreams finalizeHeaders(Result result);
 
     /**
      * Get the input stream to read the request.
@@ -325,23 +343,5 @@ public interface Context {
      * @return The reader
      */
     BufferedReader getReader() throws IOException;
-
-    /**
-     * Get the output stream to write the response.
-     *
-     * Must not be used if getWriter has been called.
-     *
-     * @return The output stream
-     */
-    OutputStream getOutputStream() throws IOException;
-
-    /**
-     * Get the writer to write the response.
-     *
-     * Must not be used if getOutputStream has been called.
-     *
-     * @return The writer
-     */
-    Writer getWriter() throws IOException;
 
 }

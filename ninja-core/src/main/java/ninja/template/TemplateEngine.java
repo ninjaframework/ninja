@@ -1,6 +1,7 @@
 package ninja.template;
 
 import ninja.Context;
+import ninja.Result;
 
 public interface TemplateEngine {
 
@@ -10,7 +11,7 @@ public interface TemplateEngine {
      * @param context The context to render to
      * @param object  The object to render
      */
-    public void invoke(Context context, Object object);
+    public void invoke(Context context, Result result);
 
     /**
      * For instance returns ".ftl.html"

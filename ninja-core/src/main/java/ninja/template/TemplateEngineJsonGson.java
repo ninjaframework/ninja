@@ -2,22 +2,46 @@ package ninja.template;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+
 import ninja.Context;
+import ninja.Result;
+import ninja.utils.ResponseStreams;
 
 import com.google.gson.Gson;
+import com.google.inject.Inject;
 
 public class TemplateEngineJsonGson implements TemplateEngine {
 
+	private final Logger logger;
+	
+	@Inject
+	public TemplateEngineJsonGson(Logger logger) {
+		this.logger = logger;
+		
+	}
+	
+	
 	@Override
-    public void invoke(Context context, Object object) {
+    public void invoke(Context context, Result result) {
 
+		
+		
+		ResponseStreams responseStreams = context.finalizeHeaders(result);
+		
+		Object object = result.getRenderable();
+		
+		
 		Gson gson = new Gson();
 		String json = gson.toJson(object);
 		
 		try {
-			context.getWriter().write(json);
+			responseStreams.getWriter().write(json);
+			responseStreams.getWriter().flush();
+			responseStreams.getWriter().close();
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while writing out Gson Json", e);
 		}
 	    
     }
@@ -30,6 +54,6 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 
     @Override
     public String getContentType() {
-        return "application/json";
+        return Result.APPLICATON_JSON;
     }
 }

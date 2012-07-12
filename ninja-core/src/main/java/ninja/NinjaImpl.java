@@ -5,6 +5,7 @@ import java.io.IOException;
 import ninja.lifecycle.LifecycleService;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
+import ninja.utils.ResponseStreams;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -108,7 +109,6 @@ public class NinjaImpl implements Ninja {
 	}
 
 	private void invokeResult(Result result, Context context) {
-
 		// if the object is a renderable it should do everything itself...:
 		// make sure to call context.finalizeHeaders(result) with the results
 		// you want to set...
@@ -117,41 +117,71 @@ public class NinjaImpl implements Ninja {
 
 			Renderable renderable = (Renderable) object;
 			renderable.render(context, result);
-			
+
 		} else {
-			
-			context.finalizeHeaders(result);
 
-            if (result.getContentType() != null) {
-                TemplateEngine templateEngine = templateEngineManager
-                        .getTemplateEngineForContentType(result.getContentType());
+			// if content type is not yet set in result we copy it over from the
+			// request
+			// otherwise we are using TEXT/HTML as fallback...
+			if (result.getContentType() == null) {
+				
+				if (context.getRequestContentType() != null) {
 
-                if (templateEngine == null) {
-                    if (result.getRenderable() instanceof String) {
-                        // Simply write it out
-                        try {
-                            context.getWriter().write(
-                                    (String) result.getRenderable());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else if (result.getRenderable() instanceof byte[]) {
-                        // Simply write it out
-                        try {
-                            context.getOutputStream().write(
-                                    (byte[]) result.getRenderable());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else if (result.getRenderable() != null) {
-                        throw new IllegalArgumentException(
-                                "No template engine found for content type "
-                                        + result.getContentType());
-                    }
-                } else {
-                    templateEngine.invoke(context, result.getRenderable());
-                }
-            }
+					result.contentType(context.getRequestContentType());
+					
+				} else {
+
+					result.contentType(Result.TEXT_HTML);
+				}
+				
+
+			}
+
+			// try to get a suitable rendering engine...
+			TemplateEngine templateEngine = templateEngineManager
+					.getTemplateEngineForContentType(result.getContentType());
+
+			if (templateEngine != null) {
+
+				templateEngine.invoke(context, result);
+
+			} else {
+
+				if (result.getRenderable() instanceof String) {
+
+					// Simply write it out
+					try {
+
+						ResponseStreams responseStreams = context
+								.finalizeHeaders(result);
+
+						responseStreams.getWriter().write(
+								(String) result.getRenderable());
+
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				} else if (result.getRenderable() instanceof byte[]) {
+					// Simply write it out
+					try {
+
+						ResponseStreams responseStreams = context
+								.finalizeHeaders(result);
+
+						responseStreams.getOutputStream().write(
+								(byte[]) result.getRenderable());
+
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				} else {
+
+					throw new IllegalArgumentException(
+							"No template engine found for content type "
+									+ result.getContentType());
+				}
+			}
+
 		}
 
 	}

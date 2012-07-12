@@ -2,6 +2,7 @@ package ninja;
 
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
+import ninja.utils.ResponseStreams;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -124,8 +125,8 @@ public class WrappedContext implements Context {
     }
 
     @Override
-    public void finalizeHeaders(Result result) {
-        wrapped.finalizeHeaders(result);
+    public ResponseStreams finalizeHeaders(Result result) {
+        return wrapped.finalizeHeaders(result);
     }
 
     @Override
@@ -138,13 +139,9 @@ public class WrappedContext implements Context {
         return wrapped.getReader();
     }
 
-    @Override
-    public OutputStream getOutputStream() throws IOException {
-        return wrapped.getOutputStream();
-    }
+	@Override
+	public String getRequestContentType() {
+		return wrapped.getRequestContentType();
+	}
 
-    @Override
-    public Writer getWriter() throws IOException {
-        return wrapped.getWriter();
-    }
 }

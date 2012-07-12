@@ -5,7 +5,11 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import ninja.ContentTypes;
 import ninja.Context;
+import ninja.Result;
+import ninja.utils.LoggerProvider;
+
 import org.junit.Test;
+import org.slf4j.Logger;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
@@ -43,7 +47,7 @@ public class TemplateEngineManagerImplTest {
     }
 
     public static abstract class MockTemplateEngine implements TemplateEngine {
-        public void invoke(Context context, Object object) {
+        public void invoke(Context context, Result result) {
         }
 
         public String getSuffixOfTemplatingEngine() {
@@ -80,8 +84,13 @@ public class TemplateEngineManagerImplTest {
         return Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
+            	
+            	bind(Logger.class).toProvider(LoggerProvider.class);            	
+            	
                 for (Class<?> clazz : toBind) {
-                    bind(clazz);
+                	
+                    bind(clazz);                 
+                    
                 }
             }
         });
