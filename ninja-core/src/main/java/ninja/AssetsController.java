@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 
+import ninja.utils.MimeTypes;
+
 import com.google.common.io.ByteStreams;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -23,8 +26,16 @@ public class AssetsController {
 	/** Used for storing files locally */
 	final String ASSETS_PREFIX = "assets/";
 
-	public Result serve(Context context) {
+	private final MimeTypes mimeTypes;
+
+	@Inject
+	public AssetsController(MimeTypes mimeTypes) {
+		this.mimeTypes = mimeTypes;
 		
+	}
+	
+	public Result serve(Context context) {
+		System.out.println("mime type is");
 		Object renderable = new Renderable() {
 			
 			@Override
@@ -44,8 +55,15 @@ public class AssetsController {
 				} else {
 					try {
 						
-						context.finalizeHeaders(Results.status(200));
+						result.status(200);
 						
+						String mimeType = mimeTypes.getContentType(context, finalName);
+						System.out.println("mime type is: " + mimeType);
+						if (!mimeType.isEmpty()) {
+							result.contentType(mimeType);
+						}
+						
+						context.finalizeHeaders(result);
 						
 						ByteStreams.copy(this.getClass().getClassLoader()
 						        .getResourceAsStream(ASSETS_PREFIX + finalName),

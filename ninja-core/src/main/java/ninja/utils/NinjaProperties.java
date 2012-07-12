@@ -1,5 +1,7 @@
 package ninja.utils;
 
+import java.util.Properties;
+
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(NinjaPropertiesImpl.class)
@@ -98,4 +100,10 @@ public interface NinjaProperties {
      * @return True if we are in prod mode
      */
     boolean isProd();
+
+    /**
+     * 
+     * @return All properties that are currently loaded from internal and external files
+     */
+	Properties getAllCurrentNinjaProperties();
 }

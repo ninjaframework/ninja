@@ -32,10 +32,7 @@ public class ContextImpl implements Context {
 
 	private Route route;
 
-	// * if set this template is used. otherwise the default mapping **/
-	private String templateOverride = null;
-
-	public String contentType;
+	private String contentType;
 
 	private AsyncStrategy asyncStrategy;
 	private final Object asyncLock = new Object();
@@ -237,9 +234,6 @@ public class ContextImpl implements Context {
             httpServletResponse.setContentType(contentType);
         }
 		httpServletResponse.setStatus(result.getStatusCode());
-
-		flashCookie.save(this);
-		sessionCookie.save(this);
 		
 		//copy headers
 		for (Entry<String, String> header : result.getHeaders().entrySet()) {
@@ -251,6 +245,15 @@ public class ContextImpl implements Context {
 			httpServletResponse.addCookie(CookieHelper
 					.convertNinjaCookieToServletCookie(cookie));
 
+		}
+		
+		//copy ninja cookies / flash and session
+		flashCookie.save(this);
+		sessionCookie.save(this);
+		
+		//set content type
+		if (result.getContentType() != null) {
+			httpServletResponse.addHeader("Content-Type", result.getContentType());
 		}
 		
 		//possibly

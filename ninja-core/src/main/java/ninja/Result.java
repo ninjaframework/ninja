@@ -8,6 +8,10 @@ import com.google.common.collect.Maps;
 
 public class Result {
 	
+	
+	///////////////////////////////////////////////////////////////////////////
+	// HTTP Status codes
+	///////////////////////////////////////////////////////////////////////////
 	public static int SC_200_OK = 200;
 	public static int SC_204_NO_CONTENT = 204;
 	
@@ -25,11 +29,16 @@ public class Result {
 	public static int SC_500_INTERNAL_SERVER_ERROR = 500;
 	public static int SC_501_NOT_IMPLEMENTED = 501;
 	
-	
 
-	public static final String APPLICATON_JSON = "application/json";
+	///////////////////////////////////////////////////////////////////////////
+	// Some MIME types
+	///////////////////////////////////////////////////////////////////////////
 	public static final String TEXT_HTML = "text/html";
+	public static final String TEXT_PLAIN = "text/plain";
+	public static final String APPLICATON_JSON = "application/json";
 	public static final String APPLICATION_XML = "application/xml";
+	public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+
 	
 	/* Used as redirection header */
 	public static final String LOCATION = "Location";

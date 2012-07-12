@@ -77,6 +77,7 @@ public class ResultHandler {
             if (result.getRenderable() instanceof String) {
                 // Simply write it out
                 try {
+                	result.contentType(Result.TEXT_PLAIN);
                     ResponseStreams responseStreams = context.finalizeHeaders(result);
                     responseStreams.getWriter().write((String) result.getRenderable());
 
@@ -87,6 +88,7 @@ public class ResultHandler {
             } else if (result.getRenderable() instanceof byte[]) {
                 // Simply write it out
                 try {
+                	result.contentType(Result.APPLICATION_OCTET_STREAM);
                     ResponseStreams responseStreams = context.finalizeHeaders(result);
                     responseStreams.getOutputStream().write((byte[]) result.getRenderable());
                 } catch (IOException e) {

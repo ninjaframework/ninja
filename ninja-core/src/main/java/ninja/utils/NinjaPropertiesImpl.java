@@ -74,8 +74,6 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 		}
 
-		System.out.println("modename: " + mode);
-
 		// 1. load application.conf
 		Optional<Properties> applicationProperties = loadPropertiesInUtf8(CONF_FILE_LOCATION_BY_CONVENTION);
 
@@ -300,6 +298,13 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	@Override
 	public boolean isTest() {
 		return (mode.equals(Mode.test));
+	}
+	
+	@Override
+	public Properties getAllCurrentNinjaProperties() {
+		
+		return allCurrentNinjaProperties;
+		
 	}
 
 }
