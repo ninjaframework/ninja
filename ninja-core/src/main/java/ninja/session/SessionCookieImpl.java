@@ -291,17 +291,7 @@ public class SessionCookieImpl implements SessionCookie {
 	 */
     @Override
 	public boolean isEmpty() {
-
-		if (data.containsKey(TIMESTAMP_KEY))
-
-			for (String key : data.keySet()) {
-
-				if (!TIMESTAMP_KEY.equals(key)) {
-					return false;
-				}
-
-			}
-		return true;
+        return (data.isEmpty() || data.size() == 1 && data.containsKey(TIMESTAMP_KEY));
 	}
 
 }
