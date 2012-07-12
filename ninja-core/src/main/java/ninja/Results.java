@@ -10,6 +10,10 @@ public class Results {
 		
 	}
 
+    public static Result ok() {
+        return status(Result.SC_200_OK);
+    }
+
     public static Result notFound() {
         return status(Result.SC_404_NOT_FOUND);
     }
