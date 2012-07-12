@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -278,7 +279,13 @@ public class ContextImpl implements Context {
 
 		flashCookie.save(this);
 		sessionCookie.save(this);
+		
+		//copy headers
+		for (Entry<String, String> header : result.getHeaders().entrySet()) {
+			httpServletResponse.addHeader(header.getKey(), header.getValue());
+		}
 
+		//copy cookies
 		for (ninja.Cookie cookie : result.getCookies()) {
 			httpServletResponse.addCookie(CookieHelper
 					.convertNinjaCookieToServletCookie(cookie));
