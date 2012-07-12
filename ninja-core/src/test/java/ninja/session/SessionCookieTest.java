@@ -1,6 +1,7 @@
 package ninja.session;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -22,7 +23,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -276,7 +276,7 @@ public class SessionCookieTest {
 
 	}
 	
-	
+	@Test
 	public void testThatCorrectMethodOfNinjaPropertiesIsUsedSoThatStuffBreaksWhenPropertyIsAbsent() {
 		
 		//we did not set the cookie prefix
@@ -286,6 +286,25 @@ public class SessionCookieTest {
 		SessionCookie sessionCookie = new SessionCookieImpl(crypto, ninjaProperties);
 		
 		verify(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix));
+	}
+
+	@Test
+	public void testSessionCookieDelete() {
+		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+		        ninjaProperties);
+		sessionCookie.init(context);
+		final String key = "mykey";
+		final String value = "myvalue";
+		sessionCookie.put(key, value);
+
+		// value should have been set:
+		assertEquals(value, sessionCookie.get(key));
+
+		// value should be returned when removing:
+		assertEquals(value, sessionCookie.remove(key));
+
+		// after removing, value should not be there anymore:
+		assertNull(sessionCookie.get(key));
 	}
 
 }
