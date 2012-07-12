@@ -18,6 +18,10 @@ public class Results {
         return status(Result.SC_403_FORBIDDEN);
     }
 
+    public static Result badRequest() {
+        return status(Result.SC_400_BAD_REQUEST);
+    }
+
     public static Result noContent() {
         return status(Result.SC_204_NO_CONTENT);
     }
