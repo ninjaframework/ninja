@@ -18,11 +18,8 @@ import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.template.TemplateEngineManager;
 import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
-
-import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 
@@ -37,14 +34,10 @@ public class ContextImpl implements Context {
 	// * if set this template is used. otherwise the default mapping **/
 	private String templateOverride = null;
 
-	private HTTP_STATUS httpStatus;
-
 	public String contentType;
 
 	private AsyncStrategy asyncStrategy;
 	private final Object asyncLock = new Object();
-
-	private final TemplateEngineManager templateEngineManager;
 
 	private final BodyParserEngineManager bodyParserEngineManager;
 
@@ -52,21 +45,13 @@ public class ContextImpl implements Context {
 
 	private final SessionCookie sessionCookie;
 
-	private final Logger logger;
-
 	@Inject
 	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
-			FlashCookie flashCookie, Logger logger,
-			SessionCookie sessionCookie,
-			TemplateEngineManager templateEngineManager) {
+			FlashCookie flashCookie, SessionCookie sessionCookie) {
 
 		this.bodyParserEngineManager = bodyParserEngineManager;
 		this.flashCookie = flashCookie;
-		this.logger = logger;
 		this.sessionCookie = sessionCookie;
-		this.templateEngineManager = templateEngineManager;
-
-		this.httpStatus = HTTP_STATUS.ok200;
 	}
 
 	public void init(HttpServletRequest httpServletRequest,
@@ -93,19 +78,6 @@ public class ContextImpl implements Context {
 	public HttpServletResponse getHttpServletResponse() {
 		return this.httpServletResponse;
 	}
-
-	// @Override
-	// public Context template(String explicitTemplateName) {
-	// this.templateOverride = explicitTemplateName;
-	// return this;
-	// }
-
-	// @Override
-	// public Context status(HTTP_STATUS httpStatus) {
-	// this.httpStatus = httpStatus;
-	// httpServletResponse.setStatus(httpStatus.code);
-	// return this;
-	// }
 
 	@Override
 	public String getPathParameter(String key) {
@@ -182,129 +154,6 @@ public class ContextImpl implements Context {
 		return CookieHelper.getCookieValue(name,
 				httpServletRequest.getCookies());
 	}
-
-	// @Override
-	// public void addCookie(ninja.Cookie cookie) {
-	// httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
-	// }
-	//
-	// @Override
-	// public void unsetCookie(String name) {
-	// httpServletResponse.addCookie(new Cookie(name, null));
-	// }
-
-	// @Override
-	// public Result render() {
-	//
-	// return render(null);
-	//
-	// }
-
-	// @Override
-	// public Result render(Object object) {
-	//
-	// finalizeResponseHeaders(contentType);
-	//
-	// if (contentType != null) {
-	// TemplateEngine templateEngine = templateEngineManager
-	// .getTemplateEngineForContentType(contentType);
-	//
-	// if (templateEngine == null) {
-	// if (object instanceof String) {
-	// // Simply write it out
-	// try {
-	// getWriter().write((String) object);
-	// } catch (IOException e) {
-	// throw new RuntimeException(e);
-	// }
-	// } else if (object instanceof byte[]) {
-	// // Simply write it out
-	// try {
-	// getOutputStream().write((byte[]) object);
-	// } catch (IOException e) {
-	// throw new RuntimeException(e);
-	// }
-	// }
-	// throw new
-	// IllegalArgumentException("No template engine found for content type " +
-	// contentType);
-	// }
-	//
-	// templateEngine.invoke(this, object);
-	// }
-	// }
-
-	// @Override
-	// public void renderHtml() {
-	// renderHtml(new HashMap<String, String>());
-	// }
-	//
-	// @Override
-	// public Result renderHtml(Object object) {
-	// finalizeResponseHeaders(ContentTypes.TEXT_HTML);
-	//
-	// TemplateEngine templateEngine = templateEngineManager
-	// .getTemplateEngineForContentType(ContentTypes.TEXT_HTML);
-	//
-	// templateEngine.invoke(this, object);
-	//
-	// }
-
-	// @Override
-	// public Result renderJson(Object object) {
-	//
-	// finalizeResponseHeaders(ContentTypes.APPLICATION_JSON);
-	//
-	// TemplateEngine templateEngine = templateEngineManager
-	// .getTemplateEngineForContentType(ContentTypes.APPLICATION_JSON);
-	//
-	// templateEngine.invoke(this, object);
-	//
-	//
-	// }
-
-	// private void finalizeResponseHeaders(String contentType) {
-	// if (contentType != null) {
-	// setContentType(contentType);
-	// }
-	// setStatusOnResponse(httpStatus);
-	//
-	// flashCookie.save(this);
-	// sessionCookie.save(this);
-	//
-	// }
-
-	// /**
-	// * set status on response finally...
-	// *
-	// * @param httpStatus
-	// */
-	// private void setStatusOnResponse(HTTP_STATUS httpStatus) {
-	//
-	// if (httpStatus.equals(HTTP_STATUS.ok200)) {
-	// httpServletResponse.setStatus(200);
-	// } else if (httpStatus.equals(HTTP_STATUS.notFound404)) {
-	// httpServletResponse.setStatus(404);
-	// } else if (httpStatus.equals(HTTP_STATUS.forbidden403)) {
-	// httpServletResponse.setStatus(403);
-	// } else if (httpStatus.equals(HTTP_STATUS.teapot418)) {
-	// httpServletResponse.setStatus(418);
-	// } else if (httpStatus.equals(HTTP_STATUS.badRequest400)) {
-	// httpServletResponse.setStatus(400);
-	// } else if (httpStatus.equals(HTTP_STATUS.noContent204)) {
-	// httpServletResponse.setStatus(204);
-	// } else if (httpStatus.equals(HTTP_STATUS.created201)) {
-	// httpServletResponse.setStatus(201);
-	// }
-	//
-	// }
-
-	// @Override
-	// public ContextImpl setContentType(String contentType) {
-	// this.contentType = contentType;
-	// httpServletResponse.setContentType(contentType);
-	// return this;
-	// }
 
 	@Override
 	public String getTemplateName(String suffix) {
@@ -385,7 +234,7 @@ public class ContextImpl implements Context {
 	@Override
 	public void returnResultAsync(Result result) {
 		synchronized (asyncLock) {
-            handleAsync();
+			handleAsync();
 			asyncStrategy.returnResultAsync(result);
 		}
 	}
@@ -399,7 +248,7 @@ public class ContextImpl implements Context {
 				return asyncStrategy.controllerReturned();
 			}
 		}
-        return null;
+		return null;
 	}
 
 	@Override
@@ -429,10 +278,11 @@ public class ContextImpl implements Context {
 
 		flashCookie.save(this);
 		sessionCookie.save(this);
-		
+
 		for (ninja.Cookie cookie : result.getCookies()) {
-			httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
-			
+			httpServletResponse.addCookie(CookieHelper
+					.convertNinjaCookieToServletCookie(cookie));
+
 		}
 
 	}

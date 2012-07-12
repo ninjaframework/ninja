@@ -28,6 +28,7 @@ public class Result {
 
 	public static final String APPLICATON_JSON = "application/json";
 	public static final String TEXT_HTML = "text/html";
+	public static final String APPLICATION_XML = "application/xml";
 	
 	/* Used as redirection header */
 	public static final String LOCATION = "Location";

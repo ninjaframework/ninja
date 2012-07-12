@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.template.TemplateEngineManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,15 +23,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.Logger;
 
 import com.google.common.collect.Maps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextImplTest {
-    
-    @Mock
-    private TemplateEngineManager templateEngineManager;
     
     @Mock
     private SessionCookie sessionCookie;
@@ -51,15 +46,12 @@ public class ContextImplTest {
     
     @Mock
     private Route route;
-    
-    @Mock 
-    private Logger logger;
 
     private ContextImpl context;
 
     @Before
     public void setUp() {
-        context = new ContextImpl(bodyParserEngineManager, flashCookie, logger, sessionCookie, templateEngineManager);
+        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie);
     }
 
     @Test

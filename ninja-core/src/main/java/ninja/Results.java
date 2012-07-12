@@ -47,6 +47,13 @@ public class Results {
 		return result;
 	}
 	
+	public static Result json(int statusCode) {
+		Result result = status(statusCode);
+		result.contentType(Result.APPLICATON_JSON);
+
+		return result;
+	}
+	
 	public static Result json() {
 		Result result = status(Result.SC_200_OK);
 		result.contentType(Result.APPLICATON_JSON);
@@ -54,10 +61,19 @@ public class Results {
 		return result;
 	}
 	
+	
 	public static Result json(Object renderable) {
 		Result result = status(Result.SC_200_OK);
 		result.contentType(Result.APPLICATON_JSON);
 		result.render(renderable);
+
+		return result;
+	}
+	
+	
+	public static Result xml() {
+		Result result = status(Result.SC_200_OK);
+		result.contentType(Result.APPLICATION_XML);
 
 		return result;
 	}

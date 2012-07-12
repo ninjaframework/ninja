@@ -1,19 +1,20 @@
 package ninja.template;
 
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import ninja.Context;
 import ninja.i18n.Lang;
-import ninja.utils.NinjaConstant;
+import ninja.utils.NoEscapeString;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.utility.HtmlEscape;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
 
@@ -55,6 +56,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		Map<String, String> i18nMap = lang.getAll(locale);		
 		map.putAll(i18nMap);
 
+		
+		//escape the mapped strings.
 
 
 		String templateName = context.getTemplateName(FILE_SUFFIX);
@@ -89,5 +92,25 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     @Override
     public String getContentType() {
         return "text/html";
+    }
+    
+    private Map escpaeStringsInMap(Map<String, String> map) {
+    	
+    	Map<String, String> returnMap = Maps.newHashMap();
+    	
+    	for (Entry<String, String> entry : map.entrySet()) {
+    		
+    		//String value = entry.getValue();
+    		//if (value instanceof NoEscapeString) {
+    			returnMap.put(entry.getKey(), entry.getValue());
+    		//} else {
+    			//returnMap.put(entry.getKey(), HtmlEscapersentry.getValue());
+    			
+    		//}
+    		
+    	}
+    	
+    	return map;
+    	
     }
 }
