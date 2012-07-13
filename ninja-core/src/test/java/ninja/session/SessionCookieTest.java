@@ -52,7 +52,7 @@ public class SessionCookieTest {
 		when(context.getHttpServletResponse()).thenReturn(httpServletResponse);
 		
 
-		when(ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInMs)).thenReturn(10000);
+		when(ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInSeconds)).thenReturn(10000);
 		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged)).thenReturn(true);
 		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly)).thenReturn(true);
 		
@@ -88,34 +88,6 @@ public class SessionCookieTest {
 		// no cookie should be set as the flash scope is empty...:
 		verify(httpServletResponse, never()).addCookie(
 		        Matchers.any(Cookie.class));
-	}
-
-	@Test
-	public void testSessionDoesNotGetWrittenToResponseWhenEmptyAndSentAlwaysEvenWhenUnchanged() {
-
-		// Something we want to test
-		// Session will be sent always. EVEN if it is empty:
-		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged)).thenReturn(false);
-
-		// setup this testmethod
-		// empty cookies
-		Cookie[] emptyCookies = new Cookie[0];
-
-		// that will be returned by the httprequest...
-		when(context.getHttpServletRequest().getCookies()).thenReturn(
-		        emptyCookies);
-
-		SessionCookie sessionCookie = new SessionCookieImpl(crypto,
-		        ninjaProperties);
-
-		sessionCookie.init(context);
-
-		// put nothing => intentionally to check if no flash cookie will be
-		// saved
-		sessionCookie.save(context);
-
-		// There will be a cookie of that session. Empty, but it will be there:
-		verify(httpServletResponse).addCookie(Matchers.any(Cookie.class));
 	}
 
 	@Test

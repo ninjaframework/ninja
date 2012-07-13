@@ -33,14 +33,14 @@ public class SessionCookieImpl implements SessionCookie {
 	private Pattern sessionParser = Pattern
 	        .compile("\u0000([^:]*):([^\u0000]*)\u0000");
 
-	private final String AUTHENTICITY_KEY = "___AT";
-	private final String ID_KEY = "___ID";
+	private static final String AUTHENTICITY_KEY = "___AT";
+	private static final String ID_KEY = "___ID";
 
 	/**
 	 * The timestamp => part of the data collection. Must be valid, otherwise
 	 * session is not valid
 	 */
-	private final String TIMESTAMP_KEY = "___TS";
+	private static final String TIMESTAMP_KEY = "___TS";
 
 	private Map<String, String> data = new HashMap<String, String>();
 
@@ -59,7 +59,7 @@ public class SessionCookieImpl implements SessionCookie {
 		this.crypto = crypto;
 		
 		//read configuration stuff:
-		this.sessionExpireTimeInMs = ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInMs);
+		this.sessionExpireTimeInMs = ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInSeconds) * 1000;
 		this.sessionSendOnlyIfChanged = ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged);
 		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly);
 		this.applicationCookiePrefix = ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix);
@@ -117,22 +117,16 @@ public class SessionCookieImpl implements SessionCookie {
 						data.clear();
 
 					} else {
-						if (Long.parseLong(data.get(TIMESTAMP_KEY)) < System
-						        .currentTimeMillis()) {
+						if (Long.parseLong(data.get(TIMESTAMP_KEY)) + sessionExpireTimeInMs
+                                < System.currentTimeMillis()) {
 							// Session expired
+                            sessionDataHasBeenChanged = true;
 							data.clear();
 						}
 					}
 
 					// Everything's alright => prolong session
-					data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis()
-					        + sessionExpireTimeInMs);
-				}
-			} else {
-				// This is a new session => we are setting the timestamp:
-				if (sessionExpireTimeInMs != null) {
-					data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis()
-					        + sessionExpireTimeInMs);
+					data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis());
 				}
 			}
 
@@ -175,25 +169,26 @@ public class SessionCookieImpl implements SessionCookie {
     @Override
 	public void save(Context context) {
 
-		if (!sessionDataHasBeenChanged && sessionSendOnlyIfChanged
-		        && sessionExpireTimeInMs == null) {
-
+        // Don't save the cookie nothing has changed, and if we're not expiring or
+        // we are expiring but we're only updating if the session changes
+        if (!sessionDataHasBeenChanged && (sessionExpireTimeInMs == null
+                || sessionSendOnlyIfChanged)) {
 			// Nothing changed and no cookie-expire, consequently send nothing
 			// back.
 			return;
 		}
 
 		if (isEmpty()) {
-			// The session is empty: delete the cookie
 			Cookie sessionCookie = CookieHelper.getCookie(
 					applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
 			        context.getHttpServletRequest().getCookies());
 
-			if (sessionCookie != null || !sessionSendOnlyIfChanged) {
+            // It is empty, but there was a session coming in, therefore clear it
+			if (sessionCookie != null) {
 
-				Cookie emptySessionCookie = new Cookie(
-						applicationCookiePrefix
+				Cookie emptySessionCookie = new Cookie(applicationCookiePrefix
 				                + NinjaConstant.SESSION_SUFFIX, null);
+                emptySessionCookie.setMaxAge(0);
 
 				context.getHttpServletResponse().addCookie(emptySessionCookie);
 
@@ -201,6 +196,11 @@ public class SessionCookieImpl implements SessionCookie {
 			return;
 
 		}
+
+        // Make sure if has a timestamp, if it needs one
+        if (sessionExpireTimeInMs != null && !data.containsKey(TIMESTAMP_KEY)) {
+            data.put(TIMESTAMP_KEY, Long.toString(System.currentTimeMillis()));
+        }
 
 		try {
 			StringBuilder session = new StringBuilder();

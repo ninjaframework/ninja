@@ -240,17 +240,17 @@ public class ContextImpl implements Context {
 			httpServletResponse.addHeader(header.getKey(), header.getValue());
 		}
 
-		//copy cookies
-		for (ninja.Cookie cookie : result.getCookies()) {
-			httpServletResponse.addCookie(CookieHelper
+        //copy ninja cookies / flash and session
+        flashCookie.save(this);
+        sessionCookie.save(this);
+
+        //copy cookies
+        for (ninja.Cookie cookie : result.getCookies()) {
+            httpServletResponse.addCookie(CookieHelper
 					.convertNinjaCookieToServletCookie(cookie));
 
-		}
-		
-		//copy ninja cookies / flash and session
-		flashCookie.save(this);
-		sessionCookie.save(this);
-		
+        }
+
 		//set content type
 		if (result.getContentType() != null) {
 			httpServletResponse.addHeader("Content-Type", result.getContentType());

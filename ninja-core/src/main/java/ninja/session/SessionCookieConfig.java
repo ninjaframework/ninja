@@ -2,7 +2,7 @@ package ninja.session;
 
 public interface SessionCookieConfig {
 
-    String sessionExpireTimeInMs = "sessionExpireTimeInMs";
-    String sessionSendOnlyIfChanged = "sessionSendOnlyIfChanged";
-    String sessionTransferredOverHttpsOnly = "sessionTransferredOverHttpsOnly"; 
+    public static final String sessionExpireTimeInSeconds = "sessionExpireTimeInSeconds";
+    public static final String sessionSendOnlyIfChanged = "sessionSendOnlyIfChanged";
+    public static final String sessionTransferredOverHttpsOnly = "sessionTransferredOverHttpsOnly";
 }
