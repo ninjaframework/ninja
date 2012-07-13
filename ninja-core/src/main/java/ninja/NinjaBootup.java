@@ -32,9 +32,7 @@ public class NinjaBootup {
             modulesToLoad.add(SchedulerSupport.getModule());
 
 			// Get base configuration of Ninja:
-			Class ninjaConfigurationClass = Configuration.class;
-			Module ninjaConfiguration = (Module) ninjaConfigurationClass.newInstance();
-			modulesToLoad.add(ninjaConfiguration);
+			modulesToLoad.add(new Configuration());
 
 			// Load main application module:
 			if (doesClassExist(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION)) {

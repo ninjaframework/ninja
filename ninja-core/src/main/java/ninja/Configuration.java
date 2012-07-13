@@ -1,5 +1,7 @@
 package ninja;
 
+import ninja.postoffice.Postoffice;
+import ninja.postoffice.guice.PostofficeProvider;
 import ninja.utils.LoggerProvider;
 
 import ninja.utils.NinjaProperties;
@@ -46,7 +48,8 @@ public class Configuration extends AbstractModule {
         ninjaProperties.bindProperties(binder());
         bind(NinjaProperties.class).toInstance(ninjaProperties);
 
-
+        // Postoffice
+        bind(Postoffice.class).toProvider(PostofficeProvider.class);
 	}
 
 }
