@@ -216,9 +216,13 @@ public class SessionCookieImpl implements SessionCookie {
 
 			cookie = new Cookie(applicationCookiePrefix
 			        + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
-			
-			cookie.setMaxAge(sessionExpireTimeInMs);
-			cookie.setSecure(sessionTransferredOverHttpsOnly);
+
+            if (sessionExpireTimeInMs != null) {
+                cookie.setMaxAge(sessionExpireTimeInMs / 1000);
+            }
+            if (sessionTransferredOverHttpsOnly != null) {
+                cookie.setSecure(sessionTransferredOverHttpsOnly);
+            }
 
 			context.getHttpServletResponse().addCookie(cookie);
 
