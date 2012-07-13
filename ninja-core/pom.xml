@@ -81,13 +81,13 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.4</version>
 		</dependency>
-		
+
 		<!-- some nice helper classes. Useful for escaping... -->
 		<dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
-        </dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
 
 		<!-- Some nice stuff for handling IO. Some overlap with guava though... -->
 		<dependency>
@@ -95,14 +95,20 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-		
-        <!--  This is our library that does all the validation goodness on fields: -->
+
+		<!-- This is our library that does all the validation goodness on fields: -->
 		<dependency>
 			<groupId>net.sf.oval</groupId>
 			<artifactId>oval</artifactId>
 			<version>1.81</version>
 		</dependency>
 
+        <!-- For uploading files we are using: -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
 
 		<!-- Testing is mainly done by mockito: -->
 		<dependency>

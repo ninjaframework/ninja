@@ -63,7 +63,7 @@ class FilterChainEnd implements FilterChain {
 
 						}
 						
-						if (a.annotationType().getPackage())
+						//if (a.annotationType().getPackage())
 						
 						if (a instanceof Email) {
 							
@@ -72,7 +72,7 @@ class FilterChainEnd implements FilterChain {
 							System.out.println("check email.");
 							
 							Validator validator = new Validator();
-							validator.addChecks(noEmail.getClass(), new Check EmailCheck());
+							validator.addChecks(noEmail.getClass(), new EmailCheck());
 							
 							List<ConstraintViolation> violations = validator.validate(noEmail);
 							

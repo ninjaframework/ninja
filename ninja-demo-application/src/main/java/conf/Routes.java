@@ -11,6 +11,7 @@ import controllers.I18nController;
 import controllers.InjectionExampleController;
 import controllers.PersonController;
 import controllers.UdpPingController;
+import controllers.UploadController;
 
 public class Routes implements ApplicationRoutes {
 	
@@ -73,6 +74,12 @@ public class Routes implements ApplicationRoutes {
         // I18n:
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/i18n").with(I18nController.class, "index");
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Upload showcase
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/upload").with(UploadController.class, "upload");
+        router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
 
         
         // /////////////////////////////////////////////////////////////////////
