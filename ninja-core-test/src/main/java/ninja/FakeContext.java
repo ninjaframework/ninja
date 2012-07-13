@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.ResponseStreams;
+import org.apache.commons.fileupload.FileItemIterator;
 
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
@@ -188,6 +189,16 @@ public class FakeContext implements Context {
     @Override
     public <T> T parseBody(Class<T> classOfT) {
         return classOfT.cast(body);
+    }
+
+    @Override
+    public boolean isMultipart() {
+        return false;
+    }
+
+    @Override
+    public FileItemIterator getFileItemIterator() {
+        throw new UnsupportedOperationException("Not supported in fake context");
     }
 
     @Override
