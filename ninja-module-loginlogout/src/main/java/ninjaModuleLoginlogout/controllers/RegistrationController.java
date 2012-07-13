@@ -100,38 +100,38 @@ public class RegistrationController {
 		return Results.html();
 	}
 
-	/**
-	 * Checks and activates user account with code sent in email.
-	 */
-	public Result registrationConfirm(Context context) {
-
-		String code = context.getParameter("code");
-		
-		if (code.length() == 0) {
-			context.getFlashCookie().error("registration.error");
-
-		}
-
-		// get user with this email
-
-		String email = Casino
-				.getCasinoUserWithConfirmationCode(code);
-
-		if (email != null) {
-
-			Casino.deleteConfirmationCodeOfCasioUser(email);
-
-			// we also log in user after successful confirmation of email...
-			context.getSessionCookie().put("username", email);
-
-			context.getFlashCookie().success("registration.registration_success");
-		} else {
-
-			context.getFlashCookie().error("registration.error");
-		}
-
-		return Results.html();
-	}
+//	/**
+//	 * Checks and activates user account with code sent in email.
+//	 */
+//	public Result registrationConfirm(Context context) {
+//
+//		String code = context.getParameter("code");
+//		
+//		if (code.length() == 0) {
+//			context.getFlashCookie().error("registration.error");
+//
+//		}
+//
+//		// get user with this email
+//
+//		String email = Casino
+//				.getCasinoUserWithConfirmationCode(code);
+//
+//		if (email != null) {
+//
+//			Casino.deleteConfirmationCodeOfCasioUser(email);
+//
+//			// we also log in user after successful confirmation of email...
+//			context.getSessionCookie().put("username", email);
+//
+//			context.getFlashCookie().success("registration.registration_success");
+//		} else {
+//
+//			context.getFlashCookie().error("registration.error");
+//		}
+//
+//		return Results.html();
+//	}
 
 	// ////////////////////////////////////////////////////////////////////////
 	// Recover lost password of user using email:

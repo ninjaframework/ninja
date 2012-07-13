@@ -3,10 +3,13 @@ package controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.oval.constraint.Email;
+import net.sf.oval.guard.Guarded;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
+import ninja.params.Param;
 
 import org.slf4j.Logger;
 
@@ -46,10 +49,10 @@ public class ApplicationController {
 
 	}
 	
-	public Result userDashboard(Context context) {
-		//get parameters from context:
-		String id = context.getPathParameter("id");				
-		String name = context.getPathParameter("name");
+	public Result userDashboard(
+			@Email @Param("id") String id, 
+			@Param("name") String name,
+			Context context) {
 
 		Map<String, String> map = new HashMap<String, String>();
 		//generate tuples

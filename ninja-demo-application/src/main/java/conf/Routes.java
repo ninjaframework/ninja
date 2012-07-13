@@ -79,7 +79,7 @@ public class Routes implements ApplicationRoutes {
         // Routes from a plugin:
         // /////////////////////////////////////////////////////////////////////
         
-        router.GET().route("/pending").with(RegistrationController.class, "pending");
+        //router.GET().route("/pending").with(RegistrationController.class, "pending");
         
         //GET         /login                                     casino.Secure.login
         //POST        /login                                     casino.Secure.authenticate
@@ -91,11 +91,11 @@ public class Routes implements ApplicationRoutes {
         //GET         /registration                              casino.Registration.registration
         router.GET().route("/registration").with(RegistrationController.class, "registration");
         //POST        /registration/finish                       casino.Registration.registrationFinish
-        router.POST().route("/registration/finish").with(RegistrationController.class, "registrationFinish");
+        //router.POST().route("/registration/finish").with(RegistrationController.class, "registrationFinish");
         //GET         /registration/pending                      casino.Registration.pending
         router.GET().route("/registration/pending").with(RegistrationController.class, "registrationPending");
         //GET         /registration/confirm/{code}               casino.Registration.confirm
-        router.GET().route("/registration/confirm/{code}").with(RegistrationController.class, "registrationConfirm");
+        //router.GET().route("/registration/confirm/{code}").with(RegistrationController.class, "registrationConfirm");
 
 //        GET         /registration/lostpassword                 casino.Registration.lostPassword
 //        POST        /registration/lostpassword/finish          casino.Registration.lostPasswordFinish

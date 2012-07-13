@@ -1,19 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ninja-core</artifactId>
-    <packaging>jar</packaging>
-    <name>ninja web framework</name>
+	<artifactId>ninja-core</artifactId>
+	<packaging>jar</packaging>
+	<name>ninja web framework</name>
 
-    <parent>
-        <groupId>ninja</groupId>
-        <artifactId>ninja</artifactId>
-        <version>0.4-SNAPSHOT</version>
-    </parent>
-    
-    <build>   
-    		<resources>
+	<parent>
+		<groupId>ninja</groupId>
+		<artifactId>ninja</artifactId>
+		<version>0.4-SNAPSHOT</version>
+	</parent>
+
+	<build>
+		<resources>
 			<resource>
 				<directory>src/main/java</directory>
 				<includes>
@@ -21,99 +21,109 @@
 				</includes>
 			</resource>
 		</resources>
-    </build>
+	</build>
 
-    <dependencies>
+	<dependencies>
 
-        <!-- The main dependency method: -->
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>3.0</version>
-        </dependency>
+		<!-- The main dependency method: -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
 
-        <!-- Servlet api is used to run Ninja inside servlet containers -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-        </dependency>
+		<!-- Servlet api is used to run Ninja inside servlet containers -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
 
-        <!-- We use gson for rendering jsons: -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.1</version>
-            <scope>compile</scope>
-        </dependency>
+		<!-- We use gson for rendering jsons: -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.1</version>
+			<scope>compile</scope>
+		</dependency>
 
-        <!-- freemarker is our templating engine: -->
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>2.3.16</version>
-        </dependency>
+		<!-- freemarker is our templating engine: -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.16</version>
+		</dependency>
 
-        <!-- guava is just cool -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>12.0.1</version>
-        </dependency>
+		<!-- guava is just cool -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>12.0.1</version>
+		</dependency>
 
-        <!-- Needed for Hex transforms (security, cookies) and more... -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.6</version>
-        </dependency>
+		<!-- Needed for Hex transforms (security, cookies) and more... -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.6</version>
+		</dependency>
 
-        <!-- Enrcyption libraray providing support for blowfish -->
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-            <version>0.3m</version>
-        </dependency>
+		<!-- Enrcyption libraray providing support for blowfish -->
+		<dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.3m</version>
+		</dependency>
 
-        <!-- Logback is the successor of log4j. We use it: -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        
-        <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-
-
-        <!-- Testing is mainly done by mockito: -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
+		<!-- Logback is the successor of log4j. We use it: -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		
+		<!-- some nice helper classes. Useful for escaping... -->
+		<dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.1</version>
         </dependency>
-        
-        
 
-    </dependencies>
+		<!-- Some nice stuff for handling IO. Some overlap with guava though... -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		
+        <!--  This is our library that does all the validation goodness on fields: -->
+		<dependency>
+			<groupId>net.sf.oval</groupId>
+			<artifactId>oval</artifactId>
+			<version>1.81</version>
+		</dependency>
+
+
+		<!-- Testing is mainly done by mockito: -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+
+
+
+
+	</dependencies>
 
 
 </project>
