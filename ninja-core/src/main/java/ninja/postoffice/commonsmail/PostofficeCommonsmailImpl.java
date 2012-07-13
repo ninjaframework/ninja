@@ -52,7 +52,7 @@ public class PostofficeCommonsmailImpl implements Postoffice {
     }
 
     // May be used for testing
-    public PostofficeCommonsmailImpl(CommonsmailHelper commonsmailHelper, String smtpHost,
+    PostofficeCommonsmailImpl(CommonsmailHelper commonsmailHelper, String smtpHost,
             int smtpPort, boolean smtpSsl, String smtpUser, String smtpPassword,
             boolean smtpDebug) {
         this.commonsmailHelper = commonsmailHelper;

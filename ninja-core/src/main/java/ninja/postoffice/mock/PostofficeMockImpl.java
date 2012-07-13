@@ -1,20 +1,15 @@
 package ninja.postoffice.mock;
 
-import com.google.inject.Inject;
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
 import org.apache.commons.mail.EmailException;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PostofficeMockImpl implements Postoffice {
 
     Mail lastSentMail;
-    private final Logger logger;
-    
-    @Inject
-    public PostofficeMockImpl(Logger logger) {
-        this.logger = logger;
-    }
+    private static final Logger log = LoggerFactory.getLogger(PostofficeMockImpl.class);
 
     @Override
     public void send(Mail mail) throws EmailException {
@@ -29,33 +24,33 @@ public class PostofficeMockImpl implements Postoffice {
 
     private void prettyPrintLastSentMail(Mail mail) {
         
-        logger.info("--------------------------------------------------------");
-        logger.info("Mock mailer received send email request");
-        logger.info("--------------------------------------------------------");
-        logger.info("Subject : " + mail.getSubject());
-        logger.info("From    : " + mail.getFrom());
+        log.info("--------------------------------------------------------");
+        log.info("Mock mailer received send email request");
+        log.info("--------------------------------------------------------");
+        log.info("Subject : " + mail.getSubject());
+        log.info("From    : " + mail.getFrom());
 
         for (String email : mail.getTos()) {
-            logger.info("To      : " + email);
+            log.info("To      : " + email);
         }
 
         for (String email : mail.getReplyTo()) {
-            logger.info("ReplyTo : " + email);
+            log.info("ReplyTo : " + email);
         }
 
         for (String email : mail.getCcs()) {
-            logger.info("Cc      : " + email);
+            log.info("Cc      : " + email);
         }
 
         for (String email : mail.getBccs()) {
-            logger.info("Bcc      : " + email);
+            log.info("Bcc      : " + email);
         }
 
-        logger.info("----- Html content -------------------------------------");
-        logger.info(mail.getBodyHtml());
-        logger.info("----- Text content -------------------------------------");
-        logger.info(mail.getBodyText());
-        logger.info("--------------------------------------------------------");
+        log.info("----- Html content -------------------------------------");
+        log.info(mail.getBodyHtml());
+        log.info("----- Text content -------------------------------------");
+        log.info(mail.getBodyText());
+        log.info("--------------------------------------------------------");
 
     }
 
