@@ -20,9 +20,14 @@ import ninja.session.SessionCookie;
 import ninja.utils.CookieHelper;
 import ninja.utils.ResponseStreams;
 import ninja.utils.ResponseStreamsServlet;
+import ninja.utils.ResultHandler;
+
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
 
 import com.google.inject.Inject;
-import ninja.utils.ResultHandler;
 
 public class ContextImpl implements Context {
 
@@ -43,6 +48,8 @@ public class ContextImpl implements Context {
 
 	private final SessionCookie sessionCookie;
     private final ResultHandler resultHandler;
+    
+    @Inject Logger logger;
 
 	@Inject
 	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
@@ -278,5 +285,28 @@ public class ContextImpl implements Context {
     @Override
     public Route getRoute() {
         return route;
+    }
+
+	@Override
+    public boolean isMultipart() {
+		
+	    return ServletFileUpload.isMultipartContent(httpServletRequest);
+    }
+
+	@Override
+    public FileItemIterator getFileItemIterator() {
+		
+		ServletFileUpload upload = new ServletFileUpload();
+		FileItemIterator fileItemIterator = null;
+
+		try {
+			fileItemIterator = upload.getItemIterator(httpServletRequest);
+        } catch (FileUploadException e) {
+	        logger.error("Error while trying to process mulitpart file upload", e);
+        } catch (IOException e) {
+        	logger.error("Error while trying to process mulitpart file upload", e);
+        }
+		
+		return fileItemIterator;
     }
 }

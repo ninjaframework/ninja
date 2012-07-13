@@ -6,6 +6,9 @@ import ninja.utils.ResponseStreams;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItemIterator;
+
 import java.io.*;
 import java.util.Map;
 
@@ -152,6 +155,16 @@ public class WrappedContext implements Context {
     @Override
     public Route getRoute() {
         return wrapped.getRoute();
+    }
+
+	@Override
+    public boolean isMultipart() {
+	    return wrapped.isMultipart();
+    }
+
+	@Override
+    public FileItemIterator getFileItemIterator() {
+	    return wrapped.getFileItemIterator();
     }
 
 }

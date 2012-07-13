@@ -1,8 +1,8 @@
-package ninjaModuleDemo.conf;
+package ninjaModuleLoginlogout.conf;
 
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
-import ninjaModuleDemo.controllers.ApplicationController;
+import ninjaModuleLoginlogout.controllers.RegistrationController;
 
 public class NinjaModuleDemoRouter implements ApplicationRoutes {
 
@@ -12,7 +12,7 @@ public class NinjaModuleDemoRouter implements ApplicationRoutes {
 		// some default functions
 		// /////////////////////////////////////////////////////////////////////
 		// simply render a page:
-		router.GET().route("/registration").with(ApplicationController.class, "registration");
+		router.GET().route("/registration").with(RegistrationController.class, "registration");
 	}
 
 }

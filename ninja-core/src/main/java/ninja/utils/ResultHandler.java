@@ -60,7 +60,12 @@ public class ResultHandler {
     }
 
     private void handleRenderable(Renderable renderable, Context context, Result result) {
-        renderable.render(context, result);
+        try {
+			renderable.render(context, result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void renderWithTemplateEngine(Context context, Result result) {
