@@ -24,33 +24,23 @@ import com.google.inject.Inject;
  */
 public class SessionCookieImpl implements SessionCookie {
 
-	private Integer sessionExpireTimeInMs;
+    private static final String AUTHENTICITY_KEY = "___AT";
+    private static final String ID_KEY = "___ID";
+    private static final String TIMESTAMP_KEY = "___TS";
+    private static final Pattern sessionParser = Pattern
+            .compile("\u0000([^:]*):([^\u0000]*)\u0000");
 
-	private Boolean sessionSendOnlyIfChanged;
+    private final Crypto crypto;
 
-	private Boolean sessionTransferredOverHttpsOnly;
+    private final Integer sessionExpireTimeInMs;
+    private final Boolean sessionSendOnlyIfChanged;
+    private final Boolean sessionTransferredOverHttpsOnly;
+    private final String applicationCookiePrefix;
+    private final Map<String, String> data = new HashMap<String, String>();
 
-	private Pattern sessionParser = Pattern
-	        .compile("\u0000([^:]*):([^\u0000]*)\u0000");
+    /** Has cookie been changed => only send new cookie stuff has been changed */
+    private boolean sessionDataHasBeenChanged = false;
 
-	private static final String AUTHENTICITY_KEY = "___AT";
-	private static final String ID_KEY = "___ID";
-
-	/**
-	 * The timestamp => part of the data collection. Must be valid, otherwise
-	 * session is not valid
-	 */
-	private static final String TIMESTAMP_KEY = "___TS";
-
-	private Map<String, String> data = new HashMap<String, String>();
-
-	/** Has cookie been changed => only send new cookie stuff has been changed */
-	private boolean sessionDataHasBeenChanged = false;
-
-	private final Crypto crypto;
-
-	private String applicationCookiePrefix;
-	
 	@Inject
 	public SessionCookieImpl(
 			Crypto crypto,
@@ -59,7 +49,12 @@ public class SessionCookieImpl implements SessionCookie {
 		this.crypto = crypto;
 		
 		//read configuration stuff:
-		this.sessionExpireTimeInMs = ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInSeconds) * 1000;
+        Integer sessionExpireTimeInSeconds = ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInSeconds);
+        if (sessionExpireTimeInSeconds != null) {
+            this.sessionExpireTimeInMs = sessionExpireTimeInSeconds * 1000;
+        } else {
+            this.sessionExpireTimeInMs = null;
+        }
 		this.sessionSendOnlyIfChanged = ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged);
 		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly);
 		this.applicationCookiePrefix = ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix);
