@@ -66,6 +66,14 @@ public interface Context {
 	SessionCookie getSessionCookie();
 
     /**
+     * Add the given cookie to the response
+     *
+     * @param cookie The cookie to add
+     * @return This context
+     */
+    public Context addCookie(Cookie cookie);
+
+    /**
      * Get the underlying HTTP servlet request
      * 
      * @Deprecated because it directly refers to the servlet api.

@@ -38,6 +38,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public Context addCookie(Cookie cookie) {
+        return wrapped.addCookie(cookie);
+    }
+
+    @Override
     @Deprecated
     public HttpServletRequest getHttpServletRequest() {
         return wrapped.getHttpServletRequest();

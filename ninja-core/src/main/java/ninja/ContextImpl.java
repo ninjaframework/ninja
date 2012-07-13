@@ -180,7 +180,13 @@ public class ContextImpl implements Context {
 		return sessionCookie;
 	}
 
-	@Override
+    @Override
+    public Context addCookie(Cookie cookie) {
+        httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
+        return this;
+    }
+
+    @Override
 	public String getRequestUri() {
 		return getHttpServletRequest().getRequestURI();
 	}

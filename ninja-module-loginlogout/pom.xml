@@ -17,7 +17,6 @@
 			<groupId>ninja</groupId>
 			<artifactId>ninja-core</artifactId>
 			<version>0.4-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
