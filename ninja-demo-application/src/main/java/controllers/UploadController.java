@@ -76,6 +76,7 @@ public class UploadController {
 					while (fileItemIterator.hasNext()) {
 						
 						FileItemStream item = fileItemIterator.next();
+						
 						String name = item.getFieldName();
 						InputStream stream = item.openStream();
 						

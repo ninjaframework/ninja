@@ -9,7 +9,7 @@ public class NinjaApiTest {
 	NinjaIntegrationTestHelper ninjaIntegrationTestHelper;
 	
 	public NinjaApiTest() {
-	    System.out.println("in constructor :)");
+		//nothing to do...
     }
 
     @Before

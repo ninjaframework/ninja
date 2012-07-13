@@ -10,14 +10,14 @@ import com.google.common.annotations.Beta;
 /**
  * Just an idea to inject parameters right into the methods...
  * 
- * This equals context.getParameter(...)
- *  
+ * This equals context.getPathParameter(...)
+ * 
  * @author ra
  *
  */
 @Beta
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
-public @interface Param {
+public @interface PathParam {
 	String value();
 }
