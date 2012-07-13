@@ -1,4 +1,4 @@
-package ninjaModuleDemo.conf;
+package ninjaModuleLoginlogout.conf;
 
 import com.google.inject.AbstractModule;
 

@@ -29,6 +29,7 @@ public class ApplicationController {
     @Inject
     Lang lang;
 
+
 	public Result examples(Context context) {
 	    logger.info("In example ");
 		// Default rendering is simple by convention
