@@ -5,8 +5,11 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ninja.utils.NinjaConstant;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import com.devbliss.doctest.DocTest;
 
@@ -18,9 +21,15 @@ import com.devbliss.doctest.DocTest;
  * 
  */
 public abstract class NinjaApiDocTest extends DocTest {
-    private static final NinjaIntegrationTestHelper ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
+    private static NinjaIntegrationTestHelper ninjaIntegrationTestHelper;
 
     public NinjaApiDocTest() {
+    }
+
+    @BeforeClass
+    public static void startServerInTestMode() {
+        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
+        ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
     }
 
     @AfterClass
