@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import ninja.NinjaServletDispatcher;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;

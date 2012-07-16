@@ -30,11 +30,11 @@ public abstract class NinjaApiDocTest extends DocTest {
     }
 
     public URI buildUri(String relativePath, Map<String, String> parameters) throws URISyntaxException {
-        return build("api/v1/" + relativePath, parameters).build();
+        return build(relativePath, parameters).build();
     }
 
     public URI buildUri(String relativePath) throws URISyntaxException {
-        return build("api/v1/" + relativePath, null).build();
+        return build(relativePath, null).build();
     }
 
     private URIBuilder build(String relativePath, Map<String, String> parameters) {
