@@ -11,6 +11,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
+
 import com.google.inject.Injector;
 
 /**
@@ -34,10 +37,43 @@ public class NinjaServletDispatcher implements Filter {
 	 */
 	private Ninja ninja;
 
+	private final String serverName;
+
+	/**
+	 * Special constructor for usage in JUnit tests.
+	 * 
+	 * We are using an embeded jetty for quick server testing. The problem is
+	 * that the port will change.
+	 * 
+	 * Therefore we inject the server name here:
+	 * 
+	 * @param serverName
+	 *            The injected server name. Will override property serverName in
+	 *            Ninja properties.
+	 */
+	public NinjaServletDispatcher(String serverName) {
+		this.serverName = serverName;
+	}
+
+	public NinjaServletDispatcher() {
+		// default constructor used in PROD and DEV modes.
+		// Especially serverName will be set from application.conf.
+		this.serverName = null; // intentionally null.
+	}
+
 	public void init(FilterConfig filterConfig) throws ServletException {
 		
 		NinjaBootup ninjaBootup = new NinjaBootup();
 		injector = ninjaBootup.getInjector();
+
+		// force set serverName when in test mode:
+		if (serverName != null) {
+			NinjaProperties ninjaProperties = injector
+			        .getInstance(NinjaProperties.class);
+			ninjaProperties.getAllCurrentNinjaProperties().setProperty(
+			        NinjaConstant.serverName, serverName);
+		}
+
 		ninja = injector.getInstance(Ninja.class);
         ninja.start();
 

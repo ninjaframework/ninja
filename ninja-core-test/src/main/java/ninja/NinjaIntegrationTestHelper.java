@@ -5,8 +5,6 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import ninja.NinjaServletDispatcher;
-
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
@@ -20,10 +18,12 @@ public class NinjaIntegrationTestHelper {
 
 	private final int port;
 	private final Server server;
+    private final URI serverUri;
 	
 	public NinjaIntegrationTestHelper() {
 		
 		this.port = findAvailablePort(1000, 10000);
+        serverUri = createServerUri();
 		server = new Server();
 		
 		try {			
@@ -34,7 +34,7 @@ public class NinjaIntegrationTestHelper {
 			// We need a default servlet. because the dispatcher filter
 			// is only decorating the servlet.
 			context.addServlet(DefaultServlet.class, "/*");
-			context.addFilter(new FilterHolder(new NinjaServletDispatcher()),
+            context.addFilter(new FilterHolder(new NinjaServletDispatcher(serverUri.toString())),
 			        "/*", Handler.ALL);
 			server.start();
 		} catch (Exception ex) {
@@ -44,10 +44,14 @@ public class NinjaIntegrationTestHelper {
 	
 
 	public String getServerAddress() {
-		return "http://localhost:" + port + "/";
+        return serverUri.toString() + "/";
 	}
 
     public URI getServerAddressAsUri() {
+        return serverUri;
+    }
+
+    private URI createServerUri() {
         try {
             return new URIBuilder().setScheme("http").setHost("localhost").setPort(port).build();
         } catch (URISyntaxException e) {
