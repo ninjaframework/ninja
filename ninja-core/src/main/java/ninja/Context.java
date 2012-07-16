@@ -43,9 +43,28 @@ public interface Context {
 	 * http://example.com/index would return
 	 * "/index".
 	 * 
+	 * This is ambiguous.
+	 * 
+	 * Please use the new method getRequestPath. It will also take care
+	 * of any prefixes and contexts set by your servlet container
+	 * 
 	 * @return the uri as seen by the server
 	 */
+	@Deprecated
     String getRequestUri();
+	
+	/**
+	 * Returns the path as seen by the server.
+	 * 
+	 * http://example.com/index would return
+	 * "/index".
+	 * 
+	 * It will also take care
+	 * of any prefixes and contexts set by your servlet container
+	 * 
+	 * @return the path as seen by the server
+	 */
+    String getRequestPath();
 
     /**
      * Returns the flash cookie. Flash cookies only live for one request.

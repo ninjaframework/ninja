@@ -42,16 +42,16 @@ public class Results {
 		return result;
 	}
 	
-	public static Result html() {
+	public static Result contentType(String contentType) {
 		Result result = status(Result.SC_200_OK);
-		result.contentType(Result.TEXT_HTML);
+		result.contentType(contentType);
 
 		return result;
 	}
 	
-	public static Result contentType(String contentType) {
+	public static Result html() {
 		Result result = status(Result.SC_200_OK);
-		result.contentType(contentType);
+		result.contentType(Result.TEXT_HTML);
 
 		return result;
 	}
@@ -63,6 +63,18 @@ public class Results {
 		return result;
 	}
 	
+	/**
+	 * html should take only int status or nothing.
+	 * => otherwise the html(..) methods might not
+	 * work properly..
+	 * 
+	 * please use "render" from Result to do so.
+	 * Should be as easy as html().render(myObject)
+	 *
+	 * @param renderable
+	 * @return
+	 */
+	@Deprecated
 	public static Result html(Object renderable) {
 		Result result = status(Result.SC_200_OK);
 		result.contentType(Result.TEXT_HTML);

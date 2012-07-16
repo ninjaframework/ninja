@@ -44,7 +44,7 @@ public class AssetsController {
 			@Override
 			public void render(Context context, Result result) {
 				
-				String finalName = context.getHttpServletRequest().getRequestURI()
+				String finalName = context.getRequestPath()
 				        .replaceFirst(PUBLIC_PREFIX, "");
 				
 				InputStream inputStream = this.getClass().getClassLoader()

@@ -167,4 +167,9 @@ public class WrappedContext implements Context {
 	    return wrapped.getFileItemIterator();
     }
 
+	@Override
+	public String getRequestPath() {
+		return wrapped.getRequestPath();
+	}
+
 }

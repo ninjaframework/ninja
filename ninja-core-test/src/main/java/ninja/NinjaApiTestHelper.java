@@ -122,14 +122,8 @@ public class NinjaApiTestHelper {
 			post.setEntity(entity);
 
 			// Here we go!
-			
-
-			
-
 			response = EntityUtils.toString(client.execute(post).getEntity(),
 			        "UTF-8");
-			
-			System.out.println("response is: " + response);
 			
 			client.getConnectionManager().shutdown();
 		} catch (ParseException e) {
