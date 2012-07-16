@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.junit.BeforeClass;
+import org.junit.AfterClass;
 
 import com.devbliss.doctest.DocTest;
 
@@ -18,15 +18,14 @@ import com.devbliss.doctest.DocTest;
  * 
  */
 public abstract class NinjaApiDocTest extends DocTest {
-    private static final NinjaApiTest ninjaApiTest = new NinjaApiTest();
+    private static final NinjaIntegrationTestHelper ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
 
     public NinjaApiDocTest() {
-
     }
 
-    @BeforeClass
-    public static final void beforeTests() {
-        ninjaApiTest.startupServer();
+    @AfterClass
+    public static void shutdownServer() {
+        ninjaIntegrationTestHelper.shutdown();
     }
 
     public URI buildUri(String relativePath, Map<String, String> parameters) throws URISyntaxException {
@@ -38,7 +37,8 @@ public abstract class NinjaApiDocTest extends DocTest {
     }
 
     private URIBuilder build(String relativePath, Map<String, String> parameters) {
-        URIBuilder uriBuilder = new URIBuilder(ninjaApiTest.getServerAddressAsUri()).setPath(relativePath);
+        URIBuilder uriBuilder =
+                new URIBuilder(ninjaIntegrationTestHelper.getServerAddressAsUri()).setPath(relativePath);
         addParametersToURI(parameters, uriBuilder);
         return uriBuilder;
     }
