@@ -75,18 +75,38 @@ class RouteBuilderImpl implements RouteBuilder {
 	 *            The method
 	 * @return The actual method
 	 */
-	private Method verifyThatControllerAndMethodExists(Class controller,
+	private Method verifyThatControllerAndMethodExists(
+			Class controller,
 			String controllerMethod) {
 
 		try {
-
-			Method method = controller.getMethod(controllerMethod,
-					Context.class);
+			
+			Method methodFromQueryingClass = null;
+			
+			// 1. Make sure method is in class
+			// 2. Make sure only one method is there. Otherwise we cannot really know what
+			//    to do with the parameters.
+			for (Method method : controller.getMethods()) {
+				
+				if (method.getName().equals(controllerMethod)) {
+					if (methodFromQueryingClass == null) {
+						methodFromQueryingClass = method;
+					} else {
+						throw new NoSuchMethodException();
+					}
+					
+				}
+				
+			}
+			
+			if (methodFromQueryingClass == null) {
+				throw new NoSuchMethodException();
+			}
 
 			//make sure that the return type of that controller method
 			//is of type Result.
-			if (method.getReturnType().isAssignableFrom(Result.class)) {
-				return method;
+			if (methodFromQueryingClass.getReturnType().isAssignableFrom(Result.class)) {
+				return methodFromQueryingClass;
 			} else {
 				throw new NoSuchMethodException();
 
@@ -101,7 +121,8 @@ class RouteBuilderImpl implements RouteBuilder {
 			log.error("Error in route configuration!!!");
 			log.error("Can not find Controller " + controller.getName()
 					+ " and method " + controllerMethod);
-			log.error("Also make sure the controller returns a ninja.Result!");
+			log.error("Hint: make sure the controller returns a ninja.Result!");
+			log.error("Hint: Ninja does not allow more than one method with the same name!");
 		}
 		return null;
 	}

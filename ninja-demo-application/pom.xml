@@ -37,11 +37,7 @@
                     <reload>automatic</reload>
                 </configuration>
             </plugin>
-            
-
 		</plugins>
-
-
 
 		<resources>
 			<resource>
@@ -51,7 +47,6 @@
 				</includes>
 			</resource>
 		</resources>
-
 
 	</build>
 
@@ -69,7 +64,14 @@
 			<version>0.4-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
 			<groupId>ninja</groupId>
 			<artifactId>ninja-core-test</artifactId>
 			<version>0.4-SNAPSHOT</version>

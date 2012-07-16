@@ -1,6 +1,8 @@
 package ninja;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,8 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.ResponseStreams;
+
+import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {
 
@@ -64,6 +68,14 @@ public interface Context {
      * @return the Session of that request / response cycle.
      */
 	SessionCookie getSessionCookie();
+
+    /**
+     * Add the given cookie to the response
+     *
+     * @param cookie The cookie to add
+     * @return This context
+     */
+    public Context addCookie(Cookie cookie);
 
     /**
      * Get the underlying HTTP servlet request
@@ -248,4 +260,26 @@ public interface Context {
      * @return The route
      */
     Route getRoute();
+    
+    /**
+     * Check if request is of type multipart.
+     * Important when you want to process uploads for instance.
+     * 
+     * Also check out: http://commons.apache.org/fileupload/streaming.html
+     * 
+     * @return true if request is of type multipart.
+     */
+    boolean isMultipart();
+    
+    /**
+     * Gets the FileItemIterator of the input.
+     * 
+     * Can be used to process uploads in a streaming fashion.
+     * Check out: http://commons.apache.org/fileupload/streaming.html
+     * 
+     * @return the FileItemIterator of the request or null if there was an error.
+     */
+    FileItemIterator getFileItemIterator();
+    
+    
 }

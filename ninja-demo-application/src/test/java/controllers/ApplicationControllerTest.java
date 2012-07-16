@@ -35,9 +35,8 @@ public class ApplicationControllerTest extends NinjaApiTest {
 	@Test
 	public void testHtmlEscapingInTeamplateWorks() {
 
-		// IF the escaping works I expect the following string inside the page:
-		String expectedContent = "&lt;a javascript:alert(&quot;Hello!&quot;);";
-
+		//IF the escaping works I expect the following string inside the page:
+		String expectedContent = "&lt;script&gt;alert('Hello');&lt;/script&gt;";
 		// Some empty headers for now...
 		Map<String, String> headers = Maps.newHashMap();
 

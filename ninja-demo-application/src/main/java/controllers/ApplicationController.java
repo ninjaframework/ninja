@@ -3,10 +3,14 @@ package controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.oval.constraint.Email;
+import net.sf.oval.guard.Guarded;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
+import ninja.params.Param;
+import ninja.params.PathParam;
 
 import org.slf4j.Logger;
 
@@ -29,6 +33,7 @@ public class ApplicationController {
     @Inject
     Lang lang;
 
+
 	public Result examples(Context context) {
 	    logger.info("In example ");
 		// Default rendering is simple by convention
@@ -45,10 +50,10 @@ public class ApplicationController {
 
 	}
 	
-	public Result userDashboard(Context context) {
-		//get parameters from context:
-		String id = context.getPathParameter("id");				
-		String name = context.getPathParameter("name");
+	public Result userDashboard(
+			@Param("id") String id, 
+			@Param("name") String name,
+			Context context) {
 
 		Map<String, String> map = new HashMap<String, String>();
 		//generate tuples
@@ -78,7 +83,7 @@ public class ApplicationController {
 		//just an example of html escaping in action.
 		//just visit /htmlEscaping and check out the source
 		//all problematic characters will be escaped 
-		String maliciousJavascript = "<a javascript:alert(\"Hello!\");";
+		String maliciousJavascript = "<script>alert('Hello');</script>";
 		
 		Map<String, String> renderMap = Maps.newHashMap();
 		renderMap.put("maliciousJavascript", maliciousJavascript);

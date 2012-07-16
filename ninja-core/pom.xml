@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ninja-core</artifactId>
@@ -11,16 +11,16 @@
         <artifactId>ninja</artifactId>
         <version>0.4-SNAPSHOT</version>
     </parent>
-    
-    <build>   
-    		<resources>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**/*.properties</include>
-				</includes>
-			</resource>
-		</resources>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <dependencies>
@@ -37,6 +37,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- We use gson for rendering jsons: -->
@@ -44,14 +45,13 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.1</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- freemarker is our templating engine: -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.16</version>
+            <version>2.3.19</version>
         </dependency>
 
         <!-- guava is just cool -->
@@ -81,7 +81,7 @@
             <artifactId>logback-classic</artifactId>
             <version>1.0.4</version>
         </dependency>
-        
+
         <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -89,6 +89,31 @@
             <version>2.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>1.2</version>
+        </dependency>
+        
+        <!-- For uploading files we are using: -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        
+        <!-- This is our library that does all the validation goodness on fields: -->
+        <dependency>
+            <groupId>net.sf.oval</groupId>
+            <artifactId>oval</artifactId>
+            <version>1.81</version>
+        </dependency>
 
         <!-- Testing is mainly done by mockito: -->
         <dependency>
@@ -100,20 +125,20 @@
 
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <!-- junit-dep has all dependencies declared, rather than bundled (bundled
+                 causes massive classpath headaches) -->
+            <artifactId>junit-dep</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
         </dependency>
-        
-        
 
     </dependencies>
-
 
 </project>

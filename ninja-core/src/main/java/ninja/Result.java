@@ -119,7 +119,7 @@ public class Result {
 	}
 	
     public Result unsetCookie(String name) {
-		cookies.add(Cookie.builder(name, null).build());
+		cookies.add(Cookie.builder(name, null).setMaxAge(0).build());
 		return this;
     }
 
