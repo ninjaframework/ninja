@@ -2,12 +2,10 @@ package ninja;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.devbliss.doctest.DocTest;
@@ -21,7 +19,6 @@ import com.devbliss.doctest.DocTest;
  */
 public abstract class NinjaApiDocTest extends DocTest {
     private static final NinjaApiTest ninjaApiTest = new NinjaApiTest();
-    protected Map<String, String> parameters;
 
     public NinjaApiDocTest() {
 
@@ -30,12 +27,6 @@ public abstract class NinjaApiDocTest extends DocTest {
     @BeforeClass
     public static final void beforeTests() {
         ninjaApiTest.startupServer();
-    }
-
-
-    @Before
-    public void setUp() throws Exception {
-        parameters = new HashMap<String, String>();
     }
 
     public URI buildUri(String relativePath, Map<String, String> parameters) throws URISyntaxException {
