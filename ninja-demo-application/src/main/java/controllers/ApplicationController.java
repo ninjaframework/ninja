@@ -10,6 +10,7 @@ import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
 import ninja.params.Param;
+import ninja.params.PathParam;
 
 import org.slf4j.Logger;
 
@@ -50,7 +51,7 @@ public class ApplicationController {
 	}
 	
 	public Result userDashboard(
-			@Email @Param("id") String id, 
+			@Param("id") String id, 
 			@Param("name") String name,
 			Context context) {
 

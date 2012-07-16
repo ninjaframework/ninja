@@ -3,9 +3,11 @@ package ninja;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.ResultSet;
 
 import ninja.utils.MimeTypes;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
@@ -19,6 +21,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class AssetsController {
+	
+	private Logger logger = LoggerFactory.getLogger(AssetsController.class);
 
 	/** Used as seen by http request */
 	final String PUBLIC_PREFIX = "/assets/";
@@ -52,26 +56,28 @@ public class AssetsController {
 					context.finalizeHeaders(Results.status(404));
 
 				} else {
-					try {
-						
+					try {						
 						result.status(200);
 						
+						//try to set the mimetype:
 						String mimeType = mimeTypes.getContentType(context, finalName);
+
 						if (!mimeType.isEmpty()) {
 							result.contentType(mimeType);
 						}
 						
+						//finalize headers:
 						context.finalizeHeaders(result);
+						
 						
 						ByteStreams.copy(this.getClass().getClassLoader()
 						        .getResourceAsStream(ASSETS_PREFIX + finalName),
 						        context.getHttpServletResponse().getOutputStream());
+						
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error("error streaming file", e);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error("error streaming file", e);
 					}
 					
 				}
