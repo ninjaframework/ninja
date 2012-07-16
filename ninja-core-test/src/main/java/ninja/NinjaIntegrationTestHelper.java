@@ -2,7 +2,10 @@ package ninja;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -10,8 +13,6 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
-
-import static org.junit.Assert.fail;
 
 public class NinjaIntegrationTestHelper {
 
@@ -41,9 +42,17 @@ public class NinjaIntegrationTestHelper {
 	
 
 	public String getServerAddress() {
-
 		return "http://localhost:" + port + "/";
 	}
+
+    public URI getServerAddressAsUri() {
+        try {
+            return new URIBuilder().setScheme("http").setHost("localhost").setPort(port).build();
+        } catch (URISyntaxException e) {
+            // should not be able to happen...
+            return null;
+        }
+    }
 
     public void shutdown() {
         try {

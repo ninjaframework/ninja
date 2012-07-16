@@ -64,6 +64,11 @@
             <version>4.2.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.devbliss.doctest</groupId>
+            <artifactId>doctest</artifactId>
+            <version>0.3</version>
+        </dependency>
 
 	</dependencies>
 

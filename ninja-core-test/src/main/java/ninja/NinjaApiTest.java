@@ -1,9 +1,17 @@
 package ninja;
 
 
+import java.net.URI;
+
 import org.junit.After;
 import org.junit.Before;
 
+/**
+ * Baseclass for tests that require a running server.
+ * 
+ * @author rbauer
+ * 
+ */
 public class NinjaApiTest {
 
 	NinjaIntegrationTestHelper ninjaIntegrationTestHelper;
@@ -26,6 +34,10 @@ public class NinjaApiTest {
     public String getServerAddress() {
 		return ninjaIntegrationTestHelper.getServerAddress();
 	}
+
+    public URI getServerAddressAsUri() {
+        return ninjaIntegrationTestHelper.getServerAddressAsUri();
+    }
 
     @After
     public void shutdownServer() {
