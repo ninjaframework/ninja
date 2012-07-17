@@ -1,10 +1,15 @@
 package ninja.template;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.inject.*;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.Binding;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 @Singleton
 public class TemplateEngineManagerImpl implements TemplateEngineManager {
@@ -40,6 +45,13 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
 
 	@Override
 	public TemplateEngine getTemplateEngineForContentType(String contentType) {
-        return contentTypeToTemplateEngineMap.get(contentType).get();
+		Provider<? extends TemplateEngine> provider = contentTypeToTemplateEngineMap
+		        .get(contentType);
+
+		if (provider != null) {
+			return provider.get();
+		} else {
+			return null;
+		}
 	}
 }
