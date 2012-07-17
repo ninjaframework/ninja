@@ -70,8 +70,7 @@ public class NinjaImpl implements Ninja {
 
 		String httpMethod = context.getHttpServletRequest().getMethod();
 
-		Route route = router.getRouteFor(httpMethod, context
-				.getHttpServletRequest().getRequestURI());
+		Route route = router.getRouteFor(httpMethod, context.getRequestPath());
 
 		context.setRoute(route);
 

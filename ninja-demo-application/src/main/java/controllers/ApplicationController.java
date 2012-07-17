@@ -3,13 +3,10 @@ package controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.oval.constraint.Email;
-import net.sf.oval.guard.Guarded;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
-import ninja.params.Param;
 import ninja.params.PathParam;
 
 import org.slf4j.Logger;
@@ -51,8 +48,8 @@ public class ApplicationController {
 	}
 	
 	public Result userDashboard(
-			@Param("id") String id, 
-			@Param("name") String name,
+			@PathParam("name") String name,
+			@PathParam("id") String id,
 			Context context) {
 
 		Map<String, String> map = new HashMap<String, String>();

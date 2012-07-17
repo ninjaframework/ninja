@@ -32,7 +32,7 @@ public class LoggerFilter implements Filter {
 	@Override
 	public Result filter(FilterChain chain, Context context) {
 
-		logger.info("Got request from : " + context.getRequestUri());
+		logger.info("Got request from : " + context.getRequestPath());
         return chain.next(context);
 	}
 

@@ -1,8 +1,8 @@
 package controllers;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URLEncoder;
 import java.util.Map;
 
 import ninja.NinjaApiTest;
@@ -68,6 +68,29 @@ public class ApplicationControllerTest extends NinjaApiTest {
 		assertTrue(setCookie.contains("___TS"));
 		assertTrue(setCookie.contains("username"));
 		assertTrue(setCookie.contains("kevin"));
+
+	}
+	
+	
+	@Test
+	public void testThatPathParamParsingWorks() {
+		
+		// Simply connect to the userDashboard place
+		// and make sure that parsing of paramters works as expected.
+		
+		
+		// Some empty headers for now...
+		Map<String, String> headers = Maps.newHashMap();
+
+		//do the request
+		String response = NinjaApiTestHelper
+				.makeRequest(getServerAddress() + "user/12345/john@example.com/userDashboard",
+						headers);
+
+		// And assert that stuff is visible on page:
+		assertTrue(response.contains("john@example.com"));
+		assertTrue(response.contains("12345"));
+
 
 	}
 }

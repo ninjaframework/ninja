@@ -89,7 +89,7 @@ public class ContextImpl implements Context {
 
 	@Override
 	public String getPathParameter(String key) {
-		return route.getParameters(httpServletRequest.getServletPath())
+		return route.getParameters(getRequestPath())
 				.get(key);
 	}
 
@@ -193,6 +193,7 @@ public class ContextImpl implements Context {
         return this;
     }
 
+    @Deprecated
     @Override
 	public String getRequestUri() {
 		return getHttpServletRequest().getRequestURI();
@@ -309,4 +310,16 @@ public class ContextImpl implements Context {
 		
 		return fileItemIterator;
     }
+
+	@Override
+	public String getRequestPath() {
+		//everything except the context of this servlet.
+		//Does not return the query params.
+		if (httpServletRequest.getPathInfo() != null) {
+			return httpServletRequest.getServletPath() + httpServletRequest.getPathInfo();
+			
+		} else {
+			return httpServletRequest.getServletPath();
+		}
+	}
 }

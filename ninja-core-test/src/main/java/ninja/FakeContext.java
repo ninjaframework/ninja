@@ -23,6 +23,11 @@ import java.util.Map;
  */
 public class FakeContext implements Context {
     private String requestContentType;
+    
+    private String requestPath;
+    
+    /** please use the requestPath stuff */
+    @Deprecated
     private String requestUri;
     private FlashCookie flashCookie;
     private SessionCookie sessionCookie;
@@ -43,11 +48,26 @@ public class FakeContext implements Context {
         return requestContentType;
     }
 
+    /**
+     * Please use the getServletPath and setServletPath facilities. 
+     * 
+     * @param requestUri
+     * @return
+     */
+    @Deprecated
     public FakeContext setRequestUri(String requestUri) {
         this.requestUri = requestUri;
         return this;
     }
 
+
+    /**
+     * Please use the getServletPath and setServletPath facilities. 
+     * 
+     * @param requestUri
+     * @return
+     */
+    @Deprecated
     public String getRequestUri() {
         return requestUri;
     }
@@ -240,4 +260,15 @@ public class FakeContext implements Context {
     public Route getRoute() {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
+    
+	
+	public FakeContext setRequestPath(String path) {
+		this.requestPath = path;
+		return this;
+	}
+
+	@Override
+	public String getRequestPath() {
+		return this.requestPath;
+	}
 }
