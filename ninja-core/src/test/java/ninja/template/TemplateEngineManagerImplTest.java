@@ -1,6 +1,7 @@
 package ninja.template;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import ninja.ContentTypes;
 import ninja.Context;
@@ -45,6 +46,12 @@ public class TemplateEngineManagerImplTest {
         assertThat(createTemplateEngineManager(OverrideHtmlTemplateEngine.class).getTemplateEngineForContentType(
                 ContentTypes.TEXT_HTML), instanceOf(OverrideHtmlTemplateEngine.class));
     }
+
+	@Test
+	public void testGetNonExistingProducesNoNPE() {
+		TemplateEngineManager manager = createTemplateEngineManager(OverrideJsonTemplateEngine.class);
+		assertNull(manager.getTemplateEngineForContentType("non/existing"));
+	}
 
     public static abstract class MockTemplateEngine implements TemplateEngine {
         public void invoke(Context context, Result result) {
