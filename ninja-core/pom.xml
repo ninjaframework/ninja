@@ -5,7 +5,7 @@
 	<artifactId>ninja-core</artifactId>
 	<packaging>jar</packaging>
 	<name>ninja web framework</name>
-
+    
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>

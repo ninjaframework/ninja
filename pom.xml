@@ -7,6 +7,15 @@
 	<packaging>pom</packaging>
 	<version>0.4-SNAPSHOT</version>
 	<name>ninja</name>
+    <url>http://www.ninjaframework.org</url>
+    
+    <!-- Deploy to central maven using the oss-parent of sonatype -->
+    <!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<modules>
 		<module>ninja-core</module>
