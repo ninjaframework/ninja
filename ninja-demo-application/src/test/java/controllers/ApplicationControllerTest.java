@@ -1,8 +1,8 @@
 package controllers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URLEncoder;
 import java.util.Map;
 
 import ninja.NinjaApiTest;
@@ -93,4 +93,24 @@ public class ApplicationControllerTest extends NinjaApiTest {
 
 
 	}
+
+    @Test
+    public void testThatValidationWorks() {
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+
+        String response = NinjaApiTestHelper
+                .makeRequest(getServerAddress() + "validation?email=john@example.com");
+
+        // And assert that stuff is visible on page:
+        assertEquals(response, "john@example.com");
+
+        response = NinjaApiTestHelper
+                .makeRequest(getServerAddress() + "validation");
+
+        // And assert that stuff is visible on page:
+        assertEquals(response, "email is required");
+
+    }
+
 }

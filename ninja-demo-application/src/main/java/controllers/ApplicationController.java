@@ -1,14 +1,18 @@
 package controllers;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
+import ninja.params.Param;
 import ninja.params.PathParam;
 
+import ninja.validation.Required;
+import ninja.validation.Validation;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Maps;
@@ -60,10 +64,19 @@ public class ApplicationController {
 
 		//and render page with both parameters:
 		return Results.html().render(map);
-
 	}
 
-	public Result redirect(Context context) {
+    public Result validation(Validation validation,
+            @Param("email") @Required String email) {
+        if (validation.hasViolations()) {
+            return Results.contentType("text/plain").render(
+                    validation.getFieldViolationMessage("email", Locale.ENGLISH));
+        } else {
+            return Results.contentType("text/plain").render(email);
+        }
+    }
+
+    public Result redirect(Context context) {
 		// Redirects back to the main page simply call redirect
 		return Results.redirect("/");
 

@@ -10,7 +10,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class PersonController {
 
-	public Result getPerson(Context context) {
+	public Result getPerson() {
 
 		//simply render a json as result:
 		Person person = new Person();
@@ -20,13 +20,7 @@ public class PersonController {
 		return Results.json(person);
 	}
 
-	public Result postPerson(Context context) {
-
-		//parsing a request body into a java value is simple:
-		Person person = context.parseBody(Person.class);
-		
-		//parseBody always uses a registered parser for the request content type...
-
+	public Result postPerson(Person person) {
 		// okay... we simply render the parsed object again as json
 		// usually we would save something into a db or so..
 		return Results.json(person);
