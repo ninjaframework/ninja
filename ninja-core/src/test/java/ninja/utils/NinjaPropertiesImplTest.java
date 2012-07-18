@@ -173,6 +173,16 @@ public class NinjaPropertiesImplTest {
     	
     }
     
+    @Test
+    public void testUft8Works() {
+    	
+    	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();  
+    	//We test this: utf8Test=this is utf8: öäü
+    	assertEquals("this is utf8: öäü", ninjaProperties.get("utf8Test"));
+
+    }
+    
+    
     
     @Test(expected = RuntimeException.class)
     public void testExernalConfigLoadingBreaksWhenFileDoesNotExist() {

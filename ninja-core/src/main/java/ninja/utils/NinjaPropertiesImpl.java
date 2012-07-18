@@ -1,5 +1,8 @@
 package ninja.utils;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Properties;
 
@@ -7,10 +10,12 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -89,36 +94,27 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 		// First step => load application.conf and also merge properties that
 		// correspond to a mode into the configuration.
-		try {
+		
 
-			// Force load stuff from classpath.
-			// => We don't want to use File.* because of possible security constraints.
-			// => new PropertiesConfiguration(resource) would use that otherwise.
-			URL resource = getClass().getClassLoader().getResource(
-					NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
-
-			defaultConfiguration = new PropertiesConfiguration(resource);
-
-			// Second step:
+		defaultConfiguration = loadPropertiesInUtf8(NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
+		
+		if (defaultConfiguration != null) {
+		// Second step:
 			// Copy special prefix of mode to parent configuration
 			// By convention it will be something like %test.myproperty
 			prefixedConfigconfiguration = defaultConfiguration.subset("%"
 					+ mode.name());
 
-		} catch (ConfigurationException e) {
+		} else {
 			
 			// If the property was set, but the file not found we emit
-			// a RuntimeException
-			
+			// a RuntimeException			
 			String errorMessage = String.format("Error reading configuration file. Make sure you got a default config file %s",
 					NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
 			
-			logger.error(errorMessage, e);
+			logger.error(errorMessage);
 			
-			throw new RuntimeException(errorMessage, e);
-			
-
-
+			throw new RuntimeException(errorMessage);
 		}
 
 		
@@ -129,36 +125,28 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
 
 		if (ninjaExternalConf != null) {
-			try {
+			
 				// only load it when the property is defined.
 
-				// We force to load properties from the classpath.
-				// => We don't want to use File.* because of possible security
-				// constraints.
-				// => new PropertiesConfiguration(resource) would use that
-				// otherwise.
-				URL resource = getClass().getClassLoader().getResource(
-						ninjaExternalConf);
+				externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
+				
+				//this should not happen:
+				if (externalConfiguration == null) {
+					
+					String errorMessage = String
+							.format("Ninja was told to use an external configuration%n"
+									+ " %s = %s %n."
+									+ "But the corresponding file cannot be found.%n"
+									+ " Make sure it is visible to this application and on the classpath.",
+									NINJA_EXTERNAL_CONF, ninjaExternalConf);
 
-				externalConfiguration = new PropertiesConfiguration(resource);
+					logger.error(errorMessage);
 
-			} catch (ConfigurationException e) {
-
-				// If the property was set, but the file not found we emit
-				// a RuntimeException
-
-				String errorMessage = String
-						.format("Ninja was told to use an external configuration%n"
-								+ " %s = %s %n."
-								+ "But the corresponding file cannot be found.%n"
-								+ " Make sure it is visible to this application and on the classpath.",
-								NINJA_EXTERNAL_CONF, ninjaExternalConf);
-
-				logger.error(errorMessage, e);
-
-				throw new RuntimeException(errorMessage, e);
-
-			}
+					throw new RuntimeException(errorMessage);
+					
+					
+				}
+			
 		}
 		
 		
@@ -300,6 +288,41 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 		return ConfigurationConverter.getProperties(compositeConfiguration);
 
+	}
+	
+	
+	/**
+	 * This is important: We load stuff as UTF-8
+	 * 
+	 * @param classLoaderUrl Classpath location of the configuration file. Eg /conf/heroku.conf
+	 * @return A configuration or null if there were problems getting it.
+	 */
+	private Configuration loadPropertiesInUtf8(String classLoaderUrl) {
+		
+		PropertiesConfiguration c = new PropertiesConfiguration();
+
+		URL resource = getClass().getClassLoader().getResource(classLoaderUrl);
+
+		try {			
+			c.load(new InputStreamReader(resource.openStream(), "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			c = null;
+			logger.error(
+					"Unsupported encoding while loading configuration file", e);
+		} catch (IOException e) {
+			c = null;
+			logger.error("Could not find configuration file. Was looking for "
+					+ classLoaderUrl, e);
+		} catch (NullPointerException e) {
+			c = null;
+			logger.error("Could not find configuration file. Was looking for "
+					+ classLoaderUrl, e);
+		} catch (ConfigurationException e) {
+			c = null;
+			logger.error("Configuration Exception.", e);
+		}
+
+		return (Configuration) c;
 	}
 
 }
