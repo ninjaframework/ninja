@@ -16,6 +16,8 @@
 'UTF-8'
 -doctitle
 'ninja web framework 0.4-SNAPSHOT Test API'
+-link
+'../apidocs'
 -linkoffline
 'http://download.oracle.com/javase/6/docs/api' '/development/t23r/ninja/ninja-core/target/javadoc-bundle-options'
 -use
