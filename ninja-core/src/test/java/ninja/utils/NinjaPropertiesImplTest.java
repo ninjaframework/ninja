@@ -16,6 +16,8 @@ public class NinjaPropertiesImplTest {
 
 	@Before
 	public void setup() {
+		//make sure the external conf property is not set initially.
+		System.clearProperty(NinjaProperties.NINJA_EXTERNAL_CONF);
 	}
 
 	@Test
@@ -136,6 +138,19 @@ public class NinjaPropertiesImplTest {
     }
     
     
+    
+    @Test
+    public void testReferenciningOfPropertiesWorks() {
+    	
+    	//instantiate the properties:
+    	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();  
+    	
+		// this is testing if referencing of properties works with external configurations
+		// and application.conf: (fullServerName=${serverName}:${serverPort})
+		assertEquals("http://myserver.com:80", ninjaProperties.get("fullServerName"));
+    	
+    }
+    
     @Test
     public void testLoadingOfExternalConfFile() {
 
@@ -150,6 +165,11 @@ public class NinjaPropertiesImplTest {
 		
 		//and make sure other properties of heroku.conf get loaded as well:
 		assertEquals("some special parameter", ninjaProperties.get("heroku.special.property"));    	
+		
+		
+		// this is testing if referencing of properties works with external configurations
+		// and application.conf (fullServerName=${serverName}:${serverPort})
+		assertEquals("http://myapp.herokuapp.com:80", ninjaProperties.get("fullServerName"));
     	
     }
     

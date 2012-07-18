@@ -1,21 +1,16 @@
 package ninja.utils;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,14 +21,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(NinjaPropertiesImpl.class);
-	
-	
+
 	Mode mode;
 
 	private enum Mode {
-		prod(NinjaConstant.MODE_PROD), 
-		dev(NinjaConstant.MODE_DEV), 
-		test(NinjaConstant.MODE_TEST);
+		prod(NinjaConstant.MODE_PROD), dev(NinjaConstant.MODE_DEV), test(
+				NinjaConstant.MODE_TEST);
 
 		private String mode;
 
@@ -46,27 +39,27 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		}
 	}
 
-
 	private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
-	//private final Properties allCurrentNinjaProperties;
-
-	// private final String mode;
-	
-	CompositeConfiguration compositeConfiguration;
+	/** 
+	 * This is the final configuration holding all information from
+	 * 1. application.conf.
+	 * 2. Special properties for the mode you are running on extracted from application.cof
+	 * 3. An external configuration file defined by a system property and on the classpath.
+	 */
+	private CompositeConfiguration compositeConfiguration;
 
 	@Inject
 	public NinjaPropertiesImpl() {
-		//this.allCurrentNinjaProperties = new Properties();
 
-		// get system variables... load application conf files...
+		// Get mode possibly set via a system property
 		String modeFromGetSystemProperty = System
 				.getProperty(NinjaConstant.MODE_KEY_NAME);
 
-		// initially we are in dev mode.
+		// Initially we are in dev mode.
 		mode = Mode.dev;
 
-		// if the user specified something we set the mode accordingly:
+		// If the user specified a mode we set the mode accordingly:
 		if (modeFromGetSystemProperty != null) {
 
 			if (modeFromGetSystemProperty.equals(NinjaConstant.MODE_TEST)) {
@@ -76,61 +69,134 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 				mode = Mode.prod;
 			}
 
-			// else dev as set before...
+			// else dev as set initially...
 
 		}
-		
-		compositeConfiguration = new CompositeConfiguration();	
-		
-		PropertiesConfiguration applicationConf;
+
+		// This is our main configuration.
+		// In the following we'll read the individual configurations and merge
+		// them into the composite configuration at the end.
+		compositeConfiguration = new CompositeConfiguration();
+
+		// That is the default config.
+		Configuration defaultConfiguration = null;
+
+		// Config of prefixed mode corresponding to current mode (eg. %test.myproperty=...)
+		Configuration prefixedConfigconfiguration = null;
+
+		// (Optional) Config set via a system property
+		Configuration externalConfiguration = null;
+
+		// First step => load application.conf and also merge properties that
+		// correspond to a mode into the configuration.
 		try {
-			applicationConf = new PropertiesConfiguration(CONF_FILE_LOCATION_BY_CONVENTION);
-			compositeConfiguration.addConfiguration(applicationConf);
+
+			// Force load stuff from classpath.
+			// => We don't want to use File.* because of possible security constraints.
+			// => new PropertiesConfiguration(resource) would use that otherwise.
+			URL resource = getClass().getClassLoader().getResource(
+					NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
+
+			defaultConfiguration = new PropertiesConfiguration(resource);
+
+			// Second step:
+			// Copy special prefix of mode to parent configuration
+			// By convention it will be something like %test.myproperty
+			prefixedConfigconfiguration = defaultConfiguration.subset("%"
+					+ mode.name());
 
 		} catch (ConfigurationException e) {
-			e.printStackTrace();
-		} 
-		
-	
-		
+			
+			// If the property was set, but the file not found we emit
+			// a RuntimeException
+			
+			String errorMessage = String.format("Error reading configuration file. Make sure you got a default config file %s",
+					NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
+			
+			logger.error(errorMessage, e);
+			
+			throw new RuntimeException(errorMessage, e);
+			
 
-//		// 1. load application.conf
-//		Optional<Properties> applicationProperties = loadPropertiesInUtf8(CONF_FILE_LOCATION_BY_CONVENTION);
-//
-//		if (!applicationProperties.isPresent()) {
-//			throw new RuntimeException(
-//					"No basic configuration file found. Please make sure you got a file called: "
-//							+ CONF_FILE_LOCATION_BY_CONVENTION);
-//		}
-//
-//		// 2. Add all properties that are relevant for this mode:
-//		allCurrentNinjaProperties.putAll(getAllPropertiesOfThatMode(
-//				applicationProperties.get(), mode.name()));
-//
-//		// 3. load an external configuration file:
-//		// get system variables... load application conf files...
-//		if (System.getProperty(NINJA_EXTERNAL_CONF) != null) {
-//
-//			String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
-//
-//			Optional<Properties> externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
-//
-//			if (!applicationProperties.isPresent()) {
-//				throw new RuntimeException(
-//						"A system property called "
-//								+ NINJA_EXTERNAL_CONF
-//								+ " was set. But the correspinding file cannot be found. Make sure it is visible to this application and on the classpath.");
-//			}
-//
-//			allCurrentNinjaProperties.putAll(externalConfiguration.get());
-//
-//		}
+
+		}
+
+		
+		
+		
+		// third step => load external configuration when a system property is
+		// defined.
+		String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
+
+		if (ninjaExternalConf != null) {
+			try {
+				// only load it when the property is defined.
+
+				// We force to load properties from the classpath.
+				// => We don't want to use File.* because of possible security
+				// constraints.
+				// => new PropertiesConfiguration(resource) would use that
+				// otherwise.
+				URL resource = getClass().getClassLoader().getResource(
+						ninjaExternalConf);
+
+				externalConfiguration = new PropertiesConfiguration(resource);
+
+			} catch (ConfigurationException e) {
+
+				// If the property was set, but the file not found we emit
+				// a RuntimeException
+
+				String errorMessage = String
+						.format("Ninja was told to use an external configuration%n"
+								+ " %s = %s %n."
+								+ "But the corresponding file cannot be found.%n"
+								+ " Make sure it is visible to this application and on the classpath.",
+								NINJA_EXTERNAL_CONF, ninjaExternalConf);
+
+				logger.error(errorMessage, e);
+
+				throw new RuntimeException(errorMessage, e);
+
+			}
+		}
+		
+		
+		
+		///////////////////////////////////////////////////////////////////////
+		// finally add the stuff to the composite config
+		// Note: Configurations added earlier will overwrite configurations 
+		// added later.
+		///////////////////////////////////////////////////////////////////////	
+		if (externalConfiguration != null) {
+			compositeConfiguration.addConfiguration(externalConfiguration);
+		}
+		
+		if (prefixedConfigconfiguration != null) {
+			compositeConfiguration.addConfiguration(prefixedConfigconfiguration);
+		}
+		
+		if (defaultConfiguration != null) {
+			compositeConfiguration.addConfiguration(defaultConfiguration);
+		}
+		
 
 	}
 
 	@Override
 	public String get(String key) {
-		return compositeConfiguration.getString(key);
+
+		String value;
+
+		try {
+			value = compositeConfiguration.getString(key);
+		} catch (Exception e) {
+			// Fail silently because we handle errors differently. Simply set
+			// them null.
+			value = null;
+		}
+
+		return value;
 
 	}
 
@@ -150,8 +216,18 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	@Override
 	public Integer getInteger(String key) {
-		
-		return compositeConfiguration.getInt(key);
+
+		Integer value;
+
+		try {
+			value = compositeConfiguration.getInt(key);
+		} catch (Exception e) {
+			// Fail silently because we handle errors differently. Simply set
+			// them null.
+			value = null;
+		}
+
+		return value;
 
 	}
 
@@ -185,102 +261,24 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	@Override
 	public Boolean getBoolean(String key) {
-		
-		
-		return compositeConfiguration.getBoolean(key);
 
+		Boolean value;
+
+		try {
+			value = compositeConfiguration.getBoolean(key);
+		} catch (Exception e) {
+			// Fail silently because we handle errors differently. Simply set
+			// them null.
+			value = null;
+		}
+
+		return value;
 
 	}
 
 	public void bindProperties(Binder binder) {
-		Names.bindProperties(binder, ConfigurationConverter.getProperties(compositeConfiguration));
-	}
-
-	/**
-	 * This properties loader uses UTF-8... that's important...
-	 * 
-	 * @param classLoaderUrl
-	 * @return
-	 */
-	private Optional<Properties> loadPropertiesInUtf8(String classLoaderUrl) {
-		Properties props = new Properties();
-		URL resource = getClass().getClassLoader().getResource(classLoaderUrl);
-
-		try {
-			props.load(new InputStreamReader(resource.openStream(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			props = null;
-			logger.error(
-					"Unsupported encoding while loading configuration file", e);
-		} catch (IOException e) {
-			props = null;
-			logger.error("Could not find configuration file. Was looking for "
-					+ classLoaderUrl, e);
-		} catch (NullPointerException e) {
-			props = null;
-			logger.error("Could not find configuration file. Was looking for "
-					+ classLoaderUrl, e);
-		}
-
-		return Optional.fromNullable(props);
-	}
-
-	/**
-	 * Of course we want to have environments. By default ninja supports 3
-	 * modes: - "test" - "dev" - "prod"
-	 * 
-	 * We are using one application.conf file containing all relevant
-	 * configuration properties. As convention you have to use "%" when
-	 * prefixing a property.
-	 * 
-	 * For instance if we are in mode "test" This: myproperty = funk is
-	 * overwritten by %test.myproperty = funkier
-	 * 
-	 */
-	private Properties getAllPropertiesOfThatMode(Properties properties,
-			String mode) {
-
-		Properties returnProperties = new Properties();
-
-		// The hashmap we get from properties is not ordered.
-		// We therefore do two passes
-		// Pass 1: Add all non % arguments
-		// Pass 2: Add all % arguments matching this mode
-		// => therefore matching % arguments will override the original ones
-		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-
-			if (!entry.getKey().toString().startsWith("%")) {
-				returnProperties.put(entry.getKey(), entry.getValue());
-
-			}
-		}
-
-		// Pass 2: Add all % arguments matching this mode
-		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-
-			if (entry.getKey().toString().startsWith("%")) {
-
-				// check if this is the mode I want to use...
-				String myModePrefix = "%" + mode;
-
-				if (entry.getKey().toString().startsWith(myModePrefix)) {
-					// please replace me:
-					// %test.myproperty=test should become
-					// myproperty=test
-					String keyToReplace = "%" + mode + "\\.";
-
-					String newKeyName = entry.getKey().toString()
-							.replaceFirst(keyToReplace, "");
-
-					returnProperties.put(newKeyName, entry.getValue());
-				} // else do nothing... that's a property I don't want to
-					// use....
-
-			}
-		}
-
-		return returnProperties;
-
+		Names.bindProperties(binder,
+				ConfigurationConverter.getProperties(compositeConfiguration));
 	}
 
 	@Override
@@ -296,12 +294,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	public boolean isTest() {
 		return (mode.equals(Mode.test));
 	}
-	
+
 	@Override
 	public Properties getAllCurrentNinjaProperties() {
-		
+
 		return ConfigurationConverter.getProperties(compositeConfiguration);
-		
+
 	}
 
 }
