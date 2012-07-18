@@ -1,6 +1,7 @@
 package ninja.params;
 
 import ninja.Context;
+import ninja.validation.Validator;
 
 import java.util.List;
 
@@ -22,13 +23,13 @@ public class ValidatingArgumentExtractor<T> implements ArgumentExtractor<T> {
     public T extract(Context context) {
         T value = wrapped.extract(context);
         // Check if we already have a validation error from a previous stage
-        if (context.getValidation().hasFieldError(wrapped.getFieldName())) {
+        if (context.getValidation().hasFieldViolation(wrapped.getFieldName())) {
             return value;
         }
         // Apply validators
         for (Validator<T> validator : validators) {
             validator.validate(value, wrapped.getFieldName(), context.getValidation());
-            if (context.getValidation().hasFieldError(wrapped.getFieldName())) {
+            if (context.getValidation().hasFieldViolation(wrapped.getFieldName())) {
                 // Break if validation failed
                 break;
             }

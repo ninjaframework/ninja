@@ -2,9 +2,12 @@ package ninja;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import ninja.i18n.LangImpl;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.ResponseStreams;
+import ninja.validation.Validation;
+import ninja.validation.ValidationImpl;
 import org.apache.commons.fileupload.FileItemIterator;
 
 import javax.annotation.Nullable;
@@ -37,7 +40,7 @@ public class FakeContext implements Context {
     private Map<String, String> pathParams = new HashMap<String, String>();
     private Map<String, String> headers = new HashMap<String, String>();
     private Object body;
-    private Validation validation;
+    private Validation validation = new ValidationImpl(new LangImpl());
 
     public FakeContext setRequestContentType(String requestContentType) {
         this.requestContentType = requestContentType;

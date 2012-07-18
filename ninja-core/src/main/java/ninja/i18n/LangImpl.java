@@ -83,7 +83,49 @@ public class LangImpl implements Lang {
 		}
 	}
 
-	@Override
+    /**
+     * Returns a possibly formatted message.
+     *
+     * @param key The key
+     * @param defaultMessage The default message if the key isn't found
+     * @param params The params
+     * @return The formatted message
+     */
+    @Override
+    public String getWithDefault(String key, String defaultMessage, Object... params) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(
+                DEFAULT_MESSAGES_LOCATION, new UTF8Control());
+
+        try {
+            return MessageFormat.format(resourceBundle.getString(key), params);
+        } catch (MissingResourceException e) {
+            return MessageFormat.format(defaultMessage, params);
+        }
+    }
+
+
+    /**
+     * Returns a possibly formatted message.
+     *
+     * @param key The key
+     * @param defaultMessage The default message if the key isn't found
+     * @param locale The locale
+     * @param params The params
+     * @return The formatted message
+     */
+    @Override
+    public String getWithDefault(String key, String defaultMessage, Locale locale, Object... params) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(
+                DEFAULT_MESSAGES_LOCATION, locale, new UTF8Control());
+
+        try {
+            return MessageFormat.format(resourceBundle.getString(key), params);
+        } catch (MissingResourceException e) {
+            return MessageFormat.format(defaultMessage, params);
+        }
+    }
+
+    @Override
 	public Map<String, String> getAll(Object... params) {
 
 		ResourceBundle resourceBundle = ResourceBundle.getBundle(

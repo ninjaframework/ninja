@@ -70,4 +70,24 @@ public interface Lang {
 	 */
 	Map<String, String> getAll(Locale locale, Object ...parameter);
 
+    /**
+     * Returns a possibly formatted message.
+     *
+     * @param key The key
+     * @param defaultMessage The default message if the key isn't found
+     * @param params The params
+     * @return The formatted message
+     */
+    String getWithDefault(String key, String defaultMessage, Object... params);
+
+    /**
+     * Returns a possibly formatted message.
+     *
+     * @param key The key
+     * @param defaultMessage The default message if the key isn't found
+     * @param locale The locale
+     * @param params The params
+     * @return The formatted message
+     */
+    String getWithDefault(String key, String defaultMessage, Locale locale, Object... params);
 }

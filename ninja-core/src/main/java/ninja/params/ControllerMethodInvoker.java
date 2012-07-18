@@ -4,6 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import ninja.Context;
 import ninja.RoutingException;
+import ninja.validation.Validator;
+import ninja.validation.WithValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -67,6 +69,20 @@ public class ControllerMethodInvoker {
             }
         }
 
+        // Replace a null extractor with a bodyAs extractor, but make sure there's only one
+        boolean bodyAsFound = false;
+        for (int i = 0; i < argumentExtractors.length; i++) {
+            if (argumentExtractors[i] == null) {
+                if (bodyAsFound) {
+                    throw new RoutingException("Only one parameter may be deserialised as the body " +
+                            method.getClass().getName() + "." + method.getName() + "()");
+                } else {
+                    argumentExtractors[i] = new ArgumentExtractors.BodyAsExtractor(paramTypes[i]);
+                    bodyAsFound = true;
+                }
+            }
+        }
+
         return new ControllerMethodInvoker(method, argumentExtractors);
     }
 
@@ -89,15 +105,19 @@ public class ControllerMethodInvoker {
         }
 
         if (extractor == null) {
-            // At this point, we could probably do things like try and parse the body
-            throw new RoutingException("Unable to find extractor for parameter of type " +
-                    paramType);
+            // Let the parent method handle what happens when no extract found
+            return null;
         }
 
         // We have validators that get applied before parsing, and validators
         // that get applied after parsing.
         List<Validator<?>> preParseValidators = new ArrayList<Validator<?>>();
         List<Validator<?>> postParseValidators = new ArrayList<Validator<?>>();
+
+        Class<?> boxedParamType = paramType;
+        if (paramType.isPrimitive()) {
+            boxedParamType = box(paramType);
+        }
 
         // Now we have an extractor, lets apply validators that are able to validate
         for (Annotation annotation : annotations) {
@@ -110,7 +130,7 @@ public class ControllerMethodInvoker {
                 if (validator.getValidatedType().isAssignableFrom(extractor.getExtractedType())) {
                     preParseValidators.add(validator);
                     // If it can validate the parameter type, it's a post parse validator
-                } else if (validator.getValidatedType().isAssignableFrom(paramType)) {
+                } else if (validator.getValidatedType().isAssignableFrom(boxedParamType)) {
                     postParseValidators.add(validator);
                     // Otherwise, we can't validate with this validator
                 } else {
@@ -129,7 +149,7 @@ public class ControllerMethodInvoker {
 
         // Either the extractor extracts a type that matches the param type, or it's a
         // String, and we can lookup a parser to parse it into the param type
-        if (!paramType.isAssignableFrom(extractor.getExtractedType())) {
+        if (!boxedParamType.isAssignableFrom(extractor.getExtractedType())) {
             if (String.class.isAssignableFrom(extractor.getExtractedType())) {
                 // Look up a parser
                 ParamParser<?> parser = ParamParsers.getParamParser(paramType);
@@ -212,6 +232,21 @@ public class ControllerMethodInvoker {
             }
         }
         return null;
+    }
+
+    private static Class<?> box(Class<?> typeToBox) {
+        if (typeToBox == int.class) {
+            return Integer.class;
+        } else if (typeToBox == boolean.class) {
+            return Boolean.class;
+        } else if (typeToBox == long.class) {
+            return Long.class;
+        } else if (typeToBox == float.class) {
+            return Float.class;
+        } else if (typeToBox == double.class) {
+            return Double.class;
+        }
+        throw new IllegalArgumentException("Don't know how to box type of " + typeToBox);
     }
 
 

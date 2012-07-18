@@ -14,6 +14,7 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.ResponseStreams;
 
+import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {
