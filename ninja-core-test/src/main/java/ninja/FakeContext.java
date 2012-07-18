@@ -37,6 +37,7 @@ public class FakeContext implements Context {
     private Map<String, String> pathParams = new HashMap<String, String>();
     private Map<String, String> headers = new HashMap<String, String>();
     private Object body;
+    private Validation validation;
 
     public FakeContext setRequestContentType(String requestContentType) {
         this.requestContentType = requestContentType;
@@ -271,4 +272,9 @@ public class FakeContext implements Context {
 	public String getRequestPath() {
 		return this.requestPath;
 	}
+
+    @Override
+    public Validation getValidation() {
+        return validation;
+    }
 }

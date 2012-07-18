@@ -25,7 +25,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(injector).matches("GET", "/index"));
+		assertTrue(buildRoute(routeBuilder).matches("GET", "/index"));
 
 	}
 	
@@ -35,7 +35,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.POST().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(injector).matches("POST", "/index"));
+		assertTrue(buildRoute(routeBuilder).matches("POST", "/index"));
 
 	}
 	
@@ -45,7 +45,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.PUT().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(injector).matches("PUT", "/index"));
+		assertTrue(buildRoute(routeBuilder).matches("PUT", "/index"));
 
 	}
 	
@@ -55,7 +55,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.OPTION().route("/index");
 
-		assertTrue(routeBuilder.buildRoute(injector).matches("OPTION", "/index"));
+		assertTrue(buildRoute(routeBuilder).matches("OPTION", "/index"));
 
 	}
 
@@ -65,7 +65,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/.*");
 
-        Route route = routeBuilder.buildRoute(injector);
+        Route route = buildRoute(routeBuilder);
 		// make sure the route catches everything:
 		assertTrue(route.matches("GET", "/index"));
 		assertTrue(route.matches("GET","/stylesheet.css"));
@@ -83,7 +83,7 @@ public class RouteBuilderImplTest {
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/{name}/dashboard");
 
-        Route route = routeBuilder.buildRoute(injector);
+        Route route = buildRoute(routeBuilder);
         assertFalse(route.matches("GET","/dashboard"));
 
 		assertTrue(route.matches("GET","/John/dashboard"));
@@ -98,7 +98,7 @@ public class RouteBuilderImplTest {
 		// /////////////////////////////////////////////////////////////////////
 		routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/{name}/{id}/dashboard");
-        route = routeBuilder.buildRoute(injector);
+        route = buildRoute(routeBuilder);
 
         assertFalse(route.matches("GET","/dashboard"));
 
@@ -119,7 +119,7 @@ public class RouteBuilderImplTest {
 		// regex expressions...
 		RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
 		routeBuilder.GET().route("/John/{id}/.*");
-        Route route = routeBuilder.buildRoute(injector);
+        Route route = buildRoute(routeBuilder);
         assertTrue(route.matches("GET","/John/20/dashboard"));
 		Map<String, String> map = route.getParameters("/John/20/dashboard");
 		assertEquals(1, map.entrySet().size());
@@ -141,8 +141,19 @@ public class RouteBuilderImplTest {
     public void testParametersDontCrossSlashes() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}");
-        Route route = routeBuilder.buildRoute(injector);
+        Route route = buildRoute(routeBuilder);
         assertFalse(route.matches("GET", "/blah/someid/sub"));
+    }
+
+    private Route buildRoute(RouteBuilderImpl builder) {
+        builder.with(MockController.class, "execute");
+        return builder.buildRoute(injector);
+    }
+
+    public static class MockController {
+        public Result execute() {
+            return null;
+        }
     }
 
 }

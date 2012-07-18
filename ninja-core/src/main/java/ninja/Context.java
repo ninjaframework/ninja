@@ -299,6 +299,11 @@ public interface Context {
      * @return the FileItemIterator of the request or null if there was an error.
      */
     FileItemIterator getFileItemIterator();
-    
-    
+
+    /**
+     * Get the validation context
+     *
+     * @return The validation context
+     */
+    Validation getValidation();
 }

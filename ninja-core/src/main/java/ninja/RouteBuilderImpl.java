@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import ninja.params.ControllerMethodInvoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +110,6 @@ class RouteBuilderImpl implements RouteBuilder {
 				return methodFromQueryingClass;
 			} else {
 				throw new NoSuchMethodException();
-
 			}
 
 		} catch (SecurityException e) {
@@ -136,14 +136,12 @@ class RouteBuilderImpl implements RouteBuilder {
 	public Route buildRoute(Injector injector) {
 		// Calculate filters
 		LinkedList<Class<? extends Filter>> filters = new LinkedList<Class<? extends Filter>>();
-		if (controllerMethod != null) {
-			filters.addAll(calculateFiltersForClass(controller));
-			FilterWith filterWith = controllerMethod
-					.getAnnotation(FilterWith.class);
-			if (filterWith != null) {
-				filters.addAll(Arrays.asList(filterWith.value()));
-			}
-		}
+        filters.addAll(calculateFiltersForClass(controller));
+        FilterWith filterWith = controllerMethod
+                .getAnnotation(FilterWith.class);
+        if (filterWith != null) {
+            filters.addAll(Arrays.asList(filterWith.value()));
+        }
 		return new Route(httpMethod, uri, controller, controllerMethod,
 				buildFilterChain(injector, filters, controller,
 						controllerMethod));
@@ -154,7 +152,7 @@ class RouteBuilderImpl implements RouteBuilder {
 			Method controllerMethod) {
 		if (filters.isEmpty()) {
 			return new FilterChainEnd(injector.getProvider(controller),
-					controllerMethod);
+					ControllerMethodInvoker.build(controllerMethod, injector));
 		} else {
 			Class<? extends Filter> filter = filters.pop();
 			return new FilterChainImpl(injector.getProvider(filter),

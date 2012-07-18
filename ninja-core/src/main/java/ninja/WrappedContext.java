@@ -172,4 +172,8 @@ public class WrappedContext implements Context {
 		return wrapped.getRequestPath();
 	}
 
+    @Override
+    public Validation getValidation() {
+        return wrapped.getValidation();
+    }
 }

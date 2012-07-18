@@ -15,7 +15,7 @@ import com.google.common.annotations.Beta;
  * @author ra
  *
  */
-@Beta
+@WithArgumentExtractor(ArgumentExtractors.ParamExtractor.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
 public @interface Param {
