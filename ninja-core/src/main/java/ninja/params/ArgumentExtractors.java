@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import ninja.Context;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
+import ninja.validation.Validation;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ public class ArgumentExtractors {
     private static final Map<Class<?>, ArgumentExtractor<?>> STATIC_EXTRACTORS =
         ImmutableMap.<Class<?>, ArgumentExtractor<?>>builder()
                 .put(Context.class, new ContextExtractor())
+                .put(Validation.class, new ValidationExtractor())
                 .put(SessionCookie.class, new SessionExtractor())
                 .put(FlashCookie.class, new FlashExtractor())
                 .put(HttpServletRequest.class, new HttpServletRequestExtractor())
@@ -38,6 +40,23 @@ public class ArgumentExtractors {
         @Override
         public Class<Context> getExtractedType() {
             return Context.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return null;
+        }
+    }
+
+    public static class ValidationExtractor implements ArgumentExtractor<Validation> {
+        @Override
+        public Validation extract(Context context) {
+            return context.getValidation();
+        }
+
+        @Override
+        public Class<Validation> getExtractedType() {
+            return Validation.class;
         }
 
         @Override

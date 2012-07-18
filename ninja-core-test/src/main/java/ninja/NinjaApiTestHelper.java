@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
@@ -14,6 +15,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -22,6 +24,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 
 import com.google.common.collect.Maps;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class NinjaApiTestHelper {
 
@@ -56,7 +59,11 @@ public class NinjaApiTestHelper {
 
 	}
 
-	public static String makeRequest(String url, Map<String, String> headers) {
+    public static String makeRequest(String url) {
+        return makeRequest(url, null);
+    }
+
+    public static String makeRequest(String url, Map<String, String> headers) {
 
 		StringBuffer sb = new StringBuffer();
 		try {
@@ -65,10 +72,12 @@ public class NinjaApiTestHelper {
 
 			HttpGet getRequest = new HttpGet(url);
 
-			// add all headers
-			for (Entry<String, String> header : headers.entrySet()) {
-				getRequest.addHeader(header.getKey(), header.getValue());
-			}
+            if (headers != null) {
+                // add all headers
+                for (Entry<String, String> header : headers.entrySet()) {
+                    getRequest.addHeader(header.getKey(), header.getValue());
+                }
+            }
 
 			HttpResponse response;
 
@@ -150,4 +159,29 @@ public class NinjaApiTestHelper {
 
 	}
 
+    public static String postJson(String url, Object object) {
+
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("Content-Type", "application/json");
+
+        HttpClient client = new DefaultHttpClient();
+        try {
+            client.getParams().setParameter(
+                    CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+            HttpPost post = new HttpPost(url);
+            StringEntity entity = new StringEntity(new ObjectMapper().writeValueAsString(object));
+            entity.setContentType("application/json");
+            post.setEntity(entity);
+
+            // Here we go!
+            return EntityUtils.toString(client.execute(post).getEntity(),
+                    "UTF-8");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            client.getConnectionManager().shutdown();
+        }
+    }
 }

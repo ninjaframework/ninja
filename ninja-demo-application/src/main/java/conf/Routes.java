@@ -36,6 +36,8 @@ public class Routes implements ApplicationRoutes {
 		// render a page with variable route parts:
 		router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
 
+        router.GET().route("/validation").with(ApplicationController.class, "validation");
+
 		// redirect back to /
 		router.GET().route("/redirect").with(ApplicationController.class, "redirect");
 		
