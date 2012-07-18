@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
+    <bannerLeft>
+        <name>Ninja web framework</name>
+        <href>http://ninjaframework.org</href>
+    </bannerLeft>
+    <bannerRight>
+        <src>./images/nopic</src>
+        <href>http://ninjaframework.org</href>
+    </bannerRight>
+    <body>
+        <menu name="Overview">
+        	<item name="Changes" href="./changes.html"/>
+            <item name="About" href="./about.html"/>
+            <item name="Level of done" href="./level_of_done.html"/>
+            <item name="Doctests" href="./doctests.html"/>
+        </menu>
+        
+        <menu ref="reports"/>
+    </body>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.0</version>
+    </skin>
+</project>
