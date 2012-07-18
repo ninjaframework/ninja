@@ -322,4 +322,9 @@ public class ContextImpl implements Context {
 			return httpServletRequest.getServletPath();
 		}
 	}
+
+    @Override
+    public Validation getValidation() {
+        return null;  //todo
+    }
 }

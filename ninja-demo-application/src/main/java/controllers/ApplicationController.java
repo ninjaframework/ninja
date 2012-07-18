@@ -48,14 +48,15 @@ public class ApplicationController {
 	}
 	
 	public Result userDashboard(
-			@PathParam("name") String name,
-			@PathParam("id") String id,
+			@PathParam("email") String email,
+			@PathParam("id") int id,
 			Context context) {
 
-		Map<String, String> map = new HashMap<String, String>();
-		//generate tuples
-		map.put("id", id);
-		map.put("name", name);
+		Map<String, Object> map = new HashMap<String, Object>();
+		// generate tuples, convert integer to string here because Freemarker does it in locale
+        // dependent way with commas etc
+		map.put("id", Integer.toString(id));
+		map.put("email", email);
 
 		//and render page with both parameters:
 		return Results.html().render(map);
