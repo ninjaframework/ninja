@@ -7,14 +7,14 @@
 
 	<name>ninja login logout register module</name>
 	<parent>
-		<groupId>ninja</groupId>
+		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
 		<version>0.4-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
-			<groupId>ninja</groupId>
+			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-core</artifactId>
 			<version>0.4-SNAPSHOT</version>
 		</dependency>
