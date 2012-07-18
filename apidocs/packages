@@ -1,14 +1,14 @@
-ninja.application
 ninja
+ninja.application
 ninja.async
 ninja.bodyparser
 ninja.i18n
 ninja.lifecycle
 ninja.params
+ninja.postoffice
 ninja.postoffice.common
 ninja.postoffice.commonsmail
 ninja.postoffice.guice
-ninja.postoffice
 ninja.postoffice.mock
 ninja.scheduler
 ninja.session
