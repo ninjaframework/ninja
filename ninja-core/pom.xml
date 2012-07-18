@@ -65,7 +65,7 @@
 						<goals>
 							<goal>site</goal>
 						</goals>
-						<phase>release</phase>
+						<phase>site</phase>
 					</execution>
 				</executions>
 			</plugin>
