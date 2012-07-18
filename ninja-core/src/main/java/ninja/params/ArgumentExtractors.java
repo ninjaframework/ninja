@@ -183,4 +183,26 @@ public class ArgumentExtractors {
         }
     }
 
+    public static class BodyAsExtractor<T> implements ArgumentExtractor<T> {
+        private final Class<T> bodyType;
+
+        public BodyAsExtractor(Class<T> bodyType) {
+            this.bodyType = bodyType;
+        }
+
+        @Override
+        public T extract(Context context) {
+            return context.parseBody(bodyType);
+        }
+
+        @Override
+        public Class<T> getExtractedType() {
+            return bodyType;
+        }
+
+        @Override
+        public String getFieldName() {
+            return null;
+        }
+    }
 }

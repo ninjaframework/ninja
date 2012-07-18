@@ -116,13 +116,6 @@
             <version>1.2.2</version>
         </dependency>
 
-        <!-- This is our library that does all the validation goodness on fields: -->
-        <dependency>
-            <groupId>net.sf.oval</groupId>
-            <artifactId>oval</artifactId>
-            <version>1.81</version>
-        </dependency>
-
         <!-- Testing is mainly done by mockito: -->
         <dependency>
             <groupId>org.mockito</groupId>

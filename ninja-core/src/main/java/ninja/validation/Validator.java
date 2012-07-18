@@ -1,6 +1,4 @@
-package ninja.params;
-
-import ninja.Validation;
+package ninja.validation;
 
 /**
  * A validator for validating parameters

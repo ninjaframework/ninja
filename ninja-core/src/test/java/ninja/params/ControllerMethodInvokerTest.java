@@ -1,7 +1,7 @@
 package ninja.params;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.lang.annotation.ElementType;
@@ -16,7 +16,9 @@ import com.google.inject.Inject;
 import ninja.Context;
 import ninja.Result;
 
-import ninja.Validation;
+import ninja.RoutingException;
+import ninja.i18n.Lang;
+import ninja.validation.*;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import org.junit.Before;
@@ -38,10 +40,13 @@ public class ControllerMethodInvokerTest {
     @Mock
     private FlashCookie flash;
     @Mock
+    private Lang lang;
+
     private Validation validation;
 
     @Before
     public void setUp() throws Exception {
+        validation = new ValidationImpl(lang);
         when(context.getSessionCookie()).thenReturn(session);
         when(context.getFlashCookie()).thenReturn(flash);
         when(context.getValidation()).thenReturn(validation);
@@ -104,7 +109,7 @@ public class ControllerMethodInvokerTest {
     public void integerParamShouldHandleNull() throws Exception {
         create("integerParam").invoke(mockController, context);
         verify(mockController).integerParam(null);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -112,7 +117,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("integerParam").invoke(mockController, context);
         verify(mockController).integerParam(null);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -126,7 +131,7 @@ public class ControllerMethodInvokerTest {
     public void intParamShouldHandleNull() throws Exception {
         create("intParam").invoke(mockController, context);
         verify(mockController).intParam(0);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -134,7 +139,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("intParam").invoke(mockController, context);
         verify(mockController).intParam(0);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -148,7 +153,7 @@ public class ControllerMethodInvokerTest {
     public void booleanParamShouldHandleNull() throws Exception {
         create("booleanParam").invoke(mockController, context);
         verify(mockController).booleanParam(null);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -162,7 +167,7 @@ public class ControllerMethodInvokerTest {
     public void primBooleanParamShouldHandleNull() throws Exception {
         create("primBooleanParam").invoke(mockController, context);
         verify(mockController).primBooleanParam(false);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -176,7 +181,7 @@ public class ControllerMethodInvokerTest {
     public void longParamShouldHandleNull() throws Exception {
         create("longParam").invoke(mockController, context);
         verify(mockController).longParam(null);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -184,7 +189,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("longParam").invoke(mockController, context);
         verify(mockController).longParam(null);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
 
@@ -199,7 +204,7 @@ public class ControllerMethodInvokerTest {
     public void primLongParamShouldHandleNull() throws Exception {
         create("primLongParam").invoke(mockController, context);
         verify(mockController).primLongParam(0);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -207,7 +212,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primLongParam").invoke(mockController, context);
         verify(mockController).primLongParam(0L);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -221,7 +226,7 @@ public class ControllerMethodInvokerTest {
     public void floatParamShouldHandleNull() throws Exception {
         create("floatParam").invoke(mockController, context);
         verify(mockController).floatParam(null);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -229,7 +234,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("floatParam").invoke(mockController, context);
         verify(mockController).floatParam(null);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -243,7 +248,7 @@ public class ControllerMethodInvokerTest {
     public void primFloatParamShouldHandleNull() throws Exception {
         create("primFloatParam").invoke(mockController, context);
         verify(mockController).primFloatParam(0);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -251,7 +256,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primFloatParam").invoke(mockController, context);
         verify(mockController).primFloatParam(0);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -265,7 +270,7 @@ public class ControllerMethodInvokerTest {
     public void doubleParamShouldHandleNull() throws Exception {
         create("doubleParam").invoke(mockController, context);
         verify(mockController).doubleParam(null);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -273,7 +278,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("doubleParam").invoke(mockController, context);
         verify(mockController).doubleParam(null);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -287,7 +292,7 @@ public class ControllerMethodInvokerTest {
     public void primDoubleParamShouldHandleNull() throws Exception {
         create("primDoubleParam").invoke(mockController, context);
         verify(mockController).primDoubleParam(0);
-        verify(validation, never()).addFieldError(anyString(), anyString(), any(Object[].class));
+        assertFalse(validation.hasViolations());
     }
 
     @Test
@@ -295,7 +300,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primDoubleParam").invoke(mockController, context);
         verify(mockController).primDoubleParam(0);
-        verify(validation).addFieldError(eq("param1"), anyString(), eq("blah"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -324,6 +329,61 @@ public class ControllerMethodInvokerTest {
         verify(mockController).multiple("value", 20, context, session);
     }
 
+    @Test
+    public void validationShouldFailWhenBadRequest() {
+        create("required").invoke(mockController, context);
+        verify(mockController).required(null);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void validationShouldPassWhenGoodRequest() {
+        when(context.getParameter("param1")).thenReturn("value");
+        create("required").invoke(mockController, context);
+        verify(mockController).required("value");
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void validationShouldBeAppliedInCorrectOrderPreFail() {
+        create("requiredInt").invoke(mockController, context);
+        verify(mockController).requiredInt(0);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void validationShouldBeAppliedInCorrectOrderPostFail() {
+        when(context.getParameter("param1")).thenReturn("5");
+        create("requiredInt").invoke(mockController, context);
+        verify(mockController).requiredInt(5);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void validationShouldBeAppliedInCorrectOrderPass() {
+        when(context.getParameter("param1")).thenReturn("20");
+        create("requiredInt").invoke(mockController, context);
+        verify(mockController).requiredInt(20);
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test(expected = RoutingException.class)
+    public void invalidValidatorShouldBeFlagged() {
+        create("badValidator").invoke(mockController, context);
+    }
+
+    @Test(expected = RoutingException.class)
+    public void tooManyBodiesShouldBeFlagged() {
+        create("tooManyBodies").invoke(mockController, context);
+    }
+
+    @Test
+    public void bodyShouldBeParsedIntoLeftOverParameter() {
+        Object body = new Object();
+        when(context.parseBody(Object.class)).thenReturn(body);
+        create("body").invoke(mockController, context);
+        verify(mockController).body(body);
+    }
 
     private ControllerMethodInvoker create(String methodName, final Object... toBind) {
         Method method = null;
@@ -366,6 +426,11 @@ public class ControllerMethodInvokerTest {
         public Result guiceArgumentExtractor(@GuiceAnnotation(foo = "bar") String param1);
         public Result multiple(@Param("param1") String param1, @PathParam("param2") int param2,
                 Context context, SessionCookie session);
+        public Result required(@Param("param1") @Required String param1);
+        public Result requiredInt(@Param("param1") @Required @NumberValue(min = 10) int param1);
+        public Result badValidator(@Param("param1") @NumberValue(min = 10) String param1);
+        public Result body(Object body);
+        public Result tooManyBodies(Object body1, Object body2);
     }
 
     // Custom argument extractors for testing different instantiation paths

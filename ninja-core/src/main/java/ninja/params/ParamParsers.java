@@ -1,7 +1,10 @@
 package ninja.params;
 
 import com.google.common.collect.ImmutableMap;
-import ninja.Validation;
+import ninja.validation.ConstraintViolation;
+import ninja.validation.IsFloat;
+import ninja.validation.IsInteger;
+import ninja.validation.Validation;
 
 import java.util.Map;
 
@@ -32,13 +35,14 @@ public class ParamParsers {
     public static class PrimitiveIntegerParamParser implements ParamParser<Integer> {
         @Override
         public Integer parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return 0;
             } else {
                 try {
                     return Integer.parseInt(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.integer.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return 0;
                 }
             }
@@ -53,13 +57,14 @@ public class ParamParsers {
     public static class IntegerParamParser implements ParamParser<Integer> {
         @Override
         public Integer parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Integer.parseInt(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.integer.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return null;
                 }
             }
@@ -74,7 +79,7 @@ public class ParamParsers {
     public static class BooleanParamParser implements ParamParser<Boolean> {
         @Override
         public Boolean parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 return Boolean.parseBoolean(parameterValue);
@@ -90,7 +95,7 @@ public class ParamParsers {
     public static class PrimitiveBooleanParamParser implements ParamParser<Boolean> {
         @Override
         public Boolean parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return false;
             } else {
                 return Boolean.parseBoolean(parameterValue);
@@ -106,13 +111,14 @@ public class ParamParsers {
     public static class LongParamParser implements ParamParser<Long> {
         @Override
         public Long parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Long.parseLong(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.integer.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return null;
                 }
             }
@@ -127,13 +133,14 @@ public class ParamParsers {
     public static class PrimitiveLongParamParser implements ParamParser<Long> {
         @Override
         public Long parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return 0L;
             } else {
                 try {
                     return Long.parseLong(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.integer.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return 0L;
                 }
             }
@@ -148,13 +155,14 @@ public class ParamParsers {
     public static class FloatParamParser implements ParamParser<Float> {
         @Override
         public Float parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Float.parseFloat(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.float.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return null;
                 }
             }
@@ -169,13 +177,14 @@ public class ParamParsers {
     public static class PrimitiveFloatParamParser implements ParamParser<Float> {
         @Override
         public Float parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return 0f;
             } else {
                 try {
                     return Float.parseFloat(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.float.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return 0f;
                 }
             }
@@ -190,13 +199,14 @@ public class ParamParsers {
     public static class DoubleParamParser implements ParamParser<Double> {
         @Override
         public Double parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Double.parseDouble(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.float.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return null;
                 }
             }
@@ -211,13 +221,14 @@ public class ParamParsers {
     public static class PrimitiveDoubleParamParser implements ParamParser<Double> {
         @Override
         public Double parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return 0d;
             } else {
                 try {
                     return Double.parseDouble(parameterValue);
                 } catch (NumberFormatException e) {
-                    validation.addFieldError(field, "error.float.format", parameterValue);
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return 0d;
                 }
             }

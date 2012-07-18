@@ -1,4 +1,4 @@
-package ninja.params;
+package ninja.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

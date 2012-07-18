@@ -1,6 +1,6 @@
 package ninja.params;
 
-import ninja.Validation;
+import ninja.validation.Validation;
 
 /**
  * Parses a String parameter

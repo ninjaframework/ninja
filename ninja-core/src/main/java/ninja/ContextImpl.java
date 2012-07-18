@@ -22,6 +22,7 @@ import ninja.utils.ResponseStreams;
 import ninja.utils.ResponseStreamsServlet;
 import ninja.utils.ResultHandler;
 
+import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -48,18 +49,20 @@ public class ContextImpl implements Context {
 
 	private final SessionCookie sessionCookie;
     private final ResultHandler resultHandler;
+    private final Validation validation;
     
     @Inject Logger logger;
 
 	@Inject
 	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
             FlashCookie flashCookie, SessionCookie sessionCookie,
-            ResultHandler resultHandler) {
+            ResultHandler resultHandler, Validation validation) {
 
 		this.bodyParserEngineManager = bodyParserEngineManager;
 		this.flashCookie = flashCookie;
 		this.sessionCookie = sessionCookie;
         this.resultHandler = resultHandler;
+        this.validation = validation;
     }
 
 	public void init(HttpServletRequest httpServletRequest,
@@ -325,6 +328,6 @@ public class ContextImpl implements Context {
 
     @Override
     public Validation getValidation() {
-        return null;  //todo
+        return validation;
     }
 }

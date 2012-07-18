@@ -17,6 +17,7 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 
 import ninja.utils.ResultHandler;
+import ninja.validation.Validation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,11 +52,15 @@ public class ContextImplTest {
     @Mock
     private ResultHandler resultHandler;
 
+    @Mock
+    private Validation validation;
+
     private ContextImpl context;
 
     @Before
     public void setUp() {
-        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie, resultHandler);
+        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie,
+                resultHandler, validation);
     }
 
     @Test
