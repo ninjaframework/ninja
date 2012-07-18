@@ -3,10 +3,15 @@ package ninja.utils;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.ConfigurationConverter;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +24,16 @@ import com.google.inject.name.Names;
 @Singleton
 public class NinjaPropertiesImpl implements NinjaProperties {
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(NinjaPropertiesImpl.class);
+	
+	
 	Mode mode;
 
 	private enum Mode {
-		prod(NinjaConstant.MODE_PROD), dev(NinjaConstant.MODE_DEV), test(
-				NinjaConstant.MODE_TEST);
+		prod(NinjaConstant.MODE_PROD), 
+		dev(NinjaConstant.MODE_DEV), 
+		test(NinjaConstant.MODE_TEST);
 
 		private String mode;
 
@@ -36,22 +46,18 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		}
 	}
 
-	private static final Logger log = LoggerFactory
-			.getLogger(NinjaPropertiesImpl.class);
+
 	private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
-	private final Properties allCurrentNinjaProperties;
+	//private final Properties allCurrentNinjaProperties;
 
 	// private final String mode;
-
-	// we are using a private logger in this case as NinjaPropertiesImpl is NOT
-	// loaded
-	// by guice.
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	CompositeConfiguration compositeConfiguration;
 
 	@Inject
 	public NinjaPropertiesImpl() {
-		this.allCurrentNinjaProperties = new Properties();
+		//this.allCurrentNinjaProperties = new Properties();
 
 		// get system variables... load application conf files...
 		String modeFromGetSystemProperty = System
@@ -73,44 +79,58 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 			// else dev as set before...
 
 		}
+		
+		compositeConfiguration = new CompositeConfiguration();	
+		
+		PropertiesConfiguration applicationConf;
+		try {
+			applicationConf = new PropertiesConfiguration(CONF_FILE_LOCATION_BY_CONVENTION);
+			compositeConfiguration.addConfiguration(applicationConf);
 
-		// 1. load application.conf
-		Optional<Properties> applicationProperties = loadPropertiesInUtf8(CONF_FILE_LOCATION_BY_CONVENTION);
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		} 
+		
+	
+		
 
-		if (!applicationProperties.isPresent()) {
-			throw new RuntimeException(
-					"No basic configuration file found. Please make sure you got a file called: "
-							+ CONF_FILE_LOCATION_BY_CONVENTION);
-		}
-
-		// 2. Add all properties that are relevant for this mode:
-		allCurrentNinjaProperties.putAll(getAllPropertiesOfThatMode(
-				applicationProperties.get(), mode.name()));
-
-		// 3. load an external configuration file:
-		// get system variables... load application conf files...
-		if (System.getProperty(NINJA_EXTERNAL_CONF) != null) {
-
-			String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
-
-			Optional<Properties> externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
-
-			if (!applicationProperties.isPresent()) {
-				throw new RuntimeException(
-						"A system property called "
-								+ NINJA_EXTERNAL_CONF
-								+ " was set. But the correspinding file cannot be found. Make sure it is visible to this application and on the classpath.");
-			}
-
-			allCurrentNinjaProperties.putAll(externalConfiguration.get());
-
-		}
+//		// 1. load application.conf
+//		Optional<Properties> applicationProperties = loadPropertiesInUtf8(CONF_FILE_LOCATION_BY_CONVENTION);
+//
+//		if (!applicationProperties.isPresent()) {
+//			throw new RuntimeException(
+//					"No basic configuration file found. Please make sure you got a file called: "
+//							+ CONF_FILE_LOCATION_BY_CONVENTION);
+//		}
+//
+//		// 2. Add all properties that are relevant for this mode:
+//		allCurrentNinjaProperties.putAll(getAllPropertiesOfThatMode(
+//				applicationProperties.get(), mode.name()));
+//
+//		// 3. load an external configuration file:
+//		// get system variables... load application conf files...
+//		if (System.getProperty(NINJA_EXTERNAL_CONF) != null) {
+//
+//			String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
+//
+//			Optional<Properties> externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
+//
+//			if (!applicationProperties.isPresent()) {
+//				throw new RuntimeException(
+//						"A system property called "
+//								+ NINJA_EXTERNAL_CONF
+//								+ " was set. But the correspinding file cannot be found. Make sure it is visible to this application and on the classpath.");
+//			}
+//
+//			allCurrentNinjaProperties.putAll(externalConfiguration.get());
+//
+//		}
 
 	}
 
 	@Override
 	public String get(String key) {
-		return allCurrentNinjaProperties.getProperty(key);
+		return compositeConfiguration.getString(key);
 
 	}
 
@@ -120,7 +140,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		String value = get(key);
 
 		if (value == null) {
-			log.error(String.format(ERROR_KEY_NOT_FOUND, key));
+			logger.error(String.format(ERROR_KEY_NOT_FOUND, key));
 			throw new RuntimeException(String.format(ERROR_KEY_NOT_FOUND, key));
 		} else {
 			return value;
@@ -130,20 +150,8 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	@Override
 	public Integer getInteger(String key) {
-
-		String value = allCurrentNinjaProperties.getProperty(key);
-
-		if (value == null) {
-			return null;
-		} else {
-
-			try {
-				return new Integer(value);
-			} catch (NumberFormatException e) {
-				return null;
-			}
-
-		}
+		
+		return compositeConfiguration.getInt(key);
 
 	}
 
@@ -153,7 +161,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		Integer value = getInteger(key);
 
 		if (value == null) {
-			log.error(String.format(ERROR_KEY_NOT_FOUND, key));
+			logger.error(String.format(ERROR_KEY_NOT_FOUND, key));
 			throw new RuntimeException(String.format(ERROR_KEY_NOT_FOUND, key));
 		} else {
 			return value;
@@ -167,7 +175,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		Boolean value = getBoolean(key);
 
 		if (value == null) {
-			log.error(String.format(ERROR_KEY_NOT_FOUND, key));
+			logger.error(String.format(ERROR_KEY_NOT_FOUND, key));
 			throw new RuntimeException(String.format(ERROR_KEY_NOT_FOUND, key));
 		} else {
 			return value;
@@ -177,26 +185,15 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	@Override
 	public Boolean getBoolean(String key) {
+		
+		
+		return compositeConfiguration.getBoolean(key);
 
-		String value = allCurrentNinjaProperties.getProperty(key);
-
-		if (value == null) {
-			return null;
-		} else {
-
-			// make sure to return null when appropriate
-			if (!(value.equals("true") || value.equals("false"))) {
-				return null;
-			}
-
-			// seems to be true or false => therefore we parse the boolean
-			return Boolean.parseBoolean(value);
-		}
 
 	}
 
 	public void bindProperties(Binder binder) {
-		Names.bindProperties(binder, allCurrentNinjaProperties);
+		Names.bindProperties(binder, ConfigurationConverter.getProperties(compositeConfiguration));
 	}
 
 	/**
@@ -303,7 +300,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 	@Override
 	public Properties getAllCurrentNinjaProperties() {
 		
-		return allCurrentNinjaProperties;
+		return ConfigurationConverter.getProperties(compositeConfiguration);
 		
 	}
 

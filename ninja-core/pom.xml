@@ -7,7 +7,7 @@
     <name>ninja web framework</name>
 
     <parent>
-        <groupId>ninja</groupId>
+        <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
         <version>0.4-SNAPSHOT</version>
     </parent>
@@ -101,13 +101,21 @@
             <version>1.2</version>
         </dependency>
         
+        <!-- Commons configuration makes handling of properties files really simple. -->
+        <!-- We use it to parse languages and the application properties. -->
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.8</version>
+        </dependency>
+        
         <!-- For uploading files we are using: -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.2</version>
         </dependency>
-        
+
         <!-- This is our library that does all the validation goodness on fields: -->
         <dependency>
             <groupId>net.sf.oval</groupId>
