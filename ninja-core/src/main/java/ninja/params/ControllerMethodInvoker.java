@@ -65,7 +65,7 @@ public class ControllerMethodInvoker {
                         injector);
             } catch (RoutingException e) {
                 throw new RoutingException("Error building argument extractor for parameter " + i +
-                        " in method " + method.getClass().getName() + "." + method.getName() + "()", e);
+                        " in method " + method.getDeclaringClass().getName() + "." + method.getName() + "()", e);
             }
         }
 
@@ -75,7 +75,7 @@ public class ControllerMethodInvoker {
             if (argumentExtractors[i] == null) {
                 if (bodyAsFound) {
                     throw new RoutingException("Only one parameter may be deserialised as the body " +
-                            method.getClass().getName() + "." + method.getName() + "()");
+                            method.getDeclaringClass().getName() + "." + method.getName() + "()");
                 } else {
                     argumentExtractors[i] = new ArgumentExtractors.BodyAsExtractor(paramTypes[i]);
                     bodyAsFound = true;
