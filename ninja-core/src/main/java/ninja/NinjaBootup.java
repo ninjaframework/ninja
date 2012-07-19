@@ -11,6 +11,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import ninja.scheduler.SchedulerSupport;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
 
 public class NinjaBootup {
     
@@ -21,8 +23,9 @@ public class NinjaBootup {
 	 * Main injector for the class.
 	 */
 	private Injector injector;
-	
-	public NinjaBootup() {
+
+
+    public NinjaBootup(NinjaPropertiesImpl ninjaProperties) {
 		try {		    
 		    List<Module> modulesToLoad = new ArrayList<Module>();  
 
@@ -32,7 +35,7 @@ public class NinjaBootup {
             modulesToLoad.add(SchedulerSupport.getModule());
 
 			// Get base configuration of Ninja:
-			modulesToLoad.add(new Configuration());
+			modulesToLoad.add(new Configuration(ninjaProperties));
 
 			// Load main application module:
 			if (doesClassExist(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION)) {

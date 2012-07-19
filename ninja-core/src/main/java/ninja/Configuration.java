@@ -20,7 +20,13 @@ import com.google.inject.name.Names;
  */
 public class Configuration extends AbstractModule {
 
-	public void configure() {
+    private final NinjaPropertiesImpl ninjaProperties;
+
+    public Configuration(NinjaPropertiesImpl ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+    }
+
+    public void configure() {
 
 		System.setProperty("file.encoding", "utf-8");
 
@@ -44,7 +50,6 @@ public class Configuration extends AbstractModule {
 		    "views/notFound404.ftl.html");
 
         // Bind the configuration into Guice
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();
         ninjaProperties.bindProperties(binder());
         bind(NinjaProperties.class).toInstance(ninjaProperties);
 

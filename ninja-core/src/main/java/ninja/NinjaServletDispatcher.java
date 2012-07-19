@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaProperties;
 
 import com.google.inject.Injector;
+import ninja.utils.NinjaPropertiesImpl;
 
 /**
  * A simple servlet filter that allows us to run Ninja inside any servlet container.
@@ -62,19 +62,18 @@ public class NinjaServletDispatcher implements Filter {
 	}
 
 	public void init(FilterConfig filterConfig) throws ServletException {
-		
-		NinjaBootup ninjaBootup = new NinjaBootup();
-		injector = ninjaBootup.getInjector();
 
-		// force set serverName when in test mode:
-		if (serverName != null) {
-			NinjaProperties ninjaProperties = injector
-			        .getInstance(NinjaProperties.class);
-			ninjaProperties.getAllCurrentNinjaProperties().setProperty(
-			        NinjaConstant.serverName, serverName);
-		}
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();
+        // force set serverName when in test mode:
+        if (serverName != null) {
+            ninjaProperties.setProperty(NinjaConstant.serverName, serverName);
+        }
 
-		ninja = injector.getInstance(Ninja.class);
+        NinjaBootup ninjaBootup = new NinjaBootup(ninjaProperties);
+
+        injector = ninjaBootup.getInjector();
+
+        ninja = injector.getInstance(Ninja.class);
         ninja.start();
 
 	}

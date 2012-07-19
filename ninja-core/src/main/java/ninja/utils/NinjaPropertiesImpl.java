@@ -264,6 +264,10 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
 	}
 
+    public void setProperty(String key, String value) {
+        compositeConfiguration.setProperty(key, value);
+    }
+
 	public void bindProperties(Binder binder) {
 		Names.bindProperties(binder,
 				ConfigurationConverter.getProperties(compositeConfiguration));

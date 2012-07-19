@@ -1,6 +1,8 @@
 <project xmlns="http://maven.apache.org/DECORATION/1.1.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
+    
+    
     <bannerLeft>
         <name>Ninja web framework</name>
         <href>http://ninjaframework.org</href>
@@ -11,10 +13,11 @@
     </bannerRight>
     <body>
         <menu name="Overview">
-        	<item name="Changes" href="./changes.html"/>
-            <item name="About" href="./about.html"/>
-            <item name="Level of done" href="./level_of_done.html"/>
-            <item name="Doctests" href="./doctests.html"/>
+        	<item name="Home" href="./index.html"/>
+        </menu>
+        
+        <menu name="For developers">
+        	<item name="Start conributing" href="./developer/developer.html"/>
         </menu>
         
         <menu ref="reports"/>
@@ -22,6 +25,21 @@
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.0</version>
+        <version>1.2.2</version>
     </skin>
+      <custom>
+    <fluidoSkin>
+      <googleSearch>
+        <sitesearch>
+        http://www.ninjaframework.org
+        </sitesearch>
+      </googleSearch>
+       <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+             <gitHub>
+        <projectId>reyez/ninja</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>black</ribbonColor>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
 </project>
