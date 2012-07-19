@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.ninjaframework</groupId>
@@ -45,10 +46,37 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
+
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-scm</artifactId>
+				<version>2.2</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-manager-plexus</artifactId>
+				<version>2.2</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-provider-gitexe</artifactId>
+				<version>2.2</version>
+			</extension>
+		</extensions>
+
+
 	</build>
 
 
+	<distributionManagement>
+		<site>
+			<id>my.git.server</id>
+			<url>scm:git:ssh://git@github.com/reyez/ninja.git</url>
+		</site>
 
+	</distributionManagement>
 	<scm>
 		<url>https://github.com/reyez/ninja</url>
 		<connection>scm:git://github.com/reyez/ninja.git</connection>

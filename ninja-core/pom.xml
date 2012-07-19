@@ -48,7 +48,7 @@
 					</dependency>
 				</dependencies>
 			</plugin> 
-			<!-- This is managing the deployment of the site to github pages:  -->
+			<!-- This is managing the deployment of the site to github pages:
 			<plugin>
 				<groupId>com.github.github</groupId>
 				<artifactId>site-maven-plugin</artifactId>
@@ -66,6 +66,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			  -->
 
 		</plugins>
 
