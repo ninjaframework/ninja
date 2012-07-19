@@ -4,12 +4,12 @@
 	<groupId>org.ninjaframework</groupId>
 	<artifactId>ninja</artifactId>
 	<packaging>pom</packaging>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.4.1</version>
 	<name>ninja</name>
-    <url>http://www.ninjaframework.org</url>
-    
-    <!-- Deploy to central maven using the oss-parent of sonatype -->
-    <!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
+	<url>http://www.ninjaframework.org</url>
+
+	<!-- Deploy to central maven using the oss-parent of sonatype -->
+	<!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
@@ -45,6 +45,16 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
+
+
+		<extensions>
+			<extension>
+				<groupId>com.github.stephenc.wagon</groupId>
+				<artifactId>wagon-gitsite</artifactId>
+				<version>0.4.1</version>
+			</extension>
+		</extensions>
 	</build>
 
 
@@ -55,7 +65,7 @@
 		<developerConnection>scm:git:git@github.com:reyez/ninja.git</developerConnection>
 	</scm>
 
-	
+
 	<distributionManagement>
 		<site>
 			<id>github</id>
