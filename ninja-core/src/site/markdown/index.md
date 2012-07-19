@@ -73,5 +73,19 @@
 </div>
 
 
+GOALS
+-----
+- Make the best web framework for the java language
+- Scalability: Ninja is state-less. Sessions are client-side.
+- Productivity: Making changes must be ultrafast.
+- Testability: Excellent test support + integration selenium tests.
+
+Subgoals:
+--------
+- Tooling: Ninja is a 1A IDE citizen (Eclipse and Intellij love us).
+- Dependency Injection: Yes. Ninja will is built on DI. For many many good reasons.
+- Compatability: Ninja will run on any war container (tomcat, jetty) but also on netty. And also on any provider. From App Engine to Heroku to Cloudbees.
+- Simple management: We are using maven to get dependencies and much more right.
+- No magic: We won't use bytecode enhancement.
 
 

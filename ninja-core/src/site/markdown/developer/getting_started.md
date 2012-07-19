@@ -4,6 +4,7 @@ How to contribute
 Great you want to contribute!
 -----------------------------
 Contributing to Ninja is really simple. Well. There are some rules that you should follow:
+
 - Make sure your feature is well tested
 - Make sure your feature runs inside ninja-demo-application
 - Make sure your feature is well documented (Javadoc)
