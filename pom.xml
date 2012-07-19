@@ -56,13 +56,14 @@
 		<developerConnection>scm:git:git@github.com:reyez/ninja.git</developerConnection>
 	</scm>
 
+	<!--
 	<distributionManagement>
 		<site>
 			<id>github-project-site</id>
 			<url>gitsite:git@github.com/reyez/ninja.git</url>
 		</site>
 	</distributionManagement>
-
+  -->
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/reyez/ninja/issues/</url>
