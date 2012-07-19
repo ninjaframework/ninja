@@ -26,7 +26,7 @@
 			</resource>
 		</resources>
 
-		<!-- For building the maven site based website: -->
+		<!-- For building the maven site based website: 
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -51,7 +51,7 @@
 				</dependencies>
 			</plugin>
 
-			<!-- This is managing the deployment of the site to github pages: -->
+			This is managing the deployment of the site to github pages: 
 			<plugin>
 				<groupId>com.github.github</groupId>
 				<artifactId>site-maven-plugin</artifactId>
@@ -70,6 +70,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+		-->
 	</build>
 
 	<dependencies>
