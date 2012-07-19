@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-core</artifactId>
-			<version>${parent.version}</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 
 
