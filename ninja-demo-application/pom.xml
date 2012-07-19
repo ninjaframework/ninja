@@ -54,13 +54,13 @@
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-core</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>${parent.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-module-loginlogout</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>${parent.version}</version>
 		</dependency>
 
         <dependency>
@@ -73,7 +73,7 @@
         <dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-core-test</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>${parent.version}</version>
 			<scope>test</scope>
 		</dependency>
 
