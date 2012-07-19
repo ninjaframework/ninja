@@ -2,20 +2,21 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>ninja-module-loginlogout</artifactId>
+  <version>0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>ninja login logout register module</name>
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
-		<version>0.4.1</version>
+		<version>0.45-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-core</artifactId>
-			<version>0.4.1</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
