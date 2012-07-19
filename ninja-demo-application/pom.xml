@@ -2,14 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>ninja-demo-application</artifactId>
-  <version>0.5-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>ninja demo application</name>
 
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
-		<version>0.45-SNAPSHOT</version>
+		<version>0.5-SNAPSHOT</version>
 	</parent>
 
 	<build>
