@@ -1,18 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>ninja-core</artifactId>
 	<packaging>jar</packaging>
 	<name>ninja web framework</name>
-    
+
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
 		<version>0.5-SNAPSHOT</version>
 	</parent>
-	
+
 	<properties>
-  		<github.global.server>github</github.global.server>
+		<github.global.server>github</github.global.server>
 	</properties>
 
 	<build>
@@ -25,51 +26,25 @@
 			</resource>
 		</resources>
 
-		<!-- For building the maven site based website: 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<reportPlugins>
+		<!-- For building the maven site based website: <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+			<artifactId>maven-site-plugin</artifactId> <version>3.0</version> <configuration> 
+			<reportPlugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
+			<version>2.8</version> </plugin> </reportPlugins> </configuration> <dependencies> 
+			<dependency> <groupId>net.ju-n.maven.doxia</groupId> <artifactId>doxia-module-markdown</artifactId> 
+			<version>1.0.0</version> </dependency> </dependencies> </plugin> This is 
+			managing the deployment of the site to github pages: <plugin> <groupId>com.github.github</groupId> 
+			<artifactId>site-maven-plugin</artifactId> <version>0.6</version> <configuration> 
+			<message>Creating site for ${project.version}</message> <force>true</force> 
+			</configuration> <executions> <execution> <goals> <goal>site</goal> </goals> 
+			<phase>site</phase> </execution> </executions> </plugin> </plugins> -->
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.8</version>
-						</plugin>
-					</reportPlugins>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>net.ju-n.maven.doxia</groupId>
-						<artifactId>doxia-module-markdown</artifactId>
-						<version>1.0.0</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-
-			This is managing the deployment of the site to github pages: 
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>site-maven-plugin</artifactId>
-				<version>0.6</version>
-				<configuration>
-					<message>Creating site for ${project.version}</message>
-					<force>true</force>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<phase>site</phase>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-		-->
+        <extensions>
+            <extension>
+                <groupId>org.kathrynhuxtable.maven.wagon</groupId>
+                <artifactId>wagon-gitsite</artifactId>
+                <version>0.3.1</version>
+            </extension>
+        </extensions>
 	</build>
 
 	<dependencies>
