@@ -62,7 +62,7 @@
 						<goals>
 							<goal>site</goal>
 						</goals>
-						<phase>site-deploy</phase>
+						<phase>site</phase>
 					</execution>
 				</executions>
 			</plugin>
