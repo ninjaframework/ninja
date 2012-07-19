@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.ninjaframework</groupId>
 	<artifactId>ninja</artifactId>
 	<packaging>pom</packaging>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.4.1</version>
 	<name>ninja</name>
 	<url>http://www.ninjaframework.org</url>
 
@@ -55,15 +54,6 @@
 		<connection>scm:git://github.com/reyez/ninja.git</connection>
 		<developerConnection>scm:git:git@github.com:reyez/ninja.git</developerConnection>
 	</scm>
-
-
-	<distributionManagement>
-		<site>
-			<id>github-project-site</id>
-			<url>gitsite:git@github.com/reyez/ninja.git</url>
-		</site>
-	</distributionManagement>
-
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/reyez/ninja/issues/</url>
