@@ -23,6 +23,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 
 import com.google.common.collect.Maps;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class NinjaApiTestHelper {
 
