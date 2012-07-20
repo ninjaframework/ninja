@@ -1,51 +1,91 @@
-The most fun and productive way to large web applications in Java
-=================================================================
-
-To be honest: We really like Java. We really like the eco-system. The libraries. The 
-excellent IDEs. Mature build systems. Stability and reliability.
-
-
-But when it came to web application development Java did not have much to offer.
+<!-- Main hero unit for a primary marketing message or call to action -->
+<div class="hero-unit">
+	<h1>Ninja web framework</h1>
+	<p>Developing large web applications in Java becomes fun again.</p>
+</div>
 
 
-This is going to change with Ninja.
-
-
-
-Fun and productive
-------------------
-Cut out the time you spend waiting for your application to restart, 
-increase your productivity and complete your projects faster.
-
-
+<!-- Example row-fluid of columns -->
+<div class="row-fluid">
+	<div class="span4">
+		<img class="bs-icon"
+			src="images/glyphicons/glyphicons_079_podium.png">
+		<h2>Fun and Productive</h2>
+		<p>Ninja uses a lot of best practises to make your development cycles super-fast.
+		For you that means two things. First: Developing with Ninja is responsive and fun. Second:
+		Developing with Ninja saves your business a lot of money because devs don't have to wait until
+		stuff gets restarted</p>
+	</div>
 
 
 
-Ready to start
---------------
-Ninja is a full stack and you don't have to setup anything in addition. Ninja has
-built in support for Guice, simple templating and ultrafast reload cycles.
-Most importantly it has support for fast mocked tests, integration tests to selenium
-tests running on a real browser. It's all there.
+	<div class="span4">
+		<img class="bs-icon"
+			src="images/glyphicons/glyphicons_042_group.png">
+		<h2>Ready to start</h2>
+		<p>Ninja is a full stack and you don't have to setup anything in addition. Ninja has
+			built-in support for Guice, simple templating and ultrafast reload cycles.
+			Most importantly it has support for fast mocked tests, integration tests to selenium
+			tests running on a real browser. It's all there.</p>
+	</div>
+	
+	<div class="span4">
+		<img class="bs-icon"
+			src="images/glyphicons/glyphicons_163_iphone.png">
+		<h2>Conventions!</h2>
+		<p>Convention over configuration. We designed Ninja to be 
+			usable in 99% of the cases without any additional configuration. 
+			That speeds up development right from the start. And for the last 1% you can of 
+			course configure everything yourself. Just in case...</p>
+	</div>
+
+</div>
+
+<div class="row-fluid">
+
+	<div class="span4">
+		<img class="bs-icon"
+			src="images/glyphicons/glyphicons_155_show_thumbnails.png">
+		<h2>Powerful build system</h2>
+		<p>Maven is one of the best build and library management systems out there. And
+			Ninja is built for it. Even better: Automating your builds in Jenkins
+			becomes as easy as telling Jenkins your repository location.</p>
+	</div>
+
+	<div class="span4">
+		<img class="bs-icon"
+			src="images/glyphicons/glyphicons_163_iphone.png">
+		<h2>Java only</h2>
+		<p>Ninja makes it easier to use all your favorite IDEs, build
+			systems and libraries from the Java world. Code completion, error checking while you type,
+			excellent refactoring support. That's what Ninja is.</p>
+	</div>
 
 
+	<div class="span4">
+		<img class="bs-icon"
+			src="images/glyphicons/glyphicons_266_book_open.png">
+		<h2>Rock solid technology</h2>
+		<p>Many companies are using Jetty or Tomcat or any other war container to host their 
+		applications. And the reason is simple: Jetty and Tomcat are fast, stable and just
+		fun to use. Ninja is 100% compatible with all traditional servlet containers.</p>
+	</div>
+</div>
 
 
+GOALS
+-----
+- Make the best web framework for the java language
+- Scalability: Ninja is state-less. Sessions are client-side.
+- Productivity: Making changes must be ultrafast.
+- Testability: Excellent test support + integration selenium tests.
 
-Convention over configuration
------------------------------
-We designed Ninja to be 
-usable in 99% of the cases without any additional configuration. 
-That speeds up development right from the start. And for the last 1% you can of 
-course configure everything yourself. Just in case...
+Subgoals:
+--------
+- Tooling: Ninja is a 1A IDE citizen (Eclipse and Intellij love us).
+- Dependency Injection: Yes. Ninja will is built on DI. For many many good reasons.
+- Compatability: Ninja will run on any war container (tomcat, jetty) but also on netty. And also on any provider. From App Engine to Heroku to Cloudbees.
+- Simple management: We are using maven to get dependencies and much more right.
+- No magic: We won't use bytecode enhancement.
 
-
-
-
-
-Powerful build system
----------------------
-Maven is one of the best build and library management systems out there. 
-And Ninja is built for it. Even better: Automating your builds in 
-Jenkins becomes as easy as specifying your repository. Done.
 

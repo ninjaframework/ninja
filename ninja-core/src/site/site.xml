@@ -1,22 +1,26 @@
 <project xmlns="http://maven.apache.org/DECORATION/1.1.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+         name="Ninja web framework - developing large web applications in Java becomes fun again.">
     
     
     <bannerLeft>
         <name>Ninja web framework</name>
-        <href>http://ninjaframework.org</href>
+        <href>http://www.ninjaframework.org</href>
     </bannerLeft>
-    <bannerRight>
-        <src>./images/nopic</src>
-        <href>http://ninjaframework.org</href>
-    </bannerRight>
     <body>
-        <menu name="Overview">
-        	<item name="Changes" href="./changes.html"/>
-            <item name="About" href="./about.html"/>
-            <item name="Level of done" href="./level_of_done.html"/>
-            <item name="Doctests" href="./doctests.html"/>
+    
+        <menu name="Home">
+        	<item name="Home" href="./index.html"/>
+        </menu>
+        
+        <menu name="Documentation">
+        	<item name="Getting started" href="./documentation/getting_started.html"/>
+        </menu>
+        
+        <menu name="For developers">
+        	<item name="Getting started" href="./developer/getting_started.html"/>
+        	<item name="Roadmap" href="./developer/roadmap.html"/>
         </menu>
         
         <menu ref="reports"/>
