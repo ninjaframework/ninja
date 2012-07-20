@@ -11,30 +11,41 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AsyncStrategyFactoryHolder {
     private static final Logger log = LoggerFactory.getLogger(AsyncStrategyFactoryHolder.class);
-    public static final AsyncStrategyFactory INSTANCE;
+    private static volatile AsyncStrategyFactory instance;
 
-    static {
-        // Try to detect servlet 3
-        AsyncStrategyFactory factory;
-        try {
-            HttpServletRequest.class.getMethod("startAsync");
-            factory = new AsyncStrategyFactory() {
-                @Override
-                public AsyncStrategy createStrategy(HttpServletRequest request,
-                        ResultHandler resultHandler) {
-                    return new Servlet3AsyncStrategy(resultHandler, request);
-                }
-            };
-        } catch (NoSuchMethodException e) {
-            log.warn("Servlet 3 container not detected, async controllers will block");
-            factory = new AsyncStrategyFactory() {
-                @Override
-                public AsyncStrategy createStrategy(HttpServletRequest request,
-                        ResultHandler resultHandler) {
-                    return new BlockingAsyncStrategy();
-                }
-            };
+    public static AsyncStrategyFactory getInstance(HttpServletRequest request) {
+        if (instance == null) {
+            AsyncStrategyFactory factory;
+            if (isAsyncSupported(request)) {
+                factory = new AsyncStrategyFactory() {
+                    @Override
+                    public AsyncStrategy createStrategy(HttpServletRequest request,
+                            ResultHandler resultHandler) {
+                        return new Servlet3AsyncStrategy(resultHandler, request);
+                    }
+                };
+            } else {
+                log.warn("Servlet 3 container not detected, async controllers will block");
+                factory = new AsyncStrategyFactory() {
+                    @Override
+                    public AsyncStrategy createStrategy(HttpServletRequest request,
+                            ResultHandler resultHandler) {
+                        return new BlockingAsyncStrategy();
+                    }
+                };
+            }
+            instance = factory;
         }
-        INSTANCE = factory;
+        return instance;
+    }
+
+    private static boolean isAsyncSupported(HttpServletRequest request) {
+        try {
+            return request.isAsyncSupported();
+        } catch (LinkageError error) {
+            // The code above might throw an AbstractMethodError or a NoSuchMethodError,
+            // if it does, it means async is not supported
+            return false;
+        }
     }
 }
