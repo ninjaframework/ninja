@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
@@ -24,7 +23,6 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 
 import com.google.common.collect.Maps;
-import org.codehaus.jackson.map.ObjectMapper;
 
 public class NinjaApiTestHelper {
 
