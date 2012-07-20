@@ -1,51 +1,95 @@
 <!-- Main hero unit for a primary marketing message or call to action -->
 <div class="hero-unit">
 	<h1>Ninja web framework</h1>
-	<p>Developing large web applications in Java becomes fun again.</p>
+	<p>Large web applications in Java made easy.</p>
 </div>
 
+<br/>
+<br/>
 
 <!-- Example row-fluid of columns -->
 <div class="row-fluid">
-	<div class="span4">
-		<img class="bs-icon"
-			src="images/glyphicons/glyphicons_079_podium.png">
-		<h2>Fun and Productive</h2>
-		<p>Ninja uses a lot of best practises to make your development cycles super-fast.
-		For you that means two things. First: Developing with Ninja is responsive and fun. Second:
-		Developing with Ninja saves your business a lot of money because devs don't have to wait until
-		stuff gets restarted</p>
-	</div>
 
+    <div class="span6">
+        <img class="bs-icon"
+            src="images/glyphicons/glyphicons_009_magic.png">
+        <h2>Happy business. Happy customers.</h2>
+        <p>Ninja will let you finish your next project faster with stunning high quality.
+        Your customers will love what they'll get.
+        </p>
+    </div>
 
-
-	<div class="span4">
-		<img class="bs-icon"
-			src="images/glyphicons/glyphicons_042_group.png">
-		<h2>Ready to start</h2>
-		<p>Ninja is a full stack and you don't have to setup anything in addition. Ninja has
-			built-in support for Guice, simple templating and ultrafast reload cycles.
-			Most importantly it has support for fast mocked tests, integration tests to selenium
-			tests running on a real browser. It's all there.</p>
-	</div>
-	
-	<div class="span4">
-		<img class="bs-icon"
-			src="images/glyphicons/glyphicons_163_iphone.png">
-		<h2>Conventions!</h2>
-		<p>Convention over configuration. We designed Ninja to be 
-			usable in 99% of the cases without any additional configuration. 
-			That speeds up development right from the start. And for the last 1% you can of 
-			course configure everything yourself. Just in case...</p>
-	</div>
-
+    <div class="span6">
+        <img class="bs-icon" src="images/glyphicons/glyphicons_042_group.png">
+        <h2>Fun for developers.</h2>
+        <p>Ninja provides everything you need to get productive immediately. 
+        And notably Ninja is fast. Really fast. Make a change to the code and see the results instantly.
+        </p>
+    </div>
 </div>
 
+
+<br/><br/><br/><br/>
+
+
 <div class="row-fluid">
+    <div class="span12 pagination-centered">
+            <h1><a href="documentation/getting_started.html">Get started!</a></h1>
+    </div>
+</div>
+
+
+
+<br/><br/><br/><br/>
+
+
+<div class="row-fluid">	
+
+
+    <div class="span4">
+        <img class="bs-icon"
+            src="images/glyphicons/glyphicons_079_podium.png">
+        <h2>Stable technology</h2>
+        <p>Ninja did not reinvent the wheel - instead we are standing on the shoulders of giants.
+        Ninja is built using the most stable technologies in the industry.
+        </p>
+    </div>
+    
+   <div class="span4">
+        <img class="bs-icon"
+            src="images/glyphicons/glyphicons_082_roundabout.png">
+        <h2>Scalability</h2>
+        <p>Ninja uses the share nothing approach. Servers do not share any common session information. That
+        means you can scale Ninja with ease.
+        </p>
+    </div>
+    
+    <div class="span4">
+        <img class="bs-icon" src="images/glyphicons/glyphicons_155_show_thumbnails.png">
+        <h2>Ready to start</h2>
+        <p>Ninja is a full stack. From quick development to fast testing to easy deployment. 
+        And by the way - if you want you can use any servlet container to run your Ninja application.
+    </p>
+    </div>
+</div>
+
+<br/>
+<br/>
+
+<div class="row-fluid"> 
+
+    <div class="span4">
+        <img class="bs-icon"
+            src="images/glyphicons/glyphicons_163_iphone.png">
+        <h2>Pure Open source</h2>
+        <p>Ninja is licensed under Apache 2.0 license. That means the codebase will be open forever.
+        It is welcoming pull requests with new features.
+        </p>
+    </div>
 
 	<div class="span4">
 		<img class="bs-icon"
-			src="images/glyphicons/glyphicons_155_show_thumbnails.png">
+			src="images/glyphicons/glyphicons_214_resize_small.png">
 		<h2>Powerful build system</h2>
 		<p>Maven is one of the best build and library management systems out there. And
 			Ninja is built for it. Even better: Automating your builds in Jenkins
@@ -54,38 +98,16 @@
 
 	<div class="span4">
 		<img class="bs-icon"
-			src="images/glyphicons/glyphicons_163_iphone.png">
-		<h2>Java only</h2>
-		<p>Ninja makes it easier to use all your favorite IDEs, build
-			systems and libraries from the Java world. Code completion, error checking while you type,
-			excellent refactoring support. That's what Ninja is.</p>
-	</div>
-
-
-	<div class="span4">
-		<img class="bs-icon"
 			src="images/glyphicons/glyphicons_266_book_open.png">
-		<h2>Rock solid technology</h2>
-		<p>Many companies are using Jetty or Tomcat or any other war container to host their 
-		applications. And the reason is simple: Jetty and Tomcat are fast, stable and just
-		fun to use. Ninja is 100% compatible with all traditional servlet containers.</p>
-	</div>
+		<h2>The best Java citizen</h2>
+		<p>
+		Ninja is built with Maven. That also means you can easily import your project with only one click
+		in any IDE. And you get all goodies of Java for free: Excellent libraries, World-class refactoring support,
+		testing at the heart of the framework and a statically typed language.</p>
+	</div>	
+
 </div>
 
 
-GOALS
------
-- Make the best web framework for the java language
-- Scalability: Ninja is state-less. Sessions are client-side.
-- Productivity: Making changes must be ultrafast.
-- Testability: Excellent test support + integration selenium tests.
-
-Subgoals:
---------
-- Tooling: Ninja is a 1A IDE citizen (Eclipse and Intellij love us).
-- Dependency Injection: Yes. Ninja will is built on DI. For many many good reasons.
-- Compatability: Ninja will run on any war container (tomcat, jetty) but also on netty. And also on any provider. From App Engine to Heroku to Cloudbees.
-- Simple management: We are using maven to get dependencies and much more right.
-- No magic: We won't use bytecode enhancement.
 
 
