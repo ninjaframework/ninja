@@ -1,2 +1,14 @@
 controllers
 example
+ninja
+ninja.classesfortest
+ninja.i18n
+ninja.lifecycle
+ninja.params
+ninja.postoffice.common
+ninja.postoffice.commonsmail
+ninja.postoffice.mock
+ninja.scheduler
+ninja.session
+ninja.template
+ninja.utils
