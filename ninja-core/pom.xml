@@ -30,7 +30,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.1</version>
-				 
+
 				<configuration>
 					<reportPlugins>
 						<plugin>
@@ -40,7 +40,7 @@
 						</plugin>
 					</reportPlugins>
 				</configuration>
-				
+
 				<dependencies>
 					<dependency>
 						<groupId>net.ju-n.maven.doxia</groupId>
@@ -50,6 +50,16 @@
 				</dependencies>
 			</plugin>
 		</plugins>
+
+
+
+		<extensions>
+			<extension>
+				<groupId>org.kathrynhuxtable.maven.wagon</groupId>
+				<artifactId>wagon-gitsite</artifactId>
+				<version>0.3.1</version>
+			</extension>
+		</extensions>
 
 	</build>
 
@@ -172,6 +182,12 @@
 
 	</dependencies>
 
+	<distributionManagement>
+		<site>
+			<id>github-project-site</id>
+			<url>gitsite:git@github.com/reyez/ninja.git</url>
+		</site>
 
+	</distributionManagement>
 
 </project>
