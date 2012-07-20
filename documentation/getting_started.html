@@ -64,35 +64,32 @@
           <div class="well sidebar-nav">
                 
             
-                                    <h3>Home</h3>
+                                    <h3></h3>
                   <ul>
                   <li class="none">
                           <a href="../index.html" title="Home">Home</a>
             </li>
           </ul>
-                        <h3>Documentation</h3>
+                        <h3>Learn</h3>
                   <ul>
                   <li class="none">
             <strong>Getting started</strong>
           </li>
-          </ul>
-                        <h3>For developers</h3>
-                  <ul>
                   <li class="none">
-                          <a href="../developer/getting_started.html" title="Getting started">Getting started</a>
-            </li>
-                  <li class="none">
-                          <a href="../developer/roadmap.html" title="Roadmap">Roadmap</a>
+                          <a href="../apidocs/index.html" title="API">API</a>
             </li>
           </ul>
-                        <h3>Project Documentation</h3>
+                        <h3>Get involved</h3>
                   <ul>
-                                                                                                                                                                                                                                                                                            <li class="collapsed">
-                          <a href="../project-info.html" title="Project Information">Project Information</a>
-                  </li>
-                                                                                      <li class="collapsed">
-                          <a href="../project-reports.html" title="Project Reports">Project Reports</a>
-                  </li>
+                  <li class="none">
+                          <a href="https://groups.google.com/d/forum/ninja-framework" class="externalLink" title="Mailing list">Mailing list</a>
+            </li>
+                  <li class="none">
+                          <a href="https://github.com/reyez/ninja" class="externalLink" title="Source code">Source code</a>
+            </li>
+                  <li class="none">
+                          <a href="https://github.com/reyez/ninja/issues" class="externalLink" title="Bug tracker">Bug tracker</a>
+            </li>
           </ul>
                       
             
@@ -118,9 +115,39 @@
         
         <div id="bodyColumn"  class="span10" >
                                   
-            <h1>Quickstart for users</h1><p>Check out the project and run &ldquo;mvn jetty:run&rdquo; inside ninja-demo-application.
-This will start the demo application and you are ready to go.</p><p>Then check out the source code inside ninja-demo-application. There is a lot of
-documentation inside the classes.</p>
+            <h1>Quickstart for users</h1><p>The best starting point is to check out the source of our demo application at:
+<a href="https://github.com/reyez/ninja/tree/develop/ninja-demo-application">https://github.com/reyez/ninja/tree/develop/ninja-demo-application</a></p><h2>Preface</h2><p>Ninja is built around the MVC pattern. MVC stands for Model View Controller. In
+essence that means that each layer of logic is cleanly separated.</p><h2>Your first controller</h2><p>A controller resides under the package <em>controllers</em>.</p><p>Controllers are just simple Java classes. </p>
+<pre><code>public class ApplicationController {       
+
+    public Result index() {
+        return Results.html();
+
+    }
+}
+</code></pre><p>Controller methods always return a &ldquo;Result&rdquo;. Results is just a little helper that lets you create
+results easily. In the case of the application controller the result is a html response.</p><p>The controller per se does not do anything. We need to tell Ninja that the ApplicationController exists.</p><h2>Your first route</h2><p>This is done by declaring a file called <em>Routes.java</em> in the package <em>conf</em>.</p><p>A minimal route file looks like:</p>
+<pre><code>public class Routes implements ApplicationRoutes {
+
+    @Override
+    public void init(Router router) {
+
+        router.GET().route(&quot;/&quot;).with(ApplicationController.class, &quot;index&quot;);
+
+    }
+}
+</code></pre><p>The route is loaded by a convention right at the start of Ninja. It simply tells ninja that requests to /
+will be handled by the ApplicationController.class and the method &ldquo;index&rdquo;.</p><p>Now we got one side of the equation - from Ninja to the routes to our controller. But what about the output?</p><h2>Your first view</h2><p>Views are declared inside the package <em>views</em>. By convention views for controllers are always stored in
+views/<em>CONTROLLER_NAME</em>/<em>METHOD_NAME</em>. In our case the view will be retrieved from views/ApplicationController/index.ftl.html.</p><p>These views are just simple templates. You can enter simple html. But you can also use extended features as the templating
+is built around freemarker templates.</p><p>Simply put a general html page into the view:</p>
+<pre><code>&lt;html&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Hello world&lt;/h1&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h2>The result</h2><p>Voila! you got your first running Ninja application. We defined a route, a controller and a simple view. That&rsquo;s all. Ninja
+retrieves everything using some conventions you already saw. Routes are under conf.Routes.java. views in a directory
+named after their controller. </p>
                   </div>
             </div>
       
