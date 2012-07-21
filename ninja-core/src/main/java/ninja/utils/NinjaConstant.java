@@ -18,6 +18,17 @@ public interface NinjaConstant {
     String VIEWS_DIR = "views";
     String CONTROLLERS_DIR = "controllers";
     String MODELS_DIR = "models";
+    
+    
+    /**
+     * Comma separated list in application.conf. Determines which languages
+     * are loaded for the application.
+     * 
+     * Something like
+     * 
+     * applicationLanguages=de,en
+     */
+    final String applicationLanguages = "applicationLanguages";
 
     /** 
      * Prefix used for all Ninja cookies. 

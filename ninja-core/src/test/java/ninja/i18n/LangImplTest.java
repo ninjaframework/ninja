@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Locale;
 import java.util.Map;
 
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
 import org.junit.Before;
@@ -24,7 +25,7 @@ public class LangImplTest {
 	@Test
 	public void testiSimple18n() {
 		
-		when(ninjaProperties.getStringArray("application.langs")).thenReturn(new String [] {"en", "de", "fr-FR"});
+		when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String [] {"en", "de", "fr-FR"});
 		
 		LangImpl lang = new LangImpl(ninjaProperties);
 		
@@ -42,7 +43,7 @@ public class LangImplTest {
 	
 	@Test
 	public void testiParameterized18n() {
-		when(ninjaProperties.getStringArray("application.langs")).thenReturn(new String [] {"en", "de", "fr-FR"});
+		when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String [] {"en", "de", "fr-FR"});
 		
 		LangImpl lang = new LangImpl(ninjaProperties);
 		
@@ -63,7 +64,7 @@ public class LangImplTest {
 	public void testi18nGetAll() {
 		
 		
-		when(ninjaProperties.getStringArray("application.langs")).thenReturn(new String [] {"en", "de", "fr-FR"});
+		when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String [] {"en", "de", "fr-FR"});
 		LangImpl lang = new LangImpl(ninjaProperties);
 		
 		

@@ -1,27 +1,19 @@
 package ninja.i18n;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
+import ninja.utils.SwissKnife;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,135 +23,42 @@ public class LangImpl implements Lang {
 
 	private static Logger logger = LoggerFactory.getLogger(LangImpl.class);
 
-	private String DEFAULT_MESSAGES_LOCATION = "conf.messages";
-
 	private Map<String, Configuration> langToKeyAndValuesMapping;
+
+	private final NinjaProperties ninjaProperties;
 
 	@Inject
 	public LangImpl(NinjaProperties ninjaProperties) {
 
+		this.ninjaProperties = ninjaProperties;
 		langToKeyAndValuesMapping = Maps.newHashMap();
+		
+		loadAllMessageFilesForRegisteredLanguages();
 
-		// load default messages:
-		Configuration defaultLanguage = loadPropertiesInUtf8("conf/messages.properties");
-
-		if (defaultLanguage == null) {
-			throw new RuntimeException(
-			        "Did not find conf/messages.properties. Please add a default language file.");
-		} else {
-			langToKeyAndValuesMapping.put("", defaultLanguage);
-		}
-
-		String[] applicationLangs = ninjaProperties
-		        .getStringArray("application.langs");
-		for (String lang : applicationLangs) {
-
-			Configuration configuration = loadPropertiesInUtf8(String.format(
-			        "conf/messages.%s.properties", lang));
-
-			Configuration configurationLangOnly = null;
-
-			if (lang.contains("-")) {
-				String langOnly = lang.split("-")[0];
-
-				configurationLangOnly = loadPropertiesInUtf8(String.format(
-				        "conf/messages.%s.properties", langOnly));
-
-			}
-
-			if (configuration == null) {
-				logger.info(String
-				        .format("Did not find conf/messages.%s.properties but it was specified in application.conf. Using default language instead.",
-				                lang));
-
-			} else {
-
-				// add new language, but combine with default language if stuff
-				// is missing...
-				CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
-				compositeConfiguration.addConfiguration(configuration);
-				if (configurationLangOnly != null) {
-					compositeConfiguration
-					        .addConfiguration(configurationLangOnly);
-				}
-				compositeConfiguration.addConfiguration(defaultLanguage);
-
-				langToKeyAndValuesMapping.put(lang,
-				        (Configuration) compositeConfiguration);
-			}
-
-		}
 
 	}
+	
 
-	private String getLangCountryFromLocale(Locale locale) {
-
-		String country = locale.getCountry();
-
-		if (country.isEmpty())
-			return null;
-
-		String language = locale.getLanguage();
-
-		if (language.isEmpty())
-			return null;
-
-		return String.format("%s-%s", language, country);
-
-	}
-
-	private String getLangFromLocale(Locale locale) {
-
-		String language = locale.getLanguage();
-
-		if (language.isEmpty())
-			return null;
-
-		return String.format("%s", language);
-
-	}
-
-	private Configuration getLanguageConfigurationForLocale(Locale locale) {
-
-		String lang = getLangCountryFromLocale(locale);
-
-		if (lang != null) {
-			Configuration configuration = langToKeyAndValuesMapping.get(lang);
-			if (configuration != null) {
-
-				return configuration;
-			}
-		}
-
-		lang = getLangFromLocale(locale);
-
-		if (lang != null) {
-			Configuration configuration = langToKeyAndValuesMapping.get(lang);
-
-			if (configuration != null) {
-
-				return configuration;
-			}
-		}
-
-		// this is guaranteed to work => default language.
-		return langToKeyAndValuesMapping.get("");
-
-	}
 
 	/**
 	 * Returns a possibly formatted message.
 	 * 
 	 * @param key
 	 * @param params
-	 * @return
+	 * @return a pssibly formatted message or null if not found.
 	 */
 	@Override
 	public String get(String key, Locale locale, Object... params) {
 
 		Configuration configuration = getLanguageConfigurationForLocale(locale);
-
-		return MessageFormat.format(configuration.getString(key), params);
+		
+		String value = configuration.getString(key);
+		
+		if (value != null) {
+			return MessageFormat.format(value, params);
+		} else {
+			return null;
+		}
 
 	}
 
@@ -232,14 +131,19 @@ public class LangImpl implements Lang {
 	@Override
 	public String getWithDefault(String key, String defaultMessage,
 	        Locale locale, Object... params) {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle(
-		        DEFAULT_MESSAGES_LOCATION, locale, new UTF8Control());
-
-		try {
-			return MessageFormat.format(resourceBundle.getString(key), params);
-		} catch (MissingResourceException e) {
+		
+		String value = get(key, locale, params);
+		
+		if (value != null) {
+			
+			return MessageFormat.format(value, params);
+				
+		} else {
+			//return default message
 			return MessageFormat.format(defaultMessage, params);
+			
 		}
+		
 	}
 
 	// @Override
@@ -263,48 +167,161 @@ public class LangImpl implements Lang {
 	 * return map; }
 	 */
 
+
+
+	
+	
 	/**
-	 * This is important: We load stuff as UTF-8
+	 * Does all the loading of message files.
 	 * 
-	 * @param classLoaderUrl
-	 *            Classpath location of the configuration file. Eg
-	 *            /conf/heroku.conf
-	 * @return A configuration or null if there were problems getting it.
+	 * Only registered messages in application.conf are loaded.
+	 * 
 	 */
-	private Configuration loadPropertiesInUtf8(String classLoaderUrl) {
+	private void loadAllMessageFilesForRegisteredLanguages() {
+		
 
-		PropertiesConfiguration c = new PropertiesConfiguration();
+		// Load default messages:
+		Configuration defaultLanguage = SwissKnife.loadConfigurationFromClasspathInUtf8("conf/messages.properties", getClass());
 
-		URL resource = getClass().getClassLoader().getResource(classLoaderUrl);
-
-		// if the resource cannot be found return null
-		if (resource == null) {
-			return null;
+		// Make sure we got the file.
+		// Everything else does not make much sense.
+		if (defaultLanguage == null) {
+			throw new RuntimeException(
+			        "Did not find conf/messages.properties. Please add a default language file.");
+		} else {
+			langToKeyAndValuesMapping.put("", defaultLanguage);
 		}
 
-		try {
-			InputStream inputStream = resource.openStream();
+		// Get the languages from the application configuration.
+		String[] applicationLangs = ninjaProperties
+		        .getStringArray(NinjaConstant.applicationLanguages);
+		
+		// Load each language into the HashMap containing the languages:
+		for (String lang : applicationLangs) {
 
-			c.load(new InputStreamReader(inputStream, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			c = null;
-			logger.error(
-			        "Unsupported encoding while loading configuration file", e);
-		} catch (IOException e) {
-			c = null;
-			logger.error("Could not find configuration file. Was looking for "
-			        + classLoaderUrl, e);
-		} catch (NullPointerException e) {
+			// First step: Load complete language eg. en-US
+			Configuration configuration = SwissKnife.loadConfigurationFromClasspathInUtf8(String.format(
+			        "conf/messages.%s.properties", lang), getClass());
 
-			logger.error("Could not find configuration file. Was looking for "
-			        + classLoaderUrl, e);
-			return null;
-		} catch (ConfigurationException e) {
-			c = null;
-			logger.error("Configuration Exception.", e);
+			Configuration configurationLangOnly = null;
+
+			// If the language has a country code load the default values for 
+			// the language, too. For instance missing variables in en-US will be
+			// Overwritten by the default languages.
+			if (lang.contains("-")) {
+				// get the lang
+				String langOnly = lang.split("-")[0];
+				
+				// And load the configuraion
+				configurationLangOnly = SwissKnife.loadConfigurationFromClasspathInUtf8(String.format(
+				        "conf/messages.%s.properties", langOnly), getClass());
+
+			}
+
+			//This is strange. If you defined the language in application.conf it should be there propably.
+			if (configuration == null) {
+				logger.info(String
+				        .format("Did not find conf/messages.%s.properties but it was specified in application.conf. Using default language instead.",
+				                lang));
+
+			} else {
+
+				// add new language, but combine with default language if stuff
+				// is missing...
+				CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
+				//Add eg. "en-US"
+				compositeConfiguration.addConfiguration(configuration);
+				
+				//Add eg. "en"
+				if (configurationLangOnly != null) {
+					compositeConfiguration
+					        .addConfiguration(configurationLangOnly);
+				}
+				//Add messages.conf (default pack)
+				compositeConfiguration.addConfiguration(defaultLanguage);
+
+				//and add the composed configuration to the hashmap with the mapping.
+				langToKeyAndValuesMapping.put(lang,
+				        (Configuration) compositeConfiguration);
+			}
+
 		}
-
-		return (Configuration) c;
+		
+		
 	}
 
+	/**
+	 * Converts locale into "en-US" when possible.
+	 * 
+	 * @param locale 
+	 * @return The 2 letter lang-country ISO code (Eg."en-US") Or null if not possible.
+	 */
+	private String getLangCountryFromLocale(Locale locale) {
+
+		String country = locale.getCountry();
+
+		if (country.isEmpty())
+			return null;
+
+		String language = locale.getLanguage();
+
+		if (language.isEmpty())
+			return null;
+
+		return String.format("%s-%s", language, country);
+
+	}
+
+	/**
+	 * Returns locale into "en" (ISO language code)
+	 * @param locale
+	 * @return the 2 letter language ISO code or null if not possible.
+	 */
+	private String getLangFromLocale(Locale locale) {
+
+		String language = locale.getLanguage();
+
+		if (language.isEmpty())
+			return null;
+
+		return String.format("%s", language);
+
+	}
+
+	/**
+	 * When a locale comes in this method determines which cached
+	 * locale to use from the hashmap.
+	 * 
+	 * 
+	 * 
+	 * @param locale
+	 * @return The matching configuration from the hashmap.
+	 */
+	private Configuration getLanguageConfigurationForLocale(Locale locale) {
+
+		String lang = getLangCountryFromLocale(locale);
+
+		if (lang != null) {
+			Configuration configuration = langToKeyAndValuesMapping.get(lang);
+			if (configuration != null) {
+
+				return configuration;
+			}
+		}
+
+		lang = getLangFromLocale(locale);
+
+		if (lang != null) {
+			Configuration configuration = langToKeyAndValuesMapping.get(lang);
+
+			if (configuration != null) {
+
+				return configuration;
+			}
+		}
+
+		// this is guaranteed to work => default language.
+		return langToKeyAndValuesMapping.get("");
+
+	}
 }

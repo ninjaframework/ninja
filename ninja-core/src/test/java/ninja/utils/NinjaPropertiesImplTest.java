@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.inject.AbstractModule;
