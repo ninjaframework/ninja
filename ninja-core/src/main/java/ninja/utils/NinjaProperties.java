@@ -79,6 +79,14 @@ public interface NinjaProperties {
 	 * @return the String or a RuntimeException will be thrown.
 	 */
 	String getOrDie(String key);
+	
+	/**
+	 * eg.
+	 * key=myval1,myval2
+	 * 
+	 * @return an array containing the values of that key or null if not found.
+	 */
+	String [] getStringArray(String key);
 
     /**
      * Whether we are in dev mode

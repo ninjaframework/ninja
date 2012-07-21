@@ -329,4 +329,9 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		return (Configuration) c;
 	}
 
+	@Override
+	public String[] getStringArray(String key) {
+		return compositeConfiguration.getStringArray(key);
+	}
+
 }

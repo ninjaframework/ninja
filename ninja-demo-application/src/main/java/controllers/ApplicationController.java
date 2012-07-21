@@ -53,7 +53,7 @@ public class ApplicationController {
 	
 	public Result userDashboard(
 			@PathParam("email") String email,
-			@PathParam("id") int id,
+			@PathParam("id") Integer id,
 			Context context) {
 
 		Map<String, Object> map = new HashMap<String, Object>();

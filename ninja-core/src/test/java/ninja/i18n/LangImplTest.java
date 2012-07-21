@@ -2,29 +2,32 @@ package ninja.i18n;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 import java.util.Map;
 
+import ninja.utils.NinjaProperties;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LangImplTest {
-
 	
-	Lang lang = new LangImpl();
-	
-	@Before
-	public void setup() {
-		lang = new LangImpl();
-	}
-	
+	@Mock
+	private NinjaProperties ninjaProperties;
 	
 	@Test
 	public void testiSimple18n() {
+		
+		when(ninjaProperties.getStringArray("application.langs")).thenReturn(new String [] {"en", "de", "fr-FR"});
+		
+		LangImpl lang = new LangImpl(ninjaProperties);
+		
 		//that will refer to messages_en.properties:
 		assertEquals("english", lang.get("language", Locale.US));
 		assertEquals("english", lang.get("language", Locale.CANADA));
@@ -39,6 +42,11 @@ public class LangImplTest {
 	
 	@Test
 	public void testiParameterized18n() {
+		when(ninjaProperties.getStringArray("application.langs")).thenReturn(new String [] {"en", "de", "fr-FR"});
+		
+		LangImpl lang = new LangImpl(ninjaProperties);
+		
+		
 		//that will refer to messages_en.properties:
 		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", Locale.US, "test_parameter"));
 		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", Locale.CANADA, "test_parameter"));
@@ -54,29 +62,33 @@ public class LangImplTest {
 	@Test
 	public void testi18nGetAll() {
 		
-		//US locale testing:
-		Map<String, String> map = lang.getAll(Locale.US);
-		assertEquals(2, map.keySet().size());
-		assertTrue(map.containsKey("i18n_language"));
-		assertTrue(map.containsKey("i18n_message_with_placeholder"));
 		
-		assertEquals("english", map.get("i18n_language"));	
-		//the placeholder does not get replaced in this case and must return null
-		//=> this will lead to freemarker failing when the key is used not intentionally
-		assertEquals(null, map.get("message_with_placeholder"));
+		when(ninjaProperties.getStringArray("application.langs")).thenReturn(new String [] {"en", "de", "fr-FR"});
+		LangImpl lang = new LangImpl(ninjaProperties);
+		
+		
+		//US locale testing:
+		Map<Object, Object> map = lang.getAll(Locale.US);
+
+		
+		assertEquals(3, map.keySet().size());
+		assertTrue(map.containsKey("language"));
+		assertTrue(map.containsKey("message_with_placeholder"));
+		assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
+		
+		assertEquals("english", map.get("language"));	
 		
 		
 		
 		//GERMAN locale testing:
 		map = lang.getAll(Locale.GERMAN);
-		assertEquals(2, map.keySet().size());
-		assertTrue(map.containsKey("i18n_language"));
-		assertTrue(map.containsKey("i18n_message_with_placeholder"));
+		assertEquals(3, map.keySet().size());
+		assertTrue(map.containsKey("language"));
+		assertTrue(map.containsKey("message_with_placeholder"));
+		assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
 		
-		assertEquals("deutsch", map.get("i18n_language"));	
-		//the placeholder does not get replaced in this case and must return null
-		//=> this will lead to freemarker failing when the key is used not intentionally
-		assertEquals(null, map.get("message_with_placeholder"));
+		assertEquals("deutsch", map.get("language"));	
+		assertEquals("das ist der platzhalter: {0}", map.get("message_with_placeholder"));
 		
 		
 	}
