@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,11 +15,12 @@ import com.google.inject.Guice;
 
 public class NinjaPropertiesImplTest {
 
-	@Before
+	@After
 	public void setup() {
-		//make sure the external conf property is not set initially.
+		//make sure the external conf property is removed after the test.
 		System.clearProperty(NinjaProperties.NINJA_EXTERNAL_CONF);
 	}
+	
 
 	@Test
 	public void testSkippingThroughModesWorks() {
