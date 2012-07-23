@@ -38,8 +38,6 @@ public class ContextImpl implements Context {
 
 	private Route route;
 
-	private String contentType;
-
 	private AsyncStrategy asyncStrategy;
 	private final Object asyncLock = new Object();
 
@@ -205,7 +203,7 @@ public class ContextImpl implements Context {
 	public void handleAsync() {
 		synchronized (asyncLock) {
 			if (asyncStrategy == null) {
-				asyncStrategy = AsyncStrategyFactoryHolder.INSTANCE
+				asyncStrategy = AsyncStrategyFactoryHolder.getInstance(httpServletRequest)
 						.createStrategy(httpServletRequest, resultHandler);
 				asyncStrategy.handleAsync();
 			}
@@ -247,9 +245,6 @@ public class ContextImpl implements Context {
 
 	@Override
 	public ResponseStreams finalizeHeaders(Result result) {
-        if (contentType != null) {
-            httpServletResponse.setContentType(contentType);
-        }
 		httpServletResponse.setStatus(result.getStatusCode());
 		
 		//copy headers

@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.devbliss.doctest</groupId>
             <artifactId>doctest</artifactId>
-            <version>0.3</version>
+            <version>0.4.2-SNAPSHOT</version>
         </dependency>
 
 	</dependencies>
