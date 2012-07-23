@@ -4,9 +4,9 @@ public interface NinjaConstant {
 	
     // /////////////////////////////////////////////////
     // The 3 basic modes for ninja.
-	// they should be set as system property: -Dmode=test
+	// they should be set as system property: -Dninja.mode=test
 	// and so on
-	String MODE_KEY_NAME = "mode";
+	String MODE_KEY_NAME = "ninja.mode";
 	//and the values for the modes:
 	String MODE_TEST = "test";
 	String MODE_DEV = "dev";
@@ -26,9 +26,9 @@ public interface NinjaConstant {
      * 
      * Something like
      * 
-     * applicationLanguages=de,en
+     * ninja.application.languages=de,en
      */
-    final String applicationLanguages = "applicationLanguages";
+    final String applicationLanguages = "application.languages";
 
     /** 
      * Prefix used for all Ninja cookies. 
@@ -36,7 +36,34 @@ public interface NinjaConstant {
      * Make sure you set the prefix in your application.conf file.
      * 
      * */
-    final String applicationCookiePrefix = "applicationCookiePrefix";
+    final String applicationCookiePrefix = "application.cookie.prefix";
+    
+    /** Used to verify client side cookie for instance. */
+    final String applicationName = "application.name";
+
+    /** Used to verify client side cookie for instance. */
+    final String applicationSecret = "application.secret";
+
+    /**
+     * In many situations the server cannot know its own name. So
+     * You can set using that variable.
+     */
+    final String serverName = "application.server.name";
+    
+    /**
+     * 
+     */
+    final String sessionExpireTimeInSeconds = "application.session.expire_time_in_seconds";
+    
+    /**
+     * 
+     */
+    final String sessionSendOnlyIfChanged = "application.session.send_only_if_changed";
+    
+    /**
+     * 
+     */
+    final String sessionTransferredOverHttpsOnly = "application.session_transferred_over_https_only";
 
     /**
      * Suffix used for Ninja cookies. Usually results
@@ -50,22 +77,10 @@ public interface NinjaConstant {
      */
     final String FLASH_SUFFIX = "_FLASH";
 
-    /** used as spacer for instance in session cookie */
+    /** Used as spacer for instance in session cookie */
     final String UNI_CODE_NULL_ENTITY = "\u0000";
 
     /** yea. utf-8 */
     final String UTF_8 = "utf-8";
-
-    /** Used to verify client side cookie for instance. */
-    final String applicationName = "applicationName";
-
-    /** Used to verify client side cookie for instance. */
-    final String applicationSecret = "applicationSecret";
-
-    /**
-     * In many situations the server cannot know its own name. So
-     * You can set using that variable.
-     */
-    final String serverName = "serverName";
 
 }
