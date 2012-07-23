@@ -108,9 +108,9 @@ For version 0.4 - "test subsystem support"
 
 
 For version 0.5 - "internationalization support"
-
 DONE - make sure properties support works
-
+DONE - works on app engine
+DONE - changed application properties to something nicer
 
 
 GENERAL:
