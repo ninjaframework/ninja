@@ -101,6 +101,13 @@ public class Results {
 		return result;
 	}
 	
+	/**
+	 * Only supporting one overloaded method.
+	 * => you can still use json().status(200). and so on...
+	 * @param statusCode
+	 * @return
+	 */
+	@Deprecated
 	public static Result json(int statusCode) {
 		Result result = status(statusCode);
 		result.contentType(Result.APPLICATON_JSON);
