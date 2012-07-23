@@ -23,7 +23,7 @@ public interface Lang {
 	 * parameter will then be used to fill {0} with the content.
 	 * 
 	 */
-    String get(String string, Object... parameter);
+    //String get(String string, Object... parameter);
 
 	/**
 	 * Get a translated string.
@@ -54,7 +54,7 @@ public interface Lang {
 	 * that nothing gets overwritten by the i18n messages.
 	 * 
 	 */
-	Map<String, String> getAll(Object ... parameter);
+	//Map<String, String> getAll(Object ... parameter);
 
 	/**
 	 * The language is determined by the provided locale or a suitable fallback.
@@ -62,13 +62,8 @@ public interface Lang {
 	 * This returns all resources as one map. Usually you want to use that
 	 * inside your templating engines so that they can access all correctly
 	 * translated messages.
-	 * 
-	 * By convention all key names are prefixed by "i18n_". That's a convention
-	 * you must follow when accessing the keys. But the prefix makes sure
-	 * that nothing gets overwritten by the i18n messages.
-	 * 
 	 */
-	Map<String, String> getAll(Locale locale, Object ...parameter);
+	Map<Object, Object> getAll(Locale locale, Object ...parameter);
 
     /**
      * Returns a possibly formatted message.
@@ -78,7 +73,7 @@ public interface Lang {
      * @param params The params
      * @return The formatted message
      */
-    String getWithDefault(String key, String defaultMessage, Object... params);
+    //String getWithDefault(String key, String defaultMessage, Object... params);
 
     /**
      * Returns a possibly formatted message.

@@ -2,6 +2,10 @@ package ninja.utils;
 
 import java.util.Properties;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationConverter;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -37,24 +41,24 @@ public class MockNinjaProperties implements NinjaProperties {
     public static MockNinjaProperties createWithMode(String mode, String... args) {
         assertTrue("You must supply an even number of arguments to form key value pairs",
                 args.length % 2 == 0);
-        Properties props = new Properties();
+        Configuration props = new PropertiesConfiguration();
         for (int i = 0; i < args.length; i+= 2) {
-            props.put(args[i], args[i + 1]);
+            props.addProperty(args[i], args[i + 1]);
         }
         return new MockNinjaProperties(mode, props);
     }
 
     private final String mode;
-    private final Properties props;
+    private final Configuration configuration;
 
-    public MockNinjaProperties(String mode, Properties props) {
+    public MockNinjaProperties(String mode, Configuration configuration) {
         this.mode = mode;
-        this.props = props;
+        this.configuration = configuration;
     }
 
     @Override
     public String get(String key) {
-        return props.getProperty(key);
+        return configuration.getString(key);
     }
 
     @Override
@@ -124,6 +128,41 @@ public class MockNinjaProperties implements NinjaProperties {
 
     @Override
     public Properties getAllCurrentNinjaProperties() {
-        return props;
+        return ConfigurationConverter.getProperties(configuration);
     }
+
+	@Override
+    public String[] getStringArray(String key) {
+	    return configuration.getStringArray(key);
+    }
+
+	@Override
+	public String getWithDefault(String key, String defaultValue) {
+        String value = get(key);
+        if (value == null) {
+            return null;
+        } else {
+            return defaultValue;
+        }
+	}
+
+	@Override
+	public Integer getIntegerWithDefault(String key, Integer defaultValue) {
+        Integer value = getInteger(key);
+        if (value == null) {
+            return null;
+        } else {
+            return defaultValue;
+        }
+	}
+
+	@Override
+	public Boolean getBooleanWithDefault(String key, Boolean defaultValue) {
+        Boolean value = getBoolean(key);
+        if (value == null) {
+            return null;
+        } else {
+            return defaultValue;
+        }
+	}
 }

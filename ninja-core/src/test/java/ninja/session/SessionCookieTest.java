@@ -3,6 +3,10 @@ package ninja.session;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,9 +56,9 @@ public class SessionCookieTest {
 		when(context.getHttpServletResponse()).thenReturn(httpServletResponse);
 		
 
-		when(ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInSeconds)).thenReturn(10000);
-		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged)).thenReturn(true);
-		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly)).thenReturn(true);
+		when(ninjaProperties.getInteger(NinjaConstant.sessionExpireTimeInSeconds)).thenReturn(10000);
+		when(ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionSendOnlyIfChanged, true)).thenReturn(true);
+		when(ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionTransferredOverHttpsOnly, true)).thenReturn(true);
 		
 		when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret)).thenReturn("secret");
 		
@@ -171,7 +175,7 @@ public class SessionCookieTest {
 		Cookie[] emptyCookies = new Cookie[0];
 		
 
-		when(ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly)).thenReturn(false);
+		when(ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionTransferredOverHttpsOnly, true)).thenReturn(false);
 
 		// that will be returned by the httprequest...
 		when(context.getHttpServletRequest().getCookies()).thenReturn(

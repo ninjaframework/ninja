@@ -63,10 +63,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		}		
 		
 		// provide all i18n templates to freemarker engine:
-		// they will be usually prefixed by a "i18n."
-		// therefore your have to call ${i18n.mytext}
 		Locale locale = context.getHttpServletRequest().getLocale();		
-		Map<String, String> i18nMap = lang.getAll(locale);		
+		Map<Object, Object> i18nMap = lang.getAll(locale);		
 		map.putAll(i18nMap);
 
 		String templateName = templateEngineHelper.getTemplateForResult(context.getRoute(),

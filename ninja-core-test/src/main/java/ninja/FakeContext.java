@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import ninja.i18n.LangImpl;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
+import ninja.utils.MockNinjaProperties;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
@@ -40,7 +41,7 @@ public class FakeContext implements Context {
     private Map<String, String> pathParams = new HashMap<String, String>();
     private Map<String, String> headers = new HashMap<String, String>();
     private Object body;
-    private Validation validation = new ValidationImpl(new LangImpl());
+    private Validation validation = new ValidationImpl(new LangImpl(MockNinjaProperties.create("","")));
 
     public FakeContext setRequestContentType(String requestContentType) {
         this.requestContentType = requestContentType;

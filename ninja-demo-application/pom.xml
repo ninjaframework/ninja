@@ -10,6 +10,10 @@
 		<artifactId>ninja</artifactId>
 		<version>0.5-SNAPSHOT</version>
 	</parent>
+	
+	<properties>
+	   <gae.version>1.7.0</gae.version>
+	</properties>
 
 	<build>
 		<plugins>
@@ -36,6 +40,22 @@
                     <reload>automatic</reload>
                 </configuration>
             </plugin>
+            
+              <plugin>
+                <groupId>net.kindleit</groupId>
+                <artifactId>maven-gae-plugin</artifactId>
+                <version>0.9.4</version>
+                <dependencies>
+                  <dependency>
+                    <groupId>net.kindleit</groupId>
+                    <artifactId>gae-runtime</artifactId>
+                    <version>${gae.version}</version>
+                    <type>pom</type>
+                  </dependency>
+                </dependencies>
+            </plugin>
+            
+            
 		</plugins>
 
 		<resources>

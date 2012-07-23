@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 
 import com.google.inject.AbstractModule;
@@ -14,11 +14,12 @@ import com.google.inject.Guice;
 
 public class NinjaPropertiesImplTest {
 
-	@Before
+	@After
 	public void setup() {
-		//make sure the external conf property is not set initially.
+		//make sure the external conf property is removed after the test.
 		System.clearProperty(NinjaProperties.NINJA_EXTERNAL_CONF);
 	}
+	
 
 	@Test
 	public void testSkippingThroughModesWorks() {
@@ -194,6 +195,50 @@ public class NinjaPropertiesImplTest {
     	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();   	
     	
     	//now a runtime exception must be thrown.
+    }
+    
+    @Test    
+    public void testGetWithDefault() {
+    	
+    	//instantiate the properties:
+    	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();  
+
+    	//test default works when property not there:
+    	assertEquals("default", ninjaProperties.getWithDefault("non_existsing_property_to_check_defaults", "default"));
+
+    	//test default works when property is there: => we are int dev mode...
+    	assertEquals("dev_testproperty", ninjaProperties.getWithDefault("testproperty", "default"));
+ 	
+    }
+    
+    @Test    
+    public void testGetIntegerWithDefault() {
+    	
+    	//instantiate the properties:
+    	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();  
+    	
+    	
+    	
+    	//test default works when property not there:
+    	assertEquals(Integer.valueOf(1), ninjaProperties.getIntegerWithDefault("non_existsing_property_to_check_defaults", 1));
+
+    	//test default works when property is there:
+    	assertEquals(Integer.valueOf(123456789), ninjaProperties.getIntegerWithDefault("integerTest", 1));
+    	
+    }
+    
+    @Test
+    public void testGetBooleanWithDefault() {
+    	
+    	//instantiate the properties:
+    	NinjaProperties ninjaProperties = new NinjaPropertiesImpl();  
+    	
+    	//test default works when property not there:
+    	assertEquals(Boolean.valueOf(true), ninjaProperties.getBooleanWithDefault("non_existsing_property_to_check_defaults", true));
+
+    	//test default works when property is there:
+    	assertEquals(Boolean.valueOf(true), ninjaProperties.getBooleanWithDefault("booleanTestTrue", false));
+    	
     }
 
 

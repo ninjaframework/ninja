@@ -52,24 +52,6 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
-    public String getFieldViolationMessage(String field) {
-        ConstraintViolation violation = fieldViolations.get(field);
-        if (violation == null) {
-            return null;
-        }
-        // First, format field
-        String formattedField = lang.getWithDefault(violation.getFieldKey(), field);
-        // Create parameters
-        Object[] params = new Object[violation.getMessageParams().length + 1];
-        params[0] = formattedField;
-        if (params.length > 1) {
-            System.arraycopy(violation.getMessageParams(), 0, params, 1, violation.getMessageParams().length);
-        }
-        // Format field
-        return lang.getWithDefault(violation.getMessageKey(), violation.getDefaultMessage(), params);
-    }
-
-    @Override
     public String getFieldViolationMessage(String field, Locale locale) {
         ConstraintViolation violation = fieldViolations.get(field);
         if (violation == null) {

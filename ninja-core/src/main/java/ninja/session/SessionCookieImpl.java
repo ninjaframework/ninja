@@ -49,14 +49,16 @@ public class SessionCookieImpl implements SessionCookie {
 		this.crypto = crypto;
 		
 		//read configuration stuff:
-        Integer sessionExpireTimeInSeconds = ninjaProperties.getInteger(SessionCookieConfig.sessionExpireTimeInSeconds);
+        Integer sessionExpireTimeInSeconds = ninjaProperties.getInteger(NinjaConstant.sessionExpireTimeInSeconds);
         if (sessionExpireTimeInSeconds != null) {
             this.sessionExpireTimeInMs = sessionExpireTimeInSeconds * 1000;
         } else {
             this.sessionExpireTimeInMs = null;
         }
-		this.sessionSendOnlyIfChanged = ninjaProperties.getBoolean(SessionCookieConfig.sessionSendOnlyIfChanged);
-		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBoolean(SessionCookieConfig.sessionTransferredOverHttpsOnly);
+        
+		this.sessionSendOnlyIfChanged = ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionSendOnlyIfChanged, true);
+		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionTransferredOverHttpsOnly, true);
+		
 		this.applicationCookiePrefix = ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix);
 	}
 
