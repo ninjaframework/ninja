@@ -1,7 +1,7 @@
 package ninja;
 
 /**
- * A simple filter that can be applied to controller methods.
+ * A simple filter that can be applied to controller methods or while classes.
  * 
  * usually you use 
  * <code>@FilterWith(MyFilter.class)</code> where MyFilter.class is implementing
