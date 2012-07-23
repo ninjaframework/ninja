@@ -140,10 +140,71 @@ public class RouteBuilderImplTest {
     @Test
     public void testParametersDontCrossSlashes() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/blah/{id}/{id2}/{id3}/morestuff/at/the/end");
+        Route route = buildRoute(routeBuilder);
+        //this must match
+        assertTrue(route.matches("GET", "/blah/id/id2/id3/morestuff/at/the/end"));
+        //this should not match as the last "end" is missing
+        assertFalse(route.matches("GET", "/blah/id/id2/id3/morestuff/at/the"));
+    }
+    
+    @Test
+    public void testPointsInRegexDontCrashRegexInTheMiddleOfTheRoute() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/blah/{id}/myname");
+        Route route = buildRoute(routeBuilder);
+        
+        //the "." in the route should not make any trouble:
+        String routeFromServer = "/blah/my.id/myname";
+        
+        assertTrue(route.matches("GET", routeFromServer));
+        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getParameters(routeFromServer).get("id")); 
+        
+        //and another slightly different route
+        routeFromServer = "/blah/my.id/myname/should_not_match";
+        assertFalse(route.matches("GET", routeFromServer));
+        assertEquals(0, route.getParameters(routeFromServer).entrySet().size());
+    }
+    
+    @Test
+    public void testPointsInRegexDontCrashRegexAtEnd() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}");
         Route route = buildRoute(routeBuilder);
-        assertFalse(route.matches("GET", "/blah/someid/sub"));
+        //the "." in the route should not make any trouble:
+        //even if it's the last part of the route
+        String routeFromServer = "/blah/my.id";
+        assertTrue(route.matches("GET", "/blah/my.id"));
+        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getParameters(routeFromServer).get("id"));   
     }
+    
+    
+    @Test
+    public void testRegexInRouteWorksWithoutSlashAtTheEnd() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/blah/{id}/.*");
+        Route route = buildRoute(routeBuilder);
+        
+        //the "." in the real route should work without any problems:
+        String routeFromServer = "/blah/my.id/and/some/more/stuff";
+        
+        assertTrue(route.matches("GET", routeFromServer));
+        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getParameters(routeFromServer).get("id"));        
+        
+        //another slightly different route.
+        routeFromServer = "/blah/my.id/";
+        assertTrue(route.matches("GET", "/blah/my.id/"));
+        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getParameters(routeFromServer).get("id")); 
+        
+        assertFalse(route.matches("GET", "/blah/my.id"));
+        
+        
+    }
+    
 
     private Route buildRoute(RouteBuilderImpl builder) {
         builder.with(MockController.class, "execute");
