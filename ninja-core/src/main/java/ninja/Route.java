@@ -1,6 +1,7 @@
 package ninja;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -60,7 +61,9 @@ public class Route {
     }
 
     /**
-     * matches /index to /index or /me/1 to /person/{id}
+     * Matches /index to /index or /me/1 to /person/{id}
+     * 
+     * @return True if the actual route matches a raw rout. False if not.
      *
      */
     public boolean matches(String httpMethod, String uri) {
@@ -74,7 +77,7 @@ public class Route {
 
     public Map<String, String> getParameters(String uri) {
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = Maps.newHashMap();
 
         Matcher m = regex.matcher(uri);
 
@@ -88,6 +91,17 @@ public class Route {
 
     }
 
+    /**
+     * 
+     * Extracts the name of the parameters from a route
+     * 
+     * /{my_id}/{my_name}
+     * 
+     * would return a List with "my_id" and "my_name"
+     * 
+     * @param rawRoute
+     * @return a list with the names of all parameters in that rotue.
+     */
     private static List<String> doParseParameters(String rawRoute) {
         List<String> list = new ArrayList<String>();
 
