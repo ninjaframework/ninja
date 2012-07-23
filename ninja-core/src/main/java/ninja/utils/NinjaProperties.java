@@ -22,7 +22,7 @@ public interface NinjaProperties {
 	 * run into security issues easily.
 	 *
 	 */
-	String NINJA_EXTERNAL_CONF = "ninjaExternalConf";
+	String NINJA_EXTERNAL_CONF = "ninja.external.configuration";
 	
 	/**
 	 * The default configuration. Make sure that file exists. Otherwise
@@ -37,6 +37,16 @@ public interface NinjaProperties {
 	 * @return the property of null if not there
 	 */
 	String get(String key);
+	
+	/**
+	 * Get a String property or a default value when property
+	 * cannot be found in any configuration file.
+	 * 
+	 * @param key the key used in the configuration file.
+	 * @param defaultValue Default value returned, when value cannot be found in configuration.
+	 * @return the value of the key or the default value.
+	 */
+	String getWithDefault(String key, String defaultValue);
 
 	/**
 	 * Get a property as Integer of null if not there / or property no integer
@@ -45,6 +55,16 @@ public interface NinjaProperties {
 	 * @return the property or null if not there or property no integer
 	 */
 	Integer getInteger(String key);
+	
+	/**
+	 * Get a Integer property or a default value when property
+	 * cannot be found in any configuration file.
+	 * 
+	 * @param key the key used in the configuration file.
+	 * @param defaultValue Default value returned, when value cannot be found in configuration.
+	 * @return the value of the key or the default value.
+	 */
+	Integer getIntegerWithDefault(String key, Integer defaultValue);
 
 	/**
 	 * 
@@ -52,6 +72,16 @@ public interface NinjaProperties {
 	 * @return the property or null if not there or property no boolean
 	 */
 	Boolean getBoolean(String key);
+	
+	/**
+	 * Get a Boolean property or a default value when property
+	 * cannot be found in any configuration file.
+	 * 
+	 * @param key the key used in the configuration file.
+	 * @param defaultValue Default value returned, when value cannot be found in configuration.
+	 * @return the value of the key or the default value.
+	 */
+	Boolean getBooleanWithDefault(String key, Boolean defaultValue);
 
 	/**
 	 * The "die" method forces this key to be set. Otherwise a runtime exception

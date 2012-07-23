@@ -334,4 +334,34 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		return compositeConfiguration.getStringArray(key);
 	}
 
+	@Override
+	public String getWithDefault(String key, String defaultValue) {
+		String value = get(key);
+		if (value != null) {
+			return value;
+		} else {
+			return defaultValue;
+		}
+	}
+
+	@Override
+	public Integer getIntegerWithDefault(String key, Integer defaultValue) {
+		Integer value = getInteger(key);
+		if (value != null) {
+			return value;
+		} else {
+			return defaultValue;
+		}
+	}
+
+	@Override
+	public Boolean getBooleanWithDefault(String key, Boolean defaultValue) {
+		Boolean value = getBoolean(key);
+		if (value != null) {
+			return value;
+		} else {
+			return defaultValue;
+		}
+	}
+
 }
