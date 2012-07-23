@@ -34,7 +34,25 @@ public class Results {
 		return status(Result.SC_500_INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * A redirect that uses 303 see other.
+	 * @param url The url used as redirect target.
+	 * @return A nicely configured result with status code 303 and the url set as Location header.
+	 */
     public static Result redirect(String url) {
+		
+		Result result = status(Result.SC_303_SEE_OTHER);
+		result.addHeader(Result.LOCATION, url);
+		
+		return result;
+	}
+    
+	/**
+	 * A redirect that uses 307 see other.
+	 * @param url The url used as redirect target.
+	 * @return A nicely configured result with status code 308 and the url set as Location header.
+	 */
+    public static Result redirectTemporary(String url) {
 		
 		Result result = status(Result.SC_307_TEMPORARY_REDIRECT);
 		result.addHeader(Result.LOCATION, url);

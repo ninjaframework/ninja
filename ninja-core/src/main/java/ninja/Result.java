@@ -146,9 +146,6 @@ public class Result {
 	}
 	
 	public Result html() {
-		//if (statusCode == null) {
-		//	statusCode = SC_200_OK;
-		//}
 		contentType = TEXT_HTML;
 		return this;
 	}
