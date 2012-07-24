@@ -25,7 +25,7 @@ public class MockNinjaProperties implements NinjaProperties {
      * @throws AssertionError If an odd number of arguments is supplied.
      */
     public static MockNinjaProperties create(String... args) {
-        return createWithMode("test", args);
+        return createWithMode(NinjaConstant.MODE_TEST, args);
     }
 
     /**

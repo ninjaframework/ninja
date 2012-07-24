@@ -34,6 +34,7 @@ public abstract class NinjaApiDocTest extends DocTest {
 
     @AfterClass
     public static void shutdownServer() {
+    	System.clearProperty(NinjaConstant.MODE_KEY_NAME);
         ninjaIntegrationTestHelper.shutdown();
     }
 
