@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -96,7 +98,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		// correspond to a mode into the configuration.
 		
 
-		defaultConfiguration = loadPropertiesInUtf8(NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
+		defaultConfiguration = SwissKnife.loadConfigurationFromClasspathInUtf8(NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION, getClass());
 		
 		if (defaultConfiguration != null) {
 		// Second step:
@@ -128,7 +130,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 			
 				// only load it when the property is defined.
 
-				externalConfiguration = loadPropertiesInUtf8(ninjaExternalConf);
+				externalConfiguration = SwissKnife.loadConfigurationFromClasspathInUtf8(ninjaExternalConf, getClass());
 				
 				//this should not happen:
 				if (externalConfiguration == null) {
@@ -293,45 +295,15 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		return ConfigurationConverter.getProperties(compositeConfiguration);
 
 	}
-	
-	
-	/**
-	 * This is important: We load stuff as UTF-8
-	 * 
-	 * @param classLoaderUrl Classpath location of the configuration file. Eg /conf/heroku.conf
-	 * @return A configuration or null if there were problems getting it.
-	 */
-	private Configuration loadPropertiesInUtf8(String classLoaderUrl) {
-		
-		PropertiesConfiguration c = new PropertiesConfiguration();
-
-		URL resource = getClass().getClassLoader().getResource(classLoaderUrl);
-
-		try {			
-			c.load(new InputStreamReader(resource.openStream(), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			c = null;
-			logger.error(
-					"Unsupported encoding while loading configuration file", e);
-		} catch (IOException e) {
-			c = null;
-			logger.error("Could not find configuration file. Was looking for "
-					+ classLoaderUrl, e);
-		} catch (NullPointerException e) {
-			c = null;
-			logger.error("Could not find configuration file. Was looking for "
-					+ classLoaderUrl, e);
-		} catch (ConfigurationException e) {
-			c = null;
-			logger.error("Configuration Exception.", e);
-		}
-
-		return (Configuration) c;
-	}
 
 	@Override
 	public String[] getStringArray(String key) {
-		return compositeConfiguration.getStringArray(key);
+		String value = compositeConfiguration.getString(key);
+		if (value != null) {
+			return Iterables.toArray(Splitter.on(",").trimResults().omitEmptyStrings().split(value), String.class);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
