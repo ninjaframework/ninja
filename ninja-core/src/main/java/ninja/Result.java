@@ -141,15 +141,35 @@ public class Result {
 		return this;
 	}
 	
+	/**
+	 * => Convenience methods moved to
+	 * Results.redirect()...
+	 * and
+	 * Results.redirectTemporary()...
+	 * @return
+	 */
+	@Deprecated
 	public Result redirect(String url) {
 		return addHeader(LOCATION, url);
 	}
 	
+	/**
+	 * => Convenience methods moved to
+	 * Results.html()...
+	 * @return
+	 */
+	@Deprecated
 	public Result html() {
 		contentType = TEXT_HTML;
 		return this;
 	}
 	
+	/**
+	 * => Convenience methods moved to
+	 * Results.json()...
+	 * @return
+	 */
+	@Deprecated
 	public Result json() {
 		contentType = APPLICATON_JSON;
 		return this;
