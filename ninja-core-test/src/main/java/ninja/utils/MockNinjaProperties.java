@@ -41,7 +41,8 @@ public class MockNinjaProperties implements NinjaProperties {
     public static MockNinjaProperties createWithMode(String mode, String... args) {
         assertTrue("You must supply an even number of arguments to form key value pairs",
                 args.length % 2 == 0);
-        Configuration props = new PropertiesConfiguration();
+        PropertiesConfiguration props = new PropertiesConfiguration();
+        props.setDelimiterParsingDisabled(true);
         for (int i = 0; i < args.length; i+= 2) {
             props.addProperty(args[i], args[i + 1]);
         }
