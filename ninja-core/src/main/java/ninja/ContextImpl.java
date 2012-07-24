@@ -263,10 +263,28 @@ public class ContextImpl implements Context {
 
         }
 
-		//set content type
-		if (result.getContentType() != null) {
-			httpServletResponse.addHeader("Content-Type", result.getContentType());
-		}
+        // set content type
+        if (result.getContentType() != null) {
+
+            // assemble the content type and the result;
+            String contentType;
+
+            // if we have a charset add it.
+            if (result.getCharset() != null) {
+
+                // something like Content-Type: text/html; charset=utf-8
+                contentType =
+                        String.format("%s; charset=%s", result.getContentType(), result
+                                .getCharset());
+
+            } else {
+                // something like Content-Type: text/html (without the charset)
+
+                contentType = result.getContentType();
+            }
+
+            httpServletResponse.addHeader(CONTENT_TYPE, contentType);
+        }
 		
 		//possibly
 		ResponseStreamsServlet responseStreamsServlet = new ResponseStreamsServlet();

@@ -133,6 +133,21 @@ public class ResultTest {
 		assertEquals(Result.APPLICATON_JSON, result.getContentType());
 	}
 	
+    @Test
+    public void testUtf8IsUsedAsDefaultCharset() {
+        Result result = new Result(Result.SC_200_OK);
+
+        assertEquals("utf-8", result.getCharset());
+    }
+
+    @Test
+    public void testSettingOfCharsetWorks() {
+        Result result = new Result(Result.SC_200_OK);
+        result.charset("iso-7777");
+
+        assertEquals("iso-7777", result.getCharset());
+    }
+	
     /**
      * Simple helper to test if objects get copied to result.
      *

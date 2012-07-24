@@ -188,5 +188,38 @@ public class ContextImplTest {
         assertEquals(new Integer(1), context.getParameterAsInteger("key"));  
     	
     }
+    
+    @Test
+    public void testContentTypeGetsConvertedProperlyUponFinalize() {
+        
+        //init the context
+        context.init(httpServletRequest, httpServletResponse);
+        
+        //this must be Content-Type: application/json; encoding=utf-8
+        Result result = Results.json();
+        
+        context.finalizeHeaders(result);
+        
+        verify(httpServletResponse).addHeader(Context.CONTENT_TYPE, "application/json; charset=utf-8");
+        
+    }
+    
+    
+    @Test
+    public void testContentTypeWithNullEncodingGetsConvertedProperlyUponFinalize() {
+        
+        //init the context
+        context.init(httpServletRequest, httpServletResponse);
+        
+        //this must be Content-Type: application/json; encoding=utf-8
+        Result result = Results.json();
+        //force a characterset that is not there. Stupid but tests that its working.
+        result.charset(null);
+        
+        context.finalizeHeaders(result);
+        
+        verify(httpServletResponse).addHeader(Context.CONTENT_TYPE, "application/json");
+        
+    }
 
 }

@@ -18,7 +18,18 @@ import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {
+    
+    /**
+     * Content-Type: ... parameter for response.
+     */
+    public String CONTENT_TYPE = "Content-Type";
 
+    /**
+     * please use Result.SC_*
+     * @author rbauer
+     *
+     */
+    @Deprecated
 	enum HTTP_STATUS {
         notFound404(404), ok200(200), forbidden403(403), teapot418(418), badRequest400(400),
         noContent204(204), created201(201);

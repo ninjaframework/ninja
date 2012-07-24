@@ -47,7 +47,15 @@ public class Result {
 
 	private Object renderable;
 
+	/** 
+	 * Something like: "text/html" => will become eg "text/html; charset=utf-8" by default
+	 */
 	private String contentType;
+	
+	/** 
+     * Something like: "utf-8" => will be appended to the content-type. eg "text/html; charset=utf-8"
+     */
+	private String charset;
 
 	private Map<String, String> headers;
 
@@ -58,6 +66,7 @@ public class Result {
 	public Result(int statusCode) {
 		
 		this.statusCode = statusCode;
+		this.charset = "utf-8";
 
 		this.headers = Maps.newHashMap();
 		this.cookies = Lists.newArrayList();
@@ -76,6 +85,20 @@ public class Result {
 	public String getContentType() {
 		return contentType;
 	}
+	
+	/**
+	 * @return Charset of the current result that will be used. Will be "utf-8" by default.
+	 */
+	public String getCharset() {
+	    return charset;
+	}
+	
+	/**
+     * @return Set the charset of the result. Is "utf-8" by default.
+     */
+    public void charset(String charset) {
+        this.charset = charset;
+    }
 
 	/**
 	 * Sets the content type
