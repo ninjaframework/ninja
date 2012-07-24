@@ -16,6 +16,7 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 
+import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
 import ninja.validation.Validation;
 import org.junit.Before;
@@ -200,8 +201,8 @@ public class ContextImplTest {
         
         context.finalizeHeaders(result);
         
-        verify(httpServletResponse).addHeader(Context.CONTENT_TYPE, "application/json; charset=utf-8");
-        
+        verify(httpServletResponse).setCharacterEncoding(result.getCharset());
+        verify(httpServletResponse).setContentType(result.getContentType());
     }
     
     
@@ -218,8 +219,8 @@ public class ContextImplTest {
         
         context.finalizeHeaders(result);
         
-        verify(httpServletResponse).addHeader(Context.CONTENT_TYPE, "application/json");
-        
+        //make sure utf-8 is used under all circumstances:
+        verify(httpServletResponse).setCharacterEncoding(NinjaConstant.UTF_8);
     }
 
 }

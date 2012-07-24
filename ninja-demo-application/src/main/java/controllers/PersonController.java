@@ -14,7 +14,7 @@ public class PersonController {
 
 		//simply render a json as result:
 		Person person = new Person();
-		person.name = "zeeess name";
+		person.name = "zeeess name - and some utf8 => öäü";
 
 		// render
 		return Results.json(person);

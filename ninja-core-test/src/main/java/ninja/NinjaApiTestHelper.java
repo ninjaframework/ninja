@@ -152,7 +152,7 @@ public class NinjaApiTestHelper {
 	public static String makeJsonRequest(String url) {
 
 		Map<String, String> headers = Maps.newHashMap();
-		headers.put("accept", "application/json");
+		headers.put("accept", "application/json; charset=utf-8");
 
 		return makeRequest(url, headers);
 

@@ -18,6 +18,8 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.CookieHelper;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 import ninja.utils.ResponseStreamsServlet;
 import ninja.utils.ResultHandler;
@@ -265,25 +267,16 @@ public class ContextImpl implements Context {
 
         // set content type
         if (result.getContentType() != null) {
-
-            // assemble the content type and the result;
-            String contentType;
-
-            // if we have a charset add it.
-            if (result.getCharset() != null) {
-
-                // something like Content-Type: text/html; charset=utf-8
-                contentType =
-                        String.format("%s; charset=%s", result.getContentType(), result
-                                .getCharset());
-
-            } else {
-                // something like Content-Type: text/html (without the charset)
-
-                contentType = result.getContentType();
-            }
-
-            httpServletResponse.addHeader(CONTENT_TYPE, contentType);
+            
+            httpServletResponse.setContentType(result.getContentType());
+        }
+        
+        //Set charset => use utf-8 if not set
+        //Sets correct encoding for Content-Type. But also for the output writers.
+        if (result.getCharset() != null) {
+            httpServletResponse.setCharacterEncoding(result.getCharset());
+        } else {
+            httpServletResponse.setCharacterEncoding(NinjaConstant.UTF_8);
         }
 		
 		//possibly

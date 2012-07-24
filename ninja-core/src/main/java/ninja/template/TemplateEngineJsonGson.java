@@ -31,7 +31,6 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 		
 		Object object = result.getRenderable();
 		
-		
 		Gson gson = new Gson();
 		String json = gson.toJson(result.getRenderable());
 		

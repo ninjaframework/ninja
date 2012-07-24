@@ -1,6 +1,6 @@
 package example;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import ninja.NinjaApiTest;
 import ninja.NinjaApiTestHelper;
 
@@ -15,8 +15,8 @@ public class ExampleApiTest extends NinjaApiTest {
 
 		String apiCallResult = NinjaApiTestHelper.makeJsonRequest(getServerAddress() + "/person");
 		
-		assertEquals("{\"name\":\"zeeess name\"}", apiCallResult);
-
+		assertTrue(apiCallResult.startsWith("{\"name\":\"zeeess name -"));
+		
 	}
 
 	
