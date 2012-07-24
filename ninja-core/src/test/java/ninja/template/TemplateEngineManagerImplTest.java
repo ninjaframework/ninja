@@ -7,6 +7,8 @@ import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Result;
 import ninja.utils.LoggerProvider;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -94,7 +96,9 @@ public class TemplateEngineManagerImplTest {
             @Override
             protected void configure() {
             	
-            	bind(Logger.class).toProvider(LoggerProvider.class);            	
+            	bind(Logger.class).toProvider(LoggerProvider.class);  
+            	
+            	bind(NinjaProperties.class).to(NinjaPropertiesImpl.class);
             	
                 for (Class<?> clazz : toBind) {
                 	

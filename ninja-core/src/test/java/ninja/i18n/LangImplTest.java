@@ -72,10 +72,11 @@ public class LangImplTest {
 		Map<Object, Object> map = lang.getAll(Locale.US);
 
 		
-		assertEquals(3, map.keySet().size());
+		assertEquals(4, map.keySet().size());
 		assertTrue(map.containsKey("language"));
 		assertTrue(map.containsKey("message_with_placeholder"));
 		assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
+		assertTrue(map.containsKey("a_propert_with_commas"));
 		
 		assertEquals("english", map.get("language"));	
 		
@@ -83,15 +84,28 @@ public class LangImplTest {
 		
 		//GERMAN locale testing:
 		map = lang.getAll(Locale.GERMAN);
-		assertEquals(3, map.keySet().size());
+		assertEquals(4, map.keySet().size());
 		assertTrue(map.containsKey("language"));
 		assertTrue(map.containsKey("message_with_placeholder"));
 		assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
+		assertTrue(map.containsKey("a_propert_with_commas"));
 		
 		assertEquals("deutsch", map.get("language"));	
 		assertEquals("das ist der platzhalter: {0}", map.get("message_with_placeholder"));
 		
 		
 	}
+	
+	
+	@Test
+	public void testAgainstCorrectParsingOfDelimitersInPropertiesFiles() {
+		
+		when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String [] {"en", "de", "fr-FR"});
+		LangImpl lang = new LangImpl(ninjaProperties);
+		
+		assertEquals("prop1, prop2, prop3", lang.get("a_propert_with_commas", Locale.US));
+				
+	}
+
 
 }

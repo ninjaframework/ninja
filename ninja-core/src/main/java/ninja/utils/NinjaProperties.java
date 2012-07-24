@@ -114,6 +114,8 @@ public interface NinjaProperties {
 	 * eg.
 	 * key=myval1,myval2
 	 * 
+	 * Delimiter is a comma "," as outlined in the example above.
+	 * 
 	 * @return an array containing the values of that key or null if not found.
 	 */
 	String [] getStringArray(String key);

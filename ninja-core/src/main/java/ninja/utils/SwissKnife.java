@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
+import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -38,6 +39,7 @@ public class SwissKnife {
 	public static Configuration loadConfigurationFromClasspathInUtf8(String classLoaderUrl, Class clazz) {
 
 		PropertiesConfiguration c = new PropertiesConfiguration();
+		c.setDelimiterParsingDisabled(true);
 
 		URL resource = clazz.getClassLoader().getResource(classLoaderUrl);
 
