@@ -31,7 +31,7 @@ public class LangImpl implements Lang {
 	public LangImpl(NinjaProperties ninjaProperties) {
 
 		this.ninjaProperties = ninjaProperties;
-		langToKeyAndValuesMapping = Maps.newHashMap();
+		this.langToKeyAndValuesMapping = Maps.newHashMap();
 		
 		loadAllMessageFilesForRegisteredLanguages();
 
@@ -195,6 +195,12 @@ public class LangImpl implements Lang {
 		// Get the languages from the application configuration.
 		String[] applicationLangs = ninjaProperties
 		        .getStringArray(NinjaConstant.applicationLanguages);
+		
+		//If we don't have any languages declared we just return.
+		//We'll use the default messages.properties file.
+		if (applicationLangs == null) {
+			return;
+		}
 		
 		// Load each language into the HashMap containing the languages:
 		for (String lang : applicationLangs) {
