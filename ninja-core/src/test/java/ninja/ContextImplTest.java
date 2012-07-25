@@ -60,6 +60,12 @@ public class ContextImplTest {
 
     @Before
     public void setUp() {
+        //default setup for httpServlet request.
+        //According to servlet spec the following will be returned:
+        when(httpServletRequest.getContextPath()).thenReturn("");
+        when(httpServletRequest.getRequestURI()).thenReturn("/");
+        
+        
         context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie,
                 resultHandler, validation);
     }
@@ -221,6 +227,42 @@ public class ContextImplTest {
         
         //make sure utf-8 is used under all circumstances:
         verify(httpServletResponse).setCharacterEncoding(NinjaConstant.UTF_8);
+    }
+    
+    
+    @Test
+    public void testGetRequestPathWorksAsExpectedWithContext() {
+        
+        // we got a context
+        when(httpServletRequest.getContextPath()).thenReturn("/my/funky/prefix");
+        
+        // we got a request uri
+        when(httpServletRequest.getRequestURI()).thenReturn("/my/funky/prefix/myapp/is/here");       
+        
+        
+        context.init(httpServletRequest, httpServletResponse);
+        
+
+        assertEquals("/myapp/is/here", context.getRequestPath());
+        
+    }
+    
+    @Test
+    public void testGetRequestPathWorksAsExpectedWithOutContext() {
+        
+        // we got not context.
+        // according to spec it will return an empty string
+        when(httpServletRequest.getContextPath()).thenReturn("");
+        when(httpServletRequest.getRequestURI()).thenReturn("/index");
+        // we got a request uri
+        when(httpServletRequest.getRequestURI()).thenReturn("/myapp/is/here");       
+        
+        
+        context.init(httpServletRequest, httpServletResponse);
+        
+
+        assertEquals("/myapp/is/here", context.getRequestPath());
+        
     }
 
 }

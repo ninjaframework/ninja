@@ -66,15 +66,21 @@ public interface Context {
     String getRequestUri();
 	
 	/**
-	 * Returns the path as seen by the server.
+	 * Returns the path that Ninja should act upon.
 	 * 
-	 * http://example.com/index would return
-	 * "/index".
+	 * For instance in servlets you could have somthing like a context prefix.
+	 * /myContext/app
 	 * 
-	 * It will also take care
-	 * of any prefixes and contexts set by your servlet container
+	 * If your route only defines /app it will work as the requestpath will return only
+	 * "/app". A context path is not returned.
 	 * 
-	 * @return the path as seen by the server
+	 * It does NOT decode any parts of the url.
+	 * 
+	 * Interesting reads:
+	 * - http://www.lunatech-research.com/archives/2009/02/03/what-every-web-developer-must-know-about-url-encoding
+	 * - http://stackoverflow.com/questions/966077/java-reading-undecoded-url-from-servlet
+	 * 
+	 * @return The the path as seen by the server. Does exclude any container set context prefixes. Not decoded.
 	 */
     String getRequestPath();
 

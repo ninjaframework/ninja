@@ -1,15 +1,16 @@
 package ninja.utils;
 
+import java.io.IOException;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import ninja.AsyncResult;
 import ninja.Context;
 import ninja.Renderable;
 import ninja.Result;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.io.IOException;
 
 /**
  * Handles the result
@@ -27,6 +28,7 @@ public class ResultHandler {
     }
 
     public void handleResult(Result result, Context context) {
+        
         if (result == null || result instanceof AsyncResult) {
             // Do nothing, assuming the controller manually handled it
             return;
@@ -58,7 +60,7 @@ public class ResultHandler {
             renderWithTemplateEngine(context, result);
         }
     }
-
+  
     private void handleRenderable(Renderable renderable, Context context, Result result) {
         try {
 			renderable.render(context, result);
@@ -101,7 +103,7 @@ public class ResultHandler {
                 }
             } else {
                 throw new IllegalArgumentException(
-                        "No template engine found for content type "
+                        "No template engine found for result content type "
                                 + result.getContentType());
             }
         }

@@ -19,12 +19,11 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 import ninja.utils.ResponseStreamsServlet;
 import ninja.utils.ResultHandler;
-
 import ninja.validation.Validation;
+
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -247,6 +246,7 @@ public class ContextImpl implements Context {
 
 	@Override
 	public ResponseStreams finalizeHeaders(Result result) {
+	    
 		httpServletResponse.setStatus(result.getStatusCode());
 		
 		//copy headers
@@ -322,14 +322,17 @@ public class ContextImpl implements Context {
 
 	@Override
 	public String getRequestPath() {
-		//everything except the context of this servlet.
-		//Does not return the query params.
-		if (httpServletRequest.getPathInfo() != null) {
-			return httpServletRequest.getServletPath() + httpServletRequest.getPathInfo();
-			
-		} else {
-			return httpServletRequest.getServletPath();
-		}
+	    //http://stackoverflow.com/questions/966077/java-reading-undecoded-url-from-servlet
+	    
+		//this one is unencoded:
+		String unencodedContextPath = httpServletRequest.getContextPath();
+		//this one is unencoded, too, but may containt the context:
+		String fullUnencodedUri = httpServletRequest.getRequestURI();
+		
+		String result = fullUnencodedUri.substring(unencodedContextPath.length());
+		
+		return result;
+
 	}
 
     @Override

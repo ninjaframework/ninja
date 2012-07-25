@@ -48,7 +48,7 @@ public class Result {
 	private Object renderable;
 
 	/** 
-	 * Something like: "text/html" => will become eg "text/html; charset=utf-8" by default
+	 * Something like: "text/html" or "application/json"
 	 */
 	private String contentType;
 	
@@ -113,9 +113,12 @@ public class Result {
 	}
 	
 	/**
-	 * Sets the content type
+	 * Sets the content type.
+	 * Must not contain any charset WRONG: "text/html; charset=utf8".
 	 * 
-	 * @param contentType
+	 * If you want to set the charset use method {@link Result#charset(String)};
+	 * 
+	 * @param contentType (without encoding) something like "text/html" or "application/json"
 	 */
 	public Result contentType(String contentType) {
 		this.contentType = contentType;
