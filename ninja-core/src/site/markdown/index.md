@@ -99,11 +99,10 @@
 	<div class="span4">
 		<img class="bs-icon"
 			src="images/glyphicons/glyphicons_266_book_open.png">
-		<h2>The best Java citizen</h2>
+		<h2>A first class Java citizen</h2>
 		<p>
-		Ninja is built with Maven. That also means you can easily import your project with only one click
-		in any IDE. And you get all goodies of Java for free: Excellent libraries, World-class refactoring support,
-		testing at the heart of the framework and a statically typed language.</p>
+		You get use all goodies that make Java great: Excellent IDE support.
+		A statically typed language. Huge and mature eco system. First class testing support and much much more.</p>
 	</div>	
 
 </div>

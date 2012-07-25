@@ -16,6 +16,7 @@
         
         <menu name="Learn">
         	<item name="Getting started" href="./documentation/getting_started.html"/>
+        	<item name="Configuration" href="./documentation/application_configuration.html"/>
         	<item name="API" href="./apidocs/index.html"/>
         </menu>
         
