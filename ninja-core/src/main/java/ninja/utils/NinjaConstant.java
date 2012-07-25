@@ -61,9 +61,9 @@ public interface NinjaConstant {
     final String sessionSendOnlyIfChanged = "application.session.send_only_if_changed";
     
     /**
-     * 
+     * Used to set the Secure flag if the cookie. Means Session will only be transferrd over Https.
      */
-    final String sessionTransferredOverHttpsOnly = "application.session_transferred_over_https_only";
+    final String sessionTransferredOverHttpsOnly = "application.session.transferred_over_https_only";
 
     /**
      * Suffix used for Ninja cookies. Usually results
