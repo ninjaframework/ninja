@@ -18,7 +18,7 @@ A controller resides under the package *controllers*.
 
 Controllers are just simple Java classes. 
 
-    
+<pre class="prettyprint">    
     public class ApplicationController {       
     
         public Result index() {
@@ -26,6 +26,7 @@ Controllers are just simple Java classes.
     
         }
     }
+</pre>
   
 Controller methods always return a "Result". Results is just a little helper that lets you create
 results easily. In the case of the application controller the result is a html response.
@@ -40,8 +41,9 @@ This is done by declaring a file called *Routes.java* in the package *conf*.
 
 A minimal route file looks like:
 
+<pre class="prettyprint">  
     public class Routes implements ApplicationRoutes {
-    
+  
         @Override
         public void init(Router router) {
         
@@ -49,6 +51,7 @@ A minimal route file looks like:
         
         }
     }
+</pre>
     
 The route is loaded by a convention right at the start of Ninja. It simply tells ninja that requests to /
 will be handled by the ApplicationController.class and the method "index".
@@ -66,6 +69,7 @@ These views are just simple templates. You can enter simple html. But you can al
 is built around freemarker templates.
 
 Simply put a general html page into the view:
+
 
     <html>
         <body>
