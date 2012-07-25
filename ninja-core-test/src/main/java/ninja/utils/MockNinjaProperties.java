@@ -66,7 +66,7 @@ public class MockNinjaProperties implements NinjaProperties {
     public String getOrDie(String key) {
         String value = get(key);
         if (value == null) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("No key with name " + key + " found");
         } else {
             return value;
         }
