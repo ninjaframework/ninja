@@ -175,24 +175,25 @@ public class SessionCookieImpl implements SessionCookie {
 			return;
 		}
 
-		if (isEmpty()) {
-			Cookie sessionCookie = CookieHelper.getCookie(
-					applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
-			        context.getHttpServletRequest().getCookies());
+        if (isEmpty()) {
+            Cookie sessionCookie = CookieHelper.getCookie(
+                    applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
+                    context.getHttpServletRequest().getCookies());
 
             // It is empty, but there was a session coming in, therefore clear it
-			if (sessionCookie != null) {
+            if (sessionCookie != null) {
 
-				Cookie emptySessionCookie = new Cookie(applicationCookiePrefix
-				                + NinjaConstant.SESSION_SUFFIX, null);
-                emptySessionCookie.setMaxAge(0);
+                Cookie expiredSessionCookie = new Cookie(applicationCookiePrefix
+                        + NinjaConstant.SESSION_SUFFIX, null);
+                expiredSessionCookie.setPath("/");
+                expiredSessionCookie.setMaxAge(0);
 
-				context.getHttpServletResponse().addCookie(emptySessionCookie);
+                context.getHttpServletResponse().addCookie(expiredSessionCookie);
 
-			}
-			return;
+            }
+            return;
 
-		}
+        }
 
         // Make sure if has a timestamp, if it needs one
         if (sessionExpireTimeInMs != null && !data.containsKey(TIMESTAMP_KEY)) {
@@ -218,6 +219,7 @@ public class SessionCookieImpl implements SessionCookie {
 
 			cookie = new Cookie(applicationCookiePrefix
 			        + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
+            cookie.setPath("/");
 
             if (sessionExpireTimeInMs != null) {
                 cookie.setMaxAge(sessionExpireTimeInMs / 1000);
