@@ -99,10 +99,10 @@
 	<div class="span4">
 		<img class="bs-icon"
 			src="images/glyphicons/glyphicons_266_book_open.png">
-		<h2>A first class Java citizen</h2>
+		<h2>First class Java citizen</h2>
 		<p>
-		You get use all goodies that make Java great: Excellent IDE support.
-		A statically typed language. Huge and mature eco system. First class testing support and much much more.</p>
+		You get all goodies that make Java great: Excellent IDE support.
+		A statically typed language. Huge and mature eco-system. First class testing support and much much more.</p>
 	</div>	
 
 </div>
