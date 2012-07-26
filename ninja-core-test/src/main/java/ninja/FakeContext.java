@@ -281,4 +281,9 @@ public class FakeContext implements Context {
     public Validation getValidation() {
         return validation;
     }
+
+    @Override
+    public String getPathParameterEncoded(String name) {
+        return this.getPathParameterEncoded(name);
+    }
 }
