@@ -144,55 +144,81 @@ public interface Context {
 	HttpServletResponse getHttpServletResponse();
 
     /**
-     * Get the parameter with the given key from the request.  The parameter may either be a query parameter, or in the
-     * case of form submissions, may be a form parameter
+     * Get the parameter with the given key from the request. The parameter may either be a query parameter, or in the
+     * case of form submissions, may be a form parameter.
+     * 
+     * The parameter is decoded by default.
      *
-     * @param key The key of the parameter
-     * @return The value, or null if no parameter was found
+     * @param name The key of the parameter
+     * @return The value, or null if no parameter was found.
      */
-    String getParameter(String key);
+    String getParameter(String name);
 
 	/**
 	 * Same like {@link #getParameter(String)}, but returns given defaultValue
-	 * instead of null in case parameter cannot be found
+	 * instead of null in case parameter cannot be found.
 	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
+	 * The parameter is decoded by default.
+	 * 
+     * @param name The name of the post or query parameter
+     * @param defaultValue A default value if parameter not found.
+     * @return The value of the parameter of the defaultValue if not found.
 	 */
-	String getParameter(String key, String defaultValue);
+	String getParameter(String name, String defaultValue);
 	
 	/**
 	 * Same like {@link #getParameter(String)}, but converts the
 	 * parameter to Integer if found.
 	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
+     * The parameter is decoded by default.
+     * 
+     * @param name The name of the post or query parameter
+     * @return The value of the parameter or null if not found.
 	 */
-	Integer getParameterAsInteger(String key);
+	Integer getParameterAsInteger(String name);
 	
 	/**
 	 * Same like {@link #getParameter(String, String)}, but converts the
 	 * parameter to Integer if found.
 	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
+	 * The parameter is decoded by default.
+	 * 
+	 * @param name The name of the post or query parameter
+	 * @param defaultValue A default value if parameter not found.
+	 * @return The value of the parameter of the defaultValue if not found.
 	 */
-	Integer getParameterAsInteger(String key, Integer defaultValue);
+	Integer getParameterAsInteger(String name, Integer defaultValue);
 	
     /**
-     * Get the path parameter for the given key
+     * Get the path parameter for the given key.
+     * 
+     * The parameter will be decoded based on the RFCs.
+     * 
+     * Check out http://docs.oracle.com/javase/6/docs/api/java/net/URI.html for more information.
      *
-     * @param key The key of the path parameter
-     * @return The path parameter, or null if no such path parameter is defined
+     * @param name The name of the path parameter in a route. Eg /{myName}/rest/of/url
+     * @return The decoded path parameter, or null if no such path parameter was found.
      */
-	String getPathParameter(String key);
+	String getPathParameter(String name);
+	
+    /**
+     * Get the path parameter for the given key.
+     * 
+     * Returns the raw path part. That means you can get stuff like:
+     * blue%2Fred%3Fand+green
+     *
+     * @param name The name of the path parameter in a route. Eg /{myName}/rest/of/url
+     * @return The encoded (!) path parameter, or null if no such path parameter was found.
+     */
+    String getPathParameterEncoded(String name);
 
 	/**
 	 * Get the path parameter for the given key and convert it to Integer.
 	 * 
+     * The parameter will be decoded based on the RFCs.
+     * 
+     * Check out http://docs.oracle.com/javase/6/docs/api/java/net/URI.html for more information.
+     *
 	 * @param key
 	 *            the key of the path parameter
 	 * @return the numeric path parameter, or null of no such path parameter is

@@ -14,12 +14,13 @@ public class NinjaConstantTest {
      * File conf/all_constants.conf simply contains all contstants.
      * We simply read them in and check if the constants are okay.
      * 
-     * Aim is to prevent stupid spelling mistakes.
+     * Aim is to prevent stupid spelling mistakes.  
      * 
      */
     @Test
     public void testAllConstants() {
 
+        
         Configuration configuration =
                 SwissKnife.loadConfigurationFromClasspathInUtf8("conf/all_constants.conf", this
                         .getClass());

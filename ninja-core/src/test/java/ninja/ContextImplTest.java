@@ -119,7 +119,7 @@ public class ContextImplTest {
         parameterMap.put("parameter", "parameter");
         
         //and return the parameter map when any parameter is called...
-        when(route.getParameters(Matchers.anyString())).thenReturn(parameterMap);	
+        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);	
 		
         context.setRoute(route);
         
@@ -127,6 +127,25 @@ public class ContextImplTest {
         assertEquals(null, context.getPathParameter("parameter_not_set")); 
         
         assertEquals("parameter", context.getPathParameter("parameter")); 
+
+    }
+    
+    @Test
+    public void testGetPathParameterDecodingWorks() {
+        //init the context
+        context.init(httpServletRequest, httpServletResponse);
+        
+        //mock a parametermap:
+        Map<String, String> parameterMap = Maps.newHashMap();
+        parameterMap.put("parameter", "blue%2Fred%3Fand+green%E2%82%AC%2f");
+        
+        //and return the parameter map when any parameter is called...
+        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);   
+        
+        context.setRoute(route);
+        
+        //that is how the above parameter looks decoded correctly:
+        assertEquals("blue/red?and+green€/", context.getPathParameter("parameter")); 
 
     }
     
@@ -141,7 +160,7 @@ public class ContextImplTest {
         parameterMap.put("parameter", "parameter");
         
         //and return the parameter map when any parameter is called...
-        when(route.getParameters(Matchers.anyString())).thenReturn(parameterMap);	
+        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);	
 		
         context.setRoute(route);
         

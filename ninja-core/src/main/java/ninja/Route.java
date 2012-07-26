@@ -75,7 +75,17 @@ public class Route {
         }
     }
 
-    public Map<String, String> getParameters(String uri) {
+    /**
+     * This method does not do any decoding / encoding.
+     * 
+     * If you want to decode you have to do it yourself.
+     * 
+     * Most likely with: http://docs.oracle.com/javase/6/docs/api/java/net/URI.html
+     * 
+     * @param uri The whole encoded uri.
+     * @return A map with all parameters of that uri. Encoded in => encoded out.
+     */
+    public Map<String, String> getPathParametersEncoded(String uri) {
 
         Map<String, String> map = Maps.newHashMap();
 

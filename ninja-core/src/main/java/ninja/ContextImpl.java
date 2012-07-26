@@ -3,6 +3,7 @@ package ninja;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,9 +92,24 @@ public class ContextImpl implements Context {
 
 	@Override
 	public String getPathParameter(String key) {
-		return route.getParameters(getRequestPath())
-				.get(key);
+	    
+	    String encodedParameter = route.getPathParametersEncoded(getRequestPath())
+                .get(key);
+	    
+	    if (encodedParameter == null) {
+	        return null;
+	    } else {
+	        return URI.create(encodedParameter).getPath();
+	    }
+
 	}
+	
+    @Override
+    public String getPathParameterEncoded(String key) {
+
+        return route.getPathParametersEncoded(getRequestPath()).get(key);
+
+    }
 
 	@Override
 	public Integer getPathParameterAsInteger(String key) {

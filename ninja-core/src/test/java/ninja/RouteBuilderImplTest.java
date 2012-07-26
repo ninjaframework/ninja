@@ -88,7 +88,7 @@ public class RouteBuilderImplTest {
 
 		assertTrue(route.matches("GET","/John/dashboard"));
 
-		Map<String, String> map = route.getParameters("/John/dashboard");
+		Map<String, String> map = route.getPathParametersEncoded("/John/dashboard");
 
 		assertEquals(1, map.entrySet().size());
 		assertEquals("John", map.get("name"));
@@ -104,7 +104,7 @@ public class RouteBuilderImplTest {
 
 		assertTrue(route.matches("GET","/John/20/dashboard"));
 
-		map = route.getParameters("/John/20/dashboard");
+		map = route.getPathParametersEncoded("/John/20/dashboard");
 
 		assertEquals(2, map.entrySet().size());
 		assertEquals("John", map.get("name"));
@@ -121,17 +121,17 @@ public class RouteBuilderImplTest {
 		routeBuilder.GET().route("/John/{id}/.*");
         Route route = buildRoute(routeBuilder);
         assertTrue(route.matches("GET","/John/20/dashboard"));
-		Map<String, String> map = route.getParameters("/John/20/dashboard");
+		Map<String, String> map = route.getPathParametersEncoded("/John/20/dashboard");
 		assertEquals(1, map.entrySet().size());
 		assertEquals("20", map.get("id"));
 
 		assertTrue(route.matches("GET","/John/20/admin"));
-		map = route.getParameters("/John/20/admin");
+		map = route.getPathParametersEncoded("/John/20/admin");
 		assertEquals(1, map.entrySet().size());
 		assertEquals("20", map.get("id"));
 
 		assertTrue(route.matches("GET","/John/20/mock"));
-		map = route.getParameters("/John/20/mock");
+		map = route.getPathParametersEncoded("/John/20/mock");
 		assertEquals(1, map.entrySet().size());
 		assertEquals("20", map.get("id"));
 
@@ -158,13 +158,13 @@ public class RouteBuilderImplTest {
         String routeFromServer = "/blah/my.id/myname";
         
         assertTrue(route.matches("GET", routeFromServer));
-        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
-        assertEquals("my.id", route.getParameters(routeFromServer).get("id")); 
+        assertEquals(1, route.getPathParametersEncoded(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getPathParametersEncoded(routeFromServer).get("id")); 
         
         //and another slightly different route
         routeFromServer = "/blah/my.id/myname/should_not_match";
         assertFalse(route.matches("GET", routeFromServer));
-        assertEquals(0, route.getParameters(routeFromServer).entrySet().size());
+        assertEquals(0, route.getPathParametersEncoded(routeFromServer).entrySet().size());
     }
     
     @Test
@@ -176,8 +176,8 @@ public class RouteBuilderImplTest {
         //even if it's the last part of the route
         String routeFromServer = "/blah/my.id";
         assertTrue(route.matches("GET", "/blah/my.id"));
-        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
-        assertEquals("my.id", route.getParameters(routeFromServer).get("id"));   
+        assertEquals(1, route.getPathParametersEncoded(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getPathParametersEncoded(routeFromServer).get("id"));   
     }
     
     
@@ -191,17 +191,34 @@ public class RouteBuilderImplTest {
         String routeFromServer = "/blah/my.id/and/some/more/stuff";
         
         assertTrue(route.matches("GET", routeFromServer));
-        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
-        assertEquals("my.id", route.getParameters(routeFromServer).get("id"));        
+        assertEquals(1, route.getPathParametersEncoded(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getPathParametersEncoded(routeFromServer).get("id"));        
         
         //another slightly different route.
         routeFromServer = "/blah/my.id/";
         assertTrue(route.matches("GET", "/blah/my.id/"));
-        assertEquals(1, route.getParameters(routeFromServer).entrySet().size());
-        assertEquals("my.id", route.getParameters(routeFromServer).get("id")); 
+        assertEquals(1, route.getPathParametersEncoded(routeFromServer).entrySet().size());
+        assertEquals("my.id", route.getPathParametersEncoded(routeFromServer).get("id")); 
         
         assertFalse(route.matches("GET", "/blah/my.id"));
         
+        
+    }
+    
+    
+    @Test
+    public void testRouteWithUrlEncodedSlashGetsChoppedCorrectly() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/blah/{id}/.*");
+        Route route = buildRoute(routeBuilder);
+        
+        //Just a simple test to make sure everything works on a not encoded uri:
+        //decoded this would be /blah/my/id/and/some/more/stuff
+        String routeFromServer = "/blah/my%2fid/and/some/more/stuff";
+        
+        assertTrue(route.matches("GET", routeFromServer));
+        assertEquals(1, route.getPathParametersEncoded(routeFromServer).entrySet().size());
+        assertEquals("my%2fid", route.getPathParametersEncoded(routeFromServer).get("id"));           
         
     }
     

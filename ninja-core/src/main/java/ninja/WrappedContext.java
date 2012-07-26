@@ -177,4 +177,9 @@ public class WrappedContext implements Context {
     public Validation getValidation() {
         return wrapped.getValidation();
     }
+
+    @Override
+    public String getPathParameterEncoded(String key) {
+        return wrapped.getPathParameterEncoded(key);
+    }
 }
