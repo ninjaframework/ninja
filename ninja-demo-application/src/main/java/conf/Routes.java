@@ -10,6 +10,7 @@ import controllers.FilterController;
 import controllers.I18nController;
 import controllers.InjectionExampleController;
 import controllers.PersonController;
+import controllers.UdpPingController;
 import controllers.UploadController;
 
 public class Routes implements ApplicationRoutes {
@@ -53,7 +54,7 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         // Lifecycle support
         // /////////////////////////////////////////////////////////////////////
-        //router.GET().route("/udpcount").with(UdpPingController.class, "getCount");
+        router.GET().route("/udpcount").with(UdpPingController.class, "getCount");
 
         // /////////////////////////////////////////////////////////////////////
 		// Route filtering example:

@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 code {
-    background: none;
-    line-height: 1.2;
+	background: none;
+	line-height: 1.2;
+}
+
+#navcolumn h5 {
+	font-size: smaller;
+	border: 1px solid #aaaaaa;
+	background-color: #bbb;
+	margin-top: 7px;
+	margin-bottom: 2px;
+	padding-top: 2px;
+	padding-left: 2px;
+	color: #000;
+}
+
+div.sidebar-nav h3 {
+	font-size: 14px;
+}
+
+div.sidebar-nav ul,ol {
+	margin: 0 0 9px 5px;
 }

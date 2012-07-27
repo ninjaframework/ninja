@@ -1,0 +1,25 @@
+<html>
+<title>Showcase for file uploads</title>
+<body>
+
+	<h1>Hi. Please enter your new comment below.</h1>
+
+	<form method="post" action="/postComment">
+		Please specify file to upload: <br/>
+		Your comment: <input type="text" name="text" /><br/>
+		Your email: <input type="text" name="email" /><br/>
+		<input type="submit" value="submit">
+	</form>
+	
+	<h1>All old comments:</h1>
+	
+	<#list comments as comment>
+        <h2>Comment</h2>
+            ${comment.text} <br/> 
+            ${comment.email} <br/>
+    </#list>
+
+</body>
+</html>
+
+

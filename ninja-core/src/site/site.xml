@@ -10,6 +10,7 @@
     </bannerLeft>
     <body>
     
+    
         <menu name="">
         	<item name="Home" href="./index.html"/>
         </menu>
@@ -17,6 +18,7 @@
         <menu name="Learn">
         	<item name="Getting started" href="./documentation/getting_started.html"/>
         	<item name="Configuration" href="./documentation/application_configuration.html"/>
+        	<item name="Deployment" href="./documentation/deployment.html"/>
         	<item name="API" href="./apidocs/index.html"/>
         </menu>
         

@@ -20,6 +20,8 @@
 		<module>ninja-core</module>
 		<module>ninja-core-test</module>
 		<module>ninja-demo-application</module>
+        <module>ninja-demo-application-mybatis</module>
+        <module>ninja-demo-application-app-engine</module>
 		<module>ninja-demo-module</module>
 		<module>ninja-module-loginlogout</module>
 	</modules>
