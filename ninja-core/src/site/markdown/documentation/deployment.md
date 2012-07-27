@@ -1,24 +1,24 @@
 Deployment
 ==========
 
-You got a great application up and running. And now you want to host is somewhere.
-Fortunately Ninja is built with 100% standard technologies. 
+You just developed a great application - and now you want to host it somewhere.
+Fortunately, Ninja is built on standard technologies. 
 
-Therefore you got a myriad of options for deployment.
+Therefore you got a myriad of great options for deployment.
 
 
-War based deployment with Tomcat
---------------------------------
+War based deployment with Java application servers
+--------------------------------------------------
 
 When you run
 
     > mvn war:war
 
 You get a war file in the subfolder /target of your project. That war file is compatible with almost all
-war containers out there.
+war containers out there. Jetty and Tomcat are two of them, but you can also deploy to Glassfish and JBoss.
 
-With [Tomcat's hot deployment](http://www.mulesoft.com/tomcat-deploy) function 
-you can simply take that file and drop it into the tomcat webapp folder.
+Just a quick example: With [Tomcat's hot deployment](http://www.mulesoft.com/tomcat-deploy) function 
+you can simply take the war file produced by Ninja and drop it into the tomcat webapp folder.
 Tomcat automatically detects the new file, stops the old application and starts the new one.
 
 It can't get simpler. But better. The very same mechanism works nicely when Tomcat is running in a cluster
@@ -28,12 +28,15 @@ cluster Tomcat's about the file. Subsequently the cluster changes to that new ve
 You can easily automate that process by using the [maven cargo plugin](http://cargo.codehaus.org/Maven2+plugin). 
 That makes it really easy to  get a simple Jenkins based continuous deployment up and running.
 
+That's the power of following well proved standars. Ninja - and the apps you are building with Ninja - 
+is standing on the shoulder of giants.
+
 
 Deployment on Google App Engine
 -------------------------------
 
 [Google's App Engine] (https://developers.google.com/appengine/) is a great hosting service provided by Google.
-The really cool feature is it scales automatically. Deploy and scale - it is really that simple.
+The really cool feature is it scales automatically. Deploy and never worry about any scaling issues - it is really that simple.
 
 Of course Ninja is fully compatible to the App Engine.
 
