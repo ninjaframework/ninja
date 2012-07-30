@@ -4,7 +4,7 @@
 	<groupId>org.ninjaframework</groupId>
 	<artifactId>ninja</artifactId>
 	<packaging>pom</packaging>
-	<version>0.5.9</version>
+	<version>0.6-SNAPSHOT</version>
 	<name>ninja</name>
 	<url>http://www.ninjaframework.org</url>
 
