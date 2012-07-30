@@ -28,7 +28,7 @@ it is possible to reference other properties by their name and combine them.
     
 fullServerName references the previously set values of the keys and will return myserver.com:80.
 
-Inside your application there are two ways to get the properties. 
+Inside your application there are two basic ways to access the properties. 
 
 First way is to use NinjaProperties.get(...). You have to inject NinjaProperties first, then you
 can use all sorts of functions to retrieve properties.
@@ -53,7 +53,7 @@ The second way to get properties is to inject them via @Named("fullServerName").
     }
 </pre>
 
-The properties are read and managed by the excellent Apache Configurations library. Please
+By the way. And this is really important: Properties are read and managed by the excellent Apache Configurations library. Please
 refer to [their manual](http://commons.apache.org/configuration/) for even more information on advanced usage.
 
 
@@ -70,11 +70,12 @@ modes by setting a Java system property called "ninja.mode".
     System.setProperty(NinjaConstant.MODE_KEY, NinjaConstant.MODE_DEV)
 </pre>
 
-Just make sure that you set the system property early so that Ninja knows its mode from the very beginning.
+Make sure that you set the system property early so that Ninja knows its mode from the very beginning.
 
 
-This modes are handy if you want to define different properties for different environments.
-You may want to use database1 when running tests and database2 when developing.
+These modes are handy if you want to define different properties for different environments.
+You may want to use database1 when running tests and database2 when developing and database3
+when running in production.
 
 Ninja supports that use case by using a mode prefix prior to your property key.
 
@@ -97,15 +98,24 @@ This can be accomplished by setting a Java system property:
     java -Dninja.external.configuration=conf/production.conf
 </pre>
 
-This tells Ninja to load conf/application.conf as usual - but also load conf/production.conf.
-Keys configured in production.conf will overwrite any keys present in application.conf.
+This tells Ninja to load conf/production.conf. It will also load conf/application.conf as usual, 
+but values in conf/production.conf will overwrite possible values in application.conf.
 
 That way you can manage a production configuration separately from
-your project. For instance - you may want to do this when your server secret should only
-be available to a certain set of people and not the world. 
+your project. You may want to do this for instance when your server secret should only
+be available to a certain set of people and not the world. Or if your cloud hoster uses
+a completely different configuration from prod,test or dev.
 
-Just make sure file "conf/production.conf" is on the classpath and in subdirectory conf. Ninja currently does
-not read the file from the file system. It is loaded solely from the classpath to
-circumvent any security issues with your container.
+Ninja tries to load the file specified in "ninja.external.configuration" from several locations:
 
+It tries to load in the following order:
+
+* From a URL.
+* From a absolute file path.
+* From a relative file path.
+* From the user's home dir.
+* From the classpath.
+
+Ninja uses again the excellent Apache Configurations library to do the loading. Please refer to
+[their manual](http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
 
