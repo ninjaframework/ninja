@@ -181,7 +181,7 @@ public class LangImpl implements Lang {
 		
 
 		// Load default messages:
-		Configuration defaultLanguage = SwissKnife.loadConfigurationFromClasspathInUtf8("conf/messages.properties", getClass());
+		Configuration defaultLanguage = SwissKnife.loadConfigurationInUtf8("conf/messages.properties");
 
 		// Make sure we got the file.
 		// Everything else does not make much sense.
@@ -206,8 +206,8 @@ public class LangImpl implements Lang {
 		for (String lang : applicationLangs) {
 
 			// First step: Load complete language eg. en-US
-			Configuration configuration = SwissKnife.loadConfigurationFromClasspathInUtf8(String.format(
-			        "conf/messages.%s.properties", lang), getClass());
+			Configuration configuration = SwissKnife.loadConfigurationInUtf8(String.format(
+			        "conf/messages.%s.properties", lang));
 
 			Configuration configurationLangOnly = null;
 
@@ -219,8 +219,8 @@ public class LangImpl implements Lang {
 				String langOnly = lang.split("-")[0];
 				
 				// And load the configuraion
-				configurationLangOnly = SwissKnife.loadConfigurationFromClasspathInUtf8(String.format(
-				        "conf/messages.%s.properties", langOnly), getClass());
+				configurationLangOnly = SwissKnife.loadConfigurationInUtf8(String.format(
+				        "conf/messages.%s.properties", langOnly));
 
 			}
 

@@ -22,8 +22,7 @@ public class NinjaConstantTest {
 
         
         Configuration configuration =
-                SwissKnife.loadConfigurationFromClasspathInUtf8("conf/all_constants.conf", this
-                        .getClass());
+                SwissKnife.loadConfigurationInUtf8("conf/all_constants.conf");
 
         assertEquals("LANGUAGES", configuration.getString(NinjaConstant.applicationLanguages));
         

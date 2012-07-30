@@ -15,9 +15,10 @@ import com.google.inject.Guice;
 public class NinjaPropertiesImplTest {
 
 	@After
-	public void setup() {
+	public void tearDown() {
 		//make sure the external conf property is removed after the test.
 		System.clearProperty(NinjaProperties.NINJA_EXTERNAL_CONF);
+		System.clearProperty(NinjaConstant.MODE_KEY_NAME);
 	}
 	
 
@@ -172,6 +173,25 @@ public class NinjaPropertiesImplTest {
 		// and application.conf (fullServerName=${serverName}:${serverPort})
 		assertEquals("http://myapp.herokuapp.com:80", ninjaProperties.get("fullServerName"));
     	
+    }
+    
+    @Test
+    public void testLoadingOfExternalConfigurationFileWorksAndPrefixedConfigurationsSetRead() {
+        
+        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
+        
+        //we can set an external conf file by setting the following system property:
+        System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/heroku.conf");
+        
+        //instantiate the properties:
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();    
+        
+        // this is testing if referencing of properties works with external configurations
+        // and application.conf (fullServerName=${serverName}:${serverPort})
+        // It also will be different as we are in "test" mode:
+        // "myapp-test" is the important thing here.
+        assertEquals("http://myapp-test.herokuapp.com:80", ninjaProperties.get("fullServerName"));
+        
     }
     
     @Test

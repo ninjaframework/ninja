@@ -1,12 +1,5 @@
 package ninja.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-
-import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -28,47 +21,43 @@ public class SwissKnife {
 	/**
 	 * This is important: We load stuff as UTF-8.
 	 * 
-	 * Returns the file or null if not found.
+	 * We are using in the default Apache Commons loading mechanism.
 	 * 
-	 * @param classLoaderUrl
-	 *            Classpath location of the configuration file. Eg
-	 *            /conf/heroku.conf
+	 * With two little tweaks:
+	 * 1. We don't accept any delimimter by default
+	 * 2. We are reading in UTF-8
+	 * 
+	 * More about that:
+	 * http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading
+	 * 
+	 * From the docs:
+	 * - If the combination from base path and file name is a full URL that points to an existing file, this URL will be used to load the file.
+     * - If the combination from base path and file name is an absolute file name and this file exists, it will be loaded.
+     * - If the combination from base path and file name is a relative file path that points to an existing file, this file will be loaded.
+     * - If a file with the specified name exists in the user's home directory, this file will be loaded.
+     * - Otherwise the file name is interpreted as a resource name, and it is checked whether the data file can be loaded from the classpath.
+	 *
+	 * @param classLoaderUrl Location of the file. Can be on file system, or on the classpath. Will both work.
 	 * @param clazz We need a classloader and clazz provides the classloader.
 	 * @return A configuration or null if there were problems getting it.
 	 */
-	public static Configuration loadConfigurationFromClasspathInUtf8(String classLoaderUrl, Class clazz) {
+	public static Configuration loadConfigurationInUtf8(String classLoaderUrl) {
 
 		PropertiesConfiguration c = new PropertiesConfiguration();
+		c.setEncoding(NinjaConstant.UTF_8);
 		c.setDelimiterParsingDisabled(true);
-
-		URL resource = clazz.getClassLoader().getResource(classLoaderUrl);
-
-		// if the resource cannot be found return null
-		if (resource == null) {
-			return null;
-		}
-
+		
 		try {
-			InputStream inputStream = resource.openStream();
-
-			c.load(new InputStreamReader(inputStream, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			c = null;
-			logger.error(
-			        "Unsupported encoding while loading configuration file", e);
-		} catch (IOException e) {
-			c = null;
-			logger.error("Could not find configuration file. Was looking for "
-			        + classLoaderUrl, e);
-		} catch (NullPointerException e) {
-
-			logger.error("Could not find configuration file. Was looking for "
-			        + classLoaderUrl, e);
-			return null;
-		} catch (ConfigurationException e) {
-			c = null;
-			logger.error("Configuration Exception.", e);
-		}
+		    
+            c.load(classLoaderUrl);
+            
+        } catch (ConfigurationException e) {
+            
+            logger.error(
+                    "Unsupported encoding while loading configuration file", e);
+            
+            return null;
+        }
 
 		return (Configuration) c;
 	}

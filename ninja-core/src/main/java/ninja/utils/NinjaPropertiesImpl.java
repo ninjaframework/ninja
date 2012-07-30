@@ -89,22 +89,25 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		Configuration defaultConfiguration = null;
 
 		// Config of prefixed mode corresponding to current mode (eg. %test.myproperty=...)
-		Configuration prefixedConfigconfiguration = null;
+		Configuration prefixedDefaultConfiguration = null;
 
 		// (Optional) Config set via a system property
 		Configuration externalConfiguration = null;
+		
+	    // (Optional) Config of prefixed mode corresponding to current mode (eg. %test.myproperty=...)
+        Configuration prefixedExternalConfiguration = null;
 
 		// First step => load application.conf and also merge properties that
 		// correspond to a mode into the configuration.
 		
 
-		defaultConfiguration = SwissKnife.loadConfigurationFromClasspathInUtf8(NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION, getClass());
+		defaultConfiguration = SwissKnife.loadConfigurationInUtf8(NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
 		
 		if (defaultConfiguration != null) {
-		// Second step:
+		    // Second step:
 			// Copy special prefix of mode to parent configuration
 			// By convention it will be something like %test.myproperty
-			prefixedConfigconfiguration = defaultConfiguration.subset("%"
+			prefixedDefaultConfiguration = defaultConfiguration.subset("%"
 					+ mode.name());
 
 		} else {
@@ -130,7 +133,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 			
 				// only load it when the property is defined.
 
-				externalConfiguration = SwissKnife.loadConfigurationFromClasspathInUtf8(ninjaExternalConf, getClass());
+				externalConfiguration = SwissKnife.loadConfigurationInUtf8(ninjaExternalConf);
 				
 				//this should not happen:
 				if (externalConfiguration == null) {
@@ -147,6 +150,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 					throw new RuntimeException(errorMessage);
 					
 					
+				} else {
+				    
+		            // Copy special prefix of mode to parent configuration
+		            // By convention it will be something like %test.myproperty
+				    prefixedExternalConfiguration = externalConfiguration.subset("%"
+		                    + mode.name());
 				}
 			
 		}
@@ -154,16 +163,21 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 		
 		
 		///////////////////////////////////////////////////////////////////////
-		// finally add the stuff to the composite config
+		// Finally add the stuff to the composite configuration
 		// Note: Configurations added earlier will overwrite configurations 
 		// added later.
 		///////////////////////////////////////////////////////////////////////	
+		
+	    if (prefixedExternalConfiguration != null) {
+	        compositeConfiguration.addConfiguration(prefixedExternalConfiguration);
+	    } 
+	      
 		if (externalConfiguration != null) {
 			compositeConfiguration.addConfiguration(externalConfiguration);
 		}
 		
-		if (prefixedConfigconfiguration != null) {
-			compositeConfiguration.addConfiguration(prefixedConfigconfiguration);
+		if (prefixedDefaultConfiguration != null) {
+			compositeConfiguration.addConfiguration(prefixedDefaultConfiguration);
 		}
 		
 		if (defaultConfiguration != null) {
