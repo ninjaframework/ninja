@@ -91,21 +91,21 @@ External configuration for deployment
 -------------------------------------
 
 When running on a server you may want to use a completely different configuration.
-This can be accomplished by using the setting a Java system property:
+This can be accomplished by setting a Java system property:
 
 <pre class="prettyprint">
-    java -Dninja.external.configuration=production.conf
+    java -Dninja.external.configuration=conf/production.conf
 </pre>
 
-This tells Ninja to load conf/application.conf as usual - but also load production.conf and
-replace all keys that are mentioned in both files with the one from production.conf.
+This tells Ninja to load conf/application.conf as usual - but also load conf/production.conf.
+Keys configured in production.conf will overwrite any keys present in application.conf.
 
 That way you can manage a production configuration separately from
 your project. For instance - you may want to do this when your server secret should only
-be available to a certain set of people and not all devs. 
+be available to a certain set of people and not the world. 
 
-Just make sure the file "production.conf" is on the classpath. Ninja currently does
+Just make sure file "conf/production.conf" is on the classpath and in subdirectory conf. Ninja currently does
 not read the file from the file system. It is loaded solely from the classpath to
-circumvent any Security Issues with your container.
+circumvent any security issues with your container.
 
 
