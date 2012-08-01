@@ -37,11 +37,11 @@ public class SwissKnife {
      * - If a file with the specified name exists in the user's home directory, this file will be loaded.
      * - Otherwise the file name is interpreted as a resource name, and it is checked whether the data file can be loaded from the classpath.
 	 *
-	 * @param classLoaderUrl Location of the file. Can be on file system, or on the classpath. Will both work.
+	 * @param fileOrUrlOrClasspathUrl Location of the file. Can be on file system, or on the classpath. Will both work.
 	 * @param clazz We need a classloader and clazz provides the classloader.
 	 * @return A configuration or null if there were problems getting it.
 	 */
-	public static Configuration loadConfigurationInUtf8(String classLoaderUrl) {
+	public static Configuration loadConfigurationInUtf8(String fileOrUrlOrClasspathUrl) {
 
 		PropertiesConfiguration c = new PropertiesConfiguration();
 		c.setEncoding(NinjaConstant.UTF_8);
@@ -49,12 +49,12 @@ public class SwissKnife {
 		
 		try {
 		    
-            c.load(classLoaderUrl);
+            c.load(fileOrUrlOrClasspathUrl);
             
         } catch (ConfigurationException e) {
             
-            logger.error(
-                    "Unsupported encoding while loading configuration file", e);
+            logger.info(
+                    "Could not load file " +  fileOrUrlOrClasspathUrl + " (not a bad thing necessarily, but I am returing null)");
             
             return null;
         }
