@@ -17,6 +17,7 @@
         
         <menu name="Learn">
         	<item name="Getting started" href="./documentation/getting_started.html"/>
+        	<item name="Controller" href="./documentation/controller.html"/>
         	<item name="Configuration" href="./documentation/application_configuration.html"/>
         	<item name="Deployment" href="./documentation/deployment.html"/>
         	<item name="API" href="./apidocs/index.html"/>
