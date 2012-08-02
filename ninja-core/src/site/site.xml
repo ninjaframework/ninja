@@ -29,6 +29,11 @@
         	<item name="Bug tracker" href="https://github.com/reyez/ninja/issues"/>
         </menu>
         
+        <menu name="Develop">
+        	<item name="Roadmap" href="./developer/roadmap.html"/>
+        	<item name="How to contribute" href="./developer/getting_started.html"/>
+        </menu>
+        
 
     </body>
     <skin>
