@@ -19,6 +19,9 @@ public interface NinjaConstant {
     String CONTROLLERS_DIR = "controllers";
     String MODELS_DIR = "models";
     
+    // location of the default views for errors:
+    String LOCATION_VIEW_FTL_HTML_NOT_FOUND = "views/system/404notFound.ftl.html";
+    String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbiddden.ftl.html";
     
     /**
      * Comma separated list in application.conf. Determines which languages

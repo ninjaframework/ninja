@@ -5,6 +5,8 @@ import ninja.lifecycle.LifecycleService;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+
+import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
 
 /**
@@ -42,19 +44,13 @@ public class NinjaImpl implements Ninja {
     private final Router router;
     private final ResultHandler resultHandler;
 
-	// something like views/notFound404.ftl.html
-	// => named so the user can change it to path she likes
-	private final String pathToViewNotFound;
-
 	@Inject
 	public NinjaImpl(LifecycleService lifecycleService,
-            Router router, ResultHandler resultHandler,
-            @Named("template404") String pathToViewNotFound) {
+            Router router, ResultHandler resultHandler) {
 
 		this.router = router;
 		this.lifecycleService = lifecycleService;
         this.resultHandler = resultHandler;
-		this.pathToViewNotFound = pathToViewNotFound;
 
 		// This system out println is intended.
 		System.out.println(NINJA_LOGO);
@@ -84,7 +80,7 @@ public class NinjaImpl implements Ninja {
 			// throw a 404 "not found" because we did not find the route
 
 			Result result = Results.html(Result.SC_404_NOT_FOUND)
-					.template(pathToViewNotFound).html();
+					.template(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
 
 			resultHandler.handleResult(result, context);
 		}

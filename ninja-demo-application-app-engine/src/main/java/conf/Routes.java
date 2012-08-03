@@ -6,6 +6,7 @@ import ninja.application.ApplicationRoutes;
 import ninjaModuleLoginlogout.controllers.RegistrationController;
 import controllers.ApplicationController;
 import controllers.AsyncController;
+import controllers.CommentController;
 import controllers.FilterController;
 import controllers.I18nController;
 import controllers.InjectionExampleController;
@@ -82,6 +83,9 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
 
+        
+        router.GET().route("/comments").with(CommentController.class, "listComments");
+        router.POST().route("/comment").with(CommentController.class, "postComment");
         
         // /////////////////////////////////////////////////////////////////////
         // Routes from a plugin:

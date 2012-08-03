@@ -31,6 +31,7 @@ public class TemplateEngineFreemarkerEscapedLoader implements TemplateLoader {
   
     @Override  
     public Reader getReader(Object templateSource, String encoding) throws IOException {  
+    	System.out.println("tempsrc: " + templateSource);
         Reader reader = delegate.getReader(templateSource, encoding);  
         try {  
             String templateText = IOUtils.toString(reader);  

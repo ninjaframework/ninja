@@ -84,8 +84,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 			responseStreams.getWriter().close();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error("Error while writing out Gson Json", e);
+			logger.error("Error processing Freemarker Template " + templateName, e);
 		} 
 
 	}

@@ -1,4 +1,4 @@
-package ninjaModuleLoginlogout.controllers;
+package controllers.ninjamoduleloginlogout;
 
 import ninja.Context;
 import ninja.Result;
@@ -21,7 +21,7 @@ public class RegistrationController {
 //
 //		render();
 //	}
-//
+////
 //	/**
 //	 * Do the validation of the registration screen
 //	 */

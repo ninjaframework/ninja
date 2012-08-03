@@ -43,12 +43,6 @@ public class Configuration extends AbstractModule {
 		//provide logging
 		bind(Logger.class).toProvider(LoggerProvider.class);
 
-		// bind the error views to their real templates
-		// => can be later customized by user. but default views should be ok
-		// for now.
-		bind(String.class).annotatedWith(Names.named("template404")).toInstance(
-		    "views/notFound404.ftl.html");
-
         // Bind the configuration into Guice
         ninjaProperties.bindProperties(binder());
         bind(NinjaProperties.class).toInstance(ninjaProperties);

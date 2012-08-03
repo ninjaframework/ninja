@@ -19,27 +19,31 @@ public class TemplateEngineHelper {
             // We always assume the template in the subdir "views"
 
             // 1) If we are in the main project =>
+            // /controllers/ControllerName
+            // to
             // /views/ControllerName/templateName.ftl.html
             // 2) If we are in a plugin / subproject
             // =>
-            // some/packages/submoduleName/views/ControllerName/templateName.ftl.html
+            // /controllers/some/packages/submoduleName/ControllerName
+            // to
+            // views/some/packages/submoduleName/ControllerName/templateName.ftl.html
 
             // So let's calculate the parent package of the controller:
             String controllerPackageName = controller.getPackage().getName();
             // This results in something like controllers or
             // some.package.controllers
 
-            // Let's remove "controllers" so we cat all parent packages:
+            // Replace controller prefix with views prefix
             String parentPackageOfController = controllerPackageName
-                    .replaceAll(NinjaConstant.CONTROLLERS_DIR, "");
+                    .replaceFirst(NinjaConstant.CONTROLLERS_DIR, NinjaConstant.VIEWS_DIR);
 
             // And now we rewrite everything from "." notation to directories /
             String parentControllerPackageAsPath = parentPackageOfController
                     .replaceAll("\\.", "/");
 
             // and the final path of the controller will be something like:
-            // some/package/views/ControllerName/templateName.ftl.html
-            return String.format("%sviews/%s/%s%s",
+            // views/some/package/submoduleName/ControllerName/templateName.ftl.html
+            return String.format("/%s/%s/%s%s",
                     parentControllerPackageAsPath, controller.getSimpleName(),
                     route.getControllerMethod().getName(), suffix);
         } else {
