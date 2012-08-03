@@ -1,6 +1,5 @@
 package conf.ninjamoduleloginlogout;
 
-import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import controllers.ninjamoduleloginlogout.RegistrationController;
@@ -10,6 +9,7 @@ public class Routes implements ApplicationRoutes {
 
     @Override
 	public void init(Router router) {
+    	
 
         // /////////////////////////////////////////////////////////////////////
         // Routes from a plugin:
@@ -34,6 +34,7 @@ public class Routes implements ApplicationRoutes {
         //router.GET().route("/registration/confirm/{code}").with(RegistrationController.class, "registrationConfirm");
 
 //        GET         /registration/lostpassword                 casino.Registration.lostPassword
+        router.GET().route("/registration/lostpassword").with(RegistrationController.class, "lostPassword");
 //        POST        /registration/lostpassword/finish          casino.Registration.lostPasswordFinish
 //        GET         /registration/lostpassword/pending         casino.Registration.lostPasswordEmailSentCheckInbox
 //        GET         /registration/lostpassword/confirm/{code}  casino.Registration.lostPasswordNewPassword
