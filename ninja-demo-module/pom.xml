@@ -8,14 +8,14 @@
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
-		<version>0.6-SNAPSHOT</version>
+		<version>0.5.10</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-core</artifactId>
-			<version>0.6-SNAPSHOT</version>
+			<version>0.5.10</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
