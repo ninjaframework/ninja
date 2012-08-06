@@ -1,11 +1,15 @@
-package ninja;
+package ninja.utils;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+
+import ninja.Context;
+import ninja.Cookie;
+import ninja.Result;
+import ninja.Route;
 import ninja.i18n.LangImpl;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.utils.MockNinjaProperties;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;

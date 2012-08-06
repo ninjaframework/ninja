@@ -5,14 +5,14 @@ import static org.junit.Assert.assertTrue;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import ninja.NinjaApiTest;
-import ninja.NinjaApiTestHelper;
+import ninja.NinjaTest;
+import ninja.utils.NinjaTestBrowser;
 
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
-public class I18nControllerTest extends NinjaApiTest {
+public class I18nControllerTest extends NinjaTest {
 
 	@Test
 	public void testThatI18nWorksEn() {
@@ -21,7 +21,7 @@ public class I18nControllerTest extends NinjaApiTest {
 		headers.put("Accept-Language", "en-US");
 		
 		
-		String result = NinjaApiTestHelper
+		String result = ninjaTestBrowser
 				.makeRequest(getServerAddress() + "/i18n", headers);
 
 		assertTrue(result.contains(
@@ -36,7 +36,7 @@ public class I18nControllerTest extends NinjaApiTest {
 		headers.put("Accept-Language", "de-DE");
 		
 		
-		String result = NinjaApiTestHelper
+		String result = ninjaTestBrowser
 				.makeRequest(getServerAddress() + "/i18n", headers);
 
 		assertTrue(result.contains(
