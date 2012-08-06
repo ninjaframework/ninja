@@ -114,10 +114,8 @@ public class NinjaTestBrowser {
 		String response = null;
 
 		try {
-
-			HttpClient client = new DefaultHttpClient();
 			
-			client.getParams().setParameter(
+		    httpClient.getParams().setParameter(
 			        CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 			HttpPost post = new HttpPost(url);
@@ -132,7 +130,7 @@ public class NinjaTestBrowser {
 			post.setEntity(entity);
 
 			// Here we go!
-			response = EntityUtils.toString(client.execute(post).getEntity(),
+			response = EntityUtils.toString(httpClient.execute(post).getEntity(),
 			        "UTF-8");
 			
 		} catch (ParseException e) {
