@@ -15,6 +15,7 @@ public class ExampleApiTest extends NinjaTest {
 
 		String apiCallResult = ninjaTestBrowser.makeJsonRequest(getServerAddress() + "/person");
 		
+		System.out.println("apicallresult: " +apiCallResult);
 		assertTrue(apiCallResult.startsWith("{\"name\":\"zeeess name -"));
 		
 	}
