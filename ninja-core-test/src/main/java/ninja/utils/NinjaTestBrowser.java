@@ -169,7 +169,7 @@ public class NinjaTestBrowser {
             MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 
             // For File parameters
-            entity.addPart(paramName, new FileBody(((File) fileToUpload), "application/zip"));
+            entity.addPart(paramName, new FileBody((File) fileToUpload));
 
             post.setEntity(entity);
 

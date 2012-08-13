@@ -150,14 +150,20 @@ class RouteBuilderImpl implements RouteBuilder {
 	private FilterChain buildFilterChain(Injector injector,
 			LinkedList<Class<? extends Filter>> filters, Class<?> controller,
 			Method controllerMethod) {
+	    
 		if (filters.isEmpty()) {
+		    
 			return new FilterChainEnd(injector.getProvider(controller),
 					ControllerMethodInvoker.build(controllerMethod, injector));
+			
 		} else {
+		    
 			Class<? extends Filter> filter = filters.pop();
+			
 			return new FilterChainImpl(injector.getProvider(filter),
 					buildFilterChain(injector, filters, controller,
 							controllerMethod));
+			
 		}
 	}
 
