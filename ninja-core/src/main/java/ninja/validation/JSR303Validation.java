@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @WithValidator(Validators.JSRValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface JSRValidation {
+public @interface JSR303Validation {
     /**
      * The key for the violation message
      * 
@@ -36,6 +36,6 @@ public @interface JSRValidation {
      */
     String fieldKey() default "";
 
-    public static final String KEY = "validation.is.JSR.violation";
-    public static final String MESSAGE = "{0} cannot be validated alonng given JSR annotations";
+    public static final String KEY = "validation.is.JSR303.violation";
+    public static final String MESSAGE = "{0} cannot be validated alonng given JSR303 annotations";
 }
