@@ -1,18 +1,19 @@
 package ninja.params;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import ninja.Context;
-import ninja.RoutingException;
-import ninja.validation.Validator;
-import ninja.validation.WithValidator;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import ninja.Context;
+import ninja.RoutingException;
+import ninja.validation.Validator;
+import ninja.validation.WithValidator;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 
 /**
  * Invokes methods on the controller, extracting arguments out
@@ -83,6 +84,14 @@ public class ControllerMethodInvoker {
             }
         }
 
+        // Now that every parameter has an argument extractor we can run validation on the annotated
+        // parameters
+        for (int i = 0; i < argumentExtractors.length; i++) {
+            argumentExtractors[i] =
+                    validateArgumentWithExtractor(paramTypes[i], paramAnnotations[i], injector,
+                    argumentExtractors[i]);
+        }
+
         return new ControllerMethodInvoker(method, argumentExtractors);
     }
 
@@ -104,11 +113,11 @@ public class ControllerMethodInvoker {
             }
         }
 
-        if (extractor == null) {
-            // Let the parent method handle what happens when no extract found
-            return null;
-        }
+        return extractor;
+    }
 
+    private static ArgumentExtractor<?> validateArgumentWithExtractor(Class<?> paramType,
+            Annotation[] annotations, Injector injector, ArgumentExtractor<?> extractor) {
         // We have validators that get applied before parsing, and validators
         // that get applied after parsing.
         List<Validator<?>> preParseValidators = new ArrayList<Validator<?>>();
@@ -150,19 +159,24 @@ public class ControllerMethodInvoker {
         // Either the extractor extracts a type that matches the param type, or it's a
         // String, and we can lookup a parser to parse it into the param type
         if (!boxedParamType.isAssignableFrom(extractor.getExtractedType())) {
-            if (String.class.isAssignableFrom(extractor.getExtractedType())) {
-                // Look up a parser
-                ParamParser<?> parser = ParamParsers.getParamParser(paramType);
-                if (parser == null) {
-                    throw new RoutingException("Can't find parameter parser for type " +
-                            extractor.getExtractedType() + " on field " + extractor.getFieldName());
+            if (extractor.getFieldName() != null) {
+                if (String.class.isAssignableFrom(extractor.getExtractedType())) {
+                    // Look up a parser
+                    ParamParser<?> parser = ParamParsers.getParamParser(paramType);
+                    if (parser == null) {
+                        throw new RoutingException("Can't find parameter parser for type "
+                                + extractor.getExtractedType() + " on field "
+                                + extractor.getFieldName());
+                    } else {
+                        extractor =
+                                new ParsingArgumentExtractor((ArgumentExtractor) extractor, parser);
+                    }
+
                 } else {
-                    extractor = new ParsingArgumentExtractor((ArgumentExtractor) extractor, parser);
+                    throw new RoutingException("Extracted type " + extractor.getExtractedType()
+                            + " for field " + extractor.getFieldName()
+                            + " doesn't match parameter type " + paramType);
                 }
-            } else {
-                throw new RoutingException("Extracted type " + extractor.getExtractedType() +
-                        " for field " + extractor.getFieldName() + " doesn't match parameter type " +
-                        paramType);
             }
         }
 

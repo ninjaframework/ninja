@@ -25,6 +25,7 @@ Raphael Bauer
 James Roper
 Henning Schuetz
 Marco Reinwarth
+Philip Sommer
 
 missing from that list? please let us know - that did not happen intentionally :)
 
