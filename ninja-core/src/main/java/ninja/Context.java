@@ -40,14 +40,14 @@ public interface Context {
         }
     }
 	
-	/**
-	 * Content type of the request we got.
-	 * Important for content negotiation...
-	 * 
-	 * @return the content type of the incoming request.
-	 * 
-	 */
-	String getRequestContentType();
+    /**
+     * The Content-Type header field indicates the media type of the request body
+     * sent to the recipient. E.g. Content-Type: text/html; charset=ISO-8859-4
+     * {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
+     * 
+     * @return the content type of the incoming request.
+     */
+    String getRequestContentType();
 
 	/**
 	 * Returns the uri as seen by the server.
@@ -350,4 +350,58 @@ public interface Context {
      * @return The validation context
      */
     Validation getValidation();
+
+    /**
+     * Get the content type that is acceptable for the client.
+     * (in this order : {@see Result.TEXT_HTML} > {@see Result.APPLICATION_XML} > {@see Result.APPLICATION_JSON} > {@see Result.TEXT_PLAIN}
+     * level- or quality-parameter are ignored with this method.)
+     * E.g. Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1,text/html;level=2;q=0.4
+     * 
+     * The Accept request-header field can be used to specify certain media types which are acceptable
+     * for the response. Accept headers can be used to indicate that the request is specifically
+     * limited to a small set of desired types, as in the case of a request for an in-line image.
+     * {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
+     * 
+     * @return one of the {@see Result} mime types that is acceptable for the client or {@see Result.TEXT_HTML} if not set
+     */
+    String getAcceptContentType();
+
+    /**
+     * Get the encoding that is acceptable for the client.
+     * E.g. Accept-Encoding: compress, gzip
+     * 
+     * The Accept-Encoding request-header field is similar to Accept, but restricts the content-codings
+     * that are acceptable in the response.
+     * {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
+     * 
+     * @return the encoding that is acceptable for the client
+     */
+    String getAcceptEncoding();
+
+    /**
+     * Get the language that is acceptable for the client.
+     * E.g. Accept-Language: da, en-gb;q=0.8, en;q=0.7
+     * 
+     * The Accept-Language request-header field is similar to Accept, but restricts the set of
+     * natural languages that are preferred as a response to the request.
+     * {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
+     * 
+     * @return the language that is acceptable for the client
+     */
+    String getAcceptLanguage();
+
+    /**
+     * Get the charset that is acceptable for the client.
+     * E.g. Accept-Charset: iso-8859-5, unicode-1-1;q=0.8
+     * 
+     * The Accept-Charset request-header field can be used to indicate what character sets are
+     * acceptable for the response. This field allows clients capable of understanding more
+     * comprehensive or special- purpose character sets to signal that capability to a server which
+     * is capable of representing documents in those character sets.
+     * {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
+     * 
+     * @return the charset that is acceptable for the client
+     */
+    String getAcceptCharset();
+
 }

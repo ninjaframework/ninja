@@ -309,6 +309,52 @@ public class ContextImpl implements Context {
 	}
 
     @Override
+    public String getAcceptContentType() {
+        String contentType = httpServletRequest.getHeader("accept");
+
+        if (contentType == null) {
+            return Result.TEXT_HTML;
+        }
+
+        if (contentType.indexOf("application/xhtml") != -1 || contentType.indexOf("text/html") != -1 || contentType.startsWith("*/*")) {
+            return Result.TEXT_HTML;
+        }
+
+        if (contentType.indexOf("application/xml") != -1 || contentType.indexOf("text/xml") != -1) {
+            return Result.APPLICATION_XML;
+        }
+
+        if (contentType.indexOf("application/json") != -1 || contentType.indexOf("text/javascript") != -1) {
+            return Result.APPLICATON_JSON;
+        }
+
+        if (contentType.indexOf("text/plain") != -1) {
+            return Result.TEXT_PLAIN;
+        }
+
+        if (contentType.endsWith("*/*")) {
+            return Result.TEXT_HTML;
+        }
+
+        return Result.TEXT_HTML;
+    }
+
+    @Override
+    public String getAcceptEncoding() {
+        return httpServletRequest.getHeader("accept-encoding");
+    }
+
+    @Override
+    public String getAcceptLanguage() {
+        return httpServletRequest.getHeader("accept-language");
+    }
+
+    @Override
+    public String getAcceptCharset() {
+        return httpServletRequest.getHeader("accept-charset");
+    }
+
+    @Override
     public Route getRoute() {
         return route;
     }
