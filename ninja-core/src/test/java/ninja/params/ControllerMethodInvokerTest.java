@@ -2,7 +2,9 @@ package ninja.params;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,22 +12,32 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import ninja.Context;
 import ninja.Result;
-
 import ninja.RoutingException;
 import ninja.i18n.Lang;
-import ninja.validation.*;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
+import ninja.validation.JSR303Validation;
+import ninja.validation.NumberValue;
+import ninja.validation.Required;
+import ninja.validation.Validation;
+import ninja.validation.ValidationImpl;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -385,6 +397,45 @@ public class ControllerMethodInvokerTest {
         verify(mockController).body(body);
     }
 
+    // JSR303Validation(@Pattern(regexp = "[a-z]*") String param1,
+    // @Length(min = 5, max = 10) String param2, @Min(3) @Max(10) int param3);
+    @Test
+    public void validationPassed() {
+        validateJSR303(buildDto("regex", "length", 5));
+        assertFalse(context.getValidation().hasViolations());
+    }
+
+    @Test
+    public void validationFailedRegex() {
+        validateJSR303(buildDto("regex!!!", "length", 5));
+        assertTrue(context.getValidation().hasViolations());
+    }
+
+    @Test
+    public void validationFailedLength() {
+        validateJSR303(buildDto("regex", "length - too long", 5));
+        assertTrue(context.getValidation().hasViolations());
+    }
+
+    @Test
+    public void validationFailedRange() {
+        validateJSR303(buildDto("regex", "length", 25));
+        assertTrue(context.getValidation().hasViolations());
+    }
+
+    private void validateJSR303(Dto dto) {
+        when(context.parseBody(Dto.class)).thenReturn(dto);
+        create("JSR303Validation").invoke(mockController, context);
+    }
+
+    private Dto buildDto(String regex, String length, int range) {
+        Dto dto = spy(new Dto());
+        dto.regex = regex;
+        dto.length = length;
+        dto.range = range;
+        return dto;
+    }
+
     private ControllerMethodInvoker create(String methodName, final Object... toBind) {
         Method method = null;
         for (Method m : MockController.class.getMethods()) {
@@ -431,6 +482,8 @@ public class ControllerMethodInvokerTest {
         public Result badValidator(@Param("param1") @NumberValue(min = 10) String param1);
         public Result body(Object body);
         public Result tooManyBodies(Object body1, Object body2);
+
+        public Result JSR303Validation(@JSR303Validation Dto dto, Validation validation);
     }
 
     // Custom argument extractors for testing different instantiation paths
@@ -535,6 +588,16 @@ public class ControllerMethodInvokerTest {
     @WithArgumentExtractor(GuiceArgumentExtractor.class)
     public @interface GuiceAnnotation {
         String foo();
+    }
+
+    public class Dto {
+        @Pattern(regexp = "[a-z]*")
+        public String regex;
+        @Size(min = 5, max = 10)
+        public String length;
+        @Min(value = 3)
+        @Max(value = 10)
+        public int range;
     }
 
 }

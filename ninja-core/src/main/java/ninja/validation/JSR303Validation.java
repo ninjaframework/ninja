@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Validates that the annoted element is conform to its JSR-Annotations
+ * Validates that the annoted element is conform to its JSR303-Annotations
  * 
  * @author psommer
  * 

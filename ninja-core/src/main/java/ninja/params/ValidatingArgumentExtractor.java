@@ -1,9 +1,9 @@
 package ninja.params;
 
+import java.util.List;
+
 import ninja.Context;
 import ninja.validation.Validator;
-
-import java.util.List;
 
 /**
  * Argument extractor that wraps another argument extractor and validates its argument

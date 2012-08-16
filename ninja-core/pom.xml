@@ -184,6 +184,13 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.0.0.GA</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>
+				hibernate-validator-annotation-processor
+			</artifactId>
+			<version>4.1.0.Final</version>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
