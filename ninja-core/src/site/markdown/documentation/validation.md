@@ -16,7 +16,7 @@ For example:
 	}
 </pre>
 
-in that example we want the context to be parsed as <code>profileId</code> and an <code>Dto</code>-object. Because of the leading <code>@JSR303Validation</code>-annotation all public fields in <code>Dto</code> may contain JSR303-annotations like this:
+In this example we want the context to be parsed as <code>profileId</code> and a <code>Dto</code>-object. Because of the leading <code>@JSR303Validation</code>-annotation all public fields in <code>Dto</code> may contain JSR303-annotations like this:
 
 <pre class="prettyprint">
 	public class Dto {
@@ -30,4 +30,4 @@ in that example we want the context to be parsed as <code>profileId</code> and a
 	}
 </pre>
 
-You can check the result of the validation by evaluating the <code>validation</code>-parameter with simply calling its <code>annotation.hasViolations()</code>-method which gives you a <code>true</code> or <code>false</code>.
+You can check the result of the validation by evaluating the <code>validation</code>-parameter with simply calling its <code>annotation.hasViolations()</code>-method in your controller which gives you a <code>true</code> or <code>false</code>.
