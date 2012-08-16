@@ -47,14 +47,9 @@ public class ResultHandler {
             handleRenderable((Renderable) object, context, result);
         } else {
             // if content type is not yet set in result we copy it over from the
-            // request
-            // otherwise we are using TEXT/HTML as fallback...
+            // request accept header
             if (result.getContentType() == null) {
-                if (context.getRequestContentType() != null) {
-                    result.contentType(context.getRequestContentType());
-                } else {
-                    result.contentType(Result.TEXT_HTML);
-                }
+                result.contentType(context.getAcceptContentType());
             }
 
             renderWithTemplateEngine(context, result);
