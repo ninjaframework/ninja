@@ -47,6 +47,14 @@ public class FakeContext implements Context {
     private Object body;
     private Validation validation = new ValidationImpl(new LangImpl(MockNinjaProperties.create("","")));
 
+    private String acceptContentType;
+
+    private String acceptEncoding;
+
+    private String acceptLanguage;
+
+    private String acceptCharset;
+
     public FakeContext setRequestContentType(String requestContentType) {
         this.requestContentType = requestContentType;
         return this;
@@ -289,5 +297,41 @@ public class FakeContext implements Context {
     @Override
     public String getPathParameterEncoded(String name) {
         return this.getPathParameterEncoded(name);
+    }
+
+    public void setAcceptContentType(String acceptContentType) {
+        this.acceptContentType = acceptContentType;
+    }
+
+    @Override
+    public String getAcceptContentType() {
+        return acceptContentType;
+    }
+
+    public void setAcceptEncoding(String acceptEncoding) {
+        this.acceptEncoding = acceptEncoding;
+    }
+
+    @Override
+    public String getAcceptEncoding() {
+        return acceptEncoding;
+    }
+
+    public void setAcceptLanguage(String acceptLanguage) {
+        this.acceptLanguage = acceptLanguage;
+    }
+
+    @Override
+    public String getAcceptLanguage() {
+        return acceptLanguage;
+    }
+
+    public void setAcceptCharset(String acceptCharset) {
+        this.acceptCharset = acceptCharset;
+    }
+
+    @Override
+    public String getAcceptCharset() {
+        return acceptCharset;
     }
 }
