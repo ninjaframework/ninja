@@ -353,7 +353,8 @@ public interface Context {
 
     /**
      * Get the content type that is acceptable for the client.
-     * (in this order : {@see Result.TEXT_HTML} > {@see Result.APPLICATION_XML} > {@see Result.APPLICATION_JSON} > {@see Result.TEXT_PLAIN}
+     * (in this order : {@see Result.TEXT_HTML} > {@see Result.APPLICATION_XML} > 
+     *     {@see Result.APPLICATION_JSON} > {@see Result.TEXT_PLAIN} > {@see Result.APPLICATION_OCTET_STREAM}
      * level- or quality-parameter are ignored with this method.)
      * E.g. Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1,text/html;level=2;q=0.4
      * 

@@ -332,6 +332,10 @@ public class ContextImpl implements Context {
             return Result.TEXT_PLAIN;
         }
 
+        if (contentType.indexOf("application/octet-stream") != -1) {
+            return Result.APPLICATION_OCTET_STREAM;
+        }
+
         if (contentType.endsWith("*/*")) {
             return Result.TEXT_HTML;
         }
