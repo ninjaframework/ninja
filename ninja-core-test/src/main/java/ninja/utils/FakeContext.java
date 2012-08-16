@@ -94,6 +94,7 @@ public class FakeContext implements Context {
         return this;
     }
 
+    @Override
     public FlashCookie getFlashCookie() {
         return flashCookie;
     }
@@ -102,7 +103,8 @@ public class FakeContext implements Context {
         this.sessionCookie = sessionCookie;
         return this;
     }
-
+    
+    @Override
     public SessionCookie getSessionCookie() {
         return sessionCookie;
     }
