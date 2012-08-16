@@ -13,11 +13,20 @@
     
         <menu name="">
         	<item name="Home" href="./index.html"/>
+        	<item name="Introduction" href="./introduction.html"/>
+        	<item name="Team" href="./team.html"/>
         </menu>
         
         <menu name="Learn">
         	<item name="Getting started" href="./documentation/getting_started.html"/>
+        	<item name="Controller" href="./documentation/controller.html"/>        	
         	<item name="Configuration" href="./documentation/application_configuration.html"/>
+        	<item name="Filter" href="./documentation/filter.html"/>
+        	<item name="Internationalization" href="./documentation/internationalization"/>
+        	<item name="Scheduler" href="./documentation/scheduler.html"/>
+        	<item name="Lifecycle" href="./documentation/lifecycle.html"/>
+        	<item name="Validation" href="./documentation/validation.html"/>
+        	<item name="Debugging" href="./documentation/debugging.html"/>
         	<item name="Deployment" href="./documentation/deployment.html"/>
         	<item name="API" href="./apidocs/index.html"/>
         </menu>
@@ -26,6 +35,12 @@
             <item name="Mailing list" href="https://groups.google.com/d/forum/ninja-framework"/>
         	<item name="Source code" href="https://github.com/reyez/ninja"/>
         	<item name="Bug tracker" href="https://github.com/reyez/ninja/issues"/>
+        	<item name="Security issues" href="./security.html"/>
+        </menu>
+        
+        <menu name="Develop">
+        	<item name="Roadmap" href="./developer/roadmap.html"/>
+        	<item name="How to contribute" href="./developer/getting_started.html"/>
         </menu>
         
 

@@ -5,15 +5,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import ninja.NinjaApiTest;
-import ninja.NinjaApiTestHelper;
+import ninja.NinjaTest;
+import ninja.utils.NinjaTestBrowser;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
-public class ApplicationControllerTest extends NinjaApiTest {
+public class ApplicationControllerTest extends NinjaTest {
 
 	@Test
 	public void testThatRedirectWorks() {
@@ -22,7 +22,7 @@ public class ApplicationControllerTest extends NinjaApiTest {
 		Map<String, String> headers = Maps.newHashMap();
 
 		// /redirect will send a location: redirect in the headers
-		String result = NinjaApiTestHelper.makeRequest(getServerAddress()
+		String result = ninjaTestBrowser.makeRequest(getServerAddress()
 				+ "/redirect", headers);
 
 		// If the redirect has worked we must see the following text
@@ -42,7 +42,7 @@ public class ApplicationControllerTest extends NinjaApiTest {
 
 		// /redirect will send a location: redirect in the headers
 
-		String result = NinjaApiTestHelper.makeRequest(getServerAddress()
+		String result = ninjaTestBrowser.makeRequest(getServerAddress()
 				+ "htmlEscaping", headers);
 
 		// If the redirect has worked we must see the following text
@@ -58,7 +58,7 @@ public class ApplicationControllerTest extends NinjaApiTest {
 		Map<String, String> headers = Maps.newHashMap();
 
 		// /redirect will send a location: redirect in the headers
-		HttpResponse httpResponse = NinjaApiTestHelper
+		HttpResponse httpResponse = ninjaTestBrowser
 				.makeRequestAndGetResponse(getServerAddress() + "session",
 						headers);
 
@@ -83,7 +83,7 @@ public class ApplicationControllerTest extends NinjaApiTest {
 		Map<String, String> headers = Maps.newHashMap();
 
 		//do the request
-		String response = NinjaApiTestHelper
+		String response = ninjaTestBrowser
 				.makeRequest(getServerAddress() + "user/12345/john@example.com/userDashboard",
 						headers);
 
@@ -99,13 +99,13 @@ public class ApplicationControllerTest extends NinjaApiTest {
         // Some empty headers for now...
         Map<String, String> headers = Maps.newHashMap();
 
-        String response = NinjaApiTestHelper
+        String response = ninjaTestBrowser
                 .makeRequest(getServerAddress() + "validation?email=john@example.com");
 
         // And assert that stuff is visible on page:
         assertEquals(response, "john@example.com");
 
-        response = NinjaApiTestHelper
+        response = ninjaTestBrowser
                 .makeRequest(getServerAddress() + "validation");
 
         // And assert that stuff is visible on page:

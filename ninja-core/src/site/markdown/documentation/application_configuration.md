@@ -48,7 +48,7 @@ The second way to get properties is to inject them via @Named("fullServerName").
 <pre class="prettyprint">
     /** An arbitrary constructor */
     @Inject
-    ApplicataionController(@Named("fullServerName") String fullServerName) {
+    ApplicationController(@Named("fullServerName") String fullServerName) {
         ... do something ...
     }
 </pre>

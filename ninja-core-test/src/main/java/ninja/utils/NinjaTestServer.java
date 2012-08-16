@@ -1,9 +1,11 @@
-package ninja;
+package ninja.utils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import ninja.NinjaServletDispatcher;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
@@ -14,13 +16,19 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 
-public class NinjaIntegrationTestHelper {
+/**
+ * Starts a new server using an embedded jetty.
+ * Startup is really fast and thus usable in integration tests.
+ * 
+ * @author rbauer
+ */
+public class NinjaTestServer {
 
 	private final int port;
 	private final Server server;
     private final URI serverUri;
 	
-	public NinjaIntegrationTestHelper() {
+	public NinjaTestServer() {
 		
 		this.port = findAvailablePort(1000, 10000);
         serverUri = createServerUri();

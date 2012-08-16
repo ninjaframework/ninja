@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaTestServer;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.AfterClass;
@@ -14,14 +15,14 @@ import org.junit.BeforeClass;
 import com.devbliss.doctest.DocTest;
 
 /**
- * Superclass for doctests that require a running server. Uses {@link NinjaApiTest} for the server
+ * Superclass for doctests that require a running server. Uses {@link NinjaTest} for the server
  * stuff.
  * 
  * @author hschuetz
  * 
  */
 public abstract class NinjaApiDocTest extends DocTest {
-    private static NinjaIntegrationTestHelper ninjaIntegrationTestHelper;
+    private static NinjaTestServer ninjaTestServer;
 
     public NinjaApiDocTest() {
     }
@@ -29,13 +30,13 @@ public abstract class NinjaApiDocTest extends DocTest {
     @BeforeClass
     public static void startServerInTestMode() {
         System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
-        ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
+        ninjaTestServer = new NinjaTestServer();
     }
 
     @AfterClass
     public static void shutdownServer() {
     	System.clearProperty(NinjaConstant.MODE_KEY_NAME);
-        ninjaIntegrationTestHelper.shutdown();
+        ninjaTestServer.shutdown();
     }
 
     public URI buildUri(String relativePath, Map<String, String> parameters) throws URISyntaxException {
@@ -48,7 +49,7 @@ public abstract class NinjaApiDocTest extends DocTest {
 
     private URIBuilder build(String relativePath, Map<String, String> parameters) {
         URIBuilder uriBuilder =
-                new URIBuilder(ninjaIntegrationTestHelper.getServerAddressAsUri()).setPath(relativePath);
+                new URIBuilder(ninjaTestServer.getServerAddressAsUri()).setPath(relativePath);
         addParametersToURI(parameters, uriBuilder);
         return uriBuilder;
     }

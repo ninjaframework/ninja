@@ -182,4 +182,24 @@ public class WrappedContext implements Context {
     public String getPathParameterEncoded(String key) {
         return wrapped.getPathParameterEncoded(key);
     }
+
+    @Override
+    public String getAcceptContentType() {
+        return wrapped.getAcceptContentType();
+    }
+
+    @Override
+    public String getAcceptEncoding() {
+        return wrapped.getAcceptEncoding();
+    }
+
+    @Override
+    public String getAcceptLanguage() {
+        return wrapped.getAcceptLanguage();
+    }
+
+    @Override
+    public String getAcceptCharset() {
+        return wrapped.getAcceptCharset();
+    }
 }

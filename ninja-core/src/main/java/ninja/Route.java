@@ -110,7 +110,7 @@ public class Route {
      * would return a List with "my_id" and "my_name"
      * 
      * @param rawRoute
-     * @return a list with the names of all parameters in that rotue.
+     * @return a list with the names of all parameters in that route.
      */
     private static List<String> doParseParameters(String rawRoute) {
         List<String> list = new ArrayList<String>();

@@ -1,11 +1,15 @@
-package ninja;
+package ninja.utils;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+
+import ninja.Context;
+import ninja.Cookie;
+import ninja.Result;
+import ninja.Route;
 import ninja.i18n.LangImpl;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.utils.MockNinjaProperties;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
@@ -42,6 +46,14 @@ public class FakeContext implements Context {
     private Map<String, String> headers = new HashMap<String, String>();
     private Object body;
     private Validation validation = new ValidationImpl(new LangImpl(MockNinjaProperties.create("","")));
+
+    private String acceptContentType;
+
+    private String acceptEncoding;
+
+    private String acceptLanguage;
+
+    private String acceptCharset;
 
     public FakeContext setRequestContentType(String requestContentType) {
         this.requestContentType = requestContentType;
@@ -285,5 +297,41 @@ public class FakeContext implements Context {
     @Override
     public String getPathParameterEncoded(String name) {
         return this.getPathParameterEncoded(name);
+    }
+
+    public void setAcceptContentType(String acceptContentType) {
+        this.acceptContentType = acceptContentType;
+    }
+
+    @Override
+    public String getAcceptContentType() {
+        return acceptContentType;
+    }
+
+    public void setAcceptEncoding(String acceptEncoding) {
+        this.acceptEncoding = acceptEncoding;
+    }
+
+    @Override
+    public String getAcceptEncoding() {
+        return acceptEncoding;
+    }
+
+    public void setAcceptLanguage(String acceptLanguage) {
+        this.acceptLanguage = acceptLanguage;
+    }
+
+    @Override
+    public String getAcceptLanguage() {
+        return acceptLanguage;
+    }
+
+    public void setAcceptCharset(String acceptCharset) {
+        this.acceptCharset = acceptCharset;
+    }
+
+    @Override
+    public String getAcceptCharset() {
+        return acceptCharset;
     }
 }

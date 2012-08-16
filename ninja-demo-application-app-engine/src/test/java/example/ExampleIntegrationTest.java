@@ -1,11 +1,11 @@
 package example;
 
 import static org.junit.Assert.assertTrue;
-import ninja.NinjaIntegrationFluentLeniumTest;
+import ninja.NinjaFluentLeniumTest;
 
 import org.junit.Test;
 
-public class ExampleIntegrationTest extends NinjaIntegrationFluentLeniumTest {
+public class ExampleIntegrationTest extends NinjaFluentLeniumTest {
 
 	@Test
 	public void testThatStaticAssetsWork() {

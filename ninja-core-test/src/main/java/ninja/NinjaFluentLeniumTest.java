@@ -1,5 +1,7 @@
 package ninja;
 
+import ninja.utils.NinjaTestServer;
+
 import org.fluentlenium.adapter.FluentTest;
 import org.junit.After;
 import org.junit.Before;
@@ -8,15 +10,15 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import javax.naming.NameNotFoundException;
 
-public abstract class NinjaIntegrationFluentLeniumTest extends FluentTest {
+public abstract class NinjaFluentLeniumTest extends FluentTest {
 
 	public WebDriver webDriver = new HtmlUnitDriver();
 	
-	public NinjaIntegrationTestHelper ninjaIntegrationTestHelper;
+	public NinjaTestServer ninjaTestServer;
 	
     @Before
     public void startupServer() {
-        ninjaIntegrationTestHelper = new NinjaIntegrationTestHelper();
+        ninjaTestServer = new NinjaTestServer();
     }
 	
 	
@@ -26,12 +28,12 @@ public abstract class NinjaIntegrationFluentLeniumTest extends FluentTest {
     }
     
     public String getServerAddress() {
-    	return ninjaIntegrationTestHelper.getServerAddress();
+    	return ninjaTestServer.getServerAddress();
     }
 
     @After
     public void shutdownServer() {
-        ninjaIntegrationTestHelper.shutdown();
+        ninjaTestServer.shutdown();
     }
 
 }

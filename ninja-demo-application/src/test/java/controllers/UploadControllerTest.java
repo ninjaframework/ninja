@@ -5,14 +5,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Map;
 
-import ninja.NinjaApiTest;
-import ninja.NinjaApiTestHelper;
+import ninja.NinjaTest;
+import ninja.utils.NinjaTestBrowser;
 
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
-public class UploadControllerTest extends NinjaApiTest {
+public class UploadControllerTest extends NinjaTest {
 	
 	@Test
 	public void testHtmlEscapingInTeamplateWorks() {
@@ -22,7 +22,7 @@ public class UploadControllerTest extends NinjaApiTest {
 		
 		// /redirect will send a location: redirect in the headers
 		
-		String result = NinjaApiTestHelper
+		String result = ninjaTestBrowser
 				.makeRequest(getServerAddress() + "upload", headers);
 
 		// If the redirect has worked we must see the following text
@@ -38,7 +38,7 @@ public class UploadControllerTest extends NinjaApiTest {
 		File file = new File("src/test/resources/test_for_upload.txt");
 		
 		// Let's upload a simple txt file...
-		String result = NinjaApiTestHelper
+		String result = ninjaTestBrowser
 				.uploadFile(getServerAddress() + "uploadFinish", "file", file);
 
 		// The upload simply displays back the file we uploaded.

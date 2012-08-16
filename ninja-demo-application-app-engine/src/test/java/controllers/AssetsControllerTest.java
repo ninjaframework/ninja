@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
-import ninja.NinjaApiTest;
-import ninja.NinjaApiTestHelper;
+import ninja.NinjaTest;
 import ninja.utils.MimeTypes;
+import ninja.utils.NinjaTestBrowser;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
-public class AssetsControllerTest extends NinjaApiTest {
+public class AssetsControllerTest extends NinjaTest {
 	
 	@Test
 	public void testThatSettingOfMimeTypeWorks() {
@@ -24,7 +24,7 @@ public class AssetsControllerTest extends NinjaApiTest {
 		Map<String, String> headers = Maps.newHashMap();
 		
 		// /redirect will send a location: redirect in the headers
-		HttpResponse httpResponse = NinjaApiTestHelper
+		HttpResponse httpResponse = ninjaTestBrowser
 				.makeRequestAndGetResponse(getServerAddress() + "assets/files/test_for_mimetypes.dxf", headers);
 
 		//this is a mimetype nobody knows of...

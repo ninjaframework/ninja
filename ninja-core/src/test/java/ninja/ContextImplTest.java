@@ -3,6 +3,7 @@ package ninja;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -282,6 +283,125 @@ public class ContextImplTest {
 
         assertEquals("/myapp/is/here", context.getRequestPath());
         
+    }
+
+    @Test
+    public void testGetRequestContentType() {
+        String contentType = "text/html";
+        when(httpServletRequest.getContentType()).thenReturn(contentType);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(contentType, context.getRequestContentType());
+
+        contentType = null;
+        when(httpServletRequest.getContentType()).thenReturn(contentType);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertNull(context.getRequestContentType());
+
+        contentType = "text/html; charset=UTF-8";
+        when(httpServletRequest.getContentType()).thenReturn(contentType);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(contentType, context.getRequestContentType());
+    }
+
+    @Test
+    public void testGetAcceptContentType() {
+        when(httpServletRequest.getHeader("accept")).thenReturn(null);
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("");
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("totally_unknown");
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/json");
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.APPLICATON_JSON, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("text/html, application/json");
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/xhtml, application/json");
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("text/plain");
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_PLAIN, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("text/plain, application/json");
+        context.init(httpServletRequest, httpServletResponse);
+        assertEquals(Result.APPLICATON_JSON, context.getAcceptContentType());
+    }
+
+    @Test
+    public void testGetAcceptEncoding() {
+        String encoding = "compress, gzip";
+        when(httpServletRequest.getHeader("accept-encoding")).thenReturn(encoding);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(encoding, context.getAcceptEncoding());
+
+        encoding = null;
+        when(httpServletRequest.getHeader("accept-encoding")).thenReturn(encoding);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertNull(context.getAcceptEncoding());
+
+        encoding = "gzip;q=1.0, identity; q=0.5, *;q=0";
+        when(httpServletRequest.getHeader("accept-encoding")).thenReturn(encoding);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(encoding, context.getAcceptEncoding());
+    }
+
+    @Test
+    public void testGetAcceptLanguage() {
+        String language = "de";
+        when(httpServletRequest.getHeader("accept-language")).thenReturn(language);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(language, context.getAcceptLanguage());
+
+        language = null;
+        when(httpServletRequest.getHeader("accept-language")).thenReturn(language);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertNull(context.getAcceptLanguage());
+
+        language = "da, en-gb;q=0.8, en;q=0.7";
+        when(httpServletRequest.getHeader("accept-language")).thenReturn(language);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(language, context.getAcceptLanguage());
+    }
+
+    @Test
+    public void testGetAcceptCharset() {
+        String charset = "UTF-8";
+        when(httpServletRequest.getHeader("accept-charset")).thenReturn(charset);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(charset, context.getAcceptCharset());
+
+        charset = null;
+        when(httpServletRequest.getHeader("accept-charset")).thenReturn(charset);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertNull(context.getAcceptCharset());
+
+        charset = "iso-8859-5, unicode-1-1;q=0.8";
+        when(httpServletRequest.getHeader("accept-charset")).thenReturn(charset);
+        context.init(httpServletRequest, httpServletResponse);
+
+        assertEquals(charset, context.getAcceptCharset());
     }
 
 }
