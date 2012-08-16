@@ -37,5 +37,5 @@ public @interface JSR303Validation {
     String fieldKey() default "";
 
     public static final String KEY = "validation.is.JSR303.violation";
-    public static final String MESSAGE = "{0} cannot be validated alonng given JSR303 annotations";
+    public static final String MESSAGE = "{0} cannot be validated with JSR303 annotations";
 }
