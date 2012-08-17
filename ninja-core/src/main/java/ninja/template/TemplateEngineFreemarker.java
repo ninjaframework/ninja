@@ -63,9 +63,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 		}		
 		
 		// provide all i18n templates to freemarker engine:
-		Locale locale = context.getHttpServletRequest().getLocale();		
-		Map<Object, Object> i18nMap = lang.getAll(locale);		
+		String language = context.getAcceptLanguage();	
+		Map<Object, Object> i18nMap = lang.getAll(language);	
 		map.putAll(i18nMap);
+		
+		
+		
 
 		String templateName = templateEngineHelper.getTemplateForResult(context.getRoute(),
                 result, FILE_SUFFIX);

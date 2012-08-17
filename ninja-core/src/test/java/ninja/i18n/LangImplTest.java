@@ -30,13 +30,13 @@ public class LangImplTest {
 		LangImpl lang = new LangImpl(ninjaProperties);
 		
 		//that will refer to messages_en.properties:
-		assertEquals("english", lang.get("language", Locale.US));
-		assertEquals("english", lang.get("language", Locale.CANADA));
-		assertEquals("english", lang.get("language", Locale.UK));	
+		assertEquals("english", lang.get("language", "en-US"));
+		assertEquals("english", lang.get("language", "en-CA"));
+		assertEquals("english", lang.get("language", "en-UK"));	
 		
 		//that will refer to messages_de.properties:
-		assertEquals("deutsch", lang.get("language", Locale.GERMAN));
-		assertEquals("deutsch", lang.get("language", Locale.GERMANY));
+		assertEquals("deutsch", lang.get("language", "de"));
+		assertEquals("deutsch", lang.get("language", "de-DE"));
 		
 	}
 	
@@ -49,13 +49,13 @@ public class LangImplTest {
 		
 		
 		//that will refer to messages_en.properties:
-		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", Locale.US, "test_parameter"));
-		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", Locale.CANADA, "test_parameter"));
-		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", Locale.UK, "test_parameter"));	
+		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", "en-US", "test_parameter"));
+		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", "en-CA", "test_parameter"));
+		assertEquals("this is the placeholder: test_parameter", lang.get("message_with_placeholder", "en-UK", "test_parameter"));	
 		
 		//that will refer to messages_de.properties:
-		assertEquals("das ist der platzhalter: test_parameter", lang.get("message_with_placeholder", Locale.GERMAN, "test_parameter"));
-		assertEquals("das ist der platzhalter: test_parameter", lang.get("message_with_placeholder", Locale.GERMANY, "test_parameter"));
+		assertEquals("das ist der platzhalter: test_parameter", lang.get("message_with_placeholder", "de", "test_parameter"));
+		assertEquals("das ist der platzhalter: test_parameter", lang.get("message_with_placeholder", "de-DE", "test_parameter"));
 		
 	}
 	
@@ -69,7 +69,7 @@ public class LangImplTest {
 		
 		
 		//US locale testing:
-		Map<Object, Object> map = lang.getAll(Locale.US);
+		Map<Object, Object> map = lang.getAll("en-US");
 
 		
 		assertEquals(4, map.keySet().size());
@@ -83,7 +83,7 @@ public class LangImplTest {
 		
 		
 		//GERMAN locale testing:
-		map = lang.getAll(Locale.GERMAN);
+		map = lang.getAll("de");
 		assertEquals(4, map.keySet().size());
 		assertTrue(map.containsKey("language"));
 		assertTrue(map.containsKey("message_with_placeholder"));
@@ -103,7 +103,7 @@ public class LangImplTest {
 		when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String [] {"en", "de", "fr-FR"});
 		LangImpl lang = new LangImpl(ninjaProperties);
 		
-		assertEquals("prop1, prop2, prop3", lang.get("a_propert_with_commas", Locale.US));
+		assertEquals("prop1, prop2, prop3", lang.get("a_propert_with_commas", "en-US"));
 				
 	}
 

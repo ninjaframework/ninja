@@ -52,13 +52,13 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
-    public String getFieldViolationMessage(String field, Locale locale) {
+    public String getFieldViolationMessage(String field, String language) {
         ConstraintViolation violation = fieldViolations.get(field);
         if (violation == null) {
             return null;
         }
         // First, format field
-        String formattedField = lang.getWithDefault(violation.getFieldKey(), field, locale);
+        String formattedField = lang.getWithDefault(violation.getFieldKey(), field, language);
         // Create parameters
         Object[] params = new Object[violation.getMessageParams().length + 1];
         params[0] = formattedField;
@@ -66,6 +66,6 @@ public class ValidationImpl implements Validation {
             System.arraycopy(violation.getMessageParams(), 0, params, 1, violation.getMessageParams().length);
         }
         // Format field
-        return lang.getWithDefault(violation.getMessageKey(), violation.getDefaultMessage(), locale, params);
+        return lang.getWithDefault(violation.getMessageKey(), violation.getDefaultMessage(), language, params);
     }
 }

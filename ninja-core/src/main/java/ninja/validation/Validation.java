@@ -53,9 +53,9 @@ public interface Validation {
      * Get the formatted violation message for the given field
      *
      * @param field The field
-     * @param locale The locale
+     * @param locale The language to get the message
      * @return The message, or null if there was no violation
      */
-    String getFieldViolationMessage(String field, Locale locale);
+    String getFieldViolationMessage(String field, String language);
 
 }

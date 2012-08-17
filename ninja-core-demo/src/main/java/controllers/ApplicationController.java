@@ -70,7 +70,7 @@ public class ApplicationController {
             @Param("email") @Required String email) {
         if (validation.hasViolations()) {
             return Results.contentType("text/plain").render(
-                    validation.getFieldViolationMessage("email", Locale.ENGLISH));
+                    validation.getFieldViolationMessage("email", "en"));
         } else {
             return Results.contentType("text/plain").render(email);
         }
