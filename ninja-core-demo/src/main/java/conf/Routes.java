@@ -16,8 +16,6 @@ import controllers.UploadController;
 
 public class Routes implements ApplicationRoutes {
 	
-	@Inject
-	conf.ninjamoduleloginlogout.Routes ninjamoduleloginlogoutRoutes;
 	/**
 	 * Using a (almost) nice DSL we can configure the router.
 	 * 
@@ -85,12 +83,6 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
-
-        
-        // /////////////////////////////////////////////////////////////////////
-        // Default routes from a plugin:
-        // /////////////////////////////////////////////////////////////////////
-        ninjamoduleloginlogoutRoutes.init(router);
         
         
         router.GET().route("/assets/.*").with(AssetsController.class, "serve");
