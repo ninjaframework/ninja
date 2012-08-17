@@ -26,7 +26,7 @@ class LifecycleRegister {
 
     public void start() {
         if (started.get()) {
-            throw new FailedStartException("VZ service is already started!");
+            throw new FailedStartException("Ninja service is already started!");
         }
         List<Target> toStart = new ArrayList<Target>(this.startables);
         started.set(true);
@@ -41,7 +41,7 @@ class LifecycleRegister {
 
     public void stop() {
         if (!started.get()) {
-            throw new FailedDisposeException("VZ service is not started!");
+            throw new FailedDisposeException("Ninja service is not started!");
         }
         List<Target> toDispose = new ArrayList<Target>(this.disposables);
         started.set(false);
