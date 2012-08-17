@@ -1,5 +1,0 @@
-&{'registration.confirmation.greeting'} ${email}!
-
-&{'registration.confirmation.body'}
-
-${confirmation_link}
