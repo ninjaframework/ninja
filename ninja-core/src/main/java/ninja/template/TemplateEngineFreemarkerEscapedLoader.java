@@ -8,10 +8,24 @@ import org.apache.commons.io.IOUtils;
 
 import freemarker.cache.TemplateLoader;
 
+/**
+ * This class html-escapes variables like ${...} in all templates (ftl.html). If
+ * you don't want to have something escaped you can use at your own risk:
+ * <p>
+ * 
+ * <code>
+ * <#noescape>${...}</#noescape>
+ * </code>
+ * 
+ * (inside your template).
+ * <p>
+ * See also http://freemarker.org/docs/ref_directive_escape.html
+ * 
+ */
 public class TemplateEngineFreemarkerEscapedLoader implements TemplateLoader {
 
-    public static final String ESCAPE_PREFIX = "<#ftl strip_whitespace=true><#escape x as x?html>";
-    public static final String ESCAPE_SUFFIX = "</#escape>";
+    public static final String ESCAPE_PREFIX = "[#ftl strip_whitespace=true][#escape x as x?html]";
+    public static final String ESCAPE_SUFFIX = "[/#escape]";
 
     private final TemplateLoader delegate;
 

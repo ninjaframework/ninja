@@ -6,7 +6,7 @@ import ninja.utils.NinjaConstant;
 
 /**
  * Helper methods for template engines
- *
+ * 
  * @author James Roper
  */
 public class TemplateEngineHelper {
@@ -35,7 +35,8 @@ public class TemplateEngineHelper {
 
             // Replace controller prefix with views prefix
             String parentPackageOfController = controllerPackageName
-                    .replaceFirst(NinjaConstant.CONTROLLERS_DIR, NinjaConstant.VIEWS_DIR);
+                    .replaceFirst(NinjaConstant.CONTROLLERS_DIR,
+                            NinjaConstant.VIEWS_DIR);
 
             // And now we rewrite everything from "." notation to directories /
             String parentControllerPackageAsPath = parentPackageOfController
@@ -43,9 +44,9 @@ public class TemplateEngineHelper {
 
             // and the final path of the controller will be something like:
             // views/some/package/submoduleName/ControllerName/templateName.ftl.html
-            return String.format("/%s/%s/%s%s",
-                    parentControllerPackageAsPath, controller.getSimpleName(),
-                    route.getControllerMethod().getName(), suffix);
+            return String.format("/%s/%s/%s%s", parentControllerPackageAsPath,
+                    controller.getSimpleName(), route.getControllerMethod()
+                            .getName(), suffix);
         } else {
             return result.getTemplate();
         }

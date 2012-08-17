@@ -25,6 +25,12 @@ public class LangImpl implements Lang {
     private static Logger logger = LoggerFactory.getLogger(LangImpl.class);
 
     private Map<String, Configuration> langToKeyAndValuesMapping;
+    
+    /**
+     * Maps the key to all properties => in that case prefixed by "i18n." by convention.
+     * This makes them easily readable and useable in templates.
+     */
+    private Map<String, Map<Object, Object>> langToPrefixedKeyMapping;
 
     private final NinjaProperties ninjaProperties;
 
@@ -189,6 +195,7 @@ public class LangImpl implements Lang {
         }
 
         // Check if we get a registered mapping for the language input string.
+        // At that point the language may be either language-country or only country
         Configuration configuration = langToKeyAndValuesMapping.get(language);
         if (configuration != null) {
 
@@ -196,8 +203,7 @@ public class LangImpl implements Lang {
         }
 
         // If we got a two part language code like "en-US" we split it and
-        // search only
-        // for the language "en".
+        // search only for the language "en".
         if (language.contains("-")) {
 
             String languageWithoutCountry = language.split("-")[0];
@@ -212,8 +218,9 @@ public class LangImpl implements Lang {
 
         }
 
-        // Oops. Nothing found. This is guaranteed to work => default language.
+        // Oops. Nothing found. We return the default language (by convention guaranteed to work).
         return langToKeyAndValuesMapping.get("");
 
     }
+
 }

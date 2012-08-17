@@ -40,7 +40,7 @@ public class I18nControllerTest extends NinjaTest {
 				.makeRequest(getServerAddress() + "/i18n", headers);
 
 		assertTrue(result.contains(
-				"Hallo - das ist eine internationalisierte Nachricht in der Templating Eninge"));
+				"Hallo - das ist eine internationalisierte Nachricht in der Templating Engine"));
 
 	}
 	

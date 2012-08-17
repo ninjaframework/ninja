@@ -13,36 +13,33 @@ import com.google.inject.Inject;
 
 public class TemplateEngineJsonGson implements TemplateEngine {
 
-	private final Logger logger;
-	
-	@Inject
-	public TemplateEngineJsonGson(Logger logger) {
-		this.logger = logger;
-		
-	}
-	
-	
-	@Override
+    private final Logger logger;
+
+    @Inject
+    public TemplateEngineJsonGson(Logger logger) {
+        this.logger = logger;
+
+    }
+
+    @Override
     public void invoke(Context context, Result result) {
 
-		
-		
-		ResponseStreams responseStreams = context.finalizeHeaders(result);
-		
-		Object object = result.getRenderable();
-		
-		Gson gson = new Gson();
-		String json = gson.toJson(result.getRenderable());
-		
-		try {
-			responseStreams.getWriter().write(json);
-			responseStreams.getWriter().flush();
-			responseStreams.getWriter().close();
-			
-		} catch (IOException e) {
-			logger.error("Error while writing out Gson Json", e);
-		}
-	    
+        ResponseStreams responseStreams = context.finalizeHeaders(result);
+
+        Object object = result.getRenderable();
+
+        Gson gson = new Gson();
+        String json = gson.toJson(result.getRenderable());
+
+        try {
+            responseStreams.getWriter().write(json);
+            responseStreams.getWriter().flush();
+            responseStreams.getWriter().close();
+
+        } catch (IOException e) {
+            logger.error("Error while writing out Gson Json", e);
+        }
+
     }
 
     @Override
@@ -50,10 +47,9 @@ public class TemplateEngineJsonGson implements TemplateEngine {
         return Result.APPLICATON_JSON;
     }
 
-
-	@Override
-	public String getSuffixOfTemplatingEngine() {
-		//intentionally returns null...
-		return null;
-	}
+    @Override
+    public String getSuffixOfTemplatingEngine() {
+        // intentionally returns null...
+        return null;
+    }
 }
