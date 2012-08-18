@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+         name="Ninja Web Framework | Full stack web framework for Java. Fast and productive. Built on Maven - runs on servlet containers.">
+    
+    
+    <bannerLeft>
+        <name>Ninja web framework</name>
+        <href>http://www.ninjaframework.org</href>
+    </bannerLeft>
+    <body>
+    
+    
+        <menu name="">
+        	<item name="Home" href="./index.html"/>
+        	<item name="Introduction" href="./introduction.html"/>
+        	<item name="Team" href="./team.html"/>
+        </menu>
+        
+        <menu name="Learn">
+        	<item name="Getting started" href="./documentation/getting_started.html"/>
+        	<item name="Controller" href="./documentation/controller.html"/>        	
+        	<item name="Configuration" href="./documentation/application_configuration.html"/>
+        	<item name="Html templating" href="./documentation/html_templating.html"/>
+        	<item name="Injection" href="./documentation/injection.html"/>
+        	<item name="Filter" href="./documentation/filter.html"/>
+        	<item name="Internationalization" href="./documentation/internationalization.html"/>
+        	<item name="Scheduler" href="./documentation/scheduler.html"/>
+        	<item name="Lifecycle" href="./documentation/lifecycle.html"/>
+        	<item name="Validation" href="./documentation/validation.html"/>
+        	<item name="Debugging" href="./documentation/debugging.html"/>
+        	<item name="Deployment" href="./documentation/deployment.html"/>
+        	<item name="API" href="./apidocs/index.html"/>
+        </menu>
+        
+        <menu name="Get involved">
+            <item name="Mailing list" href="https://groups.google.com/d/forum/ninja-framework"/>
+        	<item name="Source code" href="https://github.com/reyez/ninja"/>
+        	<item name="Bug tracker" href="https://github.com/reyez/ninja/issues"/>
+        	<item name="Security issues" href="./security.html"/>
+        </menu>
+        
+        <menu name="Develop">
+        	<item name="Roadmap" href="./developer/roadmap.html"/>
+        	<item name="How to contribute" href="./developer/getting_started.html"/>
+        </menu>
+        
+
+    </body>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.2.2</version>
+    </skin>
+      <custom>
+    <fluidoSkin>
+      <googleSearch>
+        <sitesearch>
+        http://www.ninjaframework.org
+        </sitesearch>
+      </googleSearch>
+       <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+             <gitHub>
+        <projectId>reyez/ninja</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>black</ribbonColor>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
+</project>

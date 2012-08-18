@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>ninja-core-test</artifactId>
+	<packaging>jar</packaging>
+	<name>ninja web framework test utilities</name>
+
+    <parent>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja</artifactId>
+        <version>0.6-SNAPSHOT</version>
+    </parent>
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.ninjaframework</groupId>
+			<artifactId>ninja-core</artifactId>
+			<version>0.6-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- Testing is mainly done by mockito: -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+            <!-- junit-dep has all dependencies declared, rather than bundled (bundled
+                 causes massive classpath headaches) -->
+            <artifactId>junit-dep</artifactId>
+			<version>4.8.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-embedded</artifactId>
+			<version>6.1.22</version>
+		</dependency>
+
+        <!-- A very nice abstraction for making selenum tests: -->
+		<dependency>
+			<groupId>org.fluentlenium</groupId>
+			<artifactId>fluentlenium-core</artifactId>
+			<version>0.6.0</version>
+		</dependency>
+        
+        <!--HttpCient is used to mainly test low level Json Apis -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.devbliss.doctest</groupId>
+            <artifactId>doctest</artifactId>
+            <version>0.4.1</version>
+        </dependency>
+
+	</dependencies>
+
+
+	<description>Contains test utilities that allow to easily test a ninja application. For instance NijaIntegrationTest contains everything that is needed to start up an arbitrary ninja application and test it via htmlunit and fluentlenium.</description>
+</project>
