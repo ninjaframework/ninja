@@ -2,8 +2,15 @@ Quickstart for users
 ====================
 
 The best starting point is to check out the source of our demo application at:
-https://github.com/reyez/ninja/tree/develop/ninja-demo-application
+https://github.com/reyez/ninja/tree/develop/ninja-core-demo
 
+Please check out the project into your computer and hit inside the project the following command:
+<pre class="prettyprint">
+    mvn jetty:run
+</pre>
+
+**Note**: Generating new projects is a bit strange right now as you have to copy the demo project ideally.
+However this will change. Have a look at [issue 29](https://github.com/reyez/ninja/issues/29).
 
 Preface
 -------
@@ -18,7 +25,7 @@ A controller resides under the package *controllers*.
 
 Controllers are just simple Java classes. 
 
-<pre class="prettyprint">    
+<pre class="prettyprint">
     public class ApplicationController {       
     
         public Result index() {
@@ -27,7 +34,7 @@ Controllers are just simple Java classes.
         }
     }
 </pre>
-  
+
 Controller methods always return a "Result". Results is just a little helper that lets you create
 results easily. In the case of the application controller the result is a html response.
 
@@ -41,7 +48,7 @@ This is done by declaring a file called *Routes.java* in the package *conf*.
 
 A minimal route file looks like:
 
-<pre class="prettyprint">  
+<pre class="prettyprint">
     public class Routes implements ApplicationRoutes {
   
         @Override
@@ -71,11 +78,12 @@ is built around freemarker templates.
 Simply put a general html page into the view:
 
 
+
     <html>
         <body>
             <h1>Hello world</h1>
         </body>
-    </html>
+    </html>    
 
 
 The result
@@ -83,7 +91,6 @@ The result
 Voila! you got your first running Ninja application. We defined a route, a controller and a simple view. That's all. Ninja
 retrieves everything using some conventions you already saw. Routes are under conf.Routes.java. views in a directory
 named after their controller. 
-
 
 
 

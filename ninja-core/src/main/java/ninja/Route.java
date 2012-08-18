@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ninja;
 
 import com.google.common.collect.ImmutableList;
@@ -24,8 +40,11 @@ public class Route {
     private final List<String> parameterNames;
     private final Pattern regex;
 
-    public Route(String httpMethod, String uri, Class controllerClass, Method controllerMethod,
-            FilterChain filterChain) {
+    public Route(String httpMethod,
+                 String uri,
+                 Class controllerClass,
+                 Method controllerMethod,
+                 FilterChain filterChain) {
         this.httpMethod = httpMethod;
         this.uri = uri;
         this.controllerClass = controllerClass;
@@ -64,7 +83,7 @@ public class Route {
      * Matches /index to /index or /me/1 to /person/{id}
      * 
      * @return True if the actual route matches a raw rout. False if not.
-     *
+     * 
      */
     public boolean matches(String httpMethod, String uri) {
         if (this.httpMethod.equalsIgnoreCase(httpMethod)) {
@@ -80,9 +99,11 @@ public class Route {
      * 
      * If you want to decode you have to do it yourself.
      * 
-     * Most likely with: http://docs.oracle.com/javase/6/docs/api/java/net/URI.html
+     * Most likely with:
+     * http://docs.oracle.com/javase/6/docs/api/java/net/URI.html
      * 
-     * @param uri The whole encoded uri.
+     * @param uri
+     *            The whole encoded uri.
      * @return A map with all parameters of that uri. Encoded in => encoded out.
      */
     public Map<String, String> getPathParametersEncoded(String uri) {
@@ -127,7 +148,7 @@ public class Route {
 
     /**
      * Gets a raw uri like /{name}/id/* and returns /(.*)/id/*
-     *
+     * 
      * @return The regex
      */
     private static String convertRawUriToRegex(String rawUri) {

@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/DECORATION/1.1.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
-         name="Ninja web framework - developing large web applications in Java becomes fun again.">
+         name="Ninja Web Framework | Full stack web framework for Java. Fast and productive. Built on Maven - runs on servlet containers.">
     
     
     <bannerLeft>
@@ -21,8 +21,10 @@
         	<item name="Getting started" href="./documentation/getting_started.html"/>
         	<item name="Controller" href="./documentation/controller.html"/>        	
         	<item name="Configuration" href="./documentation/application_configuration.html"/>
+        	<item name="Html templating" href="./documentation/html_templating.html"/>
+        	<item name="Injection" href="./documentation/injection.html"/>
         	<item name="Filter" href="./documentation/filter.html"/>
-        	<item name="Internationalization" href="./documentation/internationalization"/>
+        	<item name="Internationalization" href="./documentation/internationalization.html"/>
         	<item name="Scheduler" href="./documentation/scheduler.html"/>
         	<item name="Lifecycle" href="./documentation/lifecycle.html"/>
         	<item name="Validation" href="./documentation/validation.html"/>

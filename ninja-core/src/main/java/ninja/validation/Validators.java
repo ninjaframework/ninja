@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ninja.validation;
 
 import java.util.Set;
@@ -5,10 +21,9 @@ import java.util.regex.Pattern;
 
 import javax.validation.ValidatorFactory;
 
-
 /**
  * Built in validators
- *
+ * 
  * @author James Roper
  */
 public class Validators {
@@ -17,14 +32,16 @@ public class Validators {
 
         @Override
         public void validate(Object value, String field, Validation validation) {
-            ValidatorFactory validatorFactory =
-                    javax.validation.Validation.buildDefaultValidatorFactory();
-            javax.validation.Validator validator = validatorFactory.getValidator();
-            Set<javax.validation.ConstraintViolation<Object>> violations =
-                    validator.validate(value);
+            ValidatorFactory validatorFactory = javax.validation.Validation
+                    .buildDefaultValidatorFactory();
+            javax.validation.Validator validator = validatorFactory
+                    .getValidator();
+            Set<javax.validation.ConstraintViolation<Object>> violations = validator
+                    .validate(value);
             for (javax.validation.ConstraintViolation<Object> violation : violations) {
-                validation.addViolation(ninja.validation.ConstraintViolation.create(violation
-                        .getMessage(), violation.getInvalidValue()));
+                validation.addViolation(ninja.validation.ConstraintViolation
+                        .create(violation.getMessage(),
+                                violation.getInvalidValue()));
             }
         }
 
@@ -45,8 +62,12 @@ public class Validators {
         @Override
         public void validate(Object value, String field, Validation validation) {
             if (value == null) {
-                validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                    required.key(), fieldKey(field, required.fieldKey()), required.message()));
+                validation.addFieldViolation(
+                        field,
+                        ConstraintViolation.createForFieldWithDefault(
+                                required.key(),
+                                fieldKey(field, required.fieldKey()),
+                                required.message()));
             }
         }
 
@@ -67,13 +88,15 @@ public class Validators {
         public void validate(String value, String field, Validation validation) {
             if (value != null) {
                 if (length.max() != -1 && value.length() > length.max()) {
-                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                            length.maxKey(), fieldKey(field, length.fieldKey()), length.maxMessage(),
-                            length.max(), value));
+                    validation.addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(length.maxKey(),
+                                    fieldKey(field, length.fieldKey()),
+                                    length.maxMessage(), length.max(), value));
                 } else if (length.min() != -1 && value.length() < length.min()) {
-                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                            length.minKey(), fieldKey(field, length.fieldKey()), length.minMessage(),
-                            length.min(), value));
+                    validation.addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(length.minKey(),
+                                    fieldKey(field, length.fieldKey()),
+                                    length.minMessage(), length.min(), value));
                 }
             }
         }
@@ -97,8 +120,10 @@ public class Validators {
                 try {
                     Long.parseLong(value);
                 } catch (NumberFormatException e) {
-                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                            isInteger.key(), fieldKey(field, isInteger.fieldKey()), isInteger.message(), value));
+                    validation.addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(isInteger.key(),
+                                    fieldKey(field, isInteger.fieldKey()),
+                                    isInteger.message(), value));
                 }
             }
         }
@@ -122,8 +147,10 @@ public class Validators {
                 try {
                     Double.parseDouble(value);
                 } catch (NumberFormatException e) {
-                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                            isFloat.key(), fieldKey(field, isFloat.fieldKey()), isFloat.message(), value));
+                    validation.addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(isFloat.key(),
+                                    fieldKey(field, isFloat.fieldKey()),
+                                    isFloat.message(), value));
                 }
             }
         }
@@ -147,9 +174,14 @@ public class Validators {
         public void validate(String value, String field, Validation validation) {
             if (value != null) {
                 if (!pattern.matcher(value).matches()) {
-                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                            matches.key(), fieldKey(field, matches.fieldKey()), matches.message(),
-                            matches.regexp(), value));
+                    validation
+                            .addFieldViolation(
+                                    field,
+                                    ConstraintViolation.createForFieldWithDefault(
+                                            matches.key(),
+                                            fieldKey(field, matches.fieldKey()),
+                                            matches.message(),
+                                            matches.regexp(), value));
                 }
             }
         }
@@ -170,14 +202,18 @@ public class Validators {
         @Override
         public void validate(Number value, String field, Validation validation) {
             if (value != null) {
-                if (number.max() != Double.MAX_VALUE && value.doubleValue() > number.max()) {
-                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                            number.maxKey(), fieldKey(field, number.fieldKey()), number.maxMessage(),
-                            number.max(), value));
-                } else if (number.min() != -1 && value.doubleValue() < number.min()) {
-                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                            number.minKey(), fieldKey(field, number.fieldKey()), number.minMessage(),
-                            number.min(), value));
+                if (number.max() != Double.MAX_VALUE
+                        && value.doubleValue() > number.max()) {
+                    validation.addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(number.maxKey(),
+                                    fieldKey(field, number.fieldKey()),
+                                    number.maxMessage(), number.max(), value));
+                } else if (number.min() != -1
+                        && value.doubleValue() < number.min()) {
+                    validation.addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(number.minKey(),
+                                    fieldKey(field, number.fieldKey()),
+                                    number.minMessage(), number.min(), value));
                 }
             }
         }

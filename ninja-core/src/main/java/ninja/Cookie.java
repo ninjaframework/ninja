@@ -1,8 +1,24 @@
+/**
+ * Copyright (C) 2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ninja;
 
 /**
  * An HTTP cookie
- *
+ * 
  * @author James Roper
  */
 public class Cookie {
@@ -15,9 +31,14 @@ public class Cookie {
     private final boolean secure;
     private final boolean httpOnly;
 
-    public Cookie(String name, String value, String comment,
-            String domain, int maxAge, String path,
-            boolean secure, boolean httpOnly) {
+    public Cookie(String name,
+                  String value,
+                  String comment,
+                  String domain,
+                  int maxAge,
+                  String path,
+                  boolean secure,
+                  boolean httpOnly) {
         this.name = name;
         this.value = value;
         this.comment = comment;
@@ -62,19 +83,31 @@ public class Cookie {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Cookie cookie = (Cookie) o;
 
-        if (httpOnly != cookie.httpOnly) return false;
-        if (maxAge != cookie.maxAge) return false;
-        if (secure != cookie.secure) return false;
-        if (comment != null ? !comment.equals(cookie.comment) : cookie.comment != null) return false;
-        if (domain != null ? !domain.equals(cookie.domain) : cookie.domain != null) return false;
-        if (name != null ? !name.equals(cookie.name) : cookie.name != null) return false;
-        if (path != null ? !path.equals(cookie.path) : cookie.path != null) return false;
-        if (value != null ? !value.equals(cookie.value) : cookie.value != null) return false;
+        if (httpOnly != cookie.httpOnly)
+            return false;
+        if (maxAge != cookie.maxAge)
+            return false;
+        if (secure != cookie.secure)
+            return false;
+        if (comment != null ? !comment.equals(cookie.comment)
+                : cookie.comment != null)
+            return false;
+        if (domain != null ? !domain.equals(cookie.domain)
+                : cookie.domain != null)
+            return false;
+        if (name != null ? !name.equals(cookie.name) : cookie.name != null)
+            return false;
+        if (path != null ? !path.equals(cookie.path) : cookie.path != null)
+            return false;
+        if (value != null ? !value.equals(cookie.value) : cookie.value != null)
+            return false;
 
         return true;
     }
@@ -127,7 +160,8 @@ public class Cookie {
         }
 
         public Cookie build() {
-            return new Cookie(name, value, comment, domain, maxAge, path, secure, httpOnly);
+            return new Cookie(name, value, comment, domain, maxAge, path,
+                    secure, httpOnly);
         }
 
         public Builder setValue(String value) {

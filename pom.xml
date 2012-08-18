@@ -1,4 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--
+
+    Copyright (C) 2012 the original author or authors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.ninjaframework</groupId>
@@ -53,7 +72,7 @@
 		<connection>scm:git://github.com/reyez/ninja.git</connection>
 		<developerConnection>scm:git:git@github.com:reyez/ninja.git</developerConnection>
 	</scm>
-	
+
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/reyez/ninja/issues/</url>
@@ -66,4 +85,61 @@
 			<archive>http://groups.google.com/group/ninja-framework</archive>
 		</mailingList>
 	</mailingLists>
+
+
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+
+	<profiles>
+		<!-- Do a license check by running : mvn -P license license:check -->
+		<!-- Update the license check by running : mvn -P license license:format -->
+		<profile>
+			<id>license</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.mycila.maven-license-plugin</groupId>
+						<artifactId>maven-license-plugin</artifactId>
+						<version>1.6.0</version>
+						<configuration>
+							<quiet>false</quiet>
+							<header>src/main/resources/license-header.txt</header>
+							<aggregate>true</aggregate>
+							<includes>
+								<include>**/src/**</include>
+								<include>**/pom.xml</include>
+							</includes>
+							<excludes>
+								<!-- ignore files produced during a build -->
+								<exclude>**/target/**</exclude>
+								<exclude>**/WEB-INF/classes/**</exclude>
+								<exclude>**/site/**</exclude>
+								<exclude>**/.DS_Store</exclude>
+
+								<!-- ignore binary files -->
+								<exclude>**/assets/**</exclude>
+								<exclude>**/views/**</exclude>
+							</excludes>
+							<useDefaultExcludes>false</useDefaultExcludes>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
 </project>

@@ -59,7 +59,11 @@ refer to [their manual](http://commons.apache.org/configuration/) for even more 
 
 Configuring the modes
 ---------------------
-Ninja uses three predefined modes (test, dev and prod as defined in NinjaConstant.java). You can set the
+
+Ninja uses three predefined modes (test, dev and prod as defined in NinjaConstant.java). 
+By default Ninja will use the **dev** mode.
+
+You can set the
 modes by setting a Java system property called "ninja.mode".
 
 <pre class="prettyprint">
@@ -99,7 +103,7 @@ This can be accomplished by setting a Java system property:
 </pre>
 
 This tells Ninja to load conf/production.conf. It will also load conf/application.conf as usual, 
-but values in conf/production.conf will overwrite possible values in application.conf.
+but values in conf/production.conf will overwrite values in conf/application.conf.
 
 That way you can manage a production configuration separately from
 your project. You may want to do this for instance when your server secret should only
@@ -116,6 +120,6 @@ It tries to load in the following order:
 * From the user's home dir.
 * From the classpath.
 
-Ninja uses again the excellent Apache Configurations library to do the loading. Please refer to
+Ninja uses the excellent Apache Configurations library to do the loading. Please refer to
 [their manual](http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
 

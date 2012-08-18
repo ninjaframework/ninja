@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ninja;
 
 import java.io.BufferedReader;
@@ -34,76 +50,79 @@ import com.google.inject.Inject;
 
 public class ContextImpl implements Context {
 
-	private HttpServletRequest httpServletRequest;
+    private HttpServletRequest httpServletRequest;
 
-	private HttpServletResponse httpServletResponse;
+    private HttpServletResponse httpServletResponse;
 
-	private Route route;
+    private Route route;
 
-	private AsyncStrategy asyncStrategy;
-	private final Object asyncLock = new Object();
+    private AsyncStrategy asyncStrategy;
+    private final Object asyncLock = new Object();
 
-	private final BodyParserEngineManager bodyParserEngineManager;
+    private final BodyParserEngineManager bodyParserEngineManager;
 
-	private final FlashCookie flashCookie;
+    private final FlashCookie flashCookie;
 
-	private final SessionCookie sessionCookie;
+    private final SessionCookie sessionCookie;
     private final ResultHandler resultHandler;
     private final Validation validation;
-    
-    @Inject Logger logger;
 
-	@Inject
-	public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
-            FlashCookie flashCookie, SessionCookie sessionCookie,
-            ResultHandler resultHandler, Validation validation) {
+    @Inject
+    Logger logger;
 
-		this.bodyParserEngineManager = bodyParserEngineManager;
-		this.flashCookie = flashCookie;
-		this.sessionCookie = sessionCookie;
+    @Inject
+    public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
+                       FlashCookie flashCookie,
+                       SessionCookie sessionCookie,
+                       ResultHandler resultHandler,
+                       Validation validation) {
+
+        this.bodyParserEngineManager = bodyParserEngineManager;
+        this.flashCookie = flashCookie;
+        this.sessionCookie = sessionCookie;
         this.resultHandler = resultHandler;
         this.validation = validation;
     }
 
-	public void init(HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) {
-		this.httpServletRequest = httpServletRequest;
-		this.httpServletResponse = httpServletResponse;
+    public void init(HttpServletRequest httpServletRequest,
+                     HttpServletResponse httpServletResponse) {
+        this.httpServletRequest = httpServletRequest;
+        this.httpServletResponse = httpServletResponse;
 
-		// init flash scope:
-		flashCookie.init(this);
+        // init flash scope:
+        flashCookie.init(this);
 
-		// init session scope:
-		sessionCookie.init(this);
+        // init session scope:
+        sessionCookie.init(this);
 
-	}
+    }
 
-	public void setRoute(Route route) {
-		this.route = route;
-	}
+    public void setRoute(Route route) {
+        this.route = route;
+    }
 
-	public HttpServletRequest getHttpServletRequest() {
-		return httpServletRequest;
-	}
+    public HttpServletRequest getHttpServletRequest() {
+        return httpServletRequest;
+    }
 
-	public HttpServletResponse getHttpServletResponse() {
-		return this.httpServletResponse;
-	}
+    public HttpServletResponse getHttpServletResponse() {
+        return this.httpServletResponse;
+    }
 
-	@Override
-	public String getPathParameter(String key) {
-	    
-	    String encodedParameter = route.getPathParametersEncoded(getRequestPath())
-                .get(key);
-	    
-	    if (encodedParameter == null) {
-	        return null;
-	    } else {
-	        return URI.create(encodedParameter).getPath();
-	    }
+    @Override
+    public String getPathParameter(String key) {
 
-	}
-	
+        String encodedParameter = route.getPathParametersEncoded(
+                getRequestPath()).get(key);
+
+        if (encodedParameter == null) {
+            return null;
+        } else {
+            return URI.create(encodedParameter).getPath();
+        }
+
+    }
+
     @Override
     public String getPathParameterEncoded(String key) {
 
@@ -111,129 +130,131 @@ public class ContextImpl implements Context {
 
     }
 
-	@Override
-	public Integer getPathParameterAsInteger(String key) {
-		String parameter = getPathParameter(key);
+    @Override
+    public Integer getPathParameterAsInteger(String key) {
+        String parameter = getPathParameter(key);
 
-		try {
-			return Integer.parseInt(parameter);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+        try {
+            return Integer.parseInt(parameter);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-	@Override
-	public String getParameter(String key) {
-		return httpServletRequest.getParameter(key);
-	}
+    @Override
+    public String getParameter(String key) {
+        return httpServletRequest.getParameter(key);
+    }
 
-	@Override
-	public String getParameter(String key, String defaultValue) {
-		String parameter = getParameter(key);
+    @Override
+    public String getParameter(String key, String defaultValue) {
+        String parameter = getParameter(key);
 
-		if (parameter == null) {
-			parameter = defaultValue;
-		}
+        if (parameter == null) {
+            parameter = defaultValue;
+        }
 
-		return parameter;
-	}
+        return parameter;
+    }
 
-	@Override
-	public Integer getParameterAsInteger(String key) {
-		return getParameterAsInteger(key, null);
-	}
+    @Override
+    public Integer getParameterAsInteger(String key) {
+        return getParameterAsInteger(key, null);
+    }
 
-	@Override
-	public Integer getParameterAsInteger(String key, Integer defaultValue) {
-		String parameter = getParameter(key);
+    @Override
+    public Integer getParameterAsInteger(String key, Integer defaultValue) {
+        String parameter = getParameter(key);
 
-		try {
-			return Integer.parseInt(parameter);
-		} catch (Exception e) {
-			return defaultValue;
-		}
-	}
+        try {
+            return Integer.parseInt(parameter);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
 
-	@Override
-	public Map<String, String[]> getParameters() {
-		return httpServletRequest.getParameterMap();
-	}
+    @Override
+    public Map<String, String[]> getParameters() {
+        return httpServletRequest.getParameterMap();
+    }
 
-	@Override
-	public String getHeader(String name) {
-		return httpServletRequest.getHeader(name);
-	}
+    @Override
+    public String getHeader(String name) {
+        return httpServletRequest.getHeader(name);
+    }
 
-	@Override
-	public Map<String, String> getHeaders() {
-		Map<String, String> headers = new HashMap<String, String>();
-		Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-			headers.put(name, httpServletRequest.getHeader(name));
-		}
-		return headers;
-	}
+    @Override
+    public Map<String, String> getHeaders() {
+        Map<String, String> headers = new HashMap<String, String>();
+        Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
+        while (enumeration.hasMoreElements()) {
+            String name = enumeration.nextElement();
+            headers.put(name, httpServletRequest.getHeader(name));
+        }
+        return headers;
+    }
 
-	@Override
-	public String getCookieValue(String name) {
-		return CookieHelper.getCookieValue(name,
-				httpServletRequest.getCookies());
-	}
+    @Override
+    public String getCookieValue(String name) {
+        return CookieHelper.getCookieValue(name,
+                httpServletRequest.getCookies());
+    }
 
-	@Override
-	public <T> T parseBody(Class<T> classOfT) {
+    @Override
+    public <T> T parseBody(Class<T> classOfT) {
 
-		BodyParserEngine bodyParserEngine = bodyParserEngineManager
-				.getBodyParserEngineForContentType(ContentTypes.APPLICATION_JSON);
+        BodyParserEngine bodyParserEngine = bodyParserEngineManager
+                .getBodyParserEngineForContentType(ContentTypes.APPLICATION_JSON);
 
-		if (bodyParserEngine == null) {
-			return null;
-		}
+        if (bodyParserEngine == null) {
+            return null;
+        }
 
-		return bodyParserEngine.invoke(this, classOfT);
+        return bodyParserEngine.invoke(this, classOfT);
 
-	}
+    }
 
-	@Override
-	public FlashCookie getFlashCookie() {
-		return flashCookie;
-	}
+    @Override
+    public FlashCookie getFlashCookie() {
+        return flashCookie;
+    }
 
-	@Override
-	public SessionCookie getSessionCookie() {
-		return sessionCookie;
-	}
+    @Override
+    public SessionCookie getSessionCookie() {
+        return sessionCookie;
+    }
 
     @Override
     public Context addCookie(Cookie cookie) {
-        httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
+        httpServletResponse.addCookie(CookieHelper
+                .convertNinjaCookieToServletCookie(cookie));
         return this;
     }
 
     @Deprecated
     @Override
-	public String getRequestUri() {
-		return getHttpServletRequest().getRequestURI();
-	}
+    public String getRequestUri() {
+        return getHttpServletRequest().getRequestURI();
+    }
 
-	public void handleAsync() {
-		synchronized (asyncLock) {
-			if (asyncStrategy == null) {
-				asyncStrategy = AsyncStrategyFactoryHolder.getInstance(httpServletRequest)
-						.createStrategy(httpServletRequest, resultHandler);
-				asyncStrategy.handleAsync();
-			}
-		}
-	}
+    public void handleAsync() {
+        synchronized (asyncLock) {
+            if (asyncStrategy == null) {
+                asyncStrategy = AsyncStrategyFactoryHolder.getInstance(
+                        httpServletRequest).createStrategy(httpServletRequest,
+                        resultHandler);
+                asyncStrategy.handleAsync();
+            }
+        }
+    }
 
-	@Override
-	public void returnResultAsync(Result result) {
-		synchronized (asyncLock) {
-			handleAsync();
-			asyncStrategy.returnResultAsync(result, this);
-		}
-	}
+    @Override
+    public void returnResultAsync(Result result) {
+        synchronized (asyncLock) {
+            handleAsync();
+            asyncStrategy.returnResultAsync(result, this);
+        }
+    }
 
     @Override
     public void asyncRequestComplete() {
@@ -241,72 +262,73 @@ public class ContextImpl implements Context {
     }
 
     /**
-	 * Used to indicate that the controller has finished executing
-	 */
-	public Result controllerReturned() {
+     * Used to indicate that the controller has finished executing
+     */
+    public Result controllerReturned() {
         if (asyncStrategy != null) {
             return asyncStrategy.controllerReturned();
         }
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public InputStream getInputStream() throws IOException {
-		return httpServletRequest.getInputStream();
-	}
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return httpServletRequest.getInputStream();
+    }
 
-	@Override
-	public BufferedReader getReader() throws IOException {
-		return httpServletRequest.getReader();
-	}
+    @Override
+    public BufferedReader getReader() throws IOException {
+        return httpServletRequest.getReader();
+    }
 
-	@Override
-	public ResponseStreams finalizeHeaders(Result result) {
-	    
-		httpServletResponse.setStatus(result.getStatusCode());
-		
-		//copy headers
-		for (Entry<String, String> header : result.getHeaders().entrySet()) {
-			httpServletResponse.addHeader(header.getKey(), header.getValue());
-		}
+    @Override
+    public ResponseStreams finalizeHeaders(Result result) {
 
-        //copy ninja cookies / flash and session
+        httpServletResponse.setStatus(result.getStatusCode());
+
+        // copy headers
+        for (Entry<String, String> header : result.getHeaders().entrySet()) {
+            httpServletResponse.addHeader(header.getKey(), header.getValue());
+        }
+
+        // copy ninja cookies / flash and session
         flashCookie.save(this);
         sessionCookie.save(this);
 
-        //copy cookies
+        // copy cookies
         for (ninja.Cookie cookie : result.getCookies()) {
             httpServletResponse.addCookie(CookieHelper
-					.convertNinjaCookieToServletCookie(cookie));
+                    .convertNinjaCookieToServletCookie(cookie));
 
         }
 
         // set content type
         if (result.getContentType() != null) {
-            
+
             httpServletResponse.setContentType(result.getContentType());
         }
-        
-        //Set charset => use utf-8 if not set
-        //Sets correct encoding for Content-Type. But also for the output writers.
+
+        // Set charset => use utf-8 if not set
+        // Sets correct encoding for Content-Type. But also for the output
+        // writers.
         if (result.getCharset() != null) {
             httpServletResponse.setCharacterEncoding(result.getCharset());
         } else {
             httpServletResponse.setCharacterEncoding(NinjaConstant.UTF_8);
         }
-		
-		//possibly
-		ResponseStreamsServlet responseStreamsServlet = new ResponseStreamsServlet();
-		responseStreamsServlet.init(httpServletResponse);
-		
-		return (ResponseStreams) responseStreamsServlet;
 
-	}
+        // possibly
+        ResponseStreamsServlet responseStreamsServlet = new ResponseStreamsServlet();
+        responseStreamsServlet.init(httpServletResponse);
 
-	@Override
-	public String getRequestContentType() {
-		return httpServletRequest.getContentType();
-	}
+        return (ResponseStreams) responseStreamsServlet;
+
+    }
+
+    @Override
+    public String getRequestContentType() {
+        return httpServletRequest.getContentType();
+    }
 
     @Override
     public String getAcceptContentType() {
@@ -316,15 +338,19 @@ public class ContextImpl implements Context {
             return Result.TEXT_HTML;
         }
 
-        if (contentType.indexOf("application/xhtml") != -1 || contentType.indexOf("text/html") != -1 || contentType.startsWith("*/*")) {
+        if (contentType.indexOf("application/xhtml") != -1
+                || contentType.indexOf("text/html") != -1
+                || contentType.startsWith("*/*")) {
             return Result.TEXT_HTML;
         }
 
-        if (contentType.indexOf("application/xml") != -1 || contentType.indexOf("text/xml") != -1) {
+        if (contentType.indexOf("application/xml") != -1
+                || contentType.indexOf("text/xml") != -1) {
             return Result.APPLICATION_XML;
         }
 
-        if (contentType.indexOf("application/json") != -1 || contentType.indexOf("text/javascript") != -1) {
+        if (contentType.indexOf("application/json") != -1
+                || contentType.indexOf("text/javascript") != -1) {
             return Result.APPLICATON_JSON;
         }
 
@@ -363,43 +389,46 @@ public class ContextImpl implements Context {
         return route;
     }
 
-	@Override
+    @Override
     public boolean isMultipart() {
-		
-	    return ServletFileUpload.isMultipartContent(httpServletRequest);
+
+        return ServletFileUpload.isMultipartContent(httpServletRequest);
     }
 
-	@Override
+    @Override
     public FileItemIterator getFileItemIterator() {
-		
-		ServletFileUpload upload = new ServletFileUpload();
-		FileItemIterator fileItemIterator = null;
 
-		try {
-			fileItemIterator = upload.getItemIterator(httpServletRequest);
+        ServletFileUpload upload = new ServletFileUpload();
+        FileItemIterator fileItemIterator = null;
+
+        try {
+            fileItemIterator = upload.getItemIterator(httpServletRequest);
         } catch (FileUploadException e) {
-	        logger.error("Error while trying to process mulitpart file upload", e);
+            logger.error("Error while trying to process mulitpart file upload",
+                    e);
         } catch (IOException e) {
-        	logger.error("Error while trying to process mulitpart file upload", e);
+            logger.error("Error while trying to process mulitpart file upload",
+                    e);
         }
-		
-		return fileItemIterator;
+
+        return fileItemIterator;
     }
 
-	@Override
-	public String getRequestPath() {
-	    //http://stackoverflow.com/questions/966077/java-reading-undecoded-url-from-servlet
-	    
-		//this one is unencoded:
-		String unencodedContextPath = httpServletRequest.getContextPath();
-		//this one is unencoded, too, but may containt the context:
-		String fullUnencodedUri = httpServletRequest.getRequestURI();
-		
-		String result = fullUnencodedUri.substring(unencodedContextPath.length());
-		
-		return result;
+    @Override
+    public String getRequestPath() {
+        // http://stackoverflow.com/questions/966077/java-reading-undecoded-url-from-servlet
 
-	}
+        // this one is unencoded:
+        String unencodedContextPath = httpServletRequest.getContextPath();
+        // this one is unencoded, too, but may containt the context:
+        String fullUnencodedUri = httpServletRequest.getRequestURI();
+
+        String result = fullUnencodedUri.substring(unencodedContextPath
+                .length());
+
+        return result;
+
+    }
 
     @Override
     public Validation getValidation() {

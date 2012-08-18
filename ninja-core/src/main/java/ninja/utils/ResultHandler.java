@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ninja.utils;
 
 import java.io.IOException;
@@ -14,7 +30,7 @@ import ninja.template.TemplateEngineManager;
 
 /**
  * Handles the result
- *
+ * 
  * @author James Roper
  */
 @Singleton
@@ -28,7 +44,7 @@ public class ResultHandler {
     }
 
     public void handleResult(Result result, Context context) {
-        
+
         if (result == null || result instanceof AsyncResult) {
             // Do nothing, assuming the controller manually handled it
             return;
@@ -42,7 +58,8 @@ public class ResultHandler {
             context.finalizeHeaders(result);
         } else if (object instanceof Renderable) {
             // if the object is a renderable it should do everything itself...:
-            // make sure to call context.finalizeHeaders(result) with the results
+            // make sure to call context.finalizeHeaders(result) with the
+            // results
             // you want to set...
             handleRenderable((Renderable) object, context, result);
         } else {
@@ -55,14 +72,16 @@ public class ResultHandler {
             renderWithTemplateEngine(context, result);
         }
     }
-  
-    private void handleRenderable(Renderable renderable, Context context, Result result) {
+
+    private void handleRenderable(Renderable renderable,
+                                  Context context,
+                                  Result result) {
         try {
-			renderable.render(context, result);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            renderable.render(context, result);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private void renderWithTemplateEngine(Context context, Result result) {
@@ -79,9 +98,11 @@ public class ResultHandler {
             if (result.getRenderable() instanceof String) {
                 // Simply write it out
                 try {
-                	result.contentType(Result.TEXT_PLAIN);
-                    ResponseStreams responseStreams = context.finalizeHeaders(result);
-                    responseStreams.getWriter().write((String) result.getRenderable());
+                    result.contentType(Result.TEXT_PLAIN);
+                    ResponseStreams responseStreams = context
+                            .finalizeHeaders(result);
+                    responseStreams.getWriter().write(
+                            (String) result.getRenderable());
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -90,9 +111,11 @@ public class ResultHandler {
             } else if (result.getRenderable() instanceof byte[]) {
                 // Simply write it out
                 try {
-                	result.contentType(Result.APPLICATION_OCTET_STREAM);
-                    ResponseStreams responseStreams = context.finalizeHeaders(result);
-                    responseStreams.getOutputStream().write((byte[]) result.getRenderable());
+                    result.contentType(Result.APPLICATION_OCTET_STREAM);
+                    ResponseStreams responseStreams = context
+                            .finalizeHeaders(result);
+                    responseStreams.getOutputStream().write(
+                            (byte[]) result.getRenderable());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
