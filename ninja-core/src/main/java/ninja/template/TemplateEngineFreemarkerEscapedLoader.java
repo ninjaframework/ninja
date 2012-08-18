@@ -24,8 +24,8 @@ import freemarker.cache.TemplateLoader;
  */
 public class TemplateEngineFreemarkerEscapedLoader implements TemplateLoader {
 
-    public static final String ESCAPE_PREFIX = "[#ftl strip_whitespace=true][#escape x as x?html]";
-    public static final String ESCAPE_SUFFIX = "[/#escape]";
+    public static final String ESCAPE_PREFIX = "<#ftl strip_whitespace=true><#escape x as x?html>";
+    public static final String ESCAPE_SUFFIX = "</#escape>";
 
     private final TemplateLoader delegate;
 

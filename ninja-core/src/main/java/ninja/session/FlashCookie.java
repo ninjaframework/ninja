@@ -1,12 +1,15 @@
 package ninja.session;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ninja.Context;
 
 import com.google.inject.ImplementedBy;
 
 /**
- * Flash scope:
- * A client side cookie that can be used to transfer information from one request to another.
+ * Flash scope: A client side cookie that can be used to transfer information
+ * from one request to another.
  * 
  * Stuff in a flash cookie gets deleted after the next request.
  * 
@@ -15,35 +18,39 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(FlashCookieImpl.class)
 public interface FlashCookie {
 
-	public void init(Context context);
+    void init(Context context);
 
-	public void save(Context context);
+    void save(Context context);
 
-	public void put(String key, String value);
+    void put(String key, String value);
 
-	public void put(String key, Object value);
+    void put(String key, Object value);
 
-	public void now(String key, String value);
+    void now(String key, String value);
 
-	public void error(String value, Object... args);
+    void error(String value, Object... args);
 
-	public void success(String value, Object... args);
+    void success(String value, Object... args);
 
-	public void discard(String key);
+    void discard(String key);
 
-	public void discard();
+    void discard();
 
-	public void keep(String key);
+    void keep(String key);
 
-	public void keep();
+    void keep();
 
-	public String get(String key);
+    String get(String key);
 
-	public boolean remove(String key);
+    boolean remove(String key);
 
-	public void clearCurrentFlashCookieData();
+    void clearCurrentFlashCookieData();
 
-	public boolean contains(String key);
+    boolean contains(String key);
 
-	public String toString();
+    String toString();
+
+    Map<String, String> getCurrentFlashCookieData();
+
+    Map<String, String> getOutgoingFlashCookieData();
 }

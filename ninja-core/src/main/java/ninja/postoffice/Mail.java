@@ -3,6 +3,10 @@ package ninja.postoffice;
 import java.util.Collection;
 import java.util.Map;
 
+import ninja.postoffice.common.MailImpl;
+
+import com.google.inject.ImplementedBy;
+
 /**
  * A simple interface.
  * 
@@ -14,6 +18,7 @@ import java.util.Map;
  * @author rbauer
  * 
  */
+@ImplementedBy(MailImpl.class)
 public interface Mail {
 
     void setSubject(String subject);

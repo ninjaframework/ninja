@@ -1,10 +1,12 @@
 package ninja.template;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
+import ninja.session.FlashCookie;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
@@ -68,6 +70,33 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         String language = context.getAcceptLanguage();
         Map<Object, Object> i18nMap = lang.getAll(language);
         map.putAll(i18nMap);
+        
+        // get contentOfFlashCookie
+        // prefix keys with "flash_"
+        for (Entry<String, String> entry : context.getFlashCookie().getCurrentFlashCookieData().entrySet()) {
+            
+            String messageValue;
+            
+            //if it is a translated message get it from the language
+            if (entry.getValue().startsWith("i18n")) {
+                
+                messageValue = lang.get(entry.getValue(), language);
+                
+                if (messageValue == null) {
+                    throw new RuntimeException("No translated message found for flash message key: " + entry.getValue());
+                }
+                
+                //else it is something else (for form parameters for instance)
+                // we don't touch it...
+            } else {
+                messageValue = entry.getValue();
+            }
+            
+
+            
+            map.put("flash_" + entry.getKey(), messageValue);           
+        }
+
 
         String templateName = templateEngineHelper.getTemplateForResult(
                 context.getRoute(), result, FILE_SUFFIX);
