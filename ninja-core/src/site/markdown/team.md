@@ -14,12 +14,10 @@ Looking forward seeing you on the mailing list - we are social creatures :)
 Hall of fame
 ------------
 
-Ninja was initiated by [Raphael Bauer](http://raphaelbauer.com). 
-
-But Ninja is standing on the should of giants. 
+Ninja was initiated by [Raphael Bauer](http://raphaelbauer.com). But Ninja is standing on the should of giants. 
 We are using an immense amount of libraries and ideas from open source projects.
-Especially ideas from Rails, Play 1 and Play 2 and also libraries from Google, Apacha and Sun/Oracle. 
-This is the time to say **Thank you**. And we hope we can contribute a bit back to the world.
+Especially ideas from Rails, Play 1 and Play 2 and also libraries from Google, Apache and Sun/Oracle. 
+This is the time to say **Thank you**. We hope we can contribute a bit back to the world.
 
 Over the time a lot of awesome people have
 contributed stuff to Ninja. In some random order:
