@@ -25,7 +25,7 @@ import com.google.common.collect.Maps;
 public class Result {
 
     // /////////////////////////////////////////////////////////////////////////
-    // HTTP Status codes
+    // HTTP Status codes (for convenience)
     // /////////////////////////////////////////////////////////////////////////
     public static int SC_200_OK = 200;
     public static int SC_204_NO_CONTENT = 204;
@@ -45,7 +45,7 @@ public class Result {
     public static int SC_501_NOT_IMPLEMENTED = 501;
 
     // /////////////////////////////////////////////////////////////////////////
-    // Some MIME types
+    // Some MIME types (for convenience)
     // /////////////////////////////////////////////////////////////////////////
     public static final String TEXT_HTML = "text/html";
     public static final String TEXT_PLAIN = "text/plain";
@@ -53,11 +53,17 @@ public class Result {
     public static final String APPLICATION_XML = "application/xml";
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
+    
+    // /////////////////////////////////////////////////////////////////////////
+    // Finally we got to the core of this class...
+    // /////////////////////////////////////////////////////////////////////////
     /* Used as redirection header */
     public static final String LOCATION = "Location";
 
     private int statusCode;
 
+    /* The object that will be rendered. Could be a Java Pojo. Or a map. Or xyz. Will be
+     * handled by the TemplateReneringEngine. */
     private Object renderable;
 
     /**
@@ -77,6 +83,13 @@ public class Result {
 
     private String template;
 
+    /**
+     * A result. Sets utf-8 as charset and status code by default. 
+     * Refer to {@link Result#SC_200_OK}, {@link Result#SC_204_NO_CONTENT} and so on
+     * for some short cuts to predefined results. 
+     * 
+     * @param statusCode The status code to set for the result. Shortcuts to the code at: {@link Result#SC_200_OK}
+     */
     public Result(int statusCode) {
 
         this.statusCode = statusCode;
@@ -119,7 +132,7 @@ public class Result {
      * Sets the content type
      * 
      * @param contentType
-     * @Deprecated => please use contentType(...)
+     * @Deprecated => please use shortcut contentType(...)
      */
     @Deprecated
     public Result setContentType(String contentType) {
@@ -170,6 +183,14 @@ public class Result {
         return statusCode;
     }
 
+    /**
+     * Set the status of this result.
+     * Refer to {@link Result#SC_200_OK}, {@link Result#SC_204_NO_CONTENT} and so on
+     * for some short cuts to predefined results. 
+     * 
+     * @param statusCode The status code. Result ({@link Result#SC_200_OK}) provides some helpers.
+     * @return The result you executed the method on for method chaining.
+     */
     public Result status(int statusCode) {
         this.statusCode = statusCode;
         return this;
@@ -179,39 +200,64 @@ public class Result {
         return template;
     }
 
+    /**
+     * Set the template to render. For instance 
+     * template("views/AnotherController/anotherview.ftl.html");
+     * 
+     * @param template The view to render. Eg. views/AnotherController/anotherview.ftl.html
+     * @return The result that you executed the method on for chaining.
+     */
     public Result template(String template) {
         this.template = template;
         return this;
     }
 
     /**
-     * => Convenience methods moved to Results.redirect()... and
-     * Results.redirectTemporary()...
+     * A redirect that uses 303 see other.
      * 
-     * @return
+     * @param url
+     *            The url used as redirect target.
+     * @return A nicely configured result with status code 303 and the url set
+     *         as Location header.
      */
-    @Deprecated
     public Result redirect(String url) {
-        return addHeader(LOCATION, url);
+        
+        status(Result.SC_303_SEE_OTHER);
+        addHeader(Result.LOCATION, url);
+        
+        return this;
     }
 
     /**
-     * => Convenience methods moved to Results.html()...
+     * A redirect that uses 307 see other.
      * 
-     * @return
+     * @param url
+     *            The url used as redirect target.
+     * @return A nicely configured result with status code 307 and the url set
+     *         as Location header.
      */
-    @Deprecated
+    public Result redirectTemporary(String url) {
+
+        status(Result.SC_307_TEMPORARY_REDIRECT);
+        addHeader(Result.LOCATION, url);
+
+        return this;
+    }
+    /**
+     * Set the content type of this result to {@link Result#TEXT_HTML}.
+     * 
+     * @return the same result where you executed this method on. But the content type is now {@link Result#TEXT_HTML}.
+     */
     public Result html() {
         contentType = TEXT_HTML;
         return this;
     }
 
     /**
-     * => Convenience methods moved to Results.json()...
+     * Set the content type of this result to {@link Result#APPLICATON_JSON}.
      * 
-     * @return
+     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATON_JSON}.
      */
-    @Deprecated
     public Result json() {
         contentType = APPLICATON_JSON;
         return this;

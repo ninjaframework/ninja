@@ -41,6 +41,7 @@
         </menu>
         
         <menu name="Develop">
+            <item name="Changelog" href="./developer/changelog.html"/>
         	<item name="Roadmap" href="./developer/roadmap.html"/>
         	<item name="How to contribute" href="./developer/getting_started.html"/>
         </menu>

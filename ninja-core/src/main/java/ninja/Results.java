@@ -16,6 +16,16 @@
 
 package ninja;
 
+/**
+ * Convenience methods for the generation of Results.
+ * 
+ * {@link Results#forbidden() generates a results and sets it to forbidden.
+ * 
+ * A range of shortcuts are available from here.
+ * 
+ * @author rbauer
+ *
+ */
 public class Results {
 
     public static Result status(int statusCode) {
@@ -70,7 +80,7 @@ public class Results {
      * 
      * @param url
      *            The url used as redirect target.
-     * @return A nicely configured result with status code 308 and the url set
+     * @return A nicely configured result with status code 307 and the url set
      *         as Location header.
      */
     public static Result redirectTemporary(String url) {
