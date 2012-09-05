@@ -104,7 +104,7 @@ Example: The user requests "en-US". The lookup then is
  
  * return messages.en-US.propertes if file and key is found or
  * return messages.en.propertes if file and key is found or
- * return messages.en.propertes if file and key is found or
+ * return messages.propertes if file and key is found or
  * return null
  
 If you specify
