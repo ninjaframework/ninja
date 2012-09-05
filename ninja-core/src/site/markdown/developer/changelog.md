@@ -1,6 +1,13 @@
 Version 1.X
 ===========
 
+Version 1.0.2
+=============
+ 
+ * cleanup with develop and master => now only develop active
+ * added missing license headers
+ * fixed some spelling errors
+
 
 Version 1.0.1
 =============
