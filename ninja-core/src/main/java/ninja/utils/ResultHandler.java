@@ -68,6 +68,12 @@ public class ResultHandler {
             if (result.getContentType() == null) {
                 result.contentType(context.getAcceptContentType());
             }
+            
+            // If result does not contain a Cache-control: ... header
+            // we disable caching of this response by calling doNotCacheContent().
+            if (!result.getHeaders().containsKey(Result.CACHE_CONTROL)) {
+                result.doNotCacheContent();
+            }
 
             renderWithTemplateEngine(context, result);
         }

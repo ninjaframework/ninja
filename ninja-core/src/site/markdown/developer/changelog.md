@@ -1,4 +1,9 @@
-Version 1.1 - current
-=====================
+Version 1.X
+===========
 
- * 2012-08-27 Support for better testing that routes are handled by framework (NinjaRoutesTest).
+
+Version 1.0.1
+=============
+
+ * 2012-09-05 Better default http cache-control header handling (no-caching by default).
+ * 2012-08-27 Support for better testing whether routes are handled by framework (NinjaRoutesTest).

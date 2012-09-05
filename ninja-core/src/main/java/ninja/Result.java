@@ -19,6 +19,8 @@ package ninja;
 import java.util.List;
 import java.util.Map;
 
+import ninja.utils.DateUtil;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -59,6 +61,11 @@ public class Result {
     // /////////////////////////////////////////////////////////////////////////
     /* Used as redirection header */
     public static final String LOCATION = "Location";
+    public static final String CACHE_CONTROL = "Cache-Control";
+    public static final String CACHE_CONTROL_DEFAULT_NOCACHE_VALUE = "no-cache, no-store, max-age=0, must-revalidate";
+    
+    public static final String DATE = "Date";
+    public static final String EXPIRES = "Expires";
 
     private int statusCode;
 
@@ -262,5 +269,39 @@ public class Result {
         contentType = APPLICATON_JSON;
         return this;
     }
+    
+    /**
+     * Set the content type of this result to {@link Result#APPLICATON_XML}.
+     * 
+     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATON_XML}.
+     */
+    public Result xml() {
+        contentType = APPLICATION_XML;
+        return this;
+    }
+    
+    /**
+     * This function sets
+     * 
+     * Cache-Control: no-cache, no-store
+     * Date: (current date)
+     * Expires: 1970
+     * 
+     * => it therefore effectively forces the browser and every proxy in between
+     * not to cache content.
+     * 
+     * See also https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers
+     * 
+     * @return this result for chaining.
+     */
+    public Result doNotCacheContent() {
+        
+        addHeader(CACHE_CONTROL, CACHE_CONTROL_DEFAULT_NOCACHE_VALUE);
+        addHeader(DATE, DateUtil.formatForHttpHeader(System.currentTimeMillis()));
+        addHeader(EXPIRES, DateUtil.formatForHttpHeader(0L));
+        
+        return this;
+        
+    } 
 
 }
