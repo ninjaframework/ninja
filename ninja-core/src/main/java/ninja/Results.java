@@ -16,8 +16,21 @@
 
 package ninja;
 
-public class Results {
+import ninja.lifecycle.Start;
+import ninja.utils.DateUtil;
 
+/**
+ * Convenience methods for the generation of Results.
+ * 
+ * {@link Results#forbidden() generates a results and sets it to forbidden.
+ * 
+ * A range of shortcuts are available from here.
+ * 
+ * @author rbauer
+ *
+ */
+public class Results {
+    
     public static Result status(int statusCode) {
 
         Result result = new Result(statusCode);
@@ -70,7 +83,7 @@ public class Results {
      * 
      * @param url
      *            The url used as redirect target.
-     * @return A nicely configured result with status code 308 and the url set
+     * @return A nicely configured result with status code 307 and the url set
      *         as Location header.
      */
     public static Result redirectTemporary(String url) {
@@ -96,8 +109,7 @@ public class Results {
     }
 
     public static Result html(int statusCode) {
-        Result result = status(statusCode);
-        result.contentType(Result.TEXT_HTML);
+        Result result = status(statusCode).html();
 
         return result;
     }
@@ -114,8 +126,7 @@ public class Results {
      */
     @Deprecated
     public static Result html(Object renderable) {
-        Result result = status(Result.SC_200_OK);
-        result.contentType(Result.TEXT_HTML);
+        Result result = status(Result.SC_200_OK).html();
         result.render(renderable);
 
         return result;
@@ -130,30 +141,26 @@ public class Results {
      */
     @Deprecated
     public static Result json(int statusCode) {
-        Result result = status(statusCode);
-        result.contentType(Result.APPLICATON_JSON);
+        Result result = status(statusCode).json();
 
         return result;
     }
 
     public static Result json() {
-        Result result = status(Result.SC_200_OK);
-        result.contentType(Result.APPLICATON_JSON);
+        Result result = status(Result.SC_200_OK).json();
 
         return result;
     }
 
     public static Result json(Object renderable) {
-        Result result = status(Result.SC_200_OK);
-        result.contentType(Result.APPLICATON_JSON);
+        Result result = status(Result.SC_200_OK).json();
         result.render(renderable);
 
         return result;
     }
 
-    public static Result xml() {
-        Result result = status(Result.SC_200_OK);
-        result.contentType(Result.APPLICATION_XML);
+    public static Result xml() {       
+        Result result = status(Result.SC_200_OK).xml();
 
         return result;
     }

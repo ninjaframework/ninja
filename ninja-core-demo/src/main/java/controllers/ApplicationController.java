@@ -57,6 +57,11 @@ public class ApplicationController {
         return Results.html();
 
     }
+    
+    public Result testPage() {
+        return Results.html();
+
+    }
 
     public Result index(Context context) {
         // Default rendering is simple by convention

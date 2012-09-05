@@ -16,9 +16,12 @@
 
 package conf;
 
+import com.google.inject.Inject;
+
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
+import ninja.utils.NinjaProperties;
 import controllers.ApplicationController;
 import controllers.AsyncController;
 import controllers.FilterController;
@@ -29,6 +32,14 @@ import controllers.UdpPingController;
 import controllers.UploadController;
 
 public class Routes implements ApplicationRoutes {
+    
+    private NinjaProperties ninjaProperties;
+
+    @Inject
+    public Routes(NinjaProperties ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+
+    }
 
     /**
      * Using a (almost) nice DSL we can configure the router.
@@ -98,6 +109,13 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
+        
+        
+        //this is a route that should only be accessible when NOT in production
+        // this is tested in RoutesTest
+        if (!ninjaProperties.isProd()) {
+            router.GET().route("/_test/testPage").with(ApplicationController.class, "testPage");
+        }
 
         router.GET().route("/assets/.*").with(AssetsController.class, "serve");
     }
