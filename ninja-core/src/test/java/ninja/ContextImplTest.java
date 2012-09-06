@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +30,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
@@ -73,6 +75,9 @@ public class ContextImplTest {
     @Mock
     private Validation validation;
 
+    @Mock
+    private BodyParserEngine bodyParserEngine;
+    
     private ContextImpl context;
 
     @Before
@@ -418,6 +423,99 @@ public class ContextImplTest {
         context.init(httpServletRequest, httpServletResponse);
 
         assertEquals(charset, context.getAcceptCharset());
+    }
+    
+    /**
+     * This is the default mode.
+     * 
+     * We get a Content-Type: application/json and want to parse the incoming json.
+     */
+    @Test
+    public void testParseBodyJsonWorks() {
+
+        
+        when(httpServletRequest.getContentType()).thenReturn("application/json; charset=utf-8");
+        
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+        
+        when(bodyParserEngineManager.getBodyParserEngineForContentType("application/json")).thenReturn(bodyParserEngine);
+        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
+        
+        Object o = context.parseBody(Dummy.class);
+        
+        verify(bodyParserEngineManager).getBodyParserEngineForContentType("application/json");        
+        assertTrue(o instanceof Dummy);     
+        
+        
+    }
+    
+    /**
+     * This is the default mode.
+     * 
+     * We get a Content-Type: application/json and want to parse the incoming json.
+     */
+    @Test
+    public void testParseBodyXmlWorks() {
+
+        
+        when(httpServletRequest.getContentType()).thenReturn("application/xml");
+        
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+        
+        when(bodyParserEngineManager.getBodyParserEngineForContentType("application/xml")).thenReturn(bodyParserEngine);
+        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
+        
+        Object o = context.parseBody(Dummy.class);
+        
+        verify(bodyParserEngineManager).getBodyParserEngineForContentType("application/xml");
+        assertTrue(o instanceof Dummy);     
+        
+        
+    }
+    
+    /**
+     * The request does not have the Content-Type set => we get a null response.
+     */
+    @Test
+    public void testParseBodyWithUnkownContentTypeWorks() {
+        
+        when(httpServletRequest.getContentType()).thenReturn(null);
+        
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+
+        
+        Object o = context.parseBody(Dummy.class);
+        
+        
+        assertNull(o);             
+        
+    }
+    
+    /**
+     * We get an conetnt type that does not match any registered parsers.
+     * This must also return null safely.
+     */
+    @Test
+    public void testParseBodyWithUnknownRequestContentTypeWorks() {
+        
+        when(httpServletRequest.getContentType()).thenReturn("application/UNKNOWN");
+        
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+        
+        Object o = context.parseBody(Dummy.class);       
+        
+        assertNull(o);             
+        
+    }
+    
+    
+    // Dummy class used for parseBody tests.
+    class Dummy {
+        // intentionally left empty.
     }
 
 }

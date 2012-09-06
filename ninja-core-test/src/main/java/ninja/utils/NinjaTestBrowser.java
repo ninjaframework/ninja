@@ -36,6 +36,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -48,6 +49,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 
 public class NinjaTestBrowser {
 
@@ -279,20 +281,18 @@ public class NinjaTestBrowser {
 
     public String postJson(String url, Object object) {
 
-        Map<String, String> headers = Maps.newHashMap();
-        headers.put("Content-Type", "application/json");
-
         try {
             httpClient.getParams().setParameter(
                     CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
             HttpPost post = new HttpPost(url);
-            StringEntity entity = new StringEntity(
-                    new ObjectMapper().writeValueAsString(object));
-            entity.setContentType("application/json");
+    
+            ByteArrayEntity entity = new ByteArrayEntity(new Gson().toJson(object).getBytes());
+
+            entity.setContentType("application/json; charset=utf-8");
             post.setEntity(entity);
             post.releaseConnection();
-
+            
             // Here we go!
             return EntityUtils.toString(httpClient.execute(post).getEntity(),
                     "UTF-8");

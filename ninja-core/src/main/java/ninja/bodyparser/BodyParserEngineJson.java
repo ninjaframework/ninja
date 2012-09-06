@@ -20,32 +20,43 @@ import java.io.IOException;
 
 import ninja.Context;
 
+import org.slf4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class BodyParserEngineJson implements BodyParserEngine {
+    
+    private Gson gson;
+    
+    private Logger logger;
+    
+
+    @Inject
+    public BodyParserEngineJson(Gson gson, Logger logger) {
+        this.gson = gson;
+        this.logger = logger;
+
+    }
 
     public <T> T invoke(Context context, Class<T> classOfT) {
-
-        Gson gson = new Gson();
-
         T t = null;
 
         try {
 
-            t = gson.fromJson(context.getHttpServletRequest().getReader(),
-                    classOfT);
+            t = gson.fromJson(context.getReader(), classOfT);
 
         } catch (JsonSyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error parsing incoming Json", e);
+            
         } catch (JsonIOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error parsing incoming Json", e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error parsing incoming Json", e);
         }
 
         return t;

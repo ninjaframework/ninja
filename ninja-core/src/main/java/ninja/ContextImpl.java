@@ -19,6 +19,7 @@ package ninja;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.CookieHelper;
+import ninja.utils.HttpHeaderUtils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResponseStreams;
 import ninja.utils.ResponseStreamsServlet;
@@ -203,9 +205,23 @@ public class ContextImpl implements Context {
     @Override
     public <T> T parseBody(Class<T> classOfT) {
 
+        String rawContentType = getRequestContentType();
+        
+        // If the Content-type: xxx header is not set we return null.
+        // we cannot parse that request.
+        if (rawContentType == null) {
+            return null;
+        }
+        
+        // If Content-type is application/json; charset=utf-8 we split away the charset
+        // application/json
+        String contentTypeOnly = HttpHeaderUtils.getContentTypeFromContentTypeAndCharacterSetting(
+                rawContentType);
+        
         BodyParserEngine bodyParserEngine = bodyParserEngineManager
-                .getBodyParserEngineForContentType(ContentTypes.APPLICATION_JSON);
+                .getBodyParserEngineForContentType(contentTypeOnly);
 
+        
         if (bodyParserEngine == null) {
             return null;
         }
@@ -273,11 +289,17 @@ public class ContextImpl implements Context {
 
     @Override
     public InputStream getInputStream() throws IOException {
+        
+        enforeCorrectEncodingOfRequest();
+        
         return httpServletRequest.getInputStream();
     }
 
     @Override
     public BufferedReader getReader() throws IOException {
+        
+        enforeCorrectEncodingOfRequest();
+        
         return httpServletRequest.getReader();
     }
 
@@ -433,5 +455,36 @@ public class ContextImpl implements Context {
     @Override
     public Validation getValidation() {
         return validation;
+    }
+    
+    
+    /**
+     * When a servlet engine gets a content type like:
+     * "application/json" it assumes a default encoding of iso-xxxxx.
+     * 
+     * That is not what Ninja does (and is not consistent with default encodings
+     * of application/json and application/xml).
+     * 
+     * Therefore we'll set utf-8 as request encoding if it is not set.
+     */
+    private void enforeCorrectEncodingOfRequest() {
+        
+        String charset = NinjaConstant.UTF_8;
+        
+        String contentType = getHeader("content-type");
+        
+        if (contentType != null) {
+
+            charset = HttpHeaderUtils.getCharsetOfContentTypeOrUtf8(contentType);
+
+        }
+        
+        try {
+            httpServletRequest.setCharacterEncoding(charset);
+        } catch (UnsupportedEncodingException e) {
+            logger.error("Server does not support charset of content type: " + contentType);
+        }
+        
+        
     }
 }

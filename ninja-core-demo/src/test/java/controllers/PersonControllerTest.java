@@ -23,6 +23,8 @@ import ninja.utils.NinjaTestBrowser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import static org.junit.Assert.assertEquals;
 
 public class PersonControllerTest extends NinjaTest {
@@ -34,7 +36,7 @@ public class PersonControllerTest extends NinjaTest {
         String response = ninjaTestBrowser
                 .postJson(getServerAddress() + "person", person);
 
-        Person result = new ObjectMapper().readValue(response, Person.class);
+        Person result = new Gson().fromJson(response, Person.class);
         assertEquals("zeeess name - and some utf8 => öäü", result.name);
     }
 }
