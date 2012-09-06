@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -517,5 +518,47 @@ public class ContextImplTest {
     class Dummy {
         // intentionally left empty.
     }
+    
+    
+    /**
+     * Make sure the correct character encoding is set before the
+     * reader is returned.
+     * 
+     * 
+     * Otherwise we might get strange default encodings
+     * from the servlet engine.
+     * 
+     */
+    @Test
+    public void testGetReaderEnforcingOfCorrectEncoding() throws Exception {
+        
+        context.init(httpServletRequest, httpServletResponse);
+        
+        context.getReader();
+      //this proofs that the encoding has been set:
+        verify(httpServletRequest).setCharacterEncoding(anyString());
+        
+        
+    }
 
+    /**
+     * Make sure the correct character encoding is set before the
+     * inputStream is returned.
+     * 
+     * Otherwise we might get strange default encodings
+     * from the servlet engine.
+     *
+     */
+    @Test
+    public void testGetInputStreamEnforcingOfCorrectEncoding() throws Exception {
+        
+        context.init(httpServletRequest, httpServletResponse);
+        
+        context.getInputStream();
+        //this proofs that the encoding has been set:
+        verify(httpServletRequest).setCharacterEncoding(anyString());
+        
+        
+    }
+    
 }
