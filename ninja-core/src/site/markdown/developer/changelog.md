@@ -1,6 +1,15 @@
 Version 1.X
 ===========
 
+Version 1.0.3
+=============
+ 
+ * Added better sending of Json payload to NinjaTestBrowser
+ * Utf-8 now default character set when client does not specify correct Content-type
+ * Added tests to context
+ * Fixed bug where incoming payload was not parsed by correct bodyParser
+ 
+ 
 Version 1.0.2
 =============
  
