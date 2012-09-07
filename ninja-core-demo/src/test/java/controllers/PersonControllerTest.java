@@ -37,6 +37,6 @@ public class PersonControllerTest extends NinjaTest {
                 .postJson(getServerAddress() + "person", person);
 
         Person result = new Gson().fromJson(response, Person.class);
-        assertEquals("zeeess name - and some utf8 => öäü", result.name);
+        assertEquals(person.name, result.name);
     }
 }

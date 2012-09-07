@@ -286,13 +286,12 @@ public class NinjaTestBrowser {
                     CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
             HttpPost post = new HttpPost(url);
-    
-            ByteArrayEntity entity = new ByteArrayEntity(new Gson().toJson(object).getBytes());
-
+            StringEntity entity = new StringEntity(
+                    new ObjectMapper().writeValueAsString(object), "utf-8");
             entity.setContentType("application/json; charset=utf-8");
             post.setEntity(entity);
             post.releaseConnection();
-            
+
             // Here we go!
             return EntityUtils.toString(httpClient.execute(post).getEntity(),
                     "UTF-8");

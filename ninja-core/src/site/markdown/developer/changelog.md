@@ -1,6 +1,13 @@
 Version 1.X
 ===========
 
+Version 1.0.4
+=============
+ 
+ * Bump to Gson 2.2.2
+ * Fixed encoding issue in TestBrowser that showed up on some english macs
+
+
 Version 1.0.3
 =============
  
