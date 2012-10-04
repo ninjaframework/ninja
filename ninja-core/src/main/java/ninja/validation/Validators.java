@@ -32,6 +32,9 @@ public class Validators {
 
         @Override
         public void validate(Object value, String field, Validation validation) {
+            if (value == null) {
+                return;
+            }
             ValidatorFactory validatorFactory = javax.validation.Validation
                     .buildDefaultValidatorFactory();
             javax.validation.Validator validator = validatorFactory

@@ -439,6 +439,12 @@ public class ControllerMethodInvokerTest {
         assertTrue(context.getValidation().hasViolations());
     }
 
+    @Test
+    public void validationWithNullObject() {
+        validateJSR303(null);
+        assertFalse(context.getValidation().hasViolations());
+    }
+
     private void validateJSR303(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
         create("JSR303Validation").invoke(mockController, context);
