@@ -22,7 +22,7 @@
 	<groupId>org.ninjaframework</groupId>
 	<artifactId>ninja</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5</version>
 	<name>ninja</name>
 	<url>http://www.ninjaframework.org</url>
 
