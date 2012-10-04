@@ -4,7 +4,7 @@ Validation
 Introduction to parameter validation
 ------------------------------------
 
-Ninja uses hibernates implementation of the <code>javax.validation</code> feature. This means that all JSR303-defined annotations work in your DTO-objects when you let ninja inject parameters into your controller. All you have to do is to set the <code>@JSR303Validation</code> annotation in front of your method-parameter and catch the result of the validation by injecting a <code>Validation</code>-parameter the same way.
+Ninja uses hibernates implementation of the <code>javax.validation</code> feature. This means that all JSR303-defined annotations work in your DTO-objects when you let ninja inject parameters into your controller. All you have to do is to set the <code>@JSR303Validation</code> annotation in front of your method-parameter and catch the result of the validation by injecting a <code>Validation</code>-parameter the same way. As usual, this field is also allowed to be <code>null</code>.
 
 For example:
 
@@ -30,4 +30,6 @@ In this example we want the context to be parsed as <code>profileId</code> and a
 	}
 </pre>
 
-You can check the result of the validation by evaluating the <code>validation</code>-parameter with simply calling its <code>annotation.hasViolations()</code>-method in your controller which gives you a <code>true</code> or <code>false</code>.
+You can check the result of the validation by evaluating the <code>validation</code>-parameter with simply calling its <code>validation.hasViolations()</code>-method in your controller which gives you a <code>true</code> or <code>false</code>.
+
+If you want to validate nested DTOs or get in deeper detail, visit this great site: [JBOSS Validation API](http://docs.jboss.org/hibernate/validator/4.0.1/reference/en/html/validator-usingvalidator.html "JBOSS Validation API")
