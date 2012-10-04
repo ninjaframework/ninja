@@ -443,11 +443,18 @@ public class ControllerMethodInvokerTest {
     public void validationWithNullObject() {
         validateJSR303(null);
         assertFalse(context.getValidation().hasViolations());
+        validateJSR303WithRequired(null);
+        assertTrue(context.getValidation().hasViolations());
     }
 
     private void validateJSR303(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
         create("JSR303Validation").invoke(mockController, context);
+    }
+
+    private void validateJSR303WithRequired(Dto dto) {
+        when(context.parseBody(Dto.class)).thenReturn(dto);
+        create("JSR303ValidationWithRequired").invoke(mockController, context);
     }
 
     private Dto buildDto(String regex, String length, int range) {
@@ -506,6 +513,9 @@ public class ControllerMethodInvokerTest {
         public Result tooManyBodies(Object body1, Object body2);
 
         public Result JSR303Validation(@JSR303Validation Dto dto, Validation validation);
+
+        public Result JSR303ValidationWithRequired(@Required @JSR303Validation Dto dto,
+                Validation validation);
     }
 
     // Custom argument extractors for testing different instantiation paths
