@@ -16,9 +16,9 @@
 
 package ninja.validation;
 
-import com.google.inject.ImplementedBy;
+import java.util.List;
 
-import java.util.Locale;
+import com.google.inject.ImplementedBy;
 
 /**
  * Validation context
@@ -67,7 +67,7 @@ public interface Validation {
      * @return The constraint violation, or null if no constraint violation was
      *         found
      */
-    ConstraintViolation getFieldViolation(String field);
+    ConstraintViolation getFieldConstraintViolation(String field);
 
     /**
      * Get the formatted violation message for the given field
@@ -79,5 +79,11 @@ public interface Validation {
      * @return The message, or null if there was no violation
      */
     String getFieldViolationMessage(String field, String language);
+
+    List<FieldViolation> getFieldViolations();
+
+    List<ConstraintViolation> getGeneralViolations();
+
+    void addFieldViolation(FieldViolation fieldViolation);
 
 }
