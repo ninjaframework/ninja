@@ -80,10 +80,27 @@ public interface Validation {
      */
     String getFieldViolationMessage(String field, String language);
 
+    /**
+     * Get a complete list of all field violations. This list DOES NOT contain general violations
+     * (use getGeneralViolations() instead).
+     * 
+     * @return A List of FieldViolation-objects
+     */
     List<FieldViolation> getFieldViolations();
 
+    /**
+     * Get all general constraint violations. This list does not contain any specific field
+     * violation (use getFieldViolations() instead).
+     * 
+     * @return The list of general violations.
+     */
     List<ConstraintViolation> getGeneralViolations();
 
+    /**
+     * Add a field violation to the list of filed violations.
+     * 
+     * @param fieldViolation
+     */
     void addFieldViolation(FieldViolation fieldViolation);
 
 }
