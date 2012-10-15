@@ -1,6 +1,18 @@
 Version 1.X
 ===========
 
+Version 1.0.6
+=============
+
+ * Better way to retrieve constraint violations in controller methods (https://github.com/reyez/ninja/pull/58)
+
+
+Version 1.0.5
+=============
+
+ * Fix possible NPE in field validation of controller methods.
+
+
 Version 1.0.4
 =============
  
