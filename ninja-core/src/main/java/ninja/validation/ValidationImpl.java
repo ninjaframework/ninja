@@ -16,21 +16,40 @@
 
 package ninja.validation;
 
-import ninja.i18n.Lang;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
-import java.util.*;
+
+import ninja.i18n.Lang;
 
 /**
  * Validation object
- * 
+ *
  * @author James Roper
  */
 public class ValidationImpl implements Validation {
     private final Lang lang;
 
-    private final Map<String, ConstraintViolation> fieldViolations = new HashMap<String, ConstraintViolation>();
+    private final Map<String, ConstraintViolation> fieldViolations =
+            new HashMap<String, ConstraintViolation>();
     private final List<ConstraintViolation> generalViolations = new ArrayList<ConstraintViolation>();
+
+    @Override
+    public List<FieldViolation> getFieldViolations() {
+        List<FieldViolation> fieldViolationsList = new ArrayList<FieldViolation>();
+        for (Map.Entry<String, ConstraintViolation> entry : fieldViolations.entrySet()) {
+            fieldViolationsList.add(new FieldViolation(entry.getKey(), entry.getValue()));
+        }
+        return fieldViolationsList;
+    }
+
+    @Override
+    public List<ConstraintViolation> getGeneralViolations() {
+        return generalViolations;
+    }
 
     @Inject
     public ValidationImpl(Lang lang) {
@@ -58,12 +77,17 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
+    public void addFieldViolation(FieldViolation fieldViolation) {
+        addFieldViolation(fieldViolation.field, fieldViolation.constraintViolation);
+    }
+
+    @Override
     public void addViolation(ConstraintViolation constraintViolation) {
         generalViolations.add(constraintViolation);
     }
 
     @Override
-    public ConstraintViolation getFieldViolation(String field) {
+    public ConstraintViolation getFieldConstraintViolation(String field) {
         return fieldViolations.get(field);
     }
 
