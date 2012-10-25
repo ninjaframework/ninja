@@ -60,33 +60,21 @@ public interface Validation {
     void addViolation(ConstraintViolation constraintViolation);
 
     /**
-     * Get the voilation for the given field
-     * 
-     * @param field
-     *            The field
-     * @return The constraint violation, or null if no constraint violation was
-     *         found
-     */
-    ConstraintViolation getFieldConstraintViolation(String field);
-
-    /**
-     * Get the formatted violation message for the given field
-     * 
-     * @param field
-     *            The field
-     * @param locale
-     *            The language to get the message
-     * @return The message, or null if there was no violation
-     */
-    String getFieldViolationMessage(String field, String language);
-
-    /**
      * Get a complete list of all field violations. This list DOES NOT contain general violations
      * (use getGeneralViolations() instead).
      * 
      * @return A List of FieldViolation-objects
      */
     List<FieldViolation> getFieldViolations();
+
+    /**
+     * Get a complete list of field violations for a specified field. This list DOES NOT contain
+     * general violations
+     * (use getGeneralViolations() instead).
+     * 
+     * @return A List of FieldViolation-objects
+     */
+    List<FieldViolation> getFieldViolations(String fieldName);
 
     /**
      * Get all general constraint violations. This list does not contain any specific field
@@ -102,5 +90,13 @@ public interface Validation {
      * @param fieldViolation
      */
     void addFieldViolation(FieldViolation fieldViolation);
+
+    void addBeanViolation(String beanName, FieldViolation fieldViolation);
+
+    boolean hasBeanViolations(String beanName);
+
+    boolean hasBeanViolations();
+
+    List<FieldViolation> getBeanViolations(String beanName);
 
 }

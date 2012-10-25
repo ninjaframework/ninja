@@ -18,7 +18,6 @@ package ninja.params;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +35,6 @@ import javax.validation.constraints.Size;
 import ninja.Context;
 import ninja.Result;
 import ninja.RoutingException;
-import ninja.i18n.Lang;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.validation.JSR303Validation;
@@ -67,14 +65,12 @@ public class ControllerMethodInvokerTest {
     private SessionCookie session;
     @Mock
     private FlashCookie flash;
-    @Mock
-    private Lang lang;
 
     private Validation validation;
 
     @Before
     public void setUp() throws Exception {
-        validation = new ValidationImpl(lang);
+        validation = new ValidationImpl();
         when(context.getSessionCookie()).thenReturn(session);
         when(context.getFlashCookie()).thenReturn(flash);
         when(context.getValidation()).thenReturn(validation);
@@ -425,6 +421,9 @@ public class ControllerMethodInvokerTest {
     public void validationFailedRegex() {
         validateJSR303(buildDto("regex!!!", "length", 5));
         assertTrue(context.getValidation().hasViolations());
+        System.err
+                .println(context.getValidation().getBeanViolations("dto").get(0).constraintViolation
+                        .getMessageKey());
     }
 
     @Test
@@ -458,7 +457,7 @@ public class ControllerMethodInvokerTest {
     }
 
     private Dto buildDto(String regex, String length, int range) {
-        Dto dto = spy(new Dto());
+        Dto dto = new Dto();
         dto.regex = regex;
         dto.length = length;
         dto.range = range;
@@ -512,9 +511,9 @@ public class ControllerMethodInvokerTest {
         public Result body(Object body);
         public Result tooManyBodies(Object body1, Object body2);
 
-        public Result JSR303Validation(@JSR303Validation Dto dto, Validation validation);
+        public Result JSR303Validation(@JSR303Validation("dto") Dto dto, Validation validation);
 
-        public Result JSR303ValidationWithRequired(@Required @JSR303Validation Dto dto,
+        public Result JSR303ValidationWithRequired(@Required @JSR303Validation("dto") Dto dto,
                 Validation validation);
     }
 

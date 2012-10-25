@@ -23,12 +23,17 @@ import javax.validation.ValidatorFactory;
 
 /**
  * Built in validators
- * 
+ *
  * @author James Roper
  */
 public class Validators {
 
     public static class JSRValidator implements Validator<Object> {
+        private String validateDtoName;
+
+        public JSRValidator(JSR303Validation jsr303Validation) {
+            validateDtoName = jsr303Validation.value();
+        }
 
         @Override
         public void validate(Object value, String field, Validation validation) {
@@ -41,10 +46,14 @@ public class Validators {
                     .getValidator();
             Set<javax.validation.ConstraintViolation<Object>> violations = validator
                     .validate(value);
+
             for (javax.validation.ConstraintViolation<Object> violation : violations) {
-                validation.addViolation(ninja.validation.ConstraintViolation
-                        .create(violation.getMessage(),
-                                violation.getInvalidValue()));
+                ConstraintViolation constraintViolation =
+                        ConstraintViolation.create(violation.getMessage(), violation
+                                .getInvalidValue());
+
+                validation.addBeanViolation(validateDtoName, new FieldViolation(violation
+                        .getPropertyPath().toString(), constraintViolation));
             }
         }
 
