@@ -21,9 +21,13 @@ import java.util.List;
 import com.google.inject.ImplementedBy;
 
 /**
- * Validation context
+ * Validation context.
+ * There are several types of violations that can occur. A bean can have violations on its fields.
+ * Each violation on such a field results in a FieldViolation. This makes it possible to validate
+ * several controller parameters at once via annotation. If any error appears while validating a
+ * BeanViolation for that bean containing the field on which the validation failed (FieldViolation).
  * 
- * @author James Roper
+ * @author James Roper, Philip Sommer
  */
 @ImplementedBy(ValidationImpl.class)
 public interface Validation {
@@ -57,6 +61,7 @@ public interface Validation {
      * @param constraintViolation
      *            The constraint violation
      */
+    @Deprecated
     void addViolation(ConstraintViolation constraintViolation);
 
     /**
@@ -82,6 +87,7 @@ public interface Validation {
      * 
      * @return The list of general violations.
      */
+    @Deprecated
     List<ConstraintViolation> getGeneralViolations();
 
     /**
@@ -91,12 +97,37 @@ public interface Validation {
      */
     void addFieldViolation(FieldViolation fieldViolation);
 
+    /**
+     * Add a bean violation. A bean, like a DTO consists of several fields which are validated. Each
+     * validation error of a dto-field results in a field-violation for that bean.
+     * 
+     * @param beanName maybe the name of your dto
+     * @param fieldViolation the FieldViolation consisting of a cinstraintViolation and the fields
+     *            name
+     */
     void addBeanViolation(String beanName, FieldViolation fieldViolation);
 
+    /**
+     * Whether any field violations occured while validating this bean
+     * 
+     * @param beanName
+     * @return true if there are any, false if none
+     */
     boolean hasBeanViolations(String beanName);
 
+    /**
+     * Whether any violation occured while validating your beans
+     * 
+     * @return true if there are any, false if none
+     */
     boolean hasBeanViolations();
 
+    /**
+     * Get all bean validations for that bean.
+     * 
+     * @param beanName
+     * @return A list of field violations
+     */
     List<FieldViolation> getBeanViolations(String beanName);
 
 }

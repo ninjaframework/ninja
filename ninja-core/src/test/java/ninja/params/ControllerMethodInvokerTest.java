@@ -421,9 +421,6 @@ public class ControllerMethodInvokerTest {
     public void validationFailedRegex() {
         validateJSR303(buildDto("regex!!!", "length", 5));
         assertTrue(context.getValidation().hasViolations());
-        System.err
-                .println(context.getValidation().getBeanViolations("dto").get(0).constraintViolation
-                        .getMessageKey());
     }
 
     @Test
