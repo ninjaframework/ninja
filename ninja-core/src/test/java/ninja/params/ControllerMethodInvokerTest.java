@@ -16,6 +16,7 @@
 
 package ninja.params;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -443,6 +444,17 @@ public class ControllerMethodInvokerTest {
         assertTrue(context.getValidation().hasViolations());
     }
 
+    @Test
+    public void validationWithTwoDifferentDtos() {
+        validateJSR303WithTwoDtos(buildDto("regex!!!", "string tooo looooong", 11),
+                buildAnotherDto("works", "thisisok", 12));
+        Validation validation = context.getValidation();
+        assertTrue(validation.hasBeanViolations());
+        assertTrue(validation.hasViolations());
+        assertEquals(validation.getBeanViolations("dto1").size(), 2);
+        assertEquals(validation.getBeanViolations("dto2").size(), 1);
+    }
+
     private void validateJSR303(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
         create("JSR303Validation").invoke(mockController, context);
@@ -453,12 +465,26 @@ public class ControllerMethodInvokerTest {
         create("JSR303ValidationWithRequired").invoke(mockController, context);
     }
 
+    private void validateJSR303WithTwoDtos(Dto dto, AnotherDto anotherDto) {
+        when(context.parseBody(Dto.class)).thenReturn(dto);
+        when(context.parseBody(AnotherDto.class)).thenReturn(anotherDto);
+        create("JSR303ValidationWithTwoDifferentDtos").invoke(mockController, context);
+    }
+
     private Dto buildDto(String regex, String length, int range) {
         Dto dto = new Dto();
         dto.regex = regex;
         dto.length = length;
         dto.range = range;
         return dto;
+    }
+
+    private AnotherDto buildAnotherDto(String regex, String length, int range) {
+        AnotherDto anotherDto = new AnotherDto();
+        anotherDto.regex = regex;
+        anotherDto.length = length;
+        anotherDto.range = range;
+        return anotherDto;
     }
 
     private ControllerMethodInvoker create(String methodName, final Object... toBind) {
@@ -512,6 +538,9 @@ public class ControllerMethodInvokerTest {
 
         public Result JSR303ValidationWithRequired(@Required @JSR303Validation("dto") Dto dto,
                 Validation validation);
+
+        public Result JSR303ValidationWithTwoDifferentDtos(@JSR303Validation("dto1") Dto dto,
+                @JSR303Validation("dto2") AnotherDto anotherDto, Validation validation);
     }
 
     // Custom argument extractors for testing different instantiation paths
@@ -619,6 +648,16 @@ public class ControllerMethodInvokerTest {
     }
 
     public class Dto {
+        @Pattern(regexp = "[a-z]*")
+        public String regex;
+        @Size(min = 5, max = 10)
+        public String length;
+        @Min(value = 3)
+        @Max(value = 10)
+        public int range;
+    }
+
+    public class AnotherDto {
         @Pattern(regexp = "[a-z]*")
         public String regex;
         @Size(min = 5, max = 10)
