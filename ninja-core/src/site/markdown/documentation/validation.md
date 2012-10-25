@@ -30,6 +30,7 @@ In this example we want the context to be parsed as <code>profileId</code> and a
 	}
 </pre>
 
-You can check the result of the validation by evaluating the <code>validation</code>-parameter with simply calling its <code>validation.hasViolations()</code>-method in your controller which gives you a <code>true</code> or <code>false</code>.
+You can check the result of the validation by evaluating the <code>validation</code>-parameter with simply calling its <code>validation.hasBeanViolations()</code>-method in your controller which gives you a <code>true</code> or <code>false</code>.
+You have the ability to check which field(s) inside your <code>DTO</code> caused the violations by using the <code>getBeanViolations()</code> method which gives you a complete list of all occured violations in your dto.
 
 If you want to validate nested DTOs or get in deeper detail, visit this great site: [JBOSS Validation API](http://docs.jboss.org/hibernate/validator/4.0.1/reference/en/html/validator-usingvalidator.html "JBOSS Validation API")

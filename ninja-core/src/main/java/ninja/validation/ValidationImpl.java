@@ -17,21 +17,18 @@
 package ninja.validation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Validation object
- * 
+ *
  * @author James Roper, Philip Sommer
  */
 public class ValidationImpl implements Validation {
 
     private final List<FieldViolation> fieldViolations = new ArrayList<FieldViolation>();
     private final List<ConstraintViolation> generalViolations = new ArrayList<ConstraintViolation>();
-    private final Map<String, List<FieldViolation>> beanViolations =
-            new HashMap<String, List<FieldViolation>>();
+    private final List<FieldViolation> beanViolations = new ArrayList<FieldViolation>();
 
     @Override
     public boolean hasViolations() {
@@ -80,29 +77,18 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
-    public void addBeanViolation(String beanName, FieldViolation fieldViolation) {
-        if (beanViolations.containsKey(beanName)) {
-            beanViolations.get(beanName).add(fieldViolation);
-        } else {
-            List<FieldViolation> temp = new ArrayList<FieldViolation>();
-            temp.add(fieldViolation);
-            beanViolations.put(beanName, temp);
-        }
-    }
-
-    @Override
-    public boolean hasBeanViolations(String beanName) {
-        return beanViolations.containsKey(beanName);
+    public void addBeanViolation(FieldViolation fieldViolation) {
+        beanViolations.add(fieldViolation);
     }
 
     @Override
     public boolean hasBeanViolations() {
-        return beanViolations.isEmpty();
+        return !beanViolations.isEmpty();
     }
 
     @Override
-    public List<FieldViolation> getBeanViolations(String beanName) {
-        return beanViolations.get(beanName);
+    public List<FieldViolation> getBeanViolations() {
+        return beanViolations;
     }
 
     @Override

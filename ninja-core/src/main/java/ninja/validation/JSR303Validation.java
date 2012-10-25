@@ -45,11 +45,6 @@ public @interface JSR303Validation {
      */
     String message() default MESSAGE;
 
-    /**
-     * @return The Name of the validated field
-     */
-    String value();
-
     public static final String KEY = "validation.is.JSR303.violation";
     public static final String MESSAGE = "{0} cannot be validated with JSR303 annotations";
 }

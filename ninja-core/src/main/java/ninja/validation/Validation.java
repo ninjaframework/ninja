@@ -105,15 +105,7 @@ public interface Validation {
      * @param fieldViolation the FieldViolation consisting of a cinstraintViolation and the fields
      *            name
      */
-    void addBeanViolation(String beanName, FieldViolation fieldViolation);
-
-    /**
-     * Whether any field violations occured while validating this bean
-     * 
-     * @param beanName
-     * @return true if there are any, false if none
-     */
-    boolean hasBeanViolations(String beanName);
+    void addBeanViolation(FieldViolation fieldViolation);
 
     /**
      * Whether any violation occured while validating your beans
@@ -128,6 +120,6 @@ public interface Validation {
      * @param beanName
      * @return A list of field violations
      */
-    List<FieldViolation> getBeanViolations(String beanName);
+    List<FieldViolation> getBeanViolations();
 
 }

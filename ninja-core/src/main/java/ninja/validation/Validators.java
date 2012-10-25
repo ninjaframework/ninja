@@ -29,11 +29,7 @@ import javax.validation.ValidatorFactory;
 public class Validators {
 
     public static class JSRValidator implements Validator<Object> {
-        private String validateDtoName;
 
-        public JSRValidator(JSR303Validation jsr303Validation) {
-            validateDtoName = jsr303Validation.value();
-        }
 
         @Override
         public void validate(Object value, String field, Validation validation) {
@@ -52,7 +48,7 @@ public class Validators {
                         ConstraintViolation.create(violation.getMessage(), violation
                                 .getInvalidValue());
 
-                validation.addBeanViolation(validateDtoName, new FieldViolation(violation
+                validation.addBeanViolation(new FieldViolation(violation
                         .getPropertyPath().toString(), constraintViolation));
             }
         }
