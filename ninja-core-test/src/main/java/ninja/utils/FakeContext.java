@@ -16,24 +16,6 @@
 
 package ninja.utils;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
-
-import ninja.Context;
-import ninja.Cookie;
-import ninja.Result;
-import ninja.Route;
-import ninja.i18n.LangImpl;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
-import ninja.utils.ResponseStreams;
-import ninja.validation.Validation;
-import ninja.validation.ValidationImpl;
-import org.apache.commons.fileupload.FileItemIterator;
-
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,14 +24,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import ninja.Context;
+import ninja.Cookie;
+import ninja.Result;
+import ninja.Route;
+import ninja.session.FlashCookie;
+import ninja.session.SessionCookie;
+import ninja.validation.Validation;
+import ninja.validation.ValidationImpl;
+
+import org.apache.commons.fileupload.FileItemIterator;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
 /**
  * A fake context
  */
 public class FakeContext implements Context {
     private String requestContentType;
-    
+
     private String requestPath;
-    
+
     /** please use the requestPath stuff */
     @Deprecated
     private String requestUri;
@@ -61,7 +61,7 @@ public class FakeContext implements Context {
     private Map<String, String> pathParams = new HashMap<String, String>();
     private Map<String, String> headers = new HashMap<String, String>();
     private Object body;
-    private Validation validation = new ValidationImpl(new LangImpl(MockNinjaProperties.create("","")));
+    private Validation validation = new ValidationImpl();
 
     private String acceptContentType;
 
@@ -82,7 +82,7 @@ public class FakeContext implements Context {
     }
 
     /**
-     * Please use the getServletPath and setServletPath facilities. 
+     * Please use the getServletPath and setServletPath facilities.
      * 
      * @param requestUri
      * @return
@@ -95,7 +95,7 @@ public class FakeContext implements Context {
 
 
     /**
-     * Please use the getServletPath and setServletPath facilities. 
+     * Please use the getServletPath and setServletPath facilities.
      * 
      * @param requestUri
      * @return
@@ -119,7 +119,7 @@ public class FakeContext implements Context {
         this.sessionCookie = sessionCookie;
         return this;
     }
-    
+
     @Override
     public SessionCookie getSessionCookie() {
         return sessionCookie;
@@ -295,8 +295,7 @@ public class FakeContext implements Context {
     public Route getRoute() {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
-    
-	
+
 	public FakeContext setRequestPath(String path) {
 		this.requestPath = path;
 		return this;

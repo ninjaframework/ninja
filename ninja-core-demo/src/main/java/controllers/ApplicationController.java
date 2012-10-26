@@ -17,7 +17,6 @@
 package controllers;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import ninja.Context;
@@ -26,9 +25,9 @@ import ninja.Results;
 import ninja.i18n.Lang;
 import ninja.params.Param;
 import ninja.params.PathParam;
-
 import ninja.validation.Required;
 import ninja.validation.Validation;
+
 import org.slf4j.Logger;
 
 import com.google.common.collect.Maps;
@@ -57,7 +56,7 @@ public class ApplicationController {
         return Results.html();
 
     }
-    
+
     public Result testPage() {
         return Results.html();
 
@@ -88,8 +87,7 @@ public class ApplicationController {
     public Result validation(Validation validation,
                              @Param("email") @Required String email) {
         if (validation.hasViolations()) {
-            return Results.contentType("text/plain").render(
-                    validation.getFieldViolationMessage("email", "en"));
+            return Results.contentType("text/plain").render(validation.getFieldViolations("email"));
         } else {
             return Results.contentType("text/plain").render(email);
         }
