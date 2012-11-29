@@ -16,10 +16,12 @@
 
 package ninja;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import ninja.session.SessionCookie;
+import ninja.utils.NinjaConstant;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,8 +70,9 @@ public class SecureFilterTest {
         when(sessionCookie.get("username")).thenReturn(null);
         
         // filter that
-        secureFilter.filter(filterChain, context);
-
+        Result result = secureFilter.filter(filterChain, context);
+        
+        assertEquals(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN, result.getTemplate());
         verifyZeroInteractions(filterChain);
     }
 
