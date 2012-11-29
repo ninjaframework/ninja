@@ -16,6 +16,7 @@
 
 package ninja.template;
 
+import ninja.NinjaPaths;
 import ninja.Result;
 import ninja.Route;
 import ninja.utils.NinjaConstant;
@@ -51,8 +52,8 @@ public class TemplateEngineHelper {
 
             // Replace controller prefix with views prefix
             String parentPackageOfController = controllerPackageName
-                    .replaceFirst(NinjaConstant.CONTROLLERS_DIR,
-                            NinjaConstant.VIEWS_DIR);
+                    .replaceFirst(NinjaPaths.getControllerPackage(),
+                            NinjaPaths.getViews());
 
             // And now we rewrite everything from "." notation to directories /
             String parentControllerPackageAsPath = parentPackageOfController

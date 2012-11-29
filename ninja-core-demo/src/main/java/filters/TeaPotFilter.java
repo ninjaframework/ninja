@@ -19,6 +19,7 @@ package filters;
 import ninja.Context;
 import ninja.Filter;
 import ninja.FilterChain;
+import ninja.NinjaPaths;
 import ninja.Result;
 import ninja.Results;
 
@@ -37,7 +38,7 @@ public class TeaPotFilter implements Filter {
 	@Override
 	public Result filter(FilterChain chain, Context context) {
 
-		return Results.html().status(418).template("/views/TeaPotFilter/TeaPot.ftl.html");
+		return Results.html().status(418).template(NinjaPaths.getViews() + "TeaPotFilter/TeaPot.ftl.html");
 
 	}
 }

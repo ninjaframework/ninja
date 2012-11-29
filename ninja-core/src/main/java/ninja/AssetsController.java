@@ -43,9 +43,6 @@ public class AssetsController {
     /** Used as seen by http request */
     final String PUBLIC_PREFIX = "/assets/";
 
-    /** Used for storing files locally */
-    final String ASSETS_PREFIX = "assets/";
-
     private final MimeTypes mimeTypes;
 
     @Inject
@@ -64,7 +61,7 @@ public class AssetsController {
                         PUBLIC_PREFIX, "");
 
                 InputStream inputStream = this.getClass().getClassLoader()
-                        .getResourceAsStream(ASSETS_PREFIX + finalName);
+                        .getResourceAsStream(NinjaPaths.getAssets() + finalName);
 
                 // check if stream exists. if not print a notfound exception
                 if (inputStream == null) {
@@ -90,7 +87,7 @@ public class AssetsController {
                                 this.getClass()
                                         .getClassLoader()
                                         .getResourceAsStream(
-                                                ASSETS_PREFIX + finalName),
+                                                NinjaPaths.getAssets() + finalName),
                                 context.getHttpServletResponse()
                                         .getOutputStream());
 

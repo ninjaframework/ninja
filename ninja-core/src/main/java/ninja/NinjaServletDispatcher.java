@@ -80,6 +80,7 @@ public class NinjaServletDispatcher implements Filter {
 
     public void init(FilterConfig filterConfig) throws ServletException {
 
+        NinjaPaths.ninjaPackage = filterConfig.getInitParameter("package");
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();
         // force set serverName when in test mode:
         if (serverName != null) {

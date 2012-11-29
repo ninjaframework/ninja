@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import ninja.NinjaPaths;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.SwissKnife;
@@ -114,13 +115,13 @@ public class LangImpl implements Lang {
 
         // Load default messages:
         Configuration defaultLanguage = SwissKnife
-                .loadConfigurationInUtf8("conf/messages.properties");
+                .loadConfigurationInUtf8(NinjaPaths.getI18n());
 
         // Make sure we got the file.
         // Everything else does not make much sense.
         if (defaultLanguage == null) {
             throw new RuntimeException(
-                    "Did not find conf/messages.properties. Please add a default language file.");
+                    "Did not find "+ NinjaPaths.getI18n()+". Please add a default language file.");
         } else {
             langToKeyAndValuesMapping.put("", defaultLanguage);
         }
@@ -140,8 +141,7 @@ public class LangImpl implements Lang {
 
             // First step: Load complete language eg. en-US
             Configuration configuration = SwissKnife
-                    .loadConfigurationInUtf8(String.format(
-                            "conf/messages.%s.properties", lang));
+                    .loadConfigurationInUtf8(NinjaPaths.getI18n(lang));
 
             Configuration configurationLangOnly = null;
 
@@ -155,17 +155,16 @@ public class LangImpl implements Lang {
 
                 // And load the configuraion
                 configurationLangOnly = SwissKnife
-                        .loadConfigurationInUtf8(String.format(
-                                "conf/messages.%s.properties", langOnly));
+                        .loadConfigurationInUtf8(NinjaPaths.getI18n(lang));
 
             }
 
             // This is strange. If you defined the language in application.conf
             // it should be there propably.
             if (configuration == null) {
-                logger.info(String
-                        .format("Did not find conf/messages.%s.properties but it was specified in application.conf. Using default language instead.",
-                                lang));
+                logger.info("Did not find "
+                        + NinjaPaths.getI18n(lang)
+                        + " but it was specified in application.conf. Using default language instead.");
 
             } else {
 

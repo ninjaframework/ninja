@@ -18,9 +18,6 @@ package ninja.utils;
 
 import java.util.Properties;
 
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(NinjaPropertiesImpl.class)
 public interface NinjaProperties {
 
     /**
@@ -39,12 +36,6 @@ public interface NinjaProperties {
      * 
      */
     String NINJA_EXTERNAL_CONF = "ninja.external.configuration";
-
-    /**
-     * The default configuration. Make sure that file exists. Otherwise the
-     * application won't start up.
-     */
-    String CONF_FILE_LOCATION_BY_CONVENTION = "conf/application.conf";
 
     /**
      * Get a String property or null if it is not there...

@@ -123,3 +123,21 @@ It tries to load in the following order:
 Ninja uses the excellent Apache Configurations library to do the loading. Please refer to
 [their manual](http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
 
+
+Moving the application to another package
+-----------------------------------------
+
+Ninja has conventions where to look for configuration, assets, et cetera. By default it looks for them
+in the base package. You can move your application to any package, however you have to help Ninja and specifiy this package. You can do that in your ``web.xml`` file by setting the ``package`` init parmeter.
+
+Example:
+
+    <filter>
+      <filter-name>dispatcher</filter-name>
+      <filter-class>ninja.NinjaServletDispatcher</filter-class>
+      <async-supported>true</async-supported>
+      <init-param>
+        <param-name>package</param-name>
+        <param-value>server</param-value>
+      </init-param>    
+    </filter>
