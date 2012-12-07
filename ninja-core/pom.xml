@@ -212,9 +212,9 @@
 
 		<!-- XML parsing -->
 		<dependency>
-			<groupId>com.fasterxml</groupId>
-			<artifactId>jackson-xml-databind</artifactId>
-		<version>0.6.2</version>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 	</dependencies>
 

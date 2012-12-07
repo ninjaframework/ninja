@@ -21,11 +21,11 @@ import java.io.IOException;
 import ninja.Context;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 
-import com.fasterxml.jackson.xml.XmlMapper;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
