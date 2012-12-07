@@ -25,10 +25,12 @@ import com.google.inject.Singleton;
 public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
     private final BodyParserEngineJson bodyParserEngineJson;
+    private final BodyParserEngineXml bodyParserEngineXml;
 
     @Inject
-    public BodyParserEngineManagerImpl(BodyParserEngineJson bodyParserEngineJson) {
+    public BodyParserEngineManagerImpl(BodyParserEngineJson bodyParserEngineJson, BodyParserEngineXml bodyParserEngineXml) {
         this.bodyParserEngineJson = bodyParserEngineJson;
+        this.bodyParserEngineXml = bodyParserEngineXml;
 
     }
 
@@ -37,6 +39,8 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
         if (contentType.equals(ContentTypes.APPLICATION_JSON)) {
             return bodyParserEngineJson;
+        } else if (contentType.equals(ContentTypes.APPLICATION_XML)) {
+            return bodyParserEngineXml;
         } else {
             return null;
         }

@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.bodyparser.BodyParserEngineXml;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.ResponseStreams;
@@ -304,7 +305,8 @@ public interface Context {
      * own parsers depending on the request type.
      * 
      * Have a look at {@link ninja.bodyparser.BodyParserEngine}
-     * {@link BodyParserEngineJson} and {@link BodyParserEngineManager}
+     * {@link BodyParserEngineJson} {@link BodyParserEngineXml} 
+     * and {@link BodyParserEngineManager}
      * 
      * @param classOfT
      *            The class of the result.

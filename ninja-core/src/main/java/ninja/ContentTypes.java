@@ -20,6 +20,7 @@ public interface ContentTypes {
 
     String TEXT_HTML = "text/html";
     String APPLICATION_JSON = "application/json";
+    String APPLICATION_XML = "application/xml";
     String TEXT_CSS = "text/css";
 
 }
