@@ -28,13 +28,6 @@ public interface NinjaConstant {
     String MODE_DEV = "dev";
     String MODE_PROD = "prod";
 
-    // /////////////////////////////////////////////////
-    // The basic directories used in all convention
-    // over configuration operations:
-    String VIEWS_DIR = "views";
-    String CONTROLLERS_DIR = "controllers";
-    String MODELS_DIR = "models";
-
     // location of the default views for errors:
     String LOCATION_VIEW_FTL_HTML_NOT_FOUND = "views/system/404notFound.ftl.html";
     String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbidden.ftl.html";

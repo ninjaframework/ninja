@@ -32,9 +32,6 @@ import ninja.utils.NinjaPropertiesImpl;
 
 public class NinjaBootup {
 
-    private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
-    private static final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
-
     /**
      * Main injector for the class.
      */
@@ -53,9 +50,9 @@ public class NinjaBootup {
             modulesToLoad.add(new Configuration(ninjaProperties));
 
             // Load main application module:
-            if (doesClassExist(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION)) {
+            if (doesClassExist(NinjaPaths.getModuleClass())) {
                 Class applicationConfigurationClass = Class
-                        .forName(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
+                        .forName(NinjaPaths.getModuleClass());
                 Module applicationConfiguration = (Module) applicationConfigurationClass
                         .newInstance();
                 modulesToLoad.add(applicationConfiguration);
@@ -65,8 +62,8 @@ public class NinjaBootup {
             injector = Guice.createInjector(modulesToLoad);
 
             // Init routes
-            if (doesClassExist(ROUTES_CONVENTION_LOCATION)) {
-                Class clazz = Class.forName(ROUTES_CONVENTION_LOCATION);
+            if (doesClassExist(NinjaPaths.getRouteClass())) {
+                Class clazz = Class.forName(NinjaPaths.getRouteClass());
                 ApplicationRoutes applicationRoutes = (ApplicationRoutes) injector
                         .getInstance(clazz);
 

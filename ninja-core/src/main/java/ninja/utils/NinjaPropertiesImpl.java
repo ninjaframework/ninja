@@ -22,6 +22,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Properties;
 
+import ninja.NinjaPaths;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
@@ -35,8 +37,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.inject.Binder;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.name.Names;
 
 @Singleton
@@ -72,7 +74,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
      */
     private CompositeConfiguration compositeConfiguration;
 
-    @Inject
+    /**
+     * Construct a new {@link NinjaPropertiesImpl}.
+     * 
+     * This is not called by Guice. An instance is new'ed manually during
+     * startup and bound with {@link LinkedBindingBuilder#toInstance(Object)}.
+     */
     public NinjaPropertiesImpl() {
 
         // Get mode possibly set via a system property
@@ -119,7 +126,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         // correspond to a mode into the configuration.
 
         defaultConfiguration = SwissKnife
-                .loadConfigurationInUtf8(NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
+                .loadConfigurationInUtf8(NinjaPaths.getConfiguration());
 
         if (defaultConfiguration != null) {
             // Second step:
@@ -134,7 +141,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             // a RuntimeException
             String errorMessage = String
                     .format("Error reading configuration file. Make sure you got a default config file %s",
-                            NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);
+                            NinjaPaths.getConfiguration());
 
             logger.error(errorMessage);
 
