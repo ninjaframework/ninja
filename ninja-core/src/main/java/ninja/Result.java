@@ -19,6 +19,7 @@ package ninja;
 import java.util.List;
 import java.util.Map;
 
+import ninja.template.TemplateEngineJsonGson;
 import ninja.utils.DateUtil;
 
 import com.google.common.collect.Lists;
@@ -51,6 +52,7 @@ public class Result {
     // /////////////////////////////////////////////////////////////////////////
     public static final String TEXT_HTML = "text/html";
     public static final String TEXT_PLAIN = "text/plain";
+    public static final String TEXT_XML = "text/xml";
     public static final String APPLICATON_JSON = "application/json";
     public static final String APPLICATION_XML = "application/xml";
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
@@ -91,6 +93,12 @@ public class Result {
     private String template;
 
     /**
+     * See {@link #doNotProcessBody(boolean)}.
+     */
+    private boolean doNotProcessBody;
+
+
+    /**
      * A result. Sets utf-8 as charset and status code by default. 
      * Refer to {@link Result#SC_200_OK}, {@link Result#SC_204_NO_CONTENT} and so on
      * for some short cuts to predefined results. 
@@ -104,7 +112,7 @@ public class Result {
 
         this.headers = Maps.newHashMap();
         this.cookies = Lists.newArrayList();
-
+        doNotProcessBody = false;
     }
 
     public Object getRenderable() {
@@ -304,4 +312,25 @@ public class Result {
         
     } 
 
+    /**
+     * Tells whether the body needs processing by the framework. Normally it does, except {@link #doNotProcessBody()}
+     * has been called *AND* a content type has been set.
+     * 
+     * @return
+     */
+    public boolean mustProcessBody() {
+        return !doNotProcessBody || contentType == null;
+    }
+
+    /**
+     * Normally, Ninja will process the body according to the content type, so it will e.g. use
+     * {@link TemplateEngineJsonGson} if content type is "application/json". However, in some special cases you may want
+     * to produce e.g. the json response manually and Ninja should just write it out without further processing. In this
+     * case, set {@link #bodyIsProcessed} to true. But make sure you also set a content type, otherwise this flag will
+     * be ignored!
+     */
+    public Result doNotProcessBody() {
+        this.doNotProcessBody = true;
+        return this;
+    }
 }
