@@ -19,7 +19,13 @@ package ninja.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.io.Writer;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -37,7 +43,7 @@ public class ResultHandlerTest {
     
     @Mock
     private TemplateEngineManager templateEngineManager;
-    
+
     @Mock
     private TemplateEngine templateEngine;
     
@@ -45,15 +51,20 @@ public class ResultHandlerTest {
     
     @Mock 
     private Context context;
+
+    @Mock
+    private Writer writer;
     
+    @Mock
+    private ResponseStreams responseStreams;
     
     @Before
-    public void init() {
+    public void init() throws Exception {
         
         resultHandler = new ResultHandler(templateEngineManager);
         when(templateEngineManager.getTemplateEngineForContentType(
                 Result.APPLICATON_JSON)).thenReturn(templateEngine);
-        
+        when(responseStreams.getWriter()).thenReturn(writer);
     }
     
     /**
@@ -102,7 +113,26 @@ public class ResultHandlerTest {
         assertEquals("must-revalidate", result.getHeaders().get(Result.CACHE_CONTROL));
         assertNull(result.getHeaders().get(Result.DATE));
         assertNull(result.getHeaders().get(Result.EXPIRES));
-        
     }
 
+    @Test
+    public void testDoNotProcessBody() {
+        final String json = "{\"a\": 1, \"b\": [1, 2]}";
+        // create a json response that is NOT supposed to be rendered by the template engine that would normally be in
+        // charge:
+        Result result = Results.json().doNotProcessBody().render(json);
+        when(context.finalizeHeaders(result)).thenReturn(responseStreams);
+        resultHandler.handleResult(result, context);
+        verify(templateEngine, never()).invoke(any(Context.class), any(Result.class));
+    }
+
+    @Test
+    public void testTemplateEngineIsNormallyUsed() {
+        final String json = "{\"a\": 1, \"b\": [1, 2]}";
+
+        // create a json response that IS supposed to be rendered by the template engine:
+        Result result = Results.json().render(json);
+        resultHandler.handleResult(result, context);
+        verify(templateEngine).invoke(context, result);
+    }
 }

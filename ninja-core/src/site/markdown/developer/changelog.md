@@ -1,6 +1,6 @@
 Version 1.X
 ===========
-
+ * Support manually controlling response body by calling Result#doNotProcess()
  * Support XML payload parsing on Content-Type: application/xml
 
 Version 1.0.6
