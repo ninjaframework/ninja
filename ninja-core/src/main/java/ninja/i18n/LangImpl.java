@@ -211,27 +211,30 @@ public class LangImpl implements Lang {
         }
 
         // Check if we get a registered mapping for the language input string.
-        // At that point the language may be either language-country or only country
-        Configuration configuration = langToKeyAndValuesMapping.get(language);
-        if (configuration != null) {
-
-            return configuration;
-        }
-
-        // If we got a two part language code like "en-US" we split it and
-        // search only for the language "en".
-        if (language.contains("-")) {
-
-            String languageWithoutCountry = language.split("-")[0];
-
-            configuration = langToKeyAndValuesMapping
-                    .get(languageWithoutCountry);
-
+        // At that point the language may be either language-country or only country.
+        // extract multiple languages from Accept-Language header
+        String[] languages = language.split(",");
+        for (String l: languages){
+            Configuration configuration = langToKeyAndValuesMapping.get(l.trim());
             if (configuration != null) {
-
                 return configuration;
             }
 
+            // If we got a two part language code like "en-US" we split it and
+            // search only for the language "en".
+            if (l.contains("-")) {
+
+                String languageWithoutCountry = l.split("-")[0];
+
+                configuration = langToKeyAndValuesMapping
+                        .get(languageWithoutCountry);
+
+                if (configuration != null) {
+
+                    return configuration;
+                }
+
+            }
         }
 
         // Oops. Nothing found. We return the default language (by convention guaranteed to work).
