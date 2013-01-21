@@ -215,7 +215,8 @@ public class LangImpl implements Lang {
         // extract multiple languages from Accept-Language header
         String[] languages = language.split(",");
         for (String l: languages){
-            Configuration configuration = langToKeyAndValuesMapping.get(l.trim());
+            l = l.trim();
+            Configuration configuration = langToKeyAndValuesMapping.get(l);
             if (configuration != null) {
                 return configuration;
             }
@@ -223,9 +224,17 @@ public class LangImpl implements Lang {
             // If we got a two part language code like "en-US" we split it and
             // search only for the language "en".
             if (l.contains("-")) {
-
-                String languageWithoutCountry = l.split("-")[0];
-
+                String[] array = l.split("-");
+                String languageWithoutCountry = array[0];
+                // Modify country code to upper case for IE and Firefox
+                if(array.length > 1){
+                    String country = array[1];
+                    String languageWithUpperCaseCountry = languageWithoutCountry + "-" + country.toUpperCase();
+                    configuration = langToKeyAndValuesMapping.get(languageWithUpperCaseCountry);
+                    if (configuration != null) {
+                        return configuration;
+                    }
+                }
                 configuration = langToKeyAndValuesMapping
                         .get(languageWithoutCountry);
 
