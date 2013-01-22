@@ -48,11 +48,14 @@ public class LangImplTest {
 		//that will refer to messages_en.properties:
 		assertEquals("english", lang.get("language", "en-US"));
 		assertEquals("english", lang.get("language", "en-CA"));
-		assertEquals("english", lang.get("language", "en-UK"));	
+		assertEquals("english", lang.get("language", "en-UK"));
 		
 		//that will refer to messages_de.properties:
 		assertEquals("deutsch", lang.get("language", "de"));
 		assertEquals("deutsch", lang.get("language", "de-DE"));
+
+        //that will refer to messages_fr-FR.properties:
+        assertEquals("francaise", lang.get("language", "da,fr-FR;q=0.8"));
 		
 	}
 	
