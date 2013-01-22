@@ -22,7 +22,7 @@
 	<groupId>org.ninjaframework</groupId>
 	<artifactId>ninja</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.7-SNAPSHOT</version>
+	<version>1.0.7</version>
 	<name>ninja</name>
 	<url>http://www.ninjaframework.org</url>
 
@@ -83,7 +83,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
