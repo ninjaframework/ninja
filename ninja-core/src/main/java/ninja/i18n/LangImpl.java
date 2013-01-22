@@ -216,6 +216,10 @@ public class LangImpl implements Lang {
         String[] languages = language.split(",");
         for (String l: languages){
             l = l.trim();
+            // Ignore the relative quality factor in Accept-Language header
+            if(l.contains(";")){
+                l = l.split(";")[0];
+            }
             Configuration configuration = langToKeyAndValuesMapping.get(l);
             if (configuration != null) {
                 return configuration;

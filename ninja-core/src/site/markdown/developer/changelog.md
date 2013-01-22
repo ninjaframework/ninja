@@ -2,6 +2,7 @@ Version 1.X
 ===========
 
  * Support XML payload parsing on Content-Type: application/xml
+ * Fix for multiple values in request "Accept-Language" header
 
 Version 1.0.6
 =============
