@@ -1,7 +1,12 @@
-Version 1.X
-============
+Version 1.0.X
+=============
  
- * PLEASE ADD YOUR CHANGES HERE
+ * PLZ ADD YOUR CHANGES HERE :)
+ 
+Version 1.0.8
+=============
+ 
+ * Fixed bug + test with flash scope: https://github.com/reyez/ninja/issues/70 (ra)
 
 Version 1.0.7
 =============
