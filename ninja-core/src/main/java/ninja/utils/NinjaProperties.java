@@ -24,7 +24,7 @@ import com.google.inject.ImplementedBy;
 public interface NinjaProperties {
 
     /**
-     * Often you may want to use a seperate configuration file. You can define
+     * Often you may want to use a separate configuration file. You can define
      * the file to use in addition to your default config at
      * conf/application.conf by setting NINJA_EXTERNAL_CONF as JVM system
      * property.
