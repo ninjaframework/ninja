@@ -110,6 +110,10 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
         
+        router.GET().route("/form").with(ApplicationController.class, "form");
+        router.POST().route("/form").with(ApplicationController.class, "form");
+        
+        
         
         //this is a route that should only be accessible when NOT in production
         // this is tested in RoutesTest

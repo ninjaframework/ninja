@@ -16,13 +16,13 @@
 
 package ninja.template;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
-import ninja.session.FlashCookie;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
@@ -30,7 +30,9 @@ import org.slf4j.Logger;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -61,6 +63,13 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // loader:
         cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
                 .getTemplateLoader()));
+        
+        // The defaultObjectWrapper is a BeansWrapper
+        // => we fetch it and allow the wrapper to expose all fields
+        // for convenience
+        BeansWrapper beansWrapper = (BeansWrapper) cfg.getObjectWrapper();
+        beansWrapper.setExposeFields(true);
+        
     }
 
     @Override
@@ -72,14 +81,21 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         Map map;
         // if the object is null we simply render an empty map...
-        if (object == null) {
+        if (object == null) {            
             map = Maps.newHashMap();
-        } else if (!(object instanceof Map)) {
-            throw new RuntimeException(
-                    "Freemarker Templating engine can only render Map of Strings...");
-
-        } else {
+            
+        } else if (object instanceof Map) {            
             map = (Map) object;
+            
+        } else {
+            // We are getting an arbitrary Object and put that into
+            // the root of freemarker
+            
+            // If you are rendering something like Results.ok().render(new MyObject())
+            // Assume MyObject has a public String name field.            
+            // You can then access the fields in the template like that:
+            // ${publicField}            
+            map = getMapForObject(object);
         }
 
         // provide all i18n templates to freemarker engine:
@@ -108,8 +124,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                 messageValue = entry.getValue();
             }
             
-
-            
             map.put("flash_" + entry.getKey(), messageValue);           
         }
 
@@ -124,7 +138,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             Template freemarkerTemplate = cfg.getTemplate(templateName);
 
             // convert tuples:
-
             freemarkerTemplate.process(map, responseStreams.getWriter());
 
             responseStreams.getWriter().flush();
@@ -145,5 +158,31 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     @Override
     public String getSuffixOfTemplatingEngine() {
         return FILE_SUFFIX;
+    }
+    
+    private Map getMapForObject(Object object) {
+        
+        Map map = Maps.newHashMap();
+        
+        try {
+
+            for (Field field : object.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                Object value = field.get(object);
+                if (value == null) {
+                    map.put(field.getName(), "");
+                } else {
+                    map.put(field.getName(), value);
+                }
+            }
+            
+        } catch (IllegalAccessException illegalAccessException) {
+
+            logger.error(illegalAccessException.getMessage());
+        }
+        
+        
+        return map;
+        
     }
 }
