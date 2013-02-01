@@ -6,7 +6,7 @@ Version 1.0.X
 Version 1.0.8
 =============
  
- * Fixed bug + test with flash scope: https://github.com/reyez/ninja/issues/70 (ra)
+ * Fixed bug + test with flash scope: https://github.com/reyez/ninja/issues/70 (zoza / ra)
 
 Version 1.0.7
 =============
