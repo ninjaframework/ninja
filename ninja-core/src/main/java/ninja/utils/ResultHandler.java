@@ -104,7 +104,11 @@ public class ResultHandler {
             if (result.getRenderable() instanceof String) {
                 // Simply write it out
                 try {
-                    result.contentType(Result.TEXT_PLAIN);
+                    if (result.getContentType() == null) {
+                        // if content type not explicitly set, text/plain is a good default value:
+                        result.contentType(Result.TEXT_PLAIN);
+                    }
+
                     ResponseStreams responseStreams = context
                             .finalizeHeaders(result);
                     responseStreams.getWriter().write(
