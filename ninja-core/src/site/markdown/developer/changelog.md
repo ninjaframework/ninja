@@ -1,7 +1,7 @@
 Version 1.0.X
 =============
  
- * PLZ ADD YOUR CHANGES HERE :)
+ * Bugfix: explicitly set content type of result keeps untouched by ResultHandler now 
  
 Version 1.0.8
 =============
