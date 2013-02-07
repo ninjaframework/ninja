@@ -56,6 +56,9 @@ public class NinjaConstantTest {
 
         assertEquals(false, configuration.getBoolean(NinjaConstant.sessionTransferredOverHttpsOnly));
 
+        assertEquals(true,
+                configuration.getBoolean(NinjaConstant.sessionHttpOnly));
+
     }
 
 }
