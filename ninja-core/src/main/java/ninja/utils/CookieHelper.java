@@ -16,10 +16,10 @@
 
 package ninja.utils;
 
+import javax.servlet.http.Cookie;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.Cookie;
 
 public class CookieHelper {
     private static final Logger log = LoggerFactory
@@ -70,6 +70,10 @@ public class CookieHelper {
             HTTP_ONLY_SETTER.setHttpOnly(servletCookie);
         }
         return servletCookie;
+    }
+
+    public static void setHttpOnly(Cookie cookie) {
+        HTTP_ONLY_SETTER.setHttpOnly(cookie);
     }
 
     /**

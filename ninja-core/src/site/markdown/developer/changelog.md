@@ -2,6 +2,7 @@ Version 1.0.X
 =============
  
  * Bugfix: explicitly set content type of result keeps untouched by ResultHandler now 
+ * Added HttpOnly option for the session cookie 
  
 Version 1.0.8
 =============
