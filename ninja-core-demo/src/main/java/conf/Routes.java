@@ -16,12 +16,13 @@
 
 package conf;
 
-import com.google.inject.Inject;
-
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
+
+import com.google.inject.Inject;
+
 import controllers.ApplicationController;
 import controllers.AsyncController;
 import controllers.FilterController;
@@ -78,6 +79,13 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/person").with(PersonController.class, "getPerson");
         router.POST().route("/person").with(PersonController.class, "postPerson");
 
+        // /////////////////////////////////////////////////////////////////////
+        // Form parsing support
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/contactForm").with(ApplicationController.class, "contactForm");
+        router.POST().route("/contactForm").with(ApplicationController.class, "postContactForm");
+
+        
         // /////////////////////////////////////////////////////////////////////
         // Lifecycle support
         // /////////////////////////////////////////////////////////////////////

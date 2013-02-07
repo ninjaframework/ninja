@@ -17,18 +17,18 @@
 package controllers;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
+import models.Contact;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
 import ninja.params.Param;
 import ninja.params.PathParam;
-
 import ninja.validation.Required;
 import ninja.validation.Validation;
+
 import org.slf4j.Logger;
 
 import com.google.common.collect.Maps;
@@ -108,6 +108,17 @@ public class ApplicationController {
 
     }
 
+    public Result contactForm(Context context) {
+       
+        return Results.html();
+
+    }
+    public Result postContactForm(Context context,Contact contact) {
+        HashMap<Object, Object> map = Maps.newHashMap();
+        map.put("contact", contact);
+        return Results.html().render(map);
+    }
+    
     public Result htmlEscaping(Context context) {
 
         // just an example of html escaping in action.
