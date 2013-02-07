@@ -86,6 +86,16 @@ public interface NinjaConstant {
     final String sessionTransferredOverHttpsOnly = "application.session.transferred_over_https_only";
 
     /**
+     * Used to set the HttpOnly flag at the session cookie. On a supported
+     * browser, an HttpOnly session cookie will be used only when transmitting
+     * HTTP (or HTTPS) requests, thus restricting access from other, non-HTTP
+     * APIs (such as JavaScript). This restriction mitigates but does not
+     * eliminate the threat of session cookie theft via cross-site scripting
+     * (XSS).
+     */
+    final String sessionHttpOnly = "application.session.http_only";
+
+    /**
      * Suffix used for Ninja cookies. Usually results in cookies like
      * "NINJA_SESSION
      */

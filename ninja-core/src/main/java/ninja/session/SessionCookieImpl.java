@@ -51,6 +51,7 @@ public class SessionCookieImpl implements SessionCookie {
     private final Integer sessionExpireTimeInMs;
     private final Boolean sessionSendOnlyIfChanged;
     private final Boolean sessionTransferredOverHttpsOnly;
+    private final Boolean sessionHttpOnly;
     private final String applicationCookiePrefix;
     private final Map<String, String> data = new HashMap<String, String>();
 
@@ -74,6 +75,8 @@ public class SessionCookieImpl implements SessionCookie {
         
 		this.sessionSendOnlyIfChanged = ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionSendOnlyIfChanged, true);
 		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionTransferredOverHttpsOnly, true);
+        this.sessionHttpOnly = ninjaProperties.getBooleanWithDefault(
+                NinjaConstant.sessionHttpOnly, true);
 		
 		this.applicationCookiePrefix = ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix);
 	}
@@ -242,6 +245,9 @@ public class SessionCookieImpl implements SessionCookie {
             }
             if (sessionTransferredOverHttpsOnly != null) {
                 cookie.setSecure(sessionTransferredOverHttpsOnly);
+            }
+            if (sessionHttpOnly) {
+                CookieHelper.setHttpOnly(cookie);
             }
 
 			context.getHttpServletResponse().addCookie(cookie);
