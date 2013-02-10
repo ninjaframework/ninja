@@ -450,6 +450,28 @@ public class ContextImplTest {
         
         
     }
+    @Test
+    public void testParseBodyPostWorks() {
+
+        
+        when(httpServletRequest.getContentType()).thenReturn(ContentTypes.APPLICATION_POST_FORM);
+        
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+        
+        when(bodyParserEngineManager.getBodyParserEngineForContentType(ContentTypes.APPLICATION_POST_FORM)).thenReturn(bodyParserEngine);
+        Dummy dummy = new Dummy();
+        dummy.name = "post";
+        dummy.count = 245L;
+        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(dummy);
+        
+        Dummy o = context.parseBody(Dummy.class);
+        
+        verify(bodyParserEngineManager).getBodyParserEngineForContentType(ContentTypes.APPLICATION_POST_FORM);        
+        assertTrue(o instanceof Dummy);     
+        assertTrue(o.name.equals(dummy.name));     
+        assertTrue(o.count.equals(dummy.count));     
+    }
     
     /**
      * This is the default mode.
@@ -516,7 +538,8 @@ public class ContextImplTest {
     
     // Dummy class used for parseBody tests.
     class Dummy {
-        // intentionally left empty.
+       public String name;
+       public Long count; 
     }
     
     
