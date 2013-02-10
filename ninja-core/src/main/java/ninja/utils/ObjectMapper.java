@@ -3,11 +3,16 @@ package ninja.utils;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import ninja.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
+
 public class ObjectMapper {
+    
+    private static final Logger logger = LoggerFactory
+            .getLogger(ObjectMapper.class);
 
     /**
      * Converts an object to a Map. Does this by taking the fields and
@@ -29,11 +34,9 @@ public class ObjectMapper {
             try {
                 map.put(field.getName(), field.get(object));
             } catch (IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             
         }

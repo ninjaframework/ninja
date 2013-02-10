@@ -32,7 +32,6 @@ import com.google.inject.Inject;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
