@@ -16,17 +16,18 @@
 
 package ninja.template;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
+import ninja.utils.ObjectMapper;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
@@ -93,8 +94,16 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             // If you are rendering something like Results.ok().render(new MyObject())
             // Assume MyObject has a public String name field.            
             // You can then access the fields in the template like that:
-            // ${publicField}            
-            map = getMapForObject(object);
+            // ${myObject.publicField}            
+            
+            String realClassNameLowerCamelCase = CaseFormat.UPPER_CAMEL.to(
+                    CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
+            
+            map = Maps.newHashMap();
+            map.put(
+                    realClassNameLowerCamelCase, 
+                    ObjectMapper.convertObjectToMap(object));
+            
         }
 
         // provide all i18n templates to freemarker engine:
@@ -159,29 +168,4 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         return FILE_SUFFIX;
     }
     
-    private Map getMapForObject(Object object) {
-        
-        Map map = Maps.newHashMap();
-        
-        try {
-
-            for (Field field : object.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                Object value = field.get(object);
-                if (value == null) {
-                    map.put(field.getName(), "");
-                } else {
-                    map.put(field.getName(), value);
-                }
-            }
-            
-        } catch (IllegalAccessException illegalAccessException) {
-
-            logger.error(illegalAccessException.getMessage());
-        }
-        
-        
-        return map;
-        
-    }
 }

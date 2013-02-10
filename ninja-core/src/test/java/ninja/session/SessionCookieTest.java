@@ -19,10 +19,6 @@ package ninja.session;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,6 +71,9 @@ public class SessionCookieTest {
 		when(ninjaProperties.getInteger(NinjaConstant.sessionExpireTimeInSeconds)).thenReturn(10000);
 		when(ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionSendOnlyIfChanged, true)).thenReturn(true);
 		when(ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionTransferredOverHttpsOnly, true)).thenReturn(true);
+        when(
+                ninjaProperties.getBooleanWithDefault(
+                        NinjaConstant.sessionHttpOnly, true)).thenReturn(true);
 		
 		when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret)).thenReturn("secret");
 		
@@ -215,7 +214,69 @@ public class SessionCookieTest {
 		assertEquals(false, cookieCaptor.getValue().getSecure());
 
 	}
-	
+
+    @Test
+    public void testHttpOnlyWorks() throws Exception {
+        // setup this testmethod
+        // empty cookies
+        Cookie[] emptyCookies = new Cookie[0];
+
+        // that will be returned by the httprequest...
+        when(context.getHttpServletRequest().getCookies()).thenReturn(
+                emptyCookies);
+
+        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+                ninjaProperties);
+
+        sessionCookie.init(context);
+
+        sessionCookie.put("hello", "session!");
+
+        // put nothing => intentionally to check if no session cookie will be
+        // saved
+        sessionCookie.save(context);
+
+        // a cookie will be set
+        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+        // verify some stuff on the set cookie
+        assertEquals(true, cookieCaptor.getValue().isHttpOnly());
+
+    }
+
+    @Test
+    public void testNoHttpOnlyWorks() throws Exception {
+        // setup this testmethod
+        // empty cookies
+        Cookie[] emptyCookies = new Cookie[0];
+
+        when(
+                ninjaProperties.getBooleanWithDefault(
+                        NinjaConstant.sessionHttpOnly, true))
+                .thenReturn(false);
+
+        // that will be returned by the httprequest...
+        when(context.getHttpServletRequest().getCookies()).thenReturn(
+                emptyCookies);
+
+        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+                ninjaProperties);
+
+        sessionCookie.init(context);
+
+        sessionCookie.put("hello", "session!");
+
+        // put nothing => intentionally to check if no session cookie will be
+        // saved
+        sessionCookie.save(context);
+
+        // a cookie will be set
+        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+        // verify some stuff on the set cookie
+        assertEquals(false, cookieCaptor.getValue().isHttpOnly());
+
+    }
 	
 	
 

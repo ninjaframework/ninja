@@ -7,15 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 public class ObjectMapperTest {
-
-    
-    public class SimpleClass {
-        
-        public String name;
-        public String test;
-        
-    }
-    
+   
     @Test
     public void testSimple() {
         
@@ -28,8 +20,6 @@ public class ObjectMapperTest {
         assertEquals(2, map.entrySet().size());
         assertEquals("simpleName", map.get("name"));
         assertEquals("simpleTest", map.get("test"));
-        
-        
         
     }
     

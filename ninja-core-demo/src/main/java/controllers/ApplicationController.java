@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import models.FormObject;
+import models.Contact;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -108,6 +109,18 @@ public class ApplicationController {
 
     }
 
+    public Result contactForm(Context context) {
+       
+        return Results.html();
+
+    }
+    public Result postContactForm(Context context, Contact contact) {
+        // contact is parsed into the method
+        // and automatically gets rendered via the html
+        // templating engine.
+        return Results.html().render(contact);
+    }
+    
     public Result htmlEscaping(Context context) {
 
         // just an example of html escaping in action.
@@ -120,22 +133,6 @@ public class ApplicationController {
 
         return Results.html(renderMap);
 
-    }
-    
-    public Result form(Context context, FormObject formObject) {
-        
-        if (formObject != null) {
-            System.out.println("form: " + formObject.name);
-        } else {
-            System.out.println("form from bodyparser null");
-            formObject = new FormObject();
-            formObject.name = "superdupername";
-            
-        }
-
-        return Results.ok().render(formObject);
-
-    }
-    
+    }   
 
 }

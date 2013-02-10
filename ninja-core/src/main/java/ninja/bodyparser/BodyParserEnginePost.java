@@ -16,10 +16,10 @@
 
 package ninja.bodyparser;
 
+import java.lang.reflect.Field;
 import java.util.Map.Entry;
 
 import ninja.Context;
-import ognl.Ognl;
 
 import org.slf4j.Logger;
 
@@ -48,8 +48,12 @@ public class BodyParserEnginePost implements BodyParserEngine {
             return null;
         }
         for (Entry<String, String[]> ent : context.getParameters().entrySet()) {
-            try {               
-                Ognl.setValue(ent.getKey(), t, ent.getValue());
+            try {
+                Field field = classOfT.getDeclaredField(ent.getKey());
+               
+                field.setAccessible(true);
+                field.set(t, ent.getValue()[0]);
+               
             } catch (Exception e) {
                 logger.warn(
                         "Error parsing incoming Post for key " + ent.getKey()
@@ -58,5 +62,4 @@ public class BodyParserEnginePost implements BodyParserEngine {
         }
         return t;
     }
-
 }

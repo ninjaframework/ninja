@@ -19,7 +19,11 @@ package ninja.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+
+import java.io.Writer;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -41,6 +45,12 @@ public class ResultHandlerTest {
     @Mock
     private TemplateEngine templateEngine;
     
+    @Mock
+    private ResponseStreams responseStreams;
+
+    @Mock
+    private Writer writer;
+
     private ResultHandler resultHandler;
     
     @Mock 
@@ -48,9 +58,11 @@ public class ResultHandlerTest {
     
     
     @Before
-    public void init() {
+    public void init() throws Exception {
         
         resultHandler = new ResultHandler(templateEngineManager);
+        when(responseStreams.getWriter()).thenReturn(writer);
+        when(context.finalizeHeaders(any(Result.class))).thenReturn(responseStreams);
         when(templateEngineManager.getTemplateEngineForContentType(
                 Result.APPLICATON_JSON)).thenReturn(templateEngine);
         
@@ -102,7 +114,26 @@ public class ResultHandlerTest {
         assertEquals("must-revalidate", result.getHeaders().get(Result.CACHE_CONTROL));
         assertNull(result.getHeaders().get(Result.DATE));
         assertNull(result.getHeaders().get(Result.EXPIRES));
-        
+    }
+
+    @Test
+    public void testRenderPlainStringAndSetDefaultContentType() {
+        final String toRender = "this is just a plain string";
+        Result result = Results.ok();
+        result.render(toRender);
+        resultHandler.handleResult(result, context);
+        assertEquals(Result.TEXT_PLAIN, result.getContentType());
+    }
+
+    @Test
+    public void testRenderPlainStringLeavesExplicitlySetContentTypeUntouched() {
+        final String toRender = "this is just a plain string";
+        final String contentType = "any/contenttype";
+        Result result = Results.ok();
+        result.contentType(contentType);
+        result.render(toRender);
+        resultHandler.handleResult(result, context);
+        assertEquals(contentType, result.getContentType());
     }
 
 }

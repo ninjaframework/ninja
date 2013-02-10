@@ -16,12 +16,13 @@
 
 package conf;
 
-import com.google.inject.Inject;
-
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
+
+import com.google.inject.Inject;
+
 import controllers.ApplicationController;
 import controllers.AsyncController;
 import controllers.FilterController;
@@ -79,6 +80,13 @@ public class Routes implements ApplicationRoutes {
         router.POST().route("/person").with(PersonController.class, "postPerson");
 
         // /////////////////////////////////////////////////////////////////////
+        // Form parsing support
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/contactForm").with(ApplicationController.class, "contactForm");
+        router.POST().route("/contactForm").with(ApplicationController.class, "postContactForm");
+
+        
+        // /////////////////////////////////////////////////////////////////////
         // Lifecycle support
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/udpcount").with(UdpPingController.class, "getCount");
@@ -109,10 +117,6 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
-        
-        router.GET().route("/form").with(ApplicationController.class, "form");
-        router.POST().route("/form").with(ApplicationController.class, "form");
-        
         
         
         //this is a route that should only be accessible when NOT in production

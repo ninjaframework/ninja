@@ -25,14 +25,19 @@ public class ObjectMapper {
         
         Map<String, Object> map = Maps.newHashMap();
         
-        for (Field field : object.getClass().getFields()) {
+        for (Field field : object.getClass().getDeclaredFields()) {
             
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
              
             try {
-                map.put(field.getName(), field.get(object));
+                Object value = field.get(object);
+                if (value == null) {
+                    map.put(field.getName(), "");
+                } else {
+                    map.put(field.getName(), value);
+                }
             } catch (IllegalArgumentException e) {
                 logger.error(e.getMessage(), e);
             } catch (IllegalAccessException e) {
