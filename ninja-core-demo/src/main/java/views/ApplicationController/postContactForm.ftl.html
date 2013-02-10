@@ -1,0 +1,14 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout "Home page">
+
+<li>${contact.name}</li>
+<li>${contact.email}</li>
+<li>${contact.description}</li>
+
+The content of this template is:
+<pre>
+&lt;li>${r"${contact.name}"}&lt;/li>
+&lt;li>${r"${contact.email}"}&lt;/li>
+&lt;li>${r"${contact.description}"}&lt;/li>
+</pre>
+
+</@layout.myLayout>
