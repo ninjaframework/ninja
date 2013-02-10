@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
-import ninja.utils.ObjectMapper;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
@@ -102,7 +101,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             map = Maps.newHashMap();
             map.put(
                     realClassNameLowerCamelCase, 
-                    ObjectMapper.convertObjectToMap(object));
+                    object);
             
         }
 
