@@ -1,10 +1,17 @@
-Version 1.1
+Version 1.1.x
 =============
+
+ * PLZ ADD YOUR CHANGES HERE :)
+
+
+Version 1.1
+===========
  
  * Bugfix: explicitly set content type of result keeps untouched by ResultHandler now (roughy/hennig)
  * Added HttpOnly option for the session cookie (roughy)
  * Added support for simple parsing of post forms (aka application/x-www-form-urlencoded) (zoza)
- * PLZ ADD YOUR CHANGES HERE :)
+ * Added support for simple rendering of objects in html templates (reyez)
+
  
 Version 1.0.8
 =============
@@ -33,7 +40,7 @@ Version 1.0.4
 =============
  
  * Bump to Gson 2.2.2
- * Fixed encoding issue in TestBrowser that showed up on some english macs
+ * Fixed encoding issue in TestBrowser that showed up on some English macs
 
 
 Version 1.0.3

@@ -113,6 +113,6 @@ If you specify
     application.languages=en
 </pre>
 
-It makes sense to only have one message file called messages.properties in english. Therefore
-english acts as fallback for all language - country combinations.
+It makes sense to only have one message file called messages.properties in English. Therefore
+English acts as fallback for all language - country combinations.
 
