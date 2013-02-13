@@ -19,6 +19,7 @@ package controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import models.FormObject;
 import models.Contact;
 import ninja.Context;
 import ninja.Result;
@@ -113,10 +114,11 @@ public class ApplicationController {
         return Results.html();
 
     }
-    public Result postContactForm(Context context,Contact contact) {
-        HashMap<Object, Object> map = Maps.newHashMap();
-        map.put("contact", contact);
-        return Results.html().render(map);
+    public Result postContactForm(Context context, Contact contact) {
+        // contact is parsed into the method
+        // and automatically gets rendered via the html
+        // templating engine.
+        return Results.html().render(contact);
     }
     
     public Result htmlEscaping(Context context) {
@@ -131,6 +133,6 @@ public class ApplicationController {
 
         return Results.html(renderMap);
 
-    }
+    }   
 
 }

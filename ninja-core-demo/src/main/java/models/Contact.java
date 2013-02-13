@@ -18,6 +18,12 @@ package models;
 
 public class Contact {
 
+    private String name;
+    private String email;
+    public String description;
+    
+    public Contact() {}
+    
     public String getName() {
         return name;
     }
@@ -30,14 +36,5 @@ public class Contact {
     public void setEmail(String email) {
         this.email = email;
     }
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    private String name;
-    private String email;
-    private String description;
 
 }
