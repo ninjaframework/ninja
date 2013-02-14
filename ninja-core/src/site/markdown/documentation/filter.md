@@ -52,7 +52,7 @@ there can be more than one filter - see below).
     return chain.next(context);
 </pre>
 
-However - if the variable *username* is not there we will immediatley break the filter chain and will never
+However - if the variable *username* is not there we will immediately break the filter chain and will never
 call the method itself. It instead will return a forbidden status code and render a forbidden view.
 
 <pre class="prettyprint">

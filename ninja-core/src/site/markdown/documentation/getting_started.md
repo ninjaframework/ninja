@@ -60,7 +60,7 @@ A minimal route file looks like:
     }
 </pre>
     
-The route is loaded by a convention right at the start of Ninja. It simply tells ninja that requests to /
+The route is loaded by a convention right at the start of Ninja. It simply tells Ninja that requests to /
 will be handled by the ApplicationController.class and the method "index".
 
 Now we got one side of the equation - from Ninja to the routes to our controller. But what about the output?

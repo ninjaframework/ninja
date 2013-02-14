@@ -11,7 +11,7 @@ potentially a lot of ways how you can debug your app.
 Fee free to suggest other ways to debug a Ninja application!
 
 
-Debbuging via Eclipse and m2eclipse plugin
+Debugging via Eclipse and m2eclipse plugin
 ------------------------------------------
 
 Our favorite way to debug an application is to use Eclipse. We are always using the m2eclipse plugin to import our

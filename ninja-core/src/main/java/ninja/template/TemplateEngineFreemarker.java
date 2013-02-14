@@ -99,9 +99,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                     CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
             
             map = Maps.newHashMap();
-            map.put(
-                    realClassNameLowerCamelCase, 
-                    object);
+            map.put(realClassNameLowerCamelCase, object);
             
         }
 
