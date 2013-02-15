@@ -37,6 +37,8 @@
 				<version>6.1.22</version>
 				<configuration>
 					<contextPath>/</contextPath>
+					<stopKey>stop</stopKey>
+   					<stopPort>8889</stopPort>					
 					<scanIntervalSeconds>1</scanIntervalSeconds>
 					<reload>automatic</reload>
 					<classesDirectory>
