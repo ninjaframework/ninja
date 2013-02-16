@@ -48,7 +48,8 @@ public class Module extends NinjaAppAbstractModule{
 
     @Override
     protected ServletModule setupServlets() {
-        // add new Servlet filter ONLY if you have some 
+        // add new Servlet filter ONLY if you have some stuff that MUST use Servlet filter.
+        // otherwise use filters that provide ninja
         
         // every filter must be defined as singleton       
         bind(NinjaServletDispatcher.class).asEagerSingleton();
