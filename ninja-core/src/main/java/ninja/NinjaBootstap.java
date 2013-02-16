@@ -19,28 +19,61 @@ package ninja;
 import java.util.ArrayList;
 import java.util.List;
 
-import ninja.application.ApplicationRoutes;
-import ninja.lifecycle.LifecycleService;
-import ninja.lifecycle.LifecycleSupport;
+import javax.servlet.ServletContext;
 
+import ninja.application.ApplicationRoutes;
+import ninja.lifecycle.LifecycleSupport;
+import ninja.scheduler.SchedulerSupport;
+import ninja.utils.NinjaPropertiesImpl;
+
+import com.google.common.base.Preconditions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import ninja.scheduler.SchedulerSupport;
-import ninja.utils.NinjaProperties;
-import ninja.utils.NinjaPropertiesImpl;
 
-public class NinjaBootup {
+public class NinjaBootstap {
 
     private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
     private static final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
+    private ServletContext servletContext;
+    private NinjaPropertiesImpl ninjaProperties;
 
-    /**
-     * Main injector for the class.
-     */
-    private Injector injector;
+    private Injector injector = null;
 
-    public NinjaBootup(NinjaPropertiesImpl ninjaProperties) {
+    public NinjaBootstap(ServletContext servletContext) {
+        this(servletContext, new NinjaPropertiesImpl());
+    }
+
+    public NinjaBootstap(ServletContext servletContext,
+                         NinjaPropertiesImpl ninjaProperties) {
+        this.servletContext = servletContext;
+        this.ninjaProperties = ninjaProperties;
+    }
+
+    public Injector getInjector() {
+        return injector;
+    }
+
+    public synchronized void boot() {
+        if (injector != null) {
+            throw new RuntimeException("NinjaBootstap already booted");
+        }
+        injector = initInjector();
+        Preconditions.checkNotNull(injector, "Ninja injector is not exists. check for errors...");
+        Ninja ninja = injector.getInstance(Ninja.class);
+        ninja.start();
+    }
+
+    public synchronized void shutdown() {
+        Preconditions.checkNotNull(injector, "Ninja injector is not exists. maybe you already shutted down ninja?");
+        Ninja ninja = injector.getInstance(Ninja.class);
+        ninja.shutdown();
+        injector = null;
+        ninja = null;
+    }
+
+    private Injector initInjector() {
+
         try {
             List<Module> modulesToLoad = new ArrayList<Module>();
 
@@ -56,8 +89,11 @@ public class NinjaBootup {
             if (doesClassExist(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION)) {
                 Class applicationConfigurationClass = Class
                         .forName(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
-                Module applicationConfiguration = (Module) applicationConfigurationClass
-                        .newInstance();
+
+                NinjaAppAbstractModule applicationConfiguration = (NinjaAppAbstractModule) applicationConfigurationClass
+                        .getConstructor(ServletContext.class).newInstance(
+                                servletContext);
+
                 modulesToLoad.add(applicationConfiguration);
             }
 
@@ -76,31 +112,13 @@ public class NinjaBootup {
                 applicationRoutes.init(router);
                 router.compileRoutes();
             }
-
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+            return injector;
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public Injector getInjector() {
-
-        return injector;
-
-    }
-
-    public void shutdown() {
-        injector.getInstance(LifecycleService.class).stop();
-    }
-
-    /**
-     * TODO => I want to live somewhere else...
-     * 
-     * 
-     */
     private boolean doesClassExist(String nameWithPackage) {
 
         boolean exists = false;

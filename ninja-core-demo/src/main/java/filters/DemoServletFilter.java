@@ -13,14 +13,14 @@ import javax.servlet.ServletResponse;
 
 /**
  * @author zoza
- *
+ * 
  */
-public class DemoServletFilter implements javax.servlet.Filter{
+public class DemoServletFilter implements javax.servlet.Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -32,15 +32,12 @@ public class DemoServletFilter implements javax.servlet.Filter{
         chain.doFilter(request, response);
         long endTime = System.currentTimeMillis();
 
-        //Log the servlet path and time taken
-        //perfLogger.info(path + "," + (endTime - startTime) );
-        
     }
 
     @Override
     public void destroy() {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

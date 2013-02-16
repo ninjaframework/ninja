@@ -16,15 +16,26 @@
 
 package conf;
 
-import com.google.inject.AbstractModule;
+import javax.servlet.ServletContext;
+
+import ninja.NinjaAppAbstractModule;
+import ninja.NinjaServletDispatcher;
+
+import com.google.inject.servlet.ServletModule;
 
 import etc.GreetingService;
 import etc.GreetingServiceImpl;
+import filters.DemoServletFilter;
 
-public class Module extends AbstractModule {
+public class Module extends NinjaAppAbstractModule{
 
-    protected void configure() {
+    public Module(ServletContext servletContext) {
+        super(servletContext);     
+    }
 
+  
+    @Override
+    protected void setup() {       
         // /////////////////////////////////////////////////////////////////////
         // Some guice bindings
         // /////////////////////////////////////////////////////////////////////
@@ -32,6 +43,26 @@ public class Module extends AbstractModule {
         bind(GreetingService.class).to(GreetingServiceImpl.class);
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
+        
+    }
+
+    @Override
+    protected ServletModule setupServlets() {
+        // add new Servlet filter ONLY if you have some 
+        
+        // every filter must be defined as singleton       
+        bind(NinjaServletDispatcher.class).asEagerSingleton();
+
+        //this one only as reference
+        //remove it in your app
+        bind(DemoServletFilter.class).asEagerSingleton();
+        return new ServletModule() {
+            @Override
+            protected void configureServlets() {                
+                filter("/*").through(DemoServletFilter.class);
+                filter("/*").through(NinjaServletDispatcher.class);
+            }
+        };
     }
 
 }
