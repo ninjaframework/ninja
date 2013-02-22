@@ -7,7 +7,7 @@ Version 1.1.x
 Version 1.1
 ===========
  
- * Bugfix: explicitly set content type of result keeps untouched by ResultHandler now (roughy/hennig)
+ * Bugfix: explicitly set content type of result keeps untouched by ResultHandler now (roughy/henning)
  * Added HttpOnly option for the session cookie (roughy)
  * Added support for simple parsing of post forms (aka application/x-www-form-urlencoded) (zoza)
  * Added support for simple rendering of objects in html templates (reyez)

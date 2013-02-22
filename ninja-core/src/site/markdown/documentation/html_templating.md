@@ -130,8 +130,8 @@ Using simple ${email} tags you can access the content of the variables.
 Advanced object parsing and rendering
 -------------------------------------
 
-The above mentioned "@PathParam("email") String email" is cool. But would'd it be cool under some circumstances to parse and
-render objects directly. Without even knowing about path parameters?
+The above mentioned "@PathParam("email") String email" is cool. But wouldn't it be cool under some circumstances to parse and
+render objects directly - without even knowing about path parameters?
 
 Easily possible.
 
