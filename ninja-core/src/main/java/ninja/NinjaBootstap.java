@@ -19,34 +19,34 @@ package ninja;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.scheduler.SchedulerSupport;
 import ninja.utils.NinjaPropertiesImpl;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.servlet.ServletModule;
 
 public class NinjaBootstap {
 
     private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
+    private static final String APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION = "conf.ServletModule";
     private static final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
-    private ServletContext servletContext;
     private NinjaPropertiesImpl ninjaProperties;
 
     private Injector injector = null;
 
-    public NinjaBootstap(ServletContext servletContext) {
-        this(servletContext, new NinjaPropertiesImpl());
+    public NinjaBootstap() {
+        this(new NinjaPropertiesImpl());
     }
 
-    public NinjaBootstap(ServletContext servletContext,
+    public NinjaBootstap(
                          NinjaPropertiesImpl ninjaProperties) {
-        this.servletContext = servletContext;
+
         this.ninjaProperties = ninjaProperties;
     }
 
@@ -90,12 +90,41 @@ public class NinjaBootstap {
                 Class applicationConfigurationClass = Class
                         .forName(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
 
-                NinjaAppAbstractModule applicationConfiguration = (NinjaAppAbstractModule) applicationConfigurationClass
-                        .getConstructor(ServletContext.class).newInstance(
-                                servletContext);
-
+                AbstractModule applicationConfiguration = (AbstractModule) applicationConfigurationClass
+                        .getConstructor().newInstance();
+ 
                 modulesToLoad.add(applicationConfiguration);
             }
+            
+            // Load servlet module. By convention this is a ServletModule where 
+            // the user can register other servlets and servlet filters
+            // If the file does not exist we simply load the default servlet
+            if (doesClassExist(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION)) {
+                Class servletModuleClass = Class
+                        .forName(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
+
+                ServletModule servletModule = (ServletModule) servletModuleClass
+                        .getConstructor().newInstance();
+ 
+                modulesToLoad.add(servletModule);
+                
+            } else {
+                // The servlet Module does not exist => we load the default one.                
+                ServletModule servletModule = new ServletModule() {
+                    
+                    @Override
+                    protected void configureServlets() {   
+                        bind(NinjaServletDispatcher.class).asEagerSingleton();
+                        
+                        filter("/*").through(NinjaServletDispatcher.class);
+                    }
+                    
+                };
+                
+                modulesToLoad.add(servletModule);
+                
+            }
+            
 
             // And let the injector generate all instances and stuff:
             injector = Guice.createInjector(modulesToLoad);

@@ -66,8 +66,7 @@ public class NinjaTestServer {
             ninjaProperties.setProperty(NinjaConstant.serverName,
                     serverUri.toString());
 
-            NinjaBootstap ninjaBootstap = new NinjaBootstap(
-                    context.getServletContext(), ninjaProperties);
+            NinjaBootstap ninjaBootstap = new NinjaBootstap(ninjaProperties);
             ninjaBootstap.boot();
 
             // We need a default servlet. because the dispatcher filter

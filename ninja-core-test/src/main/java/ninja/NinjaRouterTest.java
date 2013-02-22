@@ -40,7 +40,7 @@ public class NinjaRouterTest {
      */
     public void startServer() {
         // in this case servletContext can be null
-        NinjaBootstap ninjaBootup = new NinjaBootstap(null);
+        NinjaBootstap ninjaBootup = new NinjaBootstap();
         ninjaBootup.boot();
 
         router = ninjaBootup.getInjector().getInstance(Router.class);

@@ -21,7 +21,7 @@ private NinjaBootstap ninjaBootstap;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ninjaBootstap = new NinjaBootstap(servletContextEvent.getServletContext());
+        ninjaBootstap = new NinjaBootstap();
         ninjaBootstap.boot();
         super.contextInitialized(servletContextEvent);
     }

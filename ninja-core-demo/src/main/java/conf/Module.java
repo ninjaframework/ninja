@@ -16,26 +16,22 @@
 
 package conf;
 
-import javax.servlet.ServletContext;
-
-import ninja.NinjaAppAbstractModule;
-import ninja.NinjaServletDispatcher;
-
+import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
 
 import etc.GreetingService;
 import etc.GreetingServiceImpl;
 import filters.DemoServletFilter;
 
-public class Module extends NinjaAppAbstractModule{
+public class Module extends AbstractModule {
 
-    public Module(ServletContext servletContext) {
-        super(servletContext);     
+    public Module() {
+        super();     
     }
 
   
     @Override
-    protected void setup() {       
+    protected void configure() {       
         // /////////////////////////////////////////////////////////////////////
         // Some guice bindings
         // /////////////////////////////////////////////////////////////////////
@@ -44,24 +40,28 @@ public class Module extends NinjaAppAbstractModule{
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
         
+        install(setupServlets());
+        
     }
 
-    @Override
-    protected ServletModule setupServlets() {
+
+    private ServletModule setupServlets() {
         // add new Servlet filter ONLY if you have some stuff that MUST use Servlet filter.
         // otherwise use filters that provide ninja
         
         // every filter must be defined as singleton       
-        bind(NinjaServletDispatcher.class).asEagerSingleton();
+        
 
         //this one only as reference
         //remove it in your app
-        bind(DemoServletFilter.class).asEagerSingleton();
+        
         return new ServletModule() {
             @Override
-            protected void configureServlets() {                
+            protected void configureServlets() {   
+                
+                bind(DemoServletFilter.class).asEagerSingleton();
+                
                 filter("/*").through(DemoServletFilter.class);
-                filter("/*").through(NinjaServletDispatcher.class);
             }
         };
     }
