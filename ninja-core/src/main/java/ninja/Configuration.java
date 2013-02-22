@@ -64,9 +64,7 @@ public class Configuration extends AbstractModule {
 
         // Postoffice
         bind(Postoffice.class).toProvider(PostofficeProvider.class);
-        
-        
-        bind(NinjaServletDispatcher.class).asEagerSingleton();
+
     }
 
 }
