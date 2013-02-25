@@ -36,7 +36,7 @@ typesafe. The architecture was a lot less magic and much more async.
 
 Great changes. We thought.
 
-However the reality was quite different. Scala was a pain because the relaods were slow. Play 2 uses sbt as build tool - 
+However the reality was quite different. Scala was a pain because the reloads were slow. Play 2 uses sbt as build tool - 
 a completely novel tool featuring some nasty bugs. IDE integration bas non existent. And
 Play 2 was a complete rewrite and rewrites will contain strange errors. And we faced them a bit too often 
 (Akka subsystem anyone). Even worse: We could not easily debug and fix the problem because the core was in Scala.
@@ -53,7 +53,7 @@ Thinking about the framework
 ----------------------------
 
 There we were - early 2012. Play 2 did not seem to work for us well. Play 1 was nice, but somehow discontinued. What
-should we do? Continue with Play 1 for new projects? Fork Play 1? Switch to Rails? Swith to something else?
+should we do? Continue with Play 1 for new projects? Fork Play 1? Switch to Rails? Switch to something else?
 
 The truth is: We love the Java eco-system. The great Ide support. Great debuggers. Superior dependency and build tools. The
 power of a statically typed language. All that is great.

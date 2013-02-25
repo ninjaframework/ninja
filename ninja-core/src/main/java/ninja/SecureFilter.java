@@ -16,6 +16,8 @@
 
 package ninja;
 
+import ninja.utils.NinjaConstant;
+
 /**
  * A simple default implementation of a SecureFilter.
  * 
@@ -45,7 +47,7 @@ public class SecureFilter implements Filter {
                 || context.getSessionCookie().get(USERNAME) == null) {
 
             return Results.forbidden().html()
-                    .template("/views/forbidden403.ftl.html");
+                    .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
 
         } else {
             return chain.next(context);

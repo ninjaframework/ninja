@@ -28,7 +28,7 @@ cluster Tomcat's about the file. Subsequently the cluster changes to that new ve
 You can easily automate that process by using the [maven cargo plugin](http://cargo.codehaus.org/Maven2+plugin). 
 That makes it really easy to  get a simple Jenkins based continuous deployment up and running.
 
-That's the power of following well proved standars. Ninja - and the apps you are building with Ninja - 
+That's the power of following well proven standards. Ninja - and the apps you are building with Ninja - 
 is standing on the shoulder of giants.
 
 
@@ -61,7 +61,7 @@ App Engine docs for details
 
 2) We need the App Engine SDK and a special way to upload stuff
 
-As we are using Maven we can use a great maven plugin from [net.kindleit] (http://www.kindleit.net/maven_gae_plugin/usage.html).
+As we are using Maven we can use a great Maven plugin from [net.kindleit] (http://www.kindleit.net/maven_gae_plugin/usage.html).
 A minimal configuration in your pom.xml will look like:
 
     <plugin>
@@ -78,7 +78,7 @@ A minimal configuration in your pom.xml will look like:
         </dependencies>
     <plugin>
     
-After adding the plugin to your maven build your have to execute
+After adding the plugin to your Maven build your have to execute
 
     mvn gae:unpack
     

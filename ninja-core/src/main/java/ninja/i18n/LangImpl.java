@@ -211,27 +211,43 @@ public class LangImpl implements Lang {
         }
 
         // Check if we get a registered mapping for the language input string.
-        // At that point the language may be either language-country or only country
-        Configuration configuration = langToKeyAndValuesMapping.get(language);
-        if (configuration != null) {
-
-            return configuration;
-        }
-
-        // If we got a two part language code like "en-US" we split it and
-        // search only for the language "en".
-        if (language.contains("-")) {
-
-            String languageWithoutCountry = language.split("-")[0];
-
-            configuration = langToKeyAndValuesMapping
-                    .get(languageWithoutCountry);
-
+        // At that point the language may be either language-country or only country.
+        // extract multiple languages from Accept-Language header
+        String[] languages = language.split(",");
+        for (String l: languages){
+            l = l.trim();
+            // Ignore the relative quality factor in Accept-Language header
+            if(l.contains(";")){
+                l = l.split(";")[0];
+            }
+            Configuration configuration = langToKeyAndValuesMapping.get(l);
             if (configuration != null) {
-
                 return configuration;
             }
 
+            // If we got a two part language code like "en-US" we split it and
+            // search only for the language "en".
+            if (l.contains("-")) {
+                String[] array = l.split("-");
+                String languageWithoutCountry = array[0];
+                // Modify country code to upper case for IE and Firefox
+                if(array.length > 1){
+                    String country = array[1];
+                    String languageWithUpperCaseCountry = languageWithoutCountry + "-" + country.toUpperCase();
+                    configuration = langToKeyAndValuesMapping.get(languageWithUpperCaseCountry);
+                    if (configuration != null) {
+                        return configuration;
+                    }
+                }
+                configuration = langToKeyAndValuesMapping
+                        .get(languageWithoutCountry);
+
+                if (configuration != null) {
+
+                    return configuration;
+                }
+
+            }
         }
 
         // Oops. Nothing found. We return the default language (by convention guaranteed to work).

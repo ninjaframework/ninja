@@ -121,7 +121,9 @@ public class FlashCookieImpl implements FlashCookie {
                         + ninja.utils.NinjaConstant.FLASH_SUFFIX, flashData);
                 cookie.setPath("/");
                 cookie.setSecure(false);
-                cookie.setMaxAge(0);
+                // "-1" does not set "Expires" for that cookie
+                // => Cookie will live as long as the browser is open theoretically
+                cookie.setMaxAge(-1);
 
                 context.getHttpServletResponse().addCookie(cookie);
 

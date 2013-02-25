@@ -155,7 +155,7 @@ Ninja can not only inject PathParam and Param objects. But also the Context.
 
 Even better: If there is a object Ninja does not know Ninja tries to parse that object into
 a Java class. This is done by content negotiation. Therefore you don't have to worry if
-input is for instance xml or json. You simply get a parsed object.
+input is for instance Xml or Json. You simply get a parsed object.
 
 
 Rendering html
@@ -229,13 +229,8 @@ And this controller:
     }
 </pre>
 
-This controller will produce a nicely formatted json output for you. Under the hood
+This controller will produce a nicely formatted Json output for you. Under the hood
 Ninja uses Gson to transform arbitrary objects into Json string.
 
 
-
-Advanced topic: Defining your own argument matcher
---------------------------------------------------
-
-TODO
 

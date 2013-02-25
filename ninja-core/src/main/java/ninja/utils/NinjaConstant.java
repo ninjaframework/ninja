@@ -37,7 +37,7 @@ public interface NinjaConstant {
 
     // location of the default views for errors:
     String LOCATION_VIEW_FTL_HTML_NOT_FOUND = "views/system/404notFound.ftl.html";
-    String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbiddden.ftl.html";
+    String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbidden.ftl.html";
 
     /**
      * Comma separated list in application.conf. Determines which languages are
@@ -84,6 +84,16 @@ public interface NinjaConstant {
      * transferrd over Https.
      */
     final String sessionTransferredOverHttpsOnly = "application.session.transferred_over_https_only";
+
+    /**
+     * Used to set the HttpOnly flag at the session cookie. On a supported
+     * browser, an HttpOnly session cookie will be used only when transmitting
+     * HTTP (or HTTPS) requests, thus restricting access from other, non-HTTP
+     * APIs (such as JavaScript). This restriction mitigates but does not
+     * eliminate the threat of session cookie theft via cross-site scripting
+     * (XSS).
+     */
+    final String sessionHttpOnly = "application.session.http_only";
 
     /**
      * Suffix used for Ninja cookies. Usually results in cookies like

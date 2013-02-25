@@ -1,5 +1,28 @@
-Version 1.X
+Version 1.1.x
+=============
+
+ * PLZ ADD YOUR CHANGES HERE :)
+
+
+Version 1.1
 ===========
+ 
+ * Bugfix: explicitly set content type of result keeps untouched by ResultHandler now (roughy/henning)
+ * Added HttpOnly option for the session cookie (roughy)
+ * Added support for simple parsing of post forms (aka application/x-www-form-urlencoded) (zoza)
+ * Added support for simple rendering of objects in html templates (reyez)
+
+ 
+Version 1.0.8
+=============
+ 
+ * Fixed bug + test with flash scope: https://github.com/reyez/ninja/issues/70 (zoza / ra)
+
+Version 1.0.7
+=============
+
+ * Support XML payload parsing on Content-Type: application/xml
+ * Fix for multiple values in request "Accept-Language" header
 
 Version 1.0.6
 =============
@@ -17,7 +40,7 @@ Version 1.0.4
 =============
  
  * Bump to Gson 2.2.2
- * Fixed encoding issue in TestBrowser that showed up on some english macs
+ * Fixed encoding issue in TestBrowser that showed up on some English macs
 
 
 Version 1.0.3

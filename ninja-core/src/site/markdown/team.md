@@ -14,18 +14,24 @@ Looking forward seeing you on the mailing list - we are social creatures :)
 Hall of fame
 ------------
 
-Ninja was initiated by [Raphael Bauer](http://raphaelbauer.com). But Ninja is standing on the should of giants. 
+[Raphael](http://raphaelbauer.com) started developing Ninja mid 2012. But Ninja will never be a one man show 
+and fortunately a bunch of great people joined the project and contributed excellent stuff :) 
+
+Finally - Ninja is standing on the shoulder of giants. 
 We are using an immense amount of libraries and ideas from open source projects.
 Especially ideas from Rails, Play 1 and Play 2 and also libraries from Google, Apache and Sun/Oracle. 
+
 This is the time to say **Thank you**. We hope we can contribute a bit back to the world.
 
 Over the time a lot of awesome people have
-contributed stuff to Ninja. In some random order:
+contributed to Ninja. In some random order:
 
  * James Roper
  * Henning Schuetz
  * Marco Reinwarth
  * Philip Sommer
+ * Liu Lujie
+ * Anatoly aka zoza
 
 Do you feel you are missing from that list? Please let us know - this did not happen
 intentionally. You can even add yourself to the list:
