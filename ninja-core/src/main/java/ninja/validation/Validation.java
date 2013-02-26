@@ -100,6 +100,7 @@ public interface Validation {
     /**
      * Add a bean violation. A bean, like a DTO consists of several fields which are validated. Each
      * validation error of a dto-field results in a field-violation for that bean.
+     * Note: For now, you can only have one bean in your controller method signature, so this is explicit.
      * 
      * @param beanName maybe the name of your dto
      * @param fieldViolation the FieldViolation consisting of a cinstraintViolation and the fields
@@ -109,6 +110,7 @@ public interface Validation {
 
     /**
      * Whether any violation occured while validating your beans
+     * Note: For now, you can only have one bean in your controller method signature, so this is explicit.
      * 
      * @return true if there are any, false if none
      */
@@ -116,6 +118,7 @@ public interface Validation {
 
     /**
      * Get all bean validations for that bean.
+     * Note: For now, you can only have one bean in your controller method signature, so this is explicit.
      * 
      * @param beanName
      * @return A list of field violations
