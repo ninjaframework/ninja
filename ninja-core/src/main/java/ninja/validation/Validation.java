@@ -21,18 +21,23 @@ import java.util.List;
 import com.google.inject.ImplementedBy;
 
 /**
- * Validation context.
- * There are several types of violations that can occur. A bean can have violations on its fields.
- * Each violation on such a field results in a FieldViolation. This makes it possible to validate
- * several controller parameters at once via annotation. If any error appears while validating a
- * BeanViolation for that bean containing the field on which the validation failed (FieldViolation).
+ * This interface means the validation context (implemented by {@link ValidationImpl}) and can be injected in your
+ * controller method.
+ * There are several types of violations that can occur: field violations (on controller method fields), bean violations
+ * (on an injected beans field) or general violations (deprecated). A controller using this validation can have
+ * violations on his
+ * parameters or, if you use a injected data container like a DTO or bean, you may have violations inside this object.
+ * Each violation on a field (parameter or in an annotated bean) results in a {@link FieldViolation}. This makes it
+ * possible to validate all controller parameters at once. If an error appears while validating the controller
+ * method parameters, it results in a violation which you can get using getFieldViolations().
+ * If your injected bean contains violations, you should use getBeanViolations().
  * 
  * @author James Roper, Philip Sommer
  */
 @ImplementedBy(ValidationImpl.class)
 public interface Validation {
     /**
-     * Whether the validation context has violations
+     * Whether the validation context has violations (including field and bean violations)
      * 
      * @return True if it does
      */
