@@ -2,6 +2,8 @@ Version 1.1.x
 =============
 
  * PLZ ADD YOUR CHANGES HERE :)
+ * Fixes in Validation
+ * Validation for controller parameter fields as well as validation for injected beans
 
 
 Version 1.1
