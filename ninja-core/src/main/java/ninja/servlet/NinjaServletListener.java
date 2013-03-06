@@ -1,6 +1,8 @@
-package ninja;
+package ninja.servlet;
 
 import javax.servlet.ServletContextEvent;
+
+import ninja.servlet.NinjaBootstap;
 
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;

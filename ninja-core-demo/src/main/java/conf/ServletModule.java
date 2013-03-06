@@ -16,14 +16,26 @@
 
 package conf;
 
-import ninja.NinjaServletDispatcher;
+import ninja.servlet.NinjaServletDispatcher;
 import filters.DemoServletFilter;
 
+/**
+ * This module is optional.
+ * 
+ * If Ninja is running inside a servlet container you can
+ * specify additional filters and servlets to be loaded.
+ * 
+ * The cool thing is that you can use all goodies from the servlet
+ * world this way.
+ * The bad thing is that you might loose a lot of stuff Ninja provides.
+ * For instance scalability via a stateless architecture.
+ * 
+ * In short:
+ * If you know what you are doing feel free to use ServletModule.
+ * If not - just skip it and enjoy Ninja pure.
+ *
+ */
 public class ServletModule extends com.google.inject.servlet.ServletModule {
-
-    public ServletModule() {
-        super();     
-    }
     
     
     @Override

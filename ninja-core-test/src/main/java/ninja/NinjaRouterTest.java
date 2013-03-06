@@ -17,6 +17,7 @@
 package ninja;
 
 import static org.junit.Assert.assertTrue;
+import ninja.servlet.NinjaBootstap;
 import ninja.utils.NinjaConstant;
 
 import org.junit.After;

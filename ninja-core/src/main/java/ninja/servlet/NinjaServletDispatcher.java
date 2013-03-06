@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja;
+package ninja.servlet;
 
 import java.io.IOException;
 
@@ -26,6 +26,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import ninja.Context;
+import ninja.Ninja;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

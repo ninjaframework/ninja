@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package ninja;
+package ninja.servlet;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ninja.Configuration;
+import ninja.Ninja;
+import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.scheduler.SchedulerSupport;

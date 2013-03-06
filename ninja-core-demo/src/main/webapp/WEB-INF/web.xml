@@ -25,7 +25,7 @@
     <display-name>ninja</display-name>
 
 	<listener>
-		<listener-class>ninja.NinjaServletListener</listener-class>
+		<listener-class>ninja.servlet.NinjaServletListener</listener-class>
 	</listener>
 
 	<filter>
@@ -36,16 +36,5 @@
 		<filter-name>guiceFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-   <!--  <filter>
-        <filter-name>dispatcher</filter-name>
-        <filter-class>ninja.NinjaServletDispatcher</filter-class>
-        <async-supported>true</async-supported>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>dispatcher</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping> -->
 
 </web-app>

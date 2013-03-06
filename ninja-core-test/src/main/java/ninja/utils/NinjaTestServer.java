@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import ninja.NinjaBootstap;
+import ninja.servlet.NinjaBootstap;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;

@@ -16,6 +16,8 @@
 
 package ninja;
 
+import ninja.servlet.ContextImpl;
+
 /**
  * The main entry class for the framework.
  * 
