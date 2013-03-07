@@ -17,11 +17,9 @@
 package conf;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.servlet.ServletModule;
 
 import etc.GreetingService;
 import etc.GreetingServiceImpl;
-import filters.DemoServletFilter;
 
 public class Module extends AbstractModule {
 
@@ -40,30 +38,6 @@ public class Module extends AbstractModule {
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
         
-        install(setupServlets());
-        
-    }
-
-
-    private ServletModule setupServlets() {
-        // add new Servlet filter ONLY if you have some stuff that MUST use Servlet filter.
-        // otherwise use filters that provide ninja
-        
-        // every filter must be defined as singleton       
-        
-
-        //this one only as reference
-        //remove it in your app
-        
-        return new ServletModule() {
-            @Override
-            protected void configureServlets() {   
-                
-                bind(DemoServletFilter.class).asEagerSingleton();
-                
-                filter("/*").through(DemoServletFilter.class);
-            }
-        };
     }
 
 }
