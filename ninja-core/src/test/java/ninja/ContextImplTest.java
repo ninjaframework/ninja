@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.servlet.ContextImpl;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 

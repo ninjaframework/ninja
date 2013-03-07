@@ -17,15 +17,10 @@
 package ninja;
 
 import static org.junit.Assert.assertTrue;
-import ninja.Ninja;
-import ninja.NinjaBootup;
-import ninja.Router;
+import ninja.servlet.NinjaBootstap;
 import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaPropertiesImpl;
 
 import org.junit.After;
-
-import com.google.inject.Injector;
 
 public class NinjaRouterTest {
 
@@ -45,17 +40,11 @@ public class NinjaRouterTest {
      * No special mode is set. By default the mode "dev" is then used by the server.
      */
     public void startServer() {
+        // in this case servletContext can be null
+        NinjaBootstap ninjaBootup = new NinjaBootstap();
+        ninjaBootup.boot();
 
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();
-
-        NinjaBootup ninjaBootup = new NinjaBootup(ninjaProperties);
-
-        Injector injector = ninjaBootup.getInjector();
-
-        Ninja ninja = injector.getInstance(Ninja.class);
-        ninja.start();
-
-        router = injector.getInstance(Router.class);
+        router = ninjaBootup.getInjector().getInstance(Router.class);
 
     }
 
