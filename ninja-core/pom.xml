@@ -208,10 +208,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>
-				hibernate-validator-annotation-processor
-			</artifactId>
-			<version>4.1.0.Final</version>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.3.0.Final</version>
 		</dependency>
 
 		<!-- XML parsing -->

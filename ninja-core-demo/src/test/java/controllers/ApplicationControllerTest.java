@@ -116,15 +116,17 @@ public class ApplicationControllerTest extends NinjaTest {
                         + "validation?email=john@example.com");
 
         // And assert that stuff is visible on page:
-        assertEquals(response, "john@example.com");
+        assertEquals(response, "\"john@example.com\"");
 
         response = ninjaTestBrowser.makeRequest(getServerAddress() + "validation");
 
         // And assert that stuff is visible on page:
-        assertEquals(response, "email is required");
+        assertEquals(
+                response.trim(),
+                "[{\"field\":\"email\",\"constraintViolation\":{\"messageKey\":\"validation.required.violation\",\"fieldKey\":\"email\",\"defaultMessage\":\"email is required\",\"messageParams\":[]}}]");
 
     }
-    
+
     @Test
     public void testPostFormParsingWorks() {
         // Some empty headers for now...
@@ -137,8 +139,8 @@ public class ApplicationControllerTest extends NinjaTest {
 
         String response =
                 ninjaTestBrowser.makePostRequestWithFormParameters(
-                        getServerAddress() + "/contactForm", 
-                        headers, 
+                        getServerAddress() + "/contactForm",
+                        headers,
                         formParameters);
 
         // And assert that stuff is visible on page:
