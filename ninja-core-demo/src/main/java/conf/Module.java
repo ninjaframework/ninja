@@ -23,8 +23,13 @@ import etc.GreetingServiceImpl;
 
 public class Module extends AbstractModule {
 
-    protected void configure() {
+    public Module() {
+        super();     
+    }
 
+  
+    @Override
+    protected void configure() {       
         // /////////////////////////////////////////////////////////////////////
         // Some guice bindings
         // /////////////////////////////////////////////////////////////////////
@@ -32,6 +37,7 @@ public class Module extends AbstractModule {
         bind(GreetingService.class).to(GreetingServiceImpl.class);
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
+        
     }
 
 }
