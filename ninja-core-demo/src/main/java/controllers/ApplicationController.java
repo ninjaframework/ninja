@@ -19,7 +19,6 @@ package controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.FormObject;
 import models.Contact;
 import ninja.Context;
 import ninja.Result;

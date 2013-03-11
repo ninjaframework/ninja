@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import ninja.NinjaServletDispatcher;
+import ninja.servlet.NinjaBootstap;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
@@ -32,44 +32,58 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 
+import com.google.inject.servlet.GuiceFilter;
+
 /**
- * Starts a new server using an embedded jetty.
- * Startup is really fast and thus usable in integration tests.
+ * Starts a new server using an embedded jetty. Startup is really fast and thus
+ * usable in integration tests.
  * 
  * @author rbauer
  */
 public class NinjaTestServer {
 
-	private final int port;
-	private final Server server;
+    private final int port;
+    private final Server server;
     private final URI serverUri;
-	
-	public NinjaTestServer() {
-		
-		this.port = findAvailablePort(1000, 10000);
-        serverUri = createServerUri();
-		server = new Server();
-		
-		try {			
-			Connector con = new SelectChannelConnector();
-			con.setPort(port);
-			server.addConnector(con);
-			Context context = new Context(server, "/");
-			// We need a default servlet. because the dispatcher filter
-			// is only decorating the servlet.
-			context.addServlet(DefaultServlet.class, "/*");
-            context.addFilter(new FilterHolder(new NinjaServletDispatcher(serverUri.toString())),
-			        "/*", Handler.ALL);
-			server.start();
-		} catch (Exception ex) {
-            throw new RuntimeException(ex);
-		}
-    }
-	
 
-	public String getServerAddress() {
+    public NinjaTestServer() {
+
+        this.port = findAvailablePort(1000, 10000);
+        serverUri = createServerUri();
+        server = new Server();
+
+        try {
+            Connector con = new SelectChannelConnector();
+            con.setPort(port);
+            server.addConnector(con);
+            Context context = new Context(server, "/");
+
+            // We are using an embeded jetty for quick server testing. The
+            // problem is
+            // that the port will change.
+            // Therefore we inject the server name here:
+            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();
+            ninjaProperties.setProperty(NinjaConstant.serverName,
+                    serverUri.toString());
+
+            NinjaBootstap ninjaBootstap = new NinjaBootstap(ninjaProperties);
+            ninjaBootstap.boot();
+
+            // We need a default servlet. because the dispatcher filter
+            // is only decorating the servlet.
+            context.addServlet(DefaultServlet.class, "/*");
+            context.addFilter(new FilterHolder(new GuiceFilter()), "/*",
+                    Handler.ALL);
+
+            server.start();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public String getServerAddress() {
         return serverUri.toString() + "/";
-	}
+    }
 
     public URI getServerAddressAsUri() {
         return serverUri;
@@ -77,7 +91,8 @@ public class NinjaTestServer {
 
     private URI createServerUri() {
         try {
-            return new URIBuilder().setScheme("http").setHost("localhost").setPort(port).build();
+            return new URIBuilder().setScheme("http").setHost("localhost")
+                    .setPort(port).build();
         } catch (URISyntaxException e) {
             // should not be able to happen...
             return null;
@@ -91,18 +106,18 @@ public class NinjaTestServer {
             throw new RuntimeException(e);
         }
     }
-	
-	private static int findAvailablePort(int min, int max) {
-	    for (int port = min; port < max; port++) {
-	        try {
-	            new ServerSocket(port).close();
-	            return port;
-	        } catch (IOException e) {
-	            // Must already be taken
-	        }
-	    }
-	    throw new IllegalStateException("Could not find available port in range "
-	            + min + " to " + max);
-	}
+
+    private static int findAvailablePort(int min, int max) {
+        for (int port = min; port < max; port++) {
+            try {
+                new ServerSocket(port).close();
+                return port;
+            } catch (IOException e) {
+                // Must already be taken
+            }
+        }
+        throw new IllegalStateException(
+                "Could not find available port in range " + min + " to " + max);
+    }
 
 }
