@@ -27,6 +27,9 @@ import ninja.lifecycle.LifecycleSupport;
 import ninja.scheduler.SchedulerSupport;
 import ninja.utils.NinjaPropertiesImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -35,6 +38,8 @@ import com.google.inject.Module;
 import com.google.inject.servlet.ServletModule;
 
 public class NinjaBootstap {
+    
+    private Logger logger = LoggerFactory.getLogger(NinjaBootstap.class);
 
     private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
     private static final String APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION = "conf.ServletModule";
@@ -62,17 +67,20 @@ public class NinjaBootstap {
             throw new RuntimeException("NinjaBootstap already booted");
         }
         injector = initInjector();
-        Preconditions.checkNotNull(injector, "Ninja injector is not exists. check for errors...");
+        Preconditions.checkNotNull(injector, "Ninja injector cannot be generated. Please check log for further errors.");
         Ninja ninja = injector.getInstance(Ninja.class);
         ninja.start();
     }
 
     public synchronized void shutdown() {
-        Preconditions.checkNotNull(injector, "Ninja injector is not exists. maybe you already shutted down ninja?");
-        Ninja ninja = injector.getInstance(Ninja.class);
-        ninja.shutdown();
-        injector = null;
-        ninja = null;
+        if (injector != null) {            
+            Ninja ninja = injector.getInstance(Ninja.class);
+            ninja.shutdown();
+            injector = null;
+            ninja = null;
+        } else {           
+            logger.info("Shutdown of Ninja not clean => injector already null.");
+        }
     }
 
     private Injector initInjector() {
