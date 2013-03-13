@@ -18,12 +18,10 @@ package ninja.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,15 +32,15 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 /**
- * A simple servlet filter that allows us to run Ninja inside any servlet
+ * A simple servlet that allows us to run Ninja inside any servlet
  * container.
- * 
- * This dispatcher targets Servlet 2.5.
  * 
  * @author ra
  * 
  */
-public class NinjaServletDispatcher implements Filter {
+public class NinjaServletDispatcher extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     private Injector injector;
@@ -62,15 +60,12 @@ public class NinjaServletDispatcher implements Filter {
         this.injector = injector;
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
- 
-    }
+    
 
     @Override
-    public void doFilter(ServletRequest req,
-                         ServletResponse resp,
-                         FilterChain chain) throws IOException,
+    public void service(ServletRequest req,
+                         ServletResponse resp
+                         ) throws IOException,
             ServletException {
 
         HttpServletRequest request = (HttpServletRequest) req;
@@ -88,10 +83,4 @@ public class NinjaServletDispatcher implements Filter {
         ninja.invoke(context);
 
     }
-
-    @Override
-    public void destroy() {
-
-    }
-
 }

@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import ninja.servlet.NinjaBootstap;
+import ninja.servlet.NinjaServletDispatcher;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
@@ -29,7 +30,6 @@ import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.FilterHolder;
 
 import com.google.inject.servlet.GuiceFilter;
@@ -68,10 +68,8 @@ public class NinjaTestServer {
 
             NinjaBootstap ninjaBootstap = new NinjaBootstap(ninjaProperties);
             ninjaBootstap.boot();
-
-            // We need a default servlet. because the dispatcher filter
-            // is only decorating the servlet.
-            context.addServlet(DefaultServlet.class, "/*");
+            
+            context.addServlet(NinjaServletDispatcher.class, "/*");
             context.addFilter(new FilterHolder(new GuiceFilter()), "/*",
                     Handler.ALL);
 
