@@ -61,7 +61,7 @@ public class Module extends NinjaAppAbstractModule{
             @Override
             protected void configureServlets() {                
                 filter("/*").through(DemoServletFilter.class);
-                filter("/*").through(NinjaServletDispatcher.class);
+                serve("/*").with(NinjaServletDispatcher.class);
             }
         };
     }
