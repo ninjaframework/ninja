@@ -45,7 +45,7 @@ public class ServletModule extends com.google.inject.servlet.ServletModule {
         bind(NinjaServletDispatcher.class).asEagerSingleton();
         
         filter("/*").through(DemoServletFilter.class);
-        filter("/*").through(NinjaServletDispatcher.class);
+        serve("/*").with(NinjaServletDispatcher.class);
     }
     
 }
