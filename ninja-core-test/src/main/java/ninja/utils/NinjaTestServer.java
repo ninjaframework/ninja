@@ -68,10 +68,7 @@ public class NinjaTestServer {
 
             NinjaBootstap ninjaBootstap = new NinjaBootstap(ninjaProperties);
             ninjaBootstap.boot();
-
-            // We need a default servlet. because the dispatcher filter
-            // is only decorating the servlet.
-            context.addServlet(NinjaServletDispatcher.class, "/RPC");
+            
             context.addServlet(NinjaServletDispatcher.class, "/*");
             context.addFilter(new FilterHolder(new GuiceFilter()), "/*",
                     Handler.ALL);

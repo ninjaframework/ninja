@@ -125,9 +125,8 @@ public class NinjaBootstap {
                     
                     @Override
                     protected void configureServlets() {   
-                        bind(NinjaServletDispatcher.class).asEagerSingleton();
-                        
-                        filter("/*").through(NinjaServletDispatcher.class);
+                        bind(NinjaServletDispatcher.class).asEagerSingleton();                        
+                        serve("/*").with(NinjaServletDispatcher.class);
                     }
                     
                 };
