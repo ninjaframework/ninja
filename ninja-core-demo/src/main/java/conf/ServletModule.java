@@ -44,7 +44,7 @@ public class ServletModule extends com.google.inject.servlet.ServletModule {
         bind(DemoServletFilter.class).asEagerSingleton();
         bind(NinjaServletDispatcher.class).asEagerSingleton();
         
-        filter("/*").through(DemoServletFilter.class);
+        filterRegex("^(?!/assets/).*$").through(DemoServletFilter.class);
         serve("/*").with(NinjaServletDispatcher.class);
     }
     
