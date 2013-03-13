@@ -280,8 +280,8 @@ The message itself is being translated.
 
 
 
-Variables available in templates
--------------------------------
+Implicit variables available in templates
+-----------------------------------------
 
  * ${lang} resolves to the language Ninja uses currently. 
     
