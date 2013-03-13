@@ -98,9 +98,10 @@ public class NinjaBootstap {
 
             // Load main application module:
             if (doesClassExist(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION)) {
-                Class applicationConfigurationClass = Class
+                Class<?> applicationConfigurationClass = Class
                         .forName(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
 
+              
                 AbstractModule applicationConfiguration = (AbstractModule) applicationConfigurationClass
                         .getConstructor().newInstance();
  
@@ -111,7 +112,7 @@ public class NinjaBootstap {
             // the user can register other servlets and servlet filters
             // If the file does not exist we simply load the default servlet
             if (doesClassExist(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION)) {
-                Class servletModuleClass = Class
+                Class<?> servletModuleClass = Class
                         .forName(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
 
                 ServletModule servletModule = (ServletModule) servletModuleClass
@@ -125,9 +126,8 @@ public class NinjaBootstap {
                     
                     @Override
                     protected void configureServlets() {   
-                        bind(NinjaServletDispatcher.class).asEagerSingleton();
-                        
-                        filter("/*").through(NinjaServletDispatcher.class);
+                        bind(NinjaServletDispatcher.class).asEagerSingleton();                        
+                        serve("/*").with(NinjaServletDispatcher.class);
                     }
                     
                 };
@@ -142,7 +142,7 @@ public class NinjaBootstap {
 
             // Init routes
             if (doesClassExist(ROUTES_CONVENTION_LOCATION)) {
-                Class clazz = Class.forName(ROUTES_CONVENTION_LOCATION);
+                Class<?> clazz = Class.forName(ROUTES_CONVENTION_LOCATION);
                 ApplicationRoutes applicationRoutes = (ApplicationRoutes) injector
                         .getInstance(clazz);
 

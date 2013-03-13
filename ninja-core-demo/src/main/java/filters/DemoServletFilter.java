@@ -28,11 +28,11 @@ public class DemoServletFilter implements javax.servlet.Filter {
                          ServletResponse response,
                          FilterChain chain) throws IOException,
             ServletException {
-        
+       
         long startTime = System.currentTimeMillis();
         chain.doFilter(request, response);
         long endTime = System.currentTimeMillis();
-
+        System.out.println("log from DemoServletFilter. request time is: "+(endTime-startTime)+" millis.");
     }
 
     @Override
