@@ -37,7 +37,7 @@ public class Module extends AbstractModule {
         bind(GreetingService.class).to(GreetingServiceImpl.class);
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
-        
+
     }
 
 }
