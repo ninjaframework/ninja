@@ -116,3 +116,35 @@ If you specify
 It makes sense to only have one message file called messages.properties in English. Therefore
 English acts as fallback for all language - country combinations.
 
+
+
+Setting a language by force
+---------------------------
+
+Ninja tries to do its best to determine the language from the Accept-Language header.
+But there are times, when it makes sense to ignore the header and force the
+usage of a certain language.
+
+Ninja provides that possibility by a cookie. The cookie is usually called
+NINJA_LANG and contains only one value - the language to use for this user.
+
+You can set the language by using the Lang tools like so:
+
+<pre class="prettyprint">
+
+    @Inject
+    Lang lang;
+
+    public Result index() {
+
+        Result result = Results.html().ok();
+        lang.setLanguage("de", result);
+
+        return result;
+
+    }
+
+</pre>
+
+After setting the language all messages will displayed in German.
+

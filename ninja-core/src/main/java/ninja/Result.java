@@ -171,6 +171,23 @@ public class Result {
         headers.put(headerName, headerContent);
         return this;
     }
+    
+    /**
+     * Returns cookie with that name or null.
+     * 
+     * @param cookieName Name of the cookie
+     * @return The cookie or null if not found.
+     */
+    public Cookie getCookie(String cookieName) {
+        
+        for (Cookie cookie : getCookies()) {
+            if (cookie.getName().equals(cookieName)) {
+                return cookie;
+            }
+        }
+        
+        return null;
+    }
 
     public List<Cookie> getCookies() {
         return cookies;

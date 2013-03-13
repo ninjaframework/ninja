@@ -27,6 +27,7 @@ import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemIterator;
 
 import java.io.*;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,11 +56,6 @@ public class WrappedContext implements Context {
     @Override
     public SessionCookie getSessionCookie() {
         return wrapped.getSessionCookie();
-    }
-
-    @Override
-    public Context addCookie(Cookie cookie) {
-        return wrapped.addCookie(cookie);
     }
 
     @Override
@@ -217,5 +213,15 @@ public class WrappedContext implements Context {
     @Override
     public String getAcceptCharset() {
         return wrapped.getAcceptCharset();
+    }
+
+    @Override
+    public Cookie getCookie(String cookieName) {
+        return wrapped.getCookie(cookieName);
+    }
+
+    @Override
+    public List<Cookie> getCookies() {
+        return wrapped.getCookies();
     }
 }

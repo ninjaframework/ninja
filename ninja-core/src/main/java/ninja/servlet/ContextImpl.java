@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -243,12 +245,43 @@ public class ContextImpl implements Context {
     public SessionCookie getSessionCookie() {
         return sessionCookie;
     }
+    
+    @Override
+    public Cookie getCookie(String cookieName) {
+        
+        javax.servlet.http.Cookie[] cookies = getHttpServletRequest().getCookies();
+        javax.servlet.http.Cookie servletCookie = CookieHelper.getCookie(cookieName, cookies);
+        
+        if (servletCookie == null) {
+            
+            return null;
+            
+        } else {
+            
+            Cookie ninjaCookie = CookieHelper.convertServletCookieToNinjaCookie(servletCookie);           
+            return ninjaCookie;
+            
+        }
+
+    }
+    
 
     @Override
-    public Context addCookie(Cookie cookie) {
-        httpServletResponse.addCookie(CookieHelper
-                .convertNinjaCookieToServletCookie(cookie));
-        return this;
+    public List<Cookie> getCookies() {
+        
+        javax.servlet.http.Cookie[] servletCookies = getHttpServletRequest().getCookies();
+        
+        List<Cookie> ninjaCookies = new ArrayList<Cookie>();
+        
+        for (javax.servlet.http.Cookie cookie : servletCookies) {
+            
+            Cookie ninjaCookie = CookieHelper.convertServletCookieToNinjaCookie(cookie);
+            ninjaCookies.add(ninjaCookie);
+            
+        }
+        
+        return ninjaCookies;
+        
     }
 
     @Deprecated

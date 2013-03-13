@@ -22,6 +22,8 @@ import static org.junit.Assert.assertThat;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Result;
+import ninja.i18n.Lang;
+import ninja.i18n.LangImpl;
 import ninja.utils.LoggerProvider;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
@@ -113,6 +115,7 @@ public class TemplateEngineManagerImplTest {
             protected void configure() {
             	
             	bind(Logger.class).toProvider(LoggerProvider.class);  
+            	bind(Lang.class).to(LangImpl.class);
             	
             	bind(NinjaProperties.class).to(NinjaPropertiesImpl.class);
             	

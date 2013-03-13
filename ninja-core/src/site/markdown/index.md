@@ -1,7 +1,7 @@
 <!-- Main hero unit for a primary marketing message or call to action -->
 <div class="hero-unit">
 	<h1>Ninja web framework</h1>
-	<p>Full stack web framework for Java.<br/> Fast and productive. Built on Maven - runs on servlet containers.</p>
+	<p>Full stack web framework for Java.<br/> Fast and productive. Runs on servlet containers - built with Maven.</p>
 </div>
 
 <br/>
@@ -14,7 +14,7 @@
         <img class="bs-icon"
             src="images/glyphicons/glyphicons_009_magic.png">
         <h2>Happy business. Happy customers.</h2>
-        <p>Ninja will let you finish your next project faster with stunning high quality.
+        <p>Ninja will let you finish your next project faster in stunning high quality.
         Your customers will love what they'll get.
         </p>
     </div>
@@ -22,8 +22,8 @@
     <div class="span6">
         <img class="bs-icon" src="images/glyphicons/glyphicons_042_group.png">
         <h2>Fun for developers.</h2>
-        <p>Ninja provides everything you need to get productive immediately. 
-        And notably Ninja is fast. Really fast. Make a change to the code and see the results instantly.
+        <p>Ninja provides everything you need to get productive in an instant. 
+        And Ninja is fast. Really fast. Make a change to the code and instantly see the results.
         </p>
     </div>
 </div>
@@ -51,7 +51,7 @@
             src="images/glyphicons/glyphicons_079_podium.png">
         <h2>Stable technology</h2>
         <p>Ninja did not reinvent the wheel - instead we are standing on the shoulders of giants.
-        Ninja is built using the most stable technologies in the industry. Maven, Servlets just to name
+        Ninja is built using the most stable technologies in the industry. Servlets, Guice dependency injection and Maven - just to name
         a few.
         </p>
     </div>
@@ -60,7 +60,7 @@
         <img class="bs-icon"
             src="images/glyphicons/glyphicons_082_roundabout.png">
         <h2>Scalability</h2>
-        <p>Ninja uses the *share nothing* approach. Servers do not share any common session information. That
+        <p>Ninja uses the share nothing approach. Servers do not share any common session information. That
         means you can scale Ninja horizontally with ease.
         </p>
     </div>

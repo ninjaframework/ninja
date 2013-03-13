@@ -17,18 +17,20 @@
 package ninja.i18n;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-import java.util.Map;
-
+import ninja.Context;
+import ninja.Cookie;
+import ninja.Result;
+import ninja.Results;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -37,112 +39,99 @@ public class LangImplTest {
 
     @Mock
     private NinjaProperties ninjaProperties;
+    
+    @Mock
+    private Context context;
+    
+    @Captor
+    ArgumentCaptor<Cookie> captor = ArgumentCaptor.forClass(Cookie.class);
+    
+   
 
     @Test
-    public void testiSimple18n() {
+    public void testGetLanguage() {
+        
+        Cookie cookie = Cookie.builder("NINJA_TEST" + NinjaConstant.LANG_COOKIE_SUFFIX, "de").build();
 
-        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
-                .thenReturn(new String[] { "en", "de", "fr-FR" });
+        when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn("NINJA_TEST");
+        when(context.getCookie("NINJA_TEST" + NinjaConstant.LANG_COOKIE_SUFFIX)).thenReturn(cookie);
 
-        LangImpl lang = new LangImpl(ninjaProperties);
-
-        // that will refer to messages_en.properties:
-        assertEquals("english", lang.get("language", "en-US"));
-        assertEquals("english", lang.get("language", "en-CA"));
-        assertEquals("english", lang.get("language", "en-UK"));
-
-        // that will refer to messages_de.properties:
-        assertEquals("deutsch", lang.get("language", "de"));
-        assertEquals("deutsch", lang.get("language", "de-DE"));
-
-        // that will refer to messages_fr-FR.properties:
-        assertEquals("francaise", lang.get("language", "fr-FR"));
+        Lang lang = new LangImpl(ninjaProperties);
+       
+        
+        // 1) with context and result => but result does not have a default lang
+        Result result = Results.ok();
+        String language = lang.getLanguage(context, result);
+        assertEquals("de", language);
+        
+        
+        // 2) with context and result => result has already new lang set...
+        result = Results.ok();
+        cookie = Cookie.builder("NINJA_TEST" + NinjaConstant.LANG_COOKIE_SUFFIX, "en").build();
+        result.addCookie(cookie);
+        
+        language = lang.getLanguage(context, result);
+        assertEquals("en", language);
+        
+        
 
     }
     
     @Test
-    public void testI18nAcceptLanguageHttpHeaderWithQualityScores() {
-
-        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
-                .thenReturn(new String[] { "en", "de", "fr-FR" });
-
-        LangImpl lang = new LangImpl(ninjaProperties);
-
-        // that will refer to messages_fr-FR.properties:
-        assertEquals("francaise", lang.get("language", "da,fr-FR;q=0.8"));
-        assertEquals("francaise", lang.get("language", "da;q=0.9, fr-FR; q=0.8"));
+    public void testChangeLanguage() {
         
-        // that will refer to messages_de.properties:
-        assertEquals("deutsch", lang.get("language", "de,fr-FR;q=0.8"));
-        assertEquals("deutsch", lang.get("language", "de;q=0.9, fr-FR; q=0.8"));
+        Cookie cookie = Cookie.builder("NINJA_TEST" + NinjaConstant.LANG_COOKIE_SUFFIX, "de").build();
+        when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn("NINJA_TEST");
+       
+        Lang lang = new LangImpl(ninjaProperties);
+        
+        // test with result
+        Result result = Results.noContent();
+        
+        result = lang.setLanguage("to", result);
+        assertEquals("to", result.getCookie(cookie.getName()).getValue());
+        assertEquals(Result.SC_204_NO_CONTENT, result.getStatusCode());
+
 
     }
-
+    
     @Test
-    public void testiParameterized18n() {
-        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
-                .thenReturn(new String[] { "en", "de", "fr-FR" });
+    public void testClearLanguage() {
+        
+        Cookie cookie = Cookie.builder("NINJA_TEST" + NinjaConstant.LANG_COOKIE_SUFFIX, "de").build();
 
-        LangImpl lang = new LangImpl(ninjaProperties);
+        when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn("NINJA_TEST");
 
-        // that will refer to messages_en.properties:
-        assertEquals("this is the placeholder: test_parameter",
-                lang.get("message_with_placeholder", "en-US", "test_parameter"));
-        assertEquals("this is the placeholder: test_parameter",
-                lang.get("message_with_placeholder", "en-CA", "test_parameter"));
-        assertEquals("this is the placeholder: test_parameter",
-                lang.get("message_with_placeholder", "en-UK", "test_parameter"));
-
-        // that will refer to messages_de.properties:
-        assertEquals("das ist der platzhalter: test_parameter",
-                lang.get("message_with_placeholder", "de", "test_parameter"));
-        assertEquals("das ist der platzhalter: test_parameter",
-                lang.get("message_with_placeholder", "de-DE", "test_parameter"));
-
+        Lang lang = new LangImpl(ninjaProperties);
+        
+        Result result = Results.ok();
+        
+        lang.clearLanguage(result);
+        
+        Cookie returnCookie = result.getCookie(cookie.getName());
+        assertEquals(null, returnCookie.getValue());
+        assertEquals(0, returnCookie.getMaxAge());
+        
     }
-
+    
     @Test
-    public void testi18nGetAll() {
-
-        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
-                .thenReturn(new String[] { "en", "de", "fr-FR" });
-        LangImpl lang = new LangImpl(ninjaProperties);
-
-        // US locale testing:
-        Map<Object, Object> map = lang.getAll("en-US");
-
-        assertEquals(4, map.keySet().size());
-        assertTrue(map.containsKey("language"));
-        assertTrue(map.containsKey("message_with_placeholder"));
-        assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
-        assertTrue(map.containsKey("a_propert_with_commas"));
-
-        assertEquals("english", map.get("language"));
-
-        // GERMAN locale testing:
-        map = lang.getAll("de");
-        assertEquals(4, map.keySet().size());
-        assertTrue(map.containsKey("language"));
-        assertTrue(map.containsKey("message_with_placeholder"));
-        assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
-        assertTrue(map.containsKey("a_propert_with_commas"));
-
-        assertEquals("deutsch", map.get("language"));
-        assertEquals("das ist der platzhalter: {0}",
-                map.get("message_with_placeholder"));
-
+    public void testIsLanguageDirectlySupportedByThisApplication() {
+  
+        when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn("NINJA_TEST");
+        when(ninjaProperties.get(NinjaConstant.applicationLanguages)).thenReturn("en");
+        
+        Lang lang = new LangImpl(ninjaProperties);
+        
+        assertTrue(lang.isLanguageDirectlySupportedByThisApplication("en"));
+        assertFalse(lang.isLanguageDirectlySupportedByThisApplication("de"));
+        
+        when(ninjaProperties.get(NinjaConstant.applicationLanguages)).thenReturn("en, de, se");
+        assertTrue(lang.isLanguageDirectlySupportedByThisApplication("en"));
+        assertTrue(lang.isLanguageDirectlySupportedByThisApplication("de"));
+        assertTrue(lang.isLanguageDirectlySupportedByThisApplication("se"));
+        assertFalse(lang.isLanguageDirectlySupportedByThisApplication("tk"));
+        
+        
     }
-
-    @Test
-    public void testAgainstCorrectParsingOfDelimitersInPropertiesFiles() {
-
-        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
-                .thenReturn(new String[] { "en", "de", "fr-FR" });
-        LangImpl lang = new LangImpl(ninjaProperties);
-
-        assertEquals("prop1, prop2, prop3",
-                lang.get("a_propert_with_commas", "en-US"));
-
-    }
-
+    
 }

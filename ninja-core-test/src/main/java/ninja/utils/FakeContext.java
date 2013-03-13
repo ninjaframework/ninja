@@ -126,12 +126,6 @@ public class FakeContext implements Context {
     }
 
     @Override
-    public Context addCookie(Cookie cookie) {
-        this.addedCookies.add(cookie);
-        return this;
-    }
-
-    @Override
     public HttpServletRequest getHttpServletRequest() {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
@@ -350,5 +344,15 @@ public class FakeContext implements Context {
     @Override
     public String getAcceptCharset() {
         return acceptCharset;
+    }
+
+    @Override
+    public Cookie getCookie(String cookieName) {
+        throw new UnsupportedOperationException("Not supported in fake context");
+    }
+
+    @Override
+    public List<Cookie> getCookies() {
+        throw new UnsupportedOperationException("Not supported in fake context");
     }
 }

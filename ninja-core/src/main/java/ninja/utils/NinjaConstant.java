@@ -48,6 +48,13 @@ public interface NinjaConstant {
      * ninja.application.languages=de,en
      */
     final String applicationLanguages = "application.languages";
+    
+    /**
+     * A cookie that helps Ninja to set a default language.
+     * Usually resolves to a cookie called NINJA_LANG.
+     * The cookie then looks like: "NINJA_LANG=en"
+     */
+    final String LANG_COOKIE_SUFFIX = "_LANG";
 
     /**
      * Prefix used for all Ninja cookies.

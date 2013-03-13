@@ -111,6 +111,7 @@ public class Routes implements ApplicationRoutes {
         // I18n:
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/i18n").with(I18nController.class, "index");
+        router.GET().route("/i18n/{language}").with(I18nController.class, "indexWithLanguage");
 
         // /////////////////////////////////////////////////////////////////////
         // Upload showcase

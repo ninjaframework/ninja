@@ -277,4 +277,11 @@ A simple demo of that
 
 This simply checks if a flash error or success is there and prints the message out.
 The message itself is being translated.
+
+
+
+Variables available in templates
+-------------------------------
+
+ * ${lang} resolves to the language Ninja uses currently. 
     

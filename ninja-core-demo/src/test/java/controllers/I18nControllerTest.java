@@ -29,36 +29,85 @@ import org.junit.Test;
 import com.google.common.collect.Maps;
 
 public class I18nControllerTest extends NinjaTest {
+    
+    String TEXT_EN = "Hello - this is an i18n message in the templating engine";
+    String TEXT_DE = "Hallo - das ist eine internationalisierte Nachricht in der Templating Engine";
 
-	@Test
-	public void testThatI18nWorksEn() {
-		
-		Map<String, String> headers = Maps.newHashMap();
-		headers.put("Accept-Language", "en-US");
-		
-		
-		String result = ninjaTestBrowser
-				.makeRequest(getServerAddress() + "/i18n", headers);
+    @Test
+    public void testThatI18nWorksEn() {
 
-		assertTrue(result.contains(
-				"Hello - this is an i18n message in the templating engine"));
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("Accept-Language", "en-US");
 
-	}
-	
-	@Test
-	public void testThatI18nWorksDe() {
-		
-		Map<String, String> headers = Maps.newHashMap();
-		headers.put("Accept-Language", "de-DE");
-		
-		
-		String result = ninjaTestBrowser
-				.makeRequest(getServerAddress() + "/i18n", headers);
+        String result = ninjaTestBrowser.makeRequest(getServerAddress()
+                + "/i18n", headers);
 
-		assertTrue(result.contains(
-				"Hallo - das ist eine internationalisierte Nachricht in der Templating Engine"));
+        assertTrue(result
+                .contains(TEXT_EN));
 
-	}
-	
+    }
+
+    @Test
+    public void testThatI18nWorksDe() {
+
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("Accept-Language", "de-DE");
+
+        String result = ninjaTestBrowser.makeRequest(getServerAddress()
+                + "/i18n", headers);
+
+        assertTrue(result
+                .contains(TEXT_DE));
+
+    }
+    
+    
+    @Test
+    public void testThatExplicitLangSettingWorks() {
+
+        // 1) test that overriding of accept-language header works
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("Accept-Language", "de-DE");
+
+        String result = ninjaTestBrowser.makeRequest(getServerAddress()
+                + "/i18n/en", headers);
+
+        assertTrue(result
+                .contains(TEXT_EN));
+        
+        
+        // 2) test that fallback is accept-language header
+        headers = Maps.newHashMap();
+        headers.put("Accept-Language", "de-DE");
+
+        result = ninjaTestBrowser.makeRequest(getServerAddress()
+                + "/i18n/tk", headers);
+
+        assertTrue(result
+                .contains(TEXT_EN));
+        
+        
+        // 3) test when no accept-lanugage is present => fallback should be
+        //    language on the root.
+        headers = Maps.newHashMap();
+
+        result = ninjaTestBrowser.makeRequest(getServerAddress()
+                + "/i18n/tk", headers);
+
+        assertTrue(result
+                .contains(TEXT_EN));
+        
+        
+        // 4) normal operation
+        headers = Maps.newHashMap();
+        headers.put("Accept-Language", "de-DE");
+
+        result = ninjaTestBrowser.makeRequest(getServerAddress()
+                + "/i18n/de", headers);
+
+        assertTrue(result
+                .contains(TEXT_DE));
+
+    }
 
 }

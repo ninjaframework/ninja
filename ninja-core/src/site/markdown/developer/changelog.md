@@ -1,9 +1,13 @@
-Version 1.1.x
-=============
+Version 1.1.x (current)
+=======================
 
  * PLZ ADD YOUR CHANGES HERE :)
- * Fixes in Validation
- * Validation for controller parameter fields as well as validation for injected beans
+ * Fixes in Validation (phil)
+ * Validation for controller parameter fields as well as validation for injected beans (phil)
+ * Servelt-Ninja bridge - support for loading Servlet Filters and Servlets using ServletModule (zoza)
+ * Cleaner cookie handling (removed dependencies servlet cookies) (ra)
+ * Support for force-setting default language via NINJA_LANG cookie (ra)
+ * Messages stuff moved from Lang to Message (cleaner)
 
 
 Version 1.1

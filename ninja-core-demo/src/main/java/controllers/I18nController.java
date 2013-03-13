@@ -19,15 +19,42 @@ package controllers;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
+import ninja.i18n.Lang;
+import ninja.params.PathParam;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class I18nController {
+    
+    @Inject
+    Lang lang;
 
     public Result index(Context context) {
         // Only render the page. It contains some language specific strings.
-        return Results.html();
+        // It will use the requested language (or a fallback language)
+        // from Accept-Language header
+        Result result = Results.html();
+        // just in case we set the language => we remove it...
+        lang.clearLanguage(result);
+        
+        return result;
+    }
+    
+    
+    public Result indexWithLanguage(@PathParam("language") String language) {
+        
+        Result result = Results.ok().html().template("/views/I18nController/index.ftl.html");
+        // This gets an url like /1i8n/en
+        // language is then the "en" part of the url.
+        
+        // We take that part and set that language as the default lanugage
+        // of the framework for this user.
+        lang.setLanguage(language, result);
+        
+        return result;       
+        
     }
 
 }

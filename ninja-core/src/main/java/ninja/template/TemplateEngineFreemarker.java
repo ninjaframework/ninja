@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
+import ninja.i18n.Messages;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
@@ -40,6 +41,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     private Configuration cfg;
 
+    private final Messages messages;
+    
     private final Lang lang;
 
     private final TemplateEngineHelper templateEngineHelper;
@@ -47,10 +50,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final Logger logger;
 
     @Inject
-    TemplateEngineFreemarker(Lang lang,
-                             Logger logger,
-                             TemplateEngineHelper templateEngineHelper,
-                             TemplateEngineManager templateEngineManager) {
+    public TemplateEngineFreemarker(Messages messages,
+                                    Lang lang,
+                                    Logger logger,
+                                    TemplateEngineHelper templateEngineHelper,
+                                    TemplateEngineManager templateEngineManager) {
+        this.messages = messages;
         this.lang = lang;
         this.logger = logger;
         this.templateEngineHelper = templateEngineHelper;
@@ -102,10 +107,14 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             map.put(realClassNameLowerCamelCase, object);
             
         }
-
-        // provide all i18n templates to freemarker engine:
-        String language = context.getAcceptLanguage();
-        Map<Object, Object> i18nMap = lang.getAll(language);
+        
+        // set language from framework. You can access
+        // it in the templates as ${lang}
+        String language = lang.getLanguage(context, result);
+        map.put("lang", language);
+        
+        // merge messages with this template...
+        Map<Object, Object> i18nMap = messages.getAll(context, result);
         map.putAll(i18nMap);
         
         // get contentOfFlashCookie
@@ -117,7 +126,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             //if it is a translated message get it from the language
             if (entry.getValue().startsWith("i18n")) {
                 
-                messageValue = lang.get(entry.getValue(), language);
+                messageValue = messages.get(entry.getValue(), context, result);
                 
                 if (messageValue == null) {
                     throw new RuntimeException("No translated message found for flash message key: " + entry.getValue());

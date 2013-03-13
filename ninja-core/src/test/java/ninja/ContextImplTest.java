@@ -26,7 +26,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Map;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +39,7 @@ import ninja.servlet.ContextImpl;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 
+import ninja.utils.CookieHelper;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
 import ninja.validation.Validation;
@@ -107,6 +110,97 @@ public class ContextImplTest {
         assertEquals("/index", context.getRequestUri());
     }
 
+    @Test
+    public void testAddCookieViaResult() {
+        Cookie cookie = Cookie.builder("cookie", "yum").setDomain("domain").build();
+        context.init(httpServletRequest, httpServletResponse);
+        //context.addCookie(cookie);
+
+        //generate an arbitrary result:
+        Result result = Results.html();
+        result.addCookie(cookie);
+        
+        //finalize the headers => the cookies must be copied over to the servletcookies
+        context.finalizeHeaders(result);
+
+        //and verify the stuff:
+        ArgumentCaptor<javax.servlet.http.Cookie> cookieCaptor = ArgumentCaptor.forClass(javax.servlet.http.Cookie.class);
+        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+        javax.servlet.http.Cookie resultCookie = cookieCaptor.getValue();
+        assertThat(resultCookie.getName(), equalTo("cookie"));
+        assertThat(resultCookie.getValue(), equalTo("yum"));
+        assertThat(resultCookie.getPath(), equalTo("/"));
+        assertThat(resultCookie.getSecure(), equalTo(false));
+        assertThat(resultCookie.getMaxAge(), equalTo(-1));
+    }
+    
+    @Test
+    public void getCookieTest() {
+        javax.servlet.http.Cookie servletCookie1 = new javax.servlet.http.Cookie("contextCookie1", "theValue1");
+        javax.servlet.http.Cookie servletCookie2 = new javax.servlet.http.Cookie("contextCookie2", "theValue2");
+        javax.servlet.http.Cookie [] servletCookies = {servletCookie1, servletCookie2};
+        
+        when(httpServletRequest.getCookies()).thenReturn(servletCookies);
+        
+        context.init(httpServletRequest, httpServletResponse);
+        
+        // negative test:
+        ninja.Cookie doesNotExist = context.getCookie("doesNotExist");
+        assertNull(doesNotExist);
+        
+        // test  against cookie that is really there
+        ninja.Cookie cookie1 = context.getCookie("contextCookie1");
+        
+        assertEquals(cookie1.getName(), "contextCookie1");
+        assertEquals(cookie1.getValue(), "theValue1");
+        
+        // test 2 against cookie that is really there
+        ninja.Cookie cookie2= context.getCookie("contextCookie2");
+        
+        assertEquals(cookie2.getName(), "contextCookie2");
+        assertEquals(cookie2.getValue(), "theValue2");
+
+        
+    }
+    
+    
+    @Test
+    public void getCookiesTest() {
+        
+        javax.servlet.http.Cookie servletCookie1 = new javax.servlet.http.Cookie("contextCookie1", "theValue");
+        javax.servlet.http.Cookie servletCookie2 = new javax.servlet.http.Cookie("contextCookie2", "theValue");
+        javax.servlet.http.Cookie [] servletCookiesEmpty = {};
+        javax.servlet.http.Cookie [] servletCookies = {servletCookie1, servletCookie2};
+        
+        when(httpServletRequest.getCookies()).thenReturn(servletCookiesEmpty);
+        
+        context.init(httpServletRequest, httpServletResponse);
+        
+        //test when there are no cookies.
+        assertEquals(0, context.getCookies().size());
+        
+        // now return some cookies:
+        when(httpServletRequest.getCookies()).thenReturn(servletCookies);
+        
+
+        assertEquals(2, context.getCookies().size());
+        
+        
+    }
+
+    /**
+     * Get the underlying HTTP servlet request
+     * 
+     * @Deprecated because it directly refers to the servlet api. And usually we
+     *             don't want that.
+     * 
+     *             If you are missing something you cannot find in context
+     *             please suggest it. getHttpServletResponse will be removed at
+     *             some point.
+     * 
+     * @return The HTTP servlet request
+     */
     @Test
     public void testAddCookie() {
         Cookie cookie = Cookie.builder("cookie", "yum").setDomain("domain").build();

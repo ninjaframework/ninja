@@ -17,6 +17,7 @@
 package ninja.utils;
 
 import javax.servlet.http.Cookie;
+import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,49 +68,105 @@ public class CookieHelper {
             servletCookie.setPath(cookie.getPath());
         }
         if (cookie.isHttpOnly()) {
-            HTTP_ONLY_SETTER.setHttpOnly(servletCookie);
+            SERVLET_COOKIE_FALLBACK_HANDLER.setHttpOnly(servletCookie);
         }
         return servletCookie;
     }
+    
+    public static ninja.Cookie convertServletCookieToNinjaCookie(
+                                                                 @NotNull Cookie cookie) {
+        ninja.Cookie.Builder ninjaCookieBuilder
+            = ninja.Cookie.builder(cookie.getName(), cookie.getValue());
+        
+
+        ninjaCookieBuilder.setMaxAge(cookie.getMaxAge());
+        
+        if (cookie.getComment() != null) {
+            ninjaCookieBuilder.setComment(cookie.getComment());
+        }
+        
+        if (cookie.getDomain() != null) {
+            ninjaCookieBuilder.setDomain(cookie.getDomain());
+        }
+
+        ninjaCookieBuilder.setSecure(cookie.getSecure());
+        
+        if (cookie.getPath() != null) {
+            ninjaCookieBuilder.setPath(cookie.getPath());
+        }
+        
+        
+        boolean isHttpOnly = SERVLET_COOKIE_FALLBACK_HANDLER.isHttpOnly(cookie);        
+        ninjaCookieBuilder.setHttpOnly(isHttpOnly);
+        
+        
+        return ninjaCookieBuilder.build();
+    }
 
     public static void setHttpOnly(Cookie cookie) {
-        HTTP_ONLY_SETTER.setHttpOnly(cookie);
+        SERVLET_COOKIE_FALLBACK_HANDLER.setHttpOnly(cookie);
     }
 
     /**
      * HTTP only is only available in Servlet 3 spec.
      */
-    private interface HttpOnlySetter {
+    private interface ServletCookieFallbackHandler {
         void setHttpOnly(Cookie cookie);
+        boolean isHttpOnly(Cookie cookie);
     }
 
-    private static class Servlet3HttpOnlySetter implements HttpOnlySetter {
+    private static class Servlet3CookieFallbackHandler implements ServletCookieFallbackHandler {
         @Override
         public void setHttpOnly(Cookie cookie) {
             cookie.setHttpOnly(true);
         }
+        
+        @Override
+        public boolean isHttpOnly(Cookie cookie) {
+            return cookie.isHttpOnly();
+        }
     }
 
-    private static class Servlet2HttpOnlySetter implements HttpOnlySetter {
+    private static class Servlet25CookieFallbackHandler implements ServletCookieFallbackHandler {
+        
+        private boolean warningAlreadyPrintedOut = false;
+        
         @Override
         public void setHttpOnly(Cookie cookie) {
-            log.warn("HTTP only set for cookie " + cookie.getName()
-                    + " but ignored because container is not a"
-                    + " servlet 3 container");
+            printWarning();
+        }
+        
+        @Override
+        public boolean isHttpOnly(Cookie cookie) {
+            printWarning();
+            return false;
+        }
+        
+        private void printWarning() {
+            
+            //don't pollute log.
+            if (!warningAlreadyPrintedOut) {
+                
+                log.warn("Running inside Servlet 2.5 container. " +
+                		"Ignoring HttpSecure and HttpOnly for now.");
+                
+                warningAlreadyPrintedOut = true;
+            }
+            
         }
     }
 
-    private static final HttpOnlySetter HTTP_ONLY_SETTER;
+    private static final ServletCookieFallbackHandler SERVLET_COOKIE_FALLBACK_HANDLER;
 
     static {
-        HttpOnlySetter httpOnlySetter;
+        ServletCookieFallbackHandler httpOnlySetter;
         try {
             Cookie.class.getMethod("setHttpOnly", boolean.class);
-            httpOnlySetter = new Servlet3HttpOnlySetter();
+            httpOnlySetter = new Servlet3CookieFallbackHandler();
         } catch (NoSuchMethodException e) {
-            httpOnlySetter = new Servlet2HttpOnlySetter();
+            httpOnlySetter = new Servlet25CookieFallbackHandler();
         }
-        HTTP_ONLY_SETTER = httpOnlySetter;
+        SERVLET_COOKIE_FALLBACK_HANDLER = httpOnlySetter;
     }
 
 }

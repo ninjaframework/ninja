@@ -19,6 +19,7 @@ package ninja;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,7 +87,7 @@ public interface Context {
     /**
      * Returns the path that Ninja should act upon.
      * 
-     * For instance in servlets you could have somthing like a context prefix.
+     * For instance in servlets you could have soemthing like a context prefix.
      * /myContext/app
      * 
      * If your route only defines /app it will work as the requestpath will
@@ -126,15 +127,25 @@ public interface Context {
      * @return the Session of that request / response cycle.
      */
     SessionCookie getSessionCookie();
-
+    
     /**
-     * Add the given cookie to the response
+     * Get cookie from context.
      * 
-     * @param cookie
-     *            The cookie to add
-     * @return This context
+     * @param cookieName
+     *            Name of the cookie to retrieve
+     * @return the cookie with that name or null.
      */
-    public Context addCookie(Cookie cookie);
+    Cookie getCookie(String cookieName);
+    
+    
+    /**
+     * Get all cookies from the context.
+     * 
+     * @param cookieName
+     *            Name of the cookie to retrieve
+     * @return the cookie with that name or null.
+     */
+    List<Cookie> getCookies();
 
     /**
      * Get the underlying HTTP servlet request
