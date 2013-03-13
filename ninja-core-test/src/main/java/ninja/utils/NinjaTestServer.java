@@ -21,8 +21,8 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import ninja.NinjaBootstap;
-import ninja.NinjaServletDispatcher;
+import ninja.servlet.NinjaBootstap;
+import ninja.servlet.NinjaServletDispatcher;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
@@ -66,8 +66,7 @@ public class NinjaTestServer {
             ninjaProperties.setProperty(NinjaConstant.serverName,
                     serverUri.toString());
 
-            NinjaBootstap ninjaBootstap = new NinjaBootstap(
-                    context.getServletContext(), ninjaProperties);
+            NinjaBootstap ninjaBootstap = new NinjaBootstap(ninjaProperties);
             ninjaBootstap.boot();
 
             // We need a default servlet. because the dispatcher filter

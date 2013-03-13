@@ -17,68 +17,78 @@
 package ninja.validation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import ninja.i18n.Lang;
 
 /**
  * Validation object
  *
- * @author James Roper
+ * @author James Roper, Philip Sommer
  */
 public class ValidationImpl implements Validation {
-    private final Lang lang;
 
-    private final Map<String, ConstraintViolation> fieldViolations =
-            new HashMap<String, ConstraintViolation>();
+    private final List<FieldViolation> fieldViolations = new ArrayList<FieldViolation>();
     private final List<ConstraintViolation> generalViolations = new ArrayList<ConstraintViolation>();
-
-    @Override
-    public List<FieldViolation> getFieldViolations() {
-        List<FieldViolation> fieldViolationsList = new ArrayList<FieldViolation>();
-        for (Map.Entry<String, ConstraintViolation> entry : fieldViolations.entrySet()) {
-            fieldViolationsList.add(new FieldViolation(entry.getKey(), entry.getValue()));
-        }
-        return fieldViolationsList;
-    }
-
-    @Override
-    public List<ConstraintViolation> getGeneralViolations() {
-        return generalViolations;
-    }
-
-    @Inject
-    public ValidationImpl(Lang lang) {
-        this.lang = lang;
-    }
+    private final List<FieldViolation> beanViolations = new ArrayList<FieldViolation>();
 
     @Override
     public boolean hasViolations() {
-        return !fieldViolations.isEmpty() || !generalViolations.isEmpty();
-    }
-
-    @Override
-    public boolean hasFieldViolation(String field) {
-        return fieldViolations.get(field) != null;
-    }
-
-    @Override
-    public void addFieldViolation(String field,
-                                  ConstraintViolation constraintViolation) {
-        if (field == null) {
-            generalViolations.add(constraintViolation);
-        } else {
-            fieldViolations.put(field, constraintViolation);
-        }
+        return !fieldViolations.isEmpty() || !generalViolations.isEmpty()
+                || !beanViolations.isEmpty();
     }
 
     @Override
     public void addFieldViolation(FieldViolation fieldViolation) {
-        addFieldViolation(fieldViolation.field, fieldViolation.constraintViolation);
+        if (fieldViolation.field == null) {
+            generalViolations.add(fieldViolation.constraintViolation);
+        } else {
+            fieldViolations.add(fieldViolation);
+        }
+    }
+
+    @Override
+    public void addFieldViolation(String field, ConstraintViolation constraintViolation) {
+        addFieldViolation(new FieldViolation(field, constraintViolation));
+    }
+
+    @Override
+    public boolean hasFieldViolation(String field) {
+        for (FieldViolation fieldViolation : fieldViolations) {
+            if (fieldViolation.field.contentEquals(field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<FieldViolation> getFieldViolations() {
+        return fieldViolations;
+    }
+
+    @Override
+    public List<FieldViolation> getFieldViolations(String field) {
+        List<FieldViolation> violationsForThisField = new ArrayList<FieldViolation>();
+        for (FieldViolation fieldViolation : fieldViolations) {
+            if (fieldViolation.field.contentEquals(field)) {
+                violationsForThisField.add(fieldViolation);
+            }
+        }
+        return violationsForThisField;
+    }
+
+    @Override
+    public void addBeanViolation(FieldViolation fieldViolation) {
+        beanViolations.add(fieldViolation);
+    }
+
+    @Override
+    public boolean hasBeanViolations() {
+        return !beanViolations.isEmpty();
+    }
+
+    @Override
+    public List<FieldViolation> getBeanViolations() {
+        return beanViolations;
     }
 
     @Override
@@ -87,28 +97,8 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
-    public ConstraintViolation getFieldConstraintViolation(String field) {
-        return fieldViolations.get(field);
+    public List<ConstraintViolation> getGeneralViolations() {
+        return generalViolations;
     }
 
-    @Override
-    public String getFieldViolationMessage(String field, String language) {
-        ConstraintViolation violation = fieldViolations.get(field);
-        if (violation == null) {
-            return null;
-        }
-        // First, format field
-        String formattedField = lang.getWithDefault(violation.getFieldKey(),
-                field, language);
-        // Create parameters
-        Object[] params = new Object[violation.getMessageParams().length + 1];
-        params[0] = formattedField;
-        if (params.length > 1) {
-            System.arraycopy(violation.getMessageParams(), 0, params, 1,
-                    violation.getMessageParams().length);
-        }
-        // Format field
-        return lang.getWithDefault(violation.getMessageKey(),
-                violation.getDefaultMessage(), language, params);
-    }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja;
+package ninja.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +29,10 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.Context;
+import ninja.Cookie;
+import ninja.Result;
+import ninja.Route;
 import ninja.async.AsyncStrategy;
 import ninja.async.AsyncStrategyFactoryHolder;
 import ninja.bodyparser.BodyParserEngine;

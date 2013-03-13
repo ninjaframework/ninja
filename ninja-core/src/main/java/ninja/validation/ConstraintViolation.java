@@ -45,7 +45,7 @@ public class ConstraintViolation {
                                Object... messageParams) {
         this.messageKey = messageKey;
         this.fieldKey = fieldKey;
-        this.defaultMessage = defaultMessage;
+        this.defaultMessage = fieldKey != null ? defaultMessage.replace("{0}", fieldKey) : defaultMessage;
         this.messageParams = messageParams;
     }
 

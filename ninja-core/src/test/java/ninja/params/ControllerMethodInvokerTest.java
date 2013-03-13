@@ -16,9 +16,9 @@
 
 package ninja.params;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +36,6 @@ import javax.validation.constraints.Size;
 import ninja.Context;
 import ninja.Result;
 import ninja.RoutingException;
-import ninja.i18n.Lang;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.validation.JSR303Validation;
@@ -67,14 +66,12 @@ public class ControllerMethodInvokerTest {
     private SessionCookie session;
     @Mock
     private FlashCookie flash;
-    @Mock
-    private Lang lang;
 
     private Validation validation;
 
     @Before
     public void setUp() throws Exception {
-        validation = new ValidationImpl(lang);
+        validation = new ValidationImpl();
         when(context.getSessionCookie()).thenReturn(session);
         when(context.getFlashCookie()).thenReturn(flash);
         when(context.getValidation()).thenReturn(validation);
@@ -425,18 +422,63 @@ public class ControllerMethodInvokerTest {
     public void validationFailedRegex() {
         validateJSR303(buildDto("regex!!!", "length", 5));
         assertTrue(context.getValidation().hasViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertTrue(context.getValidation().getBeanViolations().get(0).field
+                .contentEquals("regex"));
     }
 
     @Test
     public void validationFailedLength() {
         validateJSR303(buildDto("regex", "length - too long", 5));
         assertTrue(context.getValidation().hasViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertTrue(context.getValidation().getBeanViolations().get(0).field
+                .contentEquals("length"));
     }
 
     @Test
     public void validationFailedRange() {
         validateJSR303(buildDto("regex", "length", 25));
         assertTrue(context.getValidation().hasViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertTrue(context.getValidation().getBeanViolations().get(0).field
+                .contentEquals("range"));
+    }
+
+    @Test
+    public void validationFailedWithThreeFields() {
+        validateJSR303(buildDto("regex!!!", "length is now tooooo loooong", 25));
+        assertTrue(context.getValidation().hasViolations());
+        assertTrue(context.getValidation().hasBeanViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 3);
+
+        for (int i = 0; i < context.getValidation().getBeanViolations().size(); i++) {
+            String fieldName = context.getValidation().getBeanViolations().get(i).field;
+            assertTrue(fieldName.contentEquals("regex") || fieldName.contentEquals("length")
+                    || fieldName.contentEquals("range"));
+        }
+
+    }
+
+    @Test
+    public void validationFailedWithTwoAnnotations() {
+        validateJSR303(buildDto("regex!!! which is also too long", "length", 5));
+        assertTrue(context.getValidation().hasViolations());
+        assertTrue(context.getValidation().hasBeanViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 2);
+
+        for (int i = 0; i < context.getValidation().getBeanViolations().size(); i++) {
+            String fieldName = context.getValidation().getBeanViolations().get(i).field;
+            assertTrue(fieldName.contentEquals("regex"));
+        }
+
+        String message0 =
+                context.getValidation().getBeanViolations().get(0).constraintViolation
+                        .getMessageKey();
+        String message1 =
+                context.getValidation().getBeanViolations().get(1).constraintViolation
+                        .getMessageKey();
+        assertFalse(message0.contentEquals(message1));
     }
 
     @Test
@@ -458,7 +500,7 @@ public class ControllerMethodInvokerTest {
     }
 
     private Dto buildDto(String regex, String length, int range) {
-        Dto dto = spy(new Dto());
+        Dto dto = new Dto();
         dto.regex = regex;
         dto.length = length;
         dto.range = range;
@@ -623,6 +665,7 @@ public class ControllerMethodInvokerTest {
     }
 
     public class Dto {
+        @Size(min = 1, max = 10)
         @Pattern(regexp = "[a-z]*")
         public String regex;
         @Size(min = 5, max = 10)

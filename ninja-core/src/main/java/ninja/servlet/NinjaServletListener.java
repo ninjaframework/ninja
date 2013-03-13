@@ -1,6 +1,8 @@
-package ninja;
+package ninja.servlet;
 
 import javax.servlet.ServletContextEvent;
+
+import ninja.servlet.NinjaBootstap;
 
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
@@ -21,7 +23,7 @@ private NinjaBootstap ninjaBootstap;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ninjaBootstap = new NinjaBootstap(servletContextEvent.getServletContext());
+        ninjaBootstap = new NinjaBootstap();
         ninjaBootstap.boot();
         super.contextInitialized(servletContextEvent);
     }

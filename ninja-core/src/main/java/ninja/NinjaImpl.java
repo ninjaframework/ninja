@@ -21,6 +21,7 @@ import ninja.lifecycle.LifecycleService;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import ninja.servlet.ContextImpl;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
 

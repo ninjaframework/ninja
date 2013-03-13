@@ -19,7 +19,6 @@ package controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.FormObject;
 import models.Contact;
 import ninja.Context;
 import ninja.Result;
@@ -58,7 +57,7 @@ public class ApplicationController {
         return Results.html();
 
     }
-    
+
     public Result testPage() {
         return Results.html();
 
@@ -88,11 +87,11 @@ public class ApplicationController {
 
     public Result validation(Validation validation,
                              @Param("email") @Required String email) {
+
         if (validation.hasViolations()) {
-            return Results.contentType("text/plain").render(
-                    validation.getFieldViolationMessage("email", "en"));
+            return Results.json(validation.getFieldViolations("email"));
         } else {
-            return Results.contentType("text/plain").render(email);
+            return Results.json(email);
         }
     }
 
@@ -110,7 +109,7 @@ public class ApplicationController {
     }
 
     public Result contactForm(Context context) {
-       
+
         return Results.html();
 
     }
@@ -120,7 +119,7 @@ public class ApplicationController {
         // templating engine.
         return Results.html().render(contact);
     }
-    
+
     public Result htmlEscaping(Context context) {
 
         // just an example of html escaping in action.
@@ -133,6 +132,6 @@ public class ApplicationController {
 
         return Results.html(renderMap);
 
-    }   
+    }
 
 }

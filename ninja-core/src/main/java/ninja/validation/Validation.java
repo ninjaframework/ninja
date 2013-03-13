@@ -21,14 +21,23 @@ import java.util.List;
 import com.google.inject.ImplementedBy;
 
 /**
- * Validation context
+ * This interface means the validation context (implemented by {@link ValidationImpl}) and can be injected in your
+ * controller method.
+ * There are several types of violations that can occur: field violations (on controller method fields), bean violations
+ * (on an injected beans field) or general violations (deprecated). A controller using this validation can have
+ * violations on his
+ * parameters or, if you use a injected data container like a DTO or bean, you may have violations inside this object.
+ * Each violation on a field (parameter or in an annotated bean) results in a {@link FieldViolation}. This makes it
+ * possible to validate all controller parameters at once. If an error appears while validating the controller
+ * method parameters, it results in a violation which you can get using getFieldViolations().
+ * If your injected bean contains violations, you should use getBeanViolations().
  * 
- * @author James Roper
+ * @author James Roper, Philip Sommer
  */
 @ImplementedBy(ValidationImpl.class)
 public interface Validation {
     /**
-     * Whether the validation context has violations
+     * Whether the validation context has violations (including field and bean violations)
      * 
      * @return True if it does
      */
@@ -57,28 +66,8 @@ public interface Validation {
      * @param constraintViolation
      *            The constraint violation
      */
+    @Deprecated
     void addViolation(ConstraintViolation constraintViolation);
-
-    /**
-     * Get the voilation for the given field
-     * 
-     * @param field
-     *            The field
-     * @return The constraint violation, or null if no constraint violation was
-     *         found
-     */
-    ConstraintViolation getFieldConstraintViolation(String field);
-
-    /**
-     * Get the formatted violation message for the given field
-     * 
-     * @param field
-     *            The field
-     * @param locale
-     *            The language to get the message
-     * @return The message, or null if there was no violation
-     */
-    String getFieldViolationMessage(String field, String language);
 
     /**
      * Get a complete list of all field violations. This list DOES NOT contain general violations
@@ -89,11 +78,21 @@ public interface Validation {
     List<FieldViolation> getFieldViolations();
 
     /**
+     * Get a complete list of field violations for a specified field. This list DOES NOT contain
+     * general violations
+     * (use getGeneralViolations() instead).
+     * 
+     * @return A List of FieldViolation-objects
+     */
+    List<FieldViolation> getFieldViolations(String fieldName);
+
+    /**
      * Get all general constraint violations. This list does not contain any specific field
      * violation (use getFieldViolations() instead).
      * 
      * @return The list of general violations.
      */
+    @Deprecated
     List<ConstraintViolation> getGeneralViolations();
 
     /**
@@ -102,5 +101,33 @@ public interface Validation {
      * @param fieldViolation
      */
     void addFieldViolation(FieldViolation fieldViolation);
+
+    /**
+     * Add a bean violation. A bean, like a DTO consists of several fields which are validated. Each
+     * validation error of a dto-field results in a field-violation for that bean.
+     * Note: For now, you can only have one bean in your controller method signature, so this is explicit.
+     * 
+     * @param beanName maybe the name of your dto
+     * @param fieldViolation the FieldViolation consisting of a cinstraintViolation and the fields
+     *            name
+     */
+    void addBeanViolation(FieldViolation fieldViolation);
+
+    /**
+     * Whether any violation occured while validating your beans
+     * Note: For now, you can only have one bean in your controller method signature, so this is explicit.
+     * 
+     * @return true if there are any, false if none
+     */
+    boolean hasBeanViolations();
+
+    /**
+     * Get all bean validations for that bean.
+     * Note: For now, you can only have one bean in your controller method signature, so this is explicit.
+     * 
+     * @param beanName
+     * @return A list of field violations
+     */
+    List<FieldViolation> getBeanViolations();
 
 }

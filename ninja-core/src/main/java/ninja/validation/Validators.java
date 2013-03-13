@@ -23,12 +23,13 @@ import javax.validation.ValidatorFactory;
 
 /**
  * Built in validators
- * 
+ *
  * @author James Roper
  */
 public class Validators {
 
     public static class JSRValidator implements Validator<Object> {
+
 
         @Override
         public void validate(Object value, String field, Validation validation) {
@@ -41,10 +42,14 @@ public class Validators {
                     .getValidator();
             Set<javax.validation.ConstraintViolation<Object>> violations = validator
                     .validate(value);
+
             for (javax.validation.ConstraintViolation<Object> violation : violations) {
-                validation.addViolation(ninja.validation.ConstraintViolation
-                        .create(violation.getMessage(),
-                                violation.getInvalidValue()));
+                ConstraintViolation constraintViolation =
+                        ConstraintViolation.create(violation.getMessage(), violation
+                                .getInvalidValue());
+
+                validation.addBeanViolation(new FieldViolation(violation
+                        .getPropertyPath().toString(), constraintViolation));
             }
         }
 

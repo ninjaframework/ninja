@@ -35,8 +35,8 @@ Making a Ninja release
 
 2) Release to central maven repo
 
-- mvn release:prepare
 - mvn release:clean
+- mvn release:prepare
 - mvn release:perform
 - Log into http://oss.sonatype.org and release the packages
 
