@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import ninja.utils.MimeTypes;
+import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,15 +85,15 @@ public class AssetsController {
                         }
 
                         // finalize headers:
-                        context.finalizeHeaders(result);
+                        ResponseStreams responseStreams 
+                            = context.finalizeHeaders(result);
 
                         ByteStreams.copy(
                                 this.getClass()
                                         .getClassLoader()
                                         .getResourceAsStream(
                                                 ASSETS_PREFIX + finalName),
-                                context.getHttpServletResponse()
-                                        .getOutputStream());
+                                responseStreams.getOutputStream());
 
                     } catch (FileNotFoundException e) {
                         logger.error("error streaming file", e);
