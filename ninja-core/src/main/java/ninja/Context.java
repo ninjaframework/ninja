@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 the original author or authors.
+ * Copyright (C) 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -462,5 +462,19 @@ public interface Context {
      * @return the charset that is acceptable for the client
      */
     String getAcceptCharset();
+    
+   /**
+    *
+    * Returns the name of the HTTP method with which this 
+    * request was made, for example, GET, POST, or PUT.
+    * Same as the value of the CGI variable REQUEST_METHOD.
+    *
+    * @return a <code>String</code> 
+    *        specifying the name
+    *        of the method with which
+    *        this request was made (eg GET, POST, PUT...)
+    *
+    */
+    String getMethod();
 
 }

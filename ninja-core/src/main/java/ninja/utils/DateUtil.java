@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 the original author or authors.
+ * Copyright (C) 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -58,6 +59,21 @@ public class DateUtil {
      */
     public static String formatForHttpHeader(Long unixTime) {
         return httpHeaderDateFormat.format(new Date(unixTime));
+    }
+    
+    
+    /**
+     * Can be used to parse http times. For instance something like a http header
+     * Date: Tue, 26 Mar 2013 13:47:13 GMT
+     * 
+     * @param httpDateFormat in http format: Date: Tue, 26 Mar 2013 13:47:13 GMT
+     * @return A nice "Date" object containing that http timestamp.
+     * @throws ParseException If something goes wrong.
+     */
+    public static Date parseHttpDateFormat(String httpDateFormat) throws ParseException{
+               
+        return httpHeaderDateFormat.parse(httpDateFormat);
+
     }
 
 }

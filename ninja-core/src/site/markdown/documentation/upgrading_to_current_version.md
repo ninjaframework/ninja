@@ -4,8 +4,8 @@ Upgrading to latest Ninja
 1.2
 ---
 
-* Please use "ninja.Messages" instead of "ninja.Lang" for getting messages.
-* Your web.xml must be adapted and should resemble:
+ * Please use "ninja.Messages" instead of "ninja.Lang" for getting messages.
+ * Your web.xml must be adapted and should resemble:
 
     <web-app xmlns="http://java.sun.com/xml/ns/javaee"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

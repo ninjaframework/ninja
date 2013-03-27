@@ -1,4 +1,4 @@
-Version 1.1
-===========
+Version X
+=========
 
-Not yet decided.
+You decide by contributing :)

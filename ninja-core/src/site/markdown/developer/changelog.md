@@ -1,13 +1,14 @@
-Version 1.1.x (current)
-=======================
+Version 1.2
+===========
 
- * PLZ ADD YOUR CHANGES HERE :)
  * Fixes in Validation (phil)
  * Validation for controller parameter fields as well as validation for injected beans (phil)
- * Servelt-Ninja bridge - support for loading Servlet Filters and Servlets using ServletModule (zoza)
+ * Servlet-Ninja bridge - support for loading Servlet Filters and Servlets using ServletModule (zoza)
  * Cleaner cookie handling (removed dependencies servlet cookies) (ra)
  * Support for force-setting default language via NINJA_LANG cookie (ra)
- * Messages stuff moved from Lang to Message (cleaner)
+ * Messages stuff moved from Lang to Message (ra)
+ * ETag and http-cache header support for static assets (AssetsController) (ra).
+ * Context now supports getMethod function to know the http request method from the context (ra).
 
 
 Version 1.1

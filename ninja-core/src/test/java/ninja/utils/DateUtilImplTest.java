@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 the original author or authors.
+ * Copyright (C) 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,14 @@ public class DateUtilImplTest {
         //some simple tests:
         assertEquals("Thu, 01 Jan 1970 00:00:00 GMT", DateUtil.formatForHttpHeader(0L));
         assertEquals("Wed, 05 Sep 2012 09:57:57 GMT", DateUtil.formatForHttpHeader(1346839077523L));
+
+    }
+    
+    @Test
+    public void testParseHttpDateFormat() throws Exception {
+        //some simple tests:
+        assertEquals(new Date(0L).toString(), DateUtil.parseHttpDateFormat("Thu, 01 Jan 1970 00:00:00 GMT").toString());
+        assertEquals(new Date(1346839077523L).toString(), DateUtil.parseHttpDateFormat("Wed, 05 Sep 2012 09:57:57 GMT").toString());
 
     }
 }

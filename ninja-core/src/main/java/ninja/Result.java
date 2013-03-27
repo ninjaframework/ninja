@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 the original author or authors.
+ * Copyright (C) 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ public class Result {
     public static int SC_301_MOVED_PERMANENTLY = 301;
     public static int SC_302_FOUND = 302;
     public static int SC_303_SEE_OTHER = 303;
+    public static int SC_304_NOT_MODIFIED = 304;
     public static int SC_307_TEMPORARY_REDIRECT = 307;
 
     public static int SC_400_BAD_REQUEST = 400;
