@@ -11,6 +11,7 @@ ninja.postoffice.commonsmail
 ninja.postoffice.guice
 ninja.postoffice.mock
 ninja.scheduler
+ninja.servlet
 ninja.session
 ninja.template
 ninja.utils
