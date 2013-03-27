@@ -19,10 +19,16 @@ package ninja;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
+import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +45,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class AssetsController {
 
-    private Logger logger = LoggerFactory.getLogger(AssetsController.class);
+    private static Logger logger = LoggerFactory
+            .getLogger(AssetsController.class);
 
     /** Used as seen by http request */
     final String PUBLIC_PREFIX = "/assets/";
@@ -49,8 +56,13 @@ public class AssetsController {
 
     private final MimeTypes mimeTypes;
 
+    private HttpCacheToolkit httpCacheToolkit;
+
     @Inject
-    public AssetsController(MimeTypes mimeTypes) {
+    public AssetsController(HttpCacheToolkit httpCacheToolkit,
+                            MimeTypes mimeTypes) {
+        
+        this.httpCacheToolkit = httpCacheToolkit;
         this.mimeTypes = mimeTypes;
 
     }
@@ -64,36 +76,53 @@ public class AssetsController {
                 String finalName = context.getRequestPath().replaceFirst(
                         PUBLIC_PREFIX, "");
 
-                InputStream inputStream = this.getClass().getClassLoader()
-                        .getResourceAsStream(ASSETS_PREFIX + finalName);
+                URL url = this.getClass().getClassLoader()
+                        .getResource(ASSETS_PREFIX + finalName);
 
                 // check if stream exists. if not print a notfound exception
-                if (inputStream == null) {
+                if (url == null) {
 
-                    context.finalizeHeaders(Results.status(404));
+                    context.finalizeHeaders(Results.notFound());
 
                 } else {
+
                     try {
-                        result.status(200);
 
-                        // try to set the mimetype:
-                        String mimeType = mimeTypes.getContentType(context,
-                                finalName);
+                        URLConnection urlConnection = url.openConnection();
+                        Long lastModified = urlConnection.getLastModified();
+                        httpCacheToolkit.addEtag(context, result, lastModified);
 
-                        if (!mimeType.isEmpty()) {
-                            result.contentType(mimeType);
-                        }
+                        if (result.getStatusCode() == Result.SC_304_NOT_MODIFIED) {
+                            // Do not stream anything out. Simply return 304
+                            context.finalizeHeaders(result);
+                            
+                        } else {
 
-                        // finalize headers:
-                        ResponseStreams responseStreams 
-                            = context.finalizeHeaders(result);
+                            result.status(200);
 
-                        ByteStreams.copy(
-                                this.getClass()
-                                        .getClassLoader()
-                                        .getResourceAsStream(
-                                                ASSETS_PREFIX + finalName),
-                                responseStreams.getOutputStream());
+                            // Try to set the mimetype:
+                            String mimeType = mimeTypes.getContentType(context,
+                                    finalName);
+
+                            if (!mimeType.isEmpty()) {
+                                result.contentType(mimeType);
+                            }
+
+                            // finalize headers:
+                            ResponseStreams responseStreams = context
+                                    .finalizeHeaders(result);
+
+                            InputStream inputStream = urlConnection
+                                    .getInputStream();
+                            OutputStream outputStream = responseStreams
+                                    .getOutputStream();
+
+                            ByteStreams.copy(inputStream, outputStream);
+
+                            IOUtils.closeQuietly(inputStream);
+                            IOUtils.closeQuietly(outputStream);
+
+                        } 
 
                     } catch (FileNotFoundException e) {
                         logger.error("error streaming file", e);

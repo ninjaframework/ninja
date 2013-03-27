@@ -37,6 +37,7 @@ public class Result {
     public static int SC_301_MOVED_PERMANENTLY = 301;
     public static int SC_302_FOUND = 302;
     public static int SC_303_SEE_OTHER = 303;
+    public static int SC_304_NOT_MODIFIED = 304;
     public static int SC_307_TEMPORARY_REDIRECT = 307;
 
     public static int SC_400_BAD_REQUEST = 400;

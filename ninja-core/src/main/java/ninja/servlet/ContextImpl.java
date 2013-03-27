@@ -494,6 +494,11 @@ public class ContextImpl implements Context {
         return validation;
     }
     
+    @Override
+    public String getMethod() {
+        return httpServletRequest.getMethod();
+    }
+    
     
     /**
      * When a servlet engine gets a content type like:
@@ -524,4 +529,7 @@ public class ContextImpl implements Context {
         
         
     }
+    
+    
+
 }

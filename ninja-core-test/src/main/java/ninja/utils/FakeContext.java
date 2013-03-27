@@ -355,4 +355,9 @@ public class FakeContext implements Context {
     public List<Cookie> getCookies() {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
+
+    @Override
+    public String getMethod() {
+        throw new UnsupportedOperationException("Not supported in fake context");
+    }
 }

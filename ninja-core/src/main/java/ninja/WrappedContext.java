@@ -224,4 +224,9 @@ public class WrappedContext implements Context {
     public List<Cookie> getCookies() {
         return wrapped.getCookies();
     }
+
+    @Override
+    public String getMethod() {
+        return wrapped.getMethod();
+    }
 }

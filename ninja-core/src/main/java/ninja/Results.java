@@ -16,8 +16,6 @@
 
 package ninja;
 
-import ninja.lifecycle.Start;
-import ninja.utils.DateUtil;
 
 /**
  * Convenience methods for the generation of Results.

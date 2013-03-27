@@ -37,6 +37,7 @@
         	<item name="Controller" href="./documentation/controller.html"/>        	
         	<item name="Configuration" href="./documentation/application_configuration.html"/>
         	<item name="Html templating" href="./documentation/html_templating.html"/>
+        	<item name="Static assets" href="./documentation/static_assets.html"/>
         	<item name="Injection" href="./documentation/injection.html"/>
         	<item name="Filter" href="./documentation/filter.html"/>
         	<item name="Internationalization" href="./documentation/internationalization.html"/>
