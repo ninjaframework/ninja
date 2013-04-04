@@ -38,59 +38,11 @@ Deployment on Google App Engine
 [Google's App Engine] (https://developers.google.com/appengine/) is a great hosting service provided by Google.
 The really cool feature is it scales automatically. Deploy and never worry about any scaling issues - it is really that simple.
 
-Of course Ninja is fully compatible to the App Engine.
+Ninja is fully compatible to the App Engine via the ninja-appengine module.
 
-You can find a working demo project at: https://github.com/reyez/ninja/tree/develop/ninja-demo-application-app-engine .
+All information you need are at:
 
-The special parts are:
-
-1) Make sure you got a file called appengine-web.xml in your /src/main/webapp/WEB-INF directory.
-
-The contents of the file look like:
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-        <application>MY-APP-ID</application>
-        <version>2012-07-27</version>
-        <threadsafe>true</threadsafe>
-    </appengine-web-app>
-
-This is a standard descriptor of the App Engine and you can define a lot more using that descriptor. Check out the
-App Engine docs for details
-
-
-2) We need the App Engine SDK and a special way to upload stuff
-
-As we are using Maven we can use a great Maven plugin from [net.kindleit] (http://www.kindleit.net/maven_gae_plugin/usage.html).
-A minimal configuration in your pom.xml will look like:
-
-    <plugin>
-        <groupId>net.kindleit</groupId>
-        <artifactId>maven-gae-plugin</artifactId>
-        <version>0.9.4</version>
-        <dependencies>
-            <dependency>
-                <groupId>net.kindleit</groupId>
-                <artifactId>gae-runtime</artifactId>
-                <version>${gae.version}</version>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    <plugin>
-    
-After adding the plugin to your Maven build your have to execute
-
-    mvn gae:unpack
-    
-This will download the latest App Engine SDK automatically.
-
-Then you can call
-    
-    mvn gae:update
-    
-This will prompt you for your username / password and upload your Ninja application
-to Google's cloud. Done.
-
+    https://github.com/reyez/ninja-appengine/
 
 
 Heroku support
