@@ -1,3 +1,8 @@
+Version 1.3
+===========
+ * Fix for byte[] get a forced octet stream when content type is already explicitly set (qubic)
+
+
 Version 1.2
 ===========
 

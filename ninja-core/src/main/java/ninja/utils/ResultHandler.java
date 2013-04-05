@@ -121,7 +121,11 @@ public class ResultHandler {
             } else if (result.getRenderable() instanceof byte[]) {
                 // Simply write it out
                 try {
-                    result.contentType(Result.APPLICATION_OCTET_STREAM);
+                    // if content type not explicitly set, application/octet-stream 
+                    // is a good default value:
+                    if (result.getContentType() == null) {
+                        result.contentType(Result.APPLICATION_OCTET_STREAM);
+                    }
                     ResponseStreams responseStreams = context
                             .finalizeHeaders(result);
                     responseStreams.getOutputStream().write(
