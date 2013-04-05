@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import java.io.OutputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -48,6 +49,9 @@ public class ResultHandlerTest {
     @Mock
     private ResponseStreams responseStreams;
 
+	@Mock
+	private OutputStream outputStream;
+	
     @Mock
     private Writer writer;
 
@@ -61,6 +65,7 @@ public class ResultHandlerTest {
     public void init() throws Exception {
         
         resultHandler = new ResultHandler(templateEngineManager);
+		when(responseStreams.getOutputStream()).thenReturn(outputStream);
         when(responseStreams.getWriter()).thenReturn(writer);
         when(context.finalizeHeaders(any(Result.class))).thenReturn(responseStreams);
         when(templateEngineManager.getTemplateEngineForContentType(
@@ -136,4 +141,14 @@ public class ResultHandlerTest {
         assertEquals(contentType, result.getContentType());
     }
 
+	@Test
+	public void testRenderPictureFromBytes() {
+		final byte[] toRender = new byte[]{1,2,3};
+        final String contentType = "image/png";
+        Result result = Results.ok();
+        result.contentType(contentType);
+        result.render(toRender);
+        resultHandler.handleResult(result, context);
+        assertEquals(contentType, result.getContentType());
+	}
 }
