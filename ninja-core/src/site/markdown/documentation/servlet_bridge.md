@@ -33,7 +33,7 @@ The bst way to add servlets and filters to Ninja is to use Ninja's SevletModule 
             bind(NinjaServletDispatcher.class).asEagerSingleton();
         
             filter("/*").through(LegacyServletFilter.class);
-            filter("/*").through(NinjaServletDispatcher.class);
+            serve("/*").with(NinjaServletDispatcher.class);
         }
     
     }
