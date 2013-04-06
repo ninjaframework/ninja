@@ -1,7 +1,8 @@
-Version 1.3
+Version 1.2.1
 ===========
  * Fix for byte[] get a forced octet stream when content type is already explicitly set (qubic)
-
+ * tiny fix typos in servlet bridge documentation (ra)
+ * bugfix => TestServer in NinjaTest was in wrong mode by default (ra)
 
 Version 1.2
 ===========
