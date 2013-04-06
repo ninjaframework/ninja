@@ -57,6 +57,9 @@ public class NinjaTestServer {
             con.setPort(port);
             server.addConnector(con);
             Context context = new Context(server, "/");
+            
+            // Set testmode for Ninja:
+            System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
 
             // We are using an embeded jetty for quick server testing. The
             // problem is
