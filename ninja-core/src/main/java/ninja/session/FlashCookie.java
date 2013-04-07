@@ -16,7 +16,6 @@
 
 package ninja.session;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import ninja.Context;

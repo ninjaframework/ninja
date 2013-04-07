@@ -61,10 +61,12 @@ public interface Context {
 
     /**
      * The Content-Type header field indicates the media type of the request
-     * body sent to the recipient. E.g. Content-Type: text/html;
-     * charset=ISO-8859-4 {@link www.w3.org
-     * /Protocols/rfc2616/rfc2616-sec14.html}
-     * 
+     * body sent to the recipient. E.g. {@code Content-Type: text/html;
+     * charset=ISO-8859-4}
+     *
+     * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html"
+     *      >http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html</a>
+     *
      * @return the content type of the incoming request.
      */
     String getRequestContentType();
@@ -141,8 +143,6 @@ public interface Context {
     /**
      * Get all cookies from the context.
      * 
-     * @param cookieName
-     *            Name of the cookie to retrieve
      * @return the cookie with that name or null.
      */
     List<Cookie> getCookies();
@@ -346,9 +346,6 @@ public interface Context {
      * Finalizing the headers copies all stuff into the headers.
      * 
      * After finalizing the headers you can access the responseStreams.
-     * 
-     * @param result
-     * @return
      */
     ResponseStreams finalizeHeaders(Result result);
 
@@ -417,8 +414,10 @@ public interface Context {
      * types which are acceptable for the response. Accept headers can be used
      * to indicate that the request is specifically limited to a small set of
      * desired types, as in the case of a request for an in-line image.
-     * {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
      * 
+     * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html"
+     *      >http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html</a>
+     *
      * @return one of the {@see Result} mime types that is acceptable for the
      *         client or {@see Result.TEXT_HTML} if not set
      */
@@ -430,8 +429,10 @@ public interface Context {
      * 
      * The Accept-Encoding request-header field is similar to Accept, but
      * restricts the content-codings that are acceptable in the response.
-     * {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
      * 
+     * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html"
+     *      >http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html</a>
+     *
      * @return the encoding that is acceptable for the client
      */
     String getAcceptEncoding();
@@ -442,8 +443,11 @@ public interface Context {
      * 
      * The Accept-Language request-header field is similar to Accept, but
      * restricts the set of natural languages that are preferred as a response
-     * to the request. {@link www.w3.org/Protocols/rfc2616/rfc2616-sec14.html}
+     * to the request.
      * 
+     * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html"
+     *      >http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html</a>
+     *
      * @return the language that is acceptable for the client
      */
     String getAcceptLanguage();
@@ -456,9 +460,11 @@ public interface Context {
      * character sets are acceptable for the response. This field allows clients
      * capable of understanding more comprehensive or special- purpose character
      * sets to signal that capability to a server which is capable of
-     * representing documents in those character sets. {@link www.w3.org
-     * /Protocols/rfc2616/rfc2616-sec14.html}
+     * representing documents in those character sets.
      * 
+     * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html"
+     *      >http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html</a>
+     *
      * @return the charset that is acceptable for the client
      */
     String getAcceptCharset();
