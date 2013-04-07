@@ -55,7 +55,7 @@ import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 
-public class ContextImpl implements Context {
+public class ContextImpl implements Context.Impl {
 
     private HttpServletRequest httpServletRequest;
 
@@ -104,16 +104,9 @@ public class ContextImpl implements Context {
 
     }
 
+    @Override
     public void setRoute(Route route) {
         this.route = route;
-    }
-
-    public HttpServletRequest getHttpServletRequest() {
-        return httpServletRequest;
-    }
-
-    public HttpServletResponse getHttpServletResponse() {
-        return this.httpServletResponse;
     }
 
     @Override
@@ -248,7 +241,7 @@ public class ContextImpl implements Context {
     @Override
     public Cookie getCookie(String cookieName) {
         
-        javax.servlet.http.Cookie[] cookies = getHttpServletRequest().getCookies();
+        javax.servlet.http.Cookie[] cookies = httpServletRequest.getCookies();
         javax.servlet.http.Cookie servletCookie = CookieHelper.getCookie(cookieName, cookies);
         
         if (servletCookie == null) {
@@ -272,8 +265,8 @@ public class ContextImpl implements Context {
     @Override
     public List<Cookie> getCookies() {
         
-        javax.servlet.http.Cookie[] servletCookies = getHttpServletRequest().getCookies();
         
+        javax.servlet.http.Cookie[] servletCookies = httpServletRequest.getCookies();
         List<Cookie> ninjaCookies = new ArrayList<Cookie>();
         
         for (javax.servlet.http.Cookie cookie : servletCookies) {
@@ -290,7 +283,7 @@ public class ContextImpl implements Context {
     @Deprecated
     @Override
     public String getRequestUri() {
-        return getHttpServletRequest().getRequestURI();
+        return httpServletRequest.getRequestURI();
     }
 
     public void handleAsync() {

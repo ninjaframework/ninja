@@ -20,9 +20,6 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.ResponseStreams;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemIterator;
 
@@ -56,18 +53,6 @@ public class WrappedContext implements Context {
     @Override
     public SessionCookie getSessionCookie() {
         return wrapped.getSessionCookie();
-    }
-
-    @Override
-    @Deprecated
-    public HttpServletRequest getHttpServletRequest() {
-        return wrapped.getHttpServletRequest();
-    }
-
-    @Override
-    @Deprecated
-    public HttpServletResponse getHttpServletResponse() {
-        return wrapped.getHttpServletResponse();
     }
 
     @Override

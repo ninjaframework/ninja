@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import ninja.Context;
 import ninja.Cookie;
@@ -123,16 +121,6 @@ public class FakeContext implements Context {
     @Override
     public SessionCookie getSessionCookie() {
         return sessionCookie;
-    }
-
-    @Override
-    public HttpServletRequest getHttpServletRequest() {
-        throw new UnsupportedOperationException("Not supported in fake context");
-    }
-
-    @Override
-    public HttpServletResponse getHttpServletResponse() {
-        throw new UnsupportedOperationException("Not supported in fake context");
     }
 
     public FakeContext addParameter(String key, String value) {

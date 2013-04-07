@@ -22,9 +22,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.bodyparser.BodyParserEngineXml;
@@ -36,6 +33,10 @@ import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {
+
+    interface Impl extends Context {
+        void setRoute(Route route);
+    }
 
     /**
      * Content-Type: ... parameter for response.
@@ -154,37 +155,6 @@ public interface Context {
      * @return the cookie with that name or null.
      */
     List<Cookie> getCookies();
-
-    /**
-     * Get the underlying HTTP servlet request
-     * 
-     * @Deprecated because it directly refers to the servlet api. And usually we
-     *             don't want that.
-     * 
-     *             If you are missing something you cannot find in context
-     *             please suggest it. getHttpServletResponse will be removed at
-     *             some point.
-     * 
-     * @return The HTTP servlet request
-     */
-    @Deprecated
-    HttpServletRequest getHttpServletRequest();
-
-    /**
-     * Get the underlying HTTP servlet response
-     * 
-     * @Deprecated because it directly refers to the servlet api. And usually we
-     *             don't want that.
-     * 
-     *             If you are missing something you cannot find in context
-     *             please suggest it. getHttpServletResponse will be removed at
-     *             some point.
-     * 
-     * @return The HTTP servlet response
-     * 
-     */
-    @Deprecated
-    HttpServletResponse getHttpServletResponse();
 
     /**
      * Get the parameter with the given key from the request. The parameter may
