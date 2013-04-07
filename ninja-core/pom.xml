@@ -88,18 +88,6 @@
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-servlet</artifactId>
-			<version>3.0</version>
-		</dependency>
-		<!-- Servlet api is used to run Ninja inside servlet containers -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- We use gson for rendering jsons: -->
 		<dependency>

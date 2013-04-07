@@ -36,6 +36,7 @@
 
 	<modules>
 		<module>ninja-core</module>
+		<module>ninja-servlet</module>
 		<module>ninja-core-test</module>
 		<module>ninja-core-demo</module>
 	</modules>
