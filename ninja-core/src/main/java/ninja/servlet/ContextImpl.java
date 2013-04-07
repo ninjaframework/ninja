@@ -35,8 +35,8 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
-import ninja.async.AsyncStrategy;
-import ninja.async.AsyncStrategyFactoryHolder;
+import ninja.servlet.async.AsyncStrategy;
+import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
@@ -44,7 +44,6 @@ import ninja.session.SessionCookie;
 import ninja.utils.HttpHeaderUtils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResponseStreams;
-import ninja.utils.ResponseStreamsServlet;
 import ninja.utils.ResultHandler;
 import ninja.validation.Validation;
 
@@ -322,17 +321,17 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        
+
         enforeCorrectEncodingOfRequest();
-        
+
         return httpServletRequest.getInputStream();
     }
 
     @Override
     public BufferedReader getReader() throws IOException {
-        
+
         enforeCorrectEncodingOfRequest();
-        
+
         return httpServletRequest.getReader();
     }
 
