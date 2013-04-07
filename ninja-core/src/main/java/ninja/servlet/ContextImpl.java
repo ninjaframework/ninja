@@ -41,7 +41,6 @@ import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.utils.CookieHelper;
 import ninja.utils.HttpHeaderUtils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResponseStreams;
@@ -265,6 +264,10 @@ public class ContextImpl implements Context {
 
     }
     
+    @Override
+    public boolean hasCookie(String cookieName) {
+        return CookieHelper.getCookie(cookieName, httpServletRequest.getCookies()) != null;
+    }
 
     @Override
     public List<Cookie> getCookies() {
@@ -351,8 +354,8 @@ public class ContextImpl implements Context {
         }
 
         // copy ninja cookies / flash and session
-        flashCookie.save(this);
-        sessionCookie.save(this);
+        flashCookie.save(this, result);
+        sessionCookie.save(this, result);
 
         // copy cookies
         for (ninja.Cookie cookie : result.getCookies()) {

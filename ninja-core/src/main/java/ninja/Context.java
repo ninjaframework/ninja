@@ -139,7 +139,15 @@ public interface Context {
      */
     Cookie getCookie(String cookieName);
     
-    
+    /**
+     * Checks whether the context contains a given cookie.
+     *
+     * @param cookieName
+     *            Name of the cookie to check for
+     * @return {@code true} if the context has a cookie with that name.
+     */
+    boolean hasCookie(String cookieName);
+
     /**
      * Get all cookies from the context.
      * 

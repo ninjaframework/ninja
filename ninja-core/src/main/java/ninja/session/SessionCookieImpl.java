@@ -24,10 +24,9 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
-
 import ninja.Context;
-import ninja.utils.CookieHelper;
+import ninja.Cookie;
+import ninja.Result;
 import ninja.utils.Crypto;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
@@ -92,10 +91,9 @@ public class SessionCookieImpl implements SessionCookie {
 		try {
 
 			// get the cookie that contains session information:
-			Cookie cookie = CookieHelper.getCookie(
+			Cookie cookie = context.getCookie(
 					applicationCookiePrefix
-			                + ninja.utils.NinjaConstant.SESSION_SUFFIX,
-			        context.getHttpServletRequest().getCookies());
+			                + ninja.utils.NinjaConstant.SESSION_SUFFIX);
 
 			// check that the cookie is not empty:
 			if (cookie != null && cookie.getValue() != null
@@ -183,7 +181,7 @@ public class SessionCookieImpl implements SessionCookie {
 	}
 
     @Override
-	public void save(Context context) {
+	public void save(Context context, Result result) {
 
         // Don't save the cookie nothing has changed, and if we're not expiring or
         // we are expiring but we're only updating if the session changes
@@ -195,19 +193,16 @@ public class SessionCookieImpl implements SessionCookie {
 		}
 
         if (isEmpty()) {
-            Cookie sessionCookie = CookieHelper.getCookie(
-                    applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
-                    context.getHttpServletRequest().getCookies());
-
             // It is empty, but there was a session coming in, therefore clear it
-            if (sessionCookie != null) {
+            if (context.hasCookie(applicationCookiePrefix
+                    + NinjaConstant.SESSION_SUFFIX)) {
 
-                Cookie expiredSessionCookie = new Cookie(applicationCookiePrefix
-                        + NinjaConstant.SESSION_SUFFIX, null);
+                Cookie.Builder expiredSessionCookie = Cookie.builder(
+                    applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX, null);
                 expiredSessionCookie.setPath("/");
                 expiredSessionCookie.setMaxAge(0);
 
-                context.getHttpServletResponse().addCookie(expiredSessionCookie);
+                result.addCookie(expiredSessionCookie.build());
 
             }
             return;
@@ -234,9 +229,7 @@ public class SessionCookieImpl implements SessionCookie {
 
 			String sign = crypto.signHmacSha1(sessionData);
 
-			Cookie cookie;
-
-			cookie = new Cookie(applicationCookiePrefix
+			Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
 			        + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
             cookie.setPath("/");
 
@@ -246,11 +239,11 @@ public class SessionCookieImpl implements SessionCookie {
             if (sessionTransferredOverHttpsOnly != null) {
                 cookie.setSecure(sessionTransferredOverHttpsOnly);
             }
-            if (sessionHttpOnly) {
-                CookieHelper.setHttpOnly(cookie);
+            if (sessionHttpOnly != null) {
+              cookie.setHttpOnly(sessionHttpOnly);
             }
 
-			context.getHttpServletResponse().addCookie(cookie);
+			result.addCookie(cookie.build());
 
 		} catch (Exception e) {
 			throw new RuntimeException("Session serialization problem", e);

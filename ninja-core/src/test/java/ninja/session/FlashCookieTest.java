@@ -21,11 +21,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import ninja.Context;
+import ninja.Cookie;
+import ninja.Result;
+import ninja.Results;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
@@ -38,6 +37,8 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collections;
+
 @RunWith(MockitoJUnitRunner.class)
 public class FlashCookieTest {
 
@@ -45,10 +46,7 @@ public class FlashCookieTest {
     private Context context;
 
     @Mock
-    private HttpServletRequest httpServletRequest;
-
-    @Mock
-    private HttpServletResponse httpServletResponse;
+    private Result result;
 
     @Captor
     private ArgumentCaptor<Cookie> cookieCaptor;
@@ -59,9 +57,6 @@ public class FlashCookieTest {
     @Before
     public void setUp() {
 
-        when(context.getHttpServletRequest()).thenReturn(httpServletRequest);
-        when(context.getHttpServletResponse()).thenReturn(httpServletResponse);
-
         when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
                 .thenReturn("NINJA");
 
@@ -70,36 +65,21 @@ public class FlashCookieTest {
     @Test
     public void testFlashScopeDoesNothingWhenFlashCookieEmpty() {
 
-        // setup this testmethod
-        // empty cookies
-        Cookie[] emptyCookies = new Cookie[0];
-
-        // that will be returned by the httprequest...
-        when(context.getHttpServletRequest().getCookies()).thenReturn(
-                emptyCookies);
-
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 
         flashCookie.init(context);
 
         // put nothing => intentionally to check if no flash cookie will be
         // saved
-        flashCookie.save(context);
+        flashCookie.save(context, result);
 
         // no cookie should be set as the flash scope is empty...:
-        verify(httpServletResponse, never()).addCookie(
+        verify(result, never()).addCookie(
                 Matchers.any(Cookie.class));
     }
 
     @Test
     public void testFlashCookieSettingWorks() {
-        // setup this testmethod
-        // empty cookies
-        Cookie[] emptyCookies = new Cookie[0];
-
-        // that will be returned by the httprequest...
-        when(context.getHttpServletRequest().getCookies()).thenReturn(
-                emptyCookies);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 
@@ -109,10 +89,10 @@ public class FlashCookieTest {
 
         // put nothing => intentionally to check if no flash cookie will be
         // saved
-        flashCookie.save(context);
+        flashCookie.save(context, result);
 
         // a cookie will be set => hello:flashScope
-        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+        verify(result).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals("NINJA_FLASH", cookieCaptor.getValue().getName());
@@ -130,15 +110,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieWorksAndIsActiveOnlyOneTime() {
         // setup this testmethod
-        // empty cookies
-        Cookie[] oneCookie = new Cookie[1];
-
-        Cookie cookie = new Cookie("NINJA_FLASH", "%00hello%3AflashScope%00");
-        oneCookie[0] = cookie;
-
-        // that will be returned by the httprequest...
-        when(context.getHttpServletRequest().getCookies())
-                .thenReturn(oneCookie);
+        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 
@@ -150,10 +123,10 @@ public class FlashCookieTest {
         flashCookie.put("another message", "is there...");
         flashCookie.put("yet another message", "is there...");
 
-        flashCookie.save(context);
+        flashCookie.save(context, result);
 
         // a cookie will be set => hello:flashScope
-        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+        verify(result).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals("NINJA_FLASH", cookieCaptor.getValue().getName());
@@ -171,15 +144,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieClearWorks() {
         // setup this testmethod
-        // empty cookies
-        Cookie[] oneCookie = new Cookie[1];
-
-        Cookie cookie = new Cookie("NINJA_FLASH", "%00hello%3AflashScope%00");
-        oneCookie[0] = cookie;
-
-        // that will be returned by the httprequest...
-        when(context.getHttpServletRequest().getCookies())
-                .thenReturn(oneCookie);
+        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 
@@ -203,15 +169,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieClearOfOutgoingWorks() {
         // setup this testmethod
-        // empty cookies
-        Cookie[] oneCookie = new Cookie[1];
-
-        Cookie cookie = new Cookie("NINJA_FLASH", "%00hello%3AflashScope%00");
-        oneCookie[0] = cookie;
-
-        // that will be returned by the httprequest...
-        when(context.getHttpServletRequest().getCookies())
-                .thenReturn(oneCookie);
+        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 
@@ -235,15 +194,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieKeepWorks() {
         // setup this testmethod
-        // empty cookies
-        Cookie[] oneCookie = new Cookie[1];
-
-        Cookie cookie = new Cookie("NINJA_FLASH", "%00hello%3AflashScope%00");
-        oneCookie[0] = cookie;
-
-        // that will be returned by the httprequest...
-        when(context.getHttpServletRequest().getCookies())
-                .thenReturn(oneCookie);
+        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 

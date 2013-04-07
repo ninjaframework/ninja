@@ -221,6 +221,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public boolean hasCookie(String cookieName) {
+        return wrapped.hasCookie(cookieName);
+    }
+
+    @Override
     public List<Cookie> getCookies() {
         return wrapped.getCookies();
     }

@@ -19,6 +19,7 @@ package ninja.session;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.Result;
 
 import com.google.inject.ImplementedBy;
 
@@ -35,7 +36,7 @@ public interface FlashCookie {
 
     void init(Context context);
 
-    void save(Context context);
+    void save(Context context, Result result);
 
     void put(String key, String value);
 
