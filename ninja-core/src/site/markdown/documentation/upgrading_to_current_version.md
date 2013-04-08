@@ -1,6 +1,19 @@
 Upgrading to latest Ninja
 =========================
 
+1.3
+---
+
+In your project's pom.xml please replace artifactId ninja-core with ninja-servlet. 
+You end up with the following dependency:
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-servlet</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+
 1.2
 ---
 

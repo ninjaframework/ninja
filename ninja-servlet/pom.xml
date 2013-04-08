@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ninja-servlet</artifactId>
-    <name>Servlet-container support for the ninja web framework</name>
+    <name>ninja web framework servlet-container support</name>
 
     <parent>
         <groupId>org.ninjaframework</groupId>

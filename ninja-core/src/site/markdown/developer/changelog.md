@@ -3,6 +3,7 @@ Version CURRENT
 
  * Docs: Added documentation for WrappedContext / ArgumentMatchers aka Request scope (ra)
  * Docs: Added twitter account (ra) 
+ * Separation of servlet support (module ninja-servlet) from main ninja framework (tbroyer)
 
 
 Version 1.2.1
