@@ -22,8 +22,6 @@ import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.validation.Validation;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -39,8 +37,6 @@ public class ArgumentExtractors {
                 .put(Validation.class, new ValidationExtractor())
                 .put(SessionCookie.class, new SessionExtractor())
                 .put(FlashCookie.class, new FlashExtractor())
-                .put(HttpServletRequest.class, new HttpServletRequestExtractor())
-                .put(HttpServletResponse.class, new HttpServletResponseExtractor())
                 .build();
 
     public static ArgumentExtractor<?> getExtractorForType(Class<?> type) {
@@ -107,40 +103,6 @@ public class ArgumentExtractors {
         @Override
         public Class<FlashCookie> getExtractedType() {
             return FlashCookie.class;
-        }
-
-        @Override
-        public String getFieldName() {
-            return null;
-        }
-    }
-
-    public static class HttpServletRequestExtractor implements ArgumentExtractor<HttpServletRequest> {
-        @Override
-        public HttpServletRequest extract(Context context) {
-            return context.getHttpServletRequest();
-        }
-
-        @Override
-        public Class<HttpServletRequest> getExtractedType() {
-            return HttpServletRequest.class;
-        }
-
-        @Override
-        public String getFieldName() {
-            return null;
-        }
-    }
-
-    public static class HttpServletResponseExtractor implements ArgumentExtractor<HttpServletResponse> {
-        @Override
-        public HttpServletResponse extract(Context context) {
-            return context.getHttpServletResponse();
-        }
-
-        @Override
-        public Class<HttpServletResponse> getExtractedType() {
-            return HttpServletResponse.class;
         }
 
         @Override

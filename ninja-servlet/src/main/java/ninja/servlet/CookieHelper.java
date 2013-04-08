@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja.utils;
+package ninja.servlet;
 
 import javax.servlet.http.Cookie;
 import javax.validation.constraints.NotNull;

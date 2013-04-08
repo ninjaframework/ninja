@@ -35,17 +35,15 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
-import ninja.async.AsyncStrategy;
-import ninja.async.AsyncStrategyFactoryHolder;
+import ninja.servlet.async.AsyncStrategy;
+import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.utils.CookieHelper;
 import ninja.utils.HttpHeaderUtils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResponseStreams;
-import ninja.utils.ResponseStreamsServlet;
 import ninja.utils.ResultHandler;
 import ninja.validation.Validation;
 
@@ -56,7 +54,7 @@ import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 
-public class ContextImpl implements Context {
+public class ContextImpl implements Context.Impl {
 
     private HttpServletRequest httpServletRequest;
 
@@ -105,16 +103,9 @@ public class ContextImpl implements Context {
 
     }
 
+    @Override
     public void setRoute(Route route) {
         this.route = route;
-    }
-
-    public HttpServletRequest getHttpServletRequest() {
-        return httpServletRequest;
-    }
-
-    public HttpServletResponse getHttpServletResponse() {
-        return this.httpServletResponse;
     }
 
     @Override
@@ -249,7 +240,7 @@ public class ContextImpl implements Context {
     @Override
     public Cookie getCookie(String cookieName) {
         
-        javax.servlet.http.Cookie[] cookies = getHttpServletRequest().getCookies();
+        javax.servlet.http.Cookie[] cookies = httpServletRequest.getCookies();
         javax.servlet.http.Cookie servletCookie = CookieHelper.getCookie(cookieName, cookies);
         
         if (servletCookie == null) {
@@ -265,12 +256,16 @@ public class ContextImpl implements Context {
 
     }
     
+    @Override
+    public boolean hasCookie(String cookieName) {
+        return CookieHelper.getCookie(cookieName, httpServletRequest.getCookies()) != null;
+    }
 
     @Override
     public List<Cookie> getCookies() {
         
-        javax.servlet.http.Cookie[] servletCookies = getHttpServletRequest().getCookies();
         
+        javax.servlet.http.Cookie[] servletCookies = httpServletRequest.getCookies();
         List<Cookie> ninjaCookies = new ArrayList<Cookie>();
         
         for (javax.servlet.http.Cookie cookie : servletCookies) {
@@ -287,7 +282,7 @@ public class ContextImpl implements Context {
     @Deprecated
     @Override
     public String getRequestUri() {
-        return getHttpServletRequest().getRequestURI();
+        return httpServletRequest.getRequestURI();
     }
 
     public void handleAsync() {
@@ -326,17 +321,17 @@ public class ContextImpl implements Context {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        
+
         enforeCorrectEncodingOfRequest();
-        
+
         return httpServletRequest.getInputStream();
     }
 
     @Override
     public BufferedReader getReader() throws IOException {
-        
+
         enforeCorrectEncodingOfRequest();
-        
+
         return httpServletRequest.getReader();
     }
 
@@ -351,8 +346,8 @@ public class ContextImpl implements Context {
         }
 
         // copy ninja cookies / flash and session
-        flashCookie.save(this);
-        sessionCookie.save(this);
+        flashCookie.save(this, result);
+        sessionCookie.save(this, result);
 
         // copy cookies
         for (ninja.Cookie cookie : result.getCookies()) {

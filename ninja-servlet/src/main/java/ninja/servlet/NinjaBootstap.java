@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ninja.Configuration;
+import ninja.Context;
 import ninja.Ninja;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
@@ -95,6 +96,12 @@ public class NinjaBootstap {
 
             // Get base configuration of Ninja:
             modulesToLoad.add(new Configuration(ninjaProperties));
+            modulesToLoad.add(new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bind(Context.class).to(ContextImpl.class);
+                }
+            });
 
             // Load main application module:
             if (doesClassExist(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION)) {

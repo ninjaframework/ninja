@@ -17,9 +17,8 @@
 package controllers;
 
 
-import javax.servlet.http.Cookie;
-
 import ninja.Context;
+import ninja.Cookie;
 import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
@@ -44,22 +43,19 @@ public class FilterController {
 	@FilterWith(SecureFilter.class)
 	public Result filter(Context context) {
 
-		context.getHttpServletResponse().addCookie(
-				new Cookie("myname", "myvalue"));
-
 		// System.out.println("cookies: " +
 		// context.getHttpServletRequest().getCookies());
 
-		if (context.getHttpServletRequest().getCookies() != null) {
-			for (int i = 0; i < context.getHttpServletRequest().getCookies().length; i++) {
+		if (context.getCookies() != null) {
+			for (Cookie cookie : context.getCookies()) {
 				System.out.println("cookie: "
-						+ context.getHttpServletRequest().getCookies()[i]
-								.getName());
+						+ cookie.getName());
 
 			}
 		}
 
-		return Results.html();
+		return Results.html()
+                .addCookie(Cookie.builder("myname", "myvalue").build());
 
 	}
 	/**

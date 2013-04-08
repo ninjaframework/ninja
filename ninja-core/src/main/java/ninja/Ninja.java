@@ -16,8 +16,6 @@
 
 package ninja;
 
-import ninja.servlet.ContextImpl;
-
 /**
  * The main entry class for the framework.
  * 
@@ -31,9 +29,8 @@ public interface Ninja {
 
 	/**
 	 * Please ninja framwork - handle this context...
-	 * @param context
 	 */
-	void invoke(ContextImpl context);
+	void invoke(Context.Impl context);
 
     /**
      * Start the Ninja Framework

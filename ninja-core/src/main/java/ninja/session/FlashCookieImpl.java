@@ -20,14 +20,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
-
 import ninja.Context;
-import ninja.utils.CookieHelper;
+import ninja.Cookie;
+import ninja.Result;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
@@ -60,10 +60,8 @@ public class FlashCookieImpl implements FlashCookie {
     @Override
     public void init(Context context) {
         // get flash cookie:
-        Cookie[] cookies = context.getHttpServletRequest().getCookies();
-
-        Cookie flashCookie = CookieHelper.getCookie(applicationCookiePrefix
-                + ninja.utils.NinjaConstant.FLASH_SUFFIX, cookies);
+        Cookie flashCookie = context.getCookie(applicationCookiePrefix
+                + ninja.utils.NinjaConstant.FLASH_SUFFIX);
 
         if (flashCookie != null) {
             String flashData;
@@ -83,21 +81,20 @@ public class FlashCookieImpl implements FlashCookie {
     }
 
     @Override
-    public void save(Context context) {
+    public void save(Context context, Result result) {
 
         if (outgoingFlashCookieData.isEmpty()) {
 
-            if (CookieHelper.getCookie(applicationCookiePrefix
-                    + ninja.utils.NinjaConstant.FLASH_SUFFIX, context
-                    .getHttpServletRequest().getCookies()) != null) {
+            if (context.hasCookie(applicationCookiePrefix
+                    + ninja.utils.NinjaConstant.FLASH_SUFFIX)) {
 
-                Cookie cookie = new Cookie(applicationCookiePrefix
-                        + ninja.utils.NinjaConstant.FLASH_SUFFIX, "");
+                Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
+                    + NinjaConstant.FLASH_SUFFIX, "");
                 cookie.setPath("/");
                 cookie.setSecure(false);
                 cookie.setMaxAge(0);
 
-                context.getHttpServletResponse().addCookie(cookie);
+                result.addCookie(cookie.build());
 
             }
 
@@ -117,7 +114,7 @@ public class FlashCookieImpl implements FlashCookie {
                 }
                 String flashData = URLEncoder.encode(flash.toString(), "utf-8");
 
-                Cookie cookie = new Cookie(applicationCookiePrefix
+                Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
                         + ninja.utils.NinjaConstant.FLASH_SUFFIX, flashData);
                 cookie.setPath("/");
                 cookie.setSecure(false);
@@ -125,7 +122,7 @@ public class FlashCookieImpl implements FlashCookie {
                 // => Cookie will live as long as the browser is open theoretically
                 cookie.setMaxAge(-1);
 
-                context.getHttpServletResponse().addCookie(cookie);
+                result.addCookie(cookie.build());
 
             } catch (Exception e) {
                 System.err.println(e);

@@ -72,6 +72,11 @@
 			<artifactId>ninja-core</artifactId>
 			<version>1.2.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.ninjaframework</groupId>
+			<artifactId>ninja-servlet</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>

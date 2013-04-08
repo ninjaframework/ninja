@@ -19,6 +19,7 @@ package ninja.session;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.Result;
 
 import com.google.inject.ImplementedBy;
 
@@ -46,7 +47,7 @@ public interface SessionCookie {
 	 */
 	public String getAuthenticityToken();
 
-	public void save(Context context);
+	public void save(Context context, Result result);
 
 
 	public void put(String key, String value);

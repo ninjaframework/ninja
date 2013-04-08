@@ -18,7 +18,6 @@ package ninja;
 
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.guice.PostofficeProvider;
-import ninja.servlet.ContextImpl;
 import ninja.utils.LoggerProvider;
 
 import ninja.utils.NinjaProperties;
@@ -27,7 +26,6 @@ import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 
 /**
  * The basic configuration of the main ninja framework.
@@ -47,14 +45,11 @@ public class Configuration extends AbstractModule {
 
         System.setProperty("file.encoding", "utf-8");
 
-        // general classes for servlet container:
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
 
         bind(Router.class).to(RouterImpl.class).in(Singleton.class);
 
         bind(Ninja.class).to(NinjaImpl.class).in(Singleton.class);
-
-        bind(Context.class).to(ContextImpl.class);
 
         // provide logging
         bind(Logger.class).toProvider(LoggerProvider.class);
