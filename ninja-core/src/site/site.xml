@@ -39,8 +39,9 @@
         	<item name="Html templating" href="./documentation/html_templating.html"/>
         	<item name="Static assets" href="./documentation/static_assets.html"/>
         	<item name="Injection" href="./documentation/injection.html"/>
-        	<item name="Filter" href="./documentation/filter.html"/>
+        	<item name="Filter" href="./documentation/filter.html"/>        	
         	<item name="Internationalization" href="./documentation/internationalization.html"/>
+        	<item name="Request scope" href="./documentation/request_scope.html"/>
         	<item name="Scheduler" href="./documentation/scheduler.html"/>
         	<item name="Lifecycle" href="./documentation/lifecycle.html"/>
         	<item name="Validation" href="./documentation/validation.html"/>
@@ -52,6 +53,7 @@
         </menu>
         
         <menu name="Get involved">
+            <item name="@ninjaframework" href="https://twitter.com/ninjaframework"/>
             <item name="Mailing list" href="https://groups.google.com/d/forum/ninja-framework"/>
         	<item name="Source code" href="https://github.com/reyez/ninja"/>
         	<item name="Bug tracker" href="https://github.com/reyez/ninja/issues"/>
