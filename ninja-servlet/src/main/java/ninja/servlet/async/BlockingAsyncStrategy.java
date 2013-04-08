@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 
-package ninja.async;
+package ninja.servlet.async;
 
 import ninja.Context;
 import ninja.Result;
-import ninja.utils.ResultHandler;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author James Roper
  */
-public class Servlet3AsyncStrategy implements AsyncStrategy {
-    private final ResultHandler resultHandler;
-    private final HttpServletRequest request;
-
-    public Servlet3AsyncStrategy(ResultHandler resultHandler,
-                                 HttpServletRequest request) {
-        this.resultHandler = resultHandler;
-        this.request = request;
-    }
+public class BlockingAsyncStrategy implements AsyncStrategy {
+    private final CountDownLatch requestCompleteLatch = new CountDownLatch(1);
+    private final AtomicReference<Result> result = new AtomicReference<Result>();
 
     @Override
     public void handleAsync() {
-        request.startAsync();
     }
 
     @Override
     public Result controllerReturned() {
-        return null;
+        try {
+            requestCompleteLatch.await();
+            return this.result.get();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void returnResultAsync(Result result, Context context) {
-        resultHandler.handleResult(result, context);
-        request.getAsyncContext().complete();
+        this.result.set(result);
+        requestCompleteLatch.countDown();
     }
 }

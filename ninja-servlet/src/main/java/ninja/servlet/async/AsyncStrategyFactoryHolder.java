@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja.async;
+package ninja.servlet.async;
 
 import ninja.utils.ResultHandler;
 import org.slf4j.Logger;

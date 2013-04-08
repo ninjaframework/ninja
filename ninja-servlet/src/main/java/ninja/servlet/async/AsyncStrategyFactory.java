@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package ninja.async;
+package ninja.servlet.async;
 
-import ninja.Context;
-import ninja.Result;
+import ninja.utils.ResultHandler;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * The strategy for async handling
+ * Factory for creating an async strategy
+ *
+ * @author James Roper
  */
-public interface AsyncStrategy {
-    void handleAsync();
-
-    Result controllerReturned();
-
-    void returnResultAsync(Result result, Context context);
+public interface AsyncStrategyFactory {
+    AsyncStrategy createStrategy(HttpServletRequest request,
+                                 ResultHandler resultHandler);
 }
