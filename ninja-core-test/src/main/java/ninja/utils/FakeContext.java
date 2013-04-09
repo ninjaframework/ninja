@@ -20,12 +20,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
@@ -55,9 +59,9 @@ public class FakeContext implements Context {
     private SessionCookie sessionCookie;
     private List<Cookie> addedCookies = new ArrayList<Cookie>();
     private Map<String, String> cookieValues = new HashMap<String, String>();
-    private Map<String, String> params = new HashMap<String, String>();
+    private ListMultimap<String, String> params = ArrayListMultimap.create();
     private Map<String, String> pathParams = new HashMap<String, String>();
-    private Map<String, String> headers = new HashMap<String, String>();
+    private ListMultimap<String, String> headers = ArrayListMultimap.create();
     private Object body;
     private Validation validation = new ValidationImpl();
 
@@ -130,7 +134,12 @@ public class FakeContext implements Context {
 
     @Override
     public String getParameter(String key) {
-        return params.get(key);
+        return Iterables.getFirst(params.get(key), null);
+    }
+
+    @Override
+    public List<String> getParameterValues(String name) {
+        return params.get(name);
     }
 
     @Override
@@ -185,10 +194,10 @@ public class FakeContext implements Context {
 
     @Override
     public Map<String, String[]> getParameters() {
-        return Maps.transformValues(params, new Function<String, String[]>() {
+        return Maps.transformValues(params.asMap(), new Function<Collection<String>, String[]>() {
             @Override
-            public String[] apply(@Nullable String s) {
-                return new String[] {s};
+            public String[] apply(@Nullable Collection<String> s) {
+                return s.toArray(new String[s.size()]);
             }
         });
     }
@@ -200,12 +209,19 @@ public class FakeContext implements Context {
 
     @Override
     public String getHeader(String name) {
+        return Iterables.getFirst(headers.get(name), null);
+    }
+
+    @Override
+    public List<String> getHeaders(String name) {
         return headers.get(name);
     }
 
     @Override
-    public Map<String, String> getHeaders() {
-        return headers;
+    public Map<String, List<String>> getHeaders() {
+        @SuppressWarnings("rawtypes")
+        Map rawHeaders = headers.asMap();
+        return rawHeaders;
     }
 
     public FakeContext addCookieValue(String name, String value) {

@@ -1,6 +1,7 @@
 Version CURRENT
 ==============
 
+ * Headers can be multivalued, added `getParameterValues` for multivalued parameters (tbroyer)
  * Docs: Added documentation for WrappedContext / ArgumentMatchers aka Request scope (ra)
  * Docs: Added twitter account (ra) 
  * Separation of servlet support (module ninja-servlet) from main ninja framework (tbroyer)

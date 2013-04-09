@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -146,6 +148,15 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
+    public List<String> getParameterValues(String name) {
+        String[] params = httpServletRequest.getParameterValues(name);
+        if (params == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(params);
+    }
+
+    @Override
     public String getParameter(String key, String defaultValue) {
         String parameter = getParameter(key);
 
@@ -183,12 +194,17 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
-    public Map<String, String> getHeaders() {
-        Map<String, String> headers = new HashMap<String, String>();
-        Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
-        while (enumeration.hasMoreElements()) {
-            String name = enumeration.nextElement();
-            headers.put(name, httpServletRequest.getHeader(name));
+    public List<String> getHeaders(String name) {
+        return Collections.list(httpServletRequest.getHeaders(name));
+    }
+
+    @Override
+    public Map<String, List<String>> getHeaders() {
+        Map<String, List<String>> headers = new HashMap<String, List<String>>();
+        Enumeration<String> names = httpServletRequest.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            headers.put(name, Collections.list(httpServletRequest.getHeaders(name)));
         }
         return headers;
     }
