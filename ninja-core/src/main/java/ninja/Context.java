@@ -484,4 +484,44 @@ public interface Context {
     */
     String getMethod();
 
+    /**
+     * Gets an attribute value previously set by {@link #setAttribute}.
+     * <p>
+     * Attributes are shared state for the duration of the request;
+     * useful to pass values between {@link Filter filters} and
+     * controllers.
+     *
+     * @return the attribute value, or {@code null} if the attribute does
+     *         not exist
+     */
+    Object getAttribute(String name);
+
+    /**
+     * Gets an attribute value previously set by {@link #setAttribute}.
+     * <p>
+     * This is a convenience method, equivalent to:
+     * <pre><code>
+     *     return clazz.cast(getAttribute(name));
+     * </code></pre>
+     * <p>
+     * Attributes are shared state for the duration of the request;
+     * useful to pass values between {@link Filter filters} and
+     * controllers.
+     *
+     * @return the attribute value, or {@code null} if the attribute does
+     *         not exist
+     */
+    <T> T getAttribute(String name, Class<T> clazz);
+
+    /**
+     * Sets an attribute value.
+     * <p>
+     * Attributes are shared state for the duration of the request;
+     * useful to pass values between {@link Filter filters} and
+     * controllers.
+     *
+     * @see #getAttribute(String)
+     * @see #getAttribute(String, Class)
+     */
+    void setAttribute(String name, Object value);
 }

@@ -229,4 +229,19 @@ public class WrappedContext implements Context {
     public String getMethod() {
         return wrapped.getMethod();
     }
+
+    @Override
+    public Object getAttribute(String name) {
+        return wrapped.getAttribute(name);
+    }
+
+    @Override
+    public <T> T getAttribute(String name, Class<T> clazz) {
+        return wrapped.getAttribute(name, clazz);
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        wrapped.setAttribute(name, value);
+    }
 }

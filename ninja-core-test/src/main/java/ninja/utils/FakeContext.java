@@ -62,6 +62,7 @@ public class FakeContext implements Context {
     private ListMultimap<String, String> params = ArrayListMultimap.create();
     private Map<String, String> pathParams = new HashMap<String, String>();
     private ListMultimap<String, String> headers = ArrayListMultimap.create();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
     private Object body;
     private Validation validation = new ValidationImpl();
 
@@ -368,5 +369,20 @@ public class FakeContext implements Context {
     @Override
     public String getMethod() {
         throw new UnsupportedOperationException("Not supported in fake context");
+    }
+
+    @Override
+    public Object getAttribute(String name) {
+        return attributes.get(name);
+    }
+
+    @Override
+    public <T> T getAttribute(String name, Class<T> clazz) {
+        return clazz.cast(getAttribute(name));
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        attributes.put(name, value);
     }
 }
