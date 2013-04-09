@@ -31,7 +31,8 @@ contributed to Ninja. In some random order:
  * Marco Reinwarth
  * Philip Sommer
  * Liu Lujie
- * Anatoly Zozlinsky aka zoza
+ * Anatoly Zozlinsky aka zoza (zoza)
+ * Thomas Broyer (tbroyer)
 
 Do you feel you are missing from that list? Please let us know - this did not happen
 intentionally. You can even add yourself to the list:
