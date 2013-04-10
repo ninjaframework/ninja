@@ -36,6 +36,9 @@ Then in the controller:
 
 </pre>
 
+or even simpler, you can get the `UserInfo` injected into your controller method's arguments with
+`@Attribute("userinfo") UserInfo userInfo`.
+
 Context attributes are very similar to `ServletRequest`'s attribute, and are implement as such in
 `ninja-servlet`.
 
