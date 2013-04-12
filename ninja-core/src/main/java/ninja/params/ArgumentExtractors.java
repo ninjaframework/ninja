@@ -17,6 +17,7 @@
 package ninja.params;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
 import ninja.Context;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
@@ -172,6 +173,33 @@ public class ArgumentExtractors {
         @Override
         public Class<String> getExtractedType() {
             return String.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class AttributeExtractor implements ArgumentExtractor<Object> {
+        private final String key;
+        private final Class<?> attributeType;
+
+        @Inject
+        public AttributeExtractor(Attribute attribute, ArgumentClassHolder attributeType) {
+            this.key = attribute.value();
+            this.attributeType = attributeType.getArgumentClass();
+        }
+
+        @Override
+        public Object extract(Context context) {
+            return context.getAttribute(key, attributeType);
+        }
+
+        @Override
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        public Class getExtractedType() {
+            return attributeType;
         }
 
         @Override

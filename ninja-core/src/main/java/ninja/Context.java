@@ -160,14 +160,30 @@ public interface Context {
      * Get the parameter with the given key from the request. The parameter may
      * either be a query parameter, or in the case of form submissions, may be a
      * form parameter.
-     * 
+     * <p>
+     * When the parameter is multivalued, returns the first value.
+     * <p>
      * The parameter is decoded by default.
      * 
      * @param name
      *            The key of the parameter
      * @return The value, or null if no parameter was found.
+     * @see #getParameterValues
      */
     String getParameter(String name);
+
+    /**
+     * Get the parameter with the given key from the request. The parameter may
+     * either be a query parameter, or in the case of form submissions, may be a
+     * form parameter.
+     * <p>
+     * The parameter is decoded by default.
+     *
+     * @param name
+     *            The key of the parameter
+     * @return The values, possibly an empty list.
+     */
+    List<String> getParameterValues(String name);
 
     /**
      * Same like {@link #getParameter(String)}, but returns given defaultValue
@@ -262,18 +278,25 @@ public interface Context {
     Map<String, String[]> getParameters();
 
     /**
-     * Get the request header with the given name
+     * Get the (first) request header with the given name
      * 
      * @return The header value
      */
     String getHeader(String name);
 
     /**
+     * Get all the request headers with the given name.
+     *
+     * @return the header values
+     */
+    List<String> getHeaders(String name);
+
+    /**
      * Get all the headers from the request
      * 
      * @return The headers
      */
-    Map<String, String> getHeaders();
+    Map<String, List<String>> getHeaders();
 
     /**
      * Get the cookie value from the request, if defined
@@ -461,4 +484,44 @@ public interface Context {
     */
     String getMethod();
 
+    /**
+     * Gets an attribute value previously set by {@link #setAttribute}.
+     * <p>
+     * Attributes are shared state for the duration of the request;
+     * useful to pass values between {@link Filter filters} and
+     * controllers.
+     *
+     * @return the attribute value, or {@code null} if the attribute does
+     *         not exist
+     */
+    Object getAttribute(String name);
+
+    /**
+     * Gets an attribute value previously set by {@link #setAttribute}.
+     * <p>
+     * This is a convenience method, equivalent to:
+     * <pre><code>
+     *     return clazz.cast(getAttribute(name));
+     * </code></pre>
+     * <p>
+     * Attributes are shared state for the duration of the request;
+     * useful to pass values between {@link Filter filters} and
+     * controllers.
+     *
+     * @return the attribute value, or {@code null} if the attribute does
+     *         not exist
+     */
+    <T> T getAttribute(String name, Class<T> clazz);
+
+    /**
+     * Sets an attribute value.
+     * <p>
+     * Attributes are shared state for the duration of the request;
+     * useful to pass values between {@link Filter filters} and
+     * controllers.
+     *
+     * @see #getAttribute(String)
+     * @see #getAttribute(String, Class)
+     */
+    void setAttribute(String name, Object value);
 }
