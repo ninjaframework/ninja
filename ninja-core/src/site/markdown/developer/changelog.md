@@ -6,6 +6,7 @@ Version CURRENT
  * Docs: Added documentation for WrappedContext / ArgumentMatchers aka Request scope (ra)
  * Docs: Added twitter account (ra) 
  * Separation of servlet support (module ninja-servlet) from main ninja framework (tbroyer)
+ * replaced default freemarker templating engine with freemarker-gae for appengine compatibility (ra)
 
 
 Version 1.2.1
