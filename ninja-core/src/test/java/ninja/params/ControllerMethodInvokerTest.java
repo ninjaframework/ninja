@@ -124,6 +124,14 @@ public class ControllerMethodInvokerTest {
     }
 
     @Test
+    public void attributeAnnotatedArgumentShouldBePassed() throws Exception {
+        Dep dep = new Dep("dep");
+        when(context.getAttribute("param1", Dep.class)).thenReturn(dep);
+        create("attribute").invoke(mockController, context);
+        verify(mockController).attribute(dep);
+    }
+
+    @Test
     public void integerParamShouldBeParsedToInteger() throws Exception {
         when(context.getParameter("param1")).thenReturn("20");
         create("integerParam").invoke(mockController, context);
@@ -533,6 +541,7 @@ public class ControllerMethodInvokerTest {
         public Result param(@Param("param1") String param1);
         public Result pathParam(@PathParam("param1") String param1);
         public Result sessionParam(@SessionParam("param1") String param1);
+        public Result attribute(@Attribute("param1") Dep param1);
         public Result integerParam(@Param("param1") Integer param1);
         public Result intParam(@Param("param1") int param1);
         public Result booleanParam(@Param("param1") Boolean param1);

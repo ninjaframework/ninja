@@ -61,6 +61,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public List<String> getParameterValues(String name) {
+        return wrapped.getParameterValues(name);
+    }
+
+    @Override
     public String getParameter(String key, String defaultValue) {
         return wrapped.getParameter(key, defaultValue);
     }
@@ -96,7 +101,12 @@ public class WrappedContext implements Context {
     }
 
     @Override
-    public Map<String, String> getHeaders() {
+    public List<String> getHeaders(String name) {
+        return wrapped.getHeaders(name);
+    }
+
+    @Override
+    public Map<String, List<String>> getHeaders() {
         return wrapped.getHeaders();
     }
 
@@ -218,5 +228,20 @@ public class WrappedContext implements Context {
     @Override
     public String getMethod() {
         return wrapped.getMethod();
+    }
+
+    @Override
+    public Object getAttribute(String name) {
+        return wrapped.getAttribute(name);
+    }
+
+    @Override
+    public <T> T getAttribute(String name, Class<T> clazz) {
+        return wrapped.getAttribute(name, clazz);
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        wrapped.setAttribute(name, value);
     }
 }
