@@ -16,11 +16,10 @@
 
 package ninja.utils;
 
-import javax.annotation.Nullable;
-
 import ninja.Context;
 import ninja.Result;
 
+import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(HttpCacheToolkitImpl.class)
@@ -30,12 +29,12 @@ public interface HttpCacheToolkit {
      * Checks if resource has been modified.
      * Checks via etag or lastModified when etag not present.
      * 
-     * @param etag (can be null)
-     * @param lastModified (can be null)
+     * @param etag - may be absent
+     * @param lastModified - may be absent
      * @param context the Context of this request
      * @return true if modified / false if not.
      */
-    boolean isModified(@Nullable String etag, @Nullable Long lastModified, Context context);
+    boolean isModified(Optional<String> etag, Optional<Long> lastModified, Context context);
 
     /**
      * Adds etag to result.

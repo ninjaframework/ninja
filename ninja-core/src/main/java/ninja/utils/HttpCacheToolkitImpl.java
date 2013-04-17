@@ -30,6 +30,7 @@ import ninja.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 public class HttpCacheToolkitImpl implements HttpCacheToolkit {
@@ -44,12 +45,12 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
         
     }
 
-    public boolean isModified(String etag, Long lastModified, Context context) {
+    public boolean isModified(Optional<String> etag, Optional<Long> lastModified, Context context) {
 
         final String browserEtag = context.getHeader(HttpHeaderConstants.IF_NONE_MATCH);
 
-        if (browserEtag != null && etag != null) {
-            if (browserEtag.equals(etag)) {
+        if (browserEtag != null && etag.isPresent()) {
+            if (browserEtag.equals(etag.get())) {
                 return false;
             } else {
                 return true;
@@ -58,13 +59,13 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
 
         final String ifModifiedSince = context.getHeader(HttpHeaderConstants.IF_MODIFIED_SINCE);
 
-        if (ifModifiedSince != null && lastModified != null) {
+        if (ifModifiedSince != null && lastModified.isPresent()) {
 
             if (!ifModifiedSince.isEmpty()) {
                 try {
                     Date browserDate = DateUtil
                             .parseHttpDateFormat(ifModifiedSince);
-                    if (browserDate.getTime() >= lastModified) {
+                    if (browserDate.getTime() >= lastModified.get()) {
                         return false;
                     }
                 } catch (ParseException ex) {
@@ -106,7 +107,7 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
         }
 
 
-        if (!isModified(etag, lastModified, context)) {
+        if (!isModified(Optional.fromNullable(etag), Optional.fromNullable(lastModified), context)) {
 
             if (context.getMethod().toLowerCase().equals("get")) {
                 result.status(Result.SC_304_NOT_MODIFIED);

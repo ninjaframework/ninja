@@ -1,7 +1,8 @@
 Version CURRENT
 ===============
 
- * Add description and what you changed...
+ * Libraries of ninja-core updated to latest versions
+ * Added Optional (guava) support to Messages and Lang
 
 
 Version 1.3
