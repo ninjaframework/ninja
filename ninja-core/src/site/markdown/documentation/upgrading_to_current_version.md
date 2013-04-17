@@ -1,8 +1,8 @@
 Upgrading to latest Ninja
 =========================
 
-1.3
----
+From 1.2 to 1.3
+---------------
 
 In your project's pom.xml please replace artifactId ninja-core with ninja-servlet. 
 You end up with the following dependency:
@@ -14,8 +14,8 @@ You end up with the following dependency:
         </dependency>
 
 
-1.2
----
+From 1.1 to 1.2
+---------------
 
  * Please use "ninja.Messages" instead of "ninja.Lang" for getting messages.
  * Your web.xml must be adapted and should resemble:
@@ -43,7 +43,7 @@ You end up with the following dependency:
     </web-app>
     
     
-1.1
----
+From 1.0 to 1.1
+------
 
 no changes needed.

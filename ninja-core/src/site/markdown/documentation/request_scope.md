@@ -25,7 +25,7 @@ use by other filters down the chain or the leaf controller.
     //////////////////////////////////////////////////////////////////////////
     UserInfo userInfo = …; // a complex object, e.g. retrieved from database
     context.setAttribute("userinfo", userInfo);
-
+    
 </pre>
 
 Then in the controller:
@@ -33,7 +33,7 @@ Then in the controller:
 <pre class="prettyprint">
 
     UserInfo userInfo = context.getAttribute("userinfo", UserInfo.class);
-
+    
 </pre>
 
 or even simpler, you can get the `UserInfo` injected into your controller method's arguments with

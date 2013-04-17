@@ -1,5 +1,5 @@
-Version CURRENT
-==============
+Version 1.3
+===========
 
  * Added _attributes_ to `Context`, updated Request scope documentation (tbroyer)
  * Headers can be multivalued, added `getParameterValues` for multivalued parameters (tbroyer)
