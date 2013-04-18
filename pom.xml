@@ -39,6 +39,7 @@
 		<module>ninja-servlet</module>
 		<module>ninja-core-test</module>
 		<module>ninja-core-demo</module>
+		<module>ninja-grizzly</module>
 	</modules>
 
 	<!-- pin encoding to utf-8 -->
