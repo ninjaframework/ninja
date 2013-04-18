@@ -1,7 +1,7 @@
 Version CURRENT
 ===============
 
- * Add description and what you changed...
+ * Added modules documentation page (ra).
 
 
 Version 1.3

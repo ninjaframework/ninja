@@ -20,7 +20,7 @@ Code style
 
 - Default Sun Java / Eclipse code style (a default config for eclipse can be found at the project root eclipse-ninja-format.xml.
 - If you change only tiny things only reformat stuff you actually changed. Otherwise reviewing is really hard.
-- We use tabs.
+- We use spaces.
 - All files are UTF-8.
 
 
