@@ -40,6 +40,7 @@
 		<module>ninja-core-test</module>
 		<module>ninja-core-demo</module>
 		<module>ninja-grizzly</module>
+		<module>ninja-netty</module>
 	</modules>
 
 	<!-- pin encoding to utf-8 -->
