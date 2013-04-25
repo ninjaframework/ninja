@@ -17,19 +17,21 @@
 package ninja.utils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class DateUtil {
     
-    private static SimpleDateFormat httpHeaderDateFormat;
-    
-    static {
-        httpHeaderDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
-        httpHeaderDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));        
-    }
+    /** From here: http://www.ietf.org/rfc/rfc1123.txt */
+    private static DateTimeFormatter RFC1123_DATE_FORMAT = DateTimeFormat
+            .forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'")
+            .withLocale(Locale.US)
+            .withZone(DateTimeZone.UTC);
     
     /**
      * Can be used to format a date into http header compatible 
@@ -43,7 +45,7 @@ public class DateUtil {
      * @return a http header compatible string like "Thu, 01 Jan 1970 00:00:00 GMT"
      */
     public static String formatForHttpHeader(Date date) {
-        return httpHeaderDateFormat.format(date);
+        return RFC1123_DATE_FORMAT.print(new DateTime(date));
     }
     
     /**
@@ -58,7 +60,8 @@ public class DateUtil {
      * @return a http header compatible string like "Thu, 01 Jan 1970 00:00:00 GMT"
      */
     public static String formatForHttpHeader(Long unixTime) {
-        return httpHeaderDateFormat.format(new Date(unixTime));
+        
+        return RFC1123_DATE_FORMAT.print(new DateTime(unixTime));
     }
     
     
@@ -66,13 +69,29 @@ public class DateUtil {
      * Can be used to parse http times. For instance something like a http header
      * Date: Tue, 26 Mar 2013 13:47:13 GMT
      * 
+     * INFO: consider the JodaTime based DateUtil.parseHttpDateFormatToDateTime(...) version
+     * 
      * @param httpDateFormat in http format: Date: Tue, 26 Mar 2013 13:47:13 GMT
      * @return A nice "Date" object containing that http timestamp.
      * @throws ParseException If something goes wrong.
      */
-    public static Date parseHttpDateFormat(String httpDateFormat) throws ParseException{
+    public static Date parseHttpDateFormat(String httpDateFormat) throws IllegalArgumentException {
                
-        return httpHeaderDateFormat.parse(httpDateFormat);
+        return parseHttpDateFormatToDateTime(httpDateFormat).toDate();
+
+    }
+    
+    /**
+     * Can be used to parse http times. For instance something like a http header
+     * Date: Tue, 26 Mar 2013 13:47:13 GMT
+     * 
+     * @param httpDateFormat in http format: Date: Tue, 26 Mar 2013 13:47:13 GMT
+     * @return A nice "DateTime" (JodaTime) object containing that http timestamp.
+     * @throws ParseException If something goes wrong.
+     */
+    public static DateTime parseHttpDateFormatToDateTime(String httpDateFormat) throws IllegalArgumentException {
+               
+        return RFC1123_DATE_FORMAT.parseDateTime(httpDateFormat);
 
     }
 

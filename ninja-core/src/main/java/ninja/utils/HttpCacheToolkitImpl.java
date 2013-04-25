@@ -68,7 +68,7 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
                     if (browserDate.getTime() >= lastModified.get()) {
                         return false;
                     }
-                } catch (ParseException ex) {
+                } catch (IllegalArgumentException ex) {
                     logger.warn("Can't parse HTTP date", ex);
                 }
                 return true;

@@ -30,26 +30,26 @@
         	<item name="Home" href="./index.html"/>
         	<item name="Introduction" href="./introduction.html"/>
         	<item name="Team" href="./team.html"/>
-        </menu>
-        
-        <menu name="Learn">
-        	<item name="Getting started" href="./documentation/getting_started.html"/>
-        	<item name="Controller" href="./documentation/controller.html"/>        	
-        	<item name="Configuration" href="./documentation/application_configuration.html"/>
-        	<item name="Html templating" href="./documentation/html_templating.html"/>
-        	<item name="Static assets" href="./documentation/static_assets.html"/>
-        	<item name="Injection" href="./documentation/injection.html"/>
-        	<item name="Filter" href="./documentation/filter.html"/>        	
-        	<item name="Internationalization" href="./documentation/internationalization.html"/>
-        	<item name="Request scope" href="./documentation/request_scope.html"/>
-        	<item name="Scheduler" href="./documentation/scheduler.html"/>
-        	<item name="Lifecycle" href="./documentation/lifecycle.html"/>
-        	<item name="Validation" href="./documentation/validation.html"/>
-        	<item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>
-        	<item name="Debugging" href="./documentation/debugging.html"/>
-        	<item name="Deployment" href="./documentation/deployment.html"/>
-        	<item name="Upgrading to latest" href="./documentation/upgrading_to_current_version.html"/>
-        	<item name="API" href="./apidocs/index.html"/>
+        	<item name="Documentation" collapse="true" href="./documentation/getting_started.html">
+                <item name="Controller" href="./documentation/controller.html"/>            
+                <item name="Configuration" href="./documentation/application_configuration.html"/>
+                <item name="Html templating" href="./documentation/html_templating.html"/>
+                <item name="Static assets" href="./documentation/static_assets.html"/>
+                <item name="Injection" href="./documentation/injection.html"/>
+                <item name="Filter" href="./documentation/filter.html"/>            
+                <item name="Internationalization" href="./documentation/internationalization.html"/>
+                <item name="Request scope" href="./documentation/request_scope.html"/>
+                <item name="Scheduler" href="./documentation/scheduler.html"/>
+                <item name="Lifecycle" href="./documentation/lifecycle.html"/>
+                <item name="Validation" href="./documentation/validation.html"/>
+                <item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>
+                <item name="Debugging" href="./documentation/debugging.html"/>
+                <item name="Deployment" href="./documentation/deployment.html"/>
+                <item name="Upgrading to latest" href="./documentation/upgrading_to_current_version.html"/>
+                <item name="API" href="./apidocs/index.html"/>
+        	</item>
+        	<item name="Modules" href="./documentation/modules.html"/>
+
         </menu>
         
         <menu name="Get involved">
