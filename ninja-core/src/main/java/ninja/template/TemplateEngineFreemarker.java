@@ -28,6 +28,7 @@ import ninja.utils.ResponseStreams;
 import org.slf4j.Logger;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
@@ -110,26 +111,30 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         // set language from framework. You can access
         // it in the templates as ${lang}
-        String language = lang.getLanguage(context, result);
-        map.put("lang", language);
+        Optional<String> language = lang.getLanguage(context, Optional.of(result));
+        if (language.isPresent()) {
+            map.put("lang", language.get());
+        }
         
         // merge messages with this template...
-        Map<Object, Object> i18nMap = messages.getAll(context, result);
+        Map<Object, Object> i18nMap = messages.getAll(context, Optional.of(result));
         map.putAll(i18nMap);
         
         // get contentOfFlashCookie
         // prefix keys with "flash_"
         for (Entry<String, String> entry : context.getFlashCookie().getCurrentFlashCookieData().entrySet()) {
             
-            String messageValue;
+            String messageValue = null;
             
             //if it is a translated message get it from the language
             if (entry.getValue().startsWith("i18n")) {
                 
-                messageValue = messages.get(entry.getValue(), context, result);
+                Optional<String> messageValueOptional = messages.get(entry.getValue(), context, Optional.of(result));
                 
-                if (messageValue == null) {
+                if (!messageValueOptional.isPresent()) {
                     throw new RuntimeException("No translated message found for flash message key: " + entry.getValue());
+                } else {
+                    messageValue = messageValueOptional.get();
                 }
                 
                 //else it is something else (for form parameters for instance)

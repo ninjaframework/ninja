@@ -1,6 +1,8 @@
 Version CURRENT
 ===============
 
+ * Libraries of ninja-core updated to latest versions
+ * Added Optional (guava) support to Messages and Lang
  * Added modules documentation page (ra).
  * Replaced potentially harmful SimpleDateFormatter with JodaTime. SDF is not thread safe... (ra)
 

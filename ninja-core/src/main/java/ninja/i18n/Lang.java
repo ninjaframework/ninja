@@ -18,37 +18,14 @@ package ninja.i18n;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import ninja.Context;
 import ninja.Result;
 
+import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(LangImpl.class)
 public interface Lang {
-
-    /**
-     * @deprecated  Now lives in {@link Messages}
-     */
-    @Deprecated
-    String get(String key, @Nullable String language, Object... parameter);
-
-    /**
-     * @deprecated  Now lives in {@link Messages}
-     */
-    @Deprecated
-    String getWithDefault(String key,
-                          String defaultMessage,
-                          @Nullable String language,
-                          Object... params);
-
-    /**
-     * @deprecated  Now lives in {@link Messages}
-
-     */
-    @Deprecated
-    Map<Object, Object> getAll(@Nullable String language);
 
     /**
      * Retrieve the current language or null if not set.
@@ -57,9 +34,9 @@ public interface Lang {
      * 2) Checking if context has a NINJA_LANG cookie with a forced language
      * 3) Getting the first language from the Accept-Language header
      * 
-     * @return The current language (fr, ja, it ...) or null
+     * @return The current language (fr, ja, it ...) - may be absent
      */
-    String getLanguage(Context context, Result result);
+    Optional<String> getLanguage(Context context, Optional<Result> result);
     
 
     /**

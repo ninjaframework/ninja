@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
@@ -197,7 +195,7 @@ public class FakeContext implements Context {
     public Map<String, String[]> getParameters() {
         return Maps.transformValues(params.asMap(), new Function<Collection<String>, String[]>() {
             @Override
-            public String[] apply(@Nullable Collection<String> s) {
+            public String[] apply(Collection<String> s) {
                 return s.toArray(new String[s.size()]);
             }
         });

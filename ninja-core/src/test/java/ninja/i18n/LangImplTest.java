@@ -34,6 +34,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.common.base.Optional;
+
 @RunWith(MockitoJUnitRunner.class)
 public class LangImplTest {
 
@@ -61,8 +63,8 @@ public class LangImplTest {
         
         // 1) with context and result => but result does not have a default lang
         Result result = Results.ok();
-        String language = lang.getLanguage(context, result);
-        assertEquals("de", language);
+        Optional<String> language = lang.getLanguage(context, Optional.of(result));
+        assertEquals("de", language.get());
         
         
         // 2) with context and result => result has already new lang set...
@@ -70,8 +72,8 @@ public class LangImplTest {
         cookie = Cookie.builder("NINJA_TEST" + NinjaConstant.LANG_COOKIE_SUFFIX, "en").build();
         result.addCookie(cookie);
         
-        language = lang.getLanguage(context, result);
-        assertEquals("en", language);
+        language = lang.getLanguage(context, Optional.of(result));
+        assertEquals("en", language.get());
         
         
 
