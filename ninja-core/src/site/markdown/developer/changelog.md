@@ -2,6 +2,7 @@ Version CURRENT
 ===============
 
  * Added modules documentation page (ra).
+ * Replaced potentially harmful SimpleDateFormatter with JodaTime. SDF is not thread safe... (ra)
 
 
 Version 1.3

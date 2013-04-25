@@ -81,6 +81,13 @@
 	</build>
 
 	<dependencies>
+    
+        <!-- Thread-safe alternative for Java JDK time stuff -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.2</version>
+        </dependency>
 
 		<!-- The main dependency method: -->
 		<dependency>
