@@ -16,18 +16,16 @@
 
 package ninja.i18n;
 
-import java.util.Map;
-
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -50,36 +48,6 @@ public class LangImpl implements Lang {
         
         this.applicationCookiePrefix = ninjaProperties
                 .getOrDie(NinjaConstant.applicationCookiePrefix);
-
-    }
-
-    /** Only for compatibility => now lives in {@link Messages}. */
-    @Deprecated
-    @Override
-    public String get(String key, String language, Object... params) {
-
-        throw new NotImplementedException();
-
-    }
-
-    /** Only for compatibility => now lives in {@link Messages}. */
-    @Deprecated
-    @Override
-    public Map<Object, Object> getAll(String language) {
-
-        throw new NotImplementedException();
-
-    }
-
-    /** Only for compatibility => now lives in {@link Messages}. */
-    @Deprecated
-    @Override
-    public String getWithDefault(String key,
-                                 String defaultMessage,
-                                 String language,
-                                 Object... params) {
-        
-        throw new NotImplementedException();
 
     }
 
@@ -106,36 +74,38 @@ public class LangImpl implements Lang {
     
 
     @Override
-    public String getLanguage(Context context, Result result) {
+    public Optional<String> getLanguage(Context context, Optional<Result> result) {
         
         Cookie defaultCookie = generateNinjaLanguageCookie();
         
         
         // Step 1: Determine language from result.
         // Result always has priority over context and will overwrite context.
-        Cookie cookie = result.getCookie(defaultCookie.getName());
+        if (result.isPresent()) {
+            Cookie cookie = result.get().getCookie(defaultCookie.getName());
         
-        if (cookie != null) {
+            if (cookie != null) {
             
-            if (cookie.getValue() != null 
-                    && !cookie.getValue().isEmpty()) {
+                if (cookie.getValue() != null 
+                        && !cookie.getValue().isEmpty()) {
                 
-                //forced language is:
-                return cookie.getValue();
-            } 
+                    //forced language is:
+                    return Optional.of(cookie.getValue());
+                } 
             
+            }
         }
         
         // Step 2 => we did not find the language in the result
         // We try to determine it from the context.
-        cookie = context.getCookie(defaultCookie.getName());
+        Cookie cookie = context.getCookie(defaultCookie.getName());
 
         if (cookie != null) {
             
             if (cookie.getValue() != null 
                     && !cookie.getValue().isEmpty()) {
                 //forced language is:
-                return cookie.getValue();
+                return Optional.of(cookie.getValue());
             }
             
         }  
@@ -143,7 +113,7 @@ public class LangImpl implements Lang {
         // Step 3: Determine language from Accept-Language header.
         String acceptLanguage = context.getAcceptLanguage(); 
         if (acceptLanguage == null) {
-            return null;
+            return Optional.absent();
         }
         
 
@@ -157,18 +127,18 @@ public class LangImpl implements Lang {
             if (language.contains(";")){
                 language = language.split(";")[0];
                 
-                return language;
+                return Optional.of(language);
                 
             } else {
                 
-                return language;
+                return Optional.of(language);
                 
             }
        
         }
 
         
-        return null;
+        return Optional.absent();
         
     }
     

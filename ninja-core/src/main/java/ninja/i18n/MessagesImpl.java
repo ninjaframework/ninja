@@ -19,7 +19,6 @@ package ninja.i18n;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 
 import ninja.Context;
 import ninja.Result;
@@ -33,6 +32,7 @@ import org.apache.commons.configuration.ConfigurationConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -61,42 +61,43 @@ public class MessagesImpl implements Messages {
 
     }
     
+    
     @Override
-    public String get(String key,
+    public Optional<String> get(String key,
                       Context context,
-                      @Nullable Result result,
+                      Optional<Result> result,
                       Object... parameter) {
         
-        String language = lang.getLanguage(context, result);
+        Optional<String> language = lang.getLanguage(context, result);
         return get(key, language, parameter);
         
     }
 
     @Override
-    public String get(String key, String language, Object... params) {
+    public Optional<String> get(String key, Optional<String> language, Object... params) {
 
         Configuration configuration = getLanguageConfigurationForLocale(language);
 
         String value = configuration.getString(key);
 
         if (value != null) {
-            return MessageFormat.format(value, params);
+            return Optional.of(MessageFormat.format(value, params));
         } else {
-            return null;
+            return Optional.absent();
         }
 
     }
     
     @Override
-    public Map<Object, Object> getAll(Context context, @Nullable Result result) {
+    public Map<Object, Object> getAll(Context context, Optional<Result> result) {
         
-        String language = lang.getLanguage(context, result);
+        Optional<String> language = lang.getLanguage(context, result);
         return getAll(language);
         
     }
 
     @Override
-    public Map<Object, Object> getAll(String language) {
+    public Map<Object, Object> getAll(Optional<String> language) {
 
         Configuration configuration = getLanguageConfigurationForLocale(language);
 
@@ -108,10 +109,10 @@ public class MessagesImpl implements Messages {
     public String getWithDefault(String key,
                                  String defaultMessage,
                                  Context context,
-                                 @Nullable Result result,
+                                 Optional<Result> result,
                                  Object... params) {
         
-        String language = lang.getLanguage(context, result);
+        Optional<String> language = lang.getLanguage(context, result);
         
         return getWithDefault(key, defaultMessage, language, params);
 
@@ -120,14 +121,14 @@ public class MessagesImpl implements Messages {
     @Override
     public String getWithDefault(String key,
                                  String defaultMessage,
-                                 String language,
+                                 Optional<String> language,
                                  Object... params) {
 
-        String value = get(key, language, params);
+        Optional<String> value = get(key, language, params);
 
-        if (value != null) {
+        if (value.isPresent()) {
 
-            return MessageFormat.format(value, params);
+            return MessageFormat.format(value.get(), params);
 
         } else {
             // return default message
@@ -237,17 +238,17 @@ public class MessagesImpl implements Messages {
      * @return The matching configuration from the hashmap. Or the default
      *         mapping if no one has been found.
      */
-    private Configuration getLanguageConfigurationForLocale(@Nullable String language) {
+    private Configuration getLanguageConfigurationForLocale(Optional<String> language) {
 
         // if language is null we return the default language.
-        if (language == null) {
+        if (!language.isPresent()) {
             return langToKeyAndValuesMapping.get("");
         }
 
         // Check if we get a registered mapping for the language input string.
         // At that point the language may be either language-country or only country.
         // extract multiple languages from Accept-Language header
-        String[] languages = language.split(",");
+        String[] languages = language.get().split(",");
         for (String l: languages){
             l = l.trim();
             // Ignore the relative quality factor in Accept-Language header

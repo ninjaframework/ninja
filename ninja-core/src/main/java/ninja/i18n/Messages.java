@@ -19,11 +19,10 @@ package ninja.i18n;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import ninja.Context;
 import ninja.Result;
 
+import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(MessagesImpl.class)
@@ -57,10 +56,10 @@ public interface Messages {
      * @param parameter
      *            Parameters to use in formatting the message of the key (in
      *            {@link MessageFormat}).
-     * @return The matching and formatted value or null if not found.
+     * @return The matching and formatted value or absent if not found.
      */
-    String get(String key, 
-               @Nullable String language, 
+    Optional<String> get(String key, 
+               Optional<String> language, 
                Object... parameter);
     
     /**
@@ -83,11 +82,11 @@ public interface Messages {
      * @param parameter
      *            Parameters to use in formatting the message of the key (in
      *            {@link MessageFormat}).
-     * @return The matching and formatted value or null if not found.
+     * @return The matching and formatted value or absent if not found.
      */
-    String get(String key, 
+    Optional<String> get(String key, 
                Context context, 
-               @Nullable Result result, 
+               Optional<Result> result, 
                Object... parameter);
 
     /**
@@ -104,7 +103,7 @@ public interface Messages {
      *            A default message that will be used when no matching message
      *            can be retrieved.
      * @param language
-     *            The language to get. Can be null - then the default language
+     *            The language to get. May be absent - then the default language
      *            is returned. It also looks for a fallback. Eg. A request for
      *            "en-US" will fallback to "en" if there is no matching language
      *            file.
@@ -116,8 +115,10 @@ public interface Messages {
      */
     String getWithDefault(String key,
                           String defaultMessage,
-                          @Nullable String language,
+                          Optional<String> language,
                           Object... params);
+    
+    
     /**
      * Gets a message for a message key. Returns a defaultValue if not found.
      * 
@@ -128,7 +129,7 @@ public interface Messages {
      *            A default message that will be used when no matching message
      *            can be retrieved.
      * @param context The context used to determine the language.
-     * @param result The result used to determine the language.
+     * @param result The result used to determine the language. May be absent
      * @param params Parameters to use in formatting the message of the key (in
      *            {@link MessageFormat}).
      * @return The matching and formatted value (either from messages or the
@@ -137,7 +138,7 @@ public interface Messages {
     String getWithDefault(String key,
                           String defaultMessage,
                           Context context,
-                          @Nullable Result result,
+                          Optional<Result> result,
                           Object... params);
 
     /**
@@ -149,7 +150,7 @@ public interface Messages {
      * {@link Messages#getAll(Context, Result)} 
      * 
      * @param language
-     *            The language to get. Can be null - then the default language
+     *            The language to get. May be absent - then the default language
      *            is returned. It also looks for a fallback. Eg. A request for
      *            "en-US" will fallback to "en" if there is no matching language
      *            file.
@@ -158,7 +159,8 @@ public interface Messages {
      * 
      * @return A map with all messages as <String, String>
      */
-    Map<Object, Object> getAll(@Nullable String language);
+    Map<Object, Object> getAll(Optional<String> language);
+    
     
     /**
      * Returns all messages for the default language in that context / result.
@@ -168,9 +170,9 @@ public interface Messages {
      * 
      * 
      * @param context The context 
-     * @param result The result
+     * @param result The result - bay be absent
      * @return A map with all messages as <String, String>
      */
-    Map<Object, Object> getAll(Context context, @Nullable Result result);
+    Map<Object, Object> getAll(Context context, Optional<Result> result);
 
 }
