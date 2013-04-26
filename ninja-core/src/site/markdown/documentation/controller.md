@@ -152,9 +152,14 @@ Have a look at that method:
 </pre>
 
 Ninja can not only inject PathParam and Param objects. But also the Context.
+The context is a request scoped object that holds all informations of the current
+request - parameters, headers and so on...
 
-Even better: If there is a object Ninja does not know Ninja tries to parse that object into
-a Java class. This is done by content negotiation. Therefore you don't have to worry if
+Even better: Ninja will parse an arbitrary object given in the method.
+In the above case MyObject will be automatically parsed by Ninja. The way
+it will parsed (Json, Xml, PostForm) will be determined via the request type.
+
+Therefore you don't have to worry if
 input is for instance Xml or Json. You simply get a parsed object.
 
 
@@ -176,7 +181,7 @@ following class:
     }
 </pre>
 
-This renders by convention a view in directory **views/ApplicationCrontoller/index.ftl.html**.
+This renders by convention a view in directory **views/ApplicationController/index.ftl.html**.
 
 But you can specify your own html view, too:
 

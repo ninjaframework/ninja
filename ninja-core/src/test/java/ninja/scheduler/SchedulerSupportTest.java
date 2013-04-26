@@ -71,12 +71,12 @@ public class SchedulerSupportTest {
         MockScheduled.countDownLatch.await(200, TimeUnit.MILLISECONDS);
     }
 
-    @Test(timeout = 200)
+    @Test(timeout = 400)
     public void schedulableAddedAfterStartShouldBeScheduledImmediately() throws Exception {
         injector = createInjector();
         start(injector);
         injector.getInstance(MockScheduled.class);
-        MockScheduled.countDownLatch.await(200, TimeUnit.MILLISECONDS);
+        MockScheduled.countDownLatch.await(400, TimeUnit.MILLISECONDS);
     }
 
     @Test(timeout = 200)
