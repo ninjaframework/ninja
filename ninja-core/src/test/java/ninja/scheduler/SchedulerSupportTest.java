@@ -59,7 +59,7 @@ public class SchedulerSupportTest {
         assertThat(MockScheduled.countDownLatch.getCount(), equalTo(1L));
     }
 
-    @Test(timeout = 200)
+    @Test(timeout = 1000)
     public void schedulableShouldBeScheduledAfterStart() throws Exception {
         injector = createInjector(new AbstractModule() {
             @Override
@@ -68,18 +68,18 @@ public class SchedulerSupportTest {
             }
         });
         start(injector);
-        MockScheduled.countDownLatch.await(200, TimeUnit.MILLISECONDS);
+        MockScheduled.countDownLatch.await(1000, TimeUnit.MILLISECONDS);
     }
 
-    @Test(timeout = 400)
+    @Test(timeout = 1000)
     public void schedulableAddedAfterStartShouldBeScheduledImmediately() throws Exception {
         injector = createInjector();
         start(injector);
         injector.getInstance(MockScheduled.class);
-        MockScheduled.countDownLatch.await(400, TimeUnit.MILLISECONDS);
+        MockScheduled.countDownLatch.await(1000, TimeUnit.MILLISECONDS);
     }
 
-    @Test(timeout = 200)
+    @Test(timeout = 1000)
     public void schedulableShouldUsePropertyConfig() throws Exception {
         injector = createInjector(new AbstractModule() {
             @Override
@@ -89,7 +89,7 @@ public class SchedulerSupportTest {
         });
         injector.getInstance(MockPropertyScheduled.class);
         start(injector);
-        MockPropertyScheduled.countDownLatch.await(200, TimeUnit.MILLISECONDS);
+        MockPropertyScheduled.countDownLatch.await(1000, TimeUnit.MILLISECONDS);
     }
 
     @Test(expected = FailedStartException.class)
