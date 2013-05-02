@@ -1,11 +1,13 @@
-Version CURRENT
-===============
+Version 1.4
+===========
 
  * Libraries of ninja-core updated to latest versions
  * Added Optional (guava) support to Messages and Lang
  * Added modules documentation page (ra).
  * Replaced potentially harmful SimpleDateFormatter with JodaTime. SDF is not thread safe... (ra)
  * Better printing of numbers in Freemarker Templating Engine (See also: http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping)
+ * Better error handling for templating exceptions (ra)
+ * Brand new maven archetype ninja-core-demo-archetype for really simple project generation... (ra)
 
 
 Version 1.3
