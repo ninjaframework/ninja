@@ -1,16 +1,22 @@
 Quickstart for users
 ====================
 
-The best starting point is to check out the source of our demo application at:
-https://github.com/reyez/ninja/tree/develop/ninja-core-demo
+The best way to start a Ninja project is by calling the following command:
 
-Please check out the project into your computer and hit inside the project the following command:
+<pre class="prettyprint">
+    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-core-demo-archetype
+</pre>
+
+Please enter sensible values for "groupId" and "artifactId" and let Maven generate your first Ninja project.
+
+After finishing the generation cd into your project and execute:
+
 <pre class="prettyprint">
     mvn jetty:run
 </pre>
 
-**Note**: Generating new projects is a bit strange right now as you have to copy the demo project ideally.
-However this will change. Have a look at [issue 29](https://github.com/reyez/ninja/issues/29).
+This starts the dev webserver. And that's it already. Simply go to http://localhost:8080 and start hacking :)
+
 
 Preface
 -------

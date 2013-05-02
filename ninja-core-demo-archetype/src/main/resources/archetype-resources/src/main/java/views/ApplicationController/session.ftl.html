@@ -1,0 +1,24 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<${symbol_pound}import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout
+"Home page">
+
+<header class="jumbotron subhead">
+	<h1>Session Cookie support</h1>
+</header>
+
+<hr>
+
+<h2>You now got a session cookie attached to your browsing session.</h2>
+<p>
+And currently the username stored in the session is: <b>${symbol_dollar}{username}</b>
+<p>
+<p>
+If you use firebug or any other tool you can spot the session attached to the request.
+</p>
+
+</@layout.myLayout>
+
+
+

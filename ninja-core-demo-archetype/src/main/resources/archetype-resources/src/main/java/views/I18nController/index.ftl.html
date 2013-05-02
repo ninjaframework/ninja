@@ -1,0 +1,29 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<${symbol_pound}import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+
+<header class="jumbotron subhead">
+	<h1>This demonstrates an internationalized message:</h1>
+
+</header>
+
+<hr>
+
+<h2>I18n in the templates</h2>
+<ul>
+	<h1>${symbol_dollar}{i18nHello}</h1>
+	
+	<li>Implicit language is: ${symbol_dollar}{lang}</li>
+	
+	<li>A default route like this one: <a href="/">/</a></li>
+	<li>A parameterized route like: <a
+		href="/user/12345/john_user/userDashboard">/user/{id}/{name}/userDashboard</a></li>
+	<li>A redirect at /redirects back to index... <a href="/redirect">/redirect</a></li>
+</ul>
+
+</@layout.myLayout>
+
+
+

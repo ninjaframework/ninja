@@ -50,17 +50,23 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     private final Logger logger;
 
+    private TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
+
     @Inject
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
                                     Logger logger,
+                                    TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
                                     TemplateEngineHelper templateEngineHelper,
                                     TemplateEngineManager templateEngineManager) {
         this.messages = messages;
         this.lang = lang;
         this.logger = logger;
+        this.templateEngineFreemarkerExceptionHandler = templateEngineFreemarkerExceptionHandler;
         this.templateEngineHelper = templateEngineHelper;
         cfg = new Configuration();
+        
+        cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
         cfg.setClassForTemplateLoading(this.getClass(), "/");
 
@@ -174,6 +180,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         } catch (Exception e) {
             logger.error(
                     "Error processing Freemarker Template " + templateName, e);
+            
         }
 
     }
