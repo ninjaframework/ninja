@@ -16,16 +16,13 @@
 
 package controllers;
 
+import static org.junit.Assert.assertEquals;
 import models.Person;
 import ninja.NinjaTest;
-import ninja.utils.NinjaTestBrowser;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
 import com.google.gson.Gson;
-
-import static org.junit.Assert.assertEquals;
 
 public class PersonControllerTest extends NinjaTest {
     @Test

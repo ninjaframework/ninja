@@ -5,6 +5,7 @@ Version CURRENT
  * Added Optional (guava) support to Messages and Lang
  * Added modules documentation page (ra).
  * Replaced potentially harmful SimpleDateFormatter with JodaTime. SDF is not thread safe... (ra)
+ * Better printing of numbers in Freemarker Templating Engine (See also: http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping)
 
 
 Version 1.3

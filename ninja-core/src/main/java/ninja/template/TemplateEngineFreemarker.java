@@ -69,9 +69,18 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
                 .getTemplateLoader()));
         
+        // We also do not want Freemarker to chose a platform dependent
+        // number formatting. Eg "1000" could be printed out by FTL as "1,000"
+        // on some platform. This is not "least astonishemnt". It will also
+        // break stuff really badly sometimes.
+        // See also: http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping
+        cfg.setNumberFormat("0.######");  // now it will print 1000000
+        
         // The defaultObjectWrapper is a BeansWrapper
         // => we fetch it and allow the wrapper to expose all fields
         // for convenience
+        
+        
         BeansWrapper beansWrapper = (BeansWrapper) cfg.getObjectWrapper();
         beansWrapper.setExposeFields(true);
         
