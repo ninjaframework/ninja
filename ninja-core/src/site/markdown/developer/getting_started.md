@@ -32,6 +32,7 @@ Making a Ninja release
 1) Preliminary
 
 - update changelog.md
+- Make sure the archetypes are up-to-date
 
 2) Release to central maven repo
 

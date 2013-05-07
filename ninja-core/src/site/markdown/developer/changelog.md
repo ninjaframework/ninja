@@ -1,3 +1,8 @@
+Version 1.4.1
+=============
+
+ * Archetype wrongly referenced a snapshot version (seratch)
+
 Version 1.4
 ===========
 
