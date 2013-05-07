@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>1.4.1</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
 
 
@@ -35,12 +35,12 @@
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-core</artifactId>
-			<version>1.4.1</version>
+			<version>1.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-servlet</artifactId>
-			<version>1.4.1</version>
+			<version>1.5-SNAPSHOT</version>
 			<optional>true</optional>
 		</dependency>
 
