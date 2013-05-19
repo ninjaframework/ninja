@@ -18,6 +18,7 @@ package ninja.bodyparser;
 
 import java.io.IOException;
 
+import ninja.ContentTypes;
 import ninja.Context;
 
 import org.slf4j.Logger;
@@ -60,6 +61,10 @@ public class BodyParserEngineJson implements BodyParserEngine {
         }
 
         return t;
+    }
+    
+    public String getContentType() {
+        return ContentTypes.APPLICATION_JSON; 
     }
 
 }

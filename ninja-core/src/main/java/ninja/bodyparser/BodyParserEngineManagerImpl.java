@@ -16,36 +16,69 @@
 
 package ninja.bodyparser;
 
-import ninja.ContentTypes;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.inject.Binding;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
 public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
-    private final BodyParserEnginePost bodyParserEnginePost;
-    private final BodyParserEngineJson bodyParserEngineJson;
-    private final BodyParserEngineXml bodyParserEngineXml;
+    
+    // Keep a reference of providers rather than instances, so body parser engines
+    // don't have to be singleton if they don't want
+    private final Map<String, Provider<? extends BodyParserEngine>> contentTypeToBodyParserMap;
 
     @Inject
-    public BodyParserEngineManagerImpl(BodyParserEnginePost bodyParserEnginePost,
-                                       BodyParserEngineJson bodyParserEngineJson,
-                                       BodyParserEngineXml bodyParserEngineXml) {
-        this.bodyParserEngineJson = bodyParserEngineJson;
-        this.bodyParserEngineXml = bodyParserEngineXml;
-        this.bodyParserEnginePost = bodyParserEnginePost;
+    public BodyParserEngineManagerImpl(Provider<BodyParserEnginePost> bodyParserEnginePost,
+                                       Provider<BodyParserEngineJson> bodyParserEngineJson,
+                                       Provider<BodyParserEngineXml> bodyParserEngineXml,
+                                       Injector injector) {
+        
+        
+        Map<String, Provider<? extends BodyParserEngine>> map = Maps.newHashMap();
+
+        // First put the built in ones in, this is so they can be overridden by
+        // custom bindings
+        map.put(bodyParserEnginePost.get().getContentType(),
+                bodyParserEnginePost);
+        map.put(bodyParserEngineJson.get().getContentType(),
+                bodyParserEngineJson);
+        map.put(bodyParserEngineXml.get().getContentType(),
+                bodyParserEngineXml);
+        
+        
+        // Now lookup all explicit bindings, and find the ones that implement
+        // BodyParserEngine
+        for (Map.Entry<Key<?>, Binding<?>> binding : injector.getBindings()
+                .entrySet()) {
+            if (BodyParserEngine.class.isAssignableFrom(binding.getKey()
+                    .getTypeLiteral().getRawType())) {
+                Provider<? extends BodyParserEngine> provider = (Provider) binding
+                        .getValue().getProvider();
+                map.put(provider.get().getContentType(), provider);
+            }
+        }
+
+        contentTypeToBodyParserMap = ImmutableMap.copyOf(map);
+        
 
     }
 
     @Override
     public BodyParserEngine getBodyParserEngineForContentType(String contentType) {
 
-        if (contentType.equals(ContentTypes.APPLICATION_JSON)) {
-            return bodyParserEngineJson;
-        } else if (contentType.equals(ContentTypes.APPLICATION_XML)) {
-            return bodyParserEngineXml;
-        } else if (contentType.equals(ContentTypes.APPLICATION_POST_FORM)) {
-            return bodyParserEnginePost;
+        Provider<? extends BodyParserEngine> provider = contentTypeToBodyParserMap
+                .get(contentType);
+
+        if (provider != null) {
+            return provider.get();
         } else {
             return null;
         }

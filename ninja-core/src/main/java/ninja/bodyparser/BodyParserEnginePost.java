@@ -19,7 +19,9 @@ package ninja.bodyparser;
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
 
+import ninja.ContentTypes;
 import ninja.Context;
+import ninja.Result;
 
 import org.slf4j.Logger;
 
@@ -61,5 +63,9 @@ public class BodyParserEnginePost implements BodyParserEngine {
             }
         }
         return t;
+    }
+    
+    public String getContentType() {
+        return ContentTypes.APPLICATION_POST_FORM; 
     }
 }

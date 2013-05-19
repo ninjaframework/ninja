@@ -18,6 +18,7 @@ package ninja.bodyparser;
 
 import java.io.IOException;
 
+import ninja.ContentTypes;
 import ninja.Context;
 
 import org.apache.commons.io.IOUtils;
@@ -60,6 +61,10 @@ public class BodyParserEngineXml implements BodyParserEngine {
         }
 
         return t;
+    }
+    
+    public String getContentType() {
+        return ContentTypes.APPLICATION_XML; 
     }
 
 }
