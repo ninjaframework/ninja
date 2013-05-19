@@ -3,6 +3,7 @@ Version X
 
  * Removed deprecated and confusing methods in Results.java. Now we have only .json() .html() and so on.
    https://github.com/reyez/ninja/issues/92#issuecomment-18015522
+ * Fixed content negotiation bug https://github.com/reyez/ninja/issues/83
    
    
 Version 1.4.1
