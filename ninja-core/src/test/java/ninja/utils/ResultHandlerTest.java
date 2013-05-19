@@ -21,9 +21,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.Writer;
+import java.util.logging.Logger;
 
 import ninja.Context;
 import ninja.Result;
@@ -47,10 +49,13 @@ public class ResultHandlerTest {
     private TemplateEngine templateEngine;
     
     @Mock
+    private TemplateEngine templateEngineHtml;
+    
+    @Mock
     private ResponseStreams responseStreams;
 
-	@Mock
-	private OutputStream outputStream;
+	  @Mock
+	  private OutputStream outputStream;
 	
     @Mock
     private Writer writer;
@@ -60,16 +65,21 @@ public class ResultHandlerTest {
     @Mock 
     private Context context;
     
+    @Mock
+    Logger logger;
+    
     
     @Before
     public void init() throws Exception {
         
-        resultHandler = new ResultHandler(templateEngineManager);
-		when(responseStreams.getOutputStream()).thenReturn(outputStream);
+        resultHandler = new ResultHandler(logger, templateEngineManager);
+        when(responseStreams.getOutputStream()).thenReturn(outputStream);
         when(responseStreams.getWriter()).thenReturn(writer);
         when(context.finalizeHeaders(any(Result.class))).thenReturn(responseStreams);
         when(templateEngineManager.getTemplateEngineForContentType(
                 Result.APPLICATON_JSON)).thenReturn(templateEngine);
+        when(templateEngineManager.getTemplateEngineForContentType(
+                "text/html")).thenReturn(templateEngineHtml);
         
     }
     
@@ -128,6 +138,15 @@ public class ResultHandlerTest {
         result.render(toRender);
         resultHandler.handleResult(result, context);
         assertEquals(Result.TEXT_PLAIN, result.getContentType());
+    }
+    
+    @Test
+    public void testContentNegotiation() {
+        when(context.getAcceptContentType()).thenReturn("text/html");
+        Result result = Results.ok();
+        resultHandler.handleResult(result, context);
+        assertEquals("text/html", result.getContentType());
+        verify(templateEngineHtml).invoke(context, result);
     }
 
     @Test

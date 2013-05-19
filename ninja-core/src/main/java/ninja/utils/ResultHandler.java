@@ -17,6 +17,8 @@
 package ninja.utils;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -37,9 +39,11 @@ import ninja.template.TemplateEngineManager;
 public class ResultHandler {
 
     private final TemplateEngineManager templateEngineManager;
+    private Logger logger;
 
     @Inject
-    public ResultHandler(TemplateEngineManager templateEngineManager) {
+    public ResultHandler(Logger logger, TemplateEngineManager templateEngineManager) {
+        this.logger = logger;
         this.templateEngineManager = templateEngineManager;
     }
 
@@ -49,20 +53,16 @@ public class ResultHandler {
             // Do nothing, assuming the controller manually handled it
             return;
         }
-
+        
         Object object = result.getRenderable();
-        String contentType = result.getContentType();
 
-        if (object == null && contentType == null) {
-            // Just finalize the headers, nothing else
-            context.finalizeHeaders(result);
-        } else if (object instanceof Renderable) {
+        if (object instanceof Renderable) {
             // if the object is a renderable it should do everything itself...:
             // make sure to call context.finalizeHeaders(result) with the
-            // results
-            // you want to set...
+            // results you want to set...
             handleRenderable((Renderable) object, context, result);
         } else {
+            
             // if content type is not yet set in result we copy it over from the
             // request accept header
             if (result.getContentType() == null) {
@@ -85,8 +85,7 @@ public class ResultHandler {
         try {
             renderable.render(context, result);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while handling renderable", e);
         }
     }
 
@@ -134,6 +133,9 @@ public class ResultHandler {
                     throw new RuntimeException(e);
                 }
             } else {
+                
+                context.finalizeHeaders(result);
+                
                 throw new IllegalArgumentException(
                         "No template engine found for result content type "
                                 + result.getContentType());
