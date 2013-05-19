@@ -78,6 +78,6 @@ public class UdpPingController {
     }
 
     public Result getCount(Context ctx) {
-    	return Results.json(count.get());
+    	return Results.json().render(count.get());
     }
 }

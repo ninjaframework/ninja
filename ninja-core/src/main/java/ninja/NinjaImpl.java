@@ -94,7 +94,7 @@ public class NinjaImpl implements Ninja {
         } else {
             // throw a 404 "not found" because we did not find the route
 
-            Result result = Results.html(Result.SC_404_NOT_FOUND).template(
+            Result result = Results.html().status(Result.SC_404_NOT_FOUND).template(
                     NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
 
             resultHandler.handleResult(result, context);

@@ -119,7 +119,7 @@ public class ResultsTest {
 	@Test
 	public void testResultsHtmlWithStatusCode() {
 		
-		Result result = Results.html(Result.SC_300_MULTIPLE_CHOICES);
+		Result result = Results.html().status(Result.SC_300_MULTIPLE_CHOICES);
 		assertEquals(Result.SC_300_MULTIPLE_CHOICES, result.getStatusCode());
 		assertEquals(Result.TEXT_HTML, result.getContentType());
 	}
@@ -138,7 +138,7 @@ public class ResultsTest {
 		
 		TestObject testObject = new TestObject();
 		
-		Result result = Results.json(testObject);
+		Result result = Results.json().render(testObject);
 		assertEquals(Result.SC_200_OK, result.getStatusCode());
 		assertEquals(Result.APPLICATON_JSON, result.getContentType());
 		assertEquals(testObject, result.getRenderable());

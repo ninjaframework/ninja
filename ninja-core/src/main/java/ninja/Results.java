@@ -106,53 +106,8 @@ public class Results {
         return result;
     }
 
-    public static Result html(int statusCode) {
-        Result result = status(statusCode).html();
-
-        return result;
-    }
-
-    /**
-     * html should take only int status or nothing. => otherwise the html(..)
-     * methods might not work properly..
-     * 
-     * please use "render" from Result to do so. Should be as easy as
-     * html().render(myObject)
-     * 
-     * @param renderable
-     * @return
-     */
-    @Deprecated
-    public static Result html(Object renderable) {
-        Result result = status(Result.SC_200_OK).html();
-        result.render(renderable);
-
-        return result;
-    }
-
-    /**
-     * Only supporting one overloaded method. => you can still use
-     * json().status(200). and so on...
-     * 
-     * @param statusCode
-     * @return
-     */
-    @Deprecated
-    public static Result json(int statusCode) {
-        Result result = status(statusCode).json();
-
-        return result;
-    }
-
     public static Result json() {
         Result result = status(Result.SC_200_OK).json();
-
-        return result;
-    }
-
-    public static Result json(Object renderable) {
-        Result result = status(Result.SC_200_OK).json();
-        result.render(renderable);
 
         return result;
     }
