@@ -284,4 +284,5 @@ Implicit variables available in templates
 -----------------------------------------
 
  * ${lang} resolves to the language Ninja uses currently. 
-    
+ * You can access all session-cookie values by their keys. E.g.: If you had set a cookie with the key "username", then you can use ${username} to 
+    resolve the username and display it.

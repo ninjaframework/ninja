@@ -1,3 +1,7 @@
+Version 1.5
+===========
+ * Added an easy way to access the Session-Cookie-Values in every template (pthum)
+
 Version 1.4.2
 =============
 

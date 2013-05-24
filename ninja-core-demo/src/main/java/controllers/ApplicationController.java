@@ -103,8 +103,9 @@ public class ApplicationController {
 
     public Result session(Context context) {
         context.getSessionCookie().put("username", "kevin");
+        //context.getSessionCookie().put("", "");
 
-        return Results.html().render(context.getSessionCookie().getData());
+        return Results.html();//.render(context.getSessionCookie().getData());
 
     }
 
