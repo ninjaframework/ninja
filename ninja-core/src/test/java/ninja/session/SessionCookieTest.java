@@ -39,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
+import java.util.Random;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SessionCookieTest {
@@ -72,7 +73,7 @@ public class SessionCookieTest {
 		when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix)).thenReturn("NINJA");
 
 
-		crypto = new Crypto(ninjaProperties);
+		crypto = new Crypto(ninjaProperties, new Random());
 
 	}
 

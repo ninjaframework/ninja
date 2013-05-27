@@ -16,16 +16,21 @@
 
 package ninja.utils;
 
+import java.util.Random;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class Crypto {
 
     private final String applicationSecret;
+    private Random random;
 
     /**
      * Secret is a secret key. Usually something like:
@@ -33,9 +38,14 @@ public class Crypto {
      * 
      * @param applicationSecret
      *            the secret to use for signing.
+     * @param random
+     *            the random generator to be used for generating the secret
+     *            => usually new Random(), but can also be set to e.g. new Random(1) to
+     *            test the function.
      */
     @Inject
-    public Crypto(NinjaProperties ninjaProperties) {
+    public Crypto(NinjaProperties ninjaProperties, Random random) {
+        this.random = random;
         this.applicationSecret = ninjaProperties
                 .getOrDie(NinjaConstant.applicationSecret);
 
@@ -69,6 +79,29 @@ public class Crypto {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * Generates a random String of length. This string is suitable
+     * as secret for your application (key "application.secret" in conf/application.conf).
+     * 
+     * @return A string that can be used as "application.secret".
+     * 
+     */
+    public String generateSecret() {
+        
+        String charsetForSecret = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        
+        StringBuffer stringBuffer = new StringBuffer();
+        
+        for (int i = 0; i < 64; i++) {
+            
+            int charToPoPickFromCharset = random.nextInt(charsetForSecret.length());            
+            stringBuffer.append(charsetForSecret.charAt(charToPoPickFromCharset));
+            
+        }
+
+        return stringBuffer.toString();
     }
 
 }
