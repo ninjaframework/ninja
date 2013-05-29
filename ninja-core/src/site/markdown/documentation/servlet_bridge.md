@@ -20,7 +20,7 @@ and Ninja to get the best of both worlds.
 The Servlet-bridge
 ------------------
 
-The bst way to add servlets and filters to Ninja is to use Ninja's SevletModule at /conf/ServletModule.java .
+The best way to add servlets and filters to Ninja is to use Ninja's SevletModule at /conf/ServletModule.java .
 
 <pre class="prettyprint">
     public class ServletModule extends com.google.inject.servlet.ServletModule {
