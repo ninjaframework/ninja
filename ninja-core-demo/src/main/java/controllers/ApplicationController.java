@@ -102,10 +102,10 @@ public class ApplicationController {
     }
 
     public Result session(Context context) {
+    	//Sets the username "kevin" in the session-cookie
         context.getSessionCookie().put("username", "kevin");
-        //context.getSessionCookie().put("", "");
 
-        return Results.html();//.render(context.getSessionCookie().getData());
+        return Results.html();
 
     }
 

@@ -134,7 +134,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // put all entries of the session cookie to the map.
         // You can access the values by their key in the cookie
         if (!context.getSessionCookie().isEmpty()) {
-            map.putAll(context.getSessionCookie().getData());
+            map.put("session", context.getSessionCookie().getData());
         }
 
         // merge messages with this template...
