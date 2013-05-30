@@ -16,16 +16,21 @@
 
 package ninja.utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import com.google.common.io.Files;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -37,7 +42,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     private static final Logger logger = LoggerFactory
             .getLogger(NinjaPropertiesImpl.class);
 
-    Mode mode;
+    private Mode mode;
 
     private enum Mode {
         prod(NinjaConstant.MODE_PROD), dev(NinjaConstant.MODE_DEV), test(
@@ -94,7 +99,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         compositeConfiguration = new CompositeConfiguration();
 
         // That is the default config.
-        Configuration defaultConfiguration = null;
+        PropertiesConfiguration defaultConfiguration = null;
 
         // Config of prefixed mode corresponding to current mode (eg.
         // %test.myproperty=...)
@@ -191,6 +196,16 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         if (defaultConfiguration != null) {
             compositeConfiguration.addConfiguration(defaultConfiguration);
         }
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Check that the secret is set or generate a new one if the property
+        // does not exist
+        // /////////////////////////////////////////////////////////////////////
+        NinjaPropertiesImplTool.checkThatApplicationSecretIsSet(
+                isProd(), 
+                new File("").getAbsolutePath(), 
+                defaultConfiguration, 
+                compositeConfiguration);
 
     }
 
@@ -357,5 +372,5 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             return defaultValue;
         }
     }
-
+    
 }

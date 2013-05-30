@@ -19,8 +19,6 @@ package ninja.utils;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.util.Random;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -41,7 +39,7 @@ public class CryptoTest {
                 .thenReturn(
                         "Fxu6U5BTGIJZ06c8bD1xkhHc3Ct5JZXlst8tJ1K5uJJPaLdceDo6CUz0iWpjjQUY");
 
-        crypto = new Crypto(ninjaProperties, new Random());
+        crypto = new Crypto(ninjaProperties);
     }
 
     @Test
@@ -53,23 +51,6 @@ public class CryptoTest {
                 crypto.signHmacSha1("Another sentence to sign"));
         assertEquals("4ad5fb0895dbc0c7172f9fc85d59f74b69f99b8b",
                 crypto.signHmacSha1("Yet another sentence to sign"));
-
-    }
-
-    @Test
-    public void testGenerateSecret() {
-        
-        crypto = new Crypto(ninjaProperties, new Random(323232L));
-        assertEquals("5EJYQbXUb81LhuSoNO5l4eh2ZrNPoUBzZaGNixcPOFUsKzRkpTOeu9sm8CGUKaXZ",
-                crypto.generateSecret());
-        
-        crypto = new Crypto(ninjaProperties, new Random(2L));
-        assertEquals("oC8rHI6rDAiYSgMKHP6b4NlWG8UDdo5ALy66t3h2A5mhwWIBGjdyeFDBCoUn8Cov",
-                crypto.generateSecret());
-        
-        crypto = new Crypto(ninjaProperties, new Random(3L));
-        assertEquals("0C27oI94jXZkXyB0ID8ZPq1zinxNmrenSwItFwRXphCKOC6ZwGTFX3nYZsYKafxw",
-                crypto.generateSecret());
 
     }
 
