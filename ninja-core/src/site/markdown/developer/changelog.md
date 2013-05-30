@@ -1,8 +1,10 @@
-Version X
-=========
+Version CURRENT
+===============
 
- * Added support for creation of application.secret
- * Added security guide covering sessions
+ * Added an easy way to access the Session-Cookie-Values in every template (pthum)
+ * Added support for creation of application.secret (ra)
+ * Added security guide covering sessions (ra)
+ 
 
 Version 1.4.2
 =============
