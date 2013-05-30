@@ -1,3 +1,9 @@
+Version X
+=========
+
+ * Added support for creation of application.secret
+ * Added security guide covering sessions
+
 Version 1.4.2
 =============
 
