@@ -42,7 +42,7 @@ public class AsyncController {
         executorService.schedule(new Runnable() {
             @Override
             public void run() {
-                ctx.returnResultAsync(Results.json(ctx.getParameter("message")));
+                ctx.returnResultAsync(Results.json().render(ctx.getParameter("message")));
 
             }
         }, Long.parseLong(ctx.getParameter("timeout")), TimeUnit.MILLISECONDS);
