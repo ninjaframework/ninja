@@ -3,6 +3,9 @@ Version X
 
  * Your changes (author)
 
+Version 1.4.4
+=============
+ * Added possibility to get the contextpath in templates (pthum)
 
 Version 1.4.3
 =============

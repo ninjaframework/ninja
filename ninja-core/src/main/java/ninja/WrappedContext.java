@@ -244,4 +244,9 @@ public class WrappedContext implements Context {
     public void setAttribute(String name, Object value) {
         wrapped.setAttribute(name, value);
     }
+
+    @Override
+    public String getContextPath() {
+        return wrapped.getContextPath();
+    }
 }

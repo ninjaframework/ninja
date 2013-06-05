@@ -136,6 +136,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         if (!context.getSessionCookie().isEmpty()) {
             map.put("session", context.getSessionCookie().getData());
         }
+        
+        map.put("contextPath", context.getContextPath());
 
         // merge messages with this template...
         Map<Object, Object> i18nMap = messages.getAll(context, Optional.of(result));

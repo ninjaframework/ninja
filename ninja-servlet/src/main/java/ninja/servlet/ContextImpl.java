@@ -555,6 +555,12 @@ public class ContextImpl implements Context.Impl {
         
         
     }
+
+	@Override
+	public String getContextPath() {
+		
+		return httpServletRequest.getContextPath();
+	}
     
     
 
