@@ -285,3 +285,4 @@ Implicit variables available in templates
 
  * ${lang} resolves to the language Ninja uses currently. 
  * You can access all session-cookie values by their keys prefixed with the accessor "session.". E.g.: If you had set a cookie with the key "username", then you can use ${session.username} to resolve the username and display it.
+ *${contextPath} resolves the context path of the application (empty if running on root)

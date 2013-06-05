@@ -155,6 +155,12 @@ public interface Context {
      * @return the cookie with that name or null.
      */
     List<Cookie> getCookies();
+    
+    /**
+     * Get the context path on which the application is running
+     * @return the context-path with a leading "/" or "" if running on root
+     */
+    String getContextPath();
 
     /**
      * Get the parameter with the given key from the request. The parameter may
