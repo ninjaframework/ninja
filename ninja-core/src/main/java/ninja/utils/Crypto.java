@@ -22,7 +22,9 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Hex;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class Crypto {
 
     private final String applicationSecret;
@@ -33,6 +35,10 @@ public class Crypto {
      * 
      * @param applicationSecret
      *            the secret to use for signing.
+     * @param random
+     *            the random generator to be used for generating the secret
+     *            => usually new Random(), but can also be set to e.g. new Random(1) to
+     *            test the function.
      */
     @Inject
     public Crypto(NinjaProperties ninjaProperties) {

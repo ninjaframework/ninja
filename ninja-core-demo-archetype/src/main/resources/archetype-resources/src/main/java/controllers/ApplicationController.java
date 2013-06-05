@@ -92,9 +92,9 @@ public class ApplicationController {
                              @Param("email") @Required String email) {
 
         if (validation.hasViolations()) {
-            return Results.json(validation.getFieldViolations("email"));
+            return Results.json().render(validation.getFieldViolations("email"));
         } else {
-            return Results.json(email);
+            return Results.json().render(email);
         }
     }
 
@@ -133,7 +133,7 @@ public class ApplicationController {
         Map<String, String> renderMap = Maps.newHashMap();
         renderMap.put("maliciousJavascript", maliciousJavascript);
 
-        return Results.html(renderMap);
+        return Results.html().render(renderMap);
 
     }
 

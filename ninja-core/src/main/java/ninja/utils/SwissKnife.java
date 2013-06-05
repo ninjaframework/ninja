@@ -60,17 +60,19 @@ public class SwissKnife {
      *            classpath. Will both work.
      * @param clazz
      *            We need a classloader and clazz provides the classloader.
-     * @return A configuration or null if there were problems getting it.
+     * @return A PropertiesConfiguration or null if there were problems getting it.
      */
-    public static Configuration loadConfigurationInUtf8(String fileOrUrlOrClasspathUrl) {
+    public static PropertiesConfiguration loadConfigurationInUtf8(String fileOrUrlOrClasspathUrl) {
 
-        PropertiesConfiguration c = new PropertiesConfiguration();
-        c.setEncoding(NinjaConstant.UTF_8);
-        c.setDelimiterParsingDisabled(true);
+        PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration();
+        propertiesConfiguration.setEncoding(NinjaConstant.UTF_8);
+        propertiesConfiguration.setDelimiterParsingDisabled(true);
+        propertiesConfiguration.setFileName(fileOrUrlOrClasspathUrl);
+        propertiesConfiguration.getLayout().setSingleLine(NinjaConstant.applicationSecret, true);
 
         try {
 
-            c.load(fileOrUrlOrClasspathUrl);
+            propertiesConfiguration.load(fileOrUrlOrClasspathUrl);
 
         } catch (ConfigurationException e) {
 
@@ -80,7 +82,7 @@ public class SwissKnife {
             return null;
         }
 
-        return (Configuration) c;
+        return propertiesConfiguration;
     }
 
 }

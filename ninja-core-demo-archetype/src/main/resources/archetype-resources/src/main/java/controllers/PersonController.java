@@ -36,13 +36,13 @@ public class PersonController {
         person.name = "zeeess name - and some utf8 => öäü";
 
         // render
-        return Results.json(person);
+        return Results.json().render(person);
     }
 
     public Result postPerson(Person person) {
         // okay... we simply render the parsed object again as json
         // usually we would save something into a db or so..
-        return Results.json(person);
+        return Results.json().render(person);
     }
 
 }
