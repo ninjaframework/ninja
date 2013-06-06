@@ -32,6 +32,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
+import freemarker.core.Environment;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -85,8 +86,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // The defaultObjectWrapper is a BeansWrapper
         // => we fetch it and allow the wrapper to expose all fields
         // for convenience
-        
-        
         BeansWrapper beansWrapper = (BeansWrapper) cfg.getObjectWrapper();
         beansWrapper.setExposeFields(true);
         
@@ -137,35 +136,49 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             map.put("session", context.getSessionCookie().getData());
         }
 
+        ///////////////////////////////////////////////////////////////////////
+        // this will be deprecated soon. Please use ${i18n("mykey")} 
+        // to render i18n messages
+        //////////////////////////////////////////////////////////////////////
         // merge messages with this template...
         Map<Object, Object> i18nMap = messages.getAll(context, Optional.of(result));
         map.putAll(i18nMap);
         
-        // get contentOfFlashCookie
+        //////////////////////////////////////////////////////////////////////
+        // A method that renders i18n messages and can also render messages with 
+        // placeholders directly in your template:
+        // E.g.: ${i18n("mykey", myPlaceholderVariable)}
+        //////////////////////////////////////////////////////////////////////
+        map.put("i18n", new TemplateEngineFreemarkerI18nMethod(messages, context, result));
+        
+        
+        
+
+        ///////////////////////////////////////////////////////////////////////
+        // Convenience method to translate possible flash scope keys.
+        // !!! If you want to set messages with placeholders please do that
+        // !!! in your controller. We only can set simple messages.
+        // Eg. A message like "errorMessage=my name is: {0}" => translate in controller and pass directly.
+        //     A message like " errorMessage=An error occurred" => use that as errorMessage.  
+        //
         // prefix keys with "flash_"
+        //////////////////////////////////////////////////////////////////////
         for (Entry<String, String> entry : context.getFlashCookie().getCurrentFlashCookieData().entrySet()) {
             
             String messageValue = null;
-            
-            //if it is a translated message get it from the language
-            if (entry.getValue().startsWith("i18n")) {
+
                 
-                Optional<String> messageValueOptional = messages.get(entry.getValue(), context, Optional.of(result));
+            Optional<String> messageValueOptional = messages.get(entry.getValue(), context, Optional.of(result));
                 
-                if (!messageValueOptional.isPresent()) {
-                    throw new RuntimeException("No translated message found for flash message key: " + entry.getValue());
-                } else {
-                    messageValue = messageValueOptional.get();
-                }
-                
-                //else it is something else (for form parameters for instance)
-                // we don't touch it...
-            } else {
+            if (!messageValueOptional.isPresent()) {
                 messageValue = entry.getValue();
+            } else {
+                messageValue = messageValueOptional.get();
             }
             
             map.put("flash_" + entry.getKey(), messageValue);           
         }
+        
 
 
         String templateName = templateEngineHelper.getTemplateForResult(

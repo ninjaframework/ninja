@@ -150,5 +150,40 @@ public class ApplicationControllerTest extends NinjaTest {
 
 
     }
+    
+    @Test
+    public void testFlashSuccessWorks() {
+
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/flash_success");
+
+        System.out.println("repinse: " +response);
+        // And assert that stuff is visible on page:
+        assertTrue(response.contains("This is a flashed success - with placeholder: PLACEHOLDER"));
+
+    }
+    
+    @Test
+    public void testFlashErrorWorks() {
+
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/flash_error");
+        
+        System.out.println("repinse: " +response);
+        // And assert that stuff is visible on page:
+        assertTrue(response.contains("This is a flashed error - with placeholder: PLACEHOLDER"));
+
+    }
+    
+    @Test
+    public void testFlashAnyWorks() {
+
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/flash_any");
+
+        // And assert that stuff is visible on page:
+        assertTrue(response.contains("This is an arbitrary message as flash message - with placeholder: PLACEHOLDER"));
+
+    }
 
 }

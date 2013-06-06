@@ -1,6 +1,17 @@
 Upgrading to latest Ninja
 =========================
 
+From 1.4 to 1.X
+---------------
+
+Improvements in i18n. You can now use the following snipplet to include i18n into your templates:
+${i18n("myMessageKey")}. Using ${i18nMyMessageKey} will be deprecated soon. Don't use it.
+
+With the new i18n facilities you can now also format your messages with variables of your template:
+
+${i18n("myMessageKey", myVariable)}.
+
+
 From 1.2 to 1.3
 ---------------
 

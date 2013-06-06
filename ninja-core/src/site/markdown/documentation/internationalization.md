@@ -33,22 +33,21 @@ conf/messages.en.properties might look like:
 
 <pre class="prettyprint">
     # registration.ftl.html
-    i18nCasinoRegistrationTitle=Register
-    i18nCasinoRegistrationEmail=Your email
-    i18nCasinoRegistrationConfirm=Confirm
-    i18nCasinoRegistrationAcceptTermsOfService=Accept terms of service          
-    i18nCasinoRegistrationRegister=Register
+    casinoRegistrationTitle=Register
+    casinoRegistrationEmail=Your email
+    casinoRegistrationConfirm=Confirm
+    casinoRegistrationAcceptTermsOfService=Accept terms of service          
+    casinoRegistrationRegister=Register
 
     # registrationPending.ftl.html
-    i18nRegistrationPleaseVerifyEmailAddress=Please check your email inbox to verify your account.
-    i18nRegistrationPendingError=Error confirming email.
-    i18nRegistrationPendingSuccess=Success confirming email.  
+    registrationPleaseVerifyEmailAddress=Please check your email inbox to verify your account.
+    registrationPendingError=Error confirming email.
+    registrationPendingSuccess=Success confirming email.  
 </pre>
 
-Two important things:
+One important thing:
 
- * Use camelCaseWriting for your messages
- * Start your message ALWAYS with i18n
+ * Use ONLY camelCaseWriting for your messages
 
 
 Getting a message inside your code
@@ -86,7 +85,7 @@ Inside a freemarker template (ftl.html) you can get internationalized messages b
 
     <html>
         <head>
-            <title>${i18nCasinoRegistrationTitle}</title>
+            <title>${i18n("casinoRegistrationTitle")}</title>
         </head>
     <html>
 

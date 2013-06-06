@@ -30,8 +30,8 @@ import com.google.common.collect.Maps;
 
 public class I18nControllerTest extends NinjaTest {
     
-    String TEXT_EN = "Hello - this is an i18n message in the templating engine";
-    String TEXT_DE = "Hallo - das ist eine internationalisierte Nachricht in der Templating Engine";
+    String TEXT_EN = "Hello - this is an i18n message in the templating engine with placeholder: Yea!";
+    String TEXT_DE = "Hallo - das ist eine internationalisierte Nachricht in der Templating Engine mit placeholder: Yea!";
 
     @Test
     public void testThatI18nWorksEn() {
