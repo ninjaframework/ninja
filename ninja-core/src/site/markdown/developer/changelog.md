@@ -1,11 +1,9 @@
 Version X
-=========
-
- * Your changes (author)
-
-Version 1.4.4
 =============
+
  * Added possibility to get the contextpath in templates (pthum)
+ * Fixed bug when translating flash scope i18n (pthum, ra)
+ * Added better i18n facilities to html tempting (ra)
 
 Version 1.4.3
 =============
