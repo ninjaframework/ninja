@@ -135,6 +135,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         if (!context.getSessionCookie().isEmpty()) {
             map.put("session", context.getSessionCookie().getData());
         }
+        
+        map.put("contextPath", context.getContextPath());
 
         ///////////////////////////////////////////////////////////////////////
         // this will be deprecated soon. Please use ${i18n("mykey")} 

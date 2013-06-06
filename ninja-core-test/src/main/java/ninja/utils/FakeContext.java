@@ -49,6 +49,8 @@ public class FakeContext implements Context {
     private String requestContentType;
 
     private String requestPath;
+    
+    private String contextPath;
 
     /** please use the requestPath stuff */
     @Deprecated
@@ -383,4 +385,13 @@ public class FakeContext implements Context {
     public void setAttribute(String name, Object value) {
         attributes.put(name, value);
     }
+
+	@Override
+	public String getContextPath() {
+		return contextPath;
+	}
+	
+	public void setContextPath(String contextPath){
+		this.contextPath = contextPath;
+	}
 }

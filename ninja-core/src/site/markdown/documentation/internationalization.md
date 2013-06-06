@@ -53,24 +53,32 @@ One important thing:
 Getting a message inside your code
 ----------------------------------
 
-Ninja provides the message through the class Lang.
+Ninja provides the message through the class Messages.
 
-You can inject and use Lang your application like so:
+You can inject and use Messages in your application like so:
 
 <pre class="prettyprint">
     public class ApplicationController {
     
-        Lang lang
+        Messages msg
 
         @Inject
-        ApplicationController(Lang lang) {
-            this.lang = lang
+        ApplicationController(Messages msg) {
+            this.msg = msg
         }
     
-        public Result controllerMethod() {
-        
-           String message = "localized message: " + lang.get("i18nCasinoRegistrationTitle", "en");
-           return Results.text(message);
+        public Result controllerMethod(Context context) {
+        	
+            Optional<String> language = Optional.of("en");
+			Optional<Result> optResult = Optional.absent();
+			Object [] obj = {};
+			
+           String message1 = "localized message1: " + msg.get("i18nCasinoRegistrationTitle", language, obj);
+           
+           //this will get the language by the context
+           String message2 = "localized message2: " + msg.get("i18nCasinoRegistrationTitle", context, optResult, obj);
+           
+           return Results.text(message1+" "+message2);
 
         }
 

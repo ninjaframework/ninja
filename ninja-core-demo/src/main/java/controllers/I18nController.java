@@ -46,10 +46,10 @@ public class I18nController {
     public Result indexWithLanguage(@PathParam("language") String language) {
         
         Result result = Results.ok().html().template("/views/I18nController/index.ftl.html");
-        // This gets an url like /1i8n/en
+        // This gets an url like /i18n/en
         // language is then the "en" part of the url.
         
-        // We take that part and set that language as the default lanugage
+        // We take that part and set that language as the default language
         // of the framework for this user.
         lang.setLanguage(language, result);
         
