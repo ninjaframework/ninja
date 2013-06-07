@@ -23,6 +23,7 @@ import models.Contact;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
+import ninja.Router;
 import ninja.i18n.Lang;
 import ninja.params.Param;
 import ninja.params.PathParam;
@@ -49,6 +50,9 @@ public class ApplicationController {
 
     @Inject
     Lang lang;
+    
+    @Inject
+    Router router;
 
     public Result examples(Context context) {
         logger.info("In example ");
@@ -80,7 +84,11 @@ public class ApplicationController {
         // dependent way with commas etc
         map.put("id", Integer.toString(id));
         map.put("email", email);
+        
+        String reverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard", map);
 
+        map.put("reverseRoute", reverseRoute);
+        
         // and render page with both parameters:
         return Results.html().render(map);
     }
