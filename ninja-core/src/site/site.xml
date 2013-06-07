@@ -56,8 +56,8 @@
         <menu name="Get involved">
             <item name="@ninjaframework" href="https://twitter.com/ninjaframework"/>
             <item name="Mailing list" href="https://groups.google.com/d/forum/ninja-framework"/>
-        	<item name="Source code" href="https://github.com/reyez/ninja"/>
-        	<item name="Bug tracker" href="https://github.com/reyez/ninja/issues"/>
+        	<item name="Source code" href="https://github.com/ninjaframework/ninja"/>
+        	<item name="Bug tracker" href="https://github.com/ninjaframework/ninja/issues"/>
         	<item name="Security issues" href="./security.html"/>
         </menu>
         

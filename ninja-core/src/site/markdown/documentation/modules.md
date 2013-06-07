@@ -8,12 +8,12 @@ a short description how to setup stuff:
 
 EBean RDBMS ORM support
 
- * https://github.com/reyez/ninja-ebean
+ * https://github.com/ninjaframework/ninja-ebean
  
  
 Google AppEngine Support
 
- * https://github.com/reyez/ninja-appengine
+ * https://github.com/ninjaframework/ninja-appengine
 
 
 

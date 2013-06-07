@@ -14,7 +14,7 @@ Ninja is the best way to develop large scale web applications in Java.
 Getting started
 ---------------
 - Website with docs: http://www.ninjaframework.org
-- Source: http://github.com/reyez/ninja
+- Source: http://github.com/ninjaframework/ninja
 - Continuous integration: https://buildhive.cloudbees.com/job/reyez/job/ninja/
 
 
