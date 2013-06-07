@@ -103,6 +103,8 @@ public class ApplicationControllerTest extends NinjaTest {
         // And assert that stuff is visible on page:
         assertTrue(response.contains("john@example.com"));
         assertTrue(response.contains("12345"));
+        // Assert that reverse routing works:
+        assertTrue(response.contains("By the way... Reverse url of this rawUrl is: /user/12345/john@example.com/userDashboard"));
 
     }
 

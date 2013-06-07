@@ -77,55 +77,8 @@ In Ninja this is really simple and controller that can do so looks like:
 Method index now gets the contents of the path parameters and all query parameters.
 
 
-A note on encoding / decoding
------------------------------
-
-Encoding / Decoding of Urls is not as easy as you think it is. Ninja tries to simplify everything
-as much as possible, but as user of the Api you have to know what you are submitting to Ninja.
-
-We recommend the following [excellent article from Lunatech](http://www.lunatech-research.com/archives/2009/02/03/what-every-web-developer-must-know-about-url-encoding) 
-before you use encoding / decoding actively in your application.
-
-Let's reconsider the controller method from above:
-
-<pre class="prettyprint">
-	package controllers;
-
-	@Singleton
-	public class ApplicationController {
-		
-		public Result index(
-				@PathParam("id") String id, 
-				@PathParam("email") String email, 
-				@Param("debug") String debug) {
-				
-			//do something with the parameters...
-		}
-
-	}
-</pre>
-
-You can expect that String **id** and String **debug** are both correctly decoded values. **BUT** This assumes that
-you are encoding the values correctly on the client side. And encoding is different for
-query parameters or stuff in the path. And not - do not even think about using URLEncoder for encoding urls. This
-is wrong.
-
-Simple example that outlines some of the difficulties:
-Think of a route "/user/{id}/userDashboard".
-
-Let's say your **id** is "rootuser/domain". If you do not encode the slash in the middle you end up with a
-url like /user/rootuser/domain/userDashboard. And the this url does not match the route
-because of the "/".
-
-Therefore you have to encode your id correctly. In that case it would be: rootuser%2Fdomain.
-When the user then visits /user/rootuser%2Fdomain/userDashboard the route matches and
-a @PathParam("id") would then be rootuser/domain as it is decoded by Ninja.
-
-In principle it is really simple. But it is even simpler to mess encoding / decoding up.
-The article from Lunatech mentioned earlier is awesome and explains everything.
-
-Injecting stuff
----------------
+Injecting stuff into your controller method (method scope)
+----------------------------------------------------------
 
 Ninja can inject a lot of stuff into your methods. And you can customize that easily yourself by using so
 called ArgumentMatchers.
@@ -161,6 +114,61 @@ it will parsed (Json, Xml, PostForm) will be determined via the request type.
 
 Therefore you don't have to worry if
 input is for instance Xml or Json. You simply get a parsed object.
+
+
+Reverse routing
+---------------
+
+Let's say you want to know the final route of a class ApplicationController.class, method "index". Assume
+that the original raw route looked like a simple <code>"/"</code>.
+
+You can get the final url by injecting the router into your controller and then calling getReverseRoute
+
+<pre class="prettyprint">
+    @Inject
+    Router router;
+        
+    ...
+        
+    public void myMethod() {
+        
+        // will result into "/"
+        String generatedReverseRoute 
+            = router.getReverseRoute(
+                ApplicationController.class, 
+                "index");
+        
+        ...
+    }       
+</pre>
+
+Now consider a more complex example. Say the original raw route contained placeholders like so:
+<code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final url, but you must
+provide a map containing mappings from placeholders to final values.
+
+
+<pre class="prettyprint">
+    @Inject
+    Router router;
+    
+    ...
+    
+    public void myMethod() {
+    
+        map = Maps.newHashMap();
+        map.put("id","myId");
+        map.put("email","myEmail");
+    
+        // this will result into "/user/myId/myEmail/userDashboard"
+        String generatedReverseRoute 
+            = router.getReverseRoute(
+                ApplicationController.class, 
+                "userDashboard", 
+                map);
+
+        ...
+    }       
+</pre>
 
 
 Rendering html
@@ -238,4 +246,51 @@ This controller will produce a nicely formatted Json output for you. Under the h
 Ninja uses Gson to transform arbitrary objects into Json string.
 
 
+
+A note on encoding / decoding
+-----------------------------
+
+Encoding / Decoding of Urls is not as easy as you think it is. Ninja tries to simplify everything
+as much as possible, but as user of the Api you have to know what you are submitting to Ninja.
+
+We recommend the following [excellent article from Lunatech](http://www.lunatech-research.com/archives/2009/02/03/what-every-web-developer-must-know-about-url-encoding) 
+before you use encoding / decoding actively in your application.
+
+Let's reconsider the controller method from above:
+
+<pre class="prettyprint">
+    package controllers;
+
+    @Singleton
+    public class ApplicationController {
+        
+        public Result index(
+                @PathParam("id") String id, 
+                @PathParam("email") String email, 
+                @Param("debug") String debug) {
+                
+            //do something with the parameters...
+        }
+
+    }
+</pre>
+
+You can expect that String **id** and String **debug** are both correctly decoded values. **BUT** This assumes that
+you are encoding the values correctly on the client side. And encoding is different for
+query parameters or stuff in the path. And not - do not even think about using URLEncoder for encoding urls. This
+is wrong.
+
+Simple example that outlines some of the difficulties:
+Think of a route "/user/{id}/userDashboard".
+
+Let's say your **id** is "rootuser/domain". If you do not encode the slash in the middle you end up with a
+url like /user/rootuser/domain/userDashboard. And the this url does not match the route
+because of the "/".
+
+Therefore you have to encode your id correctly. In that case it would be: rootuser%2Fdomain.
+When the user then visits /user/rootuser%2Fdomain/userDashboard the route matches and
+a @PathParam("id") would then be rootuser/domain as it is decoded by Ninja.
+
+In principle it is really simple. But it is even simpler to mess encoding / decoding up.
+The article from Lunatech mentioned earlier is awesome and explains everything.
 

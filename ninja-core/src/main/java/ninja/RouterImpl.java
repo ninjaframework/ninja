@@ -18,14 +18,17 @@ package ninja;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class RouterImpl implements Router {
 
-	private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<RouteBuilderImpl>();
+    private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<RouteBuilderImpl>();
     private final Injector injector;
 
     private List<Route> routes;
@@ -36,20 +39,71 @@ public class RouterImpl implements Router {
     }
 
     @Override
-	public Route getRouteFor(String httpMethod, String uri) {
+    public Route getRouteFor(String httpMethod, String uri) {
         if (routes == null) {
-            throw new IllegalStateException("Attempt to get route when routes not compiled");
+            throw new IllegalStateException(
+                    "Attempt to get route when routes not compiled");
         }
 
-		for (Route route : routes) {
-			if (route.matches(httpMethod, uri)) {
-				return route;
-			}
-		}
+        for (Route route : routes) {
+            if (route.matches(httpMethod, uri)) {
+                return route;
+            }
+        }
 
-		return null;
+        return null;
 
-	}
+    }
+    
+    public String getReverseRoute(Class<?> controllerClass,
+                                  String controllerMethodName) {
+        
+        Map<String, Object> map = Maps.newHashMap();
+        return getReverseRoute(controllerClass, controllerMethodName, map);
+        
+        
+    }
+
+    public String getReverseRoute(Class<?> controllerClass,
+                                 String controllerMethodName,
+                                 Map<String, Object> parameterMap) {
+        if (routes == null) {
+            throw new IllegalStateException(
+                    "Attempt to get route when routes not compiled");
+        }
+
+        for (Route route : routes) {
+
+            if (route.getControllerClass().equals(controllerClass)
+                    && route.getControllerMethod().getName().equals(controllerMethodName)) {
+                
+                // The original url. Something like route/user/{id}/{email}/userDashboard
+                String urlWithReplacedPlaceholders = route.getUrl();
+                
+                for (Entry<String, Object> parameterPair : parameterMap.entrySet()) {
+                    
+                    // The original regex. For the example above this results in {id}
+                    String originalRegex = String.format("\\{%s\\}", parameterPair.getKey());
+                    
+                    // The value that will be added into the regex => myId for instance...
+                    String resultingRegexReplacement = parameterPair.getValue().toString();
+                    
+                    // Finally this will result in something like: route/user/myId/myEmail/userDashboard
+                    urlWithReplacedPlaceholders = urlWithReplacedPlaceholders.replaceAll(
+                            originalRegex, 
+                            resultingRegexReplacement);
+                           
+                }
+                
+                return urlWithReplacedPlaceholders;
+                
+            }
+
+        }
+
+        return null;
+
+    }
 
     public void compileRoutes() {
         if (routes != null) {
@@ -62,45 +116,45 @@ public class RouterImpl implements Router {
         this.routes = ImmutableList.copyOf(routes);
     }
 
-	@Override
-	public RouteBuilder GET() {
+    @Override
+    public RouteBuilder GET() {
 
-		RouteBuilderImpl routeBuilder = new RouteBuilderImpl().GET();
-		allRouteBuilders.add(routeBuilder);
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().GET();
+        allRouteBuilders.add(routeBuilder);
 
-		return routeBuilder;
-	}
+        return routeBuilder;
+    }
 
-	@Override
-	public RouteBuilder POST() {
+    @Override
+    public RouteBuilder POST() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl().POST();
-		allRouteBuilders.add(routeBuilder);
+        allRouteBuilders.add(routeBuilder);
 
-		return routeBuilder;
-	}
+        return routeBuilder;
+    }
 
-	@Override
-	public RouteBuilder PUT() {
+    @Override
+    public RouteBuilder PUT() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl().PUT();
-		allRouteBuilders.add(routeBuilder);
+        allRouteBuilders.add(routeBuilder);
 
-		return routeBuilder;
-	}
+        return routeBuilder;
+    }
 
-	@Override
-	public RouteBuilder DELETE() {
+    @Override
+    public RouteBuilder DELETE() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl().DELETE();
-		allRouteBuilders.add(routeBuilder);
+        allRouteBuilders.add(routeBuilder);
 
-		return routeBuilder;
-	}
+        return routeBuilder;
+    }
 
-	@Override
-	public RouteBuilder OPTIONS() {
+    @Override
+    public RouteBuilder OPTIONS() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl().OPTION();
-		allRouteBuilders.add(routeBuilder);
+        allRouteBuilders.add(routeBuilder);
 
-		return routeBuilder;
-	}
+        return routeBuilder;
+    }
 
 }
