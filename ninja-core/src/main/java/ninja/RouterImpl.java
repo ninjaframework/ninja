@@ -17,6 +17,7 @@
 package ninja;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,20 +81,61 @@ public class RouterImpl implements Router {
                 // The original url. Something like route/user/{id}/{email}/userDashboard
                 String urlWithReplacedPlaceholders = route.getUrl();
                 
+                Map<String, Object> queryParameterMap = Maps.newHashMap();
+                
                 for (Entry<String, Object> parameterPair : parameterMap.entrySet()) {
                     
                     // The original regex. For the example above this results in {id}
-                    String originalRegex = String.format("\\{%s\\}", parameterPair.getKey());
+                    String originalRegex = String.format("{%s}", parameterPair.getKey());
+                    String originalRegexEscaped = String.format("\\{%s\\}", parameterPair.getKey());
                     
                     // The value that will be added into the regex => myId for instance...
                     String resultingRegexReplacement = parameterPair.getValue().toString();
                     
-                    // Finally this will result in something like: route/user/myId/myEmail/userDashboard
-                    urlWithReplacedPlaceholders = urlWithReplacedPlaceholders.replaceAll(
-                            originalRegex, 
-                            resultingRegexReplacement);
-                           
+                    // If regex is in the url as placeholder we replace the placeholder
+                    if (urlWithReplacedPlaceholders.contains(originalRegex)) {
+                        
+                        urlWithReplacedPlaceholders = urlWithReplacedPlaceholders.replaceAll(
+                                originalRegexEscaped, 
+                                resultingRegexReplacement);
+                    
+                    // If the parameter is not there as placeholder we add it as queryParameter
+                    } else {
+                    
+                        queryParameterMap.put(parameterPair.getKey(), parameterPair.getValue());
+                        
+                    }
+   
                 }
+                
+                
+                // now prepare the query string for this url if we got some query params
+                if (queryParameterMap.entrySet().size() > 0) {
+                    
+                    StringBuffer queryParameterStringBuffer = new StringBuffer();
+                    
+                    // The uri is now replaced => we now have to add potential query parameters
+                    for (Iterator<Entry<String, Object>> iterator = queryParameterMap.entrySet().iterator(); 
+                            iterator.hasNext(); ) {
+                        
+                        Entry<String, Object> queryParameterEntry = iterator.next();
+                        queryParameterStringBuffer.append(queryParameterEntry.getKey());
+                        queryParameterStringBuffer.append("=");
+                        queryParameterStringBuffer.append(queryParameterEntry.getValue());
+                        
+                        if (iterator.hasNext()) {
+                            queryParameterStringBuffer.append("&");
+                        }
+                        
+                    }
+                    
+    
+                     urlWithReplacedPlaceholders = urlWithReplacedPlaceholders 
+                             + "?" 
+                             + queryParameterStringBuffer.toString();
+                
+                }
+                
                 
                 return urlWithReplacedPlaceholders;
                 

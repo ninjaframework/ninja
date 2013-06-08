@@ -142,9 +142,10 @@ You can get the final url by injecting the router into your controller and then 
     }       
 </pre>
 
-Now consider a more complex example. Say the original raw route contained placeholders like so:
+Now consider a more complex example. Say the original raw route contained placeholders on the following form:
 <code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final url, but you must
-provide a map containing mappings from placeholders to final values.
+provide a map containing mappings from placeholders to final values. If the key cannot be found as
+placeholders their value will be added as query parameters:
 
 
 <pre class="prettyprint">
@@ -158,8 +159,10 @@ provide a map containing mappings from placeholders to final values.
         map = Maps.newHashMap();
         map.put("id","myId");
         map.put("email","myEmail");
+        map.put("paging_size","100");
+        map.put("page","1");
     
-        // this will result into "/user/myId/myEmail/userDashboard"
+        // this will result into "/user/myId/myEmail/userDashboard?paging_size=100&page=1"
         String generatedReverseRoute 
             = router.getReverseRoute(
                 ApplicationController.class, 

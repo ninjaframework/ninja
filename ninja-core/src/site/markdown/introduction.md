@@ -16,7 +16,7 @@ Introduction
 -----------
 
 It is a really stupid idea writing your own framework. It is even more stupid writing your own web framework. Did you know
-that even Java's binary search contained a bug until 2006? Even with binary search being invented 50 years earlier. And
+that even Java's binary search contained a bug until 2006? Even with binary search being invented 50 years earlier. Knowing that - 
 how many bugs do you think a new web framework will contain?
 
 Well. Most probably many.
@@ -58,8 +58,8 @@ should we do? Continue with Play 1 for new projects? Fork Play 1? Switch to Rail
 The truth is: We love the Java eco-system. The great IDE support. Great debuggers. Superior dependency and build tools. The
 power of a statically typed language. All that is great.
 
-Therefore we decided to write a new pure Java framework. We feel that Ninja is in the tradition of Play 1 and Rails. Therefore
-we own a lot to the Play and Rails teams.
+Therefore we decided to write a new pure Java framework. We feel that Ninja is in the tradition of Play 1 and Rails. And all praise
+must go to Play and Rails teams.
 
 Conclusion
 ----------

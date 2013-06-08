@@ -1,11 +1,10 @@
 Version X
 =========
 
- * Added reverse routing facilities (ra)
-
-Version 1.4.4
-=============
  * Added possibility to get the contextpath in templates (pthum)
+ * Added reverse routing facilities (ra)
+ * Extended reverse routing facilities with support for query parameters (ra)
+
 
 Version 1.4.3
 =============

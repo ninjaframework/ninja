@@ -56,7 +56,8 @@ public interface Router {
      * @param map The map containing pairs with replacements for placeholders. 
      *          It's a String Object map so that it matches the map used to render a page.
      *          to get the value "toString()" is called on the object. Make sure that works for your object
-     *          or simply use a String.
+     *          or simply use a String. If the raw uri does not contain the placeholders
+     *          they will be added as query parameters ?key=value&key2=value2 and so on
      * @return The final url (without server, and without any prefixes)
      */
     public String getReverseRoute(Class<?> clazz, String methodName, Map<String, Object> parameterMap);
