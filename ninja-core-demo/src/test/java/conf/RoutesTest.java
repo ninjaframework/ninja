@@ -16,7 +16,14 @@
 
 package conf;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
+
 import org.junit.Test;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 
 import controllers.ApplicationController;
 import ninja.NinjaRouterTest;
@@ -44,5 +51,77 @@ public class RoutesTest extends NinjaRouterTest {
         aRequestLike("GET",  "/examples").isHandledBy(ApplicationController.class, "examples");
 
     }
+    
+    
+    @Test
+    public void testReverseRoutingWithoutMap() {
+        
+        startServer();
+        
+        
+        // TEST 1: a simple route without replacements:
+        String generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "index");
+        
+        assertEquals("/", generatedReverseRoute);
+        
+        // TEST 2: a more complex route with replacements:
+        //router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
+        
+        generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard");
+        
+        // this looks strange, but is expected:
+        assertEquals("/user/{id}/{email}/userDashboard", generatedReverseRoute);
+        
+
+
+    }
+    
+    @Test
+    public void testReverseRoutingWithMap() {
+        
+        startServer();
+        
+        
+        // TEST 1: a simple route without replacements:
+        Map<String, Object> map = Maps.newHashMap();
+        String generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "index", map);
+        
+        assertEquals("/", generatedReverseRoute);
+        
+        // TEST 2: a more complex route with replacements:
+        //router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
+        map = Maps.newHashMap();
+        map.put("id","myId");
+        map.put("email","myEmail");
+        
+        generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard", map);
+        
+        assertEquals("/user/myId/myEmail/userDashboard", generatedReverseRoute);
+        
+
+
+    }
+    
+    @Test
+    public void testReverseRoutingWithMapAndQueryParameter() {
+        
+        startServer();
+        
+        // TEST 2: a more complex route with replacements and query parameters
+        //router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("id","myId");
+        map.put("email","myEmail");        
+        map.put("paging_size","100");
+        map.put("page","1");
+        
+        String generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard", map);
+        
+        assertEquals("/user/myId/myEmail/userDashboard?paging_size=100&page=1", generatedReverseRoute);
+
+    }
+    
+    
+
 
 }

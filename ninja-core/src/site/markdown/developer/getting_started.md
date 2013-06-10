@@ -47,6 +47,11 @@ Making a Ninja release
 - cd ninja-core
 - mvn site site:deploy
 
+4) Add new version info to wikipedia:
+
+- http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks
+- http://en.wikipedia.org/wiki/Ninja_Web_Framework
+
 And back to develop:
 
 - git checkout develop

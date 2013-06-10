@@ -221,7 +221,7 @@
 	<distributionManagement>
 		<site>
 			<id>github-project-site</id>
-			<url>gitsite:git@github.com/reyez/ninja.git</url>
+			<url>gitsite:git@github.com/ninjaframework/ninja.git</url>
 		</site>
 
 	</distributionManagement>

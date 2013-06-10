@@ -98,14 +98,14 @@
 	</build>
 
 	<scm>
-		<url>https://github.com/reyez/ninja</url>
-		<connection>scm:git://github.com/reyez/ninja.git</connection>
-		<developerConnection>scm:git:git@github.com:reyez/ninja.git</developerConnection>
+		<url>https://github.com/ninjaframework/ninja</url>
+		<connection>scm:git://github.com/ninjaframework/ninja.git</connection>
+		<developerConnection>scm:git:git@github.com:ninjaframework/ninja.git</developerConnection>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/reyez/ninja/issues/</url>
+		<url>https://github.com/ninjaframework/ninja/issues/</url>
 	</issueManagement>
 
 	<mailingLists>

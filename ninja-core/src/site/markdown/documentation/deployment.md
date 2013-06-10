@@ -40,9 +40,9 @@ The really cool feature is it scales automatically. Deploy and never worry about
 
 Ninja is fully compatible to the App Engine via the ninja-appengine module.
 
-All information you need are at:
+All informations you need are at:
 
-    https://github.com/reyez/ninja-appengine/
+    https://github.com/ninjaframework/ninja-appengine/
 
 
 Heroku support

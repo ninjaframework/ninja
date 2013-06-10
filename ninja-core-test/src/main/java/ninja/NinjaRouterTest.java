@@ -25,7 +25,7 @@ import org.junit.After;
 public class NinjaRouterTest {
 
     /** The router - initiated from a real server. Routes are verified with this router */
-    private Router router;
+    public Router router;
 
     @After
     public void teardown() {
