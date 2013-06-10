@@ -21,7 +21,8 @@ Examples are "en", "de", "en-US", "en-CA" and so on.
 Defining messages for your application
 ------------------------------------
 
-The message file name follow a convention. The convention is messages.LANGUAGE.property or messages.LANGUAGE-COUNTRY.property.
+The message file name follow a convention. 
+The convention is messages.LANGUAGE.property or messages.LANGUAGE-COUNTRY.property.
 
 Some examples:
 
@@ -33,22 +34,26 @@ conf/messages.en.properties might look like:
 
 <pre class="prettyprint">
     # registration.ftl.html
-    i18nCasinoRegistrationTitle=Register
-    i18nCasinoRegistrationEmail=Your email
-    i18nCasinoRegistrationConfirm=Confirm
-    i18nCasinoRegistrationAcceptTermsOfService=Accept terms of service          
-    i18nCasinoRegistrationRegister=Register
+    casinoRegistrationTitle=Register
+    casinoRegistrationEmail=Your email
+    casinoRegistrationConfirm=Confirm
+    casinoRegistrationAcceptTermsOfService=Accept terms of service          
+    casinoRegistrationRegister=Register
+    casinoRegistrationFlashError=An error occurred.
+    
+    casinoYourUsername=Your username is: {0}
 
     # registrationPending.ftl.html
-    i18nRegistrationPleaseVerifyEmailAddress=Please check your email inbox to verify your account.
-    i18nRegistrationPendingError=Error confirming email.
-    i18nRegistrationPendingSuccess=Success confirming email.  
+    registrationPleaseVerifyEmailAddress=Please check your email inbox to verify your account.
+    registrationPendingError=Error confirming email.
+    registrationPendingSuccess=Success confirming email.  
 </pre>
 
-Two important things:
+Two important thing:
 
- * Use camelCaseWriting for your messages
- * Start your message ALWAYS with i18n
+ * Use ONLY camelCaseWriting for your messages
+ * Internally we use MessageFormat.format(text, values) to format the messages. Therefore
+   all information from http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html do apply.
 
 
 Getting a message inside your code
@@ -72,29 +77,39 @@ You can inject and use Messages in your application like so:
         	
             Optional<String> language = Optional.of("en");
 			Optional<Result> optResult = Optional.absent();
-			Object [] obj = {};
 			
-           String message1 = "localized message1: " + msg.get("i18nCasinoRegistrationTitle", language, obj);
+			// messages use messageFormat. If you use placeholders, messages can format them for you.
+			Object [] messageParamters = {"kevin"};
+			
+           String message1 = "localized message1: " + msg.get("casinoRegistrationTitle", language);
            
-           //this will get the language by the context
-           String message2 = "localized message2: " + msg.get("i18nCasinoRegistrationTitle", context, optResult, obj);
+           // This will determine the language from context and result:
+           String message2 = "localized message2: " + msg.get("casinoYourUsername", context, optResult, messageParamters);
            
-           return Results.text(message1+" "+message2);
+           return Results.text(message1 + " " + message2);
 
         }
 
     }
 </pre>
 
-Getting a message in a template
--------------------------------
+Getting a message inside a template
+-----------------------------------
 
 Inside a freemarker template (ftl.html) you can get internationalized messages by using
 
 
     <html>
         <head>
-            <title>${i18nCasinoRegistrationTitle}</title>
+            <title>${i18n("casinoRegistrationTitle")}</title>
+        </head>
+    <html>
+    
+You can also format messages automatically:
+
+    <html>
+        <head>
+            <title>${i18n("casinoYourUsername", username)}</title>
         </head>
     <html>
 
@@ -155,4 +170,44 @@ You can set the language by using the Lang tools like so:
 </pre>
 
 After setting the language all messages will displayed in German.
+
+
+
+Flash scope and i18n translation
+--------------------------------
+
+The flash scope is available in the template via e.g. ${flash_error}. There is a simple rule regarding i18n:
+If the value of the flash scope key (eg "error") can be found in the messages the translated version is used.
+Otherwise the value is used without any translation.
+
+Consider the messages file introduced some sections above. If you'd use casinoRegistrationFlashError 
+as error in your flash cookie it would be automatically translated into "An error occurred".
+Using "An error occurred - please check your input" as value won't trigger any translation as the value cannot
+be found.
+
+One note: This automatic translation facility cannot be used when placeholders aka {0} are used. In that
+case you have to translate the message in your controller and set the translated value yourself (See the demo application
+for more hints).
+
+Translating your messages with placeholders inside your controller would look like:
+
+<pre class="prettyprint">
+
+    public Result flashError(Context context) {
+    
+        Result result = Results.html();
+        
+        Optional<String> flashMessage = messages.get("flashError", context, Optional.of(result), "PLACEHOLDER");
+        
+        if (flashMessage.isPresent()) {
+            context.getFlashCookie().error(flashMessage.get());
+        }
+
+        return result;
+
+    }
+
+</pre>
+
+
 
