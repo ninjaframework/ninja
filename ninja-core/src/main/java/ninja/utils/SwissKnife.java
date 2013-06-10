@@ -16,11 +16,12 @@
 
 package ninja.utils;
 
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.CaseFormat;
 
 /**
  * A helper class that contains a lot of random stuff that helps to get things
@@ -83,6 +84,19 @@ public class SwissKnife {
         }
 
         return propertiesConfiguration;
+    }
+    
+    /**
+     * Returns the lower class name. Eg. A class named MyObject will
+     * become "myObject".
+     * 
+     * @param object Object for which to return the lowerCamelCaseName
+     * @return the lowerCamelCaseName of the Object
+     */
+    public static String getRealClassNameLowerCamelCase(Object object) {
+        
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
+    
     }
 
 }

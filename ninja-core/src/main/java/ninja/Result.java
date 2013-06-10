@@ -16,10 +16,14 @@
 
 package ninja;
 
+import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import ninja.utils.DateUtil;
+import ninja.utils.SwissKnife;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -112,8 +116,99 @@ public class Result {
         return renderable;
     }
 
-    public Result render(Object renderable) {
-        this.renderable = renderable;
+    /**
+     * This method can be chained and called multiple times.
+     * 
+     * Please make sure you respect the following:
+     * 1. If your object implements the {@link Renderable} interface you can only add one object.
+     * 2. If you add an object for the first time it will only add this object in a plain way
+     *    => The templating engine will take care.
+     * 3. If you add more than one object a map will be generated and the templating engine
+     *    will get a map<String, Object>. The key names of the map are lower camel case names
+     *    of the classnames.
+     *    
+     * IMPORTANT! If you add more than one object of the same type via render() the object you
+     * will get a {@link IllegalArgumentException}. Don't do this. If you want to add more than
+     * object of the same type use {@link Entry} or add them as {@link Map}.
+     * 
+     * @param object The object to render / or add to the map being rendered
+     * @return this result for chaining method calls.
+     */
+    public Result render(Object object) {
+         
+        // if renderable is empty we just add it.
+        // But if it is an Entry of a map we skip that and generate a map straight away...
+        if (this.renderable == null
+                && !(object instanceof Entry)) {
+            
+            this.renderable = object; 
+            
+        } else {   
+            
+            Map<String, Object> renderableMap;
+            
+            if (this.renderable instanceof Renderable) {
+                /**
+                 * Objects implementing interface Renderable can do a lot of funny stuff.
+                 * But they 100% don't want to be used together with other
+                 * objects. We break here.
+                 */
+                throw new IllegalArgumentException(
+                        "Renderable interfaces cannot be mixed with other objects " +
+                        "when calling render().");
+            
+            } else if (this.renderable instanceof Map) {
+                // there is already a map => we simply add the renderable
+                renderableMap = (Map) this.renderable;
+                
+            } else {
+                // only one object => we 
+                renderableMap = new HashMap<String, Object>();
+                // put in former single object:
+                if (this.renderable != null) {
+                    renderableMap.put(
+                            SwissKnife.getRealClassNameLowerCamelCase(this.renderable),
+                            this.renderable);                    
+                }
+ 
+                this.renderable = renderableMap;
+                
+                        
+            }
+            
+            // check the input element:
+            // first case => an entry
+            if (object instanceof Map.Entry<?, ?>) {
+                Map.Entry<String, Object> objectEntry = (Map.Entry) object;
+                renderableMap.put(objectEntry.getKey(), objectEntry.getValue());   
+            // second case => a map => we add it
+            } else if (object instanceof Map<?, ?>) {
+                Map<String, Object> map = (Map) object;
+                
+                for (Entry<String, Object> entry : map.entrySet()) {
+                    renderableMap.put(entry.getKey(), entry.getValue());
+                }
+                
+            } else {
+                //third case an arbitrary object => we transform the name and add it.
+                String name = SwissKnife.getRealClassNameLowerCamelCase(object);
+                
+                if (renderableMap.containsKey(name)) {
+                    throw new IllegalArgumentException(
+                        "Cannot add objects with same names and no specifier. " +
+                    		"Try using Entry<String, Object> and add render that to specify exact name");
+                }
+                
+                renderableMap.put(name, object);
+                
+            }
+             
+
+            
+        }
+        
+        
+        
         return this;
     }
 
