@@ -134,9 +134,44 @@ public class Result {
      * @param object The object to render / or add to the map being rendered
      * @return this result for chaining method calls.
      */
-    public Result render(Object object) {
-         
-        // if renderable is empty we just add it.
+    public Result render(Object ... objectArray) {
+        
+        Object object;
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Preparation of input array / unboxing of multiple parameters...
+        ///////////////////////////////////////////////////////////////////////
+        // case one => a single object => we unbox that
+        if (objectArray.length == 1) {
+            
+            object = objectArray[0];
+            
+        } else if (objectArray.length == 2) {
+            
+            if (!(objectArray[0] instanceof String)) {
+                
+                throw new IllegalArgumentException(
+                        "When supplying two parameters to render() you have to make sure" +
+                        "the first one is a String used as identifier for that object.");
+            } else {
+            
+                // case two => a map like entry => we convert that to a Simple Entry    
+                object = new AbstractMap.SimpleEntry<String, Object>(
+                    (String) objectArray[0], 
+                    objectArray[1]);
+            }
+            
+        } else {
+            throw new IllegalArgumentException(
+                    "Method render() only takes either a single object render(myObject), " +
+                    "or an identifier and an object(\"person\", personObject");
+        }
+        
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Now we use the object and determine what to do...
+        ///////////////////////////////////////////////////////////////////////
+        // If renderable is empty we just add it.
         // But if it is an Entry of a map we skip that and generate a map straight away...
         if (this.renderable == null
                 && !(object instanceof Entry)) {
@@ -202,12 +237,8 @@ public class Result {
                 renderableMap.put(name, object);
                 
             }
-             
-
-            
+               
         }
-        
-        
         
         return this;
     }

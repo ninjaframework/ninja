@@ -298,7 +298,7 @@ public class ResultTest {
         String stringy = new String("stringy");
         
         Entry<String, Object> entry 
-            = new SimpleImmutableEntry("stringy", new String("stringy"));
+            = new SimpleImmutableEntry("stringy", stringy);
         
         // step 1: add one object.
         Result result = new Result(200);
@@ -306,6 +306,70 @@ public class ResultTest {
         Map<String, Object> resultMap = (Map) result.getRenderable();       
         
         assertEquals(stringy, resultMap.get("stringy"));
+      
+    }
+    
+    @Test
+    public void testRenderingOfStringObjectPairsWorks() {  
+        String object1 = new String("stringy1");
+        String object2 = new String("stringy2");
+        
+        // step 1: add one object.
+        Result result = new Result(200);
+        result.render("object1", object1);
+        result.render("object2", object2);
+        Map<String, Object> resultMap = (Map) result.getRenderable();       
+        
+        assertEquals(object1, resultMap.get("object1"));
+        assertEquals(object2, resultMap.get("object2"));
+        
+        
+        ///////////////////////////////////////////////////////////////////////
+        // check that empty render throws exception
+        ///////////////////////////////////////////////////////////////////////
+        boolean gotException = false;
+        try {
+            
+            // will throw exception
+            result.render();
+            
+        } catch (IllegalArgumentException e) {
+            gotException = true;
+        }
+                
+        assertTrue(gotException);
+        
+        ///////////////////////////////////////////////////////////////////////
+        // check that too many arguments in render(...) throws exception
+        ///////////////////////////////////////////////////////////////////////
+        gotException = false;
+        try {
+            
+            // will throw exception
+            result.render(object1, object2, new String("three"));
+            
+        } catch (IllegalArgumentException e) {
+            gotException = true;
+        }
+                
+        assertTrue(gotException);
+        
+        
+        ///////////////////////////////////////////////////////////////////////
+        // check that "correct" two string render throws exception
+        // when first parameter is not a string
+        ///////////////////////////////////////////////////////////////////////
+        gotException = false;
+        try {
+            
+            // will throw exception
+            result.render(new TestObject(), object2);
+            
+        } catch (IllegalArgumentException e) {
+            gotException = true;
+        }
+                
+        assertTrue(gotException);
       
     }
     
