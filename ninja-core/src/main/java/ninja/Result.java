@@ -119,6 +119,7 @@ public class Result {
     /**
      * This method can be chained and called multiple times.
      * 
+     * 
      * Please make sure you respect the following:
      * 1. If your object implements the {@link Renderable} interface you can only add one object.
      * 2. If you add an object for the first time it will only add this object in a plain way
@@ -126,13 +127,20 @@ public class Result {
      * 3. If you add more than one object a map will be generated and the templating engine
      *    will get a map<String, Object>. The key names of the map are lower camel case names
      *    of the classnames.
+     * 4. As convenience the render method takes not only one object, but also two objects at most.
+     *    You can then use something like render("objectName", object). This is the same as adding
+     *    a single object of type Entry... You can access the object under the identifier
+     *    ${objectName.xyz} in your templates.
      *    
      * IMPORTANT! If you add more than one object of the same type via render() the object you
      * will get a {@link IllegalArgumentException}. Don't do this. If you want to add more than
-     * object of the same type use {@link Entry} or add them as {@link Map}.
+     * object of the same type use {@link Entry} or add them as {@link Map}, or use the method described
+     * under 4.
      * 
-     * @param object The object to render / or add to the map being rendered
-     * @return this result for chaining method calls.
+     * @param object The object to render / or add to the map being rendered, or the pair 
+     *          render("identifier", object) => this will put object into the resulting map
+     *          with key "identifier".
+     * @return this result for chaining method calls. You can also chain render calls.
      */
     public Result render(Object ... objectArray) {
         
