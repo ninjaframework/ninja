@@ -117,138 +117,126 @@ public class Result {
     }
 
     /**
-     * This method can be chained and called multiple times.
+     * This method handles several cases:
+     * 1) If you pass an entry to this method it will either add this Entry to the renderable map
+     *    of this result OR generate a new map and add this entry
+     * 2) If the renderable of this result is null, the object passed is simply set as renderable 
+     *    for this Result
+     * 3) If the renderable of this result is not null an new map is generated as
+     *    object to rendera both the former renderable and the new object added to the map. (Possibly
+     *    with default camelCaseKeys.
      * 
-     * 
-     * Please make sure you respect the following:
-     * 1. If your object implements the {@link Renderable} interface you can only add one object.
-     * 2. If you add an object for the first time it will only add this object in a plain way
-     *    => The templating engine will take care.
-     * 3. If you add more than one object a map will be generated and the templating engine
-     *    will get a map<String, Object>. The key names of the map are lower camel case names
-     *    of the classnames.
-     * 4. As convenience the render method takes not only one object, but also two objects at most.
-     *    You can then use something like render("objectName", object). This is the same as adding
-     *    a single object of type Entry... You can access the object under the identifier
-     *    ${objectName.xyz} in your templates.
-     *    
-     * IMPORTANT! If you add more than one object of the same type via render() the object you
-     * will get a {@link IllegalArgumentException}. Don't do this. If you want to add more than
-     * object of the same type use {@link Entry} or add them as {@link Map}, or use the method described
-     * under 4.
-     * 
-     * @param object The object to render / or add to the map being rendered, or the pair 
-     *          render("identifier", object) => this will put object into the resulting map
-     *          with key "identifier".
-     * @return this result for chaining method calls. You can also chain render calls.
      */
-    public Result render(Object ... objectArray) {
+    public Result render(Object object) {
         
-        Object object;
-        
-        ///////////////////////////////////////////////////////////////////////
-        // Preparation of input array / unboxing of multiple parameters...
-        ///////////////////////////////////////////////////////////////////////
-        // case one => a single object => we unbox that
-        if (objectArray.length == 1) {
+        if (this.renderable == null
+                && object instanceof Entry) {
             
-            object = objectArray[0];
+            Entry<String, Object> entry = (Entry) object;
             
-        } else if (objectArray.length == 2) {
+            Map<String, Object> map = Maps.newHashMap();
+            this.renderable = map;
+            map.put(entry.getKey(), entry.getValue());
             
-            if (!(objectArray[0] instanceof String)) {
-                
-                throw new IllegalArgumentException(
-                        "When supplying two parameters to render() you have to make sure" +
-                        "the first one is a String used as identifier for that object.");
-            } else {
+        } else if (this.renderable == null) {
             
-                // case two => a map like entry => we convert that to a Simple Entry    
-                object = new AbstractMap.SimpleEntry<String, Object>(
-                    (String) objectArray[0], 
-                    objectArray[1]);
-            }
+            this.renderable = object;
             
         } else {
-            throw new IllegalArgumentException(
-                    "Method render() only takes either a single object render(myObject), " +
-                    "or an identifier and an object(\"person\", personObject");
-        }
-        
-        
-        ///////////////////////////////////////////////////////////////////////
-        // Now we use the object and determine what to do...
-        ///////////////////////////////////////////////////////////////////////
-        // If renderable is empty we just add it.
-        // But if it is an Entry of a map we skip that and generate a map straight away...
-        if (this.renderable == null
-                && !(object instanceof Entry)) {
             
-            this.renderable = object; 
+            assertObjectNoRenderableOrThrowException(this.renderable);            
             
-        } else {   
+            Map<String, Object> map;
             
-            Map<String, Object> renderableMap;
-            
-            if (this.renderable instanceof Renderable) {
-                /**
-                 * Objects implementing interface Renderable can do a lot of funny stuff.
-                 * But they 100% don't want to be used together with other
-                 * objects. We break here.
-                 */
-                throw new IllegalArgumentException(
-                        "Renderable interfaces cannot be mixed with other objects " +
-                        "when calling render().");
-            
-            } else if (this.renderable instanceof Map) {
-                // there is already a map => we simply add the renderable
-                renderableMap = (Map) this.renderable;
+            // prepare the this.renderable as we now have at least two
+            // objects to render
+            if (this.renderable instanceof Map) {
+               map = (Map) this.renderable;
                 
             } else {
-                // only one object => we 
-                renderableMap = new HashMap<String, Object>();
-                // put in former single object:
-                if (this.renderable != null) {
-                    renderableMap.put(
-                            SwissKnife.getRealClassNameLowerCamelCase(this.renderable),
-                            this.renderable);                    
-                }
- 
-                this.renderable = renderableMap;
+                map = Maps.newHashMap();                
+                // add original this.renderable
+                map.put(SwissKnife.getRealClassNameLowerCamelCase(this.renderable), this.renderable);
+                this.renderable = map;
                 
-                        
             }
             
-            // check the input element:
-            // first case => an entry
-            if (object instanceof Map.Entry<?, ?>) {
-                Map.Entry<String, Object> objectEntry = (Map.Entry) object;
-                renderableMap.put(objectEntry.getKey(), objectEntry.getValue());   
-            // second case => a map => we add it
-            } else if (object instanceof Map<?, ?>) {
-                Map<String, Object> map = (Map) object;
-                
-                for (Entry<String, Object> entry : map.entrySet()) {
-                    renderableMap.put(entry.getKey(), entry.getValue());
-                }
-                
-            } else {
-                //third case an arbitrary object => we transform the name and add it.
-                String name = SwissKnife.getRealClassNameLowerCamelCase(object);
-                
-                if (renderableMap.containsKey(name)) {
+            // now prepare the object being passed to this method
+            // do some conversions and calculate the camelCaseNameOfTheObject
+            if (object instanceof Entry) {
+                Entry<String, Object> entry = (Entry<String, Object>) object;
+                if (map.containsKey(entry.getKey())) {
                     throw new IllegalArgumentException(
-                        "Cannot add objects with same names and no specifier. " +
-                    		"Try using Entry<String, Object> and add render that to specify exact name");
+                           String.format(
+                                 "Entry with key %s already stored inside this Result object. "
+                           		   + "This is currently not supported and does not make sense. "
+                           		   +  "Consider using your own map.",
+                                         entry.getKey()));
+                } else { 
+                    map.put(entry.getKey(), entry.getValue());
+                
                 }
-                
-                renderableMap.put(name, object);
-                
+            } else {
+                // add object of this method
+                String key = SwissKnife.getRealClassNameLowerCamelCase(object);
+                if (map.containsKey(key)) {
+                    throw new IllegalArgumentException(
+                            String.format(
+                                  "Cannot store object with default name %s."
+                                  + "An object with the same name is already stored."
+                                  + "Consider using render(key, value) to name objects implicitly.",
+                                  key));
+                    
+                } else {
+                    map.put(SwissKnife.getRealClassNameLowerCamelCase(object), object);
+                }
             }
-               
+            
         }
+        
         
         return this;
+    }
+    
+    /**
+     * Replaces the object being passed by this result to the rendering engine
+     * with this map. It will overwrite any previously set render(...) calls.
+     * 
+     * @param mapToRender The map being passed to the templating engine.
+     * @return This Result for chaining.
+     */
+    public Result render(Map<String, Object> mapToRender) {
+        this.renderable = mapToRender;        
+        return this;        
+    }
+    
+    /**
+     * Sets this renderable as object to render. Usually this renderable
+     * does rendering itself and will not call any templating engine. 
+     * 
+     * @param renderable The renderable that will handle everything after returing the result.
+     * @return This result for chaining.
+     */
+    public Result render(Renderable renderable) {
+        this.renderable = renderable;        
+        return this;        
+    }
+    
+    /**
+     * Implicitly generates a hashmap as object being rendered and adds
+     * this key, value pair. If the object being rendered is already a hashmap
+     * it simply adds this key value pair to it.
+     * 
+     * @param key The key to use.
+     * @param value The value to use.
+     * @return The Result for chaining.
+     */
+    public Result render(String key, Object value) {
+        
+        render(new AbstractMap.SimpleEntry<String, Object>(key, value));
+            
+        return this;
+        
     }
 
     public String getContentType() {
@@ -455,5 +443,17 @@ public class Result {
         return this;
         
     } 
+    
+    
+    private void assertObjectNoRenderableOrThrowException(Object object) {
+        if (object instanceof Renderable) {
+            throw new IllegalArgumentException(
+                    "You already want to render a Renderable class. " +
+                "Adding more items to render is not supported.");
+            
+        }
+    }
+    
+  
 
 }
