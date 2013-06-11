@@ -19,8 +19,8 @@ package ninja.session;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -158,13 +158,13 @@ public class FlashCookieImpl implements FlashCookie {
     }
 
     @Override
-    public void error(String value, Object... args) {
-        put("error", String.format(value, args));
+    public void error(String value) {
+        put("error", value);
     }
 
     @Override
-    public void success(String value, Object... args) {
-        put("success", String.format(value, args));
+    public void success(String value) {
+        put("success", value);
     }
 
     @Override
