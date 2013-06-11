@@ -117,28 +117,23 @@ public class Result {
     }
 
     /**
-     * This method handles several cases:
-     * 1) If you pass an entry to this method it will either add this Entry to the renderable map
-     *    of this result OR generate a new map and add this entry
-     * 2) If the renderable of this result is null, the object passed is simply set as renderable 
+     * This method handles two principal cases:
+     * 1) If the this.renderable of this result is null, the object passed is simply set as renderable 
      *    for this Result
-     * 3) If the renderable of this result is not null an new map is generated as
-     *    object to rendera both the former renderable and the new object added to the map. (Possibly
-     *    with default camelCaseKeys.
+     * 2) If the this.renderable of this result is not null an new map is generated as
+     *    object to render and both the former renderable and the new object added to the map. 
+     *    The former object is gets the class name in camelCase as key.
+     *    
+     * If the converted camelCase key of this object already exists an {@link IllegalArgumentException}
+     * is being thrown.
+     * 
+     * @param Object The object to add (either an arbitrary class or Renderable).
+     * @return Result this result for chaining.
      * 
      */
     public Result render(Object object) {
         
-        if (this.renderable == null
-                && object instanceof Entry) {
-            
-            Entry<String, Object> entry = (Entry) object;
-            
-            Map<String, Object> map = Maps.newHashMap();
-            this.renderable = map;
-            map.put(entry.getKey(), entry.getValue());
-            
-        } else if (this.renderable == null) {
+        if (this.renderable == null) {
             
             this.renderable = object;
             
@@ -161,36 +156,20 @@ public class Result {
                 
             }
             
-            // now prepare the object being passed to this method
-            // do some conversions and calculate the camelCaseNameOfTheObject
-            if (object instanceof Entry) {
-                Entry<String, Object> entry = (Entry<String, Object>) object;
-                if (map.containsKey(entry.getKey())) {
-                    throw new IllegalArgumentException(
-                           String.format(
-                                 "Entry with key %s already stored inside this Result object. "
-                           		   + "This is currently not supported and does not make sense. "
-                           		   +  "Consider using your own map.",
-                                         entry.getKey()));
-                } else { 
-                    map.put(entry.getKey(), entry.getValue());
+            // add object of this method
+            String key = SwissKnife.getRealClassNameLowerCamelCase(object);
+            if (map.containsKey(key)) {
+                throw new IllegalArgumentException(
+                        String.format(
+                              "Cannot store object with default name %s."
+                              + "An object with the same name is already stored."
+                              + "Consider using render(key, value) to name objects implicitly.",
+                              key));
                 
-                }
             } else {
-                // add object of this method
-                String key = SwissKnife.getRealClassNameLowerCamelCase(object);
-                if (map.containsKey(key)) {
-                    throw new IllegalArgumentException(
-                            String.format(
-                                  "Cannot store object with default name %s."
-                                  + "An object with the same name is already stored."
-                                  + "Consider using render(key, value) to name objects implicitly.",
-                                  key));
-                    
-                } else {
-                    map.put(SwissKnife.getRealClassNameLowerCamelCase(object), object);
-                }
+                map.put(SwissKnife.getRealClassNameLowerCamelCase(object), object);
             }
+            
             
         }
         
@@ -208,6 +187,68 @@ public class Result {
     public Result render(Map<String, Object> mapToRender) {
         this.renderable = mapToRender;        
         return this;        
+    }
+    
+    /**
+     * Handles two cases:
+     * 1) If this.renderable is null a new HashMap is generated and this entry being added
+     *    to the map.
+     * 2) If this.renderable is a Map the entry is added
+     * 3) If this.renderable is an object (not a renderable) a Map is generated and both
+     *    the former object and the new entry are being added.
+     * 3) If this.renderable is a Renderable an {@link IllegalArgumentException} is thrown.
+     * 
+     * If the entry key already exists in the map of this.renderable an {@link IllegalArgumentException}
+     * is thrown.
+     * 
+     * @param entry The entry to add.
+     * @return The result for further chaining.
+     */
+    public Result render(Entry<String, Object> entry) {
+        
+        if (this.renderable == null) {
+        
+            Map<String, Object> map = Maps.newHashMap();
+            this.renderable = map;
+            map.put(entry.getKey(), entry.getValue());
+        } else {
+            
+            assertObjectNoRenderableOrThrowException(this.renderable);
+            
+            Map<String, Object> map;
+            if (this.renderable instanceof Map) {
+                
+                map = (Map) this.renderable;
+                if (map.containsKey(entry.getKey())) {
+                    throw new IllegalArgumentException(
+                           String.format(
+                                 "Entry with key %s already stored inside this Result object. "
+                                 + "This is currently not supported and does not make sense. "
+                                 +  "Consider using your own map.",
+                                         entry.getKey()));
+                } else { 
+                    map.put(entry.getKey(), entry.getValue());
+                
+                }
+                
+            } else {                
+                map = Maps.newHashMap();
+                map.put(
+                        SwissKnife.getRealClassNameLowerCamelCase(this.renderable), 
+                        this.renderable);
+                
+                this.renderable = map;
+                              
+            }
+            
+            map.put(entry.getKey(), entry.getValue());
+            
+        }
+        
+        
+        return this;
+        
+        
     }
     
     /**
