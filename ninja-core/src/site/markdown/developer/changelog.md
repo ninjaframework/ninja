@@ -1,4 +1,4 @@
-Version 1.4.5
+Version 1.4.4
 =============
 
  * Added possibility to get the contextpath in templates (pthum)
