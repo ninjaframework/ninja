@@ -182,10 +182,7 @@ public class ApplicationController {
         // all problematic characters will be escaped
         String maliciousJavascript = "<script>alert('Hello');</script>";
 
-        Map<String, String> renderMap = Maps.newHashMap();
-        renderMap.put("maliciousJavascript", maliciousJavascript);
-
-        return Results.html().render(renderMap);
+        return Results.html().render("maliciousJavascript", maliciousJavascript);
 
     }
 

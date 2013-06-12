@@ -99,14 +99,13 @@ It is simple to do so. The Freemarker engine takes any Map and you can access it
             @PathParam("id") Integer id,
             Context context) {
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        // generate tuples, convert integer to string here because Freemarker does it in locale
-        // dependent way with commas etc
-        map.put("id", Integer.toString(id));
-        map.put("email", email);
-
-        //and render page with both parameters:
-        return Results.html().render(map);
+        Result result = result.html();
+        
+        result.render("id", Integer.toString(id));
+        result.render("email", email);
+        
+        return result;
+        
     }
 </pre>
 
@@ -283,14 +282,13 @@ The message itself is being translated.
 Implicit variables available in templates
 -----------------------------------------
 
- * ${session.*} You can access all session-cookie values by their keys prefixed with the accessor "session.". E.g.: 
+ * <code>${session.*}</code> You can access all session-cookie values by their keys prefixed with the accessor "session.". E.g.: 
    If you had set a cookie with the key "username", then you can use ${session.username} to resolve the 
    username and display it.
- * ${flash_success} Translated (if possible) flash success message (via success("value")).
- * ${flash_error} Translated (if possible) flash error message (via error("value")).
- * ${flash_*} Translated (if possible) flash message with arbitrary key (via put("key", "value")).
- * ${lang} resolves to the language Ninja uses currently. 
- * ${contextPath} resolves the context path of the application (empty if running on root)
+ * <code>${flash_success}</code> Translated (if possible) flash success message (via success("value")).
+ * <code>${flash_error}</code> Translated (if possible) flash error message (via error("value")).
+ * <code>${flash_*}</code> Translated (if possible) flash message with arbitrary key (via put("key", "value")).
+ * <code>${lang}</code> resolves to the language Ninja uses currently. 
+ * <code>${contextPath}</code> resolves the context path of the application (empty if running on root)
 
- 
 
