@@ -16,6 +16,7 @@
 
 package ninja.session;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 import ninja.Context;
@@ -44,9 +45,23 @@ public interface FlashCookie {
 
     void now(String key, String value);
 
-    void error(String value, Object... args);
+    /**
+     * Sets the error flash cookie value.
+     * Usually accessible via ${flash_error} in html templating engine.
+     * 
+     * @param value The i18n key used to retrieve value of that message
+     *        OR an already translated message that will be displayed right away.
+     */
+    void error(String value);
 
-    void success(String value, Object... args);
+    /**
+     * Sets the success flash cookie value.
+     * Usually accessible via ${flash_success} in html templating engine.
+     * 
+     * @param value The i18n key used to retrieve value of that message
+     *        OR an already translated message that will be displayed right away.
+     */
+    void success(String value);
 
     void discard(String key);
 

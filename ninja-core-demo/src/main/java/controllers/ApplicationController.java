@@ -25,6 +25,7 @@ import ninja.Result;
 import ninja.Results;
 import ninja.Router;
 import ninja.i18n.Lang;
+import ninja.i18n.Messages;
 import ninja.params.Param;
 import ninja.params.PathParam;
 import ninja.validation.Required;
@@ -32,6 +33,7 @@ import ninja.validation.Validation;
 
 import org.slf4j.Logger;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -52,7 +54,11 @@ public class ApplicationController {
     Lang lang;
     
     @Inject
+    Messages messages;
+
+    @Inject
     Router router;
+
 
     public Result examples(Context context) {
         logger.info("In example ");
@@ -97,7 +103,8 @@ public class ApplicationController {
                              @Param("email") @Required String email) {
 
         if (validation.hasViolations()) {
-            return Results.json().render(validation.getFieldViolations("email"));
+            return Results.json()
+                    .render(validation.getFieldViolations("email"));
         } else {
             return Results.json().render(email);
         }
@@ -110,10 +117,48 @@ public class ApplicationController {
     }
 
     public Result session(Context context) {
-    	//Sets the username "kevin" in the session-cookie
+        // Sets the username "kevin" in the session-cookie
         context.getSessionCookie().put("username", "kevin");
 
         return Results.html();
+
+    }
+
+    public Result flashSuccess(Context context) {
+        
+        Result result = Results.html();
+        
+        // sets a 18n flash message and adds a timestamp to make sure formatting works
+        Optional<String> flashMessage = messages.get("flashSuccess", context, Optional.of(result), "PLACEHOLDER");
+        if (flashMessage.isPresent()) {
+            context.getFlashCookie().success(flashMessage.get());
+        }
+
+        return result;
+
+    }
+    
+    public Result flashError(Context context) {
+        Result result = Results.html();
+        // sets a 18n flash message and adds a timestamp to make sure formatting works
+        Optional<String> flashMessage = messages.get("flashError", context, Optional.of(result), "PLACEHOLDER");
+        if (flashMessage.isPresent()) {
+            context.getFlashCookie().error(flashMessage.get());
+        }
+
+        return result;
+
+    }
+    
+    public Result flashAny(Context context) {
+        Result result = Results.html();
+        // sets a 18n flash message and adds a timestamp to make sure formatting works
+        Optional<String> flashMessage = messages.get("flashAny", context, Optional.of(result), "PLACEHOLDER");
+        if (flashMessage.isPresent()) {
+            context.getFlashCookie().put("any", flashMessage.get());
+        }
+
+        return result;
 
     }
 
@@ -122,6 +167,7 @@ public class ApplicationController {
         return Results.html();
 
     }
+
     public Result postContactForm(Context context, Contact contact) {
         // contact is parsed into the method
         // and automatically gets rendered via the html

@@ -70,7 +70,11 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/redirect").with(ApplicationController.class, "redirect");
 
         router.GET().route("/session").with(ApplicationController.class, "session");
-
+        
+        router.GET().route("/flash_success").with(ApplicationController.class, "flashSuccess");
+        router.GET().route("/flash_error").with(ApplicationController.class, "flashError");
+        router.GET().route("/flash_any").with(ApplicationController.class, "flashAny");
+        
         router.GET().route("/htmlEscaping").with(ApplicationController.class, "htmlEscaping");
 
         // /////////////////////////////////////////////////////////////////////

@@ -2,10 +2,12 @@ Version X
 =========
 
  * Added possibility to get the contextpath in templates (pthum)
+ * Fixed bug when translating flash scope i18n (pthum, ra)
+ * Added better i18n facilities to html tempting (ra)
+ * Added possibility to get the contextpath in templates (pthum)
  * Added reverse routing facilities (ra)
  * Extended reverse routing facilities with support for query parameters (ra)
  * Added support for a more much more convenient use of Result.render(...) (pthum, ra)
-
 
 Version 1.4.3
 =============
