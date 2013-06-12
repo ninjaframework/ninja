@@ -21,163 +21,162 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-
 public class ResultsTest {
-	
-	@Test
-	public void testResultsStatus() {
-		
-		Result result = Results.status(200);		
-		assertEquals(200, result.getStatusCode());
-		
-	}
-    
-	@Test
-	public void testResultsOk() {
-		
-		Result result = Results.ok();		
-		assertEquals(200, result.getStatusCode());
-		
-	}
-    
-	@Test
-	public void testResultsNotFound() {
-		
-		Result result = Results.notFound();		
-		assertEquals(Result.SC_404_NOT_FOUND, result.getStatusCode());
-		
-	}
 
-	@Test
-	public void testResultsForbidden() {
-		
-		Result result = Results.forbidden();		
-		assertEquals(Result.SC_403_FORBIDDEN, result.getStatusCode());
-		
-	}
-    
-	@Test
-	public void testResultsBadRequest() {
-		
-		Result result = Results.badRequest();		
-		assertEquals(Result.SC_400_BAD_REQUEST, result.getStatusCode());
-		
-	}
-	
-    
-	@Test
-	public void testResultsNoContent() {
-		
-		Result result = Results.noContent();		
-		assertEquals(Result.SC_204_NO_CONTENT, result.getStatusCode());
-		
-	}
-	
-	@Test
-	public void testResultsInternalServerError() {
-		
-		Result result = Results.internalServerError();		
-		assertEquals(Result.SC_500_INTERNAL_SERVER_ERROR, result.getStatusCode());
-		
-	}
-    
-	@Test
-	public void testResultsRedirect() {
-		
-		Result result = Results.redirect("http://example.com");	
-		assertEquals(Result.SC_303_SEE_OTHER, result.getStatusCode());
-		assertEquals("http://example.com", result.getHeaders().get(Result.LOCATION));
-		
-	}
-    
+    @Test
+    public void testResultsStatus() {
 
-	@Test
+        Result result = Results.status(200);
+        assertEquals(200, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testResultsOk() {
+
+        Result result = Results.ok();
+        assertEquals(200, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testResultsNotFound() {
+
+        Result result = Results.notFound();
+        assertEquals(Result.SC_404_NOT_FOUND, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testResultsForbidden() {
+
+        Result result = Results.forbidden();
+        assertEquals(Result.SC_403_FORBIDDEN, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testResultsBadRequest() {
+
+        Result result = Results.badRequest();
+        assertEquals(Result.SC_400_BAD_REQUEST, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testResultsNoContent() {
+
+        Result result = Results.noContent();
+        assertEquals(Result.SC_204_NO_CONTENT, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testResultsInternalServerError() {
+
+        Result result = Results.internalServerError();
+        assertEquals(Result.SC_500_INTERNAL_SERVER_ERROR,
+                result.getStatusCode());
+
+    }
+
+    @Test
+    public void testResultsRedirect() {
+
+        Result result = Results.redirect("http://example.com");
+        assertEquals(Result.SC_303_SEE_OTHER, result.getStatusCode());
+        assertEquals("http://example.com",
+                result.getHeaders().get(Result.LOCATION));
+
+    }
+
+    @Test
     public void testResultsRedirectTemporary() {
-		
-		Result result = Results.redirectTemporary("http://example.com");	
-		assertEquals(Result.SC_307_TEMPORARY_REDIRECT, result.getStatusCode());
-		assertEquals("http://example.com", result.getHeaders().get(Result.LOCATION));
-	}
-	
-	@Test
-	public void testResultsContentType() {
-		
-		Result result = Results.contentType("text/my-cool-content-type");	
-		assertEquals(Result.SC_200_OK, result.getStatusCode());
-		assertEquals("text/my-cool-content-type", result.getContentType());
-		
-	}
-	
-	@Test
-	public void testResultsHtml() {
-		
-		Result result = Results.html();
-		assertEquals(Result.SC_200_OK, result.getStatusCode());
-		assertEquals(Result.TEXT_HTML, result.getContentType());
-	}
-	
-	@Test
-	public void testResultsHtmlWithStatusCode() {
-		
-		Result result = Results.html().status(Result.SC_300_MULTIPLE_CHOICES);
-		assertEquals(Result.SC_300_MULTIPLE_CHOICES, result.getStatusCode());
-		assertEquals(Result.TEXT_HTML, result.getContentType());
-	}
-	
-	@Test
-	public void testResultsJson() {
-		
-		Result result = Results.json();
-		assertEquals(Result.SC_200_OK, result.getStatusCode());
-		assertEquals(Result.APPLICATON_JSON, result.getContentType());
 
-	}
-	
-	@Test
-	public void testResultsJsonWithObjectToRender() {
-		
-		TestObject testObject = new TestObject();
-		
-		Result result = Results.json().render(testObject);
-		assertEquals(Result.SC_200_OK, result.getStatusCode());
-		assertEquals(Result.APPLICATON_JSON, result.getContentType());
-		assertEquals(testObject, result.getRenderable());
+        Result result = Results.redirectTemporary("http://example.com");
+        assertEquals(Result.SC_307_TEMPORARY_REDIRECT, result.getStatusCode());
+        assertEquals("http://example.com",
+                result.getHeaders().get(Result.LOCATION));
+    }
 
-	}
-	
-	@Test
-	public void testResultsXml() {
-		
-		Result result = Results.xml();
-		assertEquals(Result.SC_200_OK, result.getStatusCode());
-		assertEquals(Result.APPLICATION_XML, result.getContentType());
-		
-	}
-	
-	@Test
-	public void testResultsTODO() {
-		
-		Result result = Results.TODO();
-		assertEquals(Result.SC_501_NOT_IMPLEMENTED, result.getStatusCode());
-		assertEquals(Result.APPLICATON_JSON, result.getContentType());
-		
-	}
-	
-	
-	@Test
-	public void testResultsAsync() {
-		
-		Result result = Results.async();
-		
-		assertTrue(result instanceof AsyncResult);
-		
-	}
-    
-    
+    @Test
+    public void testResultsContentType() {
+
+        Result result = Results.contentType("text/my-cool-content-type");
+        assertEquals(Result.SC_200_OK, result.getStatusCode());
+        assertEquals("text/my-cool-content-type", result.getContentType());
+
+    }
+
+    @Test
+    public void testResultsHtml() {
+
+        Result result = Results.html();
+        assertEquals(Result.SC_200_OK, result.getStatusCode());
+        assertEquals(Result.TEXT_HTML, result.getContentType());
+    }
+
+    @Test
+    public void testResultsHtmlWithStatusCode() {
+
+        Result result = Results.html().status(Result.SC_300_MULTIPLE_CHOICES);
+        assertEquals(Result.SC_300_MULTIPLE_CHOICES, result.getStatusCode());
+        assertEquals(Result.TEXT_HTML, result.getContentType());
+    }
+
+    @Test
+    public void testResultsJson() {
+
+        Result result = Results.json();
+        assertEquals(Result.SC_200_OK, result.getStatusCode());
+        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+
+    }
+
+    @Test
+    public void testResultsJsonWithObjectToRender() {
+
+        TestObject testObject = new TestObject();
+
+        Result result = Results.json().render(testObject);
+        assertEquals(Result.SC_200_OK, result.getStatusCode());
+        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(testObject, result.getRenderable());
+
+    }
+
+    @Test
+    public void testResultsXml() {
+
+        Result result = Results.xml();
+        assertEquals(Result.SC_200_OK, result.getStatusCode());
+        assertEquals(Result.APPLICATION_XML, result.getContentType());
+
+    }
+
+    @Test
+    public void testResultsTODO() {
+
+        Result result = Results.TODO();
+        assertEquals(Result.SC_501_NOT_IMPLEMENTED, result.getStatusCode());
+        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+
+    }
+
+    @Test
+    public void testResultsAsync() {
+
+        Result result = Results.async();
+
+        assertTrue(result instanceof AsyncResult);
+
+    }
+
     /**
      * Simple helper to test if objects get copied to result.
-     *
+     * 
      */
-    public class TestObject {}
+    public class TestObject {
+    }
 
 }

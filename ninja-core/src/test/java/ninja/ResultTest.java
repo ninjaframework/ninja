@@ -17,11 +17,19 @@
 package ninja;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
+
+import com.google.common.collect.Maps;
+
+import ch.qos.logback.core.db.dialect.MySQLDialect;
 
 public class ResultTest {
 
@@ -177,6 +185,144 @@ public class ResultTest {
         assertEquals("iso-7777", result.getCharset());
     }
 
+    
+    @Test
+    public void testRenderRenderable() {  
+        
+        Renderable renderable = new Renderable() {
+            
+            @Override
+            public void render(Context context, Result result) throws Exception {
+                // do nothing
+                
+            }
+        };
+        
+        // step 1: normal operation
+        Result result = new Result(200);
+        result.render(renderable);
+        
+        assertEquals(renderable, result.getRenderable());
+        
+        // step 2: now we expect an illegal argument exception:
+        boolean gotException = true;
+        try {            
+            result.render(new TestObject());
+            
+        } catch (IllegalArgumentException e) {
+            gotException = true;
+        }
+        
+        assertTrue(gotException);  
+        
+    }
+    
+    
+    @Test
+    public void testRenderSingleObject() {  
+        
+        TestObject testObject = new TestObject();
+        
+        Result result = new Result(200);
+        result.render(testObject);
+        
+        assertEquals(testObject, result.getRenderable());
+        
+    }
+    
+    @Test
+    public void testRenderMultipleObjects() {  
+        
+        TestObject testObject = new TestObject();
+        
+        // step 1: add one object.
+        Result result = new Result(200);
+        result.render(testObject);
+        
+        
+        assertEquals(testObject, result.getRenderable());
+
+        // step 2: add a second object (string is just a dummy)
+        // => we expect to get a map from the result now...
+        String string = new String("test");
+        
+        result.render(string);
+        
+        assertTrue(result.getRenderable() instanceof Map);
+        Map<String, Object> resultMap = (Map) result.getRenderable();
+        assertEquals(string, resultMap.get("string"));
+        assertEquals(testObject, resultMap.get("testObject"));
+        
+        // step 3: add same object => we expect an illegal argument exception as the map
+        // cannot handle that case:
+        TestObject anotherObject = new TestObject();
+        boolean gotException = false;
+        try {
+            result.render(anotherObject);
+        } catch (IllegalArgumentException e) {
+            gotException = true;
+        }
+        
+        assertTrue(gotException);
+        
+        
+        // step 4: add an entry
+        Entry<String, Object> entry = new AbstractMap.SimpleImmutableEntry<String, Object>("anotherObject", anotherObject);
+        result.render(entry);
+        resultMap = (Map) result.getRenderable();
+        assertEquals(3, resultMap.size());
+        assertEquals(anotherObject, resultMap.get("anotherObject"));
+        
+        
+        // step 5: add another map and check that conversion works:
+        Map<String, Object> mapToRender = Maps.newHashMap();
+        
+        String anotherString = new String("anotherString");
+        TestObject anotherTestObject = new TestObject();
+        mapToRender.put("anotherString", anotherString);
+        mapToRender.put("anotherTestObject", anotherTestObject);
+        result.render(mapToRender);
+        
+       
+        resultMap = (Map) result.getRenderable();
+        assertEquals(2, resultMap.size());
+        assertEquals(anotherString, resultMap.get("anotherString"));
+        assertEquals(anotherTestObject, resultMap.get("anotherTestObject"));
+        
+        
+        
+    }
+    
+    @Test
+    public void testRenderEntryAndMakeSureMapIsCreated() {  
+        String stringy = new String("stringy");
+        
+        // step 1: add one object.
+        Result result = new Result(200);
+        result.render("stringy", stringy);
+        Map<String, Object> resultMap = (Map) result.getRenderable();       
+        
+        assertEquals(stringy, resultMap.get("stringy"));
+      
+    }
+    
+    @Test
+    public void testRenderingOfStringObjectPairsWorks() {  
+        String object1 = new String("stringy1");
+        String object2 = new String("stringy2");
+        
+        // step 1: add one object.
+        Result result = new Result(200);
+        result.render("object1", object1);
+        result.render("object2", object2);
+        Map<String, Object> resultMap = (Map) result.getRenderable();       
+        
+        assertEquals(object1, resultMap.get("object1"));
+        assertEquals(object2, resultMap.get("object2"));       
+      
+    }
+    
+    
     /**
      * Simple helper to test if objects get copied to result.
      * 

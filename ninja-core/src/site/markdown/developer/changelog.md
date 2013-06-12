@@ -7,6 +7,7 @@ Version X
  * Added possibility to get the contextpath in templates (pthum)
  * Added reverse routing facilities (ra)
  * Extended reverse routing facilities with support for query parameters (ra)
+ * Added support for a more much more convenient use of Result.render(...) (pthum, ra)
 
 Version 1.4.3
 =============

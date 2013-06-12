@@ -50,10 +50,7 @@ public class InjectionExampleController {
 
     public Result injection(Context context) {
 
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("greeting", greeter.hello());
-
-        return Results.html().render(map);
+        return Results.html().render("greeting", greeter.hello());
 
     }
 
