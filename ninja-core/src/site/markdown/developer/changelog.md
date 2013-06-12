@@ -1,5 +1,5 @@
-Version X
-=========
+Version 1.4.5
+=============
 
  * Added possibility to get the contextpath in templates (pthum)
  * Fixed bug when translating flash scope i18n (pthum, ra)
