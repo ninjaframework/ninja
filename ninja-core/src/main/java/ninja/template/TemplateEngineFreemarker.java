@@ -16,6 +16,8 @@
 
 package ninja.template;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -23,6 +25,7 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
@@ -59,7 +62,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                                     Logger logger,
                                     TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
                                     TemplateEngineHelper templateEngineHelper,
-                                    TemplateEngineManager templateEngineManager) {
+                                    TemplateEngineManager templateEngineManager,
+                                    NinjaProperties ninjaProperties) {
         this.messages = messages;
         this.lang = lang;
         this.logger = logger;
@@ -69,13 +73,28 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
-        cfg.setClassForTemplateLoading(this.getClass(), "/");
+        if (ninjaProperties.isDev()) {
 
-        // we are going to enable html escaping by default using this template
-        // loader:
-        cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
-                .getTemplateLoader()));
-        
+            String userDir = System.getProperty("user.dir");
+            userDir = userDir + "/src/main/java";
+            try {
+                cfg.setDirectoryForTemplateLoading(new File(userDir));
+            } catch (IOException e) {
+                logger.error("Error Loading Freemarker Template " +userDir , e);
+            }
+
+
+        } else {
+
+            cfg.setClassForTemplateLoading(this.getClass(), "/");
+
+            // we are going to enable html escaping by default using this template
+            // loader:
+            cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
+                    .getTemplateLoader()));
+
+        }
+
         // We also do not want Freemarker to chose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"
         // on some platform. This is not "least astonishemnt". It will also
