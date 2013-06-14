@@ -88,7 +88,7 @@
         <dependency>
             <groupId>com.devbliss.doctest</groupId>
             <artifactId>doctest</artifactId>
-            <version>0.4.1</version>
+            <version>0.6.5</version>
         </dependency>
 
 	</dependencies>

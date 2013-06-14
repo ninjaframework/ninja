@@ -1,3 +1,9 @@
+Version X
+=========
+ 
+ * bump to devbliss.doctest 0.6.5
+
+
 Version 1.4.4
 =============
 
