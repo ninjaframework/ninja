@@ -63,38 +63,64 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                                     TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
                                     TemplateEngineHelper templateEngineHelper,
                                     TemplateEngineManager templateEngineManager,
-                                    NinjaProperties ninjaProperties) {
+                                    NinjaProperties ninjaProperties) throws Exception {
         this.messages = messages;
         this.lang = lang;
         this.logger = logger;
         this.templateEngineFreemarkerExceptionHandler = templateEngineFreemarkerExceptionHandler;
         this.templateEngineHelper = templateEngineHelper;
+        
         cfg = new Configuration();
         
         cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
+        ///////////////////////////////////////////////////////////////////////
+        // 1) In dev we load templates from src/java/main and ftl does refreshing
+        //    of changed templates.
+        // 2) In test and prod we never refresh templates.
+        ///////////////////////////////////////////////////////////////////////
         if (ninjaProperties.isDev()) {
 
-            String userDir = System.getProperty("user.dir");
-            userDir = userDir + "/src/main/java";
+            String srcDir 
+                = System.getProperty("user.dir")
+                    + File.separator 
+                    + "src" 
+                    + File.separator 
+                    + "main" 
+                    + File.separator
+                    + "java";
+            
             try {
-                cfg.setDirectoryForTemplateLoading(new File(userDir));
+                
+                cfg.setDirectoryForTemplateLoading(new File(srcDir));
+                
             } catch (IOException e) {
-                logger.error("Error Loading Freemarker Template " +userDir , e);
+                logger.error("Error Loading Freemarker Template " +srcDir , e);
             }
+            
+            // check for updates each second
+            cfg.setTemplateUpdateDelay(1);
 
 
         } else {
-
+            // load templates from classpath
             cfg.setClassForTemplateLoading(this.getClass(), "/");
-
-            // we are going to enable html escaping by default using this template
-            // loader:
-            cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
-                    .getTemplateLoader()));
+            
+            // never update the templates in production or while testing...
+            cfg.setTemplateUpdateDelay(Integer.MAX_VALUE);
+            
+            // Hold 20 templates as strong references as recommended by:
+            // http://freemarker.sourceforge.net/docs/pgui_config_templateloading.html
+            cfg.setSetting(Configuration.CACHE_STORAGE_KEY, "strong:20, soft:250");
 
         }
-
+        
+        // we are going to enable html escaping by default using this template
+        // loader:
+        cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
+                .getTemplateLoader()));
+        
+        
         // We also do not want Freemarker to chose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"
         // on some platform. This is not "least astonishemnt". It will also
