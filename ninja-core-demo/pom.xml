@@ -45,10 +45,22 @@
 						target/classes;../ninja-core/target/classes;../ninja-core-test/target/classes
 					</classesDirectory>
 					<scanTargets>
-						<scanTarget>target/classes</scanTarget>
 						<scanTarget>../ninja-core/target/classes</scanTarget>
 						<scanTarget>../ninja-core-test/target/classes</scanTarget>
 					</scanTargets>
+                    
+                 <scanTargetPatterns>
+                 <scanTargetPattern>
+                 
+                    <directory>target/classes</directory>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*.ftl.html</exclude>  
+                    </excludes>
+                 </scanTargetPattern>
+                  </scanTargetPatterns>
 				</configuration>
 			</plugin>
 
@@ -60,6 +72,9 @@
 				<includes>
 					<include>**/*</include>
 				</includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
 			</resource>
 		</resources>
 
