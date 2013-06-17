@@ -6,6 +6,8 @@ bin
 .project
 .settings
 .metadata
+*.iml
+.idea
 
 # when developing it is cool linking
 # the ninja framework in the main demo application
