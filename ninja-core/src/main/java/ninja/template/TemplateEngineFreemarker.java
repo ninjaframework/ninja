@@ -77,18 +77,21 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         ///////////////////////////////////////////////////////////////////////
         // 1) In dev we load templates from src/java/main and ftl does refreshing
         //    of changed templates.
+        //    => but only if we can access src/main/java => otherwise we do template
+        //    via the jetty plugin (eg in ninja-appengine)
         // 2) In test and prod we never refresh templates.
-        ///////////////////////////////////////////////////////////////////////
-        if (ninjaProperties.isDev()) {
-
-            String srcDir 
-                = System.getProperty("user.dir")
-                    + File.separator 
-                    + "src" 
-                    + File.separator 
-                    + "main" 
-                    + File.separator
-                    + "java";
+        ///////////////////////////////////////////////////////////////////////      
+        String srcDir 
+        = System.getProperty("user.dir")
+            + File.separator 
+            + "src" 
+            + File.separator 
+            + "main" 
+            + File.separator
+            + "java";        
+                
+        if (ninjaProperties.isDev()
+                && new File(srcDir).exists()) {
             
             try {
                 
