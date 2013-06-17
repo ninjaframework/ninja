@@ -47,20 +47,18 @@
 					<scanTargets>
 						<scanTarget>../ninja-core/target/classes</scanTarget>
 						<scanTarget>../ninja-core-test/target/classes</scanTarget>
-					</scanTargets>
-                    
-                 <scanTargetPatterns>
-                 <scanTargetPattern>
-                 
-                    <directory>target/classes</directory>
-                    <includes>
-                        <include>**/*</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/*.ftl.html</exclude>  
-                    </excludes>
-                 </scanTargetPattern>
-                  </scanTargetPatterns>
+					</scanTargets>                   
+                    <scanTargetPatterns>
+                        <scanTargetPattern>               
+                            <directory>target/classes</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*.ftl.html</exclude>  
+                            </excludes>
+                        </scanTargetPattern>
+                    </scanTargetPatterns>
 				</configuration>
 			</plugin>
 

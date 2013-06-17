@@ -1,7 +1,9 @@
 Version X
 =========
  
- * bump to devbliss.doctest 0.6.5
+ * bump to devbliss.doctest 0.6.5 (ra)
+ * free marker templates changes no longer cause ninja restart (makotan)
+ * freemarker templates performance optimizations (ra)
 
 
 Version 1.4.4
