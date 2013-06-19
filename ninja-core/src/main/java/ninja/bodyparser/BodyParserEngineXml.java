@@ -33,9 +33,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class BodyParserEngineXml implements BodyParserEngine {
     
-    private XmlMapper xmlMapper;
+    private final XmlMapper xmlMapper;
     
-    private Logger logger;
+    private final Logger logger;
     
 
     @Inject

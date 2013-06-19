@@ -142,6 +142,9 @@ public interface Messages {
                           Object... params);
 
     /**
+     * @deprecated Might be removed from further releases. Usually is not implemented in a thread
+     * safe way and is error prone.
+     * 
      * Returns all messages for a language we have. Please note that this method
      * does NOT format any MessageFormat values. You have to do that yourself in
      * the controller logic most likely.
@@ -159,6 +162,7 @@ public interface Messages {
      * 
      * @return A map with all messages as <String, String>
      */
+    @Deprecated
     Map<Object, Object> getAll(Optional<String> language);
     
     

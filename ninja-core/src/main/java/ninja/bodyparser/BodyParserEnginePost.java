@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 
 import ninja.ContentTypes;
 import ninja.Context;
-import ninja.Result;
 
 import org.slf4j.Logger;
 
@@ -31,7 +30,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class BodyParserEnginePost implements BodyParserEngine {
 
-    private Logger logger;
+    private final Logger logger;
 
     @Inject
     public BodyParserEnginePost(Logger logger) {

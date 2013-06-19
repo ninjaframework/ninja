@@ -16,7 +16,6 @@
 
 package ninja.bodyparser;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;

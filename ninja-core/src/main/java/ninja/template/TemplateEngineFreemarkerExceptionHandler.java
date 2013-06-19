@@ -41,8 +41,8 @@ import freemarker.template.TemplateExceptionHandler;
 public class TemplateEngineFreemarkerExceptionHandler implements
         TemplateExceptionHandler {
 
-    private NinjaProperties ninjaProperties;
-    private Logger logger;
+    private final NinjaProperties ninjaProperties;
+    private final Logger logger;
 
     @Inject
     public TemplateEngineFreemarkerExceptionHandler(Logger logger,

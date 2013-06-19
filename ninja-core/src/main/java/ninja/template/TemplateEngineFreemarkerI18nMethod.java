@@ -18,9 +18,9 @@ import freemarker.template.TemplateModelException;
 public class TemplateEngineFreemarkerI18nMethod implements
         TemplateMethodModelEx {
 
-    Messages messages;
-    Context context;
-    Optional<Result> result;
+    final Messages messages;
+    final Context context;
+    final Optional<Result> result;
 
     public TemplateEngineFreemarkerI18nMethod(Messages messages,
                                               Context context,

@@ -39,7 +39,7 @@ import ninja.template.TemplateEngineManager;
 public class ResultHandler {
 
     private final TemplateEngineManager templateEngineManager;
-    private Logger logger;
+    private final Logger logger;
 
     @Inject
     public ResultHandler(Logger logger, TemplateEngineManager templateEngineManager) {

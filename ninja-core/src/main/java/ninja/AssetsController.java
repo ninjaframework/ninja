@@ -56,7 +56,7 @@ public class AssetsController {
 
     private final MimeTypes mimeTypes;
 
-    private HttpCacheToolkit httpCacheToolkit;
+    private final HttpCacheToolkit httpCacheToolkit;
 
     @Inject
     public AssetsController(HttpCacheToolkit httpCacheToolkit,

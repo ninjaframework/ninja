@@ -21,7 +21,6 @@ import static ninja.utils.NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT;
 import static ninja.utils.NinjaConstant.HTTP_USE_ETAG;
 import static ninja.utils.NinjaConstant.HTTP_USE_ETAG_DEFAULT;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import ninja.Context;
@@ -35,9 +34,9 @@ import com.google.inject.Inject;
 
 public class HttpCacheToolkitImpl implements HttpCacheToolkit {
     
-    private static Logger logger = LoggerFactory.getLogger(HttpCacheToolkitImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpCacheToolkitImpl.class);
     
-    private NinjaProperties ninjaProperties;
+    private final NinjaProperties ninjaProperties;
     
     @Inject
     public HttpCacheToolkitImpl(NinjaProperties ninjaProperties) {

@@ -36,13 +36,13 @@ import com.google.inject.Singleton;
 @Singleton
 public class MimeTypes {
 
-    private Logger logger = LoggerFactory.getLogger(MimeTypes.class);
+    private final Logger logger = LoggerFactory.getLogger(MimeTypes.class);
 
     private final String PROPERTY_MIMETYPE_PREFIX = "mimetype.";
     private final String DEFAULT_MIMET_TYPE_LOCATIONS = "ninja/utils/mime-types.properties";
 
     private final Properties mimetypes;
-    private Pattern extPattern;
+    private final Pattern extPattern;
 
     private final NinjaProperties ninjaProperties;
 

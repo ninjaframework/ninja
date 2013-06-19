@@ -35,11 +35,11 @@ public class LangImpl implements Lang {
 
     private static Logger logger = LoggerFactory.getLogger(LangImpl.class);
     
-    private String applicationCookiePrefix;
+    private final String applicationCookiePrefix;
     
-    private int TEN_YEARS = 60*60*24*365*10;
+    private final int TEN_YEARS = 60*60*24*365*10;
 
-    private NinjaProperties ninjaProperties;
+    private final NinjaProperties ninjaProperties;
 
 
     @Inject

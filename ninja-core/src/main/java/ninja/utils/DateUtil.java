@@ -28,7 +28,7 @@ import org.joda.time.format.DateTimeFormatter;
 public class DateUtil {
     
     /** From here: http://www.ietf.org/rfc/rfc1123.txt */
-    private static DateTimeFormatter RFC1123_DATE_FORMAT = DateTimeFormat
+    private static final DateTimeFormatter RFC1123_DATE_FORMAT = DateTimeFormat
             .forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'")
             .withLocale(Locale.US)
             .withZone(DateTimeZone.UTC);

@@ -42,9 +42,9 @@ import freemarker.template.Template;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
 
-    private String FILE_SUFFIX = ".ftl.html";
+    private final String FILE_SUFFIX = ".ftl.html";
 
-    private Configuration cfg;
+    private final Configuration cfg;
 
     private final Messages messages;
     
@@ -54,7 +54,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     private final Logger logger;
 
-    private TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
+    private final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
 
     @Inject
     public TemplateEngineFreemarker(Messages messages,

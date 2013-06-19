@@ -32,7 +32,7 @@ import com.google.common.base.CaseFormat;
  */
 public class SwissKnife {
 
-    private static Logger logger = LoggerFactory.getLogger(SwissKnife.class);
+    private static final Logger logger = LoggerFactory.getLogger(SwissKnife.class);
 
     /**
      * This is important: We load stuff as UTF-8.

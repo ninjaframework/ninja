@@ -19,7 +19,6 @@ package ninja.i18n;
 import java.text.MessageFormat;
 import java.util.Map;
 
-
 import ninja.Context;
 import ninja.Result;
 import ninja.utils.NinjaConstant;
@@ -33,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -42,11 +42,11 @@ public class MessagesImpl implements Messages {
 
     private static Logger logger = LoggerFactory.getLogger(MessagesImpl.class);
 
-    private Map<String, Configuration> langToKeyAndValuesMapping;
+    private final Map<String, Configuration> langToKeyAndValuesMapping;
 
     private final NinjaProperties ninjaProperties;
 
-    private Lang lang;
+    private final Lang lang;
 
     @Inject
     public MessagesImpl(
@@ -55,9 +55,7 @@ public class MessagesImpl implements Messages {
 
         this.ninjaProperties = ninjaProperties;
         this.lang = lang;
-        this.langToKeyAndValuesMapping = Maps.newHashMap();
-
-        loadAllMessageFilesForRegisteredLanguages();
+        this.langToKeyAndValuesMapping = loadAllMessageFilesForRegisteredLanguages();
 
     }
     
@@ -144,7 +142,9 @@ public class MessagesImpl implements Messages {
      * Only registered messages in application.conf are loaded.
      * 
      */
-    private void loadAllMessageFilesForRegisteredLanguages() {
+    private  Map<String, Configuration> loadAllMessageFilesForRegisteredLanguages() {
+        
+        Map<String, Configuration> langToKeyAndValuesMappingMutable = Maps.newHashMap();
 
         // Load default messages:
         Configuration defaultLanguage = SwissKnife
@@ -156,7 +156,7 @@ public class MessagesImpl implements Messages {
             throw new RuntimeException(
                     "Did not find conf/messages.properties. Please add a default language file.");
         } else {
-            langToKeyAndValuesMapping.put("", defaultLanguage);
+            langToKeyAndValuesMappingMutable.put("", defaultLanguage);
         }
 
         // Get the languages from the application configuration.
@@ -166,7 +166,7 @@ public class MessagesImpl implements Messages {
         // If we don't have any languages declared we just return.
         // We'll use the default messages.properties file.
         if (applicationLangs == null) {
-            return;
+            return ImmutableMap.copyOf(langToKeyAndValuesMappingMutable);
         }
 
         // Load each language into the HashMap containing the languages:
@@ -219,11 +219,14 @@ public class MessagesImpl implements Messages {
 
                 // and add the composed configuration to the hashmap with the
                 // mapping.
-                langToKeyAndValuesMapping.put(lang,
+                langToKeyAndValuesMappingMutable.put(lang,
                         (Configuration) compositeConfiguration);
             }
 
         }
+        
+        
+        return ImmutableMap.copyOf(langToKeyAndValuesMappingMutable);
 
     }
 

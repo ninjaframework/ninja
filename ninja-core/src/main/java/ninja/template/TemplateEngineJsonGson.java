@@ -30,21 +30,20 @@ import com.google.inject.Inject;
 public class TemplateEngineJsonGson implements TemplateEngine {
 
     private final Logger logger;
+    
+    private final Gson gson;
 
     @Inject
     public TemplateEngineJsonGson(Logger logger) {
         this.logger = logger;
-
+        this.gson = new Gson();
     }
 
     @Override
     public void invoke(Context context, Result result) {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
-
-        Object object = result.getRenderable();
-
-        Gson gson = new Gson();
+        
         String json = gson.toJson(result.getRenderable());
 
         try {
