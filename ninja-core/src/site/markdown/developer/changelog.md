@@ -5,6 +5,7 @@ Version X
  * free marker templates changes no longer cause ninja restart (makotan)
  * freemarker templates performance optimizations (ra)
  * some improvements to harden thread-safe behavior of ninja (ra)
+ * Pinned ninja-core-archetype to java 1.7 (ra)
 
 
 Version 1.4.4
