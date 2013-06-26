@@ -19,6 +19,9 @@ package controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import models.Contact;
 import ninja.Context;
 import ninja.Result;
@@ -28,12 +31,15 @@ import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.params.Param;
 import ninja.params.PathParam;
+import ninja.servlet.util.Request;
+import ninja.servlet.util.Response;
 import ninja.validation.Required;
 import ninja.validation.Validation;
 
 import org.slf4j.Logger;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -60,8 +66,15 @@ public class ApplicationController {
     Router router;
 
 
-    public Result examples(Context context) {
+    public Result examples(@Request HttpServletRequest httpServletRequest,
+                           @Response HttpServletResponse httpServletResponse,
+                           Context context) {
         logger.info("In example ");
+        
+        // test that the injected httpservlet request and response are not null
+        Preconditions.checkNotNull(httpServletRequest);
+        Preconditions.checkNotNull(httpServletResponse);
+        
         // Default rendering is simple by convention
         // This renders the page in views/ApplicationController/index.ftl.html
         return Results.html();

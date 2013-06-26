@@ -6,6 +6,7 @@ Version X
  * freemarker templates performance optimizations (ra)
  * some improvements to harden thread-safe behavior of ninja (ra)
  * Pinned ninja-core-archetype to java 1.7 (ra)
+ * Added support for injecting HttpServletRequest and HttpServletResponse into controller method (ra, Tristan)
 
 
 Version 1.4.4
