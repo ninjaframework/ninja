@@ -23,6 +23,7 @@ import net.spy.memcached.auth.AuthDescriptor;
 import net.spy.memcached.auth.PlainCallbackHandler;
 import net.spy.memcached.transcoders.SerializingTranscoder;
 import ninja.lifecycle.Dispose;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
@@ -37,8 +38,6 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class CacheMemcachedImpl implements Cache {
-    
-    public final static String MEMCACHED_HOST = "memcached.host";
     
     private final Logger logger;
     private final MemcachedClient client;
@@ -93,15 +92,15 @@ public class CacheMemcachedImpl implements Cache {
         
         List<InetSocketAddress> addrs;
         
-        String allMemcachedHosts = ninjaProperties.getOrDie(MEMCACHED_HOST);
+        String allMemcachedHosts = ninjaProperties.getOrDie(NinjaConstant.MEMCACHED_HOST);
         
         addrs = AddrUtil.getAddresses(allMemcachedHosts);
         
-        String memcachedUser = ninjaProperties.get("memcached.user");
+        String memcachedUser = ninjaProperties.get(NinjaConstant.MEMCACHED_USER);
         
         if (memcachedUser != null) {
                 
-            String memcachePassword = ninjaProperties.getOrDie("memcached.password");
+            String memcachePassword = ninjaProperties.getOrDie(NinjaConstant.MEMCACHED_PASSWORD);
             
             // Use plain SASL to connect to memcached
             AuthDescriptor ad = new AuthDescriptor(new String[]{"PLAIN"},

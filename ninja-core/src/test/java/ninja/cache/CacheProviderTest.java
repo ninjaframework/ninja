@@ -3,6 +3,7 @@ package ninja.cache;
 import static org.junit.Assert.assertTrue;
 import ninja.Configuration;
 import ninja.lifecycle.LifecycleSupport;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaPropertiesImpl;
 
 import org.junit.Rule;
@@ -25,7 +26,7 @@ public class CacheProviderTest {
 
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();   
         
-        ninjaProperties.setProperty(CacheConstant.CACHE_IMPLEMENTATION, null);
+        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, null);
         
         Injector injector = Guice.createInjector(new Configuration(ninjaProperties), LifecycleSupport.getModule());
         
@@ -46,9 +47,9 @@ public class CacheProviderTest {
 
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();   
         
-        ninjaProperties.setProperty(CacheConstant.CACHE_IMPLEMENTATION, CacheMemcachedImpl.class.getName());
+        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, CacheMemcachedImpl.class.getName());
         // just a dummy to test that loading works
-        ninjaProperties.setProperty(CacheMemcachedImpl.MEMCACHED_HOST, "127.0.0.1:1234");
+        ninjaProperties.setProperty(NinjaConstant.MEMCACHED_HOST, "127.0.0.1:1234");
         
         Injector injector = Guice.createInjector(new Configuration(ninjaProperties), LifecycleSupport.getModule());
         
@@ -69,7 +70,7 @@ public class CacheProviderTest {
 
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();   
         
-        ninjaProperties.setProperty(CacheConstant.CACHE_IMPLEMENTATION, "not_existing_implementation");
+        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, "not_existing_implementation");
         
         Injector injector = Guice.createInjector(new Configuration(ninjaProperties), LifecycleSupport.getModule());
         

@@ -1,5 +1,6 @@
 package ninja.cache;
 
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class CacheProvider implements Provider<Cache> {
       
         Class<? extends Cache> cacheClass = null;
 
-        String cacheImplClassName = ninjaProperties.get(CacheConstant.CACHE_IMPLEMENTATION);
+        String cacheImplClassName = ninjaProperties.get(NinjaConstant.CACHE_IMPLEMENTATION);
         
         if (cacheImplClassName != null) {
             try {
@@ -58,14 +59,14 @@ public class CacheProvider implements Provider<Cache> {
             } catch (ClassNotFoundException e) {
                 
                 throw new RuntimeException(
-                        "Class defined in configuration " + CacheConstant.CACHE_IMPLEMENTATION +
+                        "Class defined in configuration " + NinjaConstant.CACHE_IMPLEMENTATION +
                         "not found (" + cacheClass + ")", e);
                 
             } catch (ClassCastException e) {
                 
                 throw new RuntimeException(
                         "Class defined in configuration " 
-                                + CacheConstant.CACHE_IMPLEMENTATION +
+                                + NinjaConstant.CACHE_IMPLEMENTATION +
                                 "is not an instance of interface cache (" 
                                 + cacheClass + ")", e);
             }
