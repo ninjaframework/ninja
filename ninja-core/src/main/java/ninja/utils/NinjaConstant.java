@@ -71,18 +71,18 @@ public interface NinjaConstant {
     final String applicationSecret = "application.secret";
 
     /**
-     * In many situations the server cannot know its own name. So You can set
+     * In many situations the server cannot know its own name. So you can set the name
      * using that variable.
      */
     final String serverName = "application.server.name";
 
     /**
-     * 
+     * Time until session expires.
      */
     final String sessionExpireTimeInSeconds = "application.session.expire_time_in_seconds";
 
     /**
-     * 
+     * Send session cookie only back when content has changed.
      */
     final String sessionSendOnlyIfChanged = "application.session.send_only_if_changed";
 
@@ -101,6 +101,31 @@ public interface NinjaConstant {
      * (XSS).
      */
     final String sessionHttpOnly = "application.session.http_only";
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // Cache configuration
+    ///////////////////////////////////////////////////////////////////////////
+    /**
+     * Constant used to bind custom cache implementation.
+     */
+    public final String CACHE_IMPLEMENTATION = "cache.implementation";
+    
+    
+    /**
+     * Either a single host or a list of hosts (space separated)
+     * 
+     */
+    public final String MEMCACHED_HOST = "memcached.host";
+    
+    /**
+     * Username for memcached (OPTIONAL)
+     */
+    public final String MEMCACHED_USER =  "memcached.user";
+    
+    /**
+     * Password for memcached (OPTIONAL)
+     */
+    public final String MEMCACHED_PASSWORD =  "memcached.password";
 
     /**
      * Suffix used for Ninja cookies. Usually results in cookies like

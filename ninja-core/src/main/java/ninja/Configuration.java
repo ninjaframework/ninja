@@ -16,12 +16,14 @@
 
 package ninja;
 
+import ninja.cache.Cache;
+import ninja.cache.CacheProvider;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.guice.PostofficeProvider;
 import ninja.utils.LoggerProvider;
-
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
+
 import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
@@ -61,6 +63,8 @@ public class Configuration extends AbstractModule {
         // Postoffice
         bind(Postoffice.class).toProvider(PostofficeProvider.class);
 
+        // Cache
+        bind(Cache.class).toProvider(CacheProvider.class);
     }
 
 }

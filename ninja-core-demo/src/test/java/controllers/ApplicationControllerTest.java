@@ -42,6 +42,7 @@ public class ApplicationControllerTest extends NinjaTest {
 
         // If the redirect has worked we must see the following text
         // from the index screen:
+        System.out.println("result" + result);
         assertTrue(result.contains("And developing large web applications becomes fun again."));
 
     }
@@ -185,6 +186,25 @@ public class ApplicationControllerTest extends NinjaTest {
 
         // And assert that stuff is visible on page:
         assertTrue(response.contains("This is an arbitrary message as flash message - with placeholder: PLACEHOLDER"));
+
+    }
+    
+    
+    @Test
+    public void testCachingWorks() {
+
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/test_caching");
+
+        // First request => no caching
+        assertTrue(response.contains("No cache key set."));
+        
+        
+        response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/test_caching");
+
+        // Second request hits cache:
+        assertTrue(response.contains("Cache key is: cacheKeyValue"));
 
     }
 
