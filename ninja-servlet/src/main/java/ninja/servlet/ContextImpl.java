@@ -556,12 +556,30 @@ public class ContextImpl implements Context.Impl {
         
     }
 
-	@Override
-	public String getContextPath() {
-		
-		return httpServletRequest.getContextPath();
-	}
-    
-    
+    @Override
+    public String getContextPath() {
+
+        return httpServletRequest.getContextPath();
+    }
+
+    /**
+     * Convenience method to access HttpServletRequest of this context.
+     * 
+     * @return HttpServletRequest of this Context
+     */
+    public HttpServletRequest getHttpServletRequest() {
+        return httpServletRequest;
+    }
+
+    /**
+     * Convenience method to access HttpServletResponse of this context.
+     * 
+     * Usually you don't want to do that.
+     * 
+     * @return HttpServletResponse of this Context.
+     */
+    public HttpServletResponse getHttpServletResponse() {
+        return httpServletResponse;
+    }
 
 }

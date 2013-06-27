@@ -193,6 +193,21 @@ And then you can simply use that extractor as annotation in your controller to i
 That's almost everything you have to know about `ArgumentExtractors`. They really facilitate injection of arbitrary objects into
 your controller during a request.
 
+
+Built-in argument extractors
+----------------------------
+
+Ninja features some extractors and classes you can inject into your
+controller methods out of the box:
+
+ * <code>Context context</code>
+ * <code>SessionCookie sessionCookie</code>
+ * <code>FlashCookie flashCookie</code>
+ * <code>@Param("paramName") String name</code>
+ * <code>@PathParam("pathParamName") String name</code>
+ * <code>@SessionParam("paramName") String sessionParamName</code>
+ * <code>@Request HttpServletRequest httpServletRequest</code> (Only on servlet environments)
+ * <code>@Response HttpServletResponse httpServletResponse</code> (Only on servlet environments)
  
 
 
