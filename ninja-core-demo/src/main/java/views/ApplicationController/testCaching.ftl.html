@@ -1,0 +1,12 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+
+
+<#if cacheKey??>
+    Cache key is: ${cacheKey}
+<#else>
+    No cache key set.
+</#if>
+
+
+</@layout.myLayout>

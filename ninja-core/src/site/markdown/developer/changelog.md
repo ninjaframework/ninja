@@ -6,6 +6,8 @@ Version X
  * freemarker templates performance optimizations (ra)
  * some improvements to harden thread-safe behavior of ninja (ra)
  * Pinned ninja-core-archetype to java 1.7 (ra)
+ * Fixed a bug in TestServer that caused context not to shut down properly (ra)
+ * Added Cache implementation (EhCache and Memcache) (ra)
  * Added support for injecting HttpServletRequest and HttpServletResponse into controller method (ra, Tristan)
 
 
