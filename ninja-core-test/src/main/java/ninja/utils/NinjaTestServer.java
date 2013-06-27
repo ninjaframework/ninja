@@ -21,8 +21,7 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import ninja.servlet.NinjaBootstap;
-import ninja.servlet.NinjaServletDispatcher;
+import ninja.servlet.NinjaServletListener;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.mortbay.jetty.Connector;
@@ -30,7 +29,7 @@ import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.FilterHolder;
+import org.mortbay.jetty.servlet.DefaultServlet;
 
 import com.google.inject.servlet.GuiceFilter;
 
@@ -44,6 +43,7 @@ public class NinjaTestServer {
 
     private final int port;
     private final Server server;
+    private final Context context;
     private final URI serverUri;
 
     public NinjaTestServer() {
@@ -56,7 +56,7 @@ public class NinjaTestServer {
             Connector con = new SelectChannelConnector();
             con.setPort(port);
             server.addConnector(con);
-            Context context = new Context(server, "/");
+            context = new Context(server, "/", Context.SESSIONS);
             
             // Set testmode for Ninja:
             System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
@@ -66,17 +66,18 @@ public class NinjaTestServer {
             // that the port will change.
             // Therefore we inject the server name here:
             NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();
-            ninjaProperties.setProperty(NinjaConstant.serverName,
-                    serverUri.toString());
-
-            NinjaBootstap ninjaBootstap = new NinjaBootstap(ninjaProperties);
-            ninjaBootstap.boot();
+            ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
             
-            context.addServlet(NinjaServletDispatcher.class, "/*");
-            context.addFilter(new FilterHolder(new GuiceFilter()), "/*",
-                    Handler.ALL);
-
+            //context.addServlet(NinjaServletDispatcher.class, "/*");
+            NinjaServletListener ninjaServletListener = new NinjaServletListener();
+            ninjaServletListener.setNinjaProperties(ninjaProperties);
+            
+            context.addEventListener(ninjaServletListener);
+            context.addFilter(GuiceFilter.class, "/*", Handler.ALL);
+            context.addServlet(DefaultServlet.class, "/");
+            
             server.start();
+            
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -102,7 +103,12 @@ public class NinjaTestServer {
 
     public void shutdown() {
         try {
+            
             server.stop();
+            server.destroy(); 
+            context.stop();
+            context.destroy();
+            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

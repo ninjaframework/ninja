@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import ninja.lifecycle.Dispose;
 
 import org.slf4j.Logger;
 
@@ -22,6 +23,9 @@ import com.google.inject.Singleton;
  * @see http://ehcache.org/
  *
  * expiration is specified in seconds
+ * 
+ * Heavily inspired by excellent Play! 1.2.5 implementation.
+ * 
  */
 @Singleton
 public class CacheEhCacheImpl implements Cache {
@@ -30,12 +34,12 @@ public class CacheEhCacheImpl implements Cache {
 
     private final net.sf.ehcache.Cache ehCache;
 
-    private static final String cacheName = "ninja";
+    private final String cacheName = "ninja";
 
-    private Logger logger;
+    private final Logger logger;
 
     @Inject
-    private CacheEhCacheImpl(Logger logger) {
+    public CacheEhCacheImpl(Logger logger) {
         this.logger = logger;
         this.ehCacheManager = CacheManager.create();
         this.ehCacheManager.addCache(cacheName);
@@ -151,7 +155,11 @@ public class CacheEhCacheImpl implements Cache {
         ehCache.put(element);
     }
 
+    @Dispose
     public void stop() {
-        ehCacheManager.shutdown();
+        if (ehCacheManager != null) {
+            ehCacheManager.shutdown();            
+        }
+        
     }
 }

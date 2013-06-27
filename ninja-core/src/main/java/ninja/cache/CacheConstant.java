@@ -19,6 +19,9 @@ package ninja.cache;
 
 public interface CacheConstant {
     
-    public static final String cacheImplementation = "cache.implementation";
+    /**
+     * Constant used to bind custom cache implementation in application.conf.
+     */
+    public static final String CACHE_IMPLEMENTATION = "cache.implementation";
     
 }

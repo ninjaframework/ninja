@@ -24,6 +24,8 @@ import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.Router;
+import ninja.cache.Cache;
+import ninja.cache.NinjaCache;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.params.Param;
@@ -34,7 +36,6 @@ import ninja.validation.Validation;
 import org.slf4j.Logger;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -58,7 +59,9 @@ public class ApplicationController {
 
     @Inject
     Router router;
-
+    
+    @Inject
+    NinjaCache ninjaCache;
 
     public Result examples(Context context) {
         logger.info("In example ");
@@ -183,6 +186,29 @@ public class ApplicationController {
         String maliciousJavascript = "<script>alert('Hello');</script>";
 
         return Results.html().render("maliciousJavascript", maliciousJavascript);
+
+    }
+    
+    
+    public Result testCaching() {
+        
+        // Simple integration test to check if ehcache works:
+        // Calling that route two times will lead to different results.
+        
+        String cacheKeyObject = ninjaCache.get("key", String.class);
+        
+        if (cacheKeyObject != null) {
+            
+            String cacheKey = cacheKeyObject;
+            
+            return Results.html().render("cacheKey", cacheKey);
+            
+        } else {
+            
+            ninjaCache.set("key", "cacheKeyValue", "10s");
+            return Results.html();
+        }
+        
 
     }
 

@@ -18,6 +18,9 @@ package ninja.servlet;
 
 import javax.servlet.ServletContextEvent;
 
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
+
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 
@@ -35,6 +38,13 @@ public class NinjaServletListener extends GuiceServletContextListener {
     
 private NinjaBootstap ninjaBootstap;
 
+    NinjaPropertiesImpl ninjaProperties;
+
+    public void setNinjaProperties(NinjaPropertiesImpl ninjaProperties) {
+        this.ninjaProperties = ninjaProperties; 
+        
+    }
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {      
         super.contextInitialized(servletContextEvent);
@@ -48,7 +58,14 @@ private NinjaBootstap ninjaBootstap;
    
     @Override
     protected Injector getInjector() {
-        ninjaBootstap = new NinjaBootstap();
+        
+        if (ninjaProperties != null) {
+            ninjaBootstap = new NinjaBootstap(ninjaProperties);
+            
+        } else {
+            ninjaBootstap = new NinjaBootstap();
+        }
+        
         ninjaBootstap.boot();
         return ninjaBootstap.getInjector();
     }

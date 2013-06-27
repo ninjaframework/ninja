@@ -22,6 +22,7 @@ import net.spy.memcached.MemcachedClient;
 import net.spy.memcached.auth.AuthDescriptor;
 import net.spy.memcached.auth.PlainCallbackHandler;
 import net.spy.memcached.transcoders.SerializingTranscoder;
+import ninja.lifecycle.Dispose;
 import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
@@ -30,11 +31,14 @@ import com.google.inject.Singleton;
 
 /**
  * Memcached implementation (using http://code.google.com/p/spymemcached/)
- *
- * expiration is specified in seconds
+ * expiration is specified in seconds.
+ * 
+ * Heavily inspired by excellent Play! 1.2.5 implementation.
  */
 @Singleton
 public class CacheMemcachedImpl implements Cache {
+    
+    public final static String MEMCACHED_HOST = "memcached.host";
     
     private final Logger logger;
     private final MemcachedClient client;
@@ -51,7 +55,7 @@ public class CacheMemcachedImpl implements Cache {
         this.logger = logger;
         this.ninjaProperties = ninjaProperties;
         
-        tc = new SerializingTranscoder() {
+        this.tc = new SerializingTranscoder() {
 
             @Override
             protected Object deserialize(byte[] data) {
@@ -89,7 +93,7 @@ public class CacheMemcachedImpl implements Cache {
         
         List<InetSocketAddress> addrs;
         
-        String allMemcachedHosts = ninjaProperties.getOrDie("memcached.host");
+        String allMemcachedHosts = ninjaProperties.getOrDie(MEMCACHED_HOST);
         
         addrs = AddrUtil.getAddresses(allMemcachedHosts);
         
@@ -204,6 +208,7 @@ public class CacheMemcachedImpl implements Cache {
         client.set(key, expiration, value, tc);
     }
 
+    @Dispose
     public void stop() {
         client.shutdown();
     }
