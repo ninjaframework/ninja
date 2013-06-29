@@ -97,6 +97,8 @@ public class Result implements Serializable {
 
     private String template;
 
+    private String uaType = "";
+
     /**
      * A result. Sets utf-8 as charset and status code by default. 
      * Refer to {@link Result#SC_200_OK}, {@link Result#SC_204_NO_CONTENT} and so on
@@ -496,7 +498,14 @@ public class Result implements Serializable {
             
         }
     }
-    
-  
+
+    public Result uaType(String uaType) {
+        this.uaType = uaType;
+        return this;
+    }
+
+    public String getUaType() {
+        return this.uaType;
+    }
 
 }
