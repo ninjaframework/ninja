@@ -229,27 +229,23 @@ can use the noescape directive around that particular variable.
 
 
 
-18n and the view
+i18n and the view
 ----------------
 
 You can access all messages by using a simple <html>
 
 Lets say your message.properties looks like:
 
-    i18nCasinoRegistrationTitle=My funky title
+    casinoRegistrationTitle=My funky title
     
 
 You can then access the variable inside your view like that.
 
     <html>
         <head>
-            <title>${i18nCasinoRegistrationTitle}</title>
+            <title>${i18n("casinoRegistrationTitle")}</title>
         </head>
     <html>
-
-**Note**
- * You must use camelCase in your messages.properties file.
- * You must prefix your messages with i18n 
 
 
 flash content in the view

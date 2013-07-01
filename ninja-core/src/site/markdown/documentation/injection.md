@@ -19,7 +19,7 @@ Example
 Injection is a first class citizen of Ninja. Ninja would not be possible without Guice. Guice
 is preconfigured for your application and you can use it out of the box.
 
-The main starting point to define your bindings is a file "conf/Module.conf".
+The main starting point to define your bindings is a file "conf/Module.java".
 
 This module is a plain Guice module that will be started when you start your application.
 

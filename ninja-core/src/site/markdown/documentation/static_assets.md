@@ -4,10 +4,9 @@ Static assets
 Intro
 -----
 
-By default you can put static assets into the <code>src/main/java/assets</code> folder. Usually you want to put
-css files, js files, images and so on into that folder.
+By default you can put static assets into the <code>src/main/java/assets</code> folder. Usually you want to put css files, js files, images and so on into that folder.
 
-You can then those files in your html templates via (for instance) 
+You can then reference those files in your html templates via (for instance) 
     
     <img src="assets/myimage.png" />
 
