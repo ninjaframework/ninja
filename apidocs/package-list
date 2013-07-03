@@ -1,6 +1,7 @@
 ninja
 ninja.application
 ninja.bodyparser
+ninja.cache
 ninja.i18n
 ninja.lifecycle
 ninja.params

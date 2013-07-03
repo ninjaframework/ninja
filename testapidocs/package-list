@@ -1,4 +1,5 @@
 ninja
+ninja.cache
 ninja.classesfortest
 ninja.i18n
 ninja.lifecycle
