@@ -7,6 +7,8 @@ Version X
  * some improvements to harden thread-safe behavior of ninja (ra)
  * Pinned ninja-core-archetype to java 1.7 (ra)
  * Added support for injecting HttpServletRequest and HttpServletResponse into controller method (ra, Tristan)
+ * Bump to latest libraries (hibernate-validator 5.0.1)
+ * Ninja now uses Java 1.7
 
 
 Version 1.4.4

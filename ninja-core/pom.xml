@@ -102,14 +102,14 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.2.3</version>
+			<version>2.2.4</version>
 		</dependency>
 
 		<!-- freemarker is our templating engine: -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker-gae</artifactId>
-            <version>2.3.19</version>
+            <version>2.3.20</version>
          </dependency>
 
 		<!-- guava is just cool -->
@@ -123,7 +123,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.7</version>
+			<version>1.8</version>
 		</dependency>
 
 		<!-- Enrcyption libraray providing support for blowfish -->
@@ -137,7 +137,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.11</version>
+			<version>1.0.13</version>
 		</dependency>
 
 		<!-- Some nice stuff for handling IO. Some overlap with guava though... -->
@@ -203,17 +203,33 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.1.0.Final</version>
 		</dependency>
+        
+
+        <!-- Reference implementation for JSR 303 / Bean validation -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>5.0.0.Final</version>
+			<version>5.0.1.Final</version>
 		</dependency>
+        
+        <!-- hibernate-validator needs the following two libraries -->
+        <!-- (these libs may be present on a JEE server) -->
+        <dependency>
+           <groupId>javax.el</groupId>
+           <artifactId>javax.el-api</artifactId>
+           <version>3.0.0</version>
+        </dependency>
+        <dependency>
+           <groupId>org.glassfish</groupId>
+           <artifactId>javax.el</artifactId>
+           <version>3.0.0</version>
+        </dependency>
 
 		<!-- XML parsing -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.1.4</version>
+			<version>2.2.2</version>
 		</dependency>
 	
 	</dependencies>
