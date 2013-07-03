@@ -85,7 +85,8 @@ Ninja supports that use case by using a mode prefix prior to your property key.
 
 <pre class="prettyprint">
     database.name=database_production   # will be used when no mode is set (or prod)
-    %dev.database.name=database_test    # will be used when running in dev mode
+    %prod.database.name=database_prod   # will be used when running in prod mode
+    %dev.database.name=database_dev     # will be used when running in dev mode
     %test.database.name=database_test   # will be used when running in test mode
 </pre>
 
