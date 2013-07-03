@@ -1,5 +1,11 @@
 Version X
 =========
+
+ * Your changes go here
+
+
+Version 1.5
+===========
  
  * bump to devbliss.doctest 0.6.5 (ra)
  * free marker templates changes no longer cause ninja restart (makotan)
@@ -9,8 +15,8 @@ Version X
  * Fixed a bug in TestServer that caused context not to shut down properly (ra)
  * Added Cache implementation (EhCache and Memcache) (ra)
  * Added support for injecting HttpServletRequest and HttpServletResponse into controller method (ra, Tristan)
- * Bump to latest libraries (hibernate-validator 5.0.1)
- * Ninja now uses Java 1.7
+ * Bump to latest libraries (hibernate-validator 5.0.1) (ra)
+ * Ninja now uses Java 1.7 (ra)
 
 
 Version 1.4.4
