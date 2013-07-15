@@ -1,7 +1,17 @@
 Upgrading to latest Ninja
 =========================
 
-From 1.4 to 1.X
+
+Upgrading to 1.X
+----------------
+
+If you are using Results.redirectTemporary(...) / Results.redirect(...) or Results.noContent()
+AND if you are using a http body to indicate something (like a hyperlink text) you have to set
+result.render(null) to remove the NoHttpResult. Otherwise nothing will change for you. You simply
+don't need a html template by default any more.
+
+
+Upgrading to 1.4
 ---------------
 
 Improvements in i18n. You can now use the following snipplet to include i18n into your templates:

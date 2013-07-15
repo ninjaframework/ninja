@@ -1,8 +1,7 @@
 Version X
 =========
 
- * Your changes go here
-
+ * 2013-07-15 Support for skipping rendering of HttpBody via NoHttpBody class (useful in redirects eg) (makotan, pthum, ra)
 
 Version 1.5
 ===========
