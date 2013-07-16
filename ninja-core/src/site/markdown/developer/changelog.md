@@ -1,7 +1,8 @@
 Version X
 =========
 
- * Your changes go here
+ * 2013-07-06 Support to show the user of Ninja the version of the framework.
+              Embedded in the splash screen (Ninja logo) at the beginning. (ra)
 
 
 Version 1.5
