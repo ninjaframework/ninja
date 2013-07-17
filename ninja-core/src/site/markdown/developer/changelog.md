@@ -1,5 +1,5 @@
-Version X
-=========
+Version 1.5.1
+=============
 
  * 2013-07-15 Support for skipping rendering of HttpBody via NoHttpBody class (useful in redirects eg) (makotan, pthum, ra)
  * 2013-07-16 Support to show the user of Ninja the version of the framework.
