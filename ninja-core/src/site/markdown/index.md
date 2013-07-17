@@ -1,7 +1,7 @@
 <!-- Main hero unit for a primary marketing message or call to action -->
 <div class="hero-unit">
 	<h1>Ninja web framework</h1>
-	<p>Full stack web framework for Java.<br/> Fast and productive. Runs on servlet containers - built with Maven.</p>
+	<p>Full stack web framework for Java.<br/> Fast and productive. Runs on servlet containers and application servers.</p>
 </div>
 
 <br/>
