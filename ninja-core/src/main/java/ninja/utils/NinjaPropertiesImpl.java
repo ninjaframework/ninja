@@ -84,12 +84,17 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
             if (modeFromGetSystemProperty.equals(NinjaConstant.MODE_TEST)) {
                 mode = Mode.test;
+                logger.info("Ninja is running in test mode.");
             } else if (modeFromGetSystemProperty
                     .equals(NinjaConstant.MODE_PROD)) {
                 mode = Mode.prod;
+                logger.info("Ninja is running in prod mode.");
+            } else {
+                logger.info("Ninja is running in dev mode.");
+                // else dev as set initially...
             }
 
-            // else dev as set initially...
+
 
         }
 
