@@ -16,6 +16,11 @@
 
 package ninja;
 
+import java.io.InputStream;
+import java.util.Properties;
+
+import javax.management.RuntimeErrorException;
+
 import ninja.lifecycle.LifecycleService;
 
 import com.google.inject.Inject;
@@ -52,7 +57,7 @@ public class NinjaImpl implements Ninja {
             + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
             + "/    |    \\   /    |    \\/\\__|    /    |    \\\n"
             + "\\____|__  /___\\____|__  /\\________\\____|__  /\n"
-            + "     web\\/framework   \\/                  \\/ \n";
+            + "     web\\/framework   \\/                  \\/ %s\n";
 
     private final LifecycleService lifecycleService;
     private final Router router;
@@ -66,9 +71,11 @@ public class NinjaImpl implements Ninja {
         this.router = router;
         this.lifecycleService = lifecycleService;
         this.resultHandler = resultHandler;
+        
+        String ninjaVersion = readNinjaVersion();
 
         // This system out println is intended.
-        System.out.println(NINJA_LOGO);
+        System.out.println(String.format(NINJA_LOGO, ninjaVersion));
     }
 
     /**
@@ -109,6 +116,38 @@ public class NinjaImpl implements Ninja {
     @Override
     public void shutdown() {
         lifecycleService.stop();
+    }
+    
+    /**
+     * Simply reads a property resource file that contains the version of this
+     * Ninja build. Helps to identify the Ninja version currently running.
+     * 
+     * @return The version of Ninja. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
+     */
+    public String readNinjaVersion() {
+        
+        // location of the properties file
+        String LOCATION_OF_NINJA_BUILTIN_PROPERTIES = "ninja/ninja-builtin.properties";
+        // and the key inside the properties file.
+        String NINJA_VERSION_PROPERTY_KEY = "ninja.version";
+        
+        String ninjaVersion;
+         
+        try {
+
+            Properties prop = new Properties();   
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES);
+            prop.load(stream);
+            
+            ninjaVersion = prop.getProperty(NINJA_VERSION_PROPERTY_KEY);
+        
+        } catch (Exception e) {
+            //this should not happen. Never.
+            throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + LOCATION_OF_NINJA_BUILTIN_PROPERTIES));
+        }
+        
+        return ninjaVersion;
+        
     }
 
 }
