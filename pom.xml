@@ -40,6 +40,8 @@
 		<module>ninja-core-test</module>
 		<module>ninja-core-demo</module>
         <module>ninja-core-demo-archetype</module>
+        <module>ninja-jpa-demo</module>
+        <module>ninja-jpa-demo-archetype</module>
 	</modules>
 
 	<!-- pin encoding to utf-8 -->

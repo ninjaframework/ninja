@@ -1,3 +1,9 @@
+Version XXX
+===========
+
+ * 2013-07-17 JPA support went into ninja-core (ra)
+ * 2013-07-17 Added a JPA demo acting as integration test and an archetype for JPA (ra)
+
 Version 1.5.1
 =============
 

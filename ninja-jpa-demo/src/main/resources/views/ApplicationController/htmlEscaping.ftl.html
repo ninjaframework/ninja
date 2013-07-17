@@ -1,0 +1,18 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+
+<header class="jumbotron subhead">
+	<h1>Html escaping</h1>
+	<p class="lead">Html escaping is really important.
+	By default all user generated content is html escaped. This includes all
+	variables you set and also all messages. The template itself is not touched.</p>
+</header>
+
+<hr>
+
+<h2>Escaping example</h2>
+<ul>
+<li>Some malicious code inside a user generated variable gets invoked: ${maliciousJavascript}</li>
+</ul>
+
+</@layout.myLayout>

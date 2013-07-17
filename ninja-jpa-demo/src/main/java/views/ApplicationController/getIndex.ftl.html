@@ -1,0 +1,44 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+
+<h1>Write a new entry for the Guestbook</h1>
+
+<form action="${postRoute}" method="post">
+    <table class="form">
+        <tr>
+            <th><label for="name"> Text </label></th>
+            <td><input class="input_full" type="text" id="text" name="text" />
+
+            </td>
+        </tr>
+        <tr>
+            <th><label for="email"> Email </label></th>
+            <td><input class="input_full" type="email" id="email"
+                name="email" /></td>
+        </tr>
+    </table>
+
+    <p>
+        <input type="submit" value="Send" /> <input type="reset"
+            value="Reset">
+    </p>
+</form>
+
+
+<#if !guestbookEntries?has_content> 
+    
+    <p>No guestbook entries yet... please enter one above...</p>
+
+<#else>
+
+    <h1>Guestbook Entries</h1>
+
+    <#list guestbookEntries as guestbookEntry>
+        <h2>Entry</h2>
+        <p>${guestbookEntry.text}</p>
+        <p>Written by: ${guestbookEntry.email}</p>
+    </#list>
+
+</#if>
+
+</@layout.myLayout>

@@ -32,6 +32,7 @@
         	<item name="Team" href="./team.html"/>
         	<item name="Documentation" collapse="true" href="./documentation/getting_started.html">                
                 <item name="Controller" href="./documentation/controller.html"/>
+                <item name="Injection" href="./documentation/injection.html"/>
                 <item name="Html templating" href="./documentation/html_templating.html"/>
                 <item name="Static assets" href="./documentation/static_assets.html"/>
                 <item name="Request scope" href="./documentation/request_scope.html"/> 
@@ -39,7 +40,7 @@
                 <item name="Filter" href="./documentation/filter.html"/>            
                 <item name="Configuration" href="./documentation/application_configuration.html"/>
                 <item name="Deployment" href="./documentation/deployment.html"/>
-                <item name="Injection" href="./documentation/injection.html"/>
+                <item name="JPA / DB" href="./documentation/jpa.html"/>
                 <item name="Caching" href="./documentation/cache.html"/>
                 <item name="Lifecycle" href="./documentation/lifecycle.html"/>
                 <item name="Scheduler" href="./documentation/scheduler.html"/>
