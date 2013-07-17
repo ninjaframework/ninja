@@ -41,92 +41,95 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultHandlerTest {
-    
+
     @Mock
     private TemplateEngineManager templateEngineManager;
-    
+
     @Mock
     private TemplateEngine templateEngine;
-    
+
     @Mock
     private TemplateEngine templateEngineHtml;
-    
+
     @Mock
     private ResponseStreams responseStreams;
 
-	  @Mock
-	  private OutputStream outputStream;
-	
+    @Mock
+    private OutputStream outputStream;
+
     @Mock
     private Writer writer;
 
     private ResultHandler resultHandler;
-    
-    @Mock 
+
+    @Mock
     private Context context;
-    
+
     @Mock
     Logger logger;
-    
-    
+
     @Before
     public void init() throws Exception {
-        
+
         resultHandler = new ResultHandler(logger, templateEngineManager);
         when(responseStreams.getOutputStream()).thenReturn(outputStream);
         when(responseStreams.getWriter()).thenReturn(writer);
-        when(context.finalizeHeaders(any(Result.class))).thenReturn(responseStreams);
-        when(templateEngineManager.getTemplateEngineForContentType(
-                Result.APPLICATON_JSON)).thenReturn(templateEngine);
-        when(templateEngineManager.getTemplateEngineForContentType(
-                "text/html")).thenReturn(templateEngineHtml);
-        
+        when(context.finalizeHeaders(any(Result.class))).thenReturn(
+                responseStreams);
+        when(
+                templateEngineManager
+                        .getTemplateEngineForContentType(Result.APPLICATON_JSON))
+                .thenReturn(templateEngine);
+        when(templateEngineManager.getTemplateEngineForContentType("text/html"))
+                .thenReturn(templateEngineHtml);
+
     }
-    
+
     /**
      * If Cache-Control is not set the no-cache strategy has to be applied.
      * 
-     * We expect
-     * Cache-Control: ...
-     * Date: ...
-     * Expires: ...
+     * We expect Cache-Control: ... Date: ... Expires: ...
      */
     @Test
     public void testAddingOfDefaultHeadersWorks() {
-        
+
         Result result = Results.json();
         // just a new object as dummy...
         result.render(new Object());
-        
-        // make sure the stuff is not set by default json method (just in case...)       
+
+        // make sure the stuff is not set by default json method (just in
+        // case...)
         assertNull(result.getHeaders().get(Result.CACHE_CONTROL));
         assertNull(result.getHeaders().get(Result.DATE));
         assertNull(result.getHeaders().get(Result.EXPIRES));
-        
+
         // handle result
         resultHandler.handleResult(result, context);
-        
+
         // make sure stuff is there:
-        assertEquals(Result.CACHE_CONTROL_DEFAULT_NOCACHE_VALUE, result.getHeaders().get(Result.CACHE_CONTROL));
+        assertEquals(Result.CACHE_CONTROL_DEFAULT_NOCACHE_VALUE, result
+                .getHeaders().get(Result.CACHE_CONTROL));
         assertNotNull(result.getHeaders().get(Result.DATE));
-        assertEquals(DateUtil.formatForHttpHeader(0L), result.getHeaders().get(Result.EXPIRES));
-        
+        assertEquals(DateUtil.formatForHttpHeader(0L),
+                result.getHeaders().get(Result.EXPIRES));
+
     }
-    
+
     @Test
     public void testCacheControlDoesNotGetTouchedWhenSet() {
-        
+
         Result result = Results.json();
-        //just a simple cache control header:
+        // just a simple cache control header:
         result.addHeader(Result.CACHE_CONTROL, "must-revalidate");
         // just a new object as dummy...
         result.render(new Object());
-        
+
         // handle result
         resultHandler.handleResult(result, context);
-        
+
         // make sure stuff is there:
-        assertEquals("must-revalidate", result.getHeaders().get(Result.CACHE_CONTROL));
+        assertEquals("must-revalidate",
+                result.getHeaders().get(Result.CACHE_CONTROL));
         assertNull(result.getHeaders().get(Result.DATE));
         assertNull(result.getHeaders().get(Result.EXPIRES));
     }
@@ -139,7 +142,7 @@ public class ResultHandlerTest {
         resultHandler.handleResult(result, context);
         assertEquals(Result.TEXT_PLAIN, result.getContentType());
     }
-    
+
     @Test
     public void testContentNegotiation() {
         when(context.getAcceptContentType()).thenReturn("text/html");
@@ -160,14 +163,27 @@ public class ResultHandlerTest {
         assertEquals(contentType, result.getContentType());
     }
 
-	@Test
-	public void testRenderPictureFromBytes() {
-		final byte[] toRender = new byte[]{1,2,3};
+    @Test
+    public void testRenderPictureFromBytes() {
+        final byte[] toRender = new byte[] { 1, 2, 3 };
         final String contentType = "image/png";
         Result result = Results.ok();
         result.contentType(contentType);
         result.render(toRender);
         resultHandler.handleResult(result, context);
         assertEquals(contentType, result.getContentType());
-	}
+    }
+    
+    @Test
+    public void testThatNoHttpBodyWorks() {
+        
+        // make sure that NoHttpBody causes the resulthandler to finalize
+        // the context and does not call a tempate render engine.
+        Result result = new Result(200);
+        result.render(new NoHttpBody());
+        
+        resultHandler.handleResult(result, context);
+        verify(context).finalizeHeaders(result);
+        
+    }
 }

@@ -18,6 +18,7 @@ package ninja;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import ninja.utils.NoHttpBody;
 
 import org.junit.Test;
 
@@ -68,6 +69,7 @@ public class ResultsTest {
 
         Result result = Results.noContent();
         assertEquals(Result.SC_204_NO_CONTENT, result.getStatusCode());
+        assertTrue(result.getRenderable() instanceof NoHttpBody);
 
     }
 
@@ -87,6 +89,7 @@ public class ResultsTest {
         assertEquals(Result.SC_303_SEE_OTHER, result.getStatusCode());
         assertEquals("http://example.com",
                 result.getHeaders().get(Result.LOCATION));
+        assertTrue(result.getRenderable() instanceof NoHttpBody);
 
     }
 
@@ -97,6 +100,7 @@ public class ResultsTest {
         assertEquals(Result.SC_307_TEMPORARY_REDIRECT, result.getStatusCode());
         assertEquals("http://example.com",
                 result.getHeaders().get(Result.LOCATION));
+        assertTrue(result.getRenderable() instanceof NoHttpBody);
     }
 
     @Test

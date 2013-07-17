@@ -54,13 +54,13 @@ public class ResultHandler {
             return;
         }
         
-        Object object = result.getRenderable();
+        Object objectToBeRendered = result.getRenderable();
 
-        if (object instanceof Renderable) {
+        if (objectToBeRendered instanceof Renderable) {
             // if the object is a renderable it should do everything itself...:
             // make sure to call context.finalizeHeaders(result) with the
             // results you want to set...
-            handleRenderable((Renderable) object, context, result);
+            handleRenderable((Renderable) objectToBeRendered, context, result);
         } else {
             
             // if content type is not yet set in result we copy it over from the
@@ -74,8 +74,18 @@ public class ResultHandler {
             if (!result.getHeaders().containsKey(Result.CACHE_CONTROL)) {
                 result.doNotCacheContent();
             }
-
-            renderWithTemplateEngine(context, result);
+            
+            if (objectToBeRendered instanceof NoHttpBody) {
+                // This indicates that we do not want to render anything in the body.
+                // Can be used e.g. for a 204 No Content response.
+                // and surpasses the rendering engines.
+                context.finalizeHeaders(result);
+                
+            } else {
+                // normal mode of operation: we render the stuff via the
+                // template renderer.
+                renderWithTemplateEngine(context, result);
+            }
         }
     }
 
