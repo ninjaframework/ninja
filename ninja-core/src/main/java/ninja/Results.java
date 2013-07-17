@@ -16,6 +16,8 @@
 
 package ninja;
 
+import ninja.utils.NoHttpBody;
+
 
 /**
  * Convenience methods for the generation of Results.
@@ -53,7 +55,8 @@ public class Results {
     }
 
     public static Result noContent() {
-        return status(Result.SC_204_NO_CONTENT);
+        return status(Result.SC_204_NO_CONTENT)
+                .render(new NoHttpBody());
     }
 
     public static Result internalServerError() {
@@ -63,15 +66,23 @@ public class Results {
     /**
      * A redirect that uses 303 see other.
      * 
+     * The redirect does NOT need a template and does NOT
+     * render a text in the Http body by default. 
+     * 
+     * If you wish to do so please
+     * remove the {@link NoHttpBody} that is set as renderable of
+     * the Result.
+     * 
      * @param url
      *            The url used as redirect target.
      * @return A nicely configured result with status code 303 and the url set
-     *         as Location header.
+     *         as Location header. Renders no Http body by default.
      */
     public static Result redirect(String url) {
 
         Result result = status(Result.SC_303_SEE_OTHER);
         result.addHeader(Result.LOCATION, url);
+        result.render(new NoHttpBody());
 
         return result;
     }
@@ -79,15 +90,23 @@ public class Results {
     /**
      * A redirect that uses 307 see other.
      * 
+     * The redirect does NOT need a template and does NOT
+     * render a text in the Http body by default. 
+     * 
+     * If you wish to do so please
+     * remove the {@link NoHttpBody} that is set as renderable of
+     * the Result.
+     * 
      * @param url
      *            The url used as redirect target.
      * @return A nicely configured result with status code 307 and the url set
-     *         as Location header.
+     *         as Location header. Renders no Http body by default.
      */
     public static Result redirectTemporary(String url) {
 
         Result result = status(Result.SC_307_TEMPORARY_REDIRECT);
         result.addHeader(Result.LOCATION, url);
+        result.render(new NoHttpBody());
 
         return result;
     }
