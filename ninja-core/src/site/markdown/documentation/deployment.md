@@ -12,10 +12,13 @@ War based deployment with Java application servers
 
 When you run
 
-    > mvn war:war
+    > mvn package
 
-You get a war file in the subfolder /target of your project. That war file is compatible with almost all
+You get a <code>war</code> file in the subfolder /target of your project. That war file is compatible with almost all
 war containers out there. Jetty and Tomcat are two of them, but you can also deploy to Glassfish and JBoss.
+
+(Make sure you ran at least once "mvn jetty:run" which generates a unique secret in application.conf
+that will be used to sign your application's sessions).
 
 Just a quick example: With [Tomcat's hot deployment](http://www.mulesoft.com/tomcat-deploy) function 
 you can simply take the war file produced by Ninja and drop it into the tomcat webapp folder.
@@ -48,6 +51,6 @@ All informations you need are at:
 Heroku support
 --------------
 
-Ninja is fully supported by Heroku. Check out the guide at their website at:
-https://devcenter.heroku.com/articles/java .
+Ninja is fully supported by Heroku. Check out the blog post at:
+http://ars-codia.raphaelbauer.com/2013/07/running-ninja-web-framework-apps-on.html
 
