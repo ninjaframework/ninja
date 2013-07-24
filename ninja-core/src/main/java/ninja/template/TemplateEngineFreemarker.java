@@ -238,10 +238,14 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // Here I set a file directory for it:
         try {
 
-            Template freemarkerTemplate = cfg.getTemplate(templateName);
+            if ((result.getStatusCode() % 100) != 3) {
+                // not use redirects
 
-            // convert tuples:
-            freemarkerTemplate.process(map, responseStreams.getWriter());
+                Template freemarkerTemplate = cfg.getTemplate(templateName);
+
+                // convert tuples:
+                freemarkerTemplate.process(map, responseStreams.getWriter());
+            }
 
             responseStreams.getWriter().flush();
             responseStreams.getWriter().close();
