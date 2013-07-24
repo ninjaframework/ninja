@@ -2,6 +2,8 @@ package ninja.jpa;
 
 import javax.inject.Inject;
 
+import ninja.migrations.MigrationEngine;
+
 import com.google.inject.persist.PersistService;
 
 public class JpaInitializer {
@@ -9,18 +11,16 @@ public class JpaInitializer {
     @Inject
     JpaInitializer(
                   //@One PersistService service, @Two PersistService service2
-                  PersistService persistService) {
+                  PersistService persistService,
+                  MigrationEngine migrationEngine) {
         
-//        Flyway flyway = new Flyway();
-//
-//        // Point it to the database
-//        flyway.setDataSource("jdbc:hsqldb:.", "sa", null);
-//
-//        // Start the migration
-//        flyway.migrate();        
-        System.out.println("starting!");
 
+        // migrate the database
+        migrationEngine.migrate();
+        
+        // then start persistence
         persistService.start();
+        
         // At this point JPA is started and ready.
     }
 
