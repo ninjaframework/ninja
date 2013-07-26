@@ -4,7 +4,7 @@
 
   <groupId>org.ninjaframework</groupId>
   <artifactId>ninja-jpa-demo-archetype</artifactId>
-  <version>1.6.0-rc2-SNAPSHOT</version>
+  <version>1.6-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
   <name>ninja-jpa-demo-archetype</name>
