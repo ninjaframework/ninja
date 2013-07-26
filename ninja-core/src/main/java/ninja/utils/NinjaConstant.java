@@ -157,6 +157,24 @@ public interface NinjaConstant {
     /** Default value / etag enabled by default. */
     final boolean HTTP_USE_ETAG_DEFAULT = true;
     
+    /**
+     * Database stuff and JPA
+     */    
+    /** run migrations on startup of application */
+    final String NINJA_MIGRATION_RUN = "ninja.migration.run";
+    
+    /** The name of the persistence unit to use */
+    String PERSISTENCE_UNIT_NAME = "ninja.jpa.persistence_unit_name";
+    
+    /** eg. jdbc:hsqldb:mem:. */
+    String DB_CONNECTION_URL = "db.connection.url";
+    
+    /** Username for db connection */
+    String DB_CONNECTION_USERNAME = "db.connection.username";
+    
+    /** Password for db connection */
+    String DB_CONNECTION_PASSWORD = "db.connection.password";
+    
     
 
 }

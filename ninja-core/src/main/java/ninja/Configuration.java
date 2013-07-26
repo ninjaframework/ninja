@@ -18,6 +18,7 @@ package ninja;
 
 import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
+import ninja.jpa.JpaModule;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.guice.PostofficeProvider;
 import ninja.utils.LoggerProvider;
@@ -65,6 +66,9 @@ public class Configuration extends AbstractModule {
 
         // Cache
         bind(Cache.class).toProvider(CacheProvider.class);
+        
+        install(new JpaModule(ninjaProperties));
+        
     }
 
 }
