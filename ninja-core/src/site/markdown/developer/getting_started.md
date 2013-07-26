@@ -11,6 +11,7 @@ Contributing to Ninja is really simple. Well. There are some rules that you shou
 - Make sure your feature is well documented (Javadoc).
 - Make sure there is a tutorial inside the website (ninja-core/src/site/markdown).
 - Make sure you are following the code style below.
+- Add your changes to changelog.md and your name to team.md.
 
 Then send us a pull request and you become a happy member of the Ninja family :)
 
@@ -31,10 +32,12 @@ Making a Ninja release
  
 1) Preliminary
 
-- update changelog.md
-- Make sure the archetypes are up-to-date
+- Make sure changelog.md is updated
+- Make sure the archetypes are up-to-date (Ninja version must match release version)
 
 2) Release to central maven repo
+
+- Make sure you are using http://semver.org/ for versioning.
 
 - mvn release:clean
 - mvn release:prepare
@@ -46,11 +49,6 @@ Making a Ninja release
 - git checkout TAG
 - cd ninja-core
 - mvn site site:deploy
-
-4) Add new version info to wikipedia:
-
-- http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks
-- http://en.wikipedia.org/wiki/Ninja_Web_Framework
 
 And back to develop:
 

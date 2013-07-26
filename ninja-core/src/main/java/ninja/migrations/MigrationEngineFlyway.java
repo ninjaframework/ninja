@@ -35,6 +35,13 @@ public class MigrationEngineFlyway implements MigrationEngine {
             // set ninja.migration.run=false in application.conf
             Flyway flyway = new Flyway();
             flyway.setDataSource(connectionUrl, connectionUsername, connectionPassword);
+            
+            // In testmode we are cleaning the database so that subsequent testcases
+            // get a fresh database.
+            if (ninjaProperties.isTest()) {
+                flyway.clean();
+            }
+            
             flyway.migrate();
             
         }

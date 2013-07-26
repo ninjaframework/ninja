@@ -51,8 +51,8 @@ public class Routes implements ApplicationRoutes {
     public void init(Router router) {
 
         // default routes
-        router.GET().route("/index").with(ApplicationController.class, "getIndex");
-        router.POST().route("/index").with(ApplicationController.class, "postIndex");
+        router.GET().route("/").with(ApplicationController.class, "getIndex");
+        router.POST().route("/").with(ApplicationController.class, "postIndex");
       
 
         router.GET().route("/assets/.*").with(AssetsController.class, "serve");

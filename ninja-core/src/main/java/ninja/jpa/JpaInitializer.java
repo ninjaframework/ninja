@@ -10,12 +10,11 @@ public class JpaInitializer {
     
     @Inject
     JpaInitializer(
-                  //@One PersistService service, @Two PersistService service2
                   PersistService persistService,
                   MigrationEngine migrationEngine) {
         
 
-        // migrate the database
+        // migrate the database if needed
         migrationEngine.migrate();
         
         // then start persistence

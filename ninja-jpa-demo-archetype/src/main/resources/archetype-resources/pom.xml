@@ -11,13 +11,9 @@
     <artifactId>${artifactId}</artifactId>
     <packaging>war</packaging>
     <groupId>${groupId}</groupId>
-    <name>Ninja JPA Archetype</name>
-    <version>1.0-SNAPSHOT</version>
+    <name>Ninja Jpa Demo application</name>
+    <version>${version}</version>
     
-    <properties>
-        <ninja.version>1.6-SNAPSHOT</ninja.version>
-    </properties>
-
     <build>
         <plugins>
 
@@ -63,14 +59,31 @@
 
     </build>
 
-    <version>${version}</version>
+
+
+
 
     <dependencies>
     
+    
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.172</version>
+        </dependency>
+        
+        <!--
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.2-1003-jdbc4</version>
+        </dependency>
+        -->
+        
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
-            <version>${ninja.version}</version>
+            <version>1.6.0-rc1</version>
         </dependency>
 
         <dependency>
@@ -83,10 +96,12 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-core-test</artifactId>
-            <version>${ninja.version}</version>
+            <version>1.6.0-rc1</version>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
+
+
 
 </project>

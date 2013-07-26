@@ -26,16 +26,27 @@ public class JpaModule extends AbstractModule {
         if (persistenceUnitName != null) {
         
             // Get the connection credentials from application.conf
-            String connectionUrl = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_URL);
-            String connectionUsername = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_USERNAME);
-            String connectionPassword = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_PASSWORD);
+            String connectionUrl = ninjaProperties.get(NinjaConstant.DB_CONNECTION_URL);
+            String connectionUsername = ninjaProperties.get(NinjaConstant.DB_CONNECTION_USERNAME);
+            String connectionPassword = ninjaProperties.get(NinjaConstant.DB_CONNECTION_PASSWORD);
         
-            // We are using hibernate, so we can set the connections stuff
+            // We are using Hibernate, so we can set the connections stuff
             // via system properties:
-            System.setProperty("hibernate.connection.url", connectionUrl);
-            System.setProperty("hibernate.connection.username", connectionUsername);
-            System.setProperty("hibernate.connection.password", connectionPassword);
+            if (connectionUrl != null) {
+                System.setProperty("hibernate.connection.url", connectionUrl);
+            }
+            
+            if (connectionUsername != null) {                
+                System.setProperty("hibernate.connection.username", connectionUsername);
+            }
+            
+            if (connectionPassword != null) {                
+                System.setProperty("hibernate.connection.password", connectionPassword);
+            }
 
+            // Now - it may be the case the neither connection.url, connection.username nor
+            // connection.password is set. But this may be okay e.g. when using JDNI to
+            // configure your datasources...
             
             install(new JpaPersistModule(persistenceUnitName));
             bind(JpaInitializer.class).asEagerSingleton();

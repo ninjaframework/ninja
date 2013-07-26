@@ -41,6 +41,7 @@
                 <item name="Configuration" href="./documentation/application_configuration.html"/>
                 <item name="Deployment" href="./documentation/deployment.html"/>
                 <item name="JPA / DB" href="./documentation/jpa.html"/>
+                <item name="DB Migrations" href="./documentation/db_migrations.html"/>
                 <item name="Caching" href="./documentation/cache.html"/>
                 <item name="Lifecycle" href="./documentation/lifecycle.html"/>
                 <item name="Scheduler" href="./documentation/scheduler.html"/>
