@@ -3,7 +3,9 @@ ninja.application
 ninja.bodyparser
 ninja.cache
 ninja.i18n
+ninja.jpa
 ninja.lifecycle
+ninja.migrations
 ninja.params
 ninja.postoffice
 ninja.postoffice.common
