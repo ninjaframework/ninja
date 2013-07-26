@@ -4,13 +4,8 @@
 
   <groupId>org.ninjaframework</groupId>
   <artifactId>ninja-jpa-demo-archetype</artifactId>
+  <version>1.6-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
-  
-  <parent>
-    <groupId>org.ninjaframework</groupId>
-    <artifactId>ninja</artifactId>
-    <version>1.6-SNAPSHOT</version>
-  </parent>
 
   <name>ninja-jpa-demo-archetype</name>
 
@@ -33,34 +28,4 @@
     </pluginManagement>
   </build>
 
-  <description>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/</description>
-
-  <url>http://www.ninjaframework.org/ninja-jpa-demo</url>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git://github.com/ninjaframework/ninja.git/ninja-jpa-demo</connection>
-    <developerConnection>scm:git:git@github.com:ninjaframework/ninja.git/ninja-jpa-demo</developerConnection>
-    <url>https://github.com/ninjaframework/ninja/ninja-jpa-demo</url>
-  </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>sonatype-nexus-staging</id>
-      <name>Nexus Release Repository</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 </project>
