@@ -4,7 +4,8 @@ Version 1.6.0
  * 2013-07-17 JPA support went into ninja-core (ra)
  * 2013-07-17 Added a JPA demo acting as integration test and an archetype for JPA (ra)
  * 2013-07-26 Added Flyway integration (database migration tool) (ra)
-
+ * 2013-07-28 Bugfix for template loading in dev mode (modules' templates not loaded) (ra)
+ 
 Version 1.5.1
 =============
 

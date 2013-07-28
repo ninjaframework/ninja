@@ -35,7 +35,10 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-import freemarker.core.Environment;
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -75,11 +78,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
         ///////////////////////////////////////////////////////////////////////
-        // 1) In dev we load templates from src/java/main and ftl does refreshing
-        //    of changed templates.
-        //    => but only if we can access src/main/java => otherwise we do template
-        //    via the jetty plugin (eg in ninja-appengine)
-        // 2) In test and prod we never refresh templates.
+        // 1) In dev we load templates from src/java/main first, then from the
+        //    classpath.
+        //    Therefire Freemarker can handle reloading of changed templates without
+        //    the need to restart the server (e.g automatic reload of jetty:run) 
+        // 2) In test and prod we never refresh templates and load them
+        //    from the classpath
         ///////////////////////////////////////////////////////////////////////      
         String srcDir 
         = System.getProperty("user.dir")
@@ -94,8 +98,19 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                 && new File(srcDir).exists()) {
             
             try {
+                // the src dir of user's project.
+                FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File(srcDir));
+                // then ftl.html files from the classpath (eg. from inherited modules
+                // or the ninja core module)
+                ClassTemplateLoader classTemplateLoader = new ClassTemplateLoader(this.getClass(), "/");
                 
-                cfg.setDirectoryForTemplateLoading(new File(srcDir));
+                TemplateLoader [] templateLoader = new TemplateLoader[] { 
+                        fileTemplateLoader, 
+                        classTemplateLoader };
+                
+                MultiTemplateLoader multiTemplateLoader = new MultiTemplateLoader(templateLoader);
+                
+                cfg.setTemplateLoader(multiTemplateLoader);  
                 
             } catch (IOException e) {
                 logger.error("Error Loading Freemarker Template " +srcDir , e);
