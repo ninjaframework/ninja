@@ -17,6 +17,7 @@ After finishing the generation cd into your project and execute:
 
 This starts the dev webserver. And that's it already. Simply go to http://localhost:8080 and start hacking :)
 
+(Not sure what "mvn" or Maven is? Check out http://maven.apache.org/guides/getting-started )
 
 Preface
 -------

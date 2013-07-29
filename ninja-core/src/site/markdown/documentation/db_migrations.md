@@ -6,7 +6,7 @@ When you are using relational databases you need to track and organize schema ev
 This becomes increasingly important when many people are collaborating on one code base and also
 when you want to consistently upgrade your production database.
 
-To that end Ninja integrates the excellent Flyway migration tool (http://http://flywaydb.org/).
+To that end Ninja integrates the excellent Flyway migration tool (http://flywaydb.org/).
 
 
 Configuring migrations in Ninja
@@ -114,7 +114,7 @@ More
 ====
 
 Flyway offers a lot more. For instance Java based migrations, that really facilitate refactoring
-of blobs. Check out Flyway's excellent site at: http://http://flywaydb.org
+of blobs. Check out Flyway's excellent site at: http://flywaydb.org
 
 
 
