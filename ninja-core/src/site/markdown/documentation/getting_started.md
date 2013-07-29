@@ -1,5 +1,5 @@
-Quickstart for users
-====================
+Quickstart
+==========
 
 The best way to start a Ninja project is by calling the following command:
 
@@ -8,6 +8,7 @@ The best way to start a Ninja project is by calling the following command:
 </pre>
 
 Please enter sensible values for "groupId" and "artifactId" and let Maven generate your first Ninja project.
+(Not sure what "mvn" or Maven is? Check out http://maven.apache.org/guides/getting-started )
 
 After finishing the generation cd into your project and execute:
 
@@ -15,12 +16,34 @@ After finishing the generation cd into your project and execute:
     mvn jetty:run
 </pre>
 
-This starts the dev webserver. And that's it already. Simply go to http://localhost:8080 and start hacking :)
+This starts the development webserver. And that's it already. Simply open http://localhost:8080 in your browser and start hacking :)
 
-(Not sure what "mvn" or Maven is? Check out http://maven.apache.org/guides/getting-started )
 
-Preface
--------
+Some tops regarding editing and development
+-------------------------------------------
+
+You just created Ninja application is just a simple Maven project. This means you can import the project into
+any modern IDE. Eclipse with m2e plugin, Netbeans, IntelliJ and many more. Using an IDE is also the most
+productive setup for Ninja. Change a class in your IDE - then your IDE will recompile the class files, 
+jetty (running as jetty:run) will pick up the changes and restart the server.
+
+This is blazingly fast and you can see the results of your changes almost immediately at http://localhost:8080.
+
+No more packaging, waiting 30 seconds then deploying to an application server. 
+Developing Ninja applications is superfast.
+
+__Note:__ If you are running into PermGen exceptions make sure you set the following maven parameter:
+
+<pre>
+export MAVEN_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled"
+</pre>
+
+More information at this excellent blog post: http://java.jiderhamn.se/2011/12/11/classloader-leaks-i-how-to-find-classloader-leaks-with-eclipse-memory-analyser-mat
+
+
+
+The MVC pattern
+---------------
 
 Ninja is built around the MVC pattern. MVC stands for Model View Controller. In
 essence that means that each layer of logic is cleanly separated.
