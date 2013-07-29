@@ -20,8 +20,6 @@ and hit
 jetty:run
 </pre>
 
-(well - following this chapter will help to understand what is going on...)
-
 
 Configuration
 =============
