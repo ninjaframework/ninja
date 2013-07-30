@@ -281,9 +281,9 @@ Implicit variables available in templates
  * <code>${session.*}</code> You can access all session-cookie values by their keys prefixed with the accessor "session.". E.g.: 
    If you had set a cookie with the key "username", then you can use ${session.username} to resolve the 
    username and display it.
- * <code>${flash_success}</code> Translated (if possible) flash success message (via success("value")).
- * <code>${flash_error}</code> Translated (if possible) flash error message (via error("value")).
- * <code>${flash_*}</code> Translated (if possible) flash message with arbitrary key (via put("key", "value")).
+ * <code>${flash.success}</code> Translated (if possible) flash success message (via success("value")).
+ * <code>${flash.error}</code> Translated (if possible) flash error message (via error("value")).
+ * <code>${flash.*}</code> Translated (if possible) flash message with arbitrary key (via put("key", "value")).
  * <code>${lang}</code> resolves to the language Ninja uses currently. 
  * <code>${contextPath}</code> resolves the context path of the application (empty if running on root)
 

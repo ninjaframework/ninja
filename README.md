@@ -15,7 +15,7 @@ Getting started
 ---------------
 - Website with docs: http://www.ninjaframework.org
 - Source: http://github.com/ninjaframework/ninja
-- Continuous integration: https://buildhive.cloudbees.com/job/reyez/job/ninja/
+- Continuous integration: [![Build Status](https://buildhive.cloudbees.com/job/ninjaframework/job/ninja/badge/icon)](https://buildhive.cloudbees.com/job/ninjaframework/job/ninja/)
 
 
 

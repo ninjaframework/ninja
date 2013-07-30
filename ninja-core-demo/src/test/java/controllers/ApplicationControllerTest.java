@@ -160,7 +160,6 @@ public class ApplicationControllerTest extends NinjaTest {
         String response =
                 ninjaTestBrowser.makeRequest(getServerAddress() + "/flash_success");
 
-        System.out.println("repinse: " +response);
         // And assert that stuff is visible on page:
         assertTrue(response.contains("This is a flashed success - with placeholder: PLACEHOLDER"));
 
@@ -171,8 +170,7 @@ public class ApplicationControllerTest extends NinjaTest {
 
         String response =
                 ninjaTestBrowser.makeRequest(getServerAddress() + "/flash_error");
-        
-        System.out.println("repinse: " +response);
+
         // And assert that stuff is visible on page:
         assertTrue(response.contains("This is a flashed error - with placeholder: PLACEHOLDER"));
 

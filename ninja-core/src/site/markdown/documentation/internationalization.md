@@ -176,7 +176,7 @@ After setting the language all messages will displayed in German.
 Flash scope and i18n translation
 --------------------------------
 
-The flash scope is available in the template via e.g. ${flash_error}. There is a simple rule regarding i18n:
+The flash scope is available in the template via e.g. ${flash.error}. There is a simple rule regarding i18n:
 If the value of the flash scope key (eg "error") can be found in the messages the translated version is used.
 Otherwise the value is used without any translation.
 

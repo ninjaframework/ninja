@@ -226,8 +226,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // Eg. A message like "errorMessage=my name is: {0}" => translate in controller and pass directly.
         //     A message like " errorMessage=An error occurred" => use that as errorMessage.  
         //
-        // prefix keys with "flash_"
+        // get keys via ${flash.KEYNAME}
         //////////////////////////////////////////////////////////////////////
+        Map<String, String> translatedFlashCookieMap = Maps.newHashMap();
         for (Entry<String, String> entry : context.getFlashCookie().getCurrentFlashCookieData().entrySet()) {
             
             String messageValue = null;
@@ -240,10 +241,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             } else {
                 messageValue = messageValueOptional.get();
             }
-            
-            map.put("flash_" + entry.getKey(), messageValue);           
+            // new way
+            translatedFlashCookieMap.put(entry.getKey(), messageValue);
         }
         
+        // now we can retrieve flash cookie messages via ${flash.MESSAGE_KEY}
+        map.put("flash", translatedFlashCookieMap);        
 
 
         String templateName = templateEngineHelper.getTemplateForResult(

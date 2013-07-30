@@ -47,7 +47,7 @@ public interface FlashCookie {
 
     /**
      * Sets the error flash cookie value.
-     * Usually accessible via ${flash_error} in html templating engine.
+     * Usually accessible via ${flash.error} in html templating engine.
      * 
      * @param value The i18n key used to retrieve value of that message
      *        OR an already translated message that will be displayed right away.
@@ -56,7 +56,7 @@ public interface FlashCookie {
 
     /**
      * Sets the success flash cookie value.
-     * Usually accessible via ${flash_success} in html templating engine.
+     * Usually accessible via ${flash.success} in html templating engine.
      * 
      * @param value The i18n key used to retrieve value of that message
      *        OR an already translated message that will be displayed right away.

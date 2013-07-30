@@ -1,6 +1,16 @@
 Upgrading to latest Ninja
 =========================
 
+
+From  1.5.1 to 1.6
+------------------
+
+Please change any ftl.html accesses of the flash cookie from underscore syntax into "." syntax.
+${flash_error} becomes ${flash.error}. ${flash_success} becomes ${flash.success}.
+${flash_anyMessage} becomes ${flash.anyMessage}. This is now much more consistent with the general
+way we access stuff inside any ftl.html file.
+
+
 From 1.4 to 1.5.1
 -----------------
 
