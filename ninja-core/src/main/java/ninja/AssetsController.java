@@ -16,10 +16,12 @@
 
 package ninja;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -53,17 +55,30 @@ public class AssetsController {
 
     /** Used for storing files locally */
     final String ASSETS_PREFIX = "assets/";
+    
+    /** Used for dev mode streaming directly from src dir without jetty reload. */
+    final String srcDir  = System.getProperty("user.dir")
+                + File.separator 
+                + "src" 
+                + File.separator 
+                + "main" 
+                + File.separator
+                + "java";  
 
     private final MimeTypes mimeTypes;
 
     private final HttpCacheToolkit httpCacheToolkit;
 
+    private NinjaProperties ninjaProperties;
+
     @Inject
     public AssetsController(HttpCacheToolkit httpCacheToolkit,
-                            MimeTypes mimeTypes) {
+                            MimeTypes mimeTypes,
+                            NinjaProperties ninjaProperties) {
         
         this.httpCacheToolkit = httpCacheToolkit;
         this.mimeTypes = mimeTypes;
+        this.ninjaProperties = ninjaProperties;
 
     }
 
@@ -76,8 +91,39 @@ public class AssetsController {
                 String finalName = context.getRequestPath().replaceFirst(
                         PUBLIC_PREFIX, "");
 
-                URL url = this.getClass().getClassLoader()
-                        .getResource(ASSETS_PREFIX + finalName);
+                URL url = null;
+                
+                // This allows to directly stream assets from src directory.
+                // Therefore jetty does not have to reload.
+                // Especially cool when developing js apps inside assets folder.
+                if (ninjaProperties.isDev()) {
+                    
+                    File possibleFileInSrc = new File(
+                            srcDir + File.separator + ASSETS_PREFIX + finalName);
+                    
+                    if (possibleFileInSrc.exists()) {
+                        
+                        try {
+                            url = possibleFileInSrc.toURI().toURL();
+                            
+                        } catch(MalformedURLException malformedURLException) {
+                            
+                            logger.error("Error in dev mode while streaming files from src dir. ", malformedURLException);
+                        }
+                    }
+   
+                }
+                    
+                
+                if (url == null) {
+                    // In mode test and prod we stream via the classloader
+                    //
+                    // In dev mode: If we cannot find the file in src we are also looking for the file
+                    // on the classpath (can be the case for plugins that ship their own assets.
+                    url = this.getClass().getClassLoader()
+                            .getResource(ASSETS_PREFIX + finalName);
+                }
+
 
                 // check if stream exists. if not print a notfound exception
                 if (url == null) {

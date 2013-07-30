@@ -34,7 +34,7 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.22</version>
+				<version>6.1.24</version>
 				<configuration>
 					<contextPath>/</contextPath>
 					<stopKey>stop</stopKey>
@@ -55,7 +55,8 @@
                                 <include>**/*</include>
                             </includes>
                             <excludes>
-                                <exclude>**/*.ftl.html</exclude>  
+                                <exclude>**/*.ftl.html</exclude> 
+                                <exclude>assets/**</exclude> 
                             </excludes>
                         </scanTargetPattern>
                     </scanTargetPatterns>
@@ -82,6 +83,12 @@
                     <exclude>**/*.java</exclude>
                 </excludes>
 			</resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
 		</resources>
 
 	</build>

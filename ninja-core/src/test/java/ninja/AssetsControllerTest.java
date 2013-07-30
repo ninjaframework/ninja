@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 
 import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
 import org.junit.Test;
@@ -52,15 +53,19 @@ public class AssetsControllerTest {
 
     @Mock
     ResponseStreams responseStreams;
+    
+    @Mock 
+    NinjaProperties ninjaProperties;
 
     @Test
     public void testAssetsController404() throws Exception {
 
         // test 404 => resource not found.
         AssetsController assetsController = new AssetsController(
-                httpCacheToolkit, mimeTypes);
+                httpCacheToolkit, mimeTypes, ninjaProperties);
 
         when(contextRenerable.getRequestPath()).thenReturn("notAvailable");
+        
 
         Result result2 = assetsController.serve(null);
 
@@ -80,7 +85,7 @@ public class AssetsControllerTest {
 
         // test 404 => resource not found.
         AssetsController assetsController = new AssetsController(
-                httpCacheToolkit, mimeTypes);
+                httpCacheToolkit, mimeTypes, ninjaProperties);
 
         when(contextRenerable.getRequestPath()).thenReturn(
                 "/assets/testasset.txt");
@@ -115,7 +120,7 @@ public class AssetsControllerTest {
 
         // test 404 => resource not found.
         AssetsController assetsController = new AssetsController(
-                httpCacheToolkit, mimeTypes);
+                httpCacheToolkit, mimeTypes, ninjaProperties);
 
         Result result = Results.ok();
 

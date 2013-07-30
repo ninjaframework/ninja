@@ -11,8 +11,7 @@
 
     <artifactId>ninja-jpa-demo</artifactId>
     <packaging>war</packaging>
-    <groupId>org.ninjaframework</groupId>
-    <name>ninja Jpa demo application</name>
+    <name>Ninja Jpa demo application</name>
     
      <parent>
         <groupId>org.ninjaframework</groupId>
@@ -36,13 +35,25 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.22</version>
+                <version>6.1.24</version>
                 <configuration>
                     <contextPath>/</contextPath>
                     <stopKey>stop</stopKey>
                     <stopPort>8889</stopPort>
                     <scanIntervalSeconds>1</scanIntervalSeconds>
                     <reload>automatic</reload>
+                     <scanTargetPatterns>
+                        <scanTargetPattern>               
+                            <directory>target/classes</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*.ftl.html</exclude> 
+                                <exclude>assets/**</exclude> 
+                            </excludes>
+                        </scanTargetPattern>
+                    </scanTargetPatterns>
                 </configuration>
             </plugin>
             
@@ -56,12 +67,15 @@
 
         </plugins>
 
-        <resources>
+         <resources>
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**/*</include>
                 </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>

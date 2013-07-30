@@ -8,6 +8,8 @@ Version 1.6.0
  * 2013-07-30 Changed accesses of the flash cookie from underscore syntax into "." syntax.
               This is now much more consistent with the general way we access stuff 
               inside any ftl.html file. (ra)
+ * 2013-07-30 Direct streaming from assets folder without jetty reload in dev mode. Cool
+              for developing js apps inside the assets folder. (ra)
  
 Version 1.5.1
 =============
