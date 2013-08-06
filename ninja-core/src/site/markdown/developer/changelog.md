@@ -11,6 +11,7 @@ Version 1.6.0
  * 2013-07-30 Direct streaming from assets folder without jetty reload in dev mode. Cool
               for developing js apps inside the assets folder. (ra)
  * 2013-08-05 Fixed bug in OPTION method of routes. (ra)
+ * 2013-08-06 Switch to logback - exlusion of commons-logging in pom (ra)
  
 Version 1.5.1
 =============

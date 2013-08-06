@@ -70,6 +70,12 @@
 			<groupId>org.fluentlenium</groupId>
 			<artifactId>fluentlenium-core</artifactId>
 			<version>0.6.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
         
         <!--HttpCient is used to mainly test low level Json Apis -->
@@ -77,6 +83,12 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.2.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		<dependency>
