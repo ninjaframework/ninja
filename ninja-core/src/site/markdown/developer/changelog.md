@@ -12,6 +12,8 @@ Version 1.6.0
               for developing js apps inside the assets folder. (ra)
  * 2013-08-05 Fixed bug in OPTION method of routes. (ra)
  * 2013-08-06 Switch to logback - exlusion of commons-logging in pom (ra)
+ * 2013-08-06 Important security fix imported from Play:
+              https://github.com/playframework/play1/commit/dce07610f1400a9c031753fc413a324e0a74c4c1 (ra)
  
 Version 1.5.1
 =============

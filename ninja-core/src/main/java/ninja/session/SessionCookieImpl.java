@@ -16,17 +16,18 @@
 
 package ninja.session;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
+import ninja.utils.CookieDataCodec;
 import ninja.utils.Crypto;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
@@ -38,12 +39,12 @@ import com.google.inject.Inject;
  * in turn is based on the new client side rails cookies.
  */
 public class SessionCookieImpl implements SessionCookie {
+    
+    private static Logger logger = LoggerFactory.getLogger(SessionCookieImpl.class);
 
     private static final String AUTHENTICITY_KEY = "___AT";
     private static final String ID_KEY = "___ID";
     private static final String TIMESTAMP_KEY = "___TS";
-    private static final Pattern sessionParser = Pattern
-            .compile("\u0000([^:]*):([^\u0000]*)\u0000");
 
     private final Crypto crypto;
 
@@ -57,148 +58,146 @@ public class SessionCookieImpl implements SessionCookie {
     /** Has cookie been changed => only send new cookie stuff has been changed */
     private boolean sessionDataHasBeenChanged = false;
 
-	@Inject
-	public SessionCookieImpl(
-			Crypto crypto,
-			NinjaProperties ninjaProperties) {
-		
-		this.crypto = crypto;
-		
-		//read configuration stuff:
-        Integer sessionExpireTimeInSeconds = ninjaProperties.getInteger(NinjaConstant.sessionExpireTimeInSeconds);
+    @Inject
+    public SessionCookieImpl(Crypto crypto, NinjaProperties ninjaProperties) {
+
+        this.crypto = crypto;
+
+        // read configuration stuff:
+        Integer sessionExpireTimeInSeconds = ninjaProperties
+                .getInteger(NinjaConstant.sessionExpireTimeInSeconds);
         if (sessionExpireTimeInSeconds != null) {
             this.sessionExpireTimeInMs = sessionExpireTimeInSeconds * 1000;
         } else {
             this.sessionExpireTimeInMs = null;
         }
-        
-		this.sessionSendOnlyIfChanged = ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionSendOnlyIfChanged, true);
-		this.sessionTransferredOverHttpsOnly = ninjaProperties.getBooleanWithDefault(NinjaConstant.sessionTransferredOverHttpsOnly, true);
+
+        this.sessionSendOnlyIfChanged = ninjaProperties.getBooleanWithDefault(
+                NinjaConstant.sessionSendOnlyIfChanged, true);
+        this.sessionTransferredOverHttpsOnly = ninjaProperties
+                .getBooleanWithDefault(
+                        NinjaConstant.sessionTransferredOverHttpsOnly, true);
         this.sessionHttpOnly = ninjaProperties.getBooleanWithDefault(
                 NinjaConstant.sessionHttpOnly, true);
-		
-		this.applicationCookiePrefix = ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix);
-	}
 
-	/**
-	 * Has to be called initially. => maybe in the future as assisted inject.
-	 * 
-	 * @param context
-	 */
-	@Override
-	public void init(Context context) {
+        this.applicationCookiePrefix = ninjaProperties
+                .getOrDie(NinjaConstant.applicationCookiePrefix);
+    }
 
-		try {
+    /**
+     * Has to be called initially. => maybe in the future as assisted inject.
+     * 
+     * @param context
+     */
+    @Override
+    public void init(Context context) {
 
-			// get the cookie that contains session information:
-			Cookie cookie = context.getCookie(
-					applicationCookiePrefix
-			                + ninja.utils.NinjaConstant.SESSION_SUFFIX);
+        try {
 
-			// check that the cookie is not empty:
-			if (cookie != null && cookie.getValue() != null
-			        && !cookie.getValue().trim().equals("")) {
+            // get the cookie that contains session information:
+            Cookie cookie = context.getCookie(applicationCookiePrefix
+                    + ninja.utils.NinjaConstant.SESSION_SUFFIX);
 
-				String value = cookie.getValue();
+            // check that the cookie is not empty:
+            if (cookie != null && cookie.getValue() != null
+                    && !cookie.getValue().trim().equals("")) {
 
-				// the first substring until "-" is the sign
-				String sign = value.substring(0, value.indexOf("-"));
+                String value = cookie.getValue();
 
-				// rest from "-" until the end it the payload of the cookie
-				String payload = value.substring(value.indexOf("-") + 1);
+                // the first substring until "-" is the sign
+                String sign = value.substring(0, value.indexOf("-"));
 
-				// check if payload is valid:
-				if (sign.equals(crypto.signHmacSha1(payload))) {
+                // rest from "-" until the end it the payload of the cookie
+                String payload = value.substring(value.indexOf("-") + 1);
 
-					String sessionData = URLDecoder.decode(payload,
-					        NinjaConstant.UTF_8);
+                // check if payload is valid:
+                // if (sign.equals(crypto.signHmacSha1(payload))) {
 
-					// parse the stuff...
-					Matcher matcher = sessionParser.matcher(sessionData);
+                if (CookieDataCodec.safeEquals(sign,
+                        crypto.signHmacSha1(payload))) {
+                    CookieDataCodec.decode(data, payload);
+                }
 
-					// ... and put it into the data hashmap...
-					while (matcher.find()) {
-						data.put(matcher.group(1), matcher.group(2));
-					}
+                if (sessionExpireTimeInMs != null) {
+                    // Make sure session contains valid timestamp
 
-				}
+                    if (!data.containsKey(TIMESTAMP_KEY)) {
 
-				if (sessionExpireTimeInMs != null) {
-					// Make sure session contains valid timestamp
+                        data.clear();
 
-					if (!data.containsKey(TIMESTAMP_KEY)) {
-
-						data.clear();
-
-					} else {
-						if (Long.parseLong(data.get(TIMESTAMP_KEY)) + sessionExpireTimeInMs
-                                < System.currentTimeMillis()) {
-							// Session expired
+                    } else {
+                        if (Long.parseLong(data.get(TIMESTAMP_KEY))
+                                + sessionExpireTimeInMs < System
+                                    .currentTimeMillis()) {
+                            // Session expired
                             sessionDataHasBeenChanged = true;
-							data.clear();
-						}
-					}
+                            data.clear();
+                        }
+                    }
 
-					// Everything's alright => prolong session
-					data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis());
-				}
-			}
+                    // Everything's alright => prolong session
+                    data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis());
+                }
+            }
 
-		} catch (Exception e) {
-			throw new RuntimeException("Corrupted HTTP session", e);
-		}
-	}
+        } catch (UnsupportedEncodingException unsupportedEncodingException) {
+            logger.error("Encoding exception - this must not happen", unsupportedEncodingException);
+        }
+    }
 
-	/**
-	 * @return id of a session.
-	 */
-	@Override
-	public String getId() {
-		if (!data.containsKey(ID_KEY)) {
-			data.put(ID_KEY, UUID.randomUUID().toString());
-		}
-		return data.get(ID_KEY);
-
-	}
-
-	/**
-	 * @return complete content of session.
-	 */
+    /**
+     * @return id of a session.
+     */
     @Override
-	public Map<String, String> getData() {
-		return data;
-	}
+    public String getId() {
+        if (!data.containsKey(ID_KEY)) {
+            data.put(ID_KEY, UUID.randomUUID().toString());
+        }
+        return data.get(ID_KEY);
 
-	/**
-	 * @return an authenticity token or generates a new one.
-	 */
+    }
+
+    /**
+     * @return complete content of session.
+     */
     @Override
-	public String getAuthenticityToken() {
-		if (!data.containsKey(AUTHENTICITY_KEY)) {
-			data.put(AUTHENTICITY_KEY, UUID.randomUUID().toString());
-		}
-		return data.get(AUTHENTICITY_KEY);
-	}
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    /**
+     * @return an authenticity token or generates a new one.
+     */
+    @Override
+    public String getAuthenticityToken() {
+        if (!data.containsKey(AUTHENTICITY_KEY)) {
+            data.put(AUTHENTICITY_KEY, UUID.randomUUID().toString());
+        }
+        return data.get(AUTHENTICITY_KEY);
+    }
 
     @Override
-	public void save(Context context, Result result) {
+    public void save(Context context, Result result) {
 
-        // Don't save the cookie nothing has changed, and if we're not expiring or
+        // Don't save the cookie nothing has changed, and if we're not expiring
+        // or
         // we are expiring but we're only updating if the session changes
-        if (!sessionDataHasBeenChanged && (sessionExpireTimeInMs == null
-                || sessionSendOnlyIfChanged)) {
-			// Nothing changed and no cookie-expire, consequently send nothing
-			// back.
-			return;
-		}
+        if (!sessionDataHasBeenChanged
+                && (sessionExpireTimeInMs == null || sessionSendOnlyIfChanged)) {
+            // Nothing changed and no cookie-expire, consequently send nothing
+            // back.
+            return;
+        }
 
         if (isEmpty()) {
-            // It is empty, but there was a session coming in, therefore clear it
+            // It is empty, but there was a session coming in, therefore clear
+            // it
             if (context.hasCookie(applicationCookiePrefix
                     + NinjaConstant.SESSION_SUFFIX)) {
 
                 Cookie.Builder expiredSessionCookie = Cookie.builder(
-                    applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX, null);
+                        applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
+                        null);
                 expiredSessionCookie.setPath("/");
                 expiredSessionCookie.setMaxAge(0);
 
@@ -214,23 +213,13 @@ public class SessionCookieImpl implements SessionCookie {
             data.put(TIMESTAMP_KEY, Long.toString(System.currentTimeMillis()));
         }
 
-		try {
-			StringBuilder session = new StringBuilder();
+        try {
+            String sessionData = CookieDataCodec.encode(data);
 
-			for (String key : data.keySet()) {
-				session.append(NinjaConstant.UNI_CODE_NULL_ENTITY);
-				session.append(key);
-				session.append(":");
-				session.append(data.get(key));
-				session.append(NinjaConstant.UNI_CODE_NULL_ENTITY);
-			}
-			String sessionData = URLEncoder.encode(session.toString(),
-			        NinjaConstant.UTF_8);
+            String sign = crypto.signHmacSha1(sessionData);
 
-			String sign = crypto.signHmacSha1(sessionData);
-
-			Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
-			        + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
+            Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
+                    + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
             cookie.setPath("/");
 
             if (sessionExpireTimeInMs != null) {
@@ -240,76 +229,77 @@ public class SessionCookieImpl implements SessionCookie {
                 cookie.setSecure(sessionTransferredOverHttpsOnly);
             }
             if (sessionHttpOnly != null) {
-              cookie.setHttpOnly(sessionHttpOnly);
+                cookie.setHttpOnly(sessionHttpOnly);
             }
 
-			result.addCookie(cookie.build());
+            result.addCookie(cookie.build());
 
-		} catch (Exception e) {
-			throw new RuntimeException("Session serialization problem", e);
-		}
+        } catch (UnsupportedEncodingException unsupportedEncodingException) {
+            logger.error("Encoding exception - this must not happen", unsupportedEncodingException);
+        }
 
-	}
+    }
 
-	/**
-	 * Puts key into session. PLEASE NOTICE: If value == null the key will be
-	 * removed!
-	 * 
-	 * @param key
-	 * @param value
-	 */
+    /**
+     * Puts key into session. PLEASE NOTICE: If value == null the key will be
+     * removed!
+     * 
+     * @param key
+     * @param value
+     */
     @Override
-	public void put(String key, String value) {
+    public void put(String key, String value) {
 
-		// make sure key is valid:
-		if (key.contains(":")) {
-			throw new IllegalArgumentException(
-			        "Character ':' is invalid in a session key.");
-		}
+        // make sure key is valid:
+        if (key.contains(":")) {
+            throw new IllegalArgumentException(
+                    "Character ':' is invalid in a session key.");
+        }
 
-		sessionDataHasBeenChanged = true;
+        sessionDataHasBeenChanged = true;
 
-		if (value == null) {
-			remove(key);
-		} else {
-			data.put(key, value);
-		}
+        if (value == null) {
+            remove(key);
+        } else {
+            data.put(key, value);
+        }
 
-	}
+    }
 
-	/**
-	 * Returns the value of the key or null.
-	 * 
-	 * @param key
-	 * @return
-	 */
+    /**
+     * Returns the value of the key or null.
+     * 
+     * @param key
+     * @return
+     */
     @Override
-	public String get(String key) {
-		return data.get(key);
-	}
-    
-    @Override
-	public String remove(String key) {
-
-		sessionDataHasBeenChanged = true;
-		String result = get(key);
-		data.remove(key);
-		return result;
-	}
+    public String get(String key) {
+        return data.get(key);
+    }
 
     @Override
-	public void clear() {
-		sessionDataHasBeenChanged = true;
-		data.clear();
-	}
+    public String remove(String key) {
 
-	/**
-	 * Returns true if the session is empty, e.g. does not contain anything else
-	 * than the timestamp key.
-	 */
+        sessionDataHasBeenChanged = true;
+        String result = get(key);
+        data.remove(key);
+        return result;
+    }
+
     @Override
-	public boolean isEmpty() {
-        return (data.isEmpty() || data.size() == 1 && data.containsKey(TIMESTAMP_KEY));
-	}
+    public void clear() {
+        sessionDataHasBeenChanged = true;
+        data.clear();
+    }
+
+    /**
+     * Returns true if the session is empty, e.g. does not contain anything else
+     * than the timestamp key.
+     */
+    @Override
+    public boolean isEmpty() {
+        return (data.isEmpty() || data.size() == 1
+                && data.containsKey(TIMESTAMP_KEY));
+    }
 
 }

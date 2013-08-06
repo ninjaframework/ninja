@@ -17,17 +17,16 @@
 package ninja.session;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
+import ninja.utils.CookieDataCodec;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
@@ -43,13 +42,12 @@ import com.google.inject.Inject;
  */
 public class FlashCookieImpl implements FlashCookie {
 
-    private Pattern flashParser = Pattern
-            .compile("\u0000([^:]*):([^\u0000]*)\u0000");
-
     private Map<String, String> currentFlashCookieData = new HashMap<String, String>();
     private Map<String, String> outgoingFlashCookieData = new HashMap<String, String>();
 
     private String applicationCookiePrefix;
+    
+    private static Logger logger = LoggerFactory.getLogger(FlashCookieImpl.class);
 
     @Inject
     public FlashCookieImpl(NinjaProperties ninjaProperties) {
@@ -64,17 +62,12 @@ public class FlashCookieImpl implements FlashCookie {
                 + ninja.utils.NinjaConstant.FLASH_SUFFIX);
 
         if (flashCookie != null) {
-            String flashData;
             try {
-                flashData = URLDecoder.decode(flashCookie.getValue(), "utf-8");
+                
+                CookieDataCodec.decode(currentFlashCookieData, flashCookie.getValue());
 
-                Matcher matcher = flashParser.matcher(flashData);
-                while (matcher.find()) {
-                    currentFlashCookieData.put(matcher.group(1),
-                            matcher.group(2));
-                }
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                logger.error("Encoding exception - this must not happen", e); 
             }
         }
 
@@ -104,15 +97,8 @@ public class FlashCookieImpl implements FlashCookie {
 
         else {
             try {
-                StringBuilder flash = new StringBuilder();
-                for (String key : outgoingFlashCookieData.keySet()) {
-                    flash.append("\u0000");
-                    flash.append(key);
-                    flash.append(":");
-                    flash.append(outgoingFlashCookieData.get(key));
-                    flash.append("\u0000");
-                }
-                String flashData = URLEncoder.encode(flash.toString(), "utf-8");
+
+                String flashData = CookieDataCodec.encode(outgoingFlashCookieData);
 
                 Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
                         + ninja.utils.NinjaConstant.FLASH_SUFFIX, flashData);
@@ -125,7 +111,7 @@ public class FlashCookieImpl implements FlashCookie {
                 result.addCookie(cookie.build());
 
             } catch (Exception e) {
-                System.err.println(e);
+                logger.error("Encoding exception - this must not happen", e);
             }
         }
     }

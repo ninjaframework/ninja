@@ -74,8 +74,7 @@ public class FlashCookieTest {
         flashCookie.save(context, result);
 
         // no cookie should be set as the flash scope is empty...:
-        verify(result, never()).addCookie(
-                Matchers.any(Cookie.class));
+        verify(result, never()).addCookie(Matchers.any(Cookie.class));
     }
 
     @Test
@@ -96,7 +95,7 @@ public class FlashCookieTest {
 
         // verify some stuff on the set cookie
         assertEquals("NINJA_FLASH", cookieCaptor.getValue().getName());
-        assertEquals("%00hello%3AflashScope%00", cookieCaptor.getValue()
+        assertEquals("hello=flashScope", cookieCaptor.getValue()
                 .getValue());
         assertEquals(-1, cookieCaptor.getValue().getMaxAge());
 
@@ -110,7 +109,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieWorksAndIsActiveOnlyOneTime() {
         // setup this testmethod
-        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        Cookie cookie = Cookie.builder("NINJA_FLASH",
+                "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
@@ -133,7 +133,7 @@ public class FlashCookieTest {
         // the new flash messages must be there..
         // but the old has disappeared (flashScope):
         assertEquals(
-                "%00another+message%3Ais+there...%00%00yet+another+message%3Ais+there...%00",
+                "another+message=is+there...&yet+another+message=is+there...",
                 cookieCaptor.getValue().getValue());
         assertEquals(3, ((FlashCookieImpl) flashCookie)
                 .getCurrentFlashCookieData().size());
@@ -144,7 +144,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieClearWorks() {
         // setup this testmethod
-        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        Cookie cookie = Cookie.builder("NINJA_FLASH",
+                "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
@@ -169,7 +170,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieClearOfOutgoingWorks() {
         // setup this testmethod
-        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        Cookie cookie = Cookie.builder("NINJA_FLASH",
+                "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
@@ -194,7 +196,8 @@ public class FlashCookieTest {
     @Test
     public void testThatFlashCookieKeepWorks() {
         // setup this testmethod
-        Cookie cookie = Cookie.builder("NINJA_FLASH", "%00hello%3AflashScope%00").build();
+        Cookie cookie = Cookie.builder("NINJA_FLASH",
+                "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
