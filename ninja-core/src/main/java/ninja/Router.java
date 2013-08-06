@@ -82,5 +82,4 @@ public interface Router {
     public RouteBuilder DELETE();
 
     public RouteBuilder OPTIONS();
-
 }

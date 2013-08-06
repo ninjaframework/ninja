@@ -193,7 +193,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder OPTIONS() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().OPTION();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().OPTIONS();
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;

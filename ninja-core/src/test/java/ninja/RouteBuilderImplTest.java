@@ -69,9 +69,9 @@ public class RouteBuilderImplTest {
     public void testBasicRoutes() {
 
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
-        routeBuilder.OPTION().route("/index");
+        routeBuilder.OPTIONS().route("/index");
 
-        assertTrue(buildRoute(routeBuilder).matches("OPTION", "/index"));
+        assertTrue(buildRoute(routeBuilder).matches("OPTIONS", "/index"));
 
     }
 

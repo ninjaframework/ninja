@@ -58,8 +58,8 @@ class RouteBuilderImpl implements RouteBuilder {
         return this;
     }
 
-    public RouteBuilderImpl OPTION() {
-        httpMethod = "OPTION";
+    public RouteBuilderImpl OPTIONS() {
+        httpMethod = "OPTIONS";
         return this;
     }
 
