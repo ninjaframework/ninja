@@ -25,14 +25,14 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>1.6.0</version>
+        <version>1.6.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-core</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
