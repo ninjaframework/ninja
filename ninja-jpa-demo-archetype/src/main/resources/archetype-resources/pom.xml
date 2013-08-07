@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
-            <version>1.6.0-rc1</version>
+            <version>1.6.0</version>
         </dependency>
 
         <dependency>
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-core-test</artifactId>
-            <version>1.6.0-rc1</version>
+            <version>1.6.0</version>
             <scope>test</scope>
         </dependency>
 
