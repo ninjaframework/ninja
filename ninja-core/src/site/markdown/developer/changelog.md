@@ -14,6 +14,8 @@ Version 1.6.0
  * 2013-08-06 Switch to logback - exlusion of commons-logging in pom (ra)
  * 2013-08-06 Important security fix imported from Play:
               https://github.com/playframework/play1/commit/dce07610f1400a9c031753fc413a324e0a74c4c1 (ra)
+ * 2013-08-08 Added default logging.xml config and enforcer plugin to make sure we do have
+              commons logging on the classpath (ra)
  
 Version 1.5.1
 =============
