@@ -16,6 +16,7 @@ Version 1.6.0
               https://github.com/playframework/play1/commit/dce07610f1400a9c031753fc413a324e0a74c4c1 (ra)
  * 2013-08-08 Added default logging.xml config and enforcer plugin to make sure we do have
               commons logging on the classpath (ra)
+ * 2013-08-08 Added .gitignore to archetypes (demo and jpa) (ra)
  
 Version 1.5.1
 =============
