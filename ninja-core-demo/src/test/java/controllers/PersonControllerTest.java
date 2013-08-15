@@ -32,6 +32,8 @@ public class PersonControllerTest extends NinjaTest {
 
         String response = ninjaTestBrowser
                 .postJson(getServerAddress() + "person", person);
+        
+        System.out.println("j: " + response);
 
         Person result = new Gson().fromJson(response, Person.class);
         assertEquals(person.name, result.name);

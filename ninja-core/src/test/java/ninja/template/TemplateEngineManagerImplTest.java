@@ -40,7 +40,7 @@ public class TemplateEngineManagerImplTest {
     @Test
     public void testGetJson() {
         assertThat(createTemplateEngineManager().getTemplateEngineForContentType(
-                ContentTypes.APPLICATION_JSON), instanceOf(TemplateEngineJsonGson.class));
+                ContentTypes.APPLICATION_JSON), instanceOf(TemplateEngineJson.class));
     }
 
     @Test

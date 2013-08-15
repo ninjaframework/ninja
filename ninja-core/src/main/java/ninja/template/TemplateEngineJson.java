@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package ninja.bodyparser;
+package ninja.template;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
-import ninja.ContentTypes;
 import ninja.Context;
+import ninja.Result;
+import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 
@@ -28,36 +30,45 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class BodyParserEngineJson implements BodyParserEngine {
-    
-    private final ObjectMapper objectMapper;
-    
+public class TemplateEngineJson implements TemplateEngine {
+
     private final Logger logger;
     
+    private final ObjectMapper objectMapper;
 
     @Inject
-    public BodyParserEngineJson(ObjectMapper objectMapper, Logger logger) {
-        this.objectMapper = objectMapper;
+    public TemplateEngineJson(Logger logger, ObjectMapper objectMapper) {
         this.logger = logger;
-
+        this.objectMapper = objectMapper;
     }
 
-    public <T> T invoke(Context context, Class<T> classOfT) {
-        T t = null;
+    @Override
+    public void invoke(Context context, Result result) {
 
+        ResponseStreams responseStreams = context.finalizeHeaders(result);
+        
         try {
-
-            t = objectMapper.readValue(context.getInputStream(), classOfT);
-
+            
+            OutputStream outputStream  = responseStreams.getOutputStream();
+            objectMapper.writeValue(outputStream, result.getRenderable());
+            outputStream.close();
+            
         } catch (IOException e) {
-            logger.error("Error parsing incoming Json", e);
+
+            logger.error("Error while rendering json", e);
         }
+        
 
-        return t;
     }
-    
+
+    @Override
     public String getContentType() {
-        return ContentTypes.APPLICATION_JSON; 
+        return Result.APPLICATON_JSON;
     }
 
+    @Override
+    public String getSuffixOfTemplatingEngine() {
+        // intentionally returns null...
+        return null;
+    }
 }

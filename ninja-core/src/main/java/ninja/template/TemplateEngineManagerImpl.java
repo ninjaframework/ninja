@@ -37,7 +37,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
 
     @Inject
     public TemplateEngineManagerImpl(Provider<TemplateEngineFreemarker> templateEngineFreemarker,
-                                     Provider<TemplateEngineJsonGson> templateEngineJsonGson,
+                                     Provider<TemplateEngineJson> templateEngineJsonGson,
                                      Injector injector) {
 
         Map<String, Provider<? extends TemplateEngine>> map = new HashMap<String, Provider<? extends TemplateEngine>>();
