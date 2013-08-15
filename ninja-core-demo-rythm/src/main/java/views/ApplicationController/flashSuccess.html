@@ -1,0 +1,21 @@
+@extends(layout.defaultLayout, title: "Home page")
+
+<header class="jumbotron subhead">
+    <h1>Flash Cookie support</h1>
+</header>
+
+<hr>
+
+<h2>This page displays a flash cookie.</h2>
+<p>
+@if(flash.containsKey("success")){
+        Success cookie: <p class="success">@flash.get("success")</p>
+}
+<p>
+<p>
+You can use firebug or any other tool you can spot the flash cookie attached to the request.
+</p>
+<p>
+If you move to another page the cookie will go away.
+</p>
+

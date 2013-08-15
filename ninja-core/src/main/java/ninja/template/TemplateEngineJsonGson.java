@@ -30,7 +30,7 @@ import com.google.inject.Inject;
 public class TemplateEngineJsonGson implements TemplateEngine {
 
     private final Logger logger;
-    
+
     private final Gson gson;
 
     @Inject
@@ -43,8 +43,15 @@ public class TemplateEngineJsonGson implements TemplateEngine {
     public void invoke(Context context, Result result) {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
-        
-        String json = gson.toJson(result.getRenderable());
+
+        // Gson.toJson() for Strings will give an invalid JSON as per as per RFC
+        // 4627. Hence they needs to be bypassed.
+        String json = "";
+        if (result.getRenderable() instanceof String) {
+            json = (String) result.getRenderable();
+        } else {
+            json = gson.toJson(result.getRenderable());
+        }
 
         try {
             responseStreams.getWriter().write(json);

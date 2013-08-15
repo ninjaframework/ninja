@@ -1,0 +1,8 @@
+@extends(layout.defaultLayout, title: "Home page")
+@args String cacheKey
+
+@if(cacheKey){
+    Cache key is: @cacheKey
+} else{
+    No cache key set.
+}

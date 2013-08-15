@@ -1,0 +1,15 @@
+@extends(layout.defaultLayout, title: "Home page")
+@import models.Contact
+@args Contact contact
+
+<li>@contact.getName()</li>
+<li>@contact.getEmail()</li>
+<li>@contact.getDescription()</li>
+
+The content of this template is:
+<pre>
+&lt;li>@@contact.getName()&lt;/li>
+&lt;li>@@contact.getEmail()&lt;/li>
+&lt;li>@@contact.getDescription()&lt;/li>
+</pre>
+

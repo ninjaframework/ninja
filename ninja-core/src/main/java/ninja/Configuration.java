@@ -26,6 +26,7 @@ import ninja.utils.LoggerProvider;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 
+import org.rythmengine.RythmEngine;
 import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
@@ -69,8 +70,10 @@ public class Configuration extends AbstractModule {
         bind(Cache.class).toProvider(CacheProvider.class);
         
         bind(MigrationInitializer.class).asEagerSingleton();
+        
         install(new JpaModule(ninjaProperties));
         
+        bind(RythmEngine.class).toProvider(RythmEngineProvider.class);
     }
 
 }
