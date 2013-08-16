@@ -64,7 +64,7 @@ public class TemplateEngineXml implements TemplateEngine {
 
     @Override
     public String getContentType() {
-        return Result.APPLICATON_JSON;
+        return Result.APPLICATION_XML;
     }
 
     @Override

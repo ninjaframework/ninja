@@ -37,7 +37,8 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
 
     @Inject
     public TemplateEngineManagerImpl(Provider<TemplateEngineFreemarker> templateEngineFreemarker,
-                                     Provider<TemplateEngineJson> templateEngineJsonGson,
+                                     Provider<TemplateEngineJson> templateEngineJson,
+                                     Provider<TemplateEngineXml> templateEngineXmlProvider,
                                      Injector injector) {
 
         Map<String, Provider<? extends TemplateEngine>> map = new HashMap<String, Provider<? extends TemplateEngine>>();
@@ -46,8 +47,10 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
         // custom bindings
         map.put(templateEngineFreemarker.get().getContentType(),
                 templateEngineFreemarker);
-        map.put(templateEngineJsonGson.get().getContentType(),
-                templateEngineJsonGson);
+        map.put(templateEngineJson.get().getContentType(),
+                templateEngineJson);
+        map.put(templateEngineXmlProvider.get().getContentType(),
+                templateEngineXmlProvider);
 
         // Now lookup all explicit bindings, and find the ones that implement
         // TemplateEngine
