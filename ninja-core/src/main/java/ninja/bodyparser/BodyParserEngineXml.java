@@ -50,7 +50,7 @@ public class BodyParserEngineXml implements BodyParserEngine {
 
         try {
             
-            t = xmlMapper.readValue(IOUtils.toString(context.getReader()), classOfT);
+            t = xmlMapper.readValue(context.getInputStream(), classOfT);
 
         } catch (JsonParseException e) {
             logger.error("Error parsing incoming Xml", e);

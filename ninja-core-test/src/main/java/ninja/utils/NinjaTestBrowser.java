@@ -47,6 +47,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -300,6 +301,29 @@ public class NinjaTestBrowser {
             throw new RuntimeException(e);
         }
     }
+    
+    public String postXml(String url, Object object) {
+
+        try {
+            httpClient.getParams().setParameter(
+                    CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+            HttpPost post = new HttpPost(url);
+            StringEntity entity = new StringEntity(
+                    new XmlMapper().writeValueAsString(object), "utf-8");
+            entity.setContentType("application/xml; charset=utf-8");
+            post.setEntity(entity);
+            post.releaseConnection();
+
+            // Here we go!
+            return EntityUtils.toString(httpClient.execute(post).getEntity(),
+                    "UTF-8");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
 
     public void shutdown() {
         httpClient.getConnectionManager().shutdown();

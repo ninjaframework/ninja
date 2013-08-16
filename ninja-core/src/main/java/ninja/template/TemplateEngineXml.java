@@ -17,6 +17,9 @@
 package ninja.template;
 
 import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.inject.Singleton;
 
 import ninja.Context;
 import ninja.Result;
@@ -24,19 +27,20 @@ import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
 
-public class TemplateEngineJsonGson implements TemplateEngine {
+@Singleton
+public class TemplateEngineXml implements TemplateEngine {
 
     private final Logger logger;
     
-    private final Gson gson;
+    private final XmlMapper xmlMapper;
 
     @Inject
-    public TemplateEngineJsonGson(Logger logger) {
+    public TemplateEngineXml(Logger logger, XmlMapper xmlMapper) {
         this.logger = logger;
-        this.gson = new Gson();
+        this.xmlMapper = xmlMapper;
     }
 
     @Override
@@ -44,22 +48,23 @@ public class TemplateEngineJsonGson implements TemplateEngine {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
-        String json = gson.toJson(result.getRenderable());
-
         try {
-            responseStreams.getWriter().write(json);
-            responseStreams.getWriter().flush();
-            responseStreams.getWriter().close();
-
+            
+            OutputStream outputStream  = responseStreams.getOutputStream();
+            xmlMapper.writeValue(outputStream, result.getRenderable());
+            outputStream.close();
+            
         } catch (IOException e) {
-            logger.error("Error while writing out Gson Json", e);
+
+            logger.error("Error while rendering json", e);
         }
+        
 
     }
 
     @Override
     public String getContentType() {
-        return Result.APPLICATON_JSON;
+        return Result.APPLICATION_XML;
     }
 
     @Override
