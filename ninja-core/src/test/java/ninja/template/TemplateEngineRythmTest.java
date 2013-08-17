@@ -36,6 +36,7 @@ import ninja.session.SessionCookie;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -46,6 +47,7 @@ import org.rythmengine.template.ITemplate;
 import org.slf4j.Logger;
 
 import com.google.common.base.Optional;
+
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineRythmTest {
 
@@ -54,28 +56,28 @@ public class TemplateEngineRythmTest {
 
     @Mock
     ResponseStreams responseStreams;
-    
-    @Mock 
+
+    @Mock
     NinjaProperties ninjaProperties;
-    
+
     @Mock
     Messages messages;
-    
+
     @Mock
     ITemplate template;
-    
+
     @Mock
     Lang lang;
-    
+
     @Mock
     Logger ninjaLogger;
-    
+
     @Mock
     NinjaExceptionHandler exceptionHandler;
-    
+
     @Mock
     TemplateEngineManager templateEngineManager;
-    
+
     @Mock
     TemplateEngineHelper templateEngineHelper;
 
@@ -84,24 +86,26 @@ public class TemplateEngineRythmTest {
 
     @Mock
     Route route;
-    
+
     @Mock
     RythmEngine engine;
-    
+
     @Mock
     SessionCookie cookie;
-    
+
     @Mock
     FlashCookie flashCookie;
-    
+
     @Test
-    public void testInvoke() throws Exception{
+    public void testInvoke() throws Exception {
         Properties p = new Properties();
         p.setProperty("key", "value");
         when(ninjaProperties.getAllCurrentNinjaProperties()).thenReturn(p);
-        
-        TemplateEngineRythm rythm = new TemplateEngineRythm(messages, lang, ninjaLogger, exceptionHandler, templateEngineHelper, templateEngineManager, ninjaProperties, engine);
-        
+
+        TemplateEngineRythm rythm = new TemplateEngineRythm(messages, lang,
+                ninjaLogger, exceptionHandler, templateEngineHelper,
+                templateEngineManager, ninjaProperties, engine);
+
         when(contextRenerable.finalizeHeaders(Mockito.eq(result))).thenReturn(
                 responseStreams);
 
@@ -109,27 +113,39 @@ public class TemplateEngineRythmTest {
         when(responseStreams.getOutputStream()).thenReturn(
                 byteArrayOutputStream);
 
-        when(responseStreams.getWriter()).thenReturn(new PrintWriter(byteArrayOutputStream));
-        
+        when(responseStreams.getWriter()).thenReturn(
+                new PrintWriter(byteArrayOutputStream));
+
         when(cookie.isEmpty()).thenReturn(true);
         when(contextRenerable.getSessionCookie()).thenReturn(cookie);
-        
-        when(flashCookie.getCurrentFlashCookieData()).thenReturn(new HashMap<String,String>());
+
+        when(flashCookie.getCurrentFlashCookieData()).thenReturn(
+                new HashMap<String, String>());
         when(contextRenerable.getFlashCookie()).thenReturn(flashCookie);
         when(contextRenerable.getRoute()).thenReturn(route);
-        
-        when(templateEngineHelper.getRythmTemplateForResult(Mockito.eq(route), Mockito.eq(result), Mockito.eq(".html"))).thenReturn("TemplateName");
-        
+
+        when(
+                templateEngineHelper.getRythmTemplateForResult(
+                        Mockito.eq(route), Mockito.eq(result),
+                        Mockito.eq(".html"))).thenReturn("TemplateName");
+
         Optional<String> language = Optional.absent();
-        when(lang.getLanguage(Mockito.eq(contextRenerable), Mockito.eq(Optional.of(result)))).thenReturn(language);
-                
-        when(engine.getTemplate(Mockito.eq("TemplateName"), anyObject())).thenReturn(template);
-        
-        when(template.__setRenderArgs(Mockito.eq(new HashMap<String, Object>()))).thenReturn(template);
+        when(
+                lang.getLanguage(Mockito.eq(contextRenerable),
+                        Mockito.eq(Optional.of(result)))).thenReturn(language);
+
+        when(engine.getTemplate(Mockito.eq("TemplateName"), anyObject()))
+                .thenReturn(template);
+
+        when(
+                template.__setRenderArgs(Mockito
+                        .eq(new HashMap<String, Object>()))).thenReturn(
+                template);
         when(template.render()).thenReturn("Hellow world from Rythm");
-        
+
         rythm.invoke(contextRenerable, result);
-        
-        assertEquals("Hellow world from Rythm", byteArrayOutputStream.toString());
+
+        assertEquals("Hellow world from Rythm" + SystemUtils.LINE_SEPARATOR,
+                byteArrayOutputStream.toString());
     }
 }

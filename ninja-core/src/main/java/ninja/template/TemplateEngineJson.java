@@ -17,6 +17,7 @@
 package ninja.template;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import ninja.Context;
 import ninja.Result;
@@ -24,44 +25,43 @@ import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-public class TemplateEngineJsonGson implements TemplateEngine {
+@Singleton
+public class TemplateEngineJson implements TemplateEngine {
 
     private final Logger logger;
-
-    private final Gson gson;
+    
+    private final ObjectMapper objectMapper;
 
     @Inject
-    public TemplateEngineJsonGson(Logger logger) {
+    public TemplateEngineJson(Logger logger, ObjectMapper objectMapper) {
         this.logger = logger;
-        this.gson = new Gson();
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void invoke(Context context, Result result) {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
-
-        // Gson.toJson() for Strings will give an invalid JSON as per as per RFC
-        // 4627. Hence they needs to be bypassed.
-        String json = "";
-        if (result.getRenderable() instanceof String) {
-            json = (String) result.getRenderable();
-        } else {
-            json = gson.toJson(result.getRenderable());
-        }
-
+        
+        // Strings needs to be bypassed.
         try {
-            responseStreams.getWriter().write(json);
-            responseStreams.getWriter().flush();
-            responseStreams.getWriter().close();
-
+            OutputStream outputStream  = responseStreams.getOutputStream();
+            Object obj = result.getRenderable();
+            if ( obj instanceof String) {
+                outputStream.write(((String)obj).getBytes());
+            } else {
+                objectMapper.writeValue(outputStream, obj);
+            }
+            outputStream.close();
+            
         } catch (IOException e) {
-            logger.error("Error while writing out Gson Json", e);
-        }
 
+            logger.error("Error while rendering json", e);
+        }
     }
 
     @Override

@@ -14,57 +14,62 @@
  * limitations under the License.
  */
 
-package ninja.bodyparser;
+package ninja.template;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
-import ninja.ContentTypes;
+import javax.inject.Singleton;
+
 import ninja.Context;
+import ninja.Result;
+import ninja.utils.ResponseStreams;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 @Singleton
-public class BodyParserEngineXml implements BodyParserEngine {
-    
-    private final XmlMapper xmlMapper;
-    
+public class TemplateEngineXml implements TemplateEngine {
+
     private final Logger logger;
     
+    private final XmlMapper xmlMapper;
 
     @Inject
-    public BodyParserEngineXml(XmlMapper xmlMapper, Logger logger) {
-        this.xmlMapper = xmlMapper;
+    public TemplateEngineXml(Logger logger, XmlMapper xmlMapper) {
         this.logger = logger;
-
+        this.xmlMapper = xmlMapper;
     }
 
-    public <T> T invoke(Context context, Class<T> classOfT) {
-        T t = null;
+    @Override
+    public void invoke(Context context, Result result) {
 
+        ResponseStreams responseStreams = context.finalizeHeaders(result);
+        
         try {
             
-            t = xmlMapper.readValue(context.getInputStream(), classOfT);
-
-        } catch (JsonParseException e) {
-            logger.error("Error parsing incoming Xml", e);
-        } catch (JsonMappingException e) {
-            logger.error("Error parsing incoming Xml", e);
+            OutputStream outputStream  = responseStreams.getOutputStream();
+            xmlMapper.writeValue(outputStream, result.getRenderable());
+            outputStream.close();
+            
         } catch (IOException e) {
-            logger.error("Error parsing incoming Xml", e);
+
+            logger.error("Error while rendering json", e);
         }
+        
 
-        return t;
     }
-    
+
+    @Override
     public String getContentType() {
-        return ContentTypes.APPLICATION_XML; 
+        return Result.APPLICATION_XML;
     }
 
+    @Override
+    public String getSuffixOfTemplatingEngine() {
+        // intentionally returns null...
+        return null;
+    }
 }

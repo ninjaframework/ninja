@@ -80,8 +80,11 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         // Json support
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/person").with(PersonController.class, "getPerson");
-        router.POST().route("/person").with(PersonController.class, "postPerson");
+        router.GET().route("/api/person.json").with(PersonController.class, "getPersonJson");
+        router.POST().route("/api/person.json").with(PersonController.class, "postPersonJson");
+        
+        router.GET().route("/api/person.xml").with(PersonController.class, "getPersonXml");
+        router.POST().route("/api/person.xml").with(PersonController.class, "postPersonXml");
 
         // /////////////////////////////////////////////////////////////////////
         // Form parsing support

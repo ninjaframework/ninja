@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import ninja.utils.NinjaProperties;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,13 +53,13 @@ public class NinjaExceptionHandlerTest {
         when(ninjaProperties.isProd()).thenReturn(true);
 
         handler.handleException(te, "response", new PrintWriter(out));
-        assertEquals("response", out.toString());
-        
-        
+        assertEquals("response" + SystemUtils.LINE_SEPARATOR, out.toString());
+
         when(ninjaProperties.isProd()).thenReturn(false);
         handler.handleException(te, "response", new PrintWriter(out));
 
-        Assert.assertTrue(out.toString().contains("Rythm Template ERROR MESSAGE STARTS HERE"));
+        Assert.assertTrue(out.toString().contains(
+                "Rythm Template ERROR MESSAGE STARTS HERE"));
         Assert.assertTrue(out.toString().contains("response"));
 
     }

@@ -23,23 +23,21 @@ import ninja.Context;
 
 import org.slf4j.Logger;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class BodyParserEngineJson implements BodyParserEngine {
     
-    private Gson gson;
+    private final ObjectMapper objectMapper;
     
-    private Logger logger;
+    private final Logger logger;
     
 
     @Inject
-    public BodyParserEngineJson(Gson gson, Logger logger) {
-        this.gson = gson;
+    public BodyParserEngineJson(ObjectMapper objectMapper, Logger logger) {
+        this.objectMapper = objectMapper;
         this.logger = logger;
 
     }
@@ -49,13 +47,8 @@ public class BodyParserEngineJson implements BodyParserEngine {
 
         try {
 
-            t = gson.fromJson(context.getReader(), classOfT);
+            t = objectMapper.readValue(context.getInputStream(), classOfT);
 
-        } catch (JsonSyntaxException e) {
-            logger.error("Error parsing incoming Json", e);
-            
-        } catch (JsonIOException e) {
-            logger.error("Error parsing incoming Json", e);
         } catch (IOException e) {
             logger.error("Error parsing incoming Json", e);
         }

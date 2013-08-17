@@ -17,7 +17,7 @@
 package ninja.template;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -181,7 +181,7 @@ public class TemplateEngineRythm implements TemplateEngine {
         // Here I set a file directory for it:
 
         try {
-            Writer writer = responseStreams.getWriter();
+            PrintWriter writer = new PrintWriter(responseStreams.getWriter());
 
             if (language.isPresent()) {
                 // RythmEngine uses ThreadLocal to set the locale, so this
@@ -192,7 +192,7 @@ public class TemplateEngineRythm implements TemplateEngine {
             t.__setRenderArgs(renderArgs);
             String response = t.render();
 
-            writer.write(response);
+            writer.println(response);
             writer.flush();
             writer.close();
 

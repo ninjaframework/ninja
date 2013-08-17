@@ -17,7 +17,6 @@
 package controllers;
 
 import models.Person;
-import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 
@@ -26,7 +25,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class PersonController {
 
-    public Result getPerson() {
+    public Result getPersonJson() {
 
         // simply render a json as result:
         Person person = new Person();
@@ -36,10 +35,26 @@ public class PersonController {
         return Results.json().render(person);
     }
 
-    public Result postPerson(Person person) {
+    public Result postPersonJson(Person person) {
         // okay... we simply render the parsed object again as json
         // usually we would save something into a db or so..
         return Results.json().render(person);
+    }
+    
+    public Result getPersonXml() {
+
+        // simply render a json as result:
+        Person person = new Person();
+        person.name = "zeeess name - and some utf8 => öäü";
+
+        // render
+        return Results.xml().render(person);
+    }
+
+    public Result postPersonXml(Person person) {
+        // okay... we simply render the parsed object again as json
+        // usually we would save something into a db or so..
+        return Results.xml().render(person);
     }
 
 }

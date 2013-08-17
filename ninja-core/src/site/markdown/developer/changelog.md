@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+ * 2013-08-16 Improved Json and Xml rendering / Switch from Gson to Jackson. (ra)
+ 
+
 Version 1.6.0
 =============
 

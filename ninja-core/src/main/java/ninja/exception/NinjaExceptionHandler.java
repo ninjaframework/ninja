@@ -47,26 +47,23 @@ public class NinjaExceptionHandler {
 
     public void handleException(Exception te, String response, Writer out) throws IOException {
 
+        PrintWriter pw = (out instanceof PrintWriter) ? (PrintWriter) out
+                : new PrintWriter(out);
+        
         // TODO render with proper http status code.
         if (ninjaProperties.isProd()) {
-
 
             if(response.endsWith("html")){
                 response = "Server error!";
             }
-            out.write(response);
-            out.flush();
-            out.close();
-
+            
+            pw.println(response);
+            
             logger.log(Level.SEVERE,
                     "Templating error. This should not happen in production",
                     te);
         } else {
-
             // print out full stacktrace if we are in test or dev mode
-
-            PrintWriter pw = (out instanceof PrintWriter) ? (PrintWriter) out
-                    : new PrintWriter(out);
             pw.println("<!-- Rythm Template ERROR MESSAGE STARTS HERE -->"
                     + "<script language=javascript>//\"></script>"
                     + "<script language=javascript>//\'></script>"
@@ -86,10 +83,10 @@ public class NinjaExceptionHandler {
                     + "<pre><xmp>");
             te.printStackTrace(pw);
             pw.println("</xmp></pre></div></html>");
-            pw.flush();
-            pw.close();
-
             logger.log(Level.SEVERE, "Templating error.", te);
         }
+        
+        pw.flush();
+        pw.close();
     }
 }
