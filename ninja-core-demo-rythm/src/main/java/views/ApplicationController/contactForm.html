@@ -1,0 +1,28 @@
+@extends(layout.defaultLayout, title: "Contact form")
+
+<form action="/contactForm" method="post">
+	<table class="form">
+		<tr>
+			<th><label for="name"> Name </label></th>
+			<td><input class="input_full" type="text" id="name" name="name" />
+
+			</td>
+		</tr>
+		<tr>
+			<th><label for="email"> Email </label></th>
+			<td><input class="input_full" type="email" id="email"
+				name="email" /></td>
+		</tr>
+
+		<tr>
+			<th><label for="description"> Description </label></th>
+			<td><input class="input_full" type="text" id="description"
+				name="description" /></td>
+		</tr>
+	</table>
+
+	<p>
+		<input type="submit" value="Send" /> <input type="reset"
+			value="Reset">
+	</p>
+</form>

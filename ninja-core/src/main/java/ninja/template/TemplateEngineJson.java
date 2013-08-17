@@ -47,18 +47,21 @@ public class TemplateEngineJson implements TemplateEngine {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
+        // Strings needs to be bypassed.
         try {
-            
             OutputStream outputStream  = responseStreams.getOutputStream();
-            objectMapper.writeValue(outputStream, result.getRenderable());
+            Object obj = result.getRenderable();
+            if ( obj instanceof String) {
+                outputStream.write(((String)obj).getBytes());
+            } else {
+                objectMapper.writeValue(outputStream, obj);
+            }
             outputStream.close();
             
         } catch (IOException e) {
 
             logger.error("Error while rendering json", e);
         }
-        
-
     }
 
     @Override

@@ -119,7 +119,7 @@ public class ApplicationControllerTest extends NinjaTest {
                         + "validation?email=john@example.com");
 
         // And assert that stuff is visible on page:
-        assertEquals(response, "\"john@example.com\"");
+        assertEquals("john@example.com", response);
 
         response = ninjaTestBrowser.makeRequest(getServerAddress() + "validation");
 
