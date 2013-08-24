@@ -33,7 +33,7 @@ import com.google.inject.Singleton;
 public class TemplateEngineJson implements TemplateEngine {
 
     private final Logger logger;
-    
+
     private final ObjectMapper objectMapper;
 
     @Inject
@@ -46,19 +46,21 @@ public class TemplateEngineJson implements TemplateEngine {
     public void invoke(Context context, Result result) {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
-        
+        // Strings needs to be bypassed.
         try {
-            
-            OutputStream outputStream  = responseStreams.getOutputStream();
-            objectMapper.writeValue(outputStream, result.getRenderable());
+            OutputStream outputStream = responseStreams.getOutputStream();
+            Object obj = result.getRenderable();
+            if (obj instanceof String) {
+                outputStream.write(((String) obj).getBytes());
+            } else {
+                objectMapper.writeValue(outputStream, obj);
+            }
             outputStream.close();
-            
+
         } catch (IOException e) {
 
             logger.error("Error while rendering json", e);
         }
-        
-
     }
 
     @Override
