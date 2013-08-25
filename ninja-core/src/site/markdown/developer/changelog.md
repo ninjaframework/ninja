@@ -2,6 +2,8 @@ Version X.X.X
 =============
 
  * 2013-08-16 Improved Json and Xml rendering / Switch from Gson to Jackson. (ra)
+ * 2013-08-25 Added facility to render simple strings to the outputstream without
+              invoking templating engine. (sojin, ra)
  
 
 Version 1.6.0

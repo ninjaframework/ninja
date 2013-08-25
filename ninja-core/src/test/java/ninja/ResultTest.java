@@ -17,21 +17,40 @@
 package ninja;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ninja.utils.ResponseStreams;
+
+import org.apache.commons.io.ByteOrderMark;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
 
 import ch.qos.logback.core.db.dialect.MySQLDialect;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ResultTest {
+    
+    @Mock
+    Context context;
+    
+    @Mock
+    ResponseStreams responseStreams;
 
     @Test
     public void testConstructor() {
@@ -320,6 +339,40 @@ public class ResultTest {
         assertEquals(object1, resultMap.get("object1"));
         assertEquals(object2, resultMap.get("object2"));       
       
+    }
+    
+    @Test
+    public void testRenderRaw() throws Exception {  
+        
+        String stringToRender = "{\"user\" : \"john@woo.com\"}";
+        
+        // Construct a new result via Results.
+        Result result = Results.json().renderRaw(stringToRender);
+        
+        // Setup some stuff to catch the output that gets written to the
+        // output stream.
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        when(context.finalizeHeaders(result)).thenReturn(responseStreams);
+        when(responseStreams.getOutputStream()).thenReturn(byteArrayOutputStream);
+        
+        
+        Renderable renderable = (Renderable) result.getRenderable();
+        
+        // Now issue a "render": 
+        renderable.render(context, result);
+        
+        
+        // make sure we called the finalizeHeaders
+        verify(context).finalizeHeaders(result);
+        
+        // make sure we did render the string to the OutputStream.
+        assertEquals(byteArrayOutputStream.toString(), stringToRender);
+        
+        // also make sure the content type is set correctly.
+        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        
+        
+        
     }
     
     
