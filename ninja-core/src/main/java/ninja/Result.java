@@ -16,6 +16,7 @@
 
 package ninja;
 
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import ninja.utils.DateUtil;
+import ninja.utils.ResponseStreams;
 import ninja.utils.SwissKnife;
 
 import com.google.common.collect.Lists;
@@ -278,6 +280,55 @@ public class Result implements Serializable {
         
         render(new AbstractMap.SimpleEntry<String, Object>(key, value));
             
+        return this;
+        
+    }
+    
+
+    /**
+     * This method directly renders the String to the output. It
+     * completely bypasses any rendering engine.
+     * 
+     * Thus you can render anything you want.
+     * 
+     * Chaining of resultRaw is NOT supported. Mixing with render()
+     * is NOT supported.
+     * 
+     * It is always recommended to implement your own RenderingEngine OR
+     * use existing rendering engines.
+     * 
+     * Example:
+     * <code>
+     * public Result controllerMethod() {
+     *    String customJson = "{\"user\" : \"john@woo.com\"}";
+     * 
+     *    return Results.json().renderRaw(customJson);
+     * }
+     * </code>
+     * 
+     * @param string The string to render.
+     * @return A result that will render the string directly to the output stream.
+     */
+    public Result renderRaw(final String string) {
+ 
+        Renderable renderable = new Renderable() {
+ 
+            @Override
+            public void render(Context context, Result result) throws Exception {
+ 
+                ResponseStreams resultJsonCustom = context
+                        .finalizeHeaders(result);
+                
+                OutputStream outputStream = resultJsonCustom.getOutputStream();
+                outputStream.write(string.getBytes());
+ 
+                outputStream.close();
+ 
+            }
+        };
+ 
+        render(renderable);
+ 
         return this;
         
     }
