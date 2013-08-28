@@ -42,7 +42,7 @@ public class CacheEhCacheImpl implements Cache {
     public CacheEhCacheImpl(Logger logger) {
         this.logger = logger;
         this.ehCacheManager = CacheManager.create();
-        this.ehCacheManager.addCache(cacheName);
+        this.ehCacheManager.addCacheIfAbsent(cacheName);
         this.ehCache = ehCacheManager.getCache(cacheName);
     }
 

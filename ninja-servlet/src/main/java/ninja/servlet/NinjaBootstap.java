@@ -36,6 +36,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Stage;
 import com.google.inject.servlet.ServletModule;
 
 public class NinjaBootstap {
@@ -67,8 +68,16 @@ public class NinjaBootstap {
         if (injector != null) {
             throw new RuntimeException("NinjaBootstap already booted");
         }
+        
+        long startTime = System.currentTimeMillis();
+        
         injector = initInjector();
+        
+        long injectorStartupTime = System.currentTimeMillis() - startTime;
+        logger.info("Ninja injector started in " + injectorStartupTime + " ms.");
+        
         Preconditions.checkNotNull(injector, "Ninja injector cannot be generated. Please check log for further errors.");
+        
         Ninja ninja = injector.getInstance(Ninja.class);
         ninja.start();
     }
@@ -145,7 +154,7 @@ public class NinjaBootstap {
             
 
             // And let the injector generate all instances and stuff:
-            injector = Guice.createInjector(modulesToLoad);
+            injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
 
             // Init routes
             if (doesClassExist(ROUTES_CONVENTION_LOCATION)) {

@@ -2,6 +2,7 @@ package ninja.jpa;
 
 import javax.inject.Inject;
 
+import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 
 import com.google.inject.Singleton;
@@ -25,7 +26,6 @@ public class JpaInitializer {
     @Inject
     JpaInitializer(PersistService persistService) {
         
-
         this.persistService = persistService;     
 
     }
@@ -37,6 +37,13 @@ public class JpaInitializer {
         persistService.start();        
         // At this point JPA is started and ready.
         
+    }
+    
+    @Dispose(order = 10)
+    public void stop() {
+        // We are nice and stop the persist service at the end...
+        persistService.stop();        
+
     }
 
 }
