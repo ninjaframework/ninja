@@ -4,7 +4,7 @@ Version X.X.X
  * 2013-08-16 Improved Json and Xml rendering / Switch from Gson to Jackson. (ra)
  * 2013-08-25 Added facility to render simple strings to the outputstream without
               invoking templating engine. (sojin, ra)
- * 2013-08-16 Guice injector now started in mode production by default. In that course
+ * 2013-08-28 Guice injector now started in mode production by default. In that course
               also fixed some hidden problems with JPA shutdown and eh cache registration (samliard, ra)
  
 
