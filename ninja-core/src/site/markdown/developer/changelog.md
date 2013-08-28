@@ -6,6 +6,7 @@ Version X.X.X
               invoking templating engine. (sojin, ra)
  * 2013-08-28 Guice injector now started in mode production by default. In that course
               also fixed some hidden problems with JPA shutdown and eh cache registration (samliard, ra)
+ * 2013-08-28 Bump to latest javax.el interfaces and implementation (needed for validation) (ra)
  
 
 Version 1.6.0
