@@ -7,6 +7,7 @@ Version X.X.X
  * 2013-08-28 Guice injector now started in mode production by default. In that course
               also fixed some hidden problems with JPA shutdown and eh cache registration (samliard, ra)
  * 2013-08-28 Bump to latest javax.el interfaces and implementation (needed for validation) (ra)
+ * 2013-08-29 Rollback of hibernate-validation to 4.3.1.Final - because version 5.0.1.Final not compatible with GAE (ra)
  
 
 Version 1.6.0

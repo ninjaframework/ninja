@@ -202,36 +202,18 @@
 		</dependency>
 
         <!-- Bean validation and reference implementation for JSR 303 -->
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.1.0.Final</version>
-		</dependency>
-        
+        <!-- IMPORTANT: still using 4.3.1.Final because 5.0.1.Final NOT compatible with GAE -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>5.0.1.Final</version>
+			<version>4.3.1.Final</version>
 			<exclusions>
 				<exclusion>
 				<artifactId>jboss-logging</artifactId>
-				<groupId>org.jboss.logging</groupId>
+				<groupId> org.jboss.logging</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-        
-        <!-- hibernate-validator needs the following two libraries -->
-        <!-- (these libs may be present on a JEE server) -->
-        <dependency>
-           <groupId>javax.el</groupId>
-           <artifactId>javax.el-api</artifactId>
-           <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>2.2.5</version>
-        </dependency>
 
 		<!-- XML parsing -->
 		<dependency>
