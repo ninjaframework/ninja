@@ -88,40 +88,16 @@ public class AssetsController {
             @Override
             public void render(Context context, Result result) {
 
-                String finalName = context.getRequestPath().replaceFirst(
-                        PUBLIC_PREFIX, "");
-
                 URL url = null;
                 
-                // This allows to directly stream assets from src directory.
-                // Therefore jetty does not have to reload.
-                // Especially cool when developing js apps inside assets folder.
-                if (ninjaProperties.isDev()) {
+                if (isFileIsValidAssetFile(context)) {
                     
-                    File possibleFileInSrc = new File(
-                            srcDir + File.separator + ASSETS_PREFIX + finalName);
+                    url = getFileFromAssetsDir(context);
                     
-                    if (possibleFileInSrc.exists()) {
-                        
-                        try {
-                            url = possibleFileInSrc.toURI().toURL();
-                            
-                        } catch(MalformedURLException malformedURLException) {
-                            
-                            logger.error("Error in dev mode while streaming files from src dir. ", malformedURLException);
-                        }
+                    if (url == null) {
+                        url = getFileFromMetaInfResourcesDir(context);
                     }
-   
-                }
                     
-                
-                if (url == null) {
-                    // In mode test and prod we stream via the classloader
-                    //
-                    // In dev mode: If we cannot find the file in src we are also looking for the file
-                    // on the classpath (can be the case for plugins that ship their own assets.
-                    url = this.getClass().getClassLoader()
-                            .getResource(ASSETS_PREFIX + finalName);
                 }
 
 
@@ -148,7 +124,7 @@ public class AssetsController {
 
                             // Try to set the mimetype:
                             String mimeType = mimeTypes.getContentType(context,
-                                    finalName);
+                                    url.getFile());
 
                             if (!mimeType.isEmpty()) {
                                 result.contentType(mimeType);
@@ -183,6 +159,86 @@ public class AssetsController {
 
         return Results.status(200).render(renderable);
 
+    }
+    
+    /**
+     * Loads files from assets directory. This is the default diretory
+     * of Ninja where to story stuff. Usually in src/main/java/assets/.
+     */
+    private URL getFileFromAssetsDir(Context context) {
+        String finalName = context.getRequestPath().replaceFirst(
+                PUBLIC_PREFIX, "");
+
+        URL url = null;
+        
+        // This allows to directly stream assets from src directory.
+        // Therefore jetty does not have to reload.
+        // Especially cool when developing js apps inside assets folder.
+        if (ninjaProperties.isDev()) {
+            
+            File possibleFileInSrc = new File(
+                    srcDir + File.separator + ASSETS_PREFIX + finalName);
+            
+            if (possibleFileInSrc.exists()) {
+                
+                try {
+                    url = possibleFileInSrc.toURI().toURL();
+                    
+                } catch(MalformedURLException malformedURLException) {
+                    
+                    logger.error("Error in dev mode while streaming files from src dir. ", malformedURLException);
+                }
+            }
+
+        }
+            
+        
+        if (url == null) {
+            // In mode test and prod we stream via the classloader
+            //
+            // In dev mode: If we cannot find the file in src we are also looking for the file
+            // on the classpath (can be the case for plugins that ship their own assets.
+            url = this.getClass().getClassLoader()
+                    .getResource(ASSETS_PREFIX + finalName);
+        }
+        
+        
+        return url;
+        
+        
+    }
+    
+    /**
+     * Loads files from META-INF/resources directory.
+     * This is compatible with Servlet 3.0 specification and allows
+     * to use e.g. webjars project.
+     */
+    private URL getFileFromMetaInfResourcesDir(Context context) {
+        
+        String finalName = context.getRequestPath().replaceFirst(PUBLIC_PREFIX, "");
+
+        URL url = null;
+        
+        url = this.getClass().getClassLoader().getResource("META-INF/resources/" + finalName);
+
+        return url;
+        
+        
+    }
+    
+    /**
+     * Checks if path begins with correct prefix. 
+     */
+    private boolean isFileIsValidAssetFile(Context context) {
+        
+        String finalName = context.getRequestPath();
+        
+        if (finalName.startsWith(PUBLIC_PREFIX)) {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 
 }

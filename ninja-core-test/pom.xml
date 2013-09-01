@@ -28,6 +28,10 @@
         <artifactId>ninja</artifactId>
         <version>1.6.1-SNAPSHOT</version>
     </parent>
+    
+    <properties>
+        <jetty.version>9.0.5.v20130815</jetty.version>
+    </properties>
 
 
 	<dependencies>
@@ -59,11 +63,16 @@
 			<version>4.8.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-embedded</artifactId>
-			<version>6.1.22</version>
-		</dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
 
         <!-- A very nice abstraction for making selenum tests: -->
 		<dependency>

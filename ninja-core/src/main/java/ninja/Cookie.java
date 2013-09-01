@@ -16,6 +16,8 @@
 
 package ninja;
 
+import com.google.common.base.Preconditions;
+
 /**
  * An HTTP cookie
  * 
@@ -126,6 +128,8 @@ public class Cookie {
     }
 
     public static Builder builder(String name, String value) {
+        Preconditions.checkNotNull(name);
+        Preconditions.checkNotNull(value);
         return new Builder(name, value);
     }
 
