@@ -37,10 +37,10 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
-import ninja.servlet.async.AsyncStrategy;
-import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.servlet.async.AsyncStrategy;
+import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.utils.HttpHeaderUtils;
@@ -351,8 +351,8 @@ public class ContextImpl implements Context.Impl {
         return httpServletRequest.getReader();
     }
 
-    @Override
-    public ResponseStreams finalizeHeaders(Result result) {
+
+    private ResponseStreams finalizeHeaders(Result result, Boolean handleFlashAndSessionCookie) {
 
         httpServletResponse.setStatus(result.getStatusCode());
 
@@ -362,8 +362,11 @@ public class ContextImpl implements Context.Impl {
         }
 
         // copy ninja cookies / flash and session
-        flashCookie.save(this, result);
-        sessionCookie.save(this, result);
+        if (handleFlashAndSessionCookie) {
+            flashCookie.save(this, result);
+            sessionCookie.save(this, result);
+        }
+
 
         // copy cookies
         for (ninja.Cookie cookie : result.getCookies()) {
@@ -392,6 +395,20 @@ public class ContextImpl implements Context.Impl {
         responseStreamsServlet.init(httpServletResponse);
 
         return (ResponseStreams) responseStreamsServlet;
+
+    }
+    
+    @Override
+    public ResponseStreams finalizeHeadersWithoutFlashAndSessionCookie(Result result) {
+        
+        return finalizeHeaders(result, false);
+        
+    }
+    
+    @Override
+    public ResponseStreams finalizeHeaders(Result result) {
+   
+        return finalizeHeaders(result, true);
 
     }
 

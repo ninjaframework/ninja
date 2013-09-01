@@ -279,6 +279,11 @@ public class FakeContext implements Context {
     public ResponseStreams finalizeHeaders(Result result) {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
+    
+    @Override
+    public ResponseStreams finalizeHeadersWithoutFlashAndSessionCookie(Result result) {
+        throw new UnsupportedOperationException("Not supported in fake context");
+    }
 
     @Override
     public InputStream getInputStream() throws IOException {
@@ -394,4 +399,5 @@ public class FakeContext implements Context {
 	public void setContextPath(String contextPath){
 		this.contextPath = contextPath;
 	}
+
 }
