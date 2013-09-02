@@ -8,6 +8,8 @@ Version X.X.X
               also fixed some hidden problems with JPA shutdown and eh cache registration (samliard, ra)
  * 2013-08-28 Bump to latest javax.el interfaces and implementation (needed for validation) (ra)
  * 2013-08-29 Rollback of hibernate-validation to 4.3.1.Final - because version 5.0.1.Final not compatible with GAE (ra)
+ * 2013-09-01 Bugfix - static assets should not handle any flash or session scopes
+               https://github.com/ninjaframework/ninja/issues/109 (Sojin, ra).
  * 2013-09-02 Bump to jetty 9 for testing and running of applications.
  * 2013-09-02 AssetsController now supports to include webjars aka META-INF/resources folders.
 
