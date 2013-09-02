@@ -128,7 +128,7 @@ public class AssetsController {
                 // check if stream exists. if not print a notfound exception
                 if (url == null) {
 
-                    context.finalizeHeaders(Results.notFound());
+                    context.finalizeHeadersWithoutFlashAndSessionCookie(Results.notFound());
 
                 } else {
 
@@ -140,7 +140,7 @@ public class AssetsController {
 
                         if (result.getStatusCode() == Result.SC_304_NOT_MODIFIED) {
                             // Do not stream anything out. Simply return 304
-                            context.finalizeHeaders(result);
+                            context.finalizeHeadersWithoutFlashAndSessionCookie(result);
                             
                         } else {
 
@@ -156,7 +156,7 @@ public class AssetsController {
 
                             // finalize headers:
                             ResponseStreams responseStreams = context
-                                    .finalizeHeaders(result);
+                                    .finalizeHeadersWithoutFlashAndSessionCookie(result);
 
                             InputStream inputStream = urlConnection
                                     .getInputStream();

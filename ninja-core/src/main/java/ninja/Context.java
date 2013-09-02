@@ -350,11 +350,24 @@ public interface Context {
     Result controllerReturned();
 
     /**
-     * Finalizing the headers copies all stuff into the headers.
+     * Finalizing the headers copies all stuff into the headers. It
+     * of course also handles Ninja session and Flash information.
      * 
      * After finalizing the headers you can access the responseStreams.
      */
     ResponseStreams finalizeHeaders(Result result);
+    
+    /**
+     * Finalizing the headers copies all stuff into the headers.
+     * 
+     * After finalizing the headers you can access the responseStreams.
+     * 
+     * This method does not set any Ninja session of flash information.
+     * Eg. When serving static assets this is the method you may want to 
+     * use. Otherwise you'd get a race condition with a lot of requests
+     * setting scopes and deleting them immediately.
+     */
+    ResponseStreams finalizeHeadersWithoutFlashAndSessionCookie(Result result);
 
     /**
      * Get the input stream to read the request.

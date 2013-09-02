@@ -75,7 +75,7 @@ public class AssetsControllerTest {
 
         renderable.render(contextRenerable, result);
 
-        verify(contextRenerable).finalizeHeaders(resultCaptor.capture());
+        verify(contextRenerable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
         assertTrue(resultCaptor.getValue().getStatusCode() == Result.SC_404_NOT_FOUND);
 
     }
@@ -106,7 +106,7 @@ public class AssetsControllerTest {
         verify(httpCacheToolkit).addEtag(Mockito.eq(contextRenerable),
                 Mockito.eq(result), Mockito.anyLong());
 
-        verify(contextRenerable).finalizeHeaders(resultCaptor.capture());
+        verify(contextRenerable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
 
         // make sure we get the correct result...
         assertEquals(Result.SC_304_NOT_MODIFIED, resultCaptor.getValue()
@@ -130,7 +130,7 @@ public class AssetsControllerTest {
         when(mimeTypes.getContentType(Mockito.eq(contextRenerable),
                         Mockito.anyString())).thenReturn("mimetype");
 
-        when(contextRenerable.finalizeHeaders(Mockito.eq(result))).thenReturn(
+        when(contextRenerable.finalizeHeadersWithoutFlashAndSessionCookie(Mockito.eq(result))).thenReturn(
                 responseStreams);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -147,7 +147,7 @@ public class AssetsControllerTest {
         verify(httpCacheToolkit).addEtag(Mockito.eq(contextRenerable),
                 Mockito.eq(result), Mockito.anyLong());
 
-        verify(contextRenerable).finalizeHeaders(resultCaptor.capture());
+        verify(contextRenerable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
 
         // make sure we get the correct result...
         assertEquals(Result.SC_200_OK, resultCaptor.getValue().getStatusCode());

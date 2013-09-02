@@ -32,22 +32,44 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Maps;
 
 public class AssetsControllerTest extends NinjaTest {
-	
-	@Test
-	public void testThatSettingOfMimeTypeWorks() {
-		
-		// Some empty headers for now...
-		Map<String, String> headers = Maps.newHashMap();
-		
-		// /redirect will send a location: redirect in the headers
-		HttpResponse httpResponse = ninjaTestBrowser
-				.makeRequestAndGetResponse(getServerAddress() + "assets/files/test_for_mimetypes.dxf", headers);
 
-		//this is a mimetype nobody knows of...
-		//but it is listetd in the ninja mimetypes... therefore it will be found:
-		//default charset is always utf-8 by convention.
-		assertEquals("application/dxf; charset=utf-8", httpResponse.getHeaders("Content-Type")[0].getValue());
+    @Test
+    public void testThatSettingOfMimeTypeWorks() {
 
-	}
-	
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+
+        // /redirect will send a location: redirect in the headers
+        HttpResponse httpResponse = ninjaTestBrowser.makeRequestAndGetResponse(
+                getServerAddress() + "assets/files/test_for_mimetypes.dxf",
+                headers);
+
+        // this is a mimetype nobody knows of...
+        // but it is listetd in the ninja mimetypes... therefore it will be
+        // found:
+        // default charset is always utf-8 by convention.
+        assertEquals("application/dxf; charset=utf-8",
+                httpResponse.getHeaders("Content-Type")[0].getValue());
+
+    }
+    
+    
+    @Test
+    public void testThatStaticAssetsDoNotSetNinjaCookies() {
+
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("Cookie", "NINJA_FLASH=\"success=This+is+a+flashed+success+-+with+placeholder%3A+PLACEHOLDER\";Path=/");
+
+        // /redirect will send a location: redirect in the headers
+        HttpResponse httpResponse = ninjaTestBrowser.makeRequestAndGetResponse(
+                getServerAddress() + "assets/files/test_for_mimetypes.dxf",
+                headers);
+            
+        // static assets should not set any session information        
+        // ... and static assets should not set any flash information
+        assertEquals(null, httpResponse.getFirstHeader("Set-Cookie"));
+
+    }
+
 }
