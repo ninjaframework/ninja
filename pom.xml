@@ -49,6 +49,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<siteProjectVersion>${project.version}</siteProjectVersion>
+        <jetty.version>9.0.5.v20130815</jetty.version>
 	</properties>
 
 	<!-- Fix version 1.7 of java compiler in all submodules: -->
