@@ -144,6 +144,11 @@ public class WrappedContext implements Context {
     public ResponseStreams finalizeHeaders(Result result) {
         return wrapped.finalizeHeaders(result);
     }
+    
+    @Override
+    public ResponseStreams finalizeHeadersWithoutFlashAndSessionCookie(Result result) {
+        return wrapped.finalizeHeadersWithoutFlashAndSessionCookie(result);
+    }
 
     @Override
     public InputStream getInputStream() throws IOException {
@@ -249,4 +254,5 @@ public class WrappedContext implements Context {
     public String getContextPath() {
         return wrapped.getContextPath();
     }
+
 }

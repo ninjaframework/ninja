@@ -44,7 +44,8 @@ public class AssetsControllerTest extends NinjaTest {
         // but it is listetd in the ninja mimetypes... therefore it will be
         // found:
         // default charset is always utf-8 by convention.
-        assertEquals("application/dxf;charset=UTF-8",
+        assertEquals(
+                "application/dxf;charset=UTF-8", 
                 httpResponse.getHeaders("Content-Type")[0].getValue());
 
     }
@@ -74,6 +75,23 @@ public class AssetsControllerTest extends NinjaTest {
                 getServerAddress() + "assets/webjars/bootstrap/2.1.1/css/bootstrap.min.css", headers);
 
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+    }
+    
+    @Test
+    public void testThatStaticAssetsDoNotSetNinjaCookies() {
+
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("Cookie", "NINJA_FLASH=\"success=This+is+a+flashed+success+-+with+placeholder%3A+PLACEHOLDER\";Path=/");
+
+        // /redirect will send a location: redirect in the headers
+        HttpResponse httpResponse = ninjaTestBrowser.makeRequestAndGetResponse(
+                getServerAddress() + "assets/files/test_for_mimetypes.dxf",
+                headers);
+            
+        // static assets should not set any session information        
+        // ... and static assets should not set any flash information
+        assertEquals(null, httpResponse.getFirstHeader("Set-Cookie"));
 
     }
 
