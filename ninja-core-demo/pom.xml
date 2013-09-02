@@ -31,24 +31,11 @@
 
 	<build>
 		<plugins>
-        
-        <plugin>
-      <artifactId>maven-assembly-plugin</artifactId>
-      <configuration>
-        <archive>
-          <manifest>
-            <mainClass>conf.Main</mainClass>
-          </manifest>
-        </archive>
-        <descriptorRefs>
-          <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-      </configuration>
-    </plugin>
+            
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.0.5.v20130815</version>
+				<version>${jetty.version}</version>
 				<configuration>
 					<contextPath>/</contextPath>
 					<stopKey>stop</stopKey>
