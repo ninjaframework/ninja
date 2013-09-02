@@ -416,7 +416,7 @@ public class Result implements Serializable {
     }
 
     public Result unsetCookie(String name) {
-        cookies.add(Cookie.builder(name, null).setMaxAge(0).build());
+        cookies.add(Cookie.builder(name, "").setMaxAge(0).build());
         return this;
     }
 

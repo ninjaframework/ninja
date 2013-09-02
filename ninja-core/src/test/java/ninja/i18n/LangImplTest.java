@@ -111,7 +111,7 @@ public class LangImplTest {
         lang.clearLanguage(result);
         
         Cookie returnCookie = result.getCookie(cookie.getName());
-        assertEquals(null, returnCookie.getValue());
+        assertEquals("", returnCookie.getValue());
         assertEquals(0, returnCookie.getMaxAge());
         
     }
