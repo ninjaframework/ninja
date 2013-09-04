@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0">
+    
+
+    <!-- h2 is a simple database - in reality you may want to switch to postgres or so... -->
+    <persistence-unit name="h2" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+            <property name="javax.persistence.provider" value="org.hibernate.ejb.HibernatePersistence" />
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <!-- you may want to enable the ddl if you do not use migrations. -->
+            <!-- <property name="hibernate.hbm2ddl.auto" value="create" /> -->
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />
+            
+            <!-- Connection Pooling settings -->
+            <property name="hibernate.connection.provider_class"
+                value="org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider" />
+
+            <property name="hibernate.c3p0.max_size" value="100" />
+            <property name="hibernate.c3p0.min_size" value="0" />
+            <property name="hibernate.c3p0.acquire_increment" value="1" />
+            <property name="hibernate.c3p0.idle_test_period" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="0" />
+            <property name="hibernate.c3p0.timeout" value="100" />     
+        </properties>
+    </persistence-unit>
+
+    <!-- The following config is an example config for postgresql -->
+    <persistence-unit name="postgresql" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" /> 
+            
+            <!-- Connection Pooling settings -->
+            <property name="hibernate.connection.provider_class"
+                value="org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider" />
+
+            <property name="hibernate.c3p0.max_size" value="100" />
+            <property name="hibernate.c3p0.min_size" value="0" />
+            <property name="hibernate.c3p0.acquire_increment" value="1" />
+            <property name="hibernate.c3p0.idle_test_period" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="0" />
+            <property name="hibernate.c3p0.timeout" value="100" />      
+        </properties>
+    </persistence-unit>
+
+    <!-- And another persistence unit that you can set and use on your production servers.
+            Quite handy because in production you may want to tune the connection pooling and so on. -->
+    <persistence-unit name="production" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+             <!-- Connection Pooling settings -->
+            <property name="hibernate.connection.provider_class"
+                value="org.hibernate.connection.C3P0ConnectionProvider" />
+
+            <property name="hibernate.c3p0.max_size" value="100" />
+            <property name="hibernate.c3p0.min_size" value="0" />
+            <property name="hibernate.c3p0.acquire_increment" value="1" />
+            <property name="hibernate.c3p0.idle_test_period" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="0" />
+            <property name="hibernate.c3p0.timeout" value="100" />      
+        </properties>
+    </persistence-unit>
+</persistence>
