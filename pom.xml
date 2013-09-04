@@ -23,7 +23,6 @@
 	<artifactId>ninja</artifactId>
 	<packaging>pom</packaging>
 	<version>1.6.1-SNAPSHOT</version>
-	<name>ninja</name>
 	<url>http://www.ninjaframework.org</url>
 
 	<!-- Deploy to central maven using the oss-parent of sonatype -->
@@ -37,11 +36,12 @@
 	<modules>
 		<module>ninja-core</module>
 		<module>ninja-servlet</module>
-		<module>ninja-core-test</module>
-		<module>ninja-core-demo</module>
-        <module>ninja-core-demo-archetype</module>
-        <module>ninja-jpa-demo</module>
-        <module>ninja-jpa-demo-archetype</module>
+        <module>ninja-standalone</module>
+		<module>ninja-test-utilities</module>
+		<module>ninja-servlet-integration-test</module>
+        <module>ninja-servlet-archetype</module>
+        <module>ninja-servlet-jpa-integration-test</module>
+        <module>ninja-servlet-jpa-archetype</module>
 	</modules>
 
 	<!-- pin encoding to utf-8 -->

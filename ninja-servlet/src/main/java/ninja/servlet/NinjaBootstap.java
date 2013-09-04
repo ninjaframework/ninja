@@ -26,6 +26,8 @@ import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.scheduler.SchedulerSupport;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
 
 import org.slf4j.Logger;
@@ -51,7 +53,11 @@ public class NinjaBootstap {
     private Injector injector = null;
 
     public NinjaBootstap() {
-        this(new NinjaPropertiesImpl());
+
+        
+        this(new NinjaPropertiesImpl(
+                NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet()));
+        
     }
 
     public NinjaBootstap(

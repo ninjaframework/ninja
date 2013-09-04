@@ -25,6 +25,7 @@ import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.LangImpl;
 import ninja.utils.LoggerProvider;
+import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 
@@ -117,7 +118,7 @@ public class TemplateEngineManagerImplTest {
             	bind(Logger.class).toProvider(LoggerProvider.class);  
             	bind(Lang.class).to(LangImpl.class);
             	
-            	bind(NinjaProperties.class).to(NinjaPropertiesImpl.class);
+            	bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
             	
                 for (Class<?> clazz : toBind) {
                 	
