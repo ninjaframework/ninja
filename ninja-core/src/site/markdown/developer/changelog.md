@@ -12,6 +12,7 @@ Version X.X.X
                https://github.com/ninjaframework/ninja/issues/109 (Sojin, ra).
  * 2013-09-02 Bump to jetty 9 for testing and running of applications (ra).
  * 2013-09-02 AssetsController now supports to include webjars aka META-INF/resources folders (ra).
+ * 2013-09-05 Bump to 1.3.0 of fluido in ninjaframework.org site (ra).
 
 Version 1.6.0
 =============
