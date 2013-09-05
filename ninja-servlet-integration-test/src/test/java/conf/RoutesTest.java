@@ -48,7 +48,6 @@ public class RoutesTest extends NinjaRouterTest {
         
         //some tests that routes are there:
         aRequestLike("GET",  "/").isHandledBy(ApplicationController.class, "index");
-        aRequestLike("GET",  "/examples").isHandledBy(ApplicationController.class, "examples");
 
     }
     

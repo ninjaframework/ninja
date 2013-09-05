@@ -23,42 +23,31 @@ import org.junit.Test;
 
 public class ExampleIntegrationTest extends NinjaFluentLeniumTest {
 
-	@Test
-	public void testThatStaticAssetsWork() {
+    @Test
+    public void testThatStaticAssetsWork() {
 
-		goTo(getServerAddress() + "/assets/css/bootstrap.css");
+        goTo(getServerAddress() + "/assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css");
 
-		assertTrue(pageSource().contains("Bootstrap"));
+        assertTrue(pageSource().contains("Bootstrap"));
 
-	}
+    }
 
-	@Test
-	public void testThatInvalidStaticAssetsAreNotFound() {
+    @Test
+    public void testThatInvalidStaticAssetsAreNotFound() {
 
-		goTo(getServerAddress() + "/assets/css/INVALID_FILE");
-		
-		assertTrue(pageSource().isEmpty());
-		
+        goTo(getServerAddress() + "/assets/css/INVALID_FILE");
 
+        assertTrue(pageSource().isEmpty());
 
-	}
+    }
 
-	@Test
-	public void testIndexRoute() {
+    @Test
+    public void testIndexRoute() {
 
-		goTo(getServerAddress());
+        goTo(getServerAddress());
 
-		assertTrue(pageSource().contains("Ninja web framework"));
+        assertTrue(pageSource().contains("Integration Test"));
 
-	}
-	
-	@Test
-	public void testExamples() {
-
-		goTo(getServerAddress() + "/examples");
-
-		assertTrue(pageSource().contains("Examples"));
-
-	}
+    }
 
 }

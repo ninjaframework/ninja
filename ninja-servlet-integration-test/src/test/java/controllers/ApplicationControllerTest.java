@@ -42,8 +42,7 @@ public class ApplicationControllerTest extends NinjaTest {
 
         // If the redirect has worked we must see the following text
         // from the index screen:
-        System.out.println("result" + result);
-        assertTrue(result.contains("And developing large web applications becomes fun again."));
+        assertTrue(result.contains("Integration Test"));
 
     }
 

@@ -72,7 +72,7 @@ public class AssetsControllerTest extends NinjaTest {
 
         // /redirect will send a location: redirect in the headers
         HttpResponse httpResponse = ninjaTestBrowser.makeRequestAndGetResponse(
-                getServerAddress() + "assets/webjars/bootstrap/2.1.1/css/bootstrap.min.css", headers);
+                getServerAddress() + "assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css", headers);
 
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
     }

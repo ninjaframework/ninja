@@ -70,10 +70,10 @@ public class ApplicationController {
     @Inject
     NinjaCache ninjaCache;
 
-    public Result examples(@Request HttpServletRequest httpServletRequest,
+    public Result index(@Request HttpServletRequest httpServletRequest,
                            @Response HttpServletResponse httpServletResponse,
                            Context context) {
-        logger.info("In example ");
+        logger.info("In index ");
         
         // test that the injected httpservlet request and response are not null
         Preconditions.checkNotNull(httpServletRequest);
@@ -86,13 +86,6 @@ public class ApplicationController {
     }
 
     public Result testPage() {
-        return Results.html();
-
-    }
-
-    public Result index(Context context) {
-        // Default rendering is simple by convention
-        // This renders the page in views/ApplicationController/index.ftl.html
         return Results.html();
 
     }

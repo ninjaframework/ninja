@@ -89,8 +89,7 @@ public class NinjaJetty {
             // problem is that the port will change.
             // Therefore we inject the server name here:
             NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
-            // ninjaProperties.setProperty(NinjaConstant.serverName,
-            // serverUri.toString());
+            ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
 
             NinjaServletListener ninjaServletListener = new NinjaServletListener();
             ninjaServletListener.setNinjaProperties(ninjaProperties);

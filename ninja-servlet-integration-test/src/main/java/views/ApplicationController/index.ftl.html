@@ -1,69 +1,112 @@
 <#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout
 "Home page">
 
-<!-- Main hero unit for a primary marketing message or call to action -->
-<div class="hero-unit">
-	<h1>Ninja web framework</h1>
-	<p>And developing large web applications becomes fun again.</p>
-</div>
+<header class="jumbotron">
+	<h1>Integration Test</h1>
+	<p class="lead">This project serves as integration test of Ninja's functionality.
+	You should try to test as much as possible with (fast) mocked tests, but from time
+	to time you have to test functionality running on a real server. And for those test usecases
+	this project is perfect. Feel free to add new testcases to this page.</p>
+</header>
+
+<hr>
+
+<h2>Routing</h2>
+<ul>
+	<li>A default route like this one: <a href="/">/</a></li>
+	<li>A parameterized route like: <a
+		href="/user/12345/john_user/userDashboard">/user/{id}/{name}/userDashboard</a></li>
+	<li>A redirect at /redirects back to index... <a href="/redirect">/redirect</a></li>
+</ul>
+
+<h2>Restful rendering of Html</h2>
+<ul>
+    <li>Well.. <a href="/">This page</a> already exemplifies that... right?</li>
+</ul>
+
+<h2>Restful rendering of Json</h2>
+<ul>
+	<li>As seen here GET <a href="/api/person.json">/api/person.json</a></li>
+	<li>As seen here POST <a href="/api/person.json">/api/person.json</a> parses the
+		body and displays the result.
+	</li>
+</ul>
+
+<h2>Restful rendering of Xml</h2>
+<ul>
+    <li>As seen here GET <a href="/api/person.xml">/api/person.xml</a></li>
+    <li>As seen here POST <a href="/api/person.xml">/api/person.xml</a> parses the
+        body and displays the result.
+    </li>
+</ul>
+
+<h2>Rendering Form post form directly to object</h2>
+<ul>
+	<li>As seen here form <a href="/contactForm">/contactForm</a></li>
+	
+</ul>
+
+<h2>Using Ninja's filters</h2>
+<ul>
+	<li>A working security filter can be found at: <a href="/filter">/filter</a></li>
+	<li>A filter that generates output, changes the status and
+		disallows further execution of the filter chain:<a href="/teapot">/teapot</a>
+	</li>
+</ul>
+
+<h2>Injection via Guice</h2>
+<ul>
+	<li>Injection of services is important and can be done easily.
+		Check out: Not yet completed. <a href="/injection">/injection</a>
+	</li>
+</ul>
+
+<h2>Ninja's session support</h2>
+<ul>
+	<li>The default mode of Ninja is to store the session as signed
+		cookie on the client side. Check out <a href="/session">/session</a>
+	</li>
+</ul>
+
+<h2>Ninja's flash cookie support</h2>
+<ul>
+	<li>To transmit small bits of information from one request to
+		another Ninja supports so called flash cookies. They transmit eg a
+		error message from one request to another. Usually flash cookies only
+		live for one request.
+	</li>
+	<li>Success message via flash cookie: <a href="/flash_success">/flash_success</a></li>
+	<li>Error message via flash cookie: <a href="/flash_error">/flash_error</a></li>
+	<li>An arbitrary flash message: <a href="/flash_any">/flash_any</a></li>
+</ul>
 
 
-<!-- Example row of columns -->
-<div class="row">
-	<div class="span4">
-		<img class="bs-icon"
-			src="assets/img/glyphicons/glyphicons_079_podium.png">
-		<h2>Fun and Productive</h2>
-		<p>Cut out the time you spend waiting for your application to
-			restart, increase your productivity and complete your projects
-			faster.</p>
-	</div>
-	<div class="span4">
-		<img class="bs-icon"
-			src="assets/img/glyphicons/glyphicons_042_group.png">
-		<h2>CoC!</h2>
-		<p>That means convention over configuration! We designed Ninja to
-			be usable in 99% of the cases without any additional configuration.
-			That speeds up development right from the start. And for the last 1%
-			you can of course configure everything yourself. Just in case...</p>
-	</div>
-	<div class="span4">
-		<img class="bs-icon"
-			src="assets/img/glyphicons/glyphicons_163_iphone.png">
-		<h2>Java only</h2>
-		<p>Ninja makes it easier to use all your favorite IDEs, build
-			systems and libraries from the Java world.</p>
-	</div>
-</div>
-<div class="row">
+<h2>Internationalization</h2>
+<ul>
+	<li>To transmit small bits of information from one request to
+		another Ninja supports so called flash cookies. They transmit eg a
+		error message from one request to another. Usually flash cookies only
+		live for one request: <a href="/i18n">/i18n</a>
+	</li>
+	<li>You can also get dedicated languages by specifying them via <a href="/i18n/en">/i18n/en</a>,
+	       <a href="/i18n/de">/i18n/de</a> and so on...
+    </li>
+</ul>
 
-	<div class="span4">
-		<img class="bs-icon"
-			src="assets/img/glyphicons/glyphicons_155_show_thumbnails.png">
-		<h2>Powerful build system</h2>
-		<p>Maven is one of the best build and library management systems out there. And
-			Ninja is built for it. Even better: Automating your builds in Jenkins
-			becomes as easy as specifying the pom.</p>
-	</div>
-	<div class="span4">
-		<img class="bs-icon"
-			src="assets/img/glyphicons/glyphicons_214_resize_small.png">
-		<h2>Ready to start</h2>
-		<p>Download the package and you're done. Start hacking with the
-			integrated development server. Push to production with a single
-			command.</p>
-	</div>
-	<div class="span4">
-		<img class="bs-icon"
-			src="assets/img/glyphicons/glyphicons_266_book_open.png">
-		<h2>Servlets galore!</h2>
-		<p>Servlet containers are the standard in the Java world. Ninja works
-		out of the box with all popular servlet containers. Therefore you get both:
-		Standard compliance and ultra-fast development cycles.</p>
-	</div>
-</div>
+
+<h2>Html Escaping</h2>
+<ul>
+	<li>By default all html templates are escaped. This eliminates a
+		lot of vulnerabilities due to javascript injection attacks. Check out
+		the following page and have a look in the source code. The html stuff
+		is escaped in the source... <a href="/htmlEscaping">/htmlEscaping</a>
+	</li>
+</ul>
+
+<h2>Upload files demo:</h2>
+<ul>
+    <li>Uploading is straight forward using Ninja. Check out the demo at: <a href="/upload">/upload</a>
+    </li>
+</ul>
 
 </@layout.myLayout>
-
-
-
