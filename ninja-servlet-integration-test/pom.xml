@@ -30,6 +30,34 @@
 
 	<build>
 		<plugins>
+        
+            <!-- We use the compiler together with Google's error-prone project. -->
+            <!-- Error-prone is a bit like finbugs, but at compile time and  -->
+            <!-- helps to prevent bugs. -->
+            <!-- More at: https://code.google.com/p/error-prone/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <compilerId>javac-with-errorprone</compilerId>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac</artifactId>
+                        <version>2.3</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
+                        <version>2.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>

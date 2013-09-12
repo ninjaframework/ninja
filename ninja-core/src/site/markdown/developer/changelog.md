@@ -13,6 +13,9 @@ Version X.X.X
  * 2013-09-02 Bump to jetty 9 for testing and running of applications (ra).
  * 2013-09-02 AssetsController now supports to include webjars aka META-INF/resources folders (ra).
  * 2013-09-05 Bump to 1.3.0 of fluido in ninjaframework.org site (ra).
+ * 2013-09-12 Added https://code.google.com/p/error-prone/ to prevent bugs at compile time. (ra)
+ * 2013-09-12 Now using module.setDefaultUseWrapper(false); in xml rednering 
+              (see also https://github.com/FasterXML/jackson-dataformat-xml) (ra)
 
 Version 1.6.0
 =============

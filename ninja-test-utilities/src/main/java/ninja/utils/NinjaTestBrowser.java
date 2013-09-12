@@ -18,7 +18,6 @@ package ninja.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +28,11 @@ import ninja.NinjaTest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -48,9 +44,7 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 
 public class NinjaTestBrowser {
 
@@ -79,7 +73,7 @@ public class NinjaTestBrowser {
     }
 
     /**
-     * @return all cookies saved by this TestBrowser
+     * @return all cookies saved by this TestBrowser.
      */
     public List<Cookie> getCookies() {
         return httpClient.getCookieStore().getCookies();
@@ -116,12 +110,8 @@ public class NinjaTestBrowser {
             response = httpClient.execute(getRequest);
             getRequest.reset();
 
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return response;
@@ -160,12 +150,8 @@ public class NinjaTestBrowser {
 
             getRequest.releaseConnection();
 
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return sb.toString();
@@ -220,12 +206,8 @@ public class NinjaTestBrowser {
 
             postRequest.releaseConnection();
 
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return sb.toString();
@@ -256,15 +238,8 @@ public class NinjaTestBrowser {
                     .getEntity(), "UTF-8");
             post.releaseConnection();
 
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return response;
@@ -275,6 +250,15 @@ public class NinjaTestBrowser {
 
         Map<String, String> headers = Maps.newHashMap();
         headers.put("accept", "application/json; charset=utf-8");
+
+        return makeRequest(url, headers);
+
+    }
+    
+    public String makeXmlRequest(String url) {
+
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("accept", "application/xml; charset=utf-8");
 
         return makeRequest(url, headers);
 

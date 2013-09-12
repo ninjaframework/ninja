@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,7 +98,7 @@ public class CookieDataCodecTest {
     public void specifically_exclude_control_chars() throws UnsupportedEncodingException {
         for (int i = 0; i < 32; ++i) {
             final Map<String, String> inMap = new HashMap<String, String>(1);
-            final String s = Character.toChars(i).toString();
+            final String s = Arrays.toString(Character.toChars(i));
             inMap.put("a", s);
             final String data = encode(inMap);
             assertFalse(data.contains(s));

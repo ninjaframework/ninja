@@ -223,16 +223,14 @@ public class FlashCookieTest {
 
     }
 
+    @Test
     public void testThatCorrectMethodOfNinjaPropertiesIsUsedSoThatStuffBreaksWhenPropertyIsAbsent() {
 
-        // we did not set the cookie prefix
-        when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
-                .thenReturn(null);
-
-        // stuff must break => ...
         FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
 
-        verify(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix));
+        // Make sure that getOrDie has been called. This makes sure we have set
+        // a cookie prefix:
+        verify(ninjaProperties).getOrDie(NinjaConstant.applicationCookiePrefix);
     }
 
 }
