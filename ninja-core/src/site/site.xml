@@ -29,6 +29,7 @@
         <menu name="">
         	<item name="Home" href="./index.html"/>
         	<item name="Introduction" href="./introduction.html"/>
+        	<item name="The stack" href="./documentation/the_stack.html"/>
         	<item name="Team" href="./team.html"/>
         	<item name="Documentation" collapse="true" href="./documentation/getting_started.html">                
                 <item name="Controller" href="./documentation/controller.html"/>
@@ -45,6 +46,7 @@
                 <item name="Caching" href="./documentation/cache.html"/>
                 <item name="Lifecycle" href="./documentation/lifecycle.html"/>
                 <item name="Scheduler" href="./documentation/scheduler.html"/>
+                <item name="Testing" href="./documentation/testing.html"/>
                 <item name="Security Guide" href="./documentation/security_guide.html"/> 
                 <item name="Debugging" href="./documentation/debugging.html"/>
                 <item name="Validation" href="./documentation/validation.html"/>

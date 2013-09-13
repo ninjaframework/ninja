@@ -27,6 +27,8 @@
         <artifactId>ninja</artifactId>
         <version>1.6.1-SNAPSHOT</version>
     </parent>
+    
+    <url>http://www.ninjaframework.org</url>
 
 	<dependencies>
         
@@ -102,6 +104,4 @@
 
 	</dependencies>
 
-
-	<description>Contains test utilities that allow to easily test a ninja application. For instance NijaIntegrationTest contains everything that is needed to start up an arbitrary ninja application and test it via htmlunit and fluentlenium.</description>
 </project>

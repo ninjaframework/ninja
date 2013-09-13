@@ -27,6 +27,8 @@
 		<artifactId>ninja</artifactId>
 		<version>1.6.1-SNAPSHOT</version>
 	</parent>
+    
+    <url>http://www.ninjaframework.org</url>
 
 	<properties>
 		<github.global.server>github</github.global.server>
@@ -297,5 +299,4 @@
 
 	</distributionManagement>
 
-	
 </project>

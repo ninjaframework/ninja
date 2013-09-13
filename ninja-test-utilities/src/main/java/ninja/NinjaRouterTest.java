@@ -16,21 +16,27 @@
 
 package ninja;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import ninja.servlet.NinjaBootstap;
-import ninja.utils.NinjaConstant;
-
-import org.junit.After;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaPropertiesImpl;
 
 public class NinjaRouterTest {
 
     /** The router - initiated from a real server. Routes are verified with this router */
     public Router router;
+    
+    /**
+     * Start the server and load the routes.
+     */
+    public void startServer(NinjaMode ninjaMode) {
+        // in this case servletContext can be null
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
+        NinjaBootstap ninjaBootup = new NinjaBootstap(ninjaProperties);
+        ninjaBootup.boot();
 
-    @After
-    public void teardown() {
-        // Important. We are using system wide modes. We remove it at the end of this test.
-        System.clearProperty(NinjaConstant.MODE_KEY_NAME);
+        router = ninjaBootup.getInjector().getInstance(Router.class);
 
     }
     
@@ -53,9 +59,7 @@ public class NinjaRouterTest {
      */
     public void startServerInProdMode() {
 
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_PROD);
-
-        startServer();
+        startServer(NinjaMode.prod);
 
     }
 
@@ -64,9 +68,7 @@ public class NinjaRouterTest {
      */
     public void startServerInDevMode() {
 
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_DEV);
-
-        startServer();
+        startServer(NinjaMode.dev);
 
     }
 
@@ -74,10 +76,8 @@ public class NinjaRouterTest {
      * Start a server in test mode and load routes.
      */
     public void startServerInTestMode() {
-
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
-
-        startServer();
+        
+        startServer(NinjaMode.test);
 
     }
 
@@ -101,6 +101,19 @@ public class NinjaRouterTest {
         public void isHandledBy(Class controllerClass, String controllerMethod) {
 
             assertTrue(isHttpMethodAndUrlMatchedByControllerClassAndControllerMethod(router,
+                    httpMethod, url, controllerClass, controllerMethod));
+
+        }
+        
+        /**
+         * Verifies that a routes is handled by that class and controller method.
+         * 
+         * @param controllerClass The controller class.
+         * @param controllerMethod The controller method.
+         */
+        public void isNotHandledBy(Class controllerClass, String controllerMethod) {
+
+            assertFalse(isHttpMethodAndUrlMatchedByControllerClassAndControllerMethod(router,
                     httpMethod, url, controllerClass, controllerMethod));
 
         }

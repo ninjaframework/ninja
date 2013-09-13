@@ -8,26 +8,29 @@ The best way to start a Ninja project is by calling the following command:
 </pre>
 
 Please enter sensible values for "groupId" and "artifactId" and let Maven generate your first Ninja project.
-(Not sure what "mvn" or Maven is? Check out http://maven.apache.org/guides/getting-started )
+
 
 After finishing the generation cd into your project and execute:
-
 <pre class="prettyprint">
     mvn jetty:run
 </pre>
 
 This starts the development webserver. And that's it already. Simply open http://localhost:8080 in your browser and start hacking :)
 
+__Note__: Not sure what "mvn" or Maven is? Check out http://maven.apache.org/guides/getting-started
 
-Some tops regarding editing and development
--------------------------------------------
+How to set up your favorite IDE (Eclipse, Netbeans, IntelliJ)
+-------------------------------------------------------------
 
-You just created Ninja application is just a simple Maven project. This means you can import the project into
-any modern IDE. Eclipse with m2e plugin, Netbeans, IntelliJ and many more. Using an IDE is also the most
-productive setup for Ninja. Change a class in your IDE - then your IDE will recompile the class files, 
+The Ninja application you create above is just a simple plain old Maven project. 
+This means you can import the project into any modern IDE. Eclipse, Netbeans, IntelliJ and many more. 
+
+Using an IDE is also the most productive setup for Ninja. 
+Change a class in your IDE - then your IDE will recompile the class files, 
 jetty (running as jetty:run) will pick up the changes and restart the server.
 
-This is blazingly fast and you can see the results of your changes almost immediately at http://localhost:8080.
+This is blazingly fast and you can see the results of your 
+changes almost immediately at http://localhost:8080.
 
 No more packaging, waiting 30 seconds then deploying to an application server. 
 Developing Ninja applications is superfast.
@@ -39,7 +42,6 @@ export MAVEN_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -XX
 </pre>
 
 More information at this excellent blog post: http://java.jiderhamn.se/2011/12/11/classloader-leaks-i-how-to-find-classloader-leaks-with-eclipse-memory-analyser-mat
-
 
 
 The MVC pattern

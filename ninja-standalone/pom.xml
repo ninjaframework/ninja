@@ -28,12 +28,14 @@
     and can be run by one command.
     The embedded Jetty also powers the test utilities' embedded Testserver.
     </description>
-
+    
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
 		<version>1.6.1-SNAPSHOT</version>
 	</parent>
+    
+    <url>http://www.ninjaframework.org</url>
 
 	<dependencies>
 
