@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 the original author or authors.
+ * Copyright (C) 2012 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,21 @@
 
 package conf;
 
+import com.google.inject.Inject;
+
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
-
-import com.google.inject.Inject;
-
+import controllers.ApiController;
 import controllers.ApplicationController;
+import controllers.ArticleController;
+import controllers.LoginLogoutController;
 
 public class Routes implements ApplicationRoutes {
     
-    private NinjaProperties ninjaProperties;
-
     @Inject
-    public Routes(NinjaProperties ninjaProperties) {
-        this.ninjaProperties = ninjaProperties;
-
-    }
+    NinjaProperties ninjaProperties;
 
     /**
      * Using a (almost) nice DSL we can configure the router.
@@ -45,14 +42,48 @@ public class Routes implements ApplicationRoutes {
      *            The default router of this application
      */
     @Override
-    public void init(Router router) {
+    public void init(Router router) {  
+        
+        // puts test data into db:
+        if (!ninjaProperties.isProd()) {
+            router.GET().route("/setup").with(ApplicationController.class, "setup");
+        }
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Login / Logout
+        ///////////////////////////////////////////////////////////////////////
+        router.GET().route("/login").with(LoginLogoutController.class, "login");
+        router.POST().route("/login").with(LoginLogoutController.class, "loginPost");
+        router.GET().route("/logout").with(LoginLogoutController.class, "logout");
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Create new article
+        ///////////////////////////////////////////////////////////////////////
+        router.GET().route("/article/new").with(ArticleController.class, "articleNew");
+        router.POST().route("/article/new").with(ArticleController.class, "articleNewPost");
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Create new article
+        ///////////////////////////////////////////////////////////////////////
+        router.GET().route("/article/{id}").with(ArticleController.class, "articleShow");
 
-        // default routes
-        router.GET().route("/").with(ApplicationController.class, "getIndex");
-        router.POST().route("/").with(ApplicationController.class, "postIndex");
-      
-
+        ///////////////////////////////////////////////////////////////////////
+        // Api for management of software
+        ///////////////////////////////////////////////////////////////////////
+        router.GET().route("/api/{username}/articles.json").with(ApiController.class, "getArticlesJson");
+        router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
+        router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
+        router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");
+ 
+        ///////////////////////////////////////////////////////////////////////
+        // Assets (pictures / javascript)
+        ///////////////////////////////////////////////////////////////////////    
         router.GET().route("/assets/.*").with(AssetsController.class, "serve");
+        
+        ///////////////////////////////////////////////////////////////////////
+        // Index / Catchall shows index page
+        ///////////////////////////////////////////////////////////////////////
+        router.GET().route("/.*").with(ApplicationController.class, "index");
     }
 
 }

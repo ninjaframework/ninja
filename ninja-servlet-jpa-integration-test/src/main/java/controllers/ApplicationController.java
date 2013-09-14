@@ -17,74 +17,57 @@
 package controllers;
 
 import java.util.List;
+import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import models.GuestbookEntry;
+import models.Article;
 import ninja.Result;
 import ninja.Results;
-import ninja.Router;
-import ninja.i18n.Lang;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
+
+import dao.ArticleDao;
+import dao.SetupDao;
 
 @Singleton
 public class ApplicationController {
 
+    @Inject
+    ArticleDao articleDao;
+
+    @Inject
+    SetupDao setupDao;
+
+    public ApplicationController() {
+
+    }
+
     /**
-     * This is the system wide logger. You can still use any config you like. Or
-     * create your own custom logger.
+     * Method to put initial data in the db...
      * 
-     * But often this is just a simple solution:
+     * @return
      */
-    @Inject
-    public org.slf4j.Logger logger;
-    
-    @Inject
-    Router router;
+    public Result setup() {
 
-    @Inject
-    Lang lang;
-    
-    @Inject 
-    Provider<EntityManager> entitiyManagerProvider;
-    
-    @Transactional
-    public Result getIndex() {
-                
-        EntityManager entityManager = entitiyManagerProvider.get();
-            
-        Query q = entityManager.createQuery("SELECT x FROM GuestbookEntry x");
-        List<GuestbookEntry> guestbookEntries = (List<GuestbookEntry>) q.getResultList();
-        
-        String postRoute = router.getReverseRoute(ApplicationController.class, "postIndex");
-        
-        return Results
-                .html()
-                .render("guestbookEntries", guestbookEntries).
-                render("postRoute", postRoute);
+        setupDao.setup();
 
-        
-    }
-    
-    
-    @Transactional
-    public Result postIndex(GuestbookEntry guestbookEntry) {
-        
-        logger.info("In postRoute");        
-        
-        EntityManager entityManager = entitiyManagerProvider.get();
-        
-        entityManager.persist(guestbookEntry);
-
-        
-        return Results.redirect(router.getReverseRoute(ApplicationController.class, "getIndex"));
+        return Results.ok();
 
     }
 
+    public Result index() {
 
+        Article frontPost = articleDao.getFirstArticleForFrontPage();
+
+        List<Article> olderPosts = articleDao.getOlderArticlesForFrontPage();
+
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("frontArticle", frontPost);
+        map.put("olderArticles", olderPosts);
+
+        return Results.html().render("frontArticle", frontPost)
+                .render("olderArticles", olderPosts);
+
+    }
 }

@@ -11,8 +11,6 @@
         <version>1.6.1-SNAPSHOT</version>
     </parent>
 
-  <name>ninja-jpa-demo-archetype</name>
-
   <build>
     <extensions>
       <extension>

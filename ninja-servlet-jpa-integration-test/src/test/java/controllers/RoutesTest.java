@@ -16,32 +16,26 @@
 
 package controllers;
 
-import static org.junit.Assert.assertTrue;
-import ninja.NinjaTest;
+import ninja.NinjaRouterTest;
 
-import org.junit.Before;
 import org.junit.Test;
 
-public class ApplicationControllerTest extends NinjaTest {
-    
-    @Before
-    public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
-        
-    }
+public class RoutesTest extends NinjaRouterTest {
 
     @Test
-    public void testThatHomepageWorks() {
-
-        // /redirect will send a location: redirect in the headers
-        String result = ninjaTestBrowser.makeRequest(getServerAddress() + "/");
-
-        // If the redirect has worked we must see the following text
-        // from the index screen:
-        assertTrue(result.contains("Hello to the blog example!"));
-        assertTrue(result.contains("My second post"));
-
+    public void testRouting() {
+        
+        startServerInProdMode();
+        aRequestLike("GET", "/").isHandledBy(ApplicationController.class, "index");
+        aRequestLike("GET", "/index").isHandledBy(ApplicationController.class, "index");
+    }
+    
+    @Test
+    public void testThatSetupIsNotAccessibleInProd() {
+        
+        startServerInProdMode();
+        aRequestLike("GET", "/setup").isNotHandledBy(ApplicationController.class, "setup");
+        
     }
 
 }
