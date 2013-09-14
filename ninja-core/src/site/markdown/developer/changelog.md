@@ -18,6 +18,7 @@ Version X.X.X
               (see also https://github.com/FasterXML/jackson-dataformat-xml) (ra)
  * 2013-09-13 Improved documentation (testing, controller) (ra)
  * 2013-09-14 Added blog integration test to JPA (ra)
+ * 2013-09-14 New default JPA blog archetype (ra)
 
 Version 1.6.0
 =============

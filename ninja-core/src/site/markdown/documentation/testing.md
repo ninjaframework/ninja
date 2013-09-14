@@ -50,27 +50,25 @@ not in prod mode. NinjaRouterTests allows you to assure that prod mode does not 
 of methods.
 
 <pre class="prettyprint">
-
-public class RoutesTest extends NinjaRouterTest {
-
-    @Test
-    public void testRouting() {
-        
-        startServerInProdMode();
-        aRequestLike("GET", "/").isHandledBy(ApplicationController.class, "index");
-        aRequestLike("GET", "/index").isHandledBy(ApplicationController.class, "index");
-    }
+    public class RoutesTest extends NinjaRouterTest {
     
-    @Test
-    public void testThatSetupIsNotAccessibleInProd() {
+        @Test
+        public void testRouting() {
+            
+            startServerInProdMode();
+            aRequestLike("GET", "/").isHandledBy(ApplicationController.class, "index");
+            aRequestLike("GET", "/index").isHandledBy(ApplicationController.class, "index");
+        }
         
-        startServerInProdMode();
-        aRequestLike("GET", "/setup").isNotHandledBy(ApplicationController.class, "setup");
-        
+        @Test
+        public void testThatSetupIsNotAccessibleInProd() {
+            
+            startServerInProdMode();
+            aRequestLike("GET", "/setup").isNotHandledBy(ApplicationController.class, "setup");
+            
+        }
+    
     }
-
-}
-
 </pre>
 
 
@@ -84,25 +82,24 @@ Consider the following controller. This controller gets a Dao injected. And the 
 the article cannot be posted.
 
 <pre class="prettyprint">
-
-public class ApiController {
-    
-    @Inject
-    ArticleDao articleDao;
-    
-    public Result postArticleJson(@LoggedInUser String username,
-                              ArticleDto articleDto) {
+    public class ApiController {
         
-        boolean succeeded = articleDao.postArticle(username, articleDto);
+        @Inject
+        ArticleDao articleDao;
         
-        if (!succeeded) {
-            return Results.notFound();
-        } else {
-            return Results.ok();
+        public Result postArticleJson(@LoggedInUser String username,
+                                  ArticleDto articleDto) {
+            
+            boolean succeeded = articleDao.postArticle(username, articleDto);
+            
+            if (!succeeded) {
+                return Results.notFound();
+            } else {
+                return Results.ok();
+            }
+            
         }
-        
     }
-}
 </pre>
 
 Mocked tests are done via Mockito. A corresponding test would test if the controller really returns
@@ -111,45 +108,44 @@ a "ok" or "not found".
 <pre class="prettyprint">
 
 @RunWith(MockitoJUnitRunner.class)
-public class ApiControllerMockTest {
-
-    @Mock
-    ArticleDao articleDao;
+    public class ApiControllerMockTest {
     
-    ApiController apiController;
-    
-    @Before
-    public void setupTest() {
-        apiController = new ApiController();
-        apiController.articleDao = articleDao;
+        @Mock
+        ArticleDao articleDao;
         
+        ApiController apiController;
+        
+        @Before
+        public void setupTest() {
+            apiController = new ApiController();
+            apiController.articleDao = articleDao;
+            
+        }
+        
+    
+        @Test
+        public void testThatPostArticleReturnsOkWhenArticleDaoReturnsTrue() {
+    
+            when(articleDao.postArticle(null, null)).thenReturn(true);
+            
+            Result result = apiController.postArticleJson(null, null);
+            
+            assertEquals(200, result.getStatusCode());
+    
+        }
+        
+        @Test
+        public void testThatPostArticleReturnsNotFoundWhenArticleDaoReturnsFalse() {
+    
+            when(articleDao.postArticle(null, null)).thenReturn(false);
+            
+            Result result = apiController.postArticleJson(null, null);
+            
+            assertEquals(404, result.getStatusCode());
+    
+        }
+    
     }
-    
-
-    @Test
-    public void testThatPostArticleReturnsOkWhenArticleDaoReturnsTrue() {
-
-        when(articleDao.postArticle(null, null)).thenReturn(true);
-        
-        Result result = apiController.postArticleJson(null, null);
-        
-        assertEquals(200, result.getStatusCode());
-
-    }
-    
-    @Test
-    public void testThatPostArticleReturnsNotFoundWhenArticleDaoReturnsFalse() {
-
-        when(articleDao.postArticle(null, null)).thenReturn(false);
-        
-        Result result = apiController.postArticleJson(null, null);
-        
-        assertEquals(404, result.getStatusCode());
-
-    }
-
-}
-
 </pre>
 
 Mockito is really powerful. Please have a look at their site at: https://code.google.com/p/mockito/.
@@ -164,30 +160,29 @@ If you use NinjaTests you get access to the NinjaTestBrowser.
 
 
 <pre class="prettyprint">
-
-public class ApplicationControllerTest extends NinjaTest {
+    public class ApplicationControllerTest extends NinjaTest {
+        
+        @Before
+        public void setup() {
+            
+            ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
+            
+        }
     
-    @Before
-    public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
-        
+        @Test
+        public void testThatHomepageWorks() {
+    
+            // /redirect will send a location: redirect in the headers
+            String result = ninjaTestBrowser.makeRequest(getServerAddress() + "/");
+    
+            // If the redirect has worked we must see the following text
+            // from the index screen:
+            assertTrue(result.contains("Hello to the blog example!"));
+            assertTrue(result.contains("My second post"));
+    
+        }
+    
     }
-
-    @Test
-    public void testThatHomepageWorks() {
-
-        // /redirect will send a location: redirect in the headers
-        String result = ninjaTestBrowser.makeRequest(getServerAddress() + "/");
-
-        // If the redirect has worked we must see the following text
-        // from the index screen:
-        assertTrue(result.contains("Hello to the blog example!"));
-        assertTrue(result.contains("My second post"));
-
-    }
-
-}
 </pre>
 
 The testcase illustrates that the NinjaTestBrowser can make request, and that you can then check
@@ -209,36 +204,36 @@ Doctests allow to test and write html documentation at the same time. It is idea
 document Json Apis.
 
 <pre class="prettyprint">
-public class ApiControllerDocTest extends NinjaApiDocTest {
+    public class ApiControllerDocTest extends NinjaApiDocTest {
+        
+        String GET_ARTICLES_URL = "/api/{username}/articles.json";
+        String LOGIN_URL = "/login";
+        
+        String USER = "bob@gmail.com";
     
-    String GET_ARTICLES_URL = "/api/{username}/articles.json";
-    String LOGIN_URL = "/login";
+        @Test
+        public void testGetAndPostArticleViaJson() throws Exception {
+            
+            sayNextSection("Retrieving articles for a user (Json)");
+            
+            say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
+            
+            ApiResponse apiResponse = makeGetRequest(buildUri(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com")));
     
-    String USER = "bob@gmail.com";
-
-    @Test
-    public void testGetAndPostArticleViaJson() throws Exception {
-        
-        sayNextSection("Retrieving articles for a user (Json)");
-        
-        say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
-        
-        ApiResponse apiResponse = makeGetRequest(buildUri(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com")));
-
-        ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, ArticlesDto.class);
-
-        assertEqualsAndSay(3, articlesDto.articles.size(), "We get back all 3 articles of that user");
+            ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, ArticlesDto.class);
+    
+            assertEqualsAndSay(3, articlesDto.articles.size(), "We get back all 3 articles of that user");
+            
+            
+        }
         
         
+        @Override
+        protected String getFileName() {
+            return this.getClass().getSimpleName();
+        }
+    
     }
-    
-    
-    @Override
-    protected String getFileName() {
-        return this.getClass().getSimpleName();
-    }
-
-}
 </pre>
 
 Doctests will generate html documentation into your target/site/doctest directory. In fact doctests
@@ -265,26 +260,25 @@ Simply extend the class and you are ready to go:
 
 
 <pre class="prettyprint">
-
-public class ApplicationControllerFluentLeniumTest extends NinjaFluentLeniumTest {
-
-    @Test
-    public void testThatHomepageWorks() {
-        
-        goTo(getServerAddress() + "/");
-        
-        System.out.println("title: " + title());
-        
-        assertTrue(title().contains("Home page"));
-        
-        click("#login");
-        
-        assertTrue(url().contains("login"));
-
-
-    }
+    public class ApplicationControllerFluentLeniumTest extends NinjaFluentLeniumTest {
     
-}
+        @Test
+        public void testThatHomepageWorks() {
+            
+            goTo(getServerAddress() + "/");
+            
+            System.out.println("title: " + title());
+            
+            assertTrue(title().contains("Home page"));
+            
+            click("#login");
+            
+            assertTrue(url().contains("login"));
+    
+    
+        }
+        
+    }
 </pre>
 
 But FluentLenium can do a lot more. Check out https://github.com/FluentLenium/FluentLenium

@@ -5,25 +5,12 @@ Goals of Ninja
 --------------
 
  * Provide a full stack web framework.
- * Fast and responsive development
+ * Superfast and responsive development cycles.
+ * First class testing support.
  * Web friendly. Restful architecture. Simple programming model.
  * Easily scalable horizontally - share nothing approach.
  * No bytecode magic.
  * Built on standards: Maven for building, servlet containers for deployment, Ioc by Guice...
- 
-
-Introduction
------------
-
-It is a really stupid idea writing your own framework. It is even more stupid writing your own web framework. Did you know
-that even Java's binary search contained a bug until 2006? Even with binary search being invented 50 years earlier. Knowing that - 
-how many bugs do you think a new web framework will contain?
-
-Well. Most probably many.
-
-Nevertheless the work for Ninja - a new full stack web framework for the Java community - began early 2012. Out of frustration.
-Out of the love for Java and productivity the Java eco-system offers.
-
 
 Why another framework?
 ----------------------
@@ -64,6 +51,6 @@ must go to Play and Rails teams.
 Conclusion
 ----------
 
-Ninja delivers everything to get productive immediately.
+Ninja delivers everything to make you productive immediately.
 And it does so by using a lot of proven technology that is used and known for years.
 

@@ -39,9 +39,8 @@
         <module>ninja-standalone</module>
 		<module>ninja-test-utilities</module>
 		<module>ninja-servlet-integration-test</module>
-        <module>ninja-servlet-archetype</module>
-        <module>ninja-servlet-jpa-integration-test</module>
-        <module>ninja-servlet-jpa-archetype</module>
+        <module>ninja-servlet-jpa-blog-integration-test</module>
+        <module>ninja-servlet-jpa-blog-archetype</module>
 	</modules>
 
 	<!-- pin encoding to utf-8 -->

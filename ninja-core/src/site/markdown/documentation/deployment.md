@@ -35,6 +35,70 @@ That's the power of following well proven standards. Ninja - and the apps you ar
 is standing on the shoulder of giants.
 
 
+Standalone Ninja
+----------------
+
+Ninja also features a standalone mode where you do not a servlet containers. The standalone mode
+enables you to run one command and get one self executing file that contains Ninja, your application
+and a server (Jetty in that case) that will run your application.
+
+This allows to simply drop that self-executing file to your server and automate that in a really simple fashion.
+Due to Ninja's client-side sessions it becomes really simple to have one reverse proxy in front of
+many Ninja instances.
+
+In order to do so you have to first of all add ninja-standalone as dependecy to your pom.xml:
+
+<pre>
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
+        &lt;artifactId&gt;ninja-standalone&lt;/artifactId&gt;
+        &lt;version&gt;X.X.X&lt;/version&gt;
+    &lt;/dependency&gt;   
+</pre>        
+
+Packaging the applciation is done via the maven assembly plugin. Add the following snipplet
+to your pom.xml.
+
+<pre>
+    &lt;plugin&gt;
+        &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+        &lt;version&gt;2.4&lt;/version&gt;
+        &lt;configuration&gt;
+            &lt;descriptorRefs&gt;
+                &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
+            &lt;/descriptorRefs&gt;
+            &lt;archive&gt;
+                &lt;manifest&gt;
+                    &lt;mainClass&gt;ninja.standalone.NinjaJetty&lt;/mainClass&gt;
+                &lt;/manifest&gt;
+            &lt;/archive&gt;
+        &lt;/configuration&gt;
+    &lt;/plugin&gt;
+</pre>
+
+Whenever you build your application on the command line this will generate a fat jar
+inside your target directory. Usually that file is named roughly MY-APPLICATION-jar-with-dependencies.jar
+
+If you skip the section called "excutions" in the maven-assembly-plugin you can generate
+the fat jar by calling
+
+<pre>
+    mvn clean compile assembly:single
+</pre>
+
+You can run the fat jar by calling java:
+
+<pre>
+    java    -Dninja.port=9000 
+            -Dninja.mode=prod
+            -jar MY-APPLICATION-jar-with-dependencies.jar
+</pre>
+
+Two parameters are important. First <code>ninja.mode</code> will allow you to set the mode of the Ninja
+application you are running. Second <code>ninja.port</code> allows you to select the port on which your
+application is starting.
+
+
 Deployment on Google App Engine
 -------------------------------
 

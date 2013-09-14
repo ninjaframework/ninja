@@ -22,8 +22,9 @@
     <div class="span6">
         <img class="bs-icon" src="images/glyphicons/glyphicons_042_group.png">
         <h2>Fun for developers.</h2>
-        <p>Ninja provides everything you need to get productive in an instant. 
-        And Ninja is fast. Really fast. Make a change to the code and instantly see the results.
+        <p>Ninja provides everything you need to get productive at once.
+        Generate a new project via our maven archetype. Import the archetype in your favorite
+        IDE. Start Ninja's hot-reloading dev server. Test your app and deploy it.
         </p>
     </div>
 </div>
@@ -51,7 +52,7 @@
             src="images/glyphicons/glyphicons_079_podium.png">
         <h2>Stable technology</h2>
         <p>Ninja did not reinvent the wheel - instead we are standing on the shoulders of giants.
-        Ninja is built using the most stable technologies in the industry. Servlets, Guice dependency injection and Maven - just to name
+        Ninja is built using the most stable technologies in the industry. Servlets, Guice dependency injection, JPA and Maven - just to name
         a few.
         </p>
     </div>
@@ -68,8 +69,8 @@
     <div class="span4">
         <img class="bs-icon" src="images/glyphicons/glyphicons_155_show_thumbnails.png">
         <h2>Ready to start</h2>
-        <p>Ninja is a full stack. From quick development to fast testing to easy deployment. 
-        And by the way - if you want you can use any servlet container to run your Ninja application.
+        <p>Ninja is a full stack. From quick development to perfectly fine testing to easy deployment. 
+        And by the way - if you want you can use any servlet container or even Ninja's Jetty based standalone mode to run your application.
     </p>
     </div>
 </div>
@@ -94,7 +95,7 @@
 		<h2>Powerful build system</h2>
 		<p>Maven is one of the best build and library management systems out there. And
 			Ninja is built for it. Even better: Automating your builds in Jenkins
-			becomes as easy as telling Jenkins your repository location.</p>
+			becomes as easy as telling Jenkins your repository location. Ninja and our test framework is made for it.</p>
 	</div>
 
 	<div class="span4">
