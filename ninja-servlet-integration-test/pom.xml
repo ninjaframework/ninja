@@ -25,7 +25,7 @@
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
-		<version>1.6.1-SNAPSHOT</version>
+		<version>2.0.0-rc1</version>
 	</parent>
     
     <url>http://www.ninjaframework.org</url>
@@ -152,13 +152,13 @@
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-servlet</artifactId>
-			<version>1.6.1-SNAPSHOT</version>
+			<version>2.0.0-rc1</version>
 		</dependency>
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
-            <version>1.6.1-SNAPSHOT</version>
+            <version>2.0.0-rc1</version>
         </dependency>
 
 		<dependency>
@@ -171,7 +171,7 @@
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
 			<artifactId>ninja-test-utilities</artifactId>
-			<version>1.6.1-SNAPSHOT</version>
+			<version>2.0.0-rc1</version>
 			<scope>test</scope>
 		</dependency>
 

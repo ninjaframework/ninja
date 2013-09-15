@@ -6,8 +6,7 @@
     under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
     OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
     the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ninja-servlet-jpa-blog-integration-test</artifactId>
@@ -16,7 +15,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>1.6.1-SNAPSHOT</version>
+        <version>2.0.0-rc1</version>
     </parent>
     
     <url>http://www.ninjaframework.org</url>
@@ -176,13 +175,13 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
-            <version>1.6.1-SNAPSHOT</version>
+            <version>2.0.0-rc1</version>
         </dependency>
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
-            <version>1.6.1-SNAPSHOT</version>
+            <version>2.0.0-rc1</version>
         </dependency>
 
         <dependency>
@@ -195,7 +194,7 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-test-utilities</artifactId>
-            <version>1.6.1-SNAPSHOT</version>
+            <version>2.0.0-rc1</version>
             <scope>test</scope>
         </dependency>
 
