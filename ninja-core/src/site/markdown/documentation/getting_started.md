@@ -4,7 +4,7 @@ Quickstart
 The best way to start a Ninja project is by calling the following command:
 
 <pre class="prettyprint">
-    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-core-demo-archetype
+    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype
 </pre>
 
 Please enter sensible values for "groupId" and "artifactId" and let Maven generate your first Ninja project.
