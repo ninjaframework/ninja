@@ -1,8 +1,8 @@
 Upgrading to latest Ninja
 =========================
 
-From 1.6 to 1.7
----------------
+From 1.6 to 2.0.0
+-----------------
 
 1) Ninja's testing artifacts have changed. 
 Please rename the original ninja-core-test to ninja-test-utilities in your pom.xml. 
@@ -11,13 +11,13 @@ You end up with the following artifact:
     <dependency>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja-test-utilities</artifactId>
-        <version>X.X</version>
+        <version>X.X.X</version>
         <scope>test</scope>
     </dependency>
         
-2) We have improved the default way xml is rendered and parsed.
-   We are now using "module.setDefaultUseWrapper(false)" of Jackson that produces output
-   more similar to the Json renderers, and handles rendering lists and collections in a much better
+2) We have improved the default way xml is rendered and parsed
+   and are now using "module.setDefaultUseWrapper(false)" of Jackson that produces output
+   more similar to the Json renderers. This handles rendering lists and collections in a much better
    way. You can change that via annotation @JacksonXmlElementWrapper.useWrapping in your models
    Also see: the https://github.com/FasterXML/jackson-dataformat-xml
 
@@ -94,6 +94,6 @@ From 1.1 to 1.2
     
     
 From 1.0 to 1.1
-------
+---------------
 
 no changes needed.
