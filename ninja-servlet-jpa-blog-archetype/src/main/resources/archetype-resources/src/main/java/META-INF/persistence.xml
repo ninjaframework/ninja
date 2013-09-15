@@ -17,9 +17,9 @@
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
             <!-- you may want to enable the ddl if you do not use migrations. -->
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.format_sql" value="true" />
+            <!-- <property name="hibernate.hbm2ddl.auto" value="create" />  -->
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />
             
             <!-- Connection Pooling settings -->
             <property name="hibernate.connection.provider_class"
@@ -42,9 +42,9 @@
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
             <!-- you may want to enable the ddl if you do not use migrations. -->
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.format_sql" value="true" />
+            <!-- <property name="hibernate.hbm2ddl.auto" value="create" />  -->
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />
             
             <!-- Connection Pooling settings -->
             <property name="hibernate.connection.provider_class"
