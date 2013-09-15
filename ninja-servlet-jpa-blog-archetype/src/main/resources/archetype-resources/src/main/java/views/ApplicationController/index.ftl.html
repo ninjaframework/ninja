@@ -1,0 +1,33 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<${symbol_pound}import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">    
+
+
+        
+<${symbol_pound}if frontArticle??>
+
+    <div class="jumbotron">
+        <h1>
+            <a href="/article/${symbol_dollar}{frontArticle.id}">${symbol_dollar}{frontArticle.title}</a>    
+        </h1>  
+        <p>${symbol_dollar}{frontArticle.postedAt?date}</p>  
+        <p><${symbol_pound}noescape>${symbol_dollar}{frontArticle.content}</${symbol_pound}noescape></p>
+    </div>
+</${symbol_pound}if>
+
+<hr/>
+
+<${symbol_pound}if olderArticles??>
+    
+    <${symbol_pound}list olderArticles as article>
+        <h3>
+            <a href="/article/${symbol_dollar}{article.id}">${symbol_dollar}{article.title}</a>    
+        </h3>  
+        <p>${symbol_dollar}{article.postedAt?date}</p>  
+    </${symbol_pound}list>
+    
+</${symbol_pound}if>
+
+</@layout.myLayout>

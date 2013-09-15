@@ -20,13 +20,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ninja-servlet</artifactId>
-    <name>ninja web framework servlet-container support</name>
 
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
         <version>1.6.1-SNAPSHOT</version>
     </parent>
+    
+    <url>http://www.ninjaframework.org</url>
 
     <dependencies>
         <dependency>

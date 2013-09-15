@@ -42,22 +42,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     private static final Logger logger = LoggerFactory
             .getLogger(NinjaPropertiesImpl.class);
 
-    private Mode mode;
-
-    private enum Mode {
-        prod(NinjaConstant.MODE_PROD), dev(NinjaConstant.MODE_DEV), test(
-                NinjaConstant.MODE_TEST);
-
-        private String mode;
-
-        Mode(String mode) {
-            this.mode = mode;
-        }
-
-        public String toString() {
-            return mode;
-        }
-    }
+    private NinjaMode ninjaMode;
 
     private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
@@ -69,34 +54,10 @@ public class NinjaPropertiesImpl implements NinjaProperties {
      */
     private CompositeConfiguration compositeConfiguration;
 
-    @Inject
-    public NinjaPropertiesImpl() {
 
-        // Get mode possibly set via a system property
-        String modeFromGetSystemProperty = System
-                .getProperty(NinjaConstant.MODE_KEY_NAME);
-
-        // Initially we are in dev mode.
-        mode = Mode.dev;
-
-        // If the user specified a mode we set the mode accordingly:
-        if (modeFromGetSystemProperty != null) {
-
-            if (modeFromGetSystemProperty.equals(NinjaConstant.MODE_TEST)) {
-                mode = Mode.test;
-                logger.info("Ninja is running in test mode.");
-            } else if (modeFromGetSystemProperty
-                    .equals(NinjaConstant.MODE_PROD)) {
-                mode = Mode.prod;
-                logger.info("Ninja is running in prod mode.");
-            } else {
-                logger.info("Ninja is running in dev mode.");
-                // else dev as set initially...
-            }
-
-
-
-        }
+    public NinjaPropertiesImpl(NinjaMode ninjaMode) {
+        
+        this.ninjaMode = ninjaMode;
 
         // This is our main configuration.
         // In the following we'll read the individual configurations and merge
@@ -128,7 +89,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             // Copy special prefix of mode to parent configuration
             // By convention it will be something like %test.myproperty
             prefixedDefaultConfiguration = defaultConfiguration.subset("%"
-                    + mode.name());
+                    + ninjaMode.name());
 
         } else {
 
@@ -173,7 +134,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
                 // Copy special prefix of mode to parent configuration
                 // By convention it will be something like %test.myproperty
                 prefixedExternalConfiguration = externalConfiguration
-                        .subset("%" + mode.name());
+                        .subset("%" + ninjaMode.name());
             }
 
         }
@@ -318,16 +279,16 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
     @Override
     public boolean isProd() {
-        return (mode.equals(Mode.prod));
+        return (ninjaMode.equals(NinjaMode.prod));
     }
 
     public boolean isDev() {
-        return (mode.equals(Mode.dev));
+        return (ninjaMode.equals(NinjaMode.dev));
     }
 
     @Override
     public boolean isTest() {
-        return (mode.equals(Mode.test));
+        return (ninjaMode.equals(NinjaMode.test));
     }
 
     @Override

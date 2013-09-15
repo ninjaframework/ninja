@@ -108,6 +108,7 @@ public class ResultTest {
 
     }
 
+    @Test
     public void testUnsetCookie() {
 
         Result result = new Result(200);
@@ -116,7 +117,7 @@ public class ResultTest {
         assertEquals(1, result.getCookies().size());
 
         assertEquals("Cookie-to-be-unset", result.getCookies().get(0).getName());
-        assertEquals(null, result.getCookies().get(0).getValue());
+        assertEquals("", result.getCookies().get(0).getValue());
 
     }
 

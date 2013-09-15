@@ -22,8 +22,9 @@
     <div class="span6">
         <img class="bs-icon" src="images/glyphicons/glyphicons_042_group.png">
         <h2>Fun for developers.</h2>
-        <p>Ninja provides everything you need to get productive in an instant. 
-        And Ninja is fast. Really fast. Make a change to the code and instantly see the results.
+        <p>Ninja provides everything you need to get productive at once.
+        Generate a new project via our maven archetype. Import the archetype in your favorite
+        IDE. Start Ninja's hot-reloading dev server. Test your app and deploy it.
         </p>
     </div>
 </div>
@@ -45,69 +46,75 @@
 
 <div class="row-fluid">	
 
-
     <div class="span4">
         <img class="bs-icon"
             src="images/glyphicons/glyphicons_079_podium.png">
-        <h2>Stable technology</h2>
-        <p>Ninja did not reinvent the wheel - instead we are standing on the shoulders of giants.
-        Ninja is built using the most stable technologies in the industry. Servlets, Guice dependency injection and Maven - just to name
-        a few.
+        <h2>Development</h2>
+        <p>Generate a new project via our Maven archetype, import it into your favorite IDE with one click and start
+        coding. Ninja features a hot reloading mode that will pick up all your changes
+        immediately. Features? All there, Html, Xml, Json, JPA, caching and much more.</p>
+    </div>
+    
+    <div class="span4">
+        <img class="bs-icon"
+            src="images/glyphicons/glyphicons_082_roundabout.png">
+        <h2>Testing</h2>
+        <p>Ninja is fully equipped with an extensive set of test tools. Run mocked tests or test your
+        complete application on a real server. Running selenium tests? All included. And the best is that
+        your tests will run locally and also on any continuous integration server.
         </p>
     </div>
+    
+    <div class="span4">
+        <img class="bs-icon"
+            src="images/glyphicons/glyphicons_155_show_thumbnails.png">
+        <h2>Deployment</h2>
+        <p>Package Ninja applications as war and run them
+        on your Tomcat or Jetty if you like. Or package your application as self contained jar that you can copy
+        to your server and execute. Ninja also runs Heroku, App Engine and many other cloud providers.
+        </p>
+    </div>
+    
+</div>
+<div class="row-fluid"> 
+    <div class="span4">
+        <img class="bs-icon"
+            src="images/glyphicons/glyphicons_079_podium.png">
+        <h2>Solid technology</h2>
+        <p>Ninja did not reinvent the wheel - instead we are standing on the shoulders of giants.
+        Ninja is built using the most mature and solid technologies in the industry. 
+        Servlets, Guice, JPA, Flyway migrations and Maven - just to name a few.
+        </p>
+    </div>
+    
+
+    
     
    <div class="span4">
         <img class="bs-icon"
             src="images/glyphicons/glyphicons_082_roundabout.png">
-        <h2>Scalability</h2>
+        <h2>Scalability built in</h2>
         <p>Ninja uses the share nothing approach. Servers do not share any common session information. That
         means you can scale Ninja horizontally with ease.
         </p>
     </div>
     
-    <div class="span4">
-        <img class="bs-icon" src="images/glyphicons/glyphicons_155_show_thumbnails.png">
-        <h2>Ready to start</h2>
-        <p>Ninja is a full stack. From quick development to fast testing to easy deployment. 
-        And by the way - if you want you can use any servlet container to run your Ninja application.
-    </p>
-    </div>
-</div>
-
-<br/>
-<br/>
-
-<div class="row-fluid"> 
-
+    
+    
     <div class="span4">
         <img class="bs-icon"
-            src="images/glyphicons/glyphicons_163_iphone.png">
-        <h2>Pure Open source</h2>
-        <p>Ninja is licensed under Apache 2.0 license. That means the codebase will be open forever.
-        We are welcoming pull requests :)
-        </p>
-    </div>
-
-	<div class="span4">
-		<img class="bs-icon"
-			src="images/glyphicons/glyphicons_214_resize_small.png">
-		<h2>Powerful build system</h2>
-		<p>Maven is one of the best build and library management systems out there. And
-			Ninja is built for it. Even better: Automating your builds in Jenkins
-			becomes as easy as telling Jenkins your repository location.</p>
-	</div>
-
-	<div class="span4">
-		<img class="bs-icon"
-			src="images/glyphicons/glyphicons_266_book_open.png">
-		<h2>First class Java citizen</h2>
-		<p>
-		You get all goodies that make Java great: Excellent IDE support.
-		A statically typed language. Huge and mature eco-system. First class testing support and much much more.</p>
-	</div>	
-
+            src="images/glyphicons/glyphicons_266_book_open.png">
+        <h2>Java open source citizen</h2>
+        <p>
+        You get all goodies that make Java great: Excellent IDE support.
+        A statically typed language. Huge and mature eco-system. 
+        First class testing support and much much more. Ninja is licensed under Apache 2.0 license. That means the codebase will be open forever.
+        We are welcoming pull requests :)</p>
+    </div>  
 </div>
 
+<br/>
+<br/>
 
 
 

@@ -21,11 +21,11 @@ import java.io.IOException;
 import ninja.ContentTypes;
 import ninja.Context;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -39,9 +39,16 @@ public class BodyParserEngineXml implements BodyParserEngine {
     
 
     @Inject
-    public BodyParserEngineXml(XmlMapper xmlMapper, Logger logger) {
-        this.xmlMapper = xmlMapper;
+    public BodyParserEngineXml(Logger logger) {
         this.logger = logger;
+        
+        JacksonXmlModule module = new JacksonXmlModule();
+        // Check out: https://github.com/FasterXML/jackson-dataformat-xml
+        // setDefaultUseWrapper produces more similar output to
+        // the Json output. You can change that with annotations in your
+        // models.
+        module.setDefaultUseWrapper(false);
+        this.xmlMapper = new XmlMapper(module); 
 
     }
 

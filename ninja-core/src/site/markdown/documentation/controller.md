@@ -77,11 +77,8 @@ In Ninja this is really simple and controller that can do so looks like:
 Method index now gets the contents of the path parameters and all query parameters.
 
 
-Injecting stuff into your controller method (method scope)
-----------------------------------------------------------
-
-Ninja can inject a lot of stuff into your methods. And you can customize that easily yourself by using so
-called ArgumentMatchers.
+More on objects Ninja can automatically provide you at controller level
+-----------------------------------------------------------------------
 
 Have a look at that method:
 
@@ -114,6 +111,83 @@ it will parsed (Json, Xml, PostForm) will be determined via the request type.
 
 Therefore you don't have to worry if
 input is for instance Xml or Json. You simply get a parsed object.
+
+
+Injecting stuff into your controller method (method scope)
+----------------------------------------------------------
+
+Ninja can inject a lot of stuff into your methods. And you can customize that easily yourself by using so
+called ArgumentExtractors.
+
+ArgumentExtractors allow you to inject arbitrary things into the method of a controller.
+
+Have a look at the following method:
+
+<pre class="prettyprint">
+    package controllers;
+
+    @Singleton
+    public class ApplicationController {
+        
+        public Result index(
+                @LoggedInUser String loggedInUser) {
+                
+            //do something with the parameters...
+        }
+
+    }
+</pre>
+
+The @LoggedInUser is a so called ArgumentExtractors and allow you to extract arbitrary things out
+of the request and re-package them into anything you want. @LoggedInUser for instance determines 
+the user and injects the username into the field annotated with @LoggedInUser.
+
+ArgumentMatchers therefore consist of two things.
+
+First the marker interface:
+
+<pre class="prettyprint">
+    @WithArgumentExtractor(LoggedInUserExtractor.class)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.PARAMETER})
+    public @interface LoggedInUser {}
+</pre>
+
+... and the ArgumentExtractor itself:
+
+<pre class="prettyprint">
+public class LoggedInUserExtractor implements ArgumentExtractor<String> {
+
+    @Override
+    public String extract(Context context) {
+        
+        // if we got no cookies we break:
+        if (context.getSessionCookie() != null) {
+            
+            String username = context.getSessionCookie().get("username");
+            
+            return username;
+            
+        }
+        
+        return null;
+    }
+
+    @Override
+    public Class getExtractedType() {
+        return String.class;
+    }
+
+    @Override
+    public String getFieldName() {
+        return null;
+    }
+}
+</pre>
+
+As you can see the interface for the ArgumentExtractor references @WithArgumentExtractor(LoggedInUserExtractor.class).
+LoggedInUserExtractor itself has full access to the context (and the incoming request) and will return the object
+annotated initially by @LoggedInUser. In our example this was @LoggedInUser String loggedInUser.
 
 
 Reverse routing

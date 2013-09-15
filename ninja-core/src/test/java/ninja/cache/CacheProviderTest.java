@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import ninja.Configuration;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 
 import org.junit.Rule;
@@ -24,7 +25,7 @@ public class CacheProviderTest {
     @Test
     public void testEhCacheDefaulLoadingWorks() {
 
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();   
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
         
         ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, null);
         
@@ -45,7 +46,7 @@ public class CacheProviderTest {
     @Test
     public void testMemcachedLoadingWorks() {
 
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();   
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
         
         ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, CacheMemcachedImpl.class.getName());
         // just a dummy to test that loading works
@@ -68,7 +69,7 @@ public class CacheProviderTest {
     @Test
     public void testThatSettingWrongCacheImplementationYieldsException() {
 
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl();   
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
         
         ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, "not_existing_implementation");
         

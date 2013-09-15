@@ -21,13 +21,14 @@
 
 	<artifactId>ninja-core</artifactId>
 	<packaging>jar</packaging>
-	<name>ninja web framework</name>
 
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
 		<version>1.6.1-SNAPSHOT</version>
 	</parent>
+    
+    <url>http://www.ninjaframework.org</url>
 
 	<properties>
 		<github.global.server>github</github.global.server>
@@ -99,24 +100,18 @@
             <version>2.2</version>
         </dependency>
 
-		<!-- Our favorite depencency injection framework: -->
+		<!-- Our favorite dependency injection framework: -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<version>3.0</version>
 		</dependency>
 
-		<!-- We use gson for rendering jsons:
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.4</version>
-		</dependency>
-        -->
+		<!-- We use Jackson for rendering jsons: -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.2.2</version>
+            <version>2.2.3</version>
         </dependency>
 
 		<!-- freemarker is our templating engine: -->
@@ -219,7 +214,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.2.2</version>
+			<version>2.2.3</version>
 		</dependency>
         
         <!-- ehcache implementation -->
@@ -304,5 +299,4 @@
 
 	</distributionManagement>
 
-	
 </project>

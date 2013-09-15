@@ -197,7 +197,7 @@ public class SessionCookieImpl implements SessionCookie {
 
                 Cookie.Builder expiredSessionCookie = Cookie.builder(
                         applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
-                        null);
+                        "");
                 expiredSessionCookie.setPath("/");
                 expiredSessionCookie.setMaxAge(0);
 

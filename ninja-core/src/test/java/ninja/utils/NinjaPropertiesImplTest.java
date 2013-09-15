@@ -51,23 +51,12 @@ public class NinjaPropertiesImplTest {
     public void testSkippingThroughModesWorks() {
 
         // check that mode tests works:
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.test);
         assertEquals("test_testproperty",
                 ninjaPropertiesImpl.get("testproperty"));
 
         // check that mode dev works:
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_DEV);
-        ninjaPropertiesImpl = new NinjaPropertiesImpl();
-        assertEquals("dev_testproperty",
-                ninjaPropertiesImpl.get("testproperty"));
-        assertEquals("secret",
-                ninjaPropertiesImpl.get(NinjaConstant.applicationSecret));
-
-        // remove property => we expect that the dev property is used as default
-        // value
-        System.clearProperty(NinjaConstant.MODE_KEY_NAME);
-        ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.dev);
         assertEquals("dev_testproperty",
                 ninjaPropertiesImpl.get("testproperty"));
         assertEquals("secret",
@@ -75,8 +64,7 @@ public class NinjaPropertiesImplTest {
 
         // and in a completely different mode with no "%"-prefixed key the
         // default value use used
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_PROD);
-        ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.prod);
         assertEquals("testproperty_without_prefix",
                 ninjaPropertiesImpl.get("testproperty"));
         assertEquals("secret",
@@ -90,7 +78,7 @@ public class NinjaPropertiesImplTest {
     @Test(expected = RuntimeException.class)
     public void testGetOrDie() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.dev);
 
         assertEquals("dev_testproperty",
                 ninjaPropertiesImpl.getOrDie("testproperty"));
@@ -102,7 +90,7 @@ public class NinjaPropertiesImplTest {
     @Test
     public void testGetBooleanParsing() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.dev);
         assertEquals(true, ninjaPropertiesImpl.getBoolean("booleanTestTrue"));
 
         assertEquals(false, ninjaPropertiesImpl.getBoolean("booleanTestFalse"));
@@ -114,7 +102,7 @@ public class NinjaPropertiesImplTest {
     @Test(expected = RuntimeException.class)
     public void testGetBooleanOrDie() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.dev);
 
         assertEquals(true,
                 ninjaPropertiesImpl.getBooleanOrDie("booleanTestTrue"));
@@ -126,7 +114,7 @@ public class NinjaPropertiesImplTest {
     @Test
     public void testGetIntegerParsing() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.dev);
 
         assertEquals(new Integer(123456789),
                 ninjaPropertiesImpl.getInteger("integerTest"));
@@ -138,7 +126,7 @@ public class NinjaPropertiesImplTest {
     @Test(expected = RuntimeException.class)
     public void testGetIntegerDie() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl();
+        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.dev);
 
         assertEquals(new Integer(123456789),
                 ninjaPropertiesImpl.getIntegerOrDie("integerTest"));
@@ -149,7 +137,7 @@ public class NinjaPropertiesImplTest {
 
     @Test
     public void testPropertiesBoundInGuice() {
-        final NinjaPropertiesImpl props = new NinjaPropertiesImpl();
+        final NinjaPropertiesImpl props = new NinjaPropertiesImpl(NinjaMode.dev);
         MockService service = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -171,7 +159,7 @@ public class NinjaPropertiesImplTest {
     public void testReferenciningOfPropertiesWorks() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
 
         // this is testing if referencing of properties works with external
         // configurations
@@ -190,7 +178,7 @@ public class NinjaPropertiesImplTest {
                 "conf/heroku.conf");
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
 
         // we expect that the original application secret gets overwritten:
         assertEquals("secretForHeroku",
@@ -211,15 +199,13 @@ public class NinjaPropertiesImplTest {
     @Test
     public void testLoadingOfExternalConfigurationFileWorksAndPrefixedConfigurationsSetRead() {
 
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
-
         // we can set an external conf file by setting the following system
         // property:
         System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF,
                 "conf/heroku.conf");
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
 
         // this is testing if referencing of properties works with external
         // configurations
@@ -234,7 +220,7 @@ public class NinjaPropertiesImplTest {
     @Test
     public void testUft8Works() {
 
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
         // We test this: utf8Test=this is utf8: öäü
         assertEquals("this is utf8: öäü", ninjaProperties.get("utf8Test"));
 
@@ -249,7 +235,7 @@ public class NinjaPropertiesImplTest {
                 "conf/non_existing.conf");
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
 
         // now a runtime exception must be thrown.
     }
@@ -258,7 +244,7 @@ public class NinjaPropertiesImplTest {
     public void testGetWithDefault() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
 
         // test default works when property not there:
         assertEquals("default", ninjaProperties.getWithDefault(
@@ -274,7 +260,7 @@ public class NinjaPropertiesImplTest {
     public void testGetIntegerWithDefault() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
 
         // test default works when property not there:
         assertEquals(Integer.valueOf(1), ninjaProperties.getIntegerWithDefault(
@@ -290,7 +276,7 @@ public class NinjaPropertiesImplTest {
     public void testGetBooleanWithDefault() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
 
         // test default works when property not there:
         assertEquals(Boolean.valueOf(true),
@@ -307,7 +293,7 @@ public class NinjaPropertiesImplTest {
     public void testGetStringArrayWorks() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl();
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev);
 
         // test default works when property not there:
         assertEquals("one", ninjaProperties.get("getOneElementStringArray"));
