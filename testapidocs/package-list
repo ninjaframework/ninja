@@ -2,6 +2,7 @@ ninja
 ninja.cache
 ninja.classesfortest
 ninja.i18n
+ninja.jpa
 ninja.lifecycle
 ninja.params
 ninja.postoffice.common
