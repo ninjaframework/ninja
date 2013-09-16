@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.ninjaframework</groupId>
-  <artifactId>ninja-servlet-jpa-blog-integration-test-archetype</artifactId>
+  <artifactId>ninja-servlet-jpa-blog-archetype</artifactId>
   <packaging>maven-archetype</packaging>
   
     <parent>

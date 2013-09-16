@@ -1,4 +1,4 @@
-Version X.X.X
+Version 2.0.0
 =============
 
  * 2013-08-16 Improved Json and Xml rendering / Switch from Gson to Jackson. (ra)
@@ -19,6 +19,7 @@ Version X.X.X
  * 2013-09-13 Improved documentation (testing, controller) (ra)
  * 2013-09-14 Added blog integration test to JPA (ra)
  * 2013-09-14 New default JPA blog archetype (ra)
+ * 2013-09-16 Multiple fixes for maven archetype (ra)
 
 Version 1.6.0
 =============
