@@ -19,7 +19,8 @@ Version 2.0.0
  * 2013-09-13 Improved documentation (testing, controller) (ra)
  * 2013-09-14 Added blog integration test to JPA (ra)
  * 2013-09-14 New default JPA blog archetype (ra)
- * 2013-09-16 Multiple fixes for maven archetype (ra)
+ * 2013-09-16 Multiple fixes for maven archetype (ra) 
+ * 2013-09-17 Fixed misnamed logging configuration files (logging.xml => logback.xml) (ra)
 
 Version 1.6.0
 =============
