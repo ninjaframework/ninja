@@ -98,6 +98,127 @@ Two parameters are important. First <code>ninja.mode</code> will allow you to se
 application you are running. Second <code>ninja.port</code> allows you to select the port on which your
 application is starting.
 
+Init.d script to run Ninja as standalone service on Linux
+---------------------------------------------------------
+
+If you want to register you Ninja standalone application on your Linux (Debian, Ubuntu) you can use
+and adapt the following script. The script should be copied at /etc/init.d/ninja and can be run
+via <code>service ninja start</code>.
+
+<pre>
+
+#!/bin/bash
+# chkconfig: 345 20 80
+# description: Ninja start/shutdown script
+# processname: java
+#
+# Installation:
+# copy file to /etc/init.d
+# chmod +x /etc/init.d/ninja
+
+# chkconfig --add /etc/init.d/ninja
+# chkconfig ninja on
+#     OR on a Debian system
+# sudo update-rc.d ninja defaults
+
+#
+# Usage: (as root)
+# service ninja start
+# service ninja stop
+# service ninja status
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Path to the application
+APPLICATION_NAME=my-ninja-service
+APPLICATION_PATH=/srv/ninja_applications/${APPLICATION_NAME}
+APPLICATION_JAR=my-ninja-service-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+PID_FILE=/var/run/${APPLICATION_NAME}.pid
+PORT=9013
+
+# Path to the JVM
+JAVA_BIN=/opt/java-oracle/jdk1.7.0/bin/java
+PARAMS="-Dninja.mode=prod -Dninja.port=${PORT} -jar ${APPLICATION_PATH}/${APPLICATION_JAR}"
+
+# User running the Ninja process
+USER=ninja
+
+RETVAL=0
+
+start() {
+    if [ -f ${PID_FILE} ]; then
+        echo "Ninja application ${APPLICATION_NAME} already running"
+    else
+        DAEMON_START_LINE="start-stop-daemon --chdir=${APPLICATION_PATH} --make-pidfile --pidfile ${PID_FILE} --chuid ${USER} --exec ${JAVA_BIN} --background --start -- ${PARAMS}"
+        ${DAEMON_START_LINE}
+        RETVAL=$?
+        echo -n "Starting Ninja Application: ${APPLICATION_NAME}... "
+
+
+            if [ $RETVAL -eq 0 ]; then
+                echo " - Success"
+            else
+                echo " - Failure"
+            fi
+        echo
+    fi
+    echo
+
+}
+stop() {
+    kill -9 `cat ${PID_FILE}`
+    RETVAL=$?
+    rm -rf ${PID_FILE}
+    echo -n "Stopping Ninja application: ${APPLICATION_NAME}"
+
+    if [ $RETVAL -eq 0 ]; then
+        echo " - Success"
+    else
+        echo " - Failure"
+    fi
+        echo
+    }
+
+status() {
+    if [ -f ${PID_FILE} ]; then
+        echo "Ninja application ${APPLICATION_NAME} running"
+    else
+        echo "Ninja application ${APPLICATION_NAME} not running"
+    fi
+    echo
+
+}
+
+clean() {
+        rm -f ${PID_FILE}
+}
+
+case "$1" in
+    start)
+    start
+    ;;
+    stop)
+    stop
+    ;;
+    restart|reload)
+    stop
+    sleep 10
+    start
+    ;;
+    status)
+    status
+    ;;
+    clean)
+    clean
+    ;;
+*)
+echo "Usage: $0 {start|stop|restart|status}"
+esac
+
+</pre>
+
+
 
 Deployment on Google App Engine
 -------------------------------
