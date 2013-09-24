@@ -34,6 +34,7 @@ Making a Ninja release
 
 - Make sure changelog.md is updated
 - Make sure the archetypes are up-to-date (Ninja version must match release version)
+- Make sure the archetypes version in docu (JPA + getting_started) matches release version
 
 2) Release to central maven repo
 
