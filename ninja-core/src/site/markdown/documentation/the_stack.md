@@ -31,6 +31,7 @@ Core libraries
 - Scheduler (Ninja)
 - Object validation - JSR 303 (Hibernate-validation)
 - Support library: (Google Guava)
+- Logging (logback / slf4j)
 
 Relational data persistence
 ---------------------------
