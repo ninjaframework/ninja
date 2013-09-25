@@ -22,7 +22,7 @@ __Note__: Not sure what "mvn" or Maven is? Check out http://maven.apache.org/gui
 How to set up your favorite IDE (Eclipse, Netbeans, IntelliJ)
 -------------------------------------------------------------
 
-The Ninja application you create above is just a simple plain old Maven project. 
+The Ninja application you created above is just a simple plain old Maven project. 
 This means you can import the project into any modern IDE. Eclipse, Netbeans, IntelliJ and many more. 
 
 Using an IDE is also the most productive setup for Ninja. 
