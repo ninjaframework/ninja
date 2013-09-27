@@ -1,3 +1,10 @@
+Version SNAPSHOT
+================
+
+ * 2013-09-27 Removed bogus System.setProperty(test...) in NinjaJetty.java (ra)
+
+
+
 Version 2.0.0
 =============
 

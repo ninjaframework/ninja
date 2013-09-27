@@ -81,10 +81,6 @@ public class NinjaJetty {
             server.addConnector(http);
             context = new ServletContextHandler(server, "/");
 
-            // Set testmode for Ninja:
-            System.setProperty(NinjaConstant.MODE_KEY_NAME,
-                    NinjaConstant.MODE_TEST);
-
             // We are using an embeded jetty for quick server testing. The
             // problem is that the port will change.
             // Therefore we inject the server name here:
