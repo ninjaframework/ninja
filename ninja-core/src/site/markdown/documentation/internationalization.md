@@ -21,7 +21,7 @@ Examples are "en", "de", "en-US", "en-CA" and so on.
 Defining messages for your application
 ------------------------------------
 
-The message file name follow a convention. 
+The message file name follows a convention. 
 The convention is messages.LANGUAGE.property or messages.LANGUAGE-COUNTRY.property.
 
 Some examples:
@@ -49,11 +49,9 @@ conf/messages.en.properties might look like:
     registrationPendingSuccess=Success confirming email.  
 </pre>
 
-Two important thing:
 
- * Use ONLY camelCaseWriting for your messages
- * Internally we use MessageFormat.format(text, values) to format the messages. Therefore
-   all information from http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html do apply.
+Internally we use MessageFormat.format(text, values) to format the messages. Therefore 
+all informations from http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html do apply.
 
 
 Getting a message inside your code
@@ -137,7 +135,7 @@ If you specify
 </pre>
 
 It makes sense to only have one message file called messages.properties in English. Therefore
-English acts as fallback for all language - country combinations.
+English acts as fallback for all languages - country combinations.
 
 
 
@@ -169,7 +167,7 @@ You can set the language by using the Lang tools like so:
 
 </pre>
 
-After setting the language all messages will displayed in German.
+After setting the language all messages will be displayed in German.
 
 
 

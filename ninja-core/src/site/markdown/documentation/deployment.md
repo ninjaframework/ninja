@@ -38,15 +38,15 @@ is standing on the shoulder of giants.
 Standalone Ninja
 ----------------
 
-Ninja also features a standalone mode where you do not a servlet containers. The standalone mode
-enables you to run one command and get one self executing file that contains Ninja, your application
-and a server (Jetty in that case) that will run your application.
+Ninja also features a standalone mode where you do not need a separate servlet container. 
+The standalone mode enables you to run a single maven command and get a self executing jar file that contains 
+your application, Ninja and a fast server (Jetty in that case).
 
-This allows to simply drop that self-executing file to your server and automate that in a really simple fashion.
+This allows to drop that self-executing file to your server run your application via zero dependencies.
 Due to Ninja's client-side sessions it becomes really simple to have one reverse proxy in front of
 many Ninja instances.
 
-In order to do so you have to first of all add ninja-standalone as dependecy to your pom.xml:
+In order to do so you have to first of all add ninja-standalone as dependency to your pom.xml:
 
 <pre>
     &lt;dependency&gt;
@@ -56,7 +56,7 @@ In order to do so you have to first of all add ninja-standalone as dependecy to 
     &lt;/dependency&gt;   
 </pre>        
 
-Packaging the applciation is done via the maven assembly plugin. Add the following snipplet
+Packaging the application is done via the maven assembly plugin. Add the following snipplet
 to your pom.xml.
 
 <pre>
@@ -79,14 +79,14 @@ to your pom.xml.
 Whenever you build your application on the command line this will generate a fat jar
 inside your target directory. Usually that file is named roughly MY-APPLICATION-jar-with-dependencies.jar
 
-If you skip the section called "excutions" in the maven-assembly-plugin you can generate
+If you skip the section called "executions" in the maven-assembly-plugin you can generate
 the fat jar by calling
 
 <pre>
     mvn clean compile assembly:single
 </pre>
 
-You can run the fat jar by calling java:
+Running the fat jar (and your app) is as simple as calling:
 
 <pre>
     java    -Dninja.port=9000 
@@ -98,10 +98,11 @@ Two parameters are important. First <code>ninja.mode</code> will allow you to se
 application you are running. Second <code>ninja.port</code> allows you to select the port on which your
 application is starting.
 
+
 Init.d script to run Ninja as standalone service on Linux
 ---------------------------------------------------------
 
-If you want to register you Ninja standalone application on your Linux (Debian, Ubuntu) you can use
+If you want to register your Ninja standalone application on your Linux box (Debian, Ubuntu) you can use
 and adapt the following script. The script should be copied at /etc/init.d/ninja and can be run
 via <code>service ninja start</code>.
 
@@ -224,13 +225,12 @@ Deployment on Google App Engine
 -------------------------------
 
 [Google's App Engine] (https://developers.google.com/appengine/) is a great hosting service provided by Google.
-The really cool feature is it scales automatically. Deploy and never worry about any scaling issues - it is really that simple.
+The really cool feature is that it scales automatically. 
+Deploy and never worry about any scaling issues - it is really that simple.
 
 Ninja is fully compatible to the App Engine via the ninja-appengine module.
 
-All informations you need are at:
-
-    https://github.com/ninjaframework/ninja-appengine/
+Please follow the guide at: https://github.com/ninjaframework/ninja-appengine/
 
 
 Heroku support
