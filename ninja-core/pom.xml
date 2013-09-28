@@ -155,6 +155,13 @@
     		<artifactId>jcl-over-slf4j</artifactId>
     		<version>1.7.5</version>
 		</dependency>
+        
+        <!-- Replace log4j with slf4j bridge (that will use logback)-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.5</version>
+        </dependency>
 
 		<!-- Some nice stuff for handling IO. Some overlap with guava though... -->
 		<dependency>

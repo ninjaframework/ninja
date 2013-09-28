@@ -4,7 +4,7 @@ Version SNAPSHOT
  * 2013-09-27 Removed bogus System.setProperty(test...) in NinjaJetty.java (ra)
  * 2013-09-27 Some documentation fixes (ra)
  * 2013-09-27 ninja-core changed from junit-dep (deprecated) to junit archetypeid (ra)
-
+ * 2013-09-28 Added log4j-over-slf4j - Needed for EhCache which logs via log4j by default. (ra)
 
 
 Version 2.0.0
