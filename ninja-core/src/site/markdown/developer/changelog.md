@@ -5,7 +5,7 @@ Version SNAPSHOT
  * 2013-09-27 Some documentation fixes (ra)
  * 2013-09-27 ninja-core changed from junit-dep (deprecated) to junit archetypeid (ra)
  * 2013-09-28 Added log4j-over-slf4j - Needed for EhCache which logs via log4j by default. (ra)
-* 2013-09-30 Possibility to change context path for standalone mode (an)
+ * 2013-09-30 Possibility to change context path for standalone mode (an)
 
 
 Version 2.0.0
