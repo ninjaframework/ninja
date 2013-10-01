@@ -97,6 +97,7 @@ Running the fat jar (and your app) is as simple as calling:
 Two parameters are important. First <code>ninja.mode</code> will allow you to set the mode of the Ninja
 application you are running. Second <code>ninja.port</code> allows you to select the port on which your
 application is starting.
+Context path is default to "/" in standalone mode but can be changed by providing additional system property: -Dninja.context=/your_context_path
 
 
 Init.d script to run Ninja as standalone service on Linux
