@@ -1,23 +1,22 @@
 package ninja.standalone;
 
+import com.google.inject.servlet.GuiceFilter;
 import java.net.URI;
-
 import ninja.servlet.NinjaServletListener;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import com.google.inject.servlet.GuiceFilter;
-
 public class NinjaJetty {
     
     static final int DEFAULT_PORT = 8080;
+
+    static final String DEFAULT_CONTEXT_PATH = "/";
     
     Integer port;
     
@@ -28,16 +27,20 @@ public class NinjaJetty {
     Server server;
     
     ServletContextHandler context;
+
+    String ninjaContextPath;
     
     public static void main(String [] args) {
         
         NinjaMode ninjaMode = NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet();
         
         int port = tryToGetPortFromSystemPropertyOrReturnDefault();
+        String contextPath = tryToGetContextPathFromSystemPropertyOrReturnDefault();
         
         NinjaJetty ninjaJetty = new NinjaJetty();
         ninjaJetty.setNinjaMode(ninjaMode);
         ninjaJetty.setPort(port);
+        ninjaJetty.setNinjaContextPath(contextPath);
         
         ninjaJetty.start();
         
@@ -70,6 +73,12 @@ public class NinjaJetty {
         this.ninjaMode = ninjaMode;
         return this;
     }
+
+    public NinjaJetty setNinjaContextPath(String ninjaContextPath) {
+
+        this.ninjaContextPath = ninjaContextPath;
+        return this;
+    }
     
     public void start() {
 
@@ -79,7 +88,7 @@ public class NinjaJetty {
             ServerConnector http = new ServerConnector(server);
 
             server.addConnector(http);
-            context = new ServletContextHandler(server, "/");
+            context = new ServletContextHandler(server, ninjaContextPath);
 
             // We are using an embeded jetty for quick server testing. The
             // problem is that the port will change.
@@ -144,5 +153,12 @@ public class NinjaJetty {
         
     }
 
-
+    public static String tryToGetContextPathFromSystemPropertyOrReturnDefault() {
+        try {
+            String contextPath = System.getProperty("ninja.context");
+            return contextPath != null ? contextPath : DEFAULT_CONTEXT_PATH;
+        } catch (Exception e) {
+            return DEFAULT_CONTEXT_PATH;
+        }
+    }
 }
