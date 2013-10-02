@@ -87,9 +87,9 @@
         http://www.ninjaframework.org
         </sitesearch>
       </googleSearch>
-       <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
-             <gitHub>
-        <projectId>reyez/ninja</projectId>
+      <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+      <gitHub>
+        <projectId>ninjaframework/ninja</projectId>
         <ribbonOrientation>right</ribbonOrientation>
         <ribbonColor>black</ribbonColor>
       </gitHub>
