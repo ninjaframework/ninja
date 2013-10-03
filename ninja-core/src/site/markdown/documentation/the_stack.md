@@ -8,13 +8,13 @@ IDE and start hacking.
 Therefore Ninja is made up of libraries that deliver everything. From Html, Json and Xml rendering
 and parsing to management of different environments, database persistence, testing and much more.
 
-Here is a tiny overview:
+Here is a overview:
 
 Frontend
 --------
 - Html rendering (Freemaker)
 - Json rendering / parsing (Jackson)
-- Xml rendering / parsing (Jackson
+- Xml rendering / parsing (Jackson)
 
 Stateful restful
 ----------------
@@ -24,7 +24,7 @@ Stateful restful
 Core libraries
 --------------
 - Injection support (Guice)
-- Mutiple environment configuration (Ninja)
+- Multiple environment configuration (Ninja)
 - i18n for templates / in controllers (Ninja)
 - Lifecycle (Ninja)
 - Mail sending (Ninja)
