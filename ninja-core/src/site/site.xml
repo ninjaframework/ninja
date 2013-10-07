@@ -29,7 +29,6 @@
         <menu name="">
         	<item name="Home" href="./index.html"/>
         	<item name="Introduction" href="./introduction.html"/>
-        	<item name="The stack" href="./documentation/the_stack.html"/>
         	<item name="Team" href="./team.html"/>
         	<item name="Documentation" collapse="true" href="./documentation/getting_started.html">                
                 <item name="Controller" href="./documentation/controller.html"/>
