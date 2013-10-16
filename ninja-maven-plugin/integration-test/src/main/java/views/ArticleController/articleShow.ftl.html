@@ -1,0 +1,20 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">    
+    
+    
+<#if article??>
+
+    <h1>${article.title}</h1>  
+    <p>${article.postedAt?date}</p>  
+    <p><#noescape>${article.content}</#noescape></p>
+    
+<#else>
+    
+    <p>Sorry. Post not found. Please go back to <a href="/index">index</a></p>
+    
+</#if>
+    
+
+     
+
+</@layout.myLayout>

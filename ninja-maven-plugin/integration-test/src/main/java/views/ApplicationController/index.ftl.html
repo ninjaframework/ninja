@@ -1,0 +1,30 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">    
+
+
+        
+<#if frontArticle??>
+
+    <div class="jumbotron">
+        <h1>
+            <a href="/article/${frontArticle.id}">${frontArticle.title}</a>    
+        </h1>  
+        <p>${frontArticle.postedAt?date}</p>  
+        <p><#noescape>${frontArticle.content}</#noescape></p>
+    </div>
+</#if>
+
+<hr/>
+
+<#if olderArticles??>
+    
+    <#list olderArticles as article>
+        <h3>
+            <a href="/article/${article.id}">${article.title}</a>    
+        </h3>  
+        <p>${article.postedAt?date}</p>  
+    </#list>
+    
+</#if>
+
+</@layout.myLayout>
