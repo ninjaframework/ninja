@@ -16,6 +16,9 @@
 
 package ninja.template;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
@@ -23,8 +26,6 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 public class TemplateEngineManagerImpl implements TemplateEngineManager {

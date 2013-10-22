@@ -16,9 +16,9 @@
 
 package ninja.template;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Result;
@@ -28,11 +28,13 @@ import ninja.utils.LoggerProvider;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.slf4j.Logger;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class TemplateEngineManagerImplTest {
 

@@ -16,17 +16,19 @@
 
 package ninja;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import ninja.utils.DateUtil;
 import ninja.utils.ResponseStreams;
 import ninja.utils.SwissKnife;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class Result implements Serializable {
 
