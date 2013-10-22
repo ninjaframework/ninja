@@ -16,19 +16,17 @@
 
 package ninja;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import ninja.utils.DateUtil;
 import ninja.utils.ResponseStreams;
 import ninja.utils.SwissKnife;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class Result implements Serializable {
 
@@ -61,6 +59,7 @@ public class Result implements Serializable {
     public static final String TEXT_HTML = "text/html";
     public static final String TEXT_PLAIN = "text/plain";
     public static final String APPLICATON_JSON = "application/json";
+    public static final String APPLICATON_JSONP = "application/javascript";
     public static final String APPLICATION_XML = "application/xml";
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
@@ -501,6 +500,16 @@ public class Result implements Serializable {
      */
     public Result json() {
         contentType = APPLICATON_JSON;
+        return this;
+    }
+
+    /**
+     * Set the content type of this result to {@link Result#APPLICATON_JSONP}.
+     *
+     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATON_JSONP}.
+     */
+    public Result jsonp() {
+        contentType = APPLICATON_JSONP;
         return this;
     }
     

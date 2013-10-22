@@ -16,9 +16,6 @@
 
 package ninja.template;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
@@ -26,6 +23,8 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class TemplateEngineManagerImpl implements TemplateEngineManager {
@@ -38,6 +37,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
     @Inject
     public TemplateEngineManagerImpl(Provider<TemplateEngineFreemarker> templateEngineFreemarker,
                                      Provider<TemplateEngineJson> templateEngineJson,
+                                     Provider<TemplateEngineJsonP> templateEngineJsonP,
                                      Provider<TemplateEngineXml> templateEngineXmlProvider,
                                      Injector injector) {
 
@@ -49,6 +49,8 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
                 templateEngineFreemarker);
         map.put(templateEngineJson.get().getContentType(),
                 templateEngineJson);
+        map.put(templateEngineJsonP.get().getContentType(),
+                templateEngineJsonP);
         map.put(templateEngineXmlProvider.get().getContentType(),
                 templateEngineXmlProvider);
 
