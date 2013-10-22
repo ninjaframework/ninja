@@ -56,7 +56,7 @@ public class SetupDao {
             + "<p>This example shows how you can use Ninja in the wild. Some things you can learn:</p>"
             + "<ul>"
             + "<li>How to use the templating system (header, footer)</li>"
-            + "<li>How to test your application with ease./li>"
+            + "<li>How to test your application with ease.</li>"
             + "<li>Setting up authentication (login / logout)</li>"
             + "<li>Internationalization (i18n)</li>" 
             + "<li>Static assets / using webjars</li>"

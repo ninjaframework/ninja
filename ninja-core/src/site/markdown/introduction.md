@@ -4,53 +4,71 @@ The Ninja Web Framework
 Goals of Ninja
 --------------
 
- * Provide a full stack web framework.
+ * Provide a full stack Java web framework.
  * Superfast and responsive development cycles.
  * First class testing support.
  * Web friendly. Restful architecture. Simple programming model.
  * Easily scalable horizontally - share nothing approach.
  * No bytecode magic.
  * Built on standards: Maven for building, servlet containers for deployment, Ioc by Guice...
+ 
+ 
+The stack
+=========
 
-Why another framework?
-----------------------
+Ninja is an integrated package and the aim is that you don't have to setup everything yourself.
+Ideally you just generate a new project from our maven archetype, import the project into your
+IDE and start hacking.
 
-The only capable full stack framework we know of in the Java world is Play. Play is great. And indeed the authors
-of Ninja were using Play 1 series for a range of projects successfully.
+Therefore Ninja is made up of libraries that deliver everything. From Html, Json and Xml rendering
+and parsing to management of different environments, database persistence, testing and much more.
 
-Then early 2012 Play 2 was released. It was a bit different. The core was written in Scala. Templates in Scala and
-typesafe. The architecture was a lot less magic and much more async.
+Here is a overview:
 
-Great changes. We thought.
+Frontend
+--------
+- Html rendering (Freemaker)
+- Json rendering / parsing (Jackson)
+- Xml rendering / parsing (Jackson)
 
-However the reality was quite different. Scala was a pain because the reloads were slow. Play 2 uses sbt as build tool - 
-a completely novel tool featuring some nasty bugs. IDE integration was non existent. And
-Play 2 was a complete rewrite and rewrites will contain strange errors. And we faced them a bit too often 
-(Akka subsystem - anyone?). Even worse: We could not easily debug and fix the problem because the core was in Scala.
-Additionally the async nature of the framework can lead to elegant solutions. 
-But also to code that is incredibly hard to analyze and read.
+Stateful restful
+----------------
+- Client side session / Authentication (ninja-session)
+- Flash scope (ninja-flash)
 
-Does that mean that Play 2 is a bad choice? No. As it matures it will become a great framework. We
-heavily think that the team around Play 2 is composed of the best developers we have ever seen. And
-Play 2 will be a great framework for the Scala community. It is our fault after all that we are not
-as fluent in Scala as we should be.
+Core libraries
+--------------
+- Injection support (Guice)
+- Multiple environment configuration (Ninja)
+- i18n for templates / in controllers (Ninja)
+- Lifecycle (Ninja)
+- Mail sending (Ninja)
+- Scheduler (Ninja)
+- Object validation - JSR 303 (Hibernate-validation)
+- Support library: (Google Guava)
+- Logging (logback / slf4j)
+
+Relational data persistence
+---------------------------
+- JPA (Hibernate)
+- Database migrations (FlyWayDB)
+
+Cache layer
+-----------
+- Memcached
+- EhCache
+
+Testing support
+---------------
+- NinjaRouterTest (Ninja)
+- Mocked Tests (Mockito)
+- NinjaTest (Ninja)
+- NinjaApiDocTest (Devbliss DocTest)
+- NinjaFluentLeniumTest (FluentLenium)
 
 
-Thinking about the framework
-----------------------------
+Ninja makes sure that all libraries mentioned above work together nicely. And as you can see we are standing
+on the shoulder of giants. Ninja is really small compared to all the great libraries we can build on.
 
-There we were - early 2012. Play 2 did not seem to work for us well. Play 1 was nice, but somehow discontinued. What
-should we do? Continue with Play 1 for new projects? Fork Play 1? Switch to Rails? Switch to something else?
 
-The truth is: We love the Java eco-system. The great IDE support. Great debuggers. Superior dependency and build tools. The
-power of a statically typed language. All that is great.
-
-Therefore we decided to write a new pure Java framework. We feel that Ninja is in the tradition of Play 1 and Rails. And all praise
-must go to Play and Rails teams.
-
-Conclusion
-----------
-
-Ninja delivers everything to make you productive immediately.
-And it does so by using a lot of proven technology that is used and known for years.
-
+ 
