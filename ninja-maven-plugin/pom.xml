@@ -7,19 +7,24 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>ninja-revolver Maven Mojo</name>
     <url>http://maven.apache.org</url>
+    
+      <prerequisites>
+    <!-- Maven 3.1.0 is the earliest version using Eclipse Aether, Maven 3.0.x uses the incompatible predecessor Sonatype Aether -->
+    <maven>3.1.1</maven>
+  </prerequisites>
 
     <properties>
-        <mavenVersion>3.0.3</mavenVersion>
-        <aetherVersion>1.8</aetherVersion>
+        <mavenVersion>3.1.1</mavenVersion>
+        <aetherVersion>0.9.0.M2</aetherVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.2</version>
-            <scope>provided</scope>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>${mavenVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -27,21 +32,36 @@
             <version>${mavenVersion}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-spi</artifactId>
+            <version>${aetherVersion}</version>
+        </dependency>
+        <dependency>
+            <!-- required in all cases -->
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>${aetherVersion}</version>
+        </dependency>
+                <dependency>
+            <!-- required in all cases -->
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-impl</artifactId>
+            <version>${aetherVersion}</version>
+        </dependency>
+        <dependency>
+            <!-- optional helpers, might be superfluous depending on your 
+                use case -->
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-util</artifactId>
+            <version>${aetherVersion}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.9.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-aether</artifactId>
-            <version>0.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-            <version>3.0.3</version>
         </dependency>
 
 
