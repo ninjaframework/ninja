@@ -28,9 +28,9 @@ import org.slf4j.Logger;
 @Singleton
 public class TemplateEngineJsonP implements TemplateEngine {
 
-    private static final String DEFAULT_CALLBACK_PARAMETER_NAME = "callback";
+    static final String DEFAULT_CALLBACK_PARAMETER_NAME = "callback";
 
-    private static final String DEFAULT_CALLBACK_PARAMETER_VALUE = "onResponse";
+    static final String DEFAULT_CALLBACK_PARAMETER_VALUE = "onResponse";
 
     private static final Pattern CALLBACK_VALIDATION_REGEXP =
             Pattern.compile("^[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.]?[a-zA-Z0-9\\$_]+$");
@@ -52,12 +52,9 @@ public class TemplateEngineJsonP implements TemplateEngine {
     @Override
     public void invoke(Context context, Result result) {
         ResponseStreams responseStreams = context.finalizeHeaders(result);
-        try {
-            String callback = getCallbackName(context);
-            OutputStream outputStream = responseStreams.getOutputStream();
+        String callback = getCallbackName(context);
+        try (OutputStream outputStream = responseStreams.getOutputStream()) {
             objectMapper.writeValue(outputStream, new JSONPObject(callback, result.getRenderable()));
-            outputStream.close();
-
         } catch (IOException e) {
             logger.error("Error while rendering jsonp.", e);
         }
@@ -76,7 +73,7 @@ public class TemplateEngineJsonP implements TemplateEngine {
 
     private String getCallbackName(Context context) {
         String callback = context.getParameter(this.callbackParameterName, DEFAULT_CALLBACK_PARAMETER_VALUE);
-        if (CALLBACK_VALIDATION_REGEXP.matcher(callback).matches()) {
+        if (callback != null && CALLBACK_VALIDATION_REGEXP.matcher(callback).matches()) {
             return callback;
         }
         return DEFAULT_CALLBACK_PARAMETER_VALUE;

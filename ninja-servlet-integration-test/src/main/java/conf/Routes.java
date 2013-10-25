@@ -65,6 +65,8 @@ public class Routes implements ApplicationRoutes {
 
         router.GET().route("/validation").with(ApplicationController.class, "validation");
 
+        router.GET().route("/jsonp").with(ApplicationController.class, "testJsonP");
+
         // redirect back to /
         router.GET().route("/redirect").with(ApplicationController.class, "redirect");
 
