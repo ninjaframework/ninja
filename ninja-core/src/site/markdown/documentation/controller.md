@@ -323,6 +323,24 @@ This controller will produce a nicely formatted Json output for you. Under the h
 Ninja uses Jackson to transform arbitrary objects into Json.
 
 
+Rendering JsonP
+--------------
+
+Use the same approach as for Json to produce JsonP (Json wrapped by Javascript function call):
+
+<pre class="prettyprint">
+    Results.jsonp().render(person);
+</pre>
+
+Parameter named **callback** should hold the name of the Javascript function or object path with function name (for example, **?callback=MyApp.Path.myCallback123**):
+
+<pre class="prettyprint">
+    MyApp.Path.myCallback123({'response': 'data'})
+</pre>
+
+The name of the GET parameter ("callback" is default) can be changed by **ninja.jsonp.callbackParameter** property in **application.conf**.
+
+
 Rendering Xml
 --------------
 

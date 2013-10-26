@@ -131,6 +131,12 @@ public class Results {
         return result;
     }
 
+    public static Result jsonp() {
+        Result result = status(Result.SC_200_OK).jsonp();
+
+        return result;
+    }
+
     public static Result xml() {       
         Result result = status(Result.SC_200_OK).xml();
 

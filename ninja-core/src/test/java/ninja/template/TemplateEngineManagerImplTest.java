@@ -45,6 +45,12 @@ public class TemplateEngineManagerImplTest {
     }
 
     @Test
+    public void testGetJsonP() {
+        assertThat(createTemplateEngineManager().getTemplateEngineForContentType(
+                ContentTypes.APPLICATION_JSONP), instanceOf(TemplateEngineJsonP.class));
+    }
+
+    @Test
     public void testGetFreemarker() {
         assertThat(createTemplateEngineManager().getTemplateEngineForContentType(
                 ContentTypes.TEXT_HTML), instanceOf(TemplateEngineFreemarker.class));

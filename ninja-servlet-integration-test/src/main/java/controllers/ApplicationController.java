@@ -27,7 +27,6 @@ import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.Router;
-import ninja.cache.Cache;
 import ninja.cache.NinjaCache;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
@@ -42,7 +41,6 @@ import org.slf4j.Logger;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -219,4 +217,7 @@ public class ApplicationController {
 
     }
 
+    public Result testJsonP() {
+        return Results.jsonp().render("object", "value");
+    }
 }
