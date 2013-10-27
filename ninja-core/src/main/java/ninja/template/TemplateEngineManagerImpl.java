@@ -38,6 +38,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
     @Inject
     public TemplateEngineManagerImpl(Provider<TemplateEngineFreemarker> templateEngineFreemarker,
                                      Provider<TemplateEngineJson> templateEngineJson,
+                                     Provider<TemplateEngineJsonP> templateEngineJsonP,
                                      Provider<TemplateEngineXml> templateEngineXmlProvider,
                                      Injector injector) {
 
@@ -49,6 +50,8 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
                 templateEngineFreemarker);
         map.put(templateEngineJson.get().getContentType(),
                 templateEngineJson);
+        map.put(templateEngineJsonP.get().getContentType(),
+                templateEngineJsonP);
         map.put(templateEngineXmlProvider.get().getContentType(),
                 templateEngineXmlProvider);
 

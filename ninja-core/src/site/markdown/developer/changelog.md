@@ -1,3 +1,9 @@
+Version 2.0.2-SNAPSHOT
+=============
+
+* 2013-10-21 Adding JsonP support (an)
+
+
 Version 2.0.1
 =============
 
