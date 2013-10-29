@@ -83,8 +83,8 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasBeanViolation(String field) {
-        for (FieldViolation fieldViolation : beanViolations) {
-            if (fieldViolation.field.contentEquals(field)) {
+        for (FieldViolation beanViolation : beanViolations) {
+            if (beanViolation.field.contentEquals(field)) {
                 return true;
             }
         }
