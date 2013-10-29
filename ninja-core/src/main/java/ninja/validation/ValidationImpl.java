@@ -82,6 +82,16 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
+    public boolean hasBeanViolation(String field) {
+        for (FieldViolation fieldViolation : beanViolations) {
+            if (fieldViolation.field.contentEquals(field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean hasBeanViolations() {
         return !beanViolations.isEmpty();
     }
