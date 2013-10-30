@@ -1,5 +1,5 @@
-Version 2.1
-===========
+Version 2.1.0
+=============
 
 * 2013-10-21 Adding JsonP support (an)
 * 2013-10-30 Fixed PostOfficeConstants spelling mistake https://github.com/ninjaframework/ninja/issues/117 (ra+socket70)
