@@ -4,14 +4,13 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2.0.2-SNAPSHOT</version>
     <name>ninja-revolver Maven Mojo</name>
     <url>http://maven.apache.org</url>
     
-      <prerequisites>
-    <!-- Maven 3.1.0 is the earliest version using Eclipse Aether, Maven 3.0.x uses the incompatible predecessor Sonatype Aether -->
-    <maven>3.1.1</maven>
-  </prerequisites>
+    <prerequisites>
+        <maven>3.1.1</maven>
+    </prerequisites>
 
     <properties>
         <mavenVersion>3.1.1</mavenVersion>
@@ -31,39 +30,12 @@
             <artifactId>maven-plugin-api</artifactId>
             <version>${mavenVersion}</version>
         </dependency>
-
-
+        
         <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-spi</artifactId>
-            <version>${aetherVersion}</version>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-standalone</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <!-- required in all cases -->
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-api</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-                <dependency>
-            <!-- required in all cases -->
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-        <dependency>
-            <!-- optional helpers, might be superfluous depending on your 
-                use case -->
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-util</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-
 
     </dependencies>
 
