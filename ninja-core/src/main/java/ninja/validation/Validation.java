@@ -114,6 +114,14 @@ public interface Validation {
     void addBeanViolation(FieldViolation fieldViolation);
 
     /**
+     * Checks if the validation has bean violation.
+     * 
+     * @param name Name of the bean.
+     * @return Whether the named bean has violation.
+     */
+    boolean hasBeanViolation(String name);
+
+    /**
      * Whether any violation occured while validating your beans
      * Note: For now, you can only have one bean in your controller method signature, so this is explicit.
      * 
