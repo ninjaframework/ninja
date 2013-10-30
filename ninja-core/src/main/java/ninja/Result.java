@@ -17,7 +17,6 @@
 package ninja;
 
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,7 @@ import ninja.utils.SwissKnife;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class Result implements Serializable {
-
-    private static final long serialVersionUID = -6982988314360788360L;
+public class Result {
 
     // /////////////////////////////////////////////////////////////////////////
     // HTTP Status codes (for convenience)
