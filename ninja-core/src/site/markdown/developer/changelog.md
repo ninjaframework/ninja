@@ -2,6 +2,7 @@ Version 2.0.2-SNAPSHOT
 =============
 
 * 2013-10-21 Adding JsonP support (an)
+* 2013-10-30 Fixed PostOfficeConstants spelling mistake https://github.com/ninjaframework/ninja/issues/117
 
 
 Version 2.0.1
