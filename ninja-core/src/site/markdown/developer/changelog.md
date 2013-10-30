@@ -1,9 +1,9 @@
-Version 2.0.2-SNAPSHOT
-=============
+Version 2.1
+===========
 
 * 2013-10-21 Adding JsonP support (an)
-* 2013-10-30 Fixed PostOfficeConstants spelling mistake https://github.com/ninjaframework/ninja/issues/117
-
+* 2013-10-30 Fixed PostOfficeConstants spelling mistake https://github.com/ninjaframework/ninja/issues/117 (ra+socket70)
+* 2013-10-30 Improvements of Validation interface - added hasBeanViolations() (an)
 
 Version 2.0.1
 =============
