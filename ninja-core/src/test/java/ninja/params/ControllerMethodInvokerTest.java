@@ -424,6 +424,8 @@ public class ControllerMethodInvokerTest {
     public void validationPassed() {
         validateJSR303(buildDto("regex", "length", 5));
         assertFalse(context.getValidation().hasViolations());
+        assertFalse("Expected not to have regex violation.",
+                context.getValidation().hasBeanViolation("regex"));
     }
 
     @Test
@@ -431,6 +433,8 @@ public class ControllerMethodInvokerTest {
         validateJSR303(buildDto("regex!!!", "length", 5));
         assertTrue(context.getValidation().hasViolations());
         assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertTrue("Expected to have regex violation.",
+                context.getValidation().hasBeanViolation("regex"));
         assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("regex"));
     }
@@ -440,6 +444,8 @@ public class ControllerMethodInvokerTest {
         validateJSR303(buildDto("regex", "length - too long", 5));
         assertTrue(context.getValidation().hasViolations());
         assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertTrue("Expected to have length violation.",
+                context.getValidation().hasBeanViolation("length"));
         assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("length"));
     }
@@ -449,6 +455,8 @@ public class ControllerMethodInvokerTest {
         validateJSR303(buildDto("regex", "length", 25));
         assertTrue(context.getValidation().hasViolations());
         assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertTrue("Expected to have range violation.",
+                context.getValidation().hasBeanViolation("range"));
         assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("range"));
     }
@@ -458,7 +466,7 @@ public class ControllerMethodInvokerTest {
         validateJSR303(buildDto("regex!!!", "length is now tooooo loooong", 25));
         assertTrue(context.getValidation().hasViolations());
         assertTrue(context.getValidation().hasBeanViolations());
-        assertTrue("Expected to have regex!!! violation",
+        assertTrue("Expected to have regex violation.",
                 context.getValidation().hasBeanViolation("regex"));
         assertEquals(context.getValidation().getBeanViolations().size(), 3);
 
