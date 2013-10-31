@@ -458,6 +458,8 @@ public class ControllerMethodInvokerTest {
         validateJSR303(buildDto("regex!!!", "length is now tooooo loooong", 25));
         assertTrue(context.getValidation().hasViolations());
         assertTrue(context.getValidation().hasBeanViolations());
+        assertTrue("Expected to have regex!!! violation",
+                context.getValidation().hasBeanViolation("regex"));
         assertEquals(context.getValidation().getBeanViolations().size(), 3);
 
         for (int i = 0; i < context.getValidation().getBeanViolations().size(); i++) {
