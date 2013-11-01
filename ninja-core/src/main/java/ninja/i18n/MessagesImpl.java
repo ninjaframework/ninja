@@ -48,6 +48,8 @@ public class MessagesImpl implements Messages {
 
     private final Lang lang;
 
+    private String messageConfigurationFile;
+
     @Inject
     public MessagesImpl(
                         NinjaProperties ninjaProperties,
@@ -55,6 +57,9 @@ public class MessagesImpl implements Messages {
 
         this.ninjaProperties = ninjaProperties;
         this.lang = lang;
+        this.messageConfigurationFile =
+                "conf/messages" + ninjaProperties.getWithDefault("application.lang.delimiter", ".") + "%s.properties";
+
         this.langToKeyAndValuesMapping = loadAllMessageFilesForRegisteredLanguages();
 
     }
@@ -174,8 +179,7 @@ public class MessagesImpl implements Messages {
 
             // First step: Load complete language eg. en-US
             Configuration configuration = SwissKnife
-                    .loadConfigurationInUtf8(String.format(
-                            "conf/messages.%s.properties", lang));
+                    .loadConfigurationInUtf8(String.format(messageConfigurationFile, lang));
 
             Configuration configurationLangOnly = null;
 
@@ -189,8 +193,7 @@ public class MessagesImpl implements Messages {
 
                 // And load the configuraion
                 configurationLangOnly = SwissKnife
-                        .loadConfigurationInUtf8(String.format(
-                                "conf/messages.%s.properties", langOnly));
+                        .loadConfigurationInUtf8(String.format(messageConfigurationFile, langOnly));
 
             }
 
@@ -198,7 +201,7 @@ public class MessagesImpl implements Messages {
             // it should be there propably.
             if (configuration == null) {
                 logger.info(String
-                        .format("Did not find conf/messages.%s.properties but it was specified in application.conf. Using default language instead.",
+                        .format("Did not find " + messageConfigurationFile + " but it was specified in application.conf. Using default language instead.",
                                 lang));
 
             } else {
