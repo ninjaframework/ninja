@@ -58,7 +58,7 @@ public class MessagesImpl implements Messages {
         this.ninjaProperties = ninjaProperties;
         this.lang = lang;
         this.messageConfigurationFile =
-                "conf/messages" + ninjaProperties.getWithDefault("application.lang.delimiter", ".") + "%s.properties";
+                "conf/messages" + ninjaProperties.getWithDefault("application.languages.delimiter", ".") + "%s.properties";
 
         this.langToKeyAndValuesMapping = loadAllMessageFilesForRegisteredLanguages();
 
