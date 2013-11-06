@@ -1,3 +1,8 @@
+Version XXXX
+============
+
+ * 2013-11-06 Set general log level of archetypes and integration tests to "info" (ra)
+
 Version 2.1.0
 =============
 
