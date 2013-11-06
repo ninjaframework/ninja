@@ -6,6 +6,9 @@ import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
 
+import org.junit.After;
+import org.junit.Before;
+
 import com.google.common.base.Optional;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -30,6 +33,8 @@ public abstract class NinjaDaoTestBase {
      */
     private Injector injector;
 
+    private NinjaMode ninjaMode;
+
     /**
      * Constructor checks if NinjaMode was set in System properties, if not,
      * NinjaMode.test is used as default
@@ -37,25 +42,30 @@ public abstract class NinjaDaoTestBase {
     public NinjaDaoTestBase() {
         Optional<NinjaMode> mode = NinjaModeHelper
                 .determineModeFromSystemProperties();
-        init(mode.isPresent() ? mode.get() : NinjaMode.test);
+        ninjaMode = mode.isPresent() ? mode.get() : NinjaMode.test;
 
     }
 
-    private void init(NinjaMode testMode) {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(testMode);
+    /**
+     * Constructor, receives the test mode to choose the database
+     * 
+     * @param testMode
+     */
+    public NinjaDaoTestBase(NinjaMode testMode) {
+        ninjaMode = testMode;
+    }
+
+    @Before
+    public final void initialize() {
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
         injector = Guice.createInjector(new JpaModule(ninjaProperties));
         jpaInitializer = injector.getInstance(JpaInitializer.class);
         jpaInitializer.start();
     }
 
-    /**
-     * Constructor, receives the test mode to choose the database and
-     * initializes the Persistence service
-     * 
-     * @param testMode
-     */
-    public NinjaDaoTestBase(NinjaMode testMode) {
-        init(testMode);
+    @After
+    public final void stop() {
+        jpaInitializer.stop();
     }
 
     /**
