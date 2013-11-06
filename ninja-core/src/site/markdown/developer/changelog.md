@@ -1,3 +1,6 @@
+Version 2.2.0
+* 2013-11-05 New NinjaDaoTestBase class to facilitate test your DAOs with a real database (emiguelt)
+
 Version 2.1.0
 =============
 
