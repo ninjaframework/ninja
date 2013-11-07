@@ -38,6 +38,7 @@ contributed to Ninja. In some random order:
  * Tristan
  * makotan
  * Aliaksei Nikuliak (an)
+ * Miguel Triana (emiguelt)
 
 Do you feel you are missing from that list? Please let us know - this did not happen
 intentionally. You can even add yourself to the list:

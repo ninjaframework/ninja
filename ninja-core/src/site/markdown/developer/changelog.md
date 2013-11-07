@@ -1,7 +1,8 @@
 Version XXXX
 ============
 
- * 2013-11-06 Set general log level of archetypes and integration tests to "info" (ra)
+* 2013-11-05 New NinjaDaoTestBase class to facilitate test your DAOs with a real database (emiguelt)
+* 2013-11-06 Set general log level of archetypes and integration tests to "info" (ra)
 
 Version 2.1.0
 =============
