@@ -113,6 +113,7 @@ public class Routes implements ApplicationRoutes {
         // Route filtering example:
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/injection").with(InjectionExampleController.class, "injection");
+        router.GET().route("/serviceInitTime").with(InjectionExampleController.class, "serviceInitTime");
 
         // /////////////////////////////////////////////////////////////////////
         // Async example:

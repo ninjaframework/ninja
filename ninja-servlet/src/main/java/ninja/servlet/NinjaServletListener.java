@@ -57,7 +57,7 @@ private NinjaBootstap ninjaBootstap;
     }
    
     @Override
-    protected Injector getInjector() {
+    public Injector getInjector() {
         
         if (ninjaProperties != null) {
             ninjaBootstap = new NinjaBootstap(ninjaProperties);
