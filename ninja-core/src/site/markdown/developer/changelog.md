@@ -1,9 +1,10 @@
-Version XXXX
-============
+Version 2.2.0
+=============
 
 * 2013-11-05 New NinjaDaoTestBase class to facilitate test your DAOs with a real database (emiguelt)
 * 2013-11-06 Set general log level of archetypes and integration tests to "info" (ra)
 * 2013-11-08 Access to application injector from NinjaTest (paweld2)
+* 2013-11-13 Dependencies and plugin versions now centrally managed in parent pom.xml (ra)
 
 Version 2.1.0
 =============

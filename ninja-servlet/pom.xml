@@ -30,39 +30,30 @@
     <url>http://www.ninjaframework.org</url>
 
     <dependencies>
+        
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-core</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-servlet</artifactId>
-            <version>3.0</version>
         </dependency>
+        
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
         </dependency>
 
-        <!-- Testing is mainly done by mockito: -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.0</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
-            <!-- junit-dep has all dependencies declared, rather than bundled (bundled
-                causes massive classpath headaches) -->
-            <artifactId>junit-dep</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
+            <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
 </project>

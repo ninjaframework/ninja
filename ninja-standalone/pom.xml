@@ -17,47 +17,42 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>ninja-standalone</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>ninja-standalone</artifactId>
+    <packaging>jar</packaging>
     
     <description>
-    This package contains a class that runs Ninja inside an embedded Jetty.
-    Very useful for making a fat library that contains Ninja and Jetty as a service
-    and can be run by one command.
-    The embedded Jetty also powers the test utilities' embedded Testserver.
+        This package contains a class that runs Ninja inside an embedded Jetty.
+        Very useful for making a fat library that contains Ninja and Jetty as a service
+        and can be run by one command.
+        The embedded Jetty also powers the test utilities' embedded Testserver.
     </description>
     
-	<parent>
-		<groupId>org.ninjaframework</groupId>
-		<artifactId>ninja</artifactId>
-		<version>2.2.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja</artifactId>
+        <version>2.2.0-SNAPSHOT</version>
+    </parent>
     
     <url>http://www.ninjaframework.org</url>
 
-	<dependencies>
+    <dependencies>
 
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         
-	</dependencies>
-	
-	
+    </dependencies>
 </project>
