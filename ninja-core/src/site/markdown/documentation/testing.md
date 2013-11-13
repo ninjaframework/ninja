@@ -196,6 +196,34 @@ We also recommend that each test method contains a method that makes sure that a
 gets reset to a certain well defined state. This is done by a @Before method that calls a certain
 url.
 
+NinjaTest provide access to the application internal guice injector ( use method public Injector getInjector(); ).
+This allow the verification of applications responses using internal application state information.
+In the following example, the json information must match application initialization time provided by a internal service.
+
+<pre class="prettyprint">
+    public class ApplicationInjectorTest extends NinjaTest {
+
+        @Test
+        public void testThatInjectorAccessibleFromNinjaTestIsTheApplicationInjector() {
+
+            // this is the application guice injector
+            Injector injector = getInjector();
+
+            // We know that this service is a singleton and it provides the application initialization time.
+            long serviceInitializationTime = injector.getInstance(GreetingService.class).getServiceInitializationTime();
+
+            // provide a json with information about the application initialization time.
+            String serviceInitTimeResult = ninjaTestBrowser.makeJsonRequest(getServerAddress() + "/serviceInitTime");
+
+            //The response information must match the internal application state
+            assertEquals("{\"initTime\":" + serviceInitializationTime + "}", serviceInitTimeResult);
+
+        }
+
+    }
+</pre>
+
+
 
 NinjaApiDocTest
 ---------------
