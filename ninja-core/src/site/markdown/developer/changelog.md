@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+* ...
+
+
 Version 2.2.0
 =============
 
@@ -5,6 +11,7 @@ Version 2.2.0
 * 2013-11-06 Set general log level of archetypes and integration tests to "info" (ra)
 * 2013-11-08 Access to application injector from NinjaTest (paweld2)
 * 2013-11-13 Dependencies and plugin versions now centrally managed in parent pom.xml (ra)
+* 2013-11-13 Bump to ehcache 2.7.4 / Fixes dependency problem with terracotta (ra)
 
 Version 2.1.0
 =============
