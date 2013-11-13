@@ -34,7 +34,7 @@ public class Module extends AbstractModule {
         // Some guice bindings
         // /////////////////////////////////////////////////////////////////////
         // some additional bindings for the application:
-        bind(GreetingService.class).to(GreetingServiceImpl.class);
+        bind(GreetingService.class).to(GreetingServiceImpl.class).asEagerSingleton();
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
 

@@ -54,4 +54,8 @@ public class InjectionExampleController {
 
     }
 
+    public Result serviceInitTime(Context context) {
+        return Results.json().render("initTime", greeter.getServiceInitializationTime());
+    }
+
 }
