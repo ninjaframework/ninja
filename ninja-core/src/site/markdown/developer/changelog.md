@@ -1,7 +1,6 @@
 Version X.X.X
 =============
-
-* ...
+* 2013-11-14 Tiny fix for sometimes flaky testcase. Added a flush to setup step. (ra)
 
 
 Version 2.2.0
