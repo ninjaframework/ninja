@@ -14,6 +14,16 @@ EBean RDBMS ORM support
 Google AppEngine Support
 
  * https://github.com/ninjaframework/ninja-appengine
+ 
+ 
+Rythm templates
+
+ * https://github.com/ninjaframework/ninja-rythm
+ 
+ 
+Mustache templates
+
+ * https://github.com/kpacha/ninja-mustache
 
 
 
