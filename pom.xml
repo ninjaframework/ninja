@@ -526,11 +526,19 @@
             </dependency>
         
             <!-- Testing -->
-            
+            <!-- devbliss doctester should be removed at some point 
+             - superseeded by docterster.org -->
             <dependency>
                 <groupId>com.devbliss.doctest</groupId>
                 <artifactId>doctest</artifactId>
                 <version>0.6.5</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.doctester</groupId>
+                <artifactId>doctester-core</artifactId>
+                <version>1.0.3</version>
                 <scope>compile</scope>
             </dependency>
             
