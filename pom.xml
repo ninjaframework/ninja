@@ -322,7 +322,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>14.0.1</version>
+                <version>15.0</version>
             </dependency>
 
             <!-- Needed for Hex transforms (security, cookies) and more... -->
@@ -526,11 +526,19 @@
             </dependency>
         
             <!-- Testing -->
-            
+            <!-- devbliss doctester should be removed at some point 
+             - superseeded by docterster.org -->
             <dependency>
                 <groupId>com.devbliss.doctest</groupId>
                 <artifactId>doctest</artifactId>
                 <version>0.6.5</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.doctester</groupId>
+                <artifactId>doctester-core</artifactId>
+                <version>1.0.3</version>
                 <scope>compile</scope>
             </dependency>
             

@@ -34,7 +34,7 @@ Tests at your disposal:
  * NinjaRouterTest - Making sure that your routes work.
  * Mocked Tests - Testing parts of your application in isolation.
  * NinjaTest - Testing a running server on Http level.
- * NinjaApiDocTest - Ideal for documenting and testing Json Apis.
+ * NinjaDocTester - Ideal for documenting and testing Json Apis.
  * NinjaFluentLeniumTest - The best way to test html elements via Selenium on your Ninja application.
 
 
@@ -225,14 +225,14 @@ In the following example, the json information must match application initializa
 
 
 
-NinjaApiDocTest
----------------
+NinjaDocTester
+--------------
 
 Doctests allow to test and write html documentation at the same time. It is ideally suited to test and
 document Json Apis.
 
 <pre class="prettyprint">
-    public class ApiControllerDocTest extends NinjaApiDocTest {
+    public class ApiControllerDocTest extends NinjaDocTester {
         
         String GET_ARTICLES_URL = "/api/{username}/articles.json";
         String LOGIN_URL = "/login";
@@ -243,36 +243,33 @@ document Json Apis.
         public void testGetAndPostArticleViaJson() throws Exception {
             
             sayNextSection("Retrieving articles for a user (Json)");
-            
+        
             say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
-            
-            ApiResponse apiResponse = makeGetRequest(buildUri(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com")));
-    
-            ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, ArticlesDto.class);
-    
-            assertEqualsAndSay(3, articlesDto.articles.size(), "We get back all 3 articles of that user");
-            
-            
-        }
         
-        
-        @Override
-        protected String getFileName() {
-            return this.getClass().getSimpleName();
+            Response response = sayAndMakeRequest(
+                Request.GET().url(
+                        testServerUrl().path(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com"))));
+
+            ArticlesDto articlesDto = response.payloadAs(ArticlesDto.class);
+
+            sayAndAssertThat("We get back all 3 articles of that user",
+                articlesDto.articles.size(), 
+                is(3));
+            
         }
     
     }
 </pre>
 
-Doctests will generate html documentation into your target/site/doctest directory. In fact doctests
+Doctests will generate html documentation into your target/site/doctester directory. In fact doctests
 are quite simple. sayNextSection is a headline in a html document. say is a paragraph in a html element.
-And whenever you are calling the doctest browser (eg via makeGetRequest(...)) the whole request, payload
+And whenever you are calling the doctest browser (eg via makeRequest(...)) the whole request, payload
 and response is nicely documented in the generated html file.
 
 This is awesome and allows you to test and document at the same time with minimal effort.
-Simply extend NinjaApiDocTest and start...
+Simply extend NinjaDocTester and you are ready to test-drive your application...
 
-But Doctest is a powerful library. Please have a look at http://devbliss.github.io/doctest/ for a much
+But DocTester can do a lot more for you Please have a look at http://www.doctester.org for a much
 more comprehensive overview. 
 
 

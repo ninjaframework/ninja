@@ -22,6 +22,7 @@ import java.net.URI;
 import com.google.inject.Injector;
 import ninja.utils.NinjaTestBrowser;
 import ninja.utils.NinjaTestServer;
+import org.doctester.testbrowser.Request;
 
 import org.junit.After;
 import org.junit.Before;
