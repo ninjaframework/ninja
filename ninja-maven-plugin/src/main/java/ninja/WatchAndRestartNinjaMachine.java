@@ -24,42 +24,62 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NWatchAndTerminate {
-    
-    private static Logger logger = LoggerFactory.getLogger(NWatchAndTerminate.class);
+public class WatchAndRestartNinjaMachine {
 
-    
-    RevolverSingleBullet revolver;
+    private static Logger logger = LoggerFactory.getLogger(WatchAndRestartNinjaMachine.class);
 
-    WatchService watcher;
+    NinjaJettyInsideSeparateJvm revolverSingleBullet;
+
+    WatchService watchService;
 
     AtomicInteger atomicInteger = new AtomicInteger(0);
 
     private final Map<WatchKey, Path> keys;
-    private final boolean recursive;
+
     private boolean trace = false;
 
-    @SuppressWarnings("unchecked")
-    static <T> WatchEvent<T> cast(WatchEvent<?> event) {
-        return (WatchEvent<T>) event;
+
+
+    /**
+     * Creates a WatchService and registers the given
+     * directoryToWatchRecursivelyForChangesectory
+     */
+    public WatchAndRestartNinjaMachine(
+            Path directoryToWatchRecursivelyForChanges,
+            List<String> classpath) throws IOException {
+
+        this.revolverSingleBullet = new NinjaJettyInsideSeparateJvm(classpath);
+
+        RestartAfterSomeTimeAndChanges restartAfterSomeTimeAndChanges 
+                = new RestartAfterSomeTimeAndChanges(
+                        atomicInteger, 
+                        revolverSingleBullet);
+        
+        restartAfterSomeTimeAndChanges.start();
+
+        this.watchService = FileSystems.getDefault().newWatchService();
+        this.keys = new HashMap<WatchKey, Path>();
+
+        System.out.format("Scanning1 %s ...\n", directoryToWatchRecursivelyForChanges);
+        registerAll(directoryToWatchRecursivelyForChanges);
+        System.out.println("Done.");
+
+        // enable trace after initial registration
+        this.trace = true;
+
     }
 
     /**
      * Register the given directory with the WatchService
      */
     private void register(Path dir) throws IOException {
-        WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE,
+        
+        WatchKey key = dir.register(
+                watchService, 
+                ENTRY_CREATE, 
+                ENTRY_DELETE,
                 ENTRY_MODIFY);
-        if (trace) {
-            Path prev = keys.get(key);
-            if (prev == null) {
-                System.out.format("register: %s\n", dir);
-            } else {
-                if (!dir.equals(prev)) {
-                    System.out.format("update: %s -> %s\n", prev, dir);
-                }
-            }
-        }
+        
         keys.put(key, dir);
 
     }
@@ -73,7 +93,7 @@ public class NWatchAndTerminate {
         Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir,
-                                                     BasicFileAttributes attrs)
+                    BasicFileAttributes attrs)
                     throws IOException {
                 register(dir);
                 return FileVisitResult.CONTINUE;
@@ -82,39 +102,7 @@ public class NWatchAndTerminate {
     }
 
     /**
-     * Creates a WatchService and registers the given directory
-     */
-    public NWatchAndTerminate(Path dir,
-                              boolean recursive,
-                              String clazz,
-                              List<String> classpath) throws IOException {
-
-        this.revolver = new RevolverSingleBullet(clazz, classpath);
-
-        RestartAfterSomeTimeAndChanges restartAfterSomeTimeAndChanges = new RestartAfterSomeTimeAndChanges(
-                atomicInteger, revolver);
-        restartAfterSomeTimeAndChanges.start();
-
-        this.watcher = FileSystems.getDefault().newWatchService();
-        this.keys = new HashMap<WatchKey, Path>();
-        this.recursive = recursive;
-
-        if (recursive) {
-            System.out.format("Scanning1 %s ...\n", dir);
-            registerAll(dir);
-            System.out.println("Done.");
-        } else {
-            System.out.format("Scanning non recursive %s ...\n", dir);
-            register(dir);
-        }
-
-        // enable trace after initial registration
-        this.trace = true;
-
-    }
-
-    /**
-     * Process all events for keys queued to the watcher
+     * Process all events for keys queued to the watchService
      */
     public void processEvents() {
 
@@ -123,7 +111,7 @@ public class NWatchAndTerminate {
             // wait for key to be signalled
             WatchKey key;
             try {
-                key = watcher.take();
+                key = watchService.take();
             } catch (InterruptedException x) {
                 return;
             }
@@ -134,7 +122,6 @@ public class NWatchAndTerminate {
                 continue;
             }
 
-            // revolver.pullTheTrigger();
             System.out.println("reload...");
             atomicInteger.incrementAndGet();
 
@@ -147,18 +134,17 @@ public class NWatchAndTerminate {
                 }
 
                 // Context for directory entry event is the file name of entry
-                WatchEvent<Path> ev = cast(event);
+                WatchEvent<Path> ev = (WatchEvent<Path>) event;
                 Path name = ev.context();
                 Path child = dir.resolve(name);
 
                 // print out event
                 System.out.format("%s: %s\n", event.kind().name(), child);
 
-                // revolver.pullTheTrigger();
-
-                // if directory is created, and watching recursively, then
-                // register it and its sub-directories
-                if (recursive && (kind == ENTRY_CREATE)) {
+                // revolverSingleBullet.restartNinjaJetty();
+                // if directory is created, then
+                // register it and its sub-directories recursively
+                if (kind == ENTRY_CREATE) {
                     try {
                         if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
                             registerAll(child);
@@ -185,41 +171,6 @@ public class NWatchAndTerminate {
 
         }
 
-    }
-
-    private static class RestartAfterSomeTimeAndChanges extends Thread {
-
-        AtomicInteger atomicInteger;
-        private RevolverSingleBullet revolver;
-
-        private RestartAfterSomeTimeAndChanges(AtomicInteger atomicInteger,
-                                               RevolverSingleBullet revolver) {
-            this.atomicInteger = atomicInteger;
-            this.revolver = revolver;
-
-        }
-
-        @Override
-        public void run() {
-
-            while (true) {
-                try {
-
-                    sleep(50);
-                    if (atomicInteger.get() > 0) {
-                        atomicInteger.set(0);
-
-                        System.out.println("restarting really...");
-                        revolver.pullTheTrigger();
-
-                    }
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
     }
 
 }

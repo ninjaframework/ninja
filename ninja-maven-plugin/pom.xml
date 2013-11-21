@@ -1,12 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.ninjaframework</groupId>
+    
+    <parent>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja</artifactId>
+        <version>2.2.1-SNAPSHOT</version>
+    </parent>
+    
     <artifactId>ninja-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>2.0.2-SNAPSHOT</version>
-    <name>ninja-revolver Maven Mojo</name>
-    <url>http://maven.apache.org</url>
+    
+    <url>http://www.ninjaframework.org</url>
     
     <prerequisites>
         <maven>3.1.1</maven>
@@ -14,7 +19,6 @@
 
     <properties>
         <mavenVersion>3.1.1</mavenVersion>
-        <aetherVersion>0.9.0.M2</aetherVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

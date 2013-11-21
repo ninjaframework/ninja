@@ -1,7 +1,9 @@
 Version X.X.X
 =============
+
 * 2013-11-14 Tiny fix for sometimes flaky testcase. Added a flush to setup step. (ra)
 * 2013-11-21 Added support for DocTester based tests. (ra)
+* 2013-11-21 Working version of ninja-maven-plugin. Hot reload for Ninja without PermGen errors. (ra)
 
 Version 2.2.0
 =============

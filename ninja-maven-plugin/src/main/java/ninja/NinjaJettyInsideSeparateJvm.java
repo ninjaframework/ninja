@@ -10,23 +10,23 @@ import java.net.URLClassLoader;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import ninja.standalone.NinjaJetty;
 
-public class RevolverSingleBullet {
+public class NinjaJettyInsideSeparateJvm {
 
-    Process process0;
+    Process processCurrentlyActive;
 
     // Main class that will be used to load...
-    private String klass;
-    
+    private String klass = NinjaJetty.class.getName();
+
     private List<String> classpath;
 
-    public RevolverSingleBullet(String klass, List<String> classpath) {
-        this.klass = klass;
+    public NinjaJettyInsideSeparateJvm(List<String> classpath) {
         this.classpath = classpath;
 
         // initial startup
         try {
-            process0 = exec(klass);
+            processCurrentlyActive = startNewNinjaJetty();
 
         } catch (IOException | InterruptedException e) {
             // TODO Auto-generated catch block
@@ -38,7 +38,7 @@ public class RevolverSingleBullet {
             @Override
             public void run() {
                 System.out.println("Inside Add Shutdown Hook");
-                process0.destroy();
+                processCurrentlyActive.destroy();
 
             }
         });
@@ -46,12 +46,12 @@ public class RevolverSingleBullet {
 
     }
 
-    public synchronized void pullTheTrigger() {
+    public synchronized void restartNinjaJetty() {
 
         try {
-            process0.destroy();
-            process0.waitFor();
-            process0 = exec(klass);
+            processCurrentlyActive.destroy();
+            processCurrentlyActive.waitFor();
+            processCurrentlyActive = startNewNinjaJetty();
         } catch (InterruptedException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -59,42 +59,30 @@ public class RevolverSingleBullet {
 
     }
 
-    public Process exec(String klass) throws IOException,
+    private Process startNewNinjaJetty() throws IOException,
             InterruptedException {
-
 
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator
                 + "java";
-        // String classpath = System.getProperty("java.class.path") + ":" +
-        // "/Users/ra/bibliothek/coden/workspace_t35/ninja-maven-plugin/target/classes/";
 
-        // String className = klass.getCanonicalName();
-
- 
-        
-        
         String pathSeparator = System.getProperty("path.separator");
-        
+
         String classpathAsString = Joiner.on(pathSeparator).join(classpath);
         System.out.println("path: " + classpathAsString);
-        
+
         System.out.println("javaHome: " + javaBin);
         System.out.println("klass: " + klass);
         //
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpathAsString,
                 klass);
-        builder.directory(new File("/Users/ra/bibliothek/coden/workspace_t35/ninja/ninja-maven-plugin/integration-test"));
-    
-        
-        //
+        builder.directory(new File(System.getProperty("user.dir")));
 
         builder.redirectErrorStream(true);
 
-        
         Process process = builder.start();
         // StreamGobbler errorGobbler = new StreamGobbler(
-        // process.getErrorStream(), "ERROR");
+        // processCurrentlyActive.getErrorStream(), "ERROR");
         //
         // // any output?
         StreamGobbler outputGobbler = new StreamGobbler(
@@ -108,6 +96,7 @@ public class RevolverSingleBullet {
     }
 
     private static class StreamGobbler extends Thread {
+
         InputStream is;
         String type;
 
