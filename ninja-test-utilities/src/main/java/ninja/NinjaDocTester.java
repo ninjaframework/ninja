@@ -28,24 +28,20 @@ import org.apache.http.client.utils.URIBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import com.devbliss.doctest.DocTest;
+import org.doctester.DocTester;
+import org.doctester.testbrowser.Url;
 
 /**
- * DEPRECATED. Please consider using NinjaDocTester and the org.doctester library instead.
- * 
- * This class and its packages will soon be moved to a Ninja module.
- * 
  * Superclass for doctests that require a running server. Uses {@link NinjaTest} for the server
  * stuff.
  * 
  * @author hschuetz
  * 
  */
-@Deprecated
-public abstract class NinjaApiDocTest extends DocTest {
+public abstract class NinjaDocTester extends DocTester {
     private static NinjaTestServer ninjaTestServer;
 
-    public NinjaApiDocTest() {
+    public NinjaDocTester() {
     }
 
     @BeforeClass
@@ -60,28 +56,11 @@ public abstract class NinjaApiDocTest extends DocTest {
         ninjaTestServer.shutdown();
     }
 
-    public URI buildUri(String relativePath, Map<String, String> parameters) throws URISyntaxException {
-        return build(relativePath, parameters).build();
+    @Override
+    public Url testServerUrl() {
+    
+        return Url.host(ninjaTestServer.getServerAddress());
+    
     }
-
-    public URI buildUri(String relativePath) throws URISyntaxException {
-        return build(relativePath, null).build();
-    }
-
-    private URIBuilder build(String relativePath, Map<String, String> parameters) {
-        URIBuilder uriBuilder =
-                new URIBuilder(ninjaTestServer.getServerAddressAsUri()).setPath(relativePath);
-        addParametersToURI(parameters, uriBuilder);
-        return uriBuilder;
-    }
-
-    private void addParametersToURI(Map<String, String> parameters, URIBuilder uriBuilder) {
-        if (parameters != null) {
-            for (Entry<String, String> param : parameters.entrySet()) {
-                uriBuilder.setParameter(param.getKey(), param.getValue());
-            }
-        }
-    }
-
 
 }
