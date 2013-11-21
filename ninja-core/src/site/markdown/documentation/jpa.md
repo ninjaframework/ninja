@@ -11,7 +11,7 @@ Quickstart
 We prepared an archetype to get you up and running. Simply execute:
 
 <pre class="prettyprint">
-    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype -DarchetypeVersion=2.0.0
+    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype
 </pre>
 
 and hit

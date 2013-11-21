@@ -19,8 +19,10 @@ package ninja;
 
 import java.net.URI;
 
+import com.google.inject.Injector;
 import ninja.utils.NinjaTestBrowser;
 import ninja.utils.NinjaTestServer;
+import org.doctester.testbrowser.Request;
 
 import org.junit.After;
 import org.junit.Before;
@@ -48,6 +50,10 @@ public class NinjaTest {
     public void startupServerAndBrowser() {
         ninjaTestServer = new NinjaTestServer();
         ninjaTestBrowser = new NinjaTestBrowser();
+    }
+
+    public Injector getInjector(){
+        return ninjaTestServer.getInjector();
     }
 
     /**

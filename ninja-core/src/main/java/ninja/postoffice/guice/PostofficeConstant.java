@@ -25,7 +25,7 @@ public interface PostofficeConstant {
 
     public static final String smtpPort = "smtp.port";
 
-    public static final String smtpSsl = "smpt.ssl";
+    public static final String smtpSsl = "smtp.ssl";
 
     public static final String smtpUser = "smtp.user";
 

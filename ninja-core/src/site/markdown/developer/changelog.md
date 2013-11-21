@@ -1,8 +1,23 @@
-Version 2.0.2-SNAPSHOT
+Version X.X.X
+=============
+* 2013-11-14 Tiny fix for sometimes flaky testcase. Added a flush to setup step. (ra)
+* 2013-11-21 Added support for DocTester based tests. (ra)
+
+Version 2.2.0
+=============
+
+* 2013-11-05 New NinjaDaoTestBase class to facilitate test your DAOs with a real database (emiguelt)
+* 2013-11-06 Set general log level of archetypes and integration tests to "info" (ra)
+* 2013-11-08 Access to application injector from NinjaTest (paweld2)
+* 2013-11-13 Dependencies and plugin versions now centrally managed in parent pom.xml (ra)
+* 2013-11-13 Bump to ehcache 2.7.4 / Fixes dependency problem with terracotta (ra)
+
+Version 2.1.0
 =============
 
 * 2013-10-21 Adding JsonP support (an)
-
+* 2013-10-30 Fixed PostOfficeConstants spelling mistake https://github.com/ninjaframework/ninja/issues/117 (ra+socket70)
+* 2013-10-30 Improvements of Validation interface - added hasBeanViolations() (an)
 
 Version 2.0.1
 =============

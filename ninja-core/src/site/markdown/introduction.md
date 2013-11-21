@@ -63,7 +63,7 @@ Testing support
 - NinjaRouterTest (Ninja)
 - Mocked Tests (Mockito)
 - NinjaTest (Ninja)
-- NinjaApiDocTest (Devbliss DocTest)
+- NinjaDocTester (DocTester)
 - NinjaFluentLeniumTest (FluentLenium)
 
 
