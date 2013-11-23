@@ -26,7 +26,6 @@ import com.google.common.collect.Lists;
 public class NinjaRunMojo extends AbstractMojo {
     
     public final String CLASSES_DIRECTORY = File.separator + "target" + File.separator + "classes";
-    
     /**
      * @parameter expression="${project}"
      * @required
@@ -42,7 +41,7 @@ public class NinjaRunMojo extends AbstractMojo {
         
         
         String directoryWithCompiledClassesOfThisProject 
-                = System.getProperty("user.dir") + CLASSES_DIRECTORY;
+                = System.getProperty(NinjaMavenPluginConstants.USER_DIR) + CLASSES_DIRECTORY;
         
         classpathItems.add(directoryWithCompiledClassesOfThisProject);
 
@@ -60,8 +59,7 @@ public class NinjaRunMojo extends AbstractMojo {
             nWatchAndTerminate.processEvents();
             
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            getLog().error(e);
         }
     }
 

@@ -69,14 +69,14 @@ public class NinjaJettyInsideSeparateJvm {
         String pathSeparator = System.getProperty("path.separator");
 
         String classpathAsString = Joiner.on(pathSeparator).join(classpath);
-        System.out.println("path: " + classpathAsString);
+        //System.out.println("path: " + classpathAsString);
 
-        System.out.println("javaHome: " + javaBin);
-        System.out.println("klass: " + klass);
+        //System.out.println("javaHome: " + javaBin);
+        //System.out.println("klass: " + klass);
         //
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpathAsString,
                 klass);
-        builder.directory(new File(System.getProperty("user.dir")));
+        builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));
 
         builder.redirectErrorStream(true);
 
