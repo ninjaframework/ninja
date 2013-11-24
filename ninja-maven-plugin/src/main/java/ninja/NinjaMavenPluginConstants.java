@@ -16,11 +16,21 @@
 
 package ninja;
 
+import com.google.common.collect.Lists;
+import java.io.File;
+
 /**
  *
  * @author ra
  */
 public interface NinjaMavenPluginConstants {
+    
+    String DEFAULT_CLASSES_DIRECTORY = File.separator + "target" + File.separator + "classes";
+    
+    String [] DEFAULT_EXCLUDE_PATTERNS = 
+        {
+            "(.*)ftl.html$" 
+            , File.pathSeparator + "assets" + File.separator};
     
     String USER_DIR = "user.dir";
     

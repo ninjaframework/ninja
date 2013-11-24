@@ -1,5 +1,7 @@
 package ninja;
 
+import com.google.common.collect.Lists;
+import com.sun.nio.file.SensitivityWatchEventModifier;
 import java.io.File;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
@@ -13,6 +15,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
@@ -27,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public class WatchAndRestartNinjaMachine {
     
-    String EXLUDE_PATTERN = "ftl.html";
+    List<String> exludePatterns;
 
     private static Logger logger = LoggerFactory.getLogger(WatchAndRestartNinjaMachine.class);
 
@@ -35,7 +38,7 @@ public class WatchAndRestartNinjaMachine {
 
     WatchService watchService;
 
-    AtomicInteger atomicInteger = new AtomicInteger(0);
+    RestartAfterSomeTimeAndChanges restartAfterSomeTimeAndChanges;
 
     private final Map<WatchKey, Path> mapOfWatchKeysToPaths;
 
@@ -47,16 +50,19 @@ public class WatchAndRestartNinjaMachine {
      */
     public WatchAndRestartNinjaMachine(
             Path directoryToWatchRecursivelyForChanges,
-            List<String> classpath) throws IOException {
+            List<String> classpath,
+            List<String> excludeRegexPatterns) throws IOException {
 
+        
+        this.exludePatterns = excludeRegexPatterns;
+        
         this.ninjaJettyInsideSeparateJvm = new NinjaJettyInsideSeparateJvm(classpath);
 
-        RestartAfterSomeTimeAndChanges restartAfterSomeTimeAndChanges 
+        this.restartAfterSomeTimeAndChanges 
                 = new RestartAfterSomeTimeAndChanges(
-                        atomicInteger, 
                         ninjaJettyInsideSeparateJvm);
         
-        restartAfterSomeTimeAndChanges.start();
+        this.restartAfterSomeTimeAndChanges.start();
 
         this.watchService = FileSystems.getDefault().newWatchService();
         this.mapOfWatchKeysToPaths = new HashMap<WatchKey, Path>();
@@ -72,11 +78,35 @@ public class WatchAndRestartNinjaMachine {
      */
     private void register(Path path) throws IOException {
         
+        System.out.println("path register: " + path.toFile().getAbsolutePath());
+
+        ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //// USUALLY THIS IS THE DEFAULT WAY TO REGISTER THE EVENTS:
+        ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        WatchKey watchKey = path.register(
+//                watchService, 
+//                ENTRY_CREATE, 
+//                ENTRY_DELETE,
+//                ENTRY_MODIFY);
+        
+        ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //// BUT THIS IS DAMN SLOW (at least on a mac)
+        //// THEREFORE WE USE EVENTS FROM COM.SUN PACKAGES THAT ARE WAY FASTER
+        //// THIS MIGHT BREAK COMPATABILITY WITH OTHER JDKS
+        //// MORE: http://stackoverflow.com/questions/9588737/is-java-7-watchservice-slow-for-anyone-else
+        ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
         WatchKey watchKey = path.register(
                 watchService, 
-                ENTRY_CREATE, 
-                ENTRY_DELETE,
-                ENTRY_MODIFY);
+           new WatchEvent.Kind[]{
+               StandardWatchEventKinds.ENTRY_CREATE,
+               StandardWatchEventKinds.ENTRY_MODIFY,
+               StandardWatchEventKinds.ENTRY_DELETE
+           }, 
+           SensitivityWatchEventModifier.HIGH);
+        
+        
+
         
         mapOfWatchKeysToPaths.put(watchKey, path);
 
@@ -103,6 +133,8 @@ public class WatchAndRestartNinjaMachine {
      * Process all watchEvents for watchKeys queued to the watchService
      */
     public void processEvents() {
+        
+        System.out.println("size of elements to watch is: " + mapOfWatchKeysToPaths.size());
 
         for (;;) {
 
@@ -145,10 +177,10 @@ public class WatchAndRestartNinjaMachine {
                     // we are not interested in events from parent directories...
                     if (! child.toFile().isDirectory()) {
                         
-                        if (!child.toFile().getAbsolutePath().endsWith(EXLUDE_PATTERN)) {
+                        if (!checkIfMatchesPattern(exludePatterns, child.toFile().getAbsolutePath())) {
                         
                             System.out.println("found file modification - reloading:  " + child.toFile().getAbsolutePath());
-                            atomicInteger.getAndIncrement();
+                            restartAfterSomeTimeAndChanges.triggerRestart();
                             
                         }
                     
@@ -161,7 +193,7 @@ public class WatchAndRestartNinjaMachine {
                 // register it and its sub-directories recursively
                 if (watchEventKind == ENTRY_CREATE) {
                     
-                    atomicInteger.incrementAndGet();
+                    restartAfterSomeTimeAndChanges.triggerRestart();
                     
                     try {
                         if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
@@ -191,5 +223,24 @@ public class WatchAndRestartNinjaMachine {
         }
 
     }
+    
+    
+    
+    public boolean checkIfMatchesPattern(List<String> regexPatterns, String string) {
+    
+        
+        for (String regex : regexPatterns) {
+        
+            if (string.matches(regex)) {
+                return true;
+            }
+            
+        }
+        
+        
+        return false;
+    }
+    
+   
 
 }

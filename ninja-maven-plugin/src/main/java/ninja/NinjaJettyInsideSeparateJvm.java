@@ -86,7 +86,7 @@ public class NinjaJettyInsideSeparateJvm {
         //
         // // any output?
         StreamGobbler outputGobbler = new StreamGobbler(
-                process.getInputStream(), "OUTPUT");
+                process.getInputStream());
         //
         // // start gobblers
         outputGobbler.start();
@@ -98,11 +98,9 @@ public class NinjaJettyInsideSeparateJvm {
     private static class StreamGobbler extends Thread {
 
         InputStream is;
-        String type;
 
-        private StreamGobbler(InputStream is, String type) {
+        private StreamGobbler(InputStream is) {
             this.is = is;
-            this.type = type;
         }
 
         @Override
@@ -112,7 +110,7 @@ public class NinjaJettyInsideSeparateJvm {
                 BufferedReader br = new BufferedReader(isr);
                 String line = null;
                 while ((line = br.readLine()) != null) {
-                    System.out.println(type + "> " + line);
+                    System.out.println(line);
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();

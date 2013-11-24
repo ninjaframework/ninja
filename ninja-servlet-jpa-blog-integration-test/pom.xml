@@ -60,6 +60,12 @@
                 <groupId>org.ninjaframework</groupId>
                 <artifactId>ninja-maven-plugin</artifactId>
                 <version>${project.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>(.*)ftl.html$</exclude>
+                        <exclude>(.*)assets(.*)</exclude>
+                    </excludes>     
+                </configuration>
             </plugin>
             
             <plugin>

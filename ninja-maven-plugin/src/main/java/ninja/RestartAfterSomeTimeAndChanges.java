@@ -6,18 +6,17 @@
 package ninja;
 
 import static java.lang.Thread.sleep;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RestartAfterSomeTimeAndChanges extends Thread {
 
-    AtomicInteger atomicInteger;
+    volatile boolean restart;
     private NinjaJettyInsideSeparateJvm revolver;
 
     public RestartAfterSomeTimeAndChanges(
-            AtomicInteger atomicInteger,
             NinjaJettyInsideSeparateJvm revolver) {
-        
-        this.atomicInteger = atomicInteger;
+        restart = false;
         this.revolver = revolver;
 
     }
@@ -30,8 +29,8 @@ public class RestartAfterSomeTimeAndChanges extends Thread {
             try {
 
                 sleep(50);
-                if (atomicInteger.get() > 0) {
-                    atomicInteger.set(0);
+                if (restart) {
+                    restart = false;
 
                     System.out.println("restarting really...");
                     revolver.restartNinjaJetty();
@@ -44,4 +43,10 @@ public class RestartAfterSomeTimeAndChanges extends Thread {
         }
 
     }
+    
+    public void triggerRestart() {
+
+        restart = true;
+    }
+    
 }
