@@ -11,6 +11,8 @@ import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.Lists;
 import java.util.Arrays;
+import ninja.standalone.NinjaJetty;
+import ninja.utils.NinjaConstant;
 
 /**
  * Starts Ninja's hot relaod dev mode.
@@ -44,6 +46,10 @@ public class NinjaRunMojo extends AbstractMojo {
      * Adds assets directory and freemarker templates to excluded files.
      * These are loaded from the src directory in dev mode.
      * 
+     * Default excludes are: 
+     * - "(.*)ftl\\.html$"
+     * - "File.pathSeparator + "assets" + File.separator"
+     * 
      * @parameter default-value="true"
      */
     protected boolean useDefaultExcludes;
@@ -69,16 +75,19 @@ public class NinjaRunMojo extends AbstractMojo {
             classpathItems.add(artifact.getFile().toString());           
         }       
         
-        Path path = FileSystems.getDefault().getPath(directoryWithCompiledClassesOfThisProject);
+        Path directoryToWatchRecursivelyForChanges 
+                = FileSystems.getDefault().getPath(
+                        directoryWithCompiledClassesOfThisProject);
         
         try {
             
-            WatchAndRestartNinjaMachine nWatchAndTerminate = new WatchAndRestartNinjaMachine(
-                    path,
+            WatchAndRestartMachine nWatchAndTerminate = new WatchAndRestartMachine(
+                    NinjaMavenPluginConstants.NINJA_JETTY_CLASSNAME,
+                    directoryToWatchRecursivelyForChanges,
                     classpathItems,
                     excludesAsList);
             
-            nWatchAndTerminate.processEvents();
+            nWatchAndTerminate.startWatching();
             
         } catch (IOException e) {
             getLog().error(e);
@@ -86,7 +95,7 @@ public class NinjaRunMojo extends AbstractMojo {
     }
     
     
-    void initMojoFromUserSubmittedParameters() {
+    private void initMojoFromUserSubmittedParameters() {
     
         if (excludes != null && excludes.length > 0) {
             excludesAsList.addAll(Arrays.asList(excludes));

@@ -5,23 +5,25 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.List;
 
 import com.google.common.base.Joiner;
-import ninja.standalone.NinjaJetty;
 
-public class NinjaJettyInsideSeparateJvm {
+public class RunClassInSeparateJvmMachine {
 
-    Process processCurrentlyActive;
+    private Process processCurrentlyActive;
 
     // Main class that will be used to load...
-    private String klass = NinjaJetty.class.getName();
+    private String classNameWithMainToRun;
 
     private List<String> classpath;
 
-    public NinjaJettyInsideSeparateJvm(List<String> classpath) {
+    public RunClassInSeparateJvmMachine(
+            String classNameWithMainToRun,
+            List<String> classpath) {
+
+        this.classNameWithMainToRun = classNameWithMainToRun;
+
         this.classpath = classpath;
 
         // initial startup
@@ -37,12 +39,10 @@ public class NinjaJettyInsideSeparateJvm {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                System.out.println("Inside Add Shutdown Hook");
                 processCurrentlyActive.destroy();
 
             }
         });
-        System.out.println("Shut Down Hook Attached.");
 
     }
 
@@ -69,32 +69,29 @@ public class NinjaJettyInsideSeparateJvm {
         String pathSeparator = System.getProperty("path.separator");
 
         String classpathAsString = Joiner.on(pathSeparator).join(classpath);
-        //System.out.println("path: " + classpathAsString);
 
-        //System.out.println("javaHome: " + javaBin);
-        //System.out.println("klass: " + klass);
-        //
+        
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpathAsString,
-                klass);
+                classNameWithMainToRun);
+        
         builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));
 
         builder.redirectErrorStream(true);
 
+        
         Process process = builder.start();
-        // StreamGobbler errorGobbler = new StreamGobbler(
-        // processCurrentlyActive.getErrorStream(), "ERROR");
-        //
-        // // any output?
+
         StreamGobbler outputGobbler = new StreamGobbler(
                 process.getInputStream());
-        //
-        // // start gobblers
         outputGobbler.start();
-        // errorGobbler.start();
 
         return process;
     }
 
+    /** 
+     * Just a stupid StreamGobbler that will print out all stuff from
+     * the "other" process...
+     */
     private static class StreamGobbler extends Thread {
 
         InputStream is;

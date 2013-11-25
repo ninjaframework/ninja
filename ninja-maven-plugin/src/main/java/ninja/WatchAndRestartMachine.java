@@ -28,17 +28,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WatchAndRestartNinjaMachine {
+public class WatchAndRestartMachine {
     
     List<String> exludePatterns;
 
-    private static Logger logger = LoggerFactory.getLogger(WatchAndRestartNinjaMachine.class);
+    private static Logger logger = LoggerFactory.getLogger(WatchAndRestartMachine.class);
 
-    NinjaJettyInsideSeparateJvm ninjaJettyInsideSeparateJvm;
+    RunClassInSeparateJvmMachine ninjaJettyInsideSeparateJvm;
 
     WatchService watchService;
 
-    RestartAfterSomeTimeAndChanges restartAfterSomeTimeAndChanges;
+    DelayedRestartTrigger restartAfterSomeTimeAndChanges;
 
     private final Map<WatchKey, Path> mapOfWatchKeysToPaths;
 
@@ -48,7 +48,8 @@ public class WatchAndRestartNinjaMachine {
      * Creates a WatchService and registers the given
  pathectoryToWatchRecursivelyForChangesectory
      */
-    public WatchAndRestartNinjaMachine(
+    public WatchAndRestartMachine(
+            String classNameWithMainToRun,
             Path directoryToWatchRecursivelyForChanges,
             List<String> classpath,
             List<String> excludeRegexPatterns) throws IOException {
@@ -56,10 +57,11 @@ public class WatchAndRestartNinjaMachine {
         
         this.exludePatterns = excludeRegexPatterns;
         
-        this.ninjaJettyInsideSeparateJvm = new NinjaJettyInsideSeparateJvm(classpath);
+        this.ninjaJettyInsideSeparateJvm = new RunClassInSeparateJvmMachine(
+                classNameWithMainToRun, classpath);
 
         this.restartAfterSomeTimeAndChanges 
-                = new RestartAfterSomeTimeAndChanges(
+                = new DelayedRestartTrigger(
                         ninjaJettyInsideSeparateJvm);
         
         this.restartAfterSomeTimeAndChanges.start();
@@ -67,9 +69,8 @@ public class WatchAndRestartNinjaMachine {
         this.watchService = FileSystems.getDefault().newWatchService();
         this.mapOfWatchKeysToPaths = new HashMap<WatchKey, Path>();
 
-        System.out.format("Scanning1 %s ...\n", directoryToWatchRecursivelyForChanges);
+        System.out.format("Scanning: %s ...\n", directoryToWatchRecursivelyForChanges);
         registerAll(directoryToWatchRecursivelyForChanges);
-        System.out.println("Done.");
 
     }
 
@@ -77,8 +78,6 @@ public class WatchAndRestartNinjaMachine {
      * Register the given path with the WatchService
      */
     private void register(Path path) throws IOException {
-        
-        System.out.println("path register: " + path.toFile().getAbsolutePath());
 
         ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //// USUALLY THIS IS THE DEFAULT WAY TO REGISTER THE EVENTS:
@@ -90,7 +89,7 @@ public class WatchAndRestartNinjaMachine {
 //                ENTRY_MODIFY);
         
         ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //// BUT THIS IS DAMN SLOW (at least on a mac)
+        //// BUT THIS IS DAMN SLOW (at least on a Mac)
         //// THEREFORE WE USE EVENTS FROM COM.SUN PACKAGES THAT ARE WAY FASTER
         //// THIS MIGHT BREAK COMPATABILITY WITH OTHER JDKS
         //// MORE: http://stackoverflow.com/questions/9588737/is-java-7-watchservice-slow-for-anyone-else
@@ -112,10 +111,7 @@ public class WatchAndRestartNinjaMachine {
 
     }
 
-    /**
-     * Register the given pathectory, and all its sub-pathectories, with the
- WatchService.
-     */
+
     private void registerAll(final Path path) throws IOException {
         // register directory and sub-directories
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
@@ -129,17 +125,10 @@ public class WatchAndRestartNinjaMachine {
         });
     }
 
-    /**
-     * Process all watchEvents for watchKeys queued to the watchService
-     */
-    public void processEvents() {
-        
-        System.out.println("size of elements to watch is: " + mapOfWatchKeysToPaths.size());
+    public void startWatching() {
 
         for (;;) {
 
-            System.out.println("run");
-            // wait for watchKey to be signalled
             WatchKey watchKey;
             try {
                 watchKey = watchService.take();
@@ -170,7 +159,7 @@ public class WatchAndRestartNinjaMachine {
                 Path child = path.resolve(name);
 
                 // print out watchEvent
-                System.out.format("%s: %s\n", watchEvent.kind().name(), child);
+                //System.out.format("%s: %s\n", watchEvent.kind().name(), child);
                 
                 if (watchEventKind == ENTRY_MODIFY) {
                     
@@ -179,7 +168,10 @@ public class WatchAndRestartNinjaMachine {
                         
                         if (!checkIfMatchesPattern(exludePatterns, child.toFile().getAbsolutePath())) {
                         
-                            System.out.println("found file modification - reloading:  " + child.toFile().getAbsolutePath());
+                            System.out.println(
+                                    "Found file modification - triggering reload:  " 
+                                        + child.toFile().getAbsolutePath());
+                            
                             restartAfterSomeTimeAndChanges.triggerRestart();
                             
                         }

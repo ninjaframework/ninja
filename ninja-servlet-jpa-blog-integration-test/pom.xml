@@ -62,8 +62,7 @@
                 <version>${project.version}</version>
                 <configuration>
                     <excludes>
-                        <exclude>(.*)ftl.html$</exclude>
-                        <exclude>(.*)assets(.*)</exclude>
+                        <exclude>(.*)Application(.*)</exclude>
                     </excludes>     
                 </configuration>
             </plugin>

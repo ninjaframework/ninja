@@ -18,6 +18,7 @@ package ninja;
 
 import com.google.common.collect.Lists;
 import java.io.File;
+import ninja.standalone.NinjaJetty;
 
 /**
  *
@@ -29,9 +30,11 @@ public interface NinjaMavenPluginConstants {
     
     String [] DEFAULT_EXCLUDE_PATTERNS = 
         {
-            "(.*)ftl.html$" 
+            "(.*)ftl\\.html$" 
             , File.pathSeparator + "assets" + File.separator};
     
     String USER_DIR = "user.dir";
+    
+    String NINJA_JETTY_CLASSNAME = NinjaJetty.class.getName();
     
 }
