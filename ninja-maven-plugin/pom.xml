@@ -12,10 +12,6 @@
     <packaging>maven-plugin</packaging>
     
     <url>http://www.ninjaframework.org</url>
-    
-    <prerequisites>
-        <maven>3.1.1</maven>
-    </prerequisites>
 
     <properties>
         <mavenVersion>3.1.1</mavenVersion>
@@ -38,7 +34,6 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
     </dependencies>
@@ -63,7 +58,6 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.2</version>
                 <configuration>
-
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
                 <executions>
