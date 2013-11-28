@@ -1,6 +1,20 @@
 Upgrading to latest Ninja
 =========================
 
+to 2.3.0
+---------
+ 
+ * File naming convention for message files have changed. Previously it was
+   messages.en.properties or messages.en-US.properties. Now it is 
+   messages_en.properties or messages_en-US.properties. Please rename
+   them in your application and you are ready to go.
+   
+   This change allows you to use a lot more i18n translation tools than 
+   before. For instance IntelliJ and Netbeans now automatically detect the files
+   as i18n files and help you with translating them efficiently.
+
+
+
 From 1.6 to 2.0.0
 -----------------
 

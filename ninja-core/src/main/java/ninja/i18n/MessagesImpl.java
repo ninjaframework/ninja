@@ -175,7 +175,7 @@ public class MessagesImpl implements Messages {
             // First step: Load complete language eg. en-US
             Configuration configuration = SwissKnife
                     .loadConfigurationInUtf8(String.format(
-                            "conf/messages.%s.properties", lang));
+                            "conf/messages_%s.properties", lang));
 
             Configuration configurationLangOnly = null;
 
@@ -190,7 +190,7 @@ public class MessagesImpl implements Messages {
                 // And load the configuraion
                 configurationLangOnly = SwissKnife
                         .loadConfigurationInUtf8(String.format(
-                                "conf/messages.%s.properties", langOnly));
+                                "conf/messages_%s.properties", langOnly));
 
             }
 
@@ -198,7 +198,7 @@ public class MessagesImpl implements Messages {
             // it should be there propably.
             if (configuration == null) {
                 logger.info(String
-                        .format("Did not find conf/messages.%s.properties but it was specified in application.conf. Using default language instead.",
+                        .format("Did not find conf/messages_%s.properties but it was specified in application.conf. Using default language instead.",
                                 lang));
 
             } else {

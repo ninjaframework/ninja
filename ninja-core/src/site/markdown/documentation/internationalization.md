@@ -2,6 +2,8 @@ Internationalization
 ====================
 
 Note: All files of Ninja are encoded in UTF-8. Yes. Also the .properties files.
+If you edit the files make sure your editor actually uses UTF-8 and not the default
+ISO encoding!
 
 
 Defining your supported languages
@@ -22,15 +24,15 @@ Defining messages for your application
 ------------------------------------
 
 The message file name follows a convention. 
-The convention is messages.LANGUAGE.property or messages.LANGUAGE-COUNTRY.property.
+The convention is messages_LANGUAGE.property or messages_LANGUAGE-COUNTRY.property.
 
 Some examples:
 
- * language "en" is specified in conf/messages.en.properties
- * language "en-US" is specified in conf/messages.en-US.properties
+ * language "en" is specified in conf/messages_en.properties
+ * language "en-US" is specified in conf/messages_en-US.properties
  
  
-conf/messages.en.properties might look like:
+conf/messages_en.properties might look like:
 
 <pre class="prettyprint">
     # registration.ftl.html
@@ -130,9 +132,9 @@ Ninja always looks up messages from more specific to less specific.
 
 Example: The user requests "en-US". The lookup then is
  
- * return messages.en-US.propertes if file and key is found or
- * return messages.en.propertes if file and key is found or
- * return messages.propertes if file and key is found or
+ * return messages_en-US.propertes if file and key is found or
+ * return messages_en.propertes if file and key is found or
+ * return messages_propertes if file and key is found or
  * return null
  
 If you specify
