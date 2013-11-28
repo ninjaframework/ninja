@@ -53,6 +53,13 @@ conf/messages.en.properties might look like:
 Internally we use MessageFormat.format(text, values) to format the messages. Therefore 
 all informations from http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html do apply.
 
+**Important**: MessageFormat is really cool, but there is one thing to keep in mind:
+The apostrophe ' is a special character used for escaping. If you need ASCII apostrophes
+you have to enter them two times like ''.
+
+Usually you may want to use regular spelling apostrophes in your messages like `or ´. 
+And regular apostrophes don't need to be escaped.
+
 
 Getting a message inside your code
 ----------------------------------

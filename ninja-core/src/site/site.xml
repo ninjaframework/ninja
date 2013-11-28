@@ -46,6 +46,7 @@
                 <item name="Scheduler" href="./documentation/scheduler.html"/>
                 <item name="Testing" href="./documentation/testing.html"/>
                 <item name="Security Guide" href="./documentation/security_guide.html"/> 
+                <item name="SuperDevMode" href="./documentation/super_dev_mode.html"/>
                 <item name="Debugging" href="./documentation/debugging.html"/>
                 <item name="Validation" href="./documentation/validation.html"/>
                 <item name="Logging" href="./documentation/logging.html"/>

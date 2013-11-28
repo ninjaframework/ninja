@@ -11,11 +11,9 @@ import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.Lists;
 import java.util.Arrays;
-import ninja.standalone.NinjaJetty;
-import ninja.utils.NinjaConstant;
 
 /**
- * Starts Ninja's hot relaod dev mode.
+ * Starts Ninja's SuperDevMode.
  * 
  * @goal run
  * @phase test
@@ -58,6 +56,9 @@ public class NinjaRunMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         
+        System.out.println("-----------------------");
+        System.out.println("Ninja SuperDevMode BETA");
+        System.out.println("-----------------------");
 
         initMojoFromUserSubmittedParameters();
         

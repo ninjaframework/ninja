@@ -12,6 +12,7 @@ A really simple controller
 A really simple controller would look like:
 
 <pre class="prettyprint">
+
 	package controllers;
 
 	@Singleton
@@ -24,6 +25,7 @@ A really simple controller would look like:
 
 
 	}
+
 </pre>
 
 The important conventions are that a controller method must return a "Result". A result
@@ -42,14 +44,20 @@ Getting parameters into your controllers
 A controller usually not only renders stuff, but also takes some inputs and does something with them.
 
 Let's say we got a route like that:
+
 <pre class="prettyprint">
+
 	router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
+
 </pre>
 
 ... and the user visits that Url...
 
-<pre class="prettyprint">  
+
+<pre class="prettyprint">
+
 	/user/12345/my@email.com/userDashboard?debug=false
+
 </pre>
 
 We then of course want to know **id**, **email** and the value of the **debug** query parameter.
@@ -57,6 +65,7 @@ We then of course want to know **id**, **email** and the value of the **debug** 
 In Ninja this is really simple and controller that can do so looks like:
 
 <pre class="prettyprint">
+
 	package controllers;
 
 	@Singleton
@@ -72,6 +81,7 @@ In Ninja this is really simple and controller that can do so looks like:
 
 
 	}
+
 </pre>
 
 Method index now gets the contents of the path parameters and all query parameters.
@@ -83,6 +93,7 @@ More on objects Ninja can automatically provide you at controller level
 Have a look at that method:
 
 <pre class="prettyprint">
+
     package controllers;
 
     @Singleton
@@ -99,6 +110,7 @@ Have a look at that method:
         }
 
     }
+
 </pre>
 
 Ninja can not only inject PathParam and Param objects. But also the Context.
@@ -124,6 +136,7 @@ ArgumentExtractors allow you to inject arbitrary things into the method of a con
 Have a look at the following method:
 
 <pre class="prettyprint">
+
     package controllers;
 
     @Singleton
@@ -136,6 +149,7 @@ Have a look at the following method:
         }
 
     }
+
 </pre>
 
 The @LoggedInUser is a so called ArgumentExtractors and allow you to extract arbitrary things out
@@ -147,15 +161,18 @@ ArgumentMatchers therefore consist of two things.
 First the marker interface:
 
 <pre class="prettyprint">
+
     @WithArgumentExtractor(LoggedInUserExtractor.class)
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.PARAMETER})
     public @interface LoggedInUser {}
+
 </pre>
 
 ... and the ArgumentExtractor itself:
 
 <pre class="prettyprint">
+
 public class LoggedInUserExtractor implements ArgumentExtractor<String> {
 
     @Override
@@ -183,6 +200,7 @@ public class LoggedInUserExtractor implements ArgumentExtractor<String> {
         return null;
     }
 }
+
 </pre>
 
 As you can see the interface for the ArgumentExtractor references @WithArgumentExtractor(LoggedInUserExtractor.class).
@@ -199,6 +217,7 @@ that the original raw route looked like a simple <code>"/"</code>.
 You can get the final url by injecting the router into your controller and then calling getReverseRoute
 
 <pre class="prettyprint">
+
     @Inject
     Router router;
         
@@ -213,7 +232,8 @@ You can get the final url by injecting the router into your controller and then 
                 "index");
         
         ...
-    }       
+    }    
+   
 </pre>
 
 Now consider a more complex example. Say the original raw route contained placeholders on the following form:
@@ -223,6 +243,7 @@ placeholders their value will be added as query parameters:
 
 
 <pre class="prettyprint">
+
     @Inject
     Router router;
     
@@ -244,7 +265,8 @@ placeholders their value will be added as query parameters:
                 map);
 
         ...
-    }       
+    } 
+      
 </pre>
 
 
@@ -255,6 +277,7 @@ Rendering by convention has been already explained in the getting started part. 
 following class:
 
 <pre class="prettyprint">
+
     package controllers;
 
     public class ApplicationController {       
@@ -264,6 +287,7 @@ following class:
     
         }
     }
+
 </pre>
 
 This renders by convention a view in directory **views/ApplicationController/index.ftl.html**.
@@ -271,6 +295,7 @@ This renders by convention a view in directory **views/ApplicationController/ind
 But you can specify your own html view, too:
 
 <pre class="prettyprint">
+
     package controllers;
 
     public class ApplicationController {       
@@ -280,6 +305,7 @@ But you can specify your own html view, too:
     
         }
     }
+
 </pre>
 
 In conclusion you can use convention over configuration in most cases - but you can also specify
@@ -292,6 +318,7 @@ Rendering Json
 Consider this simple model class:
 
 <pre class="prettyprint">
+
     package models;
 
     public class Person {       
@@ -304,6 +331,7 @@ Consider this simple model class:
 And this controller:
 
 <pre class="prettyprint">
+
     package controllers;
 
     public class ApplicationController {       
@@ -317,6 +345,7 @@ And this controller:
     
         }
     }
+
 </pre>
 
 This controller will produce a nicely formatted Json output for you. Under the hood
@@ -329,16 +358,22 @@ Rendering JsonP
 Use the same approach as for Json to produce JsonP (Json wrapped by Javascript function call):
 
 <pre class="prettyprint">
+
     Results.jsonp().render(person);
+
 </pre>
 
-Parameter named **callback** should hold the name of the Javascript function or object path with function name (for example, **?callback=MyApp.Path.myCallback123**):
+Parameter named **callback** should hold the name of the Javascript function or 
+object path with function name (for example, **?callback=MyApp.Path.myCallback123**):
 
 <pre class="prettyprint">
+
     MyApp.Path.myCallback123({'response': 'data'})
+
 </pre>
 
-The name of the GET parameter ("callback" is default) can be changed by **ninja.jsonp.callbackParameter** property in **application.conf**.
+The name of the GET parameter ("callback" is default) can be changed 
+by **ninja.jsonp.callbackParameter** property in **application.conf**.
 
 
 Rendering Xml
@@ -350,6 +385,7 @@ Let's use again a simple Person Pojo:
 Consider this simple model class:
 
 <pre class="prettyprint">
+
     package models;
 
     public class Person {       
@@ -362,6 +398,7 @@ Consider this simple model class:
 Rendering is done by using Results.xml.render(...) like so:
 
 <pre class="prettyprint">
+
     package controllers;
 
     public class ApplicationController {       
@@ -375,6 +412,7 @@ Rendering is done by using Results.xml.render(...) like so:
     
         }
     }
+
 </pre>
 
 As in the case we are using Jackson under the hood the does the transformation work.
@@ -394,6 +432,7 @@ before you use encoding / decoding actively in your application.
 Let's reconsider the controller method from above:
 
 <pre class="prettyprint">
+
     package controllers;
 
     @Singleton
@@ -408,6 +447,7 @@ Let's reconsider the controller method from above:
         }
 
     }
+
 </pre>
 
 You can expect that String **id** and String **debug** are both correctly decoded values. **BUT** This assumes that

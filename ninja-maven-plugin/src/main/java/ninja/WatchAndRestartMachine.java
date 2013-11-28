@@ -1,11 +1,8 @@
 package ninja;
 
-import com.google.common.collect.Lists;
 import com.sun.nio.file.SensitivityWatchEventModifier;
-import java.io.File;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
@@ -23,7 +20,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +65,7 @@ public class WatchAndRestartMachine {
         this.watchService = FileSystems.getDefault().newWatchService();
         this.mapOfWatchKeysToPaths = new HashMap<WatchKey, Path>();
 
-        System.out.format("Scanning: %s ...\n", directoryToWatchRecursivelyForChanges);
+        //System.out.format("Scanning: %s ...\n", directoryToWatchRecursivelyForChanges);
         registerAll(directoryToWatchRecursivelyForChanges);
 
     }

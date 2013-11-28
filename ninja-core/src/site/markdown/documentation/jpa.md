@@ -17,7 +17,7 @@ We prepared an archetype to get you up and running. Simply execute:
 and hit
 
 <pre class="prettyprint">
-jetty:run
+    ninja:run
 </pre>
 
 

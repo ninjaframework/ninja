@@ -30,8 +30,9 @@ public class DelayedRestartTrigger extends Thread {
                 sleep(50);
                 if (restart) {
                     restart = false;
-
-                    System.out.println("restarting really...");
+                    
+                    System.out.println("Restarting SuperDevMode");
+                    
                     runClassInSeparateJvmMachine.restartNinjaJetty();
 
                 }
