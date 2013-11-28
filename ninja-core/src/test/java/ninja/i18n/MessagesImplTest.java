@@ -36,6 +36,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.base.Optional;
+import java.util.Date;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagesImplTest {
@@ -195,11 +196,51 @@ public class MessagesImplTest {
         result = Results.ok();
         when(context.getCookie(Mockito.anyString())).thenReturn(
                 Cookie.builder("name", "fr-FR").build());
-        assertEquals("cest le placeholder: test_parameter", messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
+        assertEquals("c`est le placeholder: test_parameter", messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
         //and the result overwrites it again...        
         result = Results.ok();
         lang.setLanguage("de-DE", result);
         assertEquals("das ist der platzhalter: test_parameter", messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
+    }
+    
+    @Test
+    public void testiParameterized18nWithSpeciali18nPlaceholder() {
+        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
+                .thenReturn(new String[] { "en", "de", "fr-FR" });
+
+        
+        Lang lang = new LangImpl(ninjaProperties);
+        Messages messages = new MessagesImpl(ninjaProperties, lang);
+        
+        
+        // test fallback to default (english in that case)
+        Optional<String> language = Optional.absent();
+        Optional<String> result = messages.get("message_with_placeholder_date", language, new Date(0));
+        
+         assertEquals("that's a date: Jan 1, 1970", result.get());
+         
+         // de as language
+         language = Optional.of("de");
+         result = messages.get("message_with_placeholder_date", language, new Date(0));
+        
+         assertEquals("das ist ein datum: 01.01.1970", result.get());
+         
+         
+                  
+         // fr as language
+         language = Optional.of("fr-FR");
+         result = messages.get("message_with_placeholder_date", language, new Date(0));
+        
+         assertEquals("c`est la date: 1 janv. 1970", result.get());
+    
+         
+         
+         // en as language
+         language = Optional.of("en");
+         result = messages.get("message_with_placeholder_date", language, new Date(0));
+        
+         assertEquals("that's a date: Jan 1, 1970", result.get());
+    
     }
     
     
@@ -214,7 +255,7 @@ public class MessagesImplTest {
         // US locale testing:
         Map<Object, Object> map = lang.getAll(Optional.of("en-US"));
 
-        assertEquals(4, map.keySet().size());
+        assertEquals(5, map.keySet().size());
         assertTrue(map.containsKey("language"));
         assertTrue(map.containsKey("message_with_placeholder"));
         assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
@@ -224,7 +265,7 @@ public class MessagesImplTest {
 
         // GERMAN locale testing:
         map = lang.getAll(Optional.of("de"));
-        assertEquals(4, map.keySet().size());
+        assertEquals(5, map.keySet().size());
         assertTrue(map.containsKey("language"));
         assertTrue(map.containsKey("message_with_placeholder"));
         assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
@@ -252,7 +293,7 @@ public class MessagesImplTest {
         // US locale testing:
         Map<Object, Object> map = messages.getAll(context, Optional.of(result));
 
-        assertEquals(4, map.keySet().size());
+        assertEquals(5, map.keySet().size());
         assertTrue(map.containsKey("language"));
         assertTrue(map.containsKey("message_with_placeholder"));
         assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
@@ -264,7 +305,7 @@ public class MessagesImplTest {
         lang.setLanguage("de", result);
         
         map = messages.getAll(context, Optional.of(result));
-        assertEquals(4, map.keySet().size());
+        assertEquals(5, map.keySet().size());
         assertTrue(map.containsKey("language"));
         assertTrue(map.containsKey("message_with_placeholder"));
         assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
@@ -281,7 +322,7 @@ public class MessagesImplTest {
                 Cookie.builder("name", "en").build());
         map = messages.getAll(context, Optional.of(result));
 
-        assertEquals(4, map.keySet().size());
+        assertEquals(5, map.keySet().size());
         assertTrue(map.containsKey("language"));
         assertTrue(map.containsKey("message_with_placeholder"));
         assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
