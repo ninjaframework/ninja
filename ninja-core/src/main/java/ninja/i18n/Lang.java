@@ -23,6 +23,7 @@ import ninja.Result;
 
 import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
+import java.util.Locale;
 
 @ImplementedBy(LangImpl.class)
 public interface Lang {
@@ -74,5 +75,28 @@ public interface Lang {
      * @return true if supported directly, false if not
      */
     boolean isLanguageDirectlySupportedByThisApplication(String language);
+    
+    /**
+     * application.conf usually contains the following:
+     * application.languages=en,de
+     * 
+     * This little helper converts a language code
+     * like (en, en-US etc) to a Java locale.
+     * 
+     * It takes null as input and falls back to the default language.
+     * 
+     * By convention this is the first language of application.languages.
+     * 
+     * In the case of 
+     * application.languages=en,de
+     * 
+     * The default language is "en".
+     * 
+     * 
+     * @param language The language to check (en, en-US etc)
+     * @return The Java locale or a default locale based on the first language
+     *          in your application.languages configuration.
+     */
+    Locale getLocaleFromStringOrDefault(Optional<String> language);
 
 }

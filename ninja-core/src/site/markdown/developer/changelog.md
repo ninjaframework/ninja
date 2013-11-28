@@ -7,6 +7,8 @@ Version X.X.X
 * 2013-11-28 Changed naming convention for i18n files from messages.en.properties
              to messages_en.properties. This allows IntelliJ, Netbeans to recognize
              those files as translateable and provide i18n editors. (amsz, ra)
+* 2013-11-29 Fixed potential bug in i18n module. Locale was not set when parsing
+             locale sensitive special MessageFormat patterns like {0, date} (ra)
 
 Version 2.2.0
 =============
