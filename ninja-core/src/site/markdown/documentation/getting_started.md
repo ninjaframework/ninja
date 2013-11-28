@@ -11,11 +11,12 @@ Please enter sensible values for "groupId" and "artifactId" and let Maven genera
 
 
 After finishing the generation cd into your project and execute:
+
 <pre class="prettyprint">
-    mvn jetty:run
+    mvn ninja:run
 </pre>
 
-This starts the development webserver. And that's it already. Simply open http://localhost:8080 in your browser and start hacking :)
+This starts Ninja's SuperDevMode. Simply open http://localhost:8080 in your browser and start coding :)
 
 __Note__: Not sure what "mvn" or Maven is? Check out http://maven.apache.org/guides/getting-started
 

@@ -67,6 +67,21 @@
                     </scanTargetPatterns>
                 </configuration>
             </plugin>
+
+            <!-- Allows you to run Ninja via the SuperDevMode. -->
+            <!-- run "mvn ninja:run" on the command line for the best -->
+            <!-- development experience. -->
+            <plugin>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                    <excludes>
+                        <exclude>(.*)png$</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

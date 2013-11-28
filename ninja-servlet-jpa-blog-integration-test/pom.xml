@@ -56,6 +56,15 @@
                 </configuration>
             </plugin>
 
+            <!-- Allows you to run Ninja via the SuperDevMode. -->
+            <!-- run "mvn ninja:run" on the command line for the best -->
+            <!-- development experience. -->
+            <plugin>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-maven-plugin</artifactId>
+                <version>${project.version}</version>
+            </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>

@@ -23,7 +23,7 @@ IDE and start hacking.
 Therefore Ninja is made up of libraries that deliver everything. From Html, Json and Xml rendering
 and parsing to management of different environments, database persistence, testing and much more.
 
-Here is a overview:
+Here is an overview:
 
 Frontend
 --------

@@ -52,12 +52,14 @@ public class NinjaImpl implements Ninja {
     /**
      * The most important thing: A cool logo.
      */
-    private final String NINJA_LOGO = " _______  .___ _______        ____.  _____   \n"
+    private final String NINJA_LOGO = 
+              " _______  .___ _______        ____.  _____   \n"
             + " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
             + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
-            + "/    |    \\   /    |    \\/\\__|    /    |    \\\n"
-            + "\\____|__  /___\\____|__  /\\________\\____|__  /\n"
-            + "     web\\/framework   \\/                  \\/ %s\n";
+            + "/    |    \\   /    |    \\/\\__|    /    |    \\  http://www.ninjaframework.org\n"
+            + "\\____|__  /___\\____|__  /\\________\\____|__  /  @ninjaframework\n"
+            + "     web\\/framework   \\/                  \\/   %s\n";
+    
 
     private final LifecycleService lifecycleService;
     private final Router router;

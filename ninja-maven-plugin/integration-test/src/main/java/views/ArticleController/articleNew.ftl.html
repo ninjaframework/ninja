@@ -1,0 +1,46 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout i18n("articleNew.pageTitle")>
+
+
+<script defer type="text/javascript">
+	$(window).load(function() {
+		tinyMCE.init({
+			mode : "textareas"
+		});
+	});
+</script>
+
+
+<div class="container">
+
+	<h1>${i18n("articleNew.newArticle")}</h1>
+
+	<!-- Example row of columns -->
+	<div class="row">
+		<div class="col-lg-8">
+			<form action="/article/new" method="post" class="form-horizontal" role="form">
+
+                <div class="form-group">
+                    <label for="title" class="col-lg-2 control-label">${i18n("articleNew.title")}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="title" id="title" value="${(flash.title!" ")}" class="form-control"/>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content" class="col-lg-2 control-label">${i18n("articleNew.content")}</label>
+                    <div class="col-lg-10">
+                        <textarea name="content" class="form-control" id="content">${(flash.content!"")}</textarea>
+                    </div>
+                </div>
+
+				<input type="submit" value="${i18n("articleNew.postNewArticle")}" class="btn btn-success pull-right" />
+
+			</form>
+
+		</div>
+
+	</div>
+</div>
+
+
+</@layout.myLayout>

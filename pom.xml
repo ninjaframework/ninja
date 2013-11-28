@@ -41,6 +41,7 @@
         <module>ninja-servlet-integration-test</module>
         <module>ninja-servlet-jpa-blog-integration-test</module>
         <module>ninja-servlet-jpa-blog-archetype</module>
+        <module>ninja-maven-plugin</module>
     </modules>
 
     <!-- pin encoding to utf-8 -->
@@ -265,6 +266,7 @@
                 <artifactId>ninja-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            
             <dependency>
                 <groupId>org.ninjaframework</groupId>
                 <artifactId>ninja-servlet</artifactId>
