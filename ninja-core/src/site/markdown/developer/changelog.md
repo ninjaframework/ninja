@@ -4,6 +4,9 @@ Version X.X.X
 * 2013-11-14 Tiny fix for sometimes flaky testcase. Added a flush to setup step. (ra)
 * 2013-11-21 Added support for DocTester based tests. (ra)
 * 2013-11-21 Working version of ninja-maven-plugin. Hot reload for Ninja without PermGen errors. (ra)
+* 2013-11-28 Changed naming convention for i18n files from messages.en.properties
+             to messages_en.properties. This allows IntelliJ, Netbeans to recognize
+             those files as translateable and provide i18n editors. (amsz, ra)
 
 Version 2.2.0
 =============
