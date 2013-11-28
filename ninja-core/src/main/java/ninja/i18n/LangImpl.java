@@ -29,6 +29,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Locale;
 
 @Singleton
 public class LangImpl implements Lang {
@@ -40,14 +41,19 @@ public class LangImpl implements Lang {
     private final int TEN_YEARS = 60*60*24*365*10;
 
     private final NinjaProperties ninjaProperties;
+    
+    private final String DEFAULT_LANGUAGE;
 
 
     @Inject
     public LangImpl(NinjaProperties ninjaProperties) {
+        
         this.ninjaProperties = ninjaProperties;
         
         this.applicationCookiePrefix = ninjaProperties
                 .getOrDie(NinjaConstant.applicationCookiePrefix);
+        
+        this.DEFAULT_LANGUAGE = getDefaultLanguage(this.ninjaProperties);
 
     }
 
@@ -175,6 +181,44 @@ public class LangImpl implements Lang {
         }
         
         return false;
+    }
+
+    @Override
+    public Locale getLocaleFromStringOrDefault(Optional<String> language) {
+        
+        if (language.isPresent()) {
+            
+            return Locale.forLanguageTag(language.get());
+            
+        } else {
+            
+            return Locale.forLanguageTag(DEFAULT_LANGUAGE);
+            
+        } 
+
+    }
+    
+    
+    String getDefaultLanguage(NinjaProperties ninjaProperties) {
+    
+        String [] applicationLanguages 
+                = ninjaProperties.getStringArray(NinjaConstant.applicationLanguages);
+        
+        if (applicationLanguages == null || applicationLanguages.length == 0) {
+            
+            String EXCEPTION_TEXT = 
+                    "Please define at least one language in your application.conf file. "
+                    + "For instance application.languages=en to make en your default language.";
+            
+            throw new IllegalStateException(EXCEPTION_TEXT);
+            
+        }
+        
+        // by convention the first language is the default language
+        String defaultLanguage = applicationLanguages[0];
+        
+        return defaultLanguage;
+    
     }
 
 }

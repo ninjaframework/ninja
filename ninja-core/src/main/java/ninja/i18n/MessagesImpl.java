@@ -36,6 +36,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Locale;
 
 @Singleton
 public class MessagesImpl implements Messages {
@@ -56,6 +57,7 @@ public class MessagesImpl implements Messages {
         this.ninjaProperties = ninjaProperties;
         this.lang = lang;
         this.langToKeyAndValuesMapping = loadAllMessageFilesForRegisteredLanguages();
+
 
     }
     
@@ -79,7 +81,11 @@ public class MessagesImpl implements Messages {
         String value = configuration.getString(key);
 
         if (value != null) {
-            return Optional.of(MessageFormat.format(value, params));
+
+            MessageFormat messageFormat = getMessageFormatForLocale(value, language);
+            
+            return Optional.of(messageFormat.format(params));
+            
         } else {
             return Optional.absent();
         }
@@ -126,11 +132,16 @@ public class MessagesImpl implements Messages {
 
         if (value.isPresent()) {
 
-            return MessageFormat.format(value.get(), params);
+            MessageFormat messageFormat = getMessageFormatForLocale(value.get(), language);
+            
+            return messageFormat.format(params);
 
         } else {
+            
             // return default message
-            return MessageFormat.format(defaultMessage, params);
+            MessageFormat messageFormat = getMessageFormatForLocale(defaultMessage, language);
+            
+            return messageFormat.format(params);
 
         }
 
@@ -295,7 +306,14 @@ public class MessagesImpl implements Messages {
 
 
 
-
+    MessageFormat getMessageFormatForLocale(String value, Optional<String> language) {
+    
+        Locale locale = lang.getLocaleFromStringOrDefault(language);
+        MessageFormat messageFormat = new MessageFormat(value, locale);
+        
+        return messageFormat;
+    
+    }
 
 
 

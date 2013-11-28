@@ -54,19 +54,20 @@ public class MessagesImplTest {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
 
-        Messages lang = new MessagesImpl(ninjaProperties, null);
+        Lang lang = new LangImpl(ninjaProperties);
+        Messages messages = new MessagesImpl(ninjaProperties, lang);
 
         // that will refer to messages_en.properties:
-        assertEquals("english", lang.get("language", Optional.of("en-US")).get());
-        assertEquals("english", lang.get("language", Optional.of("en-CA")).get());
-        assertEquals("english", lang.get("language", Optional.of("en-UK")).get());
+        assertEquals("english", messages.get("language", Optional.of("en-US")).get());
+        assertEquals("english", messages.get("language", Optional.of("en-CA")).get());
+        assertEquals("english", messages.get("language", Optional.of("en-UK")).get());
 
         // that will refer to messages_de.properties:
-        assertEquals("deutsch", lang.get("language", Optional.of("de")).get());
-        assertEquals("deutsch", lang.get("language", Optional.of("de-DE")).get());
+        assertEquals("deutsch", messages.get("language", Optional.of("de")).get());
+        assertEquals("deutsch", messages.get("language", Optional.of("de-DE")).get());
 
         // that will refer to messages_fr-FR.properties:
-        assertEquals("francaise", lang.get("language", Optional.of("fr-FR")).get());
+        assertEquals("francaise", messages.get("language", Optional.of("fr-FR")).get());
 
     }
     
@@ -115,16 +116,18 @@ public class MessagesImplTest {
 
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
-
-        Messages lang = new MessagesImpl(ninjaProperties, null);
+        
+        Lang lang = new LangImpl(ninjaProperties);
+        
+        Messages messages = new MessagesImpl(ninjaProperties, lang);
 
         // that will refer to messages_fr-FR.properties:
-        assertEquals("francaise", lang.get("language", Optional.of("da,fr-FR;q=0.8")).get());
-        assertEquals("francaise", lang.get("language", Optional.of("da;q=0.9, fr-FR; q=0.8")).get());
+        assertEquals("francaise", messages.get("language", Optional.of("da,fr-FR;q=0.8")).get());
+        assertEquals("francaise", messages.get("language", Optional.of("da;q=0.9, fr-FR; q=0.8")).get());
         
         // that will refer to messages_de.properties:
-        assertEquals("deutsch", lang.get("language", Optional.of("de,fr-FR;q=0.8")).get());
-        assertEquals("deutsch", lang.get("language", Optional.of("de;q=0.9, fr-FR; q=0.8")).get());
+        assertEquals("deutsch", messages.get("language", Optional.of("de,fr-FR;q=0.8")).get());
+        assertEquals("deutsch", messages.get("language", Optional.of("de;q=0.9, fr-FR; q=0.8")).get());
 
     }
 
@@ -133,21 +136,23 @@ public class MessagesImplTest {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
 
-        Messages lang = new MessagesImpl(ninjaProperties, null);
+        Lang lang = new LangImpl(ninjaProperties);
+        
+        Messages messages = new MessagesImpl(ninjaProperties, lang);
 
         // that will refer to messages_en.properties:
         assertEquals("this is the placeholder: test_parameter",
-                lang.get("message_with_placeholder", Optional.of("en-US"), "test_parameter").get());
+                messages.get("message_with_placeholder", Optional.of("en-US"), "test_parameter").get());
         assertEquals("this is the placeholder: test_parameter",
-                lang.get("message_with_placeholder", Optional.of("en-CA"), "test_parameter").get());
+                messages.get("message_with_placeholder", Optional.of("en-CA"), "test_parameter").get());
         assertEquals("this is the placeholder: test_parameter",
-                lang.get("message_with_placeholder", Optional.of("en-UK"), "test_parameter").get());
+                messages.get("message_with_placeholder", Optional.of("en-UK"), "test_parameter").get());
 
         // that will refer to messages_de.properties:
         assertEquals("das ist der platzhalter: test_parameter",
-                lang.get("message_with_placeholder", Optional.of("de"), "test_parameter").get());
+                messages.get("message_with_placeholder", Optional.of("de"), "test_parameter").get());
         assertEquals("das ist der platzhalter: test_parameter",
-                lang.get("message_with_placeholder", Optional.of("de-DE"), "test_parameter").get());
+                messages.get("message_with_placeholder", Optional.of("de-DE"), "test_parameter").get());
 
     }
     
@@ -294,10 +299,11 @@ public class MessagesImplTest {
 
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
-        Messages lang = new MessagesImpl(ninjaProperties, null);
+        Lang lang = new LangImpl(ninjaProperties);
+        Messages messages = new MessagesImpl(ninjaProperties, lang);
 
         assertEquals("prop1, prop2, prop3",
-                lang.get("a_propert_with_commas", Optional.of("en-US")).get());
+                messages.get("a_propert_with_commas", Optional.of("en-US")).get());
 
     }
 
