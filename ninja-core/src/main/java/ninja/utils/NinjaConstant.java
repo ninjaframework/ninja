@@ -64,6 +64,13 @@ public interface NinjaConstant {
      * */
     final String applicationCookiePrefix = "application.cookie.prefix";
 
+    /**
+     * Enables session/cookie sharing between subdomains. For example, to make cookies valid for
+     * all domains ending with ‘.example.com’, e.g. foo.example.com and bar.example.com:
+     */
+    final String applicationCookieDomain = "application.cookie.domain";
+
+
     /** Used to verify client side cookie for instance. */
     final String applicationName = "application.name";
 
