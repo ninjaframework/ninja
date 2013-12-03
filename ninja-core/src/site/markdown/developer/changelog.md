@@ -1,3 +1,8 @@
+Version 2.3.1
+=============
+
+* 2013-12-02 Session/cookie sharing between subdomains. (linx56)
+
 Version 2.3.0
 =============
 
