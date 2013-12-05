@@ -17,7 +17,10 @@
 package ninja;
 
 import java.io.File;
+import java.util.regex.Pattern;
+
 import ninja.standalone.NinjaJetty;
+import ninja.utils.NinjaConstant;
 
 /**
  *
@@ -27,10 +30,10 @@ public interface NinjaMavenPluginConstants {
     
     String DEFAULT_CLASSES_DIRECTORY = File.separator + "target" + File.separator + "classes";
     
-    String [] DEFAULT_EXCLUDE_PATTERNS = 
-        {
-            "(.*)ftl\\.html$" 
-            , File.pathSeparator + "assets" + File.separator};
+    String [] DEFAULT_EXCLUDE_PATTERNS = {
+            "(.*)" + Pattern.quote(File.separator) + NinjaConstant.VIEWS_DIR + Pattern.quote(File.separator) + "(.*)ftl\\.html$",
+            "(.*)" + Pattern.quote(File.separator) + AssetsController.ASSETS_DIR + Pattern.quote(File.separator) + "(.*)"
+        };
     
     String USER_DIR = "user.dir";
     

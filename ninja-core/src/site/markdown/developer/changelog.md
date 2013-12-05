@@ -2,6 +2,7 @@ Version 2.3.1
 =============
 
 * 2013-12-02 Session/cookie sharing between subdomains. (linx56)
+* 2013-12-05 Fix + test in maven plugin. Assets directory was not ignored / regex wrong (ra)
 
 Version 2.3.0
 =============

@@ -214,7 +214,7 @@ public class WatchAndRestartMachine {
     
     
     
-    public boolean checkIfMatchesPattern(List<String> regexPatterns, String string) {
+    public static boolean checkIfMatchesPattern(List<String> regexPatterns, String string) {
     
         
         for (String regex : regexPatterns) {
