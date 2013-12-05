@@ -40,14 +40,14 @@
 
         <!-- Testing is mainly done by mockito: -->
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>compile</scope>
         </dependency>
 
