@@ -119,10 +119,41 @@ request - parameters, headers and so on...
 
 Even better: Ninja will parse an arbitrary object given in the method.
 In the above case MyObject will be automatically parsed by Ninja. The way
-it will parsed (Json, Xml, PostForm) will be determined via the request type.
+it will parsed (Json, Xml, PostForm) will be determined via the content type request header.
 
 Therefore you don't have to worry if
 input is for instance Xml or Json. You simply get a parsed object.
+
+
+## Ninja and content negotiation
+
+In the last section we have already seen that parsing of objects works via content 
+negotiation.
+
+Rendering of objects works the same way and evaluates the Accept header for that.
+
+Therefore a controller method like...
+
+<pre class="prettyprint">
+
+    public void Result getUser() {
+        User user = userDao.getUser();
+        return Results.ok().render(user);
+    }
+
+</pre>
+
+...will render xml when the request accept header is "application/xml" or json when
+the accept header is "application/json".
+
+While content negotiation is pretty cool it sometimes breaks down in
+reality. 
+
+Especially if clients send strange headers or if you want to
+be sure that a certain controller method always renders a return format. 
+
+Then you can simply call use <code>return Results.json().render(user)</code> or 
+<code>return Results.xml().render(user)</code> to enforce the rendering of a certain return format.
 
 
 Injecting stuff into your controller method (method scope)
