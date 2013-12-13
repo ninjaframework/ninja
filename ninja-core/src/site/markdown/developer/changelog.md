@@ -5,6 +5,7 @@ Version X.X.X
 * 2013-12-05 Fix + test in maven plugin. Assets directory was not ignored / regex wrong. (ra)
 * 2013-12-05 Fixed wrong hamcrest imports (junit imports hamcrest 1.3, mockito by default imports hamcrest 1.1).
              JUnit now always above mockito in pom.xml - therefore hamcrest 1.3 takes precedence over hamcrest 1.1 (ra)
+* 2013-12-13 Bugfix in session implementation. Authenticity token and ID not sent under some circumstances. (ra)
 
 Version 2.3.0
 =============

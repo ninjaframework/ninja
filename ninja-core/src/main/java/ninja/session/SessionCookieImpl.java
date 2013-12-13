@@ -155,9 +155,9 @@ public class SessionCookieImpl implements SessionCookie {
     @Override
     public String getId() {
         if (!data.containsKey(ID_KEY)) {
-            data.put(ID_KEY, UUID.randomUUID().toString());
+            put(ID_KEY, UUID.randomUUID().toString());
         }
-        return data.get(ID_KEY);
+        return get(ID_KEY);
 
     }
 
@@ -175,9 +175,9 @@ public class SessionCookieImpl implements SessionCookie {
     @Override
     public String getAuthenticityToken() {
         if (!data.containsKey(AUTHENTICITY_KEY)) {
-            data.put(AUTHENTICITY_KEY, UUID.randomUUID().toString());
+            put(AUTHENTICITY_KEY, UUID.randomUUID().toString());
         }
-        return data.get(AUTHENTICITY_KEY);
+        return get(AUTHENTICITY_KEY);
     }
 
     @Override
