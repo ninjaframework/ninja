@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import ninja.utils.NinjaConstant;
 
 public class RunClassInSeparateJvmMachine {
 
@@ -70,8 +71,11 @@ public class RunClassInSeparateJvmMachine {
 
         String classpathAsString = Joiner.on(pathSeparator).join(classpath);
 
+        String systemPropertyDevMode 
+                = "-D" + NinjaConstant.MODE_KEY_NAME + "=" + NinjaConstant.MODE_DEV;
         
-        ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpathAsString,
+        ProcessBuilder builder = new ProcessBuilder(
+                javaBin, systemPropertyDevMode, "-cp", classpathAsString,
                 classNameWithMainToRun);
         
         builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));

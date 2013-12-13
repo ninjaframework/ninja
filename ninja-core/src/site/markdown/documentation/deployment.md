@@ -90,13 +90,11 @@ Running the fat jar (and your app) is as simple as calling:
 
 <pre>
     java    -Dninja.port=9000 
-            -Dninja.mode=prod
             -jar MY-APPLICATION-jar-with-dependencies.jar
 </pre>
 
-Two parameters are important. First <code>ninja.mode</code> will allow you to set the mode of the Ninja
-application you are running. Second <code>ninja.port</code> allows you to select the port on which your
-application is starting.
+code>ninja.port</code> allows you to select the port on which your application is starting. By default
+Ninja will start in the fast production mode.
 Context path is default to "/" in standalone mode but can be changed by providing additional system property: -Dninja.context=/your_context_path
 
 
@@ -141,7 +139,7 @@ PORT=9013
 
 # Path to the JVM
 JAVA_BIN=/opt/java-oracle/jdk1.7.0/bin/java
-PARAMS="-Dninja.mode=prod -Dninja.port=${PORT} -jar ${APPLICATION_PATH}/${APPLICATION_JAR}"
+PARAMS="-Dninja.port=${PORT} -jar ${APPLICATION_PATH}/${APPLICATION_JAR}"
 
 # User running the Ninja process
 USER=ninja

@@ -6,6 +6,11 @@ Version X.X.X
 * 2013-12-05 Fixed wrong hamcrest imports (junit imports hamcrest 1.3, mockito by default imports hamcrest 1.1).
              JUnit now always above mockito in pom.xml - therefore hamcrest 1.3 takes precedence over hamcrest 1.1 (ra)
 * 2013-12-13 Bugfix in session implementation. Authenticity token and ID not sent under some circumstances. (ra)
+* 2013-12-13 Ninja now uses "ninja.mode=prod" by default (and no longer dev). 
+             Many users complained that it is quite strange to configure the prod 
+             mode when running Ninja as war inside a  servlet container.  These problems
+             are now gone. (ra)
+
 
 Version 2.3.0
 =============

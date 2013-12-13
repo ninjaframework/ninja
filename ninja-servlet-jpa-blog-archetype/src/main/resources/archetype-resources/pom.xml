@@ -82,6 +82,12 @@
                             </excludes>
                         </scanTargetPattern>
                     </scanTargetPatterns>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>ninja.mode</name>
+                            <value>dev</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
 

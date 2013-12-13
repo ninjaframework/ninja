@@ -35,7 +35,7 @@ public class NinjaJetty {
 
     public static void main(String [] args) {
         
-        NinjaMode ninjaMode = NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet();
+        NinjaMode ninjaMode = NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet();
         
         int port = tryToGetPortFromSystemPropertyOrReturnDefault();
         String contextPath = tryToGetContextPathFromSystemPropertyOrReturnDefault();

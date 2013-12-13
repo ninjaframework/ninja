@@ -1,6 +1,38 @@
 Upgrading to latest Ninja
 =========================
 
+to 2.4.0
+--------
+
+ * Ninja now uses "ninja.mode=prod" by default (and no longer dev). 
+   Many users complained that it is quite strange to configure the prod 
+   mode when running Ninja as war inside a  servlet container. 
+   Therefore Ninja assumes now mode prod by default.
+
+   The downside of this is that you have to set the mode for dev now manually if 
+   you need it. Ninja's SuperDevMode handles this for you and you can simply
+   use "mvn ninja:run" to start Ninja in dev mode.
+
+   But if you are using e.g. Jetty's maven plugin you have to set the system
+   property like that:
+
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                   ....
+                    <systemProperties>
+                        <systemProperty>
+                            <name>ninja.mode</name>
+                            <value>dev</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+   The archetypes are already equipped with the new versions.
+  
+
 to 2.3.0
 ---------
  
