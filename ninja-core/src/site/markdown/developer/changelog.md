@@ -16,6 +16,10 @@ Version X.X.X
 * 2013-12-14 Fixed a performance bug where output streams / outputwriters were not properly
              closed. This affected the performance of rendering raw Strings and
              raw byte arrays. (ra)
+* 2013-12-14 NinjaDocTester added ability to getInjector and get arbitrary guice objects inside
+             Test classes.
+* 2013-12-14 Added Results.text() as helper to render plain text
+
 
 
 Version 2.3.0

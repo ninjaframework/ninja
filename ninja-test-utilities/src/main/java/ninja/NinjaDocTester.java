@@ -16,6 +16,7 @@
 
 package ninja;
 
+import com.google.inject.Injector;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -61,6 +62,10 @@ public abstract class NinjaDocTester extends DocTester {
     
         return Url.host(ninjaTestServer.getServerAddress());
     
+    }
+    
+    public Injector getInjector() {
+        return ninjaTestServer.getInjector();
     }
 
 }

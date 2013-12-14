@@ -124,6 +124,13 @@ public class Results {
 
         return result;
     }
+    
+    public static Result text() {
+        Result result = status(Result.SC_200_OK);
+        result.contentType(Result.TEXT_PLAIN);
+
+        return result;
+    }
 
     public static Result json() {
         Result result = status(Result.SC_200_OK).json();
