@@ -19,6 +19,9 @@ Version X.X.X
 * 2013-12-14 NinjaDocTester added ability to getInjector and get arbitrary guice objects inside
              Test classes.
 * 2013-12-14 Added Results.text() as helper to render plain text
+* 2013-12-14 Fixed getInjector() behavior of NinjaServletListener. Multiple calling
+             of getInjector() caused the generation of multiple Ninja instances what
+             is wrong.
 
 
 

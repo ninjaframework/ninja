@@ -36,7 +36,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
  */
 public class NinjaServletListener extends GuiceServletContextListener {
     
-private NinjaBootstap ninjaBootstap;
+    private NinjaBootstap ninjaBootstap;
 
     NinjaPropertiesImpl ninjaProperties;
 
@@ -59,6 +59,12 @@ private NinjaBootstap ninjaBootstap;
     @Override
     public Injector getInjector() {
         
+        // If Ninja is already booted and ready return the injector
+        if (ninjaBootstap != null) {
+            return ninjaBootstap.getInjector();
+        }
+        
+        // Otherwise create a new bootstrap and generate a new injector.
         if (ninjaProperties != null) {
             ninjaBootstap = new NinjaBootstap(ninjaProperties);
             
