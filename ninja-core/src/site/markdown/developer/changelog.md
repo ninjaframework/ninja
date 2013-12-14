@@ -13,6 +13,9 @@ Version X.X.X
 * 2013-12-14 Json Jackson mapper now uses Afterburner by default for reading / writing
              Json Pojos (Also valid for rendering JsonP). This should improve Json performance
              a lot. (ra)
+* 2013-12-14 Fixed a performance bug where output streams / outputwriters were not properly
+             closed. This affected the performance of rendering raw Strings and
+             raw byte arrays. (ra)
 
 
 Version 2.3.0
