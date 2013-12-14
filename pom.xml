@@ -51,6 +51,7 @@
         <siteProjectVersion>${project.version}</siteProjectVersion>
         <jetty.version>9.0.5.v20130815</jetty.version>
         <hibernate.version>4.2.3.Final</hibernate.version>
+        <jackson.version>2.3.0</jackson.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
@@ -310,8 +311,24 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.2.3</version>
+                <version>${jackson.version}</version>
             </dependency>
+            
+            <!-- XML parsing -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            
+            <!-- Afterburner lib optimizes Jackson and improves
+                 performance -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-afterburner</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            
 
             <!-- freemarker is our templating engine: -->
             <dependency>
@@ -414,13 +431,6 @@
                         <groupId> org.jboss.logging</groupId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <!-- XML parsing -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-xml</artifactId>
-                <version>2.2.3</version>
             </dependency>
         
             <!-- ehcache implementation -->
@@ -540,7 +550,7 @@
             <dependency>
                 <groupId>org.doctester</groupId>
                 <artifactId>doctester-core</artifactId>
-                <version>1.0.3</version>
+                <version>1.1.0</version>
                 <scope>compile</scope>
             </dependency>
             

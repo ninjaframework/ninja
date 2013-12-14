@@ -10,6 +10,9 @@ Version X.X.X
              Many users complained that it is quite strange to configure the prod 
              mode when running Ninja as war inside a  servlet container.  These problems
              are now gone. (ra)
+* 2013-12-14 Json Jackson mapper now uses Afterburner by default for reading / writing
+             Json Pojos (Also valid for rendering JsonP). This should improve Json performance
+             a lot. (ra)
 
 
 Version 2.3.0

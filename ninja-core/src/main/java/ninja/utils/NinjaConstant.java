@@ -183,5 +183,8 @@ public interface NinjaConstant {
     String DB_CONNECTION_PASSWORD = "db.connection.password";
     
     
+    String NINJA_JSONP_CALLBACK_PARAMETER = "ninja.jsonp.callbackParameter";
+    
+    
 
 }

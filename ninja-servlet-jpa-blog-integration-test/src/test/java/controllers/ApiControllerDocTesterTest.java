@@ -22,7 +22,6 @@ import java.util.Map;
 
 import models.ArticleDto;
 import models.ArticlesDto;
-import ninja.NinjaApiDocTest;
 
 import org.junit.Test;
 
@@ -34,16 +33,16 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-import de.devbliss.apitester.ApiResponse;
+import models.Article;
 import ninja.NinjaDocTester;
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 
 public class ApiControllerDocTesterTest extends NinjaDocTester {
     
     String GET_ARTICLES_URL = "/api/{username}/articles.json";
+    String GET_ARTICLE_URL = "/api/{username}/article/{id}.json";
     String POST_ARTICLE_URL = "/api/{username}/article.json";
     String LOGIN_URL = "/login";
     
@@ -116,6 +115,26 @@ public class ApiControllerDocTesterTest extends NinjaDocTester {
         sayAndAssertThat("We are now getting 4 articles."
                 , articlesDto.articles.size()
                 , CoreMatchers.is(4));
+        
+        
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Fetch single article
+        // /////////////////////////////////////////////////////////////////////
+        say("We can also fetch an individual article via the Json Api.");
+        say("That's a GET request to: " + GET_ARTICLE_URL);
+        response = sayAndMakeRequest(
+                Request.GET().url(
+                        testServerUrl().path(
+                                GET_ARTICLE_URL
+                                        .replace("{username}", "bob@gmail.com")
+                                        .replace("{id}", "1"))));
+
+        Article article = getGsonWithLongToDateParsing().fromJson(response.payload, Article.class);
+        // one new result:
+        sayAndAssertThat("And we got back the first article"
+                , article.id
+                , CoreMatchers.is(1L));
     }
 
 

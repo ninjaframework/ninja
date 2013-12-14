@@ -28,6 +28,8 @@ import com.google.inject.Singleton;
 
 import dao.ArticleDao;
 import etc.LoggedInUser;
+import models.Article;
+import ninja.params.PathParam;
 
 @Singleton
 public class ApiController {
@@ -41,6 +43,14 @@ public class ApiController {
 
         return Results.json().render(articlesDto);
 
+    }
+    
+    public Result getArticleJson(@PathParam("id") Long id) {
+    
+        Article article = articleDao.getArticle(id);
+        
+        return Results.json().render(article);
+    
     }
 
     public Result getArticlesXml() {

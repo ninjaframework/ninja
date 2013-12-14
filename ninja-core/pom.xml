@@ -94,6 +94,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
+        
+        <!-- Afterburner lib optimizes Jackson and improves
+             performance -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-afterburner</artifactId>
+        </dependency>
 
         <!-- freemarker is our templating engine: -->
         <dependency>

@@ -26,28 +26,29 @@ import org.slf4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.InputStream;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class BodyParserEngineJson implements BodyParserEngine {
     
+    private final Logger logger = LoggerFactory.getLogger(BodyParserEngineJson.class);
+    
     private final ObjectMapper objectMapper;
-    
-    private final Logger logger;
-    
 
     @Inject
-    public BodyParserEngineJson(ObjectMapper objectMapper, Logger logger) {
+    public BodyParserEngineJson(ObjectMapper objectMapper) {
+        
         this.objectMapper = objectMapper;
-        this.logger = logger;
 
     }
 
     public <T> T invoke(Context context, Class<T> classOfT) {
         T t = null;
 
-        try {
+        try (InputStream inputStream = context.getInputStream()) {
 
-            t = objectMapper.readValue(context.getInputStream(), classOfT);
+            t = objectMapper.readValue(inputStream, classOfT);
 
         } catch (IOException e) {
             logger.error("Error parsing incoming Json", e);
