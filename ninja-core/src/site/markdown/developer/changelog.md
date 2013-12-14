@@ -22,6 +22,10 @@ Version X.X.X
 * 2013-12-14 Fixed getInjector() behavior of NinjaServletListener. Multiple calling
              of getInjector() caused the generation of multiple Ninja instances what
              is wrong.
+* 2013-12-14 Streamlined test-utilities. Now all Ninja*Tests start a new Ninja server
+             before each test. (NinjaDocTester for instance started Ninja before each
+             class. That was inconsistent) (ra).
+* 2013-12-14 Bump to org.doctester 1.1.1 and fluentlenium 0.9.1 (ra).
 
 
 

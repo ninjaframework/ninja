@@ -544,21 +544,19 @@
                 <groupId>com.devbliss.doctest</groupId>
                 <artifactId>doctest</artifactId>
                 <version>0.6.5</version>
-                <scope>compile</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.doctester</groupId>
                 <artifactId>doctester-core</artifactId>
-                <version>1.1.0</version>
-                <scope>compile</scope>
+                <version>1.1.1</version>
             </dependency>
-            
+
             <!-- A very nice abstraction for making selenum tests: -->
             <dependency>
                 <groupId>org.fluentlenium</groupId>
                 <artifactId>fluentlenium-core</artifactId>
-                <version>0.6.0</version>
+                <version>0.9.1</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>

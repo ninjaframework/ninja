@@ -29,6 +29,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.devbliss.doctest.DocTest;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * DEPRECATED. Please consider using NinjaDocTester and the org.doctester library instead.
@@ -48,15 +50,13 @@ public abstract class NinjaApiDocTest extends DocTest {
     public NinjaApiDocTest() {
     }
 
-    @BeforeClass
-    public static void startServerInTestMode() {
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
+    @Before
+    public void startServerInTestMode() {
         ninjaTestServer = new NinjaTestServer();
     }
 
-    @AfterClass
-    public static void shutdownServer() {
-    	System.clearProperty(NinjaConstant.MODE_KEY_NAME);
+    @After
+    public void shutdownServer() {
         ninjaTestServer.shutdown();
     }
 

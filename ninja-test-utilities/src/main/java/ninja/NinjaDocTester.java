@@ -31,6 +31,8 @@ import org.junit.BeforeClass;
 
 import org.doctester.DocTester;
 import org.doctester.testbrowser.Url;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Superclass for doctests that require a running server. Uses {@link NinjaTest} for the server
@@ -40,20 +42,18 @@ import org.doctester.testbrowser.Url;
  * 
  */
 public abstract class NinjaDocTester extends DocTester {
-    private static NinjaTestServer ninjaTestServer;
+    private NinjaTestServer ninjaTestServer;
 
     public NinjaDocTester() {
     }
 
-    @BeforeClass
-    public static void startServerInTestMode() {
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
+    @Before
+    public void startServerInTestMode() {
         ninjaTestServer = new NinjaTestServer();
     }
 
-    @AfterClass
-    public static void shutdownServer() {
-    	System.clearProperty(NinjaConstant.MODE_KEY_NAME);
+    @After
+    public void shutdownServer() {
         ninjaTestServer.shutdown();
     }
 
