@@ -42,6 +42,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import java.io.Writer;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
 
@@ -254,15 +255,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         // Specify the data source where the template files come from.
         // Here I set a file directory for it:
-        try {
+        try (Writer writer = responseStreams.getWriter()) {
 
             Template freemarkerTemplate = cfg.getTemplate(templateName);
 
             // convert tuples:
-            freemarkerTemplate.process(map, responseStreams.getWriter());
-
-            responseStreams.getWriter().flush();
-            responseStreams.getWriter().close();
+            freemarkerTemplate.process(map, writer);
 
         } catch (Exception e) {
             logger.error(

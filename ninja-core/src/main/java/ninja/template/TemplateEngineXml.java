@@ -56,11 +56,10 @@ public class TemplateEngineXml implements TemplateEngine {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
-        try {
+        
+        try (OutputStream outputStream = responseStreams.getOutputStream()) {
             
-            OutputStream outputStream  = responseStreams.getOutputStream();
-            xmlMapper.writeValue(outputStream, result.getRenderable());
-            outputStream.close();
+                xmlMapper.writeValue(outputStream, result.getRenderable());
             
         } catch (IOException e) {
 
