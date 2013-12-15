@@ -1,4 +1,4 @@
-Version X.X.X
+Version 2.4.0
 =============
 
 * 2013-12-02 Session/cookie sharing between subdomains. (linx56)
@@ -17,11 +17,11 @@ Version X.X.X
              closed. This affected the performance of rendering raw Strings and
              raw byte arrays. (ra)
 * 2013-12-14 NinjaDocTester added ability to getInjector and get arbitrary guice objects inside
-             Test classes.
-* 2013-12-14 Added Results.text() as helper to render plain text
+             Test classes. (ra)
+* 2013-12-14 Added Results.text() as helper to render plain text (ra)
 * 2013-12-14 Fixed getInjector() behavior of NinjaServletListener. Multiple calling
              of getInjector() caused the generation of multiple Ninja instances what
-             is wrong.
+             is wrong. (ra)
 * 2013-12-14 Streamlined test-utilities. Now all Ninja*Tests start a new Ninja server
              before each test. (NinjaDocTester for instance started Ninja before each
              class. That was inconsistent) (ra).
