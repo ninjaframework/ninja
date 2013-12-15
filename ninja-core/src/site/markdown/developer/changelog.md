@@ -26,7 +26,8 @@ Version 2.4.0
              before each test. (NinjaDocTester for instance started Ninja before each
              class. That was inconsistent) (ra).
 * 2013-12-14 Bump to org.doctester 1.1.1 and fluentlenium 0.9.1 (ra).
-
+* 2013-12-15 Fixed bug in result.renderRaw(). Used outputStream to render strings, 
+             will lead to problems with utf-8 characters.
 
 
 Version 2.3.0

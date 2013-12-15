@@ -126,7 +126,7 @@ public class ResultHandler {
 
                 try (Writer writer = responseStreams.getWriter()) {
                     
-                    writer.append((String) result.getRenderable());
+                    writer.write((String) result.getRenderable());
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
