@@ -1,3 +1,10 @@
+Version X.X.X
+=============
+ 
+ * 2013-12-19 ObjectMapperProvider now a singleton (it is threadsafe) (ra)
+
+
+
 Version 2.4.0
 =============
 
