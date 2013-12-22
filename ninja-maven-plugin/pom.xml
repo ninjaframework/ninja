@@ -11,6 +11,10 @@
     <packaging>maven-plugin</packaging>
     
     <url>http://www.ninjaframework.org</url>
+    
+    <prerequisites>
+        <maven>3.1.0</maven>
+    </prerequisites>
 
     <properties>
         <mavenVersion>3.1.1</mavenVersion>
