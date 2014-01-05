@@ -50,8 +50,8 @@ public class ApplicationControllerTest extends NinjaTest {
     public void testHtmlEscapingInTeamplateWorks() {
 
         // IF the escaping works I expect the following string inside the page:
-        String expectedContent = "&lt;script&gt;alert('Hello');&lt;/script&gt;";
-        // Some empty headers for now...
+        String expectedContent = "&lt;script&gt;alert(&#39;Hello! &lt;&gt;&amp;&quot;&#39;&#39;);&lt;/script&gt;";       
+
         Map<String, String> headers = Maps.newHashMap();
 
         // /redirect will send a location: redirect in the headers
