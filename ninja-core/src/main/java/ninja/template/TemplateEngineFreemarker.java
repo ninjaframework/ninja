@@ -42,6 +42,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.Version;
 import java.io.Writer;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -76,6 +77,14 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         cfg = new Configuration();
         
+        // This is important to enable html escaping of apostrophes
+        // http://freemarker.org/docs/ref_builtins_string.html
+        cfg.setIncompatibleImprovements(new Version(2, 3, 20));
+        
+        // Set your preferred charset template files are stored in. UTF-8 is
+        // a good choice in most applications:
+        cfg.setDefaultEncoding("UTF-8");
+
         cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
         ///////////////////////////////////////////////////////////////////////
