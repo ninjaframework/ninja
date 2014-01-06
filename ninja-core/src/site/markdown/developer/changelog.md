@@ -1,4 +1,4 @@
-Version X.X.X
+Version 2.5.0
 =============
  
  * 2014-01-07 Security fix. Html templates did not escape apostrophes properly ('). (ra)
