@@ -1,6 +1,7 @@
 Version X.X.X
 =============
  
+ * 2014-01-08 Setting of hibernate properties no longer on System.setProperty level, but locally. (ra).
  * 2014-01-08 Added @UnitOfWork annotation for fast readonly database access (ra).
 
 

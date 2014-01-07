@@ -16,9 +16,6 @@
 package ninja.jpa;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.persist.PersistService;
-import javax.persistence.EntityManager;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -50,30 +47,33 @@ public class UnitOfWorkInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         
-            if (null == didWeStartWork.get()) {
-                unitOfWork.begin();
-                didWeStartWork.set(Boolean.TRUE);
-            } else {
-                // If unit of work already started we don't do anything here...
-                // another UnitOfWorkInterceptor point point will take care...
-                // This happens if you are nesting your calls.
-                return invocation.proceed();
-            }
+        if (null == didWeStartWork.get()) {
             
-        
-          try {
+            unitOfWork.begin();
+            didWeStartWork.set(Boolean.TRUE);
+            
+        } else {
+            // If unit of work already started we don't do anything here...
+            // another UnitOfWorkInterceptor point point will take care...
+            // This happens if you are nesting your calls.
+            return invocation.proceed();
+        }
+
+        try {
 
             return invocation.proceed();
 
         } finally {
-              
-              if (null != didWeStartWork.get()) {
-                  didWeStartWork.remove();
-                  unitOfWork.end();
-              } 
-              
+
+            if (null != didWeStartWork.get()) {
+                
+                didWeStartWork.remove();
+                unitOfWork.end();
+                
+            }
+
         }
-          
+
     }
 
 }

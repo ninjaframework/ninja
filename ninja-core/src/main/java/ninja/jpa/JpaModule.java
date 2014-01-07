@@ -23,6 +23,7 @@ import com.google.inject.AbstractModule;
 import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.any;
 import com.google.inject.persist.jpa.JpaPersistModule;
+import java.util.Properties;
 
 public class JpaModule extends AbstractModule {
     
@@ -48,25 +49,26 @@ public class JpaModule extends AbstractModule {
             String connectionUsername = ninjaProperties.get(NinjaConstant.DB_CONNECTION_USERNAME);
             String connectionPassword = ninjaProperties.get(NinjaConstant.DB_CONNECTION_PASSWORD);
         
+            Properties jpaProperties = new Properties();
+            
             // We are using Hibernate, so we can set the connections stuff
             // via system properties:
             if (connectionUrl != null) {
-                System.setProperty("hibernate.connection.url", connectionUrl);
+                jpaProperties.put("hibernate.connection.url", connectionUrl);
             }
             
             if (connectionUsername != null) {                
-                System.setProperty("hibernate.connection.username", connectionUsername);
+                jpaProperties.put("hibernate.connection.username", connectionUsername);
             }
             
             if (connectionPassword != null) {                
-                System.setProperty("hibernate.connection.password", connectionPassword);
+                jpaProperties.put("hibernate.connection.password", connectionPassword);
             }
 
             // Now - it may be the case the neither connection.url, connection.username nor
             // connection.password is set. But this may be okay e.g. when using JDNI to
             // configure your datasources...
-            
-            install(new JpaPersistModule(persistenceUnitName));
+            install(new JpaPersistModule(persistenceUnitName).properties(jpaProperties));
             
             
             UnitOfWorkInterceptor unitOfWorkInterceptor = new UnitOfWorkInterceptor();
