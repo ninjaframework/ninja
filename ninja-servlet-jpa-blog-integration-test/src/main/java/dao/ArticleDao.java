@@ -15,13 +15,14 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
+import ninja.jpa.UnitOfWork;
 
 public class ArticleDao {
    
     @Inject
     Provider<EntityManager> entitiyManagerProvider;
     
-    @Transactional
+    @UnitOfWork
     public ArticlesDto getAllArticles() {
         
         EntityManager entityManager = entitiyManagerProvider.get();
@@ -36,7 +37,7 @@ public class ArticleDao {
         
     }
     
-    @Transactional
+    @UnitOfWork
     public Article getFirstArticleForFrontPage() {
         
         EntityManager entityManager = entitiyManagerProvider.get();
@@ -49,7 +50,7 @@ public class ArticleDao {
         
     }
     
-    @Transactional
+    @UnitOfWork
     public List<Article> getOlderArticlesForFrontPage() {
         
         EntityManager entityManager = entitiyManagerProvider.get();
@@ -62,7 +63,7 @@ public class ArticleDao {
         
     }
     
-    @Transactional
+    @UnitOfWork
     public Article getArticle(Long id) {
         
         EntityManager entityManager = entitiyManagerProvider.get();

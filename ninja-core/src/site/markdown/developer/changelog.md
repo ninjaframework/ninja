@@ -1,10 +1,15 @@
+Version X.X.X
+=============
+ 
+ * 2014-01-08 Added @UnitOfWork annotation for fast readonly database access (ra).
+
+
 Version 2.5.0
 =============
  
  * 2014-01-07 Security fix. Html templates did not escape apostrophes properly ('). (ra)
  * 2013-12-22 Added Maven 3.1.0 as requirement for ninja-maven-plugin (ra)
  * 2013-12-19 ObjectMapperProvider now a singleton (it is threadsafe) (ra)
-
 
 
 Version 2.4.0

@@ -209,7 +209,7 @@ Let's have a look at a controller that does some querying:
     @Inject 
     Provider<EntityManager> entitiyManagerProvider;
     
-    @Transactional
+    @UnitOfWork
     public Result getIndex() {
                 
         EntityManager entityManager = entitiyManagerProvider.get();
@@ -232,15 +232,18 @@ Let's have a look at a controller that does some querying:
 Two things here are important:
 
  * The injected Provider for an EntityManager
- * The method that is annotated with <code>@Transactional</code>
+ * The method that is annotated with <code>@UnitOfWork</code>
  
 The entity manager is the key component that allows you to update / save and query data based on your models.
 But JPA has to open connections, save data, maintain caches - and you'd possibly go crazy if you'd have to
-manage that for each controller method yourself. This is what <code>@Transactional</code> is for. Simply annotate
+manage that for each controller method yourself. This is what <code>@UnitOfWork</code> is for. Simply annotate
 your method with that annotation and guice-persist will handle all boilerplate for you.
 
+But <code>@UnitOfWork</code> only handles connections and does not help you with transactions.
+This is what <code>@Transactional</code> is for. <code>@Transactional</code> automatically opens and closes
+transactions around the annotated method.
 
-Saving is also quite simple:
+Saving is also straight forward:
 
 <pre class="prettyprint">
 
@@ -263,6 +266,10 @@ Saving is also quite simple:
 
 Saving really is just a call to entityManager.perist(...). It can not get much simpler. 
 But again - don't forget to annotate your method with <code>@Transactional</code>.
+
+Summing up: For read-only queries you should use <code>@UnitOfWork</code> (and it may be faster because
+there are no transactions started). But for saving / updating and deleting data
+always use <code>@Transactional</code>.
 
 
 More
