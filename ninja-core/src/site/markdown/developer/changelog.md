@@ -1,4 +1,4 @@
-Version X.X.X
+Version 2.5.1
 =============
  
  * 2014-01-08 Setting of hibernate properties no longer on System.setProperty level, but locally. (ra).

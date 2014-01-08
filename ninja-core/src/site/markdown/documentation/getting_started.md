@@ -5,7 +5,7 @@ The best way to start a Ninja project is by calling the following command:
 
 <pre class="prettyprint">
 
-    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype -DarchetypeVersion=2.5.0
+    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype -DarchetypeVersion=2.5.1
 
 </pre>
 
