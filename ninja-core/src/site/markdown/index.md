@@ -11,17 +11,16 @@
 <div class="row-fluid">
 
     <div class="span6">
-        <img class="bs-icon"
-            src="images/glyphicons/glyphicons_009_magic.png">
-        <h2>Happy business. Happy customers.</h2>
+
+        <h2><img class="bs-icon" src="images/glyphicons/glyphicons_009_magic.png"/> Happy business. Happy customers.</h2>
         <p>Ninja will let you finish your next project faster in stunning high quality.
         Your customers will love what they'll get.
         </p>
     </div>
 
     <div class="span6">
-        <img class="bs-icon" src="images/glyphicons/glyphicons_042_group.png">
-        <h2>Fun for developers.</h2>
+        
+        <h2><img class="bs-icon" src="images/glyphicons/glyphicons_042_group.png"/> Fun for developers.</h2>
         <p>Ninja provides everything you need to get productive at once.
         Generate a new project via our maven archetype. Import the archetype in your favorite
         IDE. Start Ninja's hot-reloading dev server. Test your app and deploy it.
@@ -47,18 +46,16 @@
 <div class="row-fluid">	
 
     <div class="span4">
-        <img class="bs-icon"
-            src="images/glyphicons/glyphicons_079_podium.png">
-        <h2>Development</h2>
+        
+        <h2><img class="bs-icon" src="images/glyphicons/glyphicons_079_podium.png"/> Development</h2>
         <p>Generate a new project via our Maven archetype, import it into your favorite IDE with one click and start
         coding. Ninja features a hot reloading mode that will pick up all your changes
         immediately. Features? All there, Html, Xml, Json, JPA, caching and much more.</p>
     </div>
     
     <div class="span4">
-        <img class="bs-icon"
-            src="images/glyphicons/glyphicons_082_roundabout.png">
-        <h2>Testing</h2>
+        
+        <h2><img class="bs-icon"  src="images/glyphicons/glyphicons_082_roundabout.png"/> Testing</h2>
         <p>Ninja is fully equipped with an extensive set of test tools. Run mocked tests or test your
         complete application on a real server. Running selenium tests? All included. And the best is that
         your tests will run locally and also on any continuous integration server.
@@ -66,9 +63,7 @@
     </div>
     
     <div class="span4">
-        <img class="bs-icon"
-            src="images/glyphicons/glyphicons_155_show_thumbnails.png">
-        <h2>Deployment</h2>
+        <h2><img class="bs-icon" src="images/glyphicons/glyphicons_155_show_thumbnails.png"/> Deployment</h2>
         <p>Package Ninja applications as war and run them
         on your Tomcat or Jetty if you like. Or package your application as self contained jar that you can copy
         to your server and execute. Ninja also runs Heroku, App Engine and many other cloud providers.
@@ -78,9 +73,7 @@
 </div>
 <div class="row-fluid"> 
     <div class="span4">
-        <img class="bs-icon"
-            src="images/glyphicons/glyphicons_079_podium.png">
-        <h2>Solid technology</h2>
+        <h2><img class="bs-icon" src="images/glyphicons/glyphicons_079_podium.png"/> Solid technology</h2>
         <p>Ninja did not reinvent the wheel - instead we are standing on the shoulders of giants.
         Ninja is built using the most mature and solid technologies in the industry. 
         Servlets, Guice, JPA, Flyway migrations and Maven - just to name a few.
@@ -91,9 +84,7 @@
     
     
    <div class="span4">
-        <img class="bs-icon"
-            src="images/glyphicons/glyphicons_082_roundabout.png">
-        <h2>Scalability built in</h2>
+        <h2><img class="bs-icon" src="images/glyphicons/glyphicons_082_roundabout.png"/> Scalability built in</h2>
         <p>Ninja uses the share nothing approach. Servers do not share any common session information. That
         means you can scale Ninja horizontally with ease.
         </p>
@@ -102,9 +93,8 @@
     
     
     <div class="span4">
-        <img class="bs-icon"
-            src="images/glyphicons/glyphicons_266_book_open.png">
-        <h2>Java open source citizen</h2>
+
+        <h2><img class="bs-icon" src="images/glyphicons/glyphicons_266_book_open.png"/> Java open source citizen</h2>
         <p>
         You get all goodies that make Java great: Excellent IDE support.
         A statically typed language. Huge and mature eco-system. 
