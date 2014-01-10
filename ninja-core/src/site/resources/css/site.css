@@ -14,7 +14,7 @@ a.externalLink[href^="https"] {
 }
 
 /* general styling for headlines */
-h1, h2, h1 > *, h2 > * {
+h1, h2, h1 > *, h2 > *, div.hero-unit > h1 {
     color: #68006C; /* dark violet */
     font-family: "Droid Sans", sans-serif;
 }
@@ -48,6 +48,10 @@ a:visited {
 .hero-unit {
     border-radius: 0px;
     background-color: #F5F5F5; /* very light gray */
+}
+
+div.hero-unit > p {
+    margin-top: 20px;
 }
 
 .nav-header {
