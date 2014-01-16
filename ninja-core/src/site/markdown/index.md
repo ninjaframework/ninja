@@ -23,7 +23,7 @@
         <h2><img class="bs-icon" src="images/glyphicons/glyphicons_042_group.png"/> Fun for developers.</h2>
         <p>Ninja provides everything you need to get productive at once.
         Generate a new project via our maven archetype. Import the archetype in your favorite
-        IDE. Start Ninja's hot-reloading dev server. Test your app and deploy it.
+        IDE. Start Ninja's <b>hot-reloading dev server</b>. <b>Test</b> your app and <b>deploy</b> it with ease.
         </p>
     </div>
 </div>

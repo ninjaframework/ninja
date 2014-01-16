@@ -14,7 +14,9 @@ a.externalLink[href^="https"] {
 }
 
 /* general styling for headlines */
-h1, h2, h1 > *, h2 > *, div.hero-unit > h1 {
+h1, h2, h3, 
+h1 > *, h2 > *, h3 > *, 
+div.hero-unit > h1 {
     color: #68006C; /* dark violet */
     font-family: "Droid Sans", sans-serif;
 }
@@ -88,4 +90,13 @@ pre.prettyprint {
 /* search bar => fix that search bar does not become bigger thatn sidebar */
 input.search-query {
     padding-right: 0px;
+}
+
+.alert {
+    border-radius: 0px;
+}
+
+.alert-info {
+    background-color: #D9EDF7;
+    border-color: #D9EDF7;
 }

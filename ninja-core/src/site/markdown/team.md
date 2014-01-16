@@ -1,25 +1,32 @@
-The Ninjas
-==========
+The team - a.k.a the Ninjas
+===========================
 
 Introduction
 ------------
-Ninja is open source. Everybody is invited to contribute. And that is not
-limited to code alone. Reporting issues is really important. Documentation 
-is very very important. 
+
+We really invite everyone to contribute. And contribution is not only writing code,
+but also improving the documentation and reporting bugs. Every tiny bit
+helps!
 
 And if you don't like what you see - feel free to fork Ninja or implement a new feature. 
 Looking forward seeing you on the mailing list - we are social creatures :)
+
+By the way - Ninja is Open Source and licensed under the business friendly Apache 2.0 license.
 
 
 Hall of fame
 ------------
 
-[Raphael](http://raphaelbauer.com) started developing Ninja mid 2012. But Ninja will never be a one man show 
-and fortunately a bunch of great people joined the project and contributed excellent stuff :) 
+Ninja is currently supported by [FinalFrontierLabs](http://www.finalfrontierlabs.com) 
+and led by [Raphael](http://raphaelbauer.com).
 
-Finally - Ninja is standing on the shoulder of giants. 
+But Ninja will never be a one man show. Fortunately a lot of great 
+people joined the project and contributed excellent stuff :) 
+
+Ninja is standing on the shoulder of giants. 
 We are using an immense amount of libraries and ideas from open source projects.
-Especially ideas from Rails, Play 1 and Play 2 and also libraries from Google, Apache and Sun/Oracle. 
+Especially ideas from Rails, Play 1 and Play 2 and also 
+libraries from Apache, Google, Sun/Oracle and many others.
 
 This is the time to say **Thank you**. We hope we can contribute a bit back to the world.
 
@@ -42,16 +49,8 @@ contributed to Ninja. In some random order:
  * amsz
  * Max Garmash (linx56)
 
-Do you feel you are missing from that list? Please let us know - this did not happen
+(Do you feel you are missing from that list? Please let us know - this did not happen
 intentionally. You can even add yourself to the list:
 You can do so easily by checking out the source code of Ninja and changing the file
-ninja/ninja-core/site/markdown/team.md .
-
-
-Official sponsor: FinalFrontierLabs
------------------------------------
-The main sponsor of the Ninja Web Framework are the FinalFrontierLabs 
-Berlin http://finalfrontierlabs.com. FFL also provides professional support
-and application development.
-
+ninja/ninja-core/site/markdown/team.md .)
 

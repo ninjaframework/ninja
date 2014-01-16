@@ -4,8 +4,8 @@
          name="Ninja Web Framework | Full stack web framework for Java. Fast and productive. Built on Maven - runs on servlet containers.">
     
     
-    <publishDate position="right"/>
-    <version position="right"/>
+    <publishDate position="navigation-bottom"/>
+    <version position="navigation-bottom"/>
     <bannerLeft>
         <name>Ninja web framework</name>
         <href>http://www.ninjaframework.org</href>
@@ -30,19 +30,20 @@
 </script>
     
     </head>
-        <menu name="">
-        	<item name="Home" href="./index.html"/>
-        	<item name="Introduction" href="./introduction.html"/>
-        	<item name="Team" href="./team.html"/>
+        <menu name="Introduction">
+        	<item name="The problem we solve" href="./introduction.html"/>
+            <item name="Ninja - high level overview" href="./high_level_overview.html"/>
+            <item name="Comparing to other technologies" href="#"/>
+        	<item name="The team" href="./team.html"/>
         </menu>
             
         <menu name="Documentation">
             
-            <item name="Getting Started" collapse="true" href="./documentation/getting_started.html">                
-                <item name="Installing" href="#"/>
-                <item name="The anatomy of a Ninja application" href="#"/>
-                <item name="Creating a new application" href="#"/>
-                <item name="Comparing to other technologies" href="#"/>
+            <item name="Getting Started" collapse="true" href="./documentation/getting_started/installing_ninja.html">                
+                <item name="Create your first Ninja application" href="./documentation/getting_started/create_your_first_application.html"/>
+                <item name="Setting up your IDE" href="./documentation/getting_started/setting_up_your_ide.html"/>
+                <item name="The anatomy of a Ninja application" href="./documentation/getting_started/the_anatomy_of_a_ninja_application.html"/>
+                <item name="The MVC pattern" href="./documentation/getting_started/the_mvc_pattern.html"/>
             </item>
             
             <item name="Basic concepts" collapse="true" href="./documentation/getting_started.html">                
@@ -60,10 +61,7 @@
                 <item name="Creating a new application" href="#"/>
             </item>
             
-            <item name="Working with Json" collapse="true" href="./documentation/getting_started.html">                
-                <item name="Installing" href="#"/>
-                <item name="Creating a new application" href="#"/>
-            </item>
+            <item name="Working with Json" collapse="true" href="./documentation/working_with_json.html"/>                
             
             <item name="Working with Xml" collapse="true" href="./documentation/getting_started.html">                
                 <item name="Installing" href="#"/>
@@ -128,7 +126,9 @@
                 <item name="API" href="./apidocs/index.html"/>
         	</item>
         	<item name="Modules" href="./documentation/modules.html"/>
-
+         </menu>
+        <menu name="Commercial support"> 
+            <item name="Commercial support" href="./commercial_support.html"/>
         </menu>
         
         <menu name="Get involved">
@@ -139,12 +139,13 @@
         	<item name="Security issues" href="./security.html"/>
         </menu>
         
+    
+        
         <menu name="Develop">
             <item name="Changelog" href="./developer/changelog.html"/>
         	<item name="Roadmap" href="./developer/roadmap.html"/>
         	<item name="How to contribute" href="./developer/getting_started.html"/>
         </menu>
-        
 
     </body>
     <skin>
@@ -152,6 +153,7 @@
         <artifactId>maven-fluido-skin</artifactId>
         <version>1.3.0</version>
     </skin>
+    
       <custom>
     <fluidoSkin>
       <googleSearch>
