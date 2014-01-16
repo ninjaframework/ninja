@@ -1,3 +1,9 @@
+Version XXX
+===========
+
+ * 2014-01-14 Renaming SessionCookie => Session and FlashCookie => FlashScope (ra)
+
+
 Version 2.5.1
 =============
  

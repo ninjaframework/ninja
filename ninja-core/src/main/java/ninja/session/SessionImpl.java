@@ -38,9 +38,9 @@ import com.google.inject.Inject;
  * Session Cookie... Mostly an adaption of Play1's excellent cookie system that
  * in turn is based on the new client side rails cookies.
  */
-public class SessionCookieImpl implements SessionCookie {
+public class SessionImpl implements Session {
     
-    private static Logger logger = LoggerFactory.getLogger(SessionCookieImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(SessionImpl.class);
 
     private static final String AUTHENTICITY_KEY = "___AT";
     private static final String ID_KEY = "___ID";
@@ -60,7 +60,7 @@ public class SessionCookieImpl implements SessionCookie {
     private boolean sessionDataHasBeenChanged = false;
 
     @Inject
-    public SessionCookieImpl(Crypto crypto, NinjaProperties ninjaProperties) {
+    public SessionImpl(Crypto crypto, NinjaProperties ninjaProperties) {
 
         this.crypto = crypto;
 

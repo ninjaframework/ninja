@@ -1,14 +1,23 @@
-Creating your first application
-===============================
+Create your first application
+=============================
 
-The best way to start a Ninja project is by executing the following command:
+Ninja features so called "Maven archetypes". These archetypes are blueprints
+that allow you to generate a new project based on a predefined blueprint.
+
+In Ninja's case we recommend to create a new Ninja project based on our
+"ninja-servlet-jpa-blog-archetype". This archetype is a blog-like application
+and shows a real world application written in Ninja.
+
+You should use that archetype as starting point to create your own application.
+
+The command to do so is:
 
 <pre class="prettyprint">
 mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype -DarchetypeVersion=2.5.1
 </pre>
 
-This command tells Maven (mvn) to create a new Ninja application based on a blueprint.
-Please enter sensible values for "groupId" and "artifactId" and let Maven generate your first Ninja project.
+Please enter sensible values for "groupId" and "artifactId" and let Maven 
+generate your first Ninja project.
 
 
 After finishing the generation change into your project directory and execute:

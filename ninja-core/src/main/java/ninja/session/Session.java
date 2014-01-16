@@ -27,8 +27,8 @@ import com.google.inject.ImplementedBy;
  * Session Cookie... Mostly an adaption of Play1's excellent cookie system that
  * in turn is based on the new client side rails cookies.
  */
-@ImplementedBy(SessionCookieImpl.class)
-public interface SessionCookie {
+@ImplementedBy(SessionImpl.class)
+public interface Session {
 	
 	public void init(Context context);
 

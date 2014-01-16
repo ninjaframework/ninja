@@ -72,11 +72,16 @@ div.hero-unit > p {
 }
 
 
+code, 
 pre,
 pre.prettyprint {
     border: 0;
     border-radius: 0;
     padding: 2px;
+}
+
+code {
+    color: #660066;
 }
 
 .well {

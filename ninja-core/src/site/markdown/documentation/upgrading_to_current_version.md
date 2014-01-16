@@ -1,6 +1,17 @@
 Upgrading to latest Ninja
 =========================
 
+to 2.6.0
+--------
+
+<code>SessionCookie</code> and <code>FlashCookie</code> changed their names. 
+<code>SessionCookie</code> is now called
+Session and <code>FlashCookie</code> is called <code>FlashScope</code>.
+
+<code>Context</code> object reflects this by providing <code>getSession()</code> 
+and <code>getFlashScope()</code> methods.
+
+
 to 2.4.0
 --------
 

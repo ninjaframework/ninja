@@ -40,17 +40,17 @@ import com.google.inject.Inject;
  * 
  * Please note also that flash cookies are not signed.
  */
-public class FlashCookieImpl implements FlashCookie {
+public class FlashScopeImpl implements FlashScope {
 
     private Map<String, String> currentFlashCookieData = new HashMap<String, String>();
     private Map<String, String> outgoingFlashCookieData = new HashMap<String, String>();
 
     private String applicationCookiePrefix;
     
-    private static Logger logger = LoggerFactory.getLogger(FlashCookieImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(FlashScopeImpl.class);
 
     @Inject
-    public FlashCookieImpl(NinjaProperties ninjaProperties) {
+    public FlashScopeImpl(NinjaProperties ninjaProperties) {
         this.applicationCookiePrefix = ninjaProperties
                 .getOrDie(NinjaConstant.applicationCookiePrefix);
     }

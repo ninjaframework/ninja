@@ -87,7 +87,7 @@ public class SessionCookieTest {
     @Test
     public void testSessionDoesNotGetWrittenToResponseWhenEmptyAndOnlySentWhenChanged() {
 
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie.init(context);
@@ -103,7 +103,7 @@ public class SessionCookieTest {
     @Test
     public void testSessionCookieSettingWorks() throws Exception {
 
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie.init(context);
@@ -140,7 +140,7 @@ public class SessionCookieTest {
     @Test
     public void testHttpsOnlyWorks() throws Exception {
 
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie.init(context);
@@ -167,7 +167,7 @@ public class SessionCookieTest {
                         NinjaConstant.sessionTransferredOverHttpsOnly, true))
                 .thenReturn(false);
 
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie.init(context);
@@ -189,7 +189,7 @@ public class SessionCookieTest {
     @Test
     public void testHttpOnlyWorks() throws Exception {
 
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie.init(context);
@@ -215,7 +215,7 @@ public class SessionCookieTest {
                 ninjaProperties.getBooleanWithDefault(
                         NinjaConstant.sessionHttpOnly, true)).thenReturn(false);
 
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie.init(context);
@@ -237,7 +237,7 @@ public class SessionCookieTest {
     @Test
     public void testThatCookieSavingAndInitingWorks() {
 
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie.init(context);
@@ -264,7 +264,7 @@ public class SessionCookieTest {
                 newSessionCookie);
 
         // init new session from that cookie:
-        SessionCookie sessionCookie2 = new SessionCookieImpl(crypto,
+        Session sessionCookie2 = new SessionImpl(crypto,
                 ninjaProperties);
 
         sessionCookie2.init(context);
@@ -283,7 +283,7 @@ public class SessionCookieTest {
                 .thenReturn(null);
 
         // stuff must break => ...
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
 
         verify(ninjaProperties).getOrDie(NinjaConstant.applicationCookiePrefix);
@@ -291,7 +291,7 @@ public class SessionCookieTest {
 
     @Test
     public void testSessionCookieDelete() {
-        SessionCookie sessionCookie = new SessionCookieImpl(crypto,
+        Session sessionCookie = new SessionImpl(crypto,
                 ninjaProperties);
         sessionCookie.init(context);
         final String key = "mykey";
@@ -311,7 +311,7 @@ public class SessionCookieTest {
     @Test
     public void testGetAuthenticityTokenWorks() {
         
-        SessionCookie sessionCookie = new SessionCookieImpl(
+        Session sessionCookie = new SessionImpl(
                 crypto,
                 ninjaProperties);
         
@@ -337,7 +337,7 @@ public class SessionCookieTest {
     @Test
     public void testGetIdTokenWorks() {
         
-        SessionCookie sessionCookie = new SessionCookieImpl(
+        Session sessionCookie = new SessionImpl(
                 crypto,
                 ninjaProperties);
         

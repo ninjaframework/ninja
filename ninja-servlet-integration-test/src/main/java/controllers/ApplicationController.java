@@ -43,6 +43,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 
 @Singleton
 public class ApplicationController {
@@ -124,46 +126,46 @@ public class ApplicationController {
 
     }
 
-    public Result session(Context context) {
+    public Result session(Session session) {
         // Sets the username "kevin" in the session-cookie
-        context.getSessionCookie().put("username", "kevin");
+        session.put("username", "kevin");
 
         return Results.html();
 
     }
 
-    public Result flashSuccess(Context context) {
+    public Result flashSuccess(FlashScope flashScope, Context context) {
         
         Result result = Results.html();
         
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashSuccess", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().success(flashMessage.get());
+            flashScope.success(flashMessage.get());
         }
 
         return result;
 
     }
     
-    public Result flashError(Context context) {
+    public Result flashError(Context context, FlashScope flashScope) {
         Result result = Results.html();
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashError", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().error(flashMessage.get());
+            flashScope.error(flashMessage.get());
         }
 
         return result;
 
     }
     
-    public Result flashAny(Context context) {
+    public Result flashAny(Context context, FlashScope flashScope) {
         Result result = Results.html();
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashAny", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().put("any", flashMessage.get());
+            flashScope.put("any", flashMessage.get());
         }
 
         return result;

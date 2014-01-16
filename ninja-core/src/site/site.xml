@@ -46,9 +46,12 @@
                 <item name="The MVC pattern" href="./documentation/getting_started/the_mvc_pattern.html"/>
             </item>
             
-            <item name="Basic concepts" collapse="true" href="./documentation/getting_started.html">                
-                <item name="Installing" href="#"/>
-                <item name="Creating a new application" href="#"/>
+            <item name="Basic concepts" collapse="true" href="./documentation/basic_concepts/basic_concepts.html">                
+                <item name="Routing" href="./documentation/basic_concepts/routing.html"/>
+                <item name="Controllers" href="./documentation/basic_concepts/controllers.html"/>
+                <item name="Filtering" href="./documentation/basic_concepts/filtering.html"/>
+                <item name="Argument extractors" href="./documentation/basic_concepts/argument_extractors.html"/>
+                <item name="Sessions and Flash scope" href="./documentation/basic_concepts/sessions_and_flash_scope.html"/>
             </item>
             
             <item name="Html templating" collapse="true" href="./documentation/getting_started.html">                

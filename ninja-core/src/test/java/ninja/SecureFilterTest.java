@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import ninja.session.SessionCookie;
+import ninja.session.Session;
 import ninja.utils.NinjaConstant;
 
 import org.junit.Before;
@@ -36,7 +36,7 @@ public class SecureFilterTest {
     private Context context;
     
     @Mock
-    private SessionCookie sessionCookie;
+    private Session sessionCookie;
 
     @Mock 
     private FilterChain filterChain;

@@ -32,8 +32,8 @@ import com.google.inject.ImplementedBy;
  * 
  * Please note also that flash cookies are not signed.
  */
-@ImplementedBy(FlashCookieImpl.class)
-public interface FlashCookie {
+@ImplementedBy(FlashScopeImpl.class)
+public interface FlashScope {
 
     void init(Context context);
 
