@@ -1,8 +1,5 @@
-The MVC pattern
-===============
-
-Ninja is built around the MVC pattern. MVC stands for Model View Controller. In
-essence that means that each layer of logic is cleanly separated.
+Basic concepts: route - controller - view
+===========================================
 
 A route
 -------

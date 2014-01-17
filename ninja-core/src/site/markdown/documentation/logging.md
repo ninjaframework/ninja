@@ -5,7 +5,7 @@ Ninja uses the Logback via slf4j as logging library. The prototypes both contain
 configures the logging behavior. Below is an exemplary logging configuration. But in general
 the best way to configure Logback is to follow the excellent guide at: http://logback.qos.ch/manual/configuration.html
 
-<pre>
+<pre class="prettyprint">
 &lt;configuration&gt;
 
   &lt;appender name=&quot;FILE&quot; class=&quot;ch.qos.logback.core.FileAppender&quot;&gt;

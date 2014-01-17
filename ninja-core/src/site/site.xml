@@ -73,9 +73,8 @@
                 <item name="Creating a new application" href="#"/>
             </item>
             
-            <item name="Working with relational databases" collapse="true" href="./documentation/getting_started.html">                
-                <item name="Installing" href="#"/>
-                <item name="Creating a new application" href="#"/>
+            <item name="Working with relational DBs" collapse="true" href="./documentation/working_with_relational_dbs/jpa.html">                
+                <item name="DB Migrations" href="./documentation/working_with_relational_dbs/db_migrations.html"/>
             </item>
             
             <item name="Using the cache" collapse="true" href="./documentation/using_the_cache.html"/>
@@ -85,7 +84,7 @@
             <item name="Static assets" collapse="true" href="./documentation/static_assets.html"/>
             <item name="Logging" href="./documentation/logging.html"/>
             
-            <item name="Upgrade guide" href="./documentation/lupgrade_guide.html"/>
+            <item name="Upgrade guide" href="./documentation/upgrade_guide.html"/>
             
             <item name="Testing your application" collapse="true" href="./documentation/getting_started.html">                
                 <item name="Installing" href="#"/>

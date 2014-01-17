@@ -11,13 +11,13 @@ Quickstart
 We prepared an archetype to get you up and running. Simply execute:
 
 <pre class="prettyprint">
-    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype
+mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype
 </pre>
 
 and hit
 
 <pre class="prettyprint">
-    ninja:run
+ninja:run
 </pre>
 
 
@@ -205,28 +205,26 @@ Ninja just offers a convenient out of the box configuration and maps the modes t
 Let's have a look at a controller that does some querying:
 
 <pre class="prettyprint">
+@Inject 
+Provider<EntityManager> entitiyManagerProvider;
 
-    @Inject 
-    Provider<EntityManager> entitiyManagerProvider;
-    
-    @UnitOfWork
-    public Result getIndex() {
-                
-        EntityManager entityManager = entitiyManagerProvider.get();
-            
-        Query q = entityManager.createQuery("SELECT x FROM GuestbookEntry x");
-        List<GuestbookEntry> guestbookEntries = (List<GuestbookEntry>) q.getResultList();
-        
-        String postRoute = router.getReverseRoute(ApplicationController.class, "postIndex");
-        
-        return Results
-                .html()
-                .render("guestbookEntries", guestbookEntries).
-                render("postRoute", postRoute);
+@UnitOfWork
+public Result getIndex() {
 
-        
-    }
+    EntityManager entityManager = entitiyManagerProvider.get();
 
+    Query q = entityManager.createQuery("SELECT x FROM GuestbookEntry x");
+    List<GuestbookEntry> guestbookEntries = (List<GuestbookEntry>) q.getResultList();
+
+    String postRoute = router.getReverseRoute(ApplicationController.class, "postIndex");
+
+    return Results
+            .html()
+            .render("guestbookEntries", guestbookEntries).
+            render("postRoute", postRoute);
+
+
+}
 </pre>
 
 Two things here are important:
@@ -246,21 +244,19 @@ transactions around the annotated method.
 Saving is also straight forward:
 
 <pre class="prettyprint">
+@Transactional
+public Result postIndex(GuestbookEntry guestbookEntry) {
 
-    @Transactional
-    public Result postIndex(GuestbookEntry guestbookEntry) {
-        
-        logger.info("In postRoute");        
-        
-        EntityManager entityManager = entitiyManagerProvider.get();
-        
-        entityManager.persist(guestbookEntry);
+    logger.info("In postRoute");        
 
-        
-        return Results.redirect(router.getReverseRoute(ApplicationController.class, "getIndex"));
+    EntityManager entityManager = entitiyManagerProvider.get();
 
-    }
+    entityManager.persist(guestbookEntry);
 
+
+    return Results.redirect(router.getReverseRoute(ApplicationController.class, "getIndex"));
+
+}
 </pre>
 
 
