@@ -1,0 +1,7 @@
+Flash scope
+===========
+
+Introduction
+------------
+
+...

@@ -428,7 +428,7 @@
                 <exclusions>
                     <exclusion>
                         <artifactId>jboss-logging</artifactId>
-                        <groupId> org.jboss.logging</groupId>
+                        <groupId>org.jboss.logging</groupId>
                     </exclusion>
                 </exclusions>
             </dependency>
