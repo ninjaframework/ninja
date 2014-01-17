@@ -1,22 +1,23 @@
 Controller
 ==========
 
-Controller are the "C" in the MVC paradigm.
-
-As almost everything else in Ninja a controller in Ninja is just a simple 
-Java class that follows some little conventions.
+Introduction
+------------
+Controllers are the "C" in the MVC paradigm. Controllers will do actual stuff.
+They get requests or part of requests, retrieve stuff from databases and
+cause Ninja to return certain results.
 
 A really simple controller
 --------------------------
 
-A really simple controller would look like:
+A basic controller looks like:
 
 <pre class="prettyprint">
 
 	package controllers;
 
 	@Singleton
-	public class ApplicationController {
+	public class AppController {
 		
 		public Result index() {
 		
@@ -28,12 +29,14 @@ A really simple controller would look like:
 
 </pre>
 
-The important conventions are that a controller method must return a "Result". A result
-is in short just an object that holds response codes, content to render, headers and cookies
-that should be returned to the visitors of your website.
+The important conventions are that a controller method must return a <code>Result</code>. 
+A result is in short just an object that holds response codes, 
+content to render, headers and cookies that should be returned to the visitors of your website.
 
-Results with the "s" at the end is a convenience class that allows you to generate a configured result.
-For instance Results.html() will tell Ninja to render a html page. There is also Results.json().
+<code>Results</code> with the "s" at the end is a convenience class 
+that allows you to generate a preconfigured <code>Result</code>.
+For instance <code>Results.html()</code> will tell Ninja to render a html page. 
+But you can also render json and other results.
 
 By convention controllers live in the package "controllers".
 
@@ -41,50 +44,47 @@ By convention controllers live in the package "controllers".
 Getting parameters into your controllers
 ----------------------------------------
 
-A controller usually not only renders stuff, but also takes some inputs and does something with them.
+A controller usually not only renders stuff, 
+but also takes some inputs and does something with them.
 
-Let's say we got a route like that:
+You can get parts of the url inside your controller via two annotations:
+<code>@Param</code> and <code>@PathParam</code>. Via @PathParam you can get 
+variable parts of a route (described in more details in the routing section).
+And @Param allows you to get Query or Form parameters.
 
-<pre class="prettyprint">
-
-	router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
-
-</pre>
-
-... and the user visits that Url...
-
+Let's say and the user visits the following Url...
 
 <pre class="prettyprint">
-
-	/user/12345/my@email.com/userDashboard?debug=false
-
+/user/12345/my@email.com/userDashboard?debug=false
 </pre>
 
-We then of course want to know **id**, **email** and the value of the **debug** query parameter.
-
-In Ninja this is really simple and controller that can do so looks like:
+... and we got a route definition like that:
 
 <pre class="prettyprint">
-
-	package controllers;
-
-	@Singleton
-	public class ApplicationController {
-		
-		public Result index(
-				@PathParam("id") String id, 
-				@PathParam("email") String email, 
-				@Param("debug") String debug) {
-				
-			//do something with the parameters...
-		}
-
-
-	}
-
+router.GET().route("/user/{id}/{email}/userDashboard").with(AppController.class, "userDashboard");
 </pre>
 
-Method index now gets the contents of the path parameters and all query parameters.
+We can then get all variable parts of this url via the following method controller
+definition:
+
+<pre class="prettyprint">
+package controllers;
+
+@Singleton
+public class AppController {
+
+    public Result userDashboard(
+            @PathParam("id") String id, 
+            @PathParam("email") String email, 
+            @Param("debug") String debug) {
+
+        //do something with the parameters...
+
+    }
+
+}
+
+</pre>
 
 
 More on objects Ninja can automatically provide you at controller level
@@ -156,87 +156,6 @@ Then you can simply call use <code>return Results.json().render(user)</code> or
 <code>return Results.xml().render(user)</code> to enforce the rendering of a certain return format.
 
 
-Injecting stuff into your controller method (method scope)
-----------------------------------------------------------
-
-Ninja can inject a lot of stuff into your methods. And you can customize that easily yourself by using so
-called ArgumentExtractors.
-
-ArgumentExtractors allow you to inject arbitrary things into the method of a controller.
-
-Have a look at the following method:
-
-<pre class="prettyprint">
-
-    package controllers;
-
-    @Singleton
-    public class ApplicationController {
-        
-        public Result index(
-                @LoggedInUser String loggedInUser) {
-                
-            //do something with the parameters...
-        }
-
-    }
-
-</pre>
-
-The @LoggedInUser is a so called ArgumentExtractors and allow you to extract arbitrary things out
-of the request and re-package them into anything you want. @LoggedInUser for instance determines 
-the user and injects the username into the field annotated with @LoggedInUser.
-
-ArgumentMatchers therefore consist of two things.
-
-First the marker interface:
-
-<pre class="prettyprint">
-
-    @WithArgumentExtractor(LoggedInUserExtractor.class)
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.PARAMETER})
-    public @interface LoggedInUser {}
-
-</pre>
-
-... and the ArgumentExtractor itself:
-
-<pre class="prettyprint">
-
-public class LoggedInUserExtractor implements ArgumentExtractor<String> {
-
-    @Override
-    public String extract(Context context) {
-        
-        // if we got no cookies we break:
-        if (context.getSessionCookie() != null) {
-            
-            String username = context.getSessionCookie().get("username");
-            
-            return username;
-            
-        }
-        
-        return null;
-    }
-
-    @Override
-    public Class getExtractedType() {
-        return String.class;
-    }
-
-    @Override
-    public String getFieldName() {
-        return null;
-    }
-}
-
-</pre>
-
-As you can see the interface for the ArgumentExtractor references @WithArgumentExtractor(LoggedInUserExtractor.class).
-LoggedInUserExtractor itself has full access to the context (and the incoming request) and will return the object
-annotated initially by @LoggedInUser. In our example this was @LoggedInUser String loggedInUser.
 
 
 Reverse routing
