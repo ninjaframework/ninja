@@ -1,3 +1,9 @@
+Vesion x.x.x
+============
+
+ * 2014-01-27 Added support to serve arbitrary paths via AssetsController via
+              serveStatic method (ra).
+
 Version 2.5.1
 =============
  
