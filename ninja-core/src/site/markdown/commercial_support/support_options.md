@@ -1,63 +1,60 @@
-Commercial support
-==================
-
-Our philosophy
---------------
-
-Ninja is licensed as Apache 2 which is known as one of the most business friendly
-licenses around.
-
-We are really open source affienados. But not because we are especially nice 
-people - it's only because Open source leads to better software. And this is
-good for you.
-
-Therefore Ninja will always stay under the open source domain.
-
-Our philosophy is that Ninja will always stay under the Open Source domain. There
-are no plans to cap functionality for Pro users or anything alike. The reason behind
-that rationale is really simple: The more people use Ninja - the better Ninja
-will get. Better plugins, better reports, a better ecosytems and much more.
-
-For business owners this means that your investment into a new technology will
-not turn into something nasty.
-
+Support options
+===============
 
 Training
 --------
 
-We provide trainings around the world. 
+We offer two distinct training packages.
+
+### Ninja - Introduction
+
+Covers basic concepts of Ninja. The participants should have basic
+knowledge in Java. The course gives participants a jump start into
+successful Ninja web development.
+
+Duration is two days and will. The course is hands-on and understanding
+of the topics is developed via a real application.
+
+ * Introduction: Routes, Controllers and sessions
+ * Html programming / Form handling and validation
+ * Json / xml support
+ * Database support 
+ * Deployment to live
+ * Ninja and single page webapps (Angular and Gwt).
 
 
-Ninja introduction
-- basic concepts of Ninja
-- your first application
-- html programming
-- json / xml support
-- application configuration in different modes.
-- Ninja and GWt / Json framewokrs
+### Ninja - Advanced topics
 
+The participants should have a basic knowledge of Ninja. Duration is one day.
 
-Ninja advanced topics
-- module development
-- deployment options (resin, jetty)
-- hooking up many teams
-- monitoring Ninja in production
+ * Module development
+ * Agile test setups / Jenkins integration / Different stages
+ * Monitoring a Ninja application in production best practises
+ * Database setups and migration
+ * Deployment options (Resin, Jetty, Tomcat, nginx)
+ * Orchestration of many teams working on the same code base
 
-
-
+The price is calculated per participant - please contact us for more:
+support@ninjaframwork.org.
 
 Support plans
 -------------
 
+###
+###
+###
+###
 
 
 
-
-
-Adopt-a-feature
+Development
 ---------------
 
-Need a new feature? Plese 
+### For your project
+
+
+### New feature for Ninja
+
 
 
 

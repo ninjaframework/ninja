@@ -17,28 +17,32 @@
 package ninja.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import com.google.inject.Provider;
 
 /**
- * ObjectMapper is used in several classes. For instance in the
- * BodyParser for Json and the Json rendering engines for both
- * Json and JsonP.
- * 
- * This provider makes it simple to configure the ObjectMapper in one place
+ * This provider makes it simple to configure the XmlMapper in one place
  * for all places where it is used.
  */
-public class ObjectMapperProvider implements Provider<ObjectMapper>{
+public class XmlMapperProvider implements Provider<XmlMapper>{
 
     @Override
-    public ObjectMapper get() {
+    public XmlMapper get() {
         
-        ObjectMapper objectMapper = new ObjectMapper();
+        JacksonXmlModule module = new JacksonXmlModule();
+        // Check out: https://github.com/FasterXML/jackson-dataformat-xml
+        // setDefaultUseWrapper produces more similar output to
+        // the Json output. You can change that with annotations in your
+        // models.
+        module.setDefaultUseWrapper(false);
         
-        // Afterburner optimizes performance of Pojo to Json mapper
-        objectMapper.registerModule(new AfterburnerModule());
+        XmlMapper xmlMapper = new XmlMapper(module);
+        xmlMapper.registerModule(new AfterburnerModule());
+
         
-        return objectMapper;
+        return xmlMapper;
         
     }
     
