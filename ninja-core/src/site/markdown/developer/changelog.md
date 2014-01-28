@@ -1,6 +1,7 @@
 Version XXX
 ===========
 
+ * 2014-01-29 Bump to latest Guava 16.0 (ra) 
  * 2013-01-28 XmlMapper now singleton configured in one place via a provider. (ra).
  * 2013-01-28 Added afterburner support to XmlMapper (ra).
  * 2014-01-28 Added support for custom regex in variable part of routes (ra).
