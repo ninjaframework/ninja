@@ -117,9 +117,26 @@ public class AppController {
 
 <div class="alert alert-info">
 By default Ninja replaces curly braces with the following regex to match a 
-variable part: <code>([^/]*?)</code>. That means that variable parts match arbitrary
-characters but do not span over any path separators "/".
+variable part: <code>([^/]*)</code>. That means that variable parts match arbitrary
+characters but do not span over any path separators "/". If you need more control
+please you'll find more in the next section.
 </div>
+
+
+Regular expressions in variable route parts
+-------------------------------------------
+
+Ninja allows you to specify regular expressions 
+that will be used to match arbitrary parts of your url.
+The syntax is <code>{PRAMETER_NAME: REGEX}</code> (with a whitespace after the ":").
+
+For instance a route like <code>/assets/{fileName: .*}</code> will match everything
+after <code>/assets/</code>. Imagine a request to <code>/assets/css/app.css</code>. 
+This request will be handled by the route and accessing the path parameter 
+<code>fileName</code> will return <code>css/app.css</code>.
+
+You can use any Java compliant regular expressions for matching. Please refer to
+the official documentation at http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html.
 
 
 Injecting objects into the Router

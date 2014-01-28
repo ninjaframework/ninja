@@ -23,9 +23,12 @@ By the way - Ninja did not invent the concept of client side sessions - The prai
 More on sessions: (http://en.wikipedia.org/wiki/Session_(computer_science))
 
 
-<div class="alert alert-info">Ninja sessions currently are not encrypted. Therefore you should not store any 
+<div class="alert alert-info">
+Ninja sessions currently are not encrypted. 
+Therefore you should not store any 
 critical information. Storing a user id, oder username is fine. Storing
-credit card information is really bad practise.</div>
+credit card information is really bad practise.
+</div>
 
 
 Reading a session value

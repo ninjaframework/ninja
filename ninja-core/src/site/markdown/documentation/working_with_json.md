@@ -89,7 +89,7 @@ Advanced Json usage
 -------------------
 
 Under the hood Ninja uses Jackson (http://jackson.codehaus.org/). Jackson
-is one of the most widely used Json serializers of the Java econsystem.
+is one of the most widely used Json serializers of the Java ecosystem.
 
 If you want to customize the way Jackson works you can do so by injecting
 ObjectMapper into a startup action and modifying it. 

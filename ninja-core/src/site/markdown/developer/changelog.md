@@ -1,6 +1,8 @@
 Version XXX
 ===========
 
+ * 2013-01-28 XmlMapper now singleton configured in one place via a provider. (ra).
+ * 2013-01-28 Added afterburner support to XmlMapper (ra).
  * 2014-01-28 Added support for custom regex in variable part of routes (ra).
  * 2014-01-27 Added support to serve arbitrary paths via AssetsController via
               serveStatic method (ra).
@@ -8,6 +10,7 @@ Version XXX
               freemarker templates directly via ${messagekey}. This was replaced by
               by ${i18n("messageKey")} a long time ago (ra).
  * 2014-01-14 Renaming SessionCookie => Session and FlashCookie => FlashScope (ra)
+
 
 Version 2.5.1
 =============

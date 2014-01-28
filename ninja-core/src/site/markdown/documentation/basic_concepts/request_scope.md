@@ -19,21 +19,17 @@ This is cool, because it offers you the possibility to inject objects into the c
 use by other filters down the chain or the leaf controller.
 
 <pre class="prettyprint">
-
-    //////////////////////////////////////////////////////////////////////////
-    // do some stuff like connecting to your database and verifying the user.
-    //////////////////////////////////////////////////////////////////////////
-    UserInfo userInfo = …; // a complex object, e.g. retrieved from database
-    context.setAttribute("userinfo", userInfo);
-    
+//////////////////////////////////////////////////////////////////////////
+// do some stuff like connecting to your database and verifying the user.
+//////////////////////////////////////////////////////////////////////////
+UserInfo userInfo = …; // a complex object, e.g. retrieved from database
+context.setAttribute("userinfo", userInfo);  
 </pre>
 
 Then in the controller:
 
 <pre class="prettyprint">
-
-    UserInfo userInfo = context.getAttribute("userinfo", UserInfo.class);
-    
+UserInfo userInfo = context.getAttribute("userinfo", UserInfo.class);   
 </pre>
 
 or even simpler, you can get the `UserInfo` injected into your controller method's arguments with
@@ -55,42 +51,40 @@ if you want to authorize that user by setting (or not setting) the email as para
 
 
 <pre class="prettyprint">
+//////////////////////////////////////////////////////////////////////////
+// do some stuff like connecting to your database and verifying the user.
+//////////////////////////////////////////////////////////////////////////
+final username = "MyUserName";
 
-    //////////////////////////////////////////////////////////////////////////
-    // do some stuff like connecting to your database and verifying the user.
-    //////////////////////////////////////////////////////////////////////////
-    final username = "MyUserName";
+public class WrappedContextFilter implements Filter {
 
-    public class WrappedContextFilter implements Filter {
+    @Override
+    public Result filter(FilterChain filterChain, Context context) {
 
-        @Override
-        public Result filter(FilterChain filterChain, Context context) {
-        
-            WrappedContext wrappedContext = new WrappedContext(context) {
-            
-                // Override the getParameter function of the context.
-                // This lets you inject parameters in your controller via @Param("username")
-                // But also have a look at ArgumentExtractors. Maybe they are a cleaner solution
-                // to your problem :)
-                public String getParameter(String key) {
-                
-                    if (key.equals("username")) {
-                    
-                        return username;
-                    } else {
-                    
-                        return getParameter(key);
-                    }
-                
-                }            
-            };
-        
-            // Simply continue the chain with the wrapped context
-            return filterChain.next(wrappedContext);
-        }
-  
+        WrappedContext wrappedContext = new WrappedContext(context) {
+
+            // Override the getParameter function of the context.
+            // This lets you inject parameters in your controller via @Param("username")
+            // But also have a look at ArgumentExtractors. Maybe they are a cleaner solution
+            // to your problem :)
+            public String getParameter(String key) {
+
+                if (key.equals("username")) {
+
+                    return username;
+                } else {
+
+                    return getParameter(key);
+                }
+
+            }            
+        };
+
+        // Simply continue the chain with the wrapped context
+        return filterChain.next(wrappedContext);
     }
-    
+
+}
 </pre>
 
 
@@ -98,18 +92,16 @@ if you want to authorize that user by setting (or not setting) the email as para
 You can then use a simple `@Param("username")` to inject the username of your wrapped context into the controller:
 
 <pre class="prettyprint">
+@FilterWith(WrappedContextFilter.class)
+public Result index(@Param("username") String username) {
 
-    @FilterWith(WrappedContextFilter.class)
-    public Result index(@Param("username") String username) {
-    
-        // Usually you would do some authentication or error handling with
-        // username...
-        logger.log("username: " + username); //this will be MyUserName
+    // Usually you would do some authentication or error handling with
+    // username...
+    logger.log("username: " + username); //this will be MyUserName
 
-        return Results.html();
+    return Results.html();
 
-    }
-    
+}  
 </pre>    
 
 
@@ -120,9 +112,7 @@ Argument Extractors
 Injecting stuff into your controller via 
 
 <pre class="prettyprint">
-
-    public Result index(@Param("username") String username) { ... }
-    
+public Result index(@Param("username") String username) { ... }  
 </pre>
 
 is really nice, but what about creating your own annotations for custom controller injections? 
@@ -133,60 +123,54 @@ Let's say we want to inject a User object into our controller based on e.g. logg
 First you have to define your own annotation interface like so:
 
 <pre class="prettyprint">
-
-    @WithArgumentExtractor(LoggedInUserExtractor.class)
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.PARAMETER })
-    public @interface LoggedInUser {
-        // Just a marker interface
-    }
-    
+@WithArgumentExtractor(LoggedInUserExtractor.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER })
+public @interface LoggedInUser {
+    // Just a marker interface
+}  
 </pre>
 
 You can of course also use annotations with values like in `@Param`. But we want keep things simple for now.
 The next step is to write your own `ArgumentExtractor` for your `User` object:
 
 <pre class="prettyprint">
+public class LoggedInUserExtractor implements ArgumentExtractor&#60;User&#62; {
 
-    public class LoggedInUserExtractor implements ArgumentExtractor&#60;User&#62; {
-
-        @Override
-        public User extract(Context context) {                    
-            //////////////////////////////////////////////////////////////////
-            // Usually you would now extract stuff from the context
-            // and contact your db to check if user is authenticated or so...        
-            ///////////////////////////////////////////////////////////////////
-            User user = new User();
-            user.email = "user@example.com";
-            return user;
-        }
-
-        @Override
-        public Class&#60;User&#62; getExtractedType() {
-            return User.class;
-        }
-
-        @Override
-        public String getFieldName() {
-            return null;
-        }
+    @Override
+    public User extract(Context context) {                    
+        //////////////////////////////////////////////////////////////////
+        // Usually you would now extract stuff from the context
+        // and contact your db to check if user is authenticated or so...        
+        ///////////////////////////////////////////////////////////////////
+        User user = new User();
+        user.email = "user@example.com";
+        return user;
     }
-    
+
+    @Override
+    public Class&#60;User&#62; getExtractedType() {
+        return User.class;
+    }
+
+    @Override
+    public String getFieldName() {
+        return null;
+    }
+}  
 </pre>
 
 And then you can simply use that extractor as annotation in your controller to inject a user during a request:
 
 <pre class="prettyprint">
+public Result index(@LoggedInUser User user) {
 
-    public Result index(@LoggedInUser User user) {
-    
-        System.out.println("user's email: " + user.email); //will be user@example.com
-        // Usually you want to do some more complex logic here...
+    System.out.println("user's email: " + user.email); //will be user@example.com
+    // Usually you want to do some more complex logic here...
 
-        return Results.html();
+    return Results.html();
 
-    }
-    
+} 
 </pre>
 
 

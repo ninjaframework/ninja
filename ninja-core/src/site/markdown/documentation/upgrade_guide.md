@@ -1,8 +1,16 @@
-Upgrading to latest Ninja
-=========================
+Upgrade guide
+=============
+
+Sometimes (and hopefully not too often) we have to introduce breaking changes
+into Ninja's behavior. This document describes which steps are needed to upgrade
+your application to the latest Ninja version. Simply start with your current 
+version and then work your way up to the top of the document.
+
 
 to 2.6.0
 --------
+
+### Session and Flash scopes
 
 <code>SessionCookie</code> and <code>FlashCookie</code> changed their names. 
 <code>SessionCookie</code> is now called
@@ -11,6 +19,29 @@ to 2.6.0
 <code>Context</code> object reflects this by providing <code>getSession()</code> 
 and <code>getFlashScope()</code> methods.
 
+### Changes in serving of static assets
+
+AssetsController's serve method has been deprecated for good. The replacement
+are AssetsController's serveStatic and serveWebJars methods.
+
+OLD:
+
+<pre class="prettyprint">
+router.GET().route("/assets/.*").with(AssetsController.class, "serve");
+</pre>
+
+NEW (direct replacement): 
+
+<pre class="prettyprint">
+router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
+router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
+</pre>
+ 
+This also means that you can now serve static assets from arbitrary directories or
+even files from root like:
+<pre class="prettyprint">
+router.GET().route("/robots.txt").with(AssetsController.class, "serveStatic");
+</pre>
 
 to 2.4.0
 --------

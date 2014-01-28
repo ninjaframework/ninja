@@ -17,28 +17,27 @@ The class and binding
 The class and method then looks like:
 
 <pre class="prettyprint">
-    @Singleton
-    public class ScheduledAction {
+@Singleton
+public class ScheduledAction {
 
 
-        @Schedule(delay = 60, initialDelay = 5, timeUnit = TimeUnit.SECONDS)
-        public void doStuffEach60Seconds() {
-            // do stuff
-        }
+    @Schedule(delay = 60, initialDelay = 5, timeUnit = TimeUnit.SECONDS)
+    public void doStuffEach60Seconds() {
+        // do stuff
     }
-    
+}
 </pre>   
 
 Don't forget to bind the class explicitly inside conf/Module.java
 
 <pre class="prettyprint">
-    public class Module extends AbstractModule {
+public class Module extends AbstractModule {
 
-        protected void configure() {
+    protected void configure() {
 
-            bind(ScheduledAction.class);
+        bind(ScheduledAction.class);
 
-        }
+    }
 }
 </pre> 
 

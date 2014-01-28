@@ -23,20 +23,20 @@ The Servlet-bridge
 The best way to add servlets and filters to Ninja is to use Ninja's SevletModule at /conf/ServletModule.java .
 
 <pre class="prettyprint">
-    public class ServletModule extends com.google.inject.servlet.ServletModule {
-    
-    
-        @Override
-        protected void configureServlets() {
+public class ServletModule extends com.google.inject.servlet.ServletModule {
 
-            bind(LegacyServletFilter.class).asEagerSingleton();
-            bind(NinjaServletDispatcher.class).asEagerSingleton();
-        
-            filter("/*").through(LegacyServletFilter.class);
-            serve("/*").with(NinjaServletDispatcher.class);
-        }
-    
+
+    @Override
+    protected void configureServlets() {
+
+        bind(LegacyServletFilter.class).asEagerSingleton();
+        bind(NinjaServletDispatcher.class).asEagerSingleton();
+
+        filter("/*").through(LegacyServletFilter.class);
+        serve("/*").with(NinjaServletDispatcher.class);
     }
+
+}
 </pre>
 
 

@@ -26,20 +26,21 @@ Usage of Ninja's Cache Api
 Using Ninja's caching facilities is straight forward. You inject NinjaCache into the classes that
 want to use caching and you are ready to go.
 
-<pre class="prettyprint">    
-    @Inject NinjaCache ninjaCache;
+<pre class="prettyprint">
+@Inject 
+NinjaCache ninjaCache;
 
-    public Result allPosts() {
-    
-        List<Post> posts = ninjaCache.get("posts", List.class);
-        if(products == null) {
-            posts = postDao.findAll();
-            ninjaCache.set("posts", posts, "30mn");
-        }
-        
-        return Results.html().render(posts);
-        
+public Result allPosts() {
+
+    List<Post> posts = ninjaCache.get("posts", List.class);
+    if(products == null) {
+        posts = postDao.findAll();
+        ninjaCache.set("posts", posts, "30mn");
     }
+
+    return Results.html().render(posts);
+
+}
 </pre>
 
 NinjaCache provides a range of methods to store, retrieve and manipulate data in your cache.

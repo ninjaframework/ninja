@@ -1,15 +1,6 @@
 Commercial support
 ==================
 
-
-+------------+---------+
-|    Type    |  MySQL  |
-+------------+---------+
-| Header     | Top Row |
-| Auto Align | On      |
-+------------+---------+
-
-
 Our philosophy
 --------------
 

@@ -78,4 +78,11 @@ Implicit variables available in templates
  * <code>${contextPath}</code> resolves the context path of the application 
    (empty if running on root)
 
+Advanced usage of Freemarker
+----------------------------
+
+Freemarker is the templating language we are using for rendering views. 
+It can do a lot of cool stuff, and you should refer to http://freemarker.org/
+to learn more.
+
 
