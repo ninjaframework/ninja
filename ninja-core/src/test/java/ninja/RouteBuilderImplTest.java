@@ -154,6 +154,35 @@ public class RouteBuilderImplTest {
         assertEquals("20", map.get("id"));
 
     }
+    
+        @Test
+    public void testBasicPlaceholersParametersAndRegexInsideVariableParts() {
+
+        // test that parameter parsing works in conjunction with
+        // regex expressions...
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/assets/{file: .*}");
+        Route route = buildRoute(routeBuilder);
+        
+        String pathUnderTest = "/assets/css/app.css";
+        assertTrue(route.matches("GET", pathUnderTest));
+        Map<String, String> map = route.getPathParametersEncoded(pathUnderTest);
+        assertEquals(1, map.entrySet().size());
+        assertEquals("css/app.css", map.get("file"));
+
+        pathUnderTest = "/assets/javascripts/main.js";
+        assertTrue(route.matches("GET", pathUnderTest));
+        map = route.getPathParametersEncoded(pathUnderTest);
+        assertEquals(1, map.entrySet().size());
+        assertEquals("javascripts/main.js", map.get("file"));
+
+        pathUnderTest = "/assets/robots.txt";
+        assertTrue(route.matches("GET", pathUnderTest));
+        map = route.getPathParametersEncoded(pathUnderTest);
+        assertEquals(1, map.entrySet().size());
+        assertEquals("robots.txt", map.get("file"));
+
+    }
 
     @Test
     public void testParametersDontCrossSlashes() {
