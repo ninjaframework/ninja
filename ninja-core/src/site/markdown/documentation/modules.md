@@ -26,6 +26,9 @@ Mustache templates
  * https://github.com/kpacha/ninja-mustache
 
 
+Jade4Ninja (Jade) templates
+
+ * https://github.com/mysu/jade4ninja
 
 Please feel free to add your modules to this page as pull request 
 (ninja/ninja-core/src/site/markdown/documentation/modules.md)

@@ -1,11 +1,13 @@
 Version XXX
 ===========
 
- * 2014-01-14 Renaming SessionCookie => Session and FlashCookie => FlashScope (ra)
+ * 2014-01-28 Added support for custom regex in variable part of routes (ra).
+ * 2014-01-27 Added support to serve arbitrary paths via AssetsController via
+              serveStatic method (ra).
  * 2014-01-16 Removed deprecated (and slow) option to access i18n messages in 
               freemarker templates directly via ${messagekey}. This was replaced by
               by ${i18n("messageKey")} a long time ago (ra).
-
+ * 2014-01-14 Renaming SessionCookie => Session and FlashCookie => FlashScope (ra)
 
 Version 2.5.1
 =============
