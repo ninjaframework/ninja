@@ -1,6 +1,7 @@
 Version x.x.x
 ============
 
+ * 2014-01-29 Bump to latest Guava 16.0 (ra) 
  * 2014-01-28 Added support for custom regex in variable part of routes (ra).
  * 2014-01-27 Added support to serve arbitrary paths via AssetsController via
               serveStatic method (ra).
