@@ -110,7 +110,6 @@ public class AssetsControllerTest {
                 httpCacheToolkit, mimeTypes, ninjaProperties);
 
         when(contextRenerable.getRequestPath()).thenReturn("/ninja/Ninja.class");
-        
         Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();

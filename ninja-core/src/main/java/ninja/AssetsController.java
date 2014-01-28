@@ -52,6 +52,8 @@ public class AssetsController {
             .getLogger(AssetsController.class);
     
     public final static String ASSETS_DIR = "assets";
+    
+    public final static String FILENAME_PATH_PARAM = "fileName";
 
     /** Used as seen by http request */
     //remove when removing "serve" method.
@@ -111,60 +113,7 @@ public class AssetsController {
                     
                 }
 
-
-                // check if stream exists. if not print a notfound exception
-                if (url == null) {
-
-                    context.finalizeHeadersWithoutFlashAndSessionCookie(Results.notFound());
-
-                } else {
-
-                    try {
-
-                        URLConnection urlConnection = url.openConnection();
-                        Long lastModified = urlConnection.getLastModified();
-                        httpCacheToolkit.addEtag(context, result, lastModified);
-
-                        if (result.getStatusCode() == Result.SC_304_NOT_MODIFIED) {
-                            // Do not stream anything out. Simply return 304
-                            context.finalizeHeadersWithoutFlashAndSessionCookie(result);
-                            
-                        } else {
-
-                            result.status(Result.SC_200_OK);
-
-                            // Try to set the mimetype:
-                            String mimeType = mimeTypes.getContentType(context,
-                                    url.getFile());
-
-                            if (null != mimeType
-                                    && !mimeType.isEmpty()) {
-                                result.contentType(mimeType);
-                            }
-
-                            // finalize headers:
-                            ResponseStreams responseStreams = context
-                                    .finalizeHeadersWithoutFlashAndSessionCookie(result);
-
-                            InputStream inputStream = urlConnection
-                                    .getInputStream();
-                            OutputStream outputStream = responseStreams
-                                    .getOutputStream();
-
-                            ByteStreams.copy(inputStream, outputStream);
-
-                            IOUtils.closeQuietly(inputStream);
-                            IOUtils.closeQuietly(outputStream);
-
-                        } 
-
-                    } catch (FileNotFoundException e) {
-                        logger.error("error streaming file", e);
-                    } catch (IOException e) {
-                        logger.error("error streaming file", e);
-                    }
-
-                }
+                streamOutUrlEntity(url, context, result);
 
             }
         };
@@ -177,8 +126,16 @@ public class AssetsController {
      * Serves resources from the assets directory of your application.
      * 
      * For instance:
+     * route: /robots.txt
      * A request to /robots.txt will be served from /assets/robots.txt.
-     * Request to /public/css/app.css will be served from /assets/css/app.css.
+     * 
+     * You can also use a path like the following to serve files:
+     * route: /assets/{fileName: .*}
+     * 
+     * matches
+     * /assets/app/app.css 
+     * and will return
+     * /assets/app/app.css (from your jar).
      * 
      */
     public Result serveStatic(Context context) {
@@ -187,16 +144,50 @@ public class AssetsController {
             @Override
             public void render(Context context, Result result) {
 
-                URL url = null;
+                String fileName = getFileNameFromPathOrReturnRequestPath(context);
                 
-                url = getStaticFileFromAssetsDir(context);
+                URL url = getStaticFileFromAssetsDir(context, fileName);
+
+                streamOutUrlEntity(url, context, result);
+
+            }
+        };
+
+        return Results.ok().render(renderable);
+
+    }
+    
+    
+      /**
+     * Serves resources from the assets directory of your application.
+     * 
+     * For instance:
+     * A request to /robots.txt will be served from /assets/robots.txt.
+     * Request to /public/css/app.css will be served from /assets/css/app.css.
+     * 
+     */
+    public Result serveWebjars(Context context) {
+        Object renderable = new Renderable() {
+
+            @Override
+            public void render(Context context, Result result) {
                     
-                if (url == null) {
-                    url = getStaticFileFromMetaInfResourcesDir(context);
-                }
+                String fileName = getFileNameFromPathOrReturnRequestPath(context);
+   
+                URL url = getStaticFileFromMetaInfResourcesDir(context, fileName);
 
+                streamOutUrlEntity(url, context, result);
 
-                // check if stream exists. if not print a notfound exception
+            }
+        };
+
+        return Results.ok().render(renderable);
+
+    }
+    
+    private void streamOutUrlEntity(URL url, Context context, Result result) {
+    
+        // check if stream exists. if not print a notfound exception
                 if (url == null) {
 
                     context.finalizeHeadersWithoutFlashAndSessionCookie(Results.notFound());
@@ -247,12 +238,8 @@ public class AssetsController {
                     }
 
                 }
-
-            }
-        };
-
-        return Results.ok().render(renderable);
-
+    
+    
     }
     
     /**
@@ -312,10 +299,10 @@ public class AssetsController {
      * of Ninja where to store stuff. Usually in src/main/java/assets/.
      * 
      */
-    private URL getStaticFileFromAssetsDir(Context context) {
+    private URL getStaticFileFromAssetsDir(Context context, String fileName) {
         
         String finalNameWithoutLeadingSlash = 
-                normalizePathWithoutTrailingSlash(context.getRequestPath());
+                normalizePathWithoutTrailingSlash(fileName);
 
         URL url = null;
         
@@ -368,14 +355,14 @@ public class AssetsController {
      * to use e.g. webjars project.
      * 
      */
-    private URL getStaticFileFromMetaInfResourcesDir(Context context) {
+    private URL getStaticFileFromMetaInfResourcesDir(Context context, String fileName) {
 
         String finalNameWithoutLeadingSlash 
-                = normalizePathWithoutTrailingSlash(context.getRequestPath());
+                = normalizePathWithoutTrailingSlash(fileName);
 
         URL url = null;
         
-        url = this.getClass().getClassLoader().getResource("META-INF/resources/" + finalNameWithoutLeadingSlash);
+        url = this.getClass().getClassLoader().getResource("META-INF/resources/webjars/" + finalNameWithoutLeadingSlash);
 
         return url;
         
@@ -451,6 +438,18 @@ public class AssetsController {
             return false;
         }
         
+    }
+    
+    
+    public static String getFileNameFromPathOrReturnRequestPath(Context context) {
+        
+        String fileName = context.getPathParameter(FILENAME_PATH_PARAM);
+
+        if (fileName == null) {
+            fileName = context.getRequestPath();
+        }
+        return fileName;
+
     }
 
 }
