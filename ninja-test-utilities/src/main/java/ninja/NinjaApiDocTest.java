@@ -29,29 +29,34 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.devbliss.doctest.DocTest;
+import org.junit.After;
+import org.junit.Before;
 
 /**
+ * DEPRECATED. Please consider using NinjaDocTester and the org.doctester library instead.
+ * 
+ * This class and its packages will soon be moved to a Ninja module.
+ * 
  * Superclass for doctests that require a running server. Uses {@link NinjaTest} for the server
  * stuff.
  * 
  * @author hschuetz
  * 
  */
+@Deprecated
 public abstract class NinjaApiDocTest extends DocTest {
     private static NinjaTestServer ninjaTestServer;
 
     public NinjaApiDocTest() {
     }
 
-    @BeforeClass
-    public static void startServerInTestMode() {
-        System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
+    @Before
+    public void startServerInTestMode() {
         ninjaTestServer = new NinjaTestServer();
     }
 
-    @AfterClass
-    public static void shutdownServer() {
-    	System.clearProperty(NinjaConstant.MODE_KEY_NAME);
+    @After
+    public void shutdownServer() {
         ninjaTestServer.shutdown();
     }
 

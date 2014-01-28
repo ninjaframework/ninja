@@ -42,6 +42,9 @@ import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.Version;
+import java.io.Writer;
+import ninja.utils.NinjaConstant;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
 
@@ -75,6 +78,19 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         cfg = new Configuration();
         
+        // This is important to enable html escaping of apostrophes
+        // http://freemarker.org/docs/ref_builtins_string.html
+        cfg.setIncompatibleImprovements(new Version(2, 3, 20));
+        
+        // Set your preferred charset template files are stored in. UTF-8 is
+        // a good choice in most applications:
+        cfg.setDefaultEncoding(NinjaConstant.UTF_8);
+        
+        // Set the charset of the output. This is actually just a hint, that
+        // templates may require for URL encoding and for generating META element
+        // that uses http-equiv="Content-type".
+        cfg.setOutputEncoding(NinjaConstant.UTF_8);
+
         cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
         ///////////////////////////////////////////////////////////////////////
@@ -254,15 +270,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         // Specify the data source where the template files come from.
         // Here I set a file directory for it:
-        try {
+        try (Writer writer = responseStreams.getWriter()) {
 
             Template freemarkerTemplate = cfg.getTemplate(templateName);
 
             // convert tuples:
-            freemarkerTemplate.process(map, responseStreams.getWriter());
-
-            responseStreams.getWriter().flush();
-            responseStreams.getWriter().close();
+            freemarkerTemplate.process(map, writer);
 
         } catch (Exception e) {
             logger.error(

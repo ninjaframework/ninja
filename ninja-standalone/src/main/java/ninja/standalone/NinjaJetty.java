@@ -1,5 +1,6 @@
 package ninja.standalone;
 
+import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
 import java.net.URI;
 import ninja.servlet.NinjaServletListener;
@@ -29,10 +30,12 @@ public class NinjaJetty {
     ServletContextHandler context;
 
     String ninjaContextPath;
-    
+
+    NinjaServletListener ninjaServletListener;
+
     public static void main(String [] args) {
         
-        NinjaMode ninjaMode = NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet();
+        NinjaMode ninjaMode = NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet();
         
         int port = tryToGetPortFromSystemPropertyOrReturnDefault();
         String contextPath = tryToGetContextPathFromSystemPropertyOrReturnDefault();
@@ -52,7 +55,11 @@ public class NinjaJetty {
         port = 8080;
         serverUri = URI.create("http://localhost:" + port);
         ninjaMode = NinjaMode.dev;
-        
+        ninjaServletListener = new NinjaServletListener();
+    }
+
+    public Injector getInjector() {
+        return ninjaServletListener.getInjector();
     }
     
     public NinjaJetty setPort(int port) {
@@ -96,7 +103,6 @@ public class NinjaJetty {
             NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
             ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
 
-            NinjaServletListener ninjaServletListener = new NinjaServletListener();
             ninjaServletListener.setNinjaProperties(ninjaProperties);
 
             context.addEventListener(ninjaServletListener);

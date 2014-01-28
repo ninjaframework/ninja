@@ -24,7 +24,7 @@ public class NinjaModeHelperTest {
     public void testNinjaModeHelperWorksWithNoModeSet() {
         
         assertEquals(false, NinjaModeHelper.determineModeFromSystemProperties().isPresent());
-        assertEquals(NinjaMode.dev, NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet());
+        assertEquals(NinjaMode.prod, NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
         
     }
 
@@ -34,7 +34,7 @@ public class NinjaModeHelperTest {
         System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
         
         assertEquals(NinjaMode.test, NinjaModeHelper.determineModeFromSystemProperties().get());
-        assertEquals(NinjaMode.test, NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet());
+        assertEquals(NinjaMode.test, NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
         
         System.clearProperty(NinjaConstant.MODE_KEY_NAME);
         
@@ -46,7 +46,7 @@ public class NinjaModeHelperTest {
         System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_DEV);
         
         assertEquals(NinjaMode.dev, NinjaModeHelper.determineModeFromSystemProperties().get());
-        assertEquals(NinjaMode.dev, NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet());
+        assertEquals(NinjaMode.dev, NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
         
         System.clearProperty(NinjaConstant.MODE_KEY_NAME);
         
@@ -58,7 +58,7 @@ public class NinjaModeHelperTest {
         System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_PROD);
         
         assertEquals(NinjaMode.prod, NinjaModeHelper.determineModeFromSystemProperties().get());
-        assertEquals(NinjaMode.prod, NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet());
+        assertEquals(NinjaMode.prod, NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
         
         System.clearProperty(NinjaConstant.MODE_KEY_NAME);
         

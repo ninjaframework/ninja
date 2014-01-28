@@ -28,8 +28,14 @@ import ninja.utils.SwissKnife;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.io.IOException;
+import java.io.Writer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Result {
+    
+    private final Logger logger = LoggerFactory.getLogger(Result.class);
 
     // /////////////////////////////////////////////////////////////////////////
     // HTTP Status codes (for convenience)
@@ -317,10 +323,16 @@ public class Result {
                 ResponseStreams resultJsonCustom = context
                         .finalizeHeaders(result);
                 
-                OutputStream outputStream = resultJsonCustom.getOutputStream();
-                outputStream.write(string.getBytes());
- 
-                outputStream.close();
+                try (Writer writer = resultJsonCustom.getWriter()) {
+                
+                    writer.write(string);
+                    
+                } catch (IOException ioException) {
+                
+                    logger.error(
+                            "Error rendering raw String via renderRaw(...)", 
+                            ioException);
+                }
  
             }
         };

@@ -21,6 +21,7 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.google.inject.Injector;
 import ninja.standalone.NinjaJetty;
 
 import org.apache.http.client.utils.URIBuilder;
@@ -51,6 +52,10 @@ public class NinjaTestServer {
         
         ninjaJetty.start();
         
+    }
+
+    public Injector getInjector() {
+        return ninjaJetty.getInjector();
     }
 
     public String getServerAddress() {

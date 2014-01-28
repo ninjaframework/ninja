@@ -4,18 +4,24 @@ Quickstart
 The best way to start a Ninja project is by calling the following command:
 
 <pre class="prettyprint">
-    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype
+
+    mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype -DarchetypeVersion=2.5.1
+
 </pre>
 
 Please enter sensible values for "groupId" and "artifactId" and let Maven generate your first Ninja project.
 
 
 After finishing the generation cd into your project and execute:
+
 <pre class="prettyprint">
-    mvn jetty:run
+
+    mvn clean install     // to generate the compiled classes the first time
+    mvn ninja:run         // to start Ninja's SuperDevMode
+
 </pre>
 
-This starts the development webserver. And that's it already. Simply open http://localhost:8080 in your browser and start hacking :)
+This starts Ninja's SuperDevMode. Simply open http://localhost:8080 in your browser and start coding :)
 
 __Note__: Not sure what "mvn" or Maven is? Check out http://maven.apache.org/guides/getting-started
 
@@ -38,7 +44,9 @@ Developing Ninja applications is superfast.
 __Note:__ If you are running into PermGen exceptions make sure you set the following maven parameter:
 
 <pre>
-export MAVEN_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled"
+
+    export MAVEN_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled"
+
 </pre>
 
 More information at this excellent blog post: http://java.jiderhamn.se/2011/12/11/classloader-leaks-i-how-to-find-classloader-leaks-with-eclipse-memory-analyser-mat
@@ -58,6 +66,7 @@ A controller resides under the package *controllers*.
 Controllers are just simple Java classes. 
 
 <pre class="prettyprint">
+
     public class ApplicationController {       
     
         public Result index() {
@@ -65,6 +74,7 @@ Controllers are just simple Java classes.
     
         }
     }
+
 </pre>
 
 Controller methods always return a "Result". Results is just a little helper that lets you create
@@ -81,6 +91,7 @@ This is done by declaring a file called *Routes.java* in the package *conf*.
 A minimal route file looks like:
 
 <pre class="prettyprint">
+
     public class Routes implements ApplicationRoutes {
   
         @Override
@@ -90,6 +101,7 @@ A minimal route file looks like:
         
         }
     }
+
 </pre>
     
 The route is loaded by a convention right at the start of Ninja. It simply tells Ninja that requests to /

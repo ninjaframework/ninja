@@ -19,4 +19,9 @@ package etc;
 public interface GreetingService {
 	String hello();
 
+    /**
+     * @return the time when this service was initialized
+     */
+    long getServiceInitializationTime();
+
 }

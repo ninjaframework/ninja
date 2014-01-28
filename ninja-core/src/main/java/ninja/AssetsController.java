@@ -49,12 +49,14 @@ public class AssetsController {
 
     private static Logger logger = LoggerFactory
             .getLogger(AssetsController.class);
+    
+    public static String ASSETS_DIR = "assets";
 
     /** Used as seen by http request */
-    final String PUBLIC_PREFIX = "/assets/";
+    final String PUBLIC_PREFIX = "/" + ASSETS_DIR + "/";
 
     /** Used for storing files locally */
-    final String ASSETS_PREFIX = "assets/";
+    final String ASSETS_PREFIX = ASSETS_DIR + "/";
     
     /** Used for dev mode streaming directly from src dir without jetty reload. */
     final String srcDir  = System.getProperty("user.dir")

@@ -53,6 +53,7 @@ public class SessionCookieImpl implements SessionCookie {
     private final Boolean sessionTransferredOverHttpsOnly;
     private final Boolean sessionHttpOnly;
     private final String applicationCookiePrefix;
+    private final String applicationCookieDomain;
     private final Map<String, String> data = new HashMap<String, String>();
 
     /** Has cookie been changed => only send new cookie stuff has been changed */
@@ -82,6 +83,9 @@ public class SessionCookieImpl implements SessionCookie {
 
         this.applicationCookiePrefix = ninjaProperties
                 .getOrDie(NinjaConstant.applicationCookiePrefix);
+
+        this.applicationCookieDomain = ninjaProperties
+                .get(NinjaConstant.applicationCookieDomain);
     }
 
     /**
@@ -151,9 +155,9 @@ public class SessionCookieImpl implements SessionCookie {
     @Override
     public String getId() {
         if (!data.containsKey(ID_KEY)) {
-            data.put(ID_KEY, UUID.randomUUID().toString());
+            put(ID_KEY, UUID.randomUUID().toString());
         }
-        return data.get(ID_KEY);
+        return get(ID_KEY);
 
     }
 
@@ -171,9 +175,9 @@ public class SessionCookieImpl implements SessionCookie {
     @Override
     public String getAuthenticityToken() {
         if (!data.containsKey(AUTHENTICITY_KEY)) {
-            data.put(AUTHENTICITY_KEY, UUID.randomUUID().toString());
+            put(AUTHENTICITY_KEY, UUID.randomUUID().toString());
         }
-        return data.get(AUTHENTICITY_KEY);
+        return get(AUTHENTICITY_KEY);
     }
 
     @Override
@@ -221,6 +225,10 @@ public class SessionCookieImpl implements SessionCookie {
             Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
                     + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
             cookie.setPath("/");
+
+            if(applicationCookieDomain != null){
+                cookie.setDomain(applicationCookieDomain);
+            }
 
             if (sessionExpireTimeInMs != null) {
                 cookie.setMaxAge(sessionExpireTimeInMs / 1000);

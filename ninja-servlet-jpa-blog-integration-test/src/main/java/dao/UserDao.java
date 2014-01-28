@@ -8,13 +8,14 @@ import models.User;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
+import ninja.jpa.UnitOfWork;
 
 public class UserDao {
     
     @Inject
     Provider<EntityManager> entityManagerProvider;
     
-    @Transactional
+    @UnitOfWork
     public boolean isUserAndPasswordValid(String username, String password) {
         
         if (username != null && password != null) {

@@ -43,6 +43,8 @@ public class SetupDao {
             // Create a new post
             Article bobPost1 = new Article(bob, post1Title, post1Content);
             entityManager.persist(bobPost1);
+            
+            entityManager.flush();
         }
 
     }

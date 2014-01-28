@@ -16,7 +16,11 @@
 
 package controllers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import com.google.inject.Injector;
+import dao.ArticleDao;
 import ninja.NinjaTest;
 
 import org.junit.Before;
@@ -29,6 +33,16 @@ public class ApplicationControllerTest extends NinjaTest {
         
         ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
         
+    }
+
+    @Test
+    public void testThatSetupInitializationCreatesTheTestUsers(){
+        // Get the application injector
+        Injector applicationInjector = getInjector();
+        // Access internal dao
+        ArticleDao articleDao = applicationInjector.getInstance(ArticleDao.class);
+        // check that articles are setup
+        assertEquals(articleDao.getAllArticles().articles.size(), 3);
     }
 
     @Test

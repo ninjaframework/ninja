@@ -24,6 +24,7 @@ The main starting point to define your bindings is a file "conf/Module.java".
 This module is a plain Guice module that will be started when you start your application.
 
 <pre class="prettyprint">
+
     public class Module extends AbstractModule {
 
         protected void configure() {
@@ -32,6 +33,7 @@ This module is a plain Guice module that will be started when you start your app
         }
 
     }
+
 </pre>
 
 
@@ -39,6 +41,7 @@ And that's it already. You can now simply inject the GreetingService (an interfa
 into your controller and get a ready to use implementation:
 
 <pre class="prettyprint">
+
     @Singleton
     public class InjectionExampleController {
 	
@@ -51,6 +54,7 @@ into your controller and get a ready to use implementation:
 
         }
     }
+
 </pre>
 
 You can also use Providers, annotations like @Singleton and so on. Guice does

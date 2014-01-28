@@ -56,7 +56,7 @@ public class NinjaBootstap {
 
         
         this(new NinjaPropertiesImpl(
-                NinjaModeHelper.determineModeFromSystemPropertiesOrDevIfNotSet()));
+                NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet()));
         
     }
 

@@ -1,3 +1,71 @@
+Version 2.5.1
+=============
+ 
+ * 2014-01-08 Setting of hibernate properties no longer on System.setProperty level, but locally. (ra).
+ * 2014-01-08 Added @UnitOfWork annotation for fast readonly database access (ra).
+
+
+Version 2.5.0
+=============
+ 
+ * 2014-01-07 Security fix. Html templates did not escape apostrophes properly ('). (ra)
+ * 2013-12-22 Added Maven 3.1.0 as requirement for ninja-maven-plugin (ra)
+ * 2013-12-19 ObjectMapperProvider now a singleton (it is threadsafe) (ra)
+
+
+Version 2.4.0
+=============
+
+* 2013-12-02 Session/cookie sharing between subdomains. (linx56)
+* 2013-12-05 Fix + test in maven plugin. Assets directory was not ignored / regex wrong. (ra)
+* 2013-12-05 Fixed wrong hamcrest imports (junit imports hamcrest 1.3, mockito by default imports hamcrest 1.1).
+             JUnit now always above mockito in pom.xml - therefore hamcrest 1.3 takes precedence over hamcrest 1.1 (ra)
+* 2013-12-13 Bugfix in session implementation. Authenticity token and ID not sent under some circumstances. (ra)
+* 2013-12-13 Ninja now uses "ninja.mode=prod" by default (and no longer dev). 
+             Many users complained that it is quite strange to configure the prod 
+             mode when running Ninja as war inside a  servlet container.  These problems
+             are now gone. (ra)
+* 2013-12-14 Json Jackson mapper now uses Afterburner by default for reading / writing
+             Json Pojos (Also valid for rendering JsonP). This should improve Json performance
+             a lot. (ra)
+* 2013-12-14 Fixed a performance bug where output streams / outputwriters were not properly
+             closed. This affected the performance of rendering raw Strings and
+             raw byte arrays. (ra)
+* 2013-12-14 NinjaDocTester added ability to getInjector and get arbitrary guice objects inside
+             Test classes. (ra)
+* 2013-12-14 Added Results.text() as helper to render plain text (ra)
+* 2013-12-14 Fixed getInjector() behavior of NinjaServletListener. Multiple calling
+             of getInjector() caused the generation of multiple Ninja instances what
+             is wrong. (ra)
+* 2013-12-14 Streamlined test-utilities. Now all Ninja*Tests start a new Ninja server
+             before each test. (NinjaDocTester for instance started Ninja before each
+             class. That was inconsistent) (ra).
+* 2013-12-14 Bump to org.doctester 1.1.1 and fluentlenium 0.9.1 (ra).
+* 2013-12-15 Fixed bug in result.renderRaw(). Used outputStream to render strings, 
+             will lead to problems with utf-8 characters.
+
+
+Version 2.3.0
+=============
+
+* 2013-11-14 Tiny fix for sometimes flaky testcase. Added a flush to setup step. (ra)
+* 2013-11-21 Added support for DocTester based tests. (ra)
+* 2013-11-21 Working version of ninja-maven-plugin. Hot reload for Ninja without PermGen errors. (ra)
+* 2013-11-28 Changed naming convention for i18n files from messages.en.properties
+             to messages_en.properties. This allows IntelliJ, Netbeans to recognize
+             those files as translateable and provide i18n editors. (amsz, ra)
+* 2013-11-29 Fixed potential bug in i18n module. Locale was not set when parsing
+             locale sensitive special MessageFormat patterns like {0, date} (ra)
+
+Version 2.2.0
+=============
+
+* 2013-11-05 New NinjaDaoTestBase class to facilitate test your DAOs with a real database (emiguelt)
+* 2013-11-06 Set general log level of archetypes and integration tests to "info" (ra)
+* 2013-11-08 Access to application injector from NinjaTest (paweld2)
+* 2013-11-13 Dependencies and plugin versions now centrally managed in parent pom.xml (ra)
+* 2013-11-13 Bump to ehcache 2.7.4 / Fixes dependency problem with terracotta (ra)
+
 Version 2.1.0
 =============
 

@@ -1,6 +1,52 @@
 Upgrading to latest Ninja
 =========================
 
+to 2.4.0
+--------
+
+ * Ninja now uses "ninja.mode=prod" by default (and no longer dev). 
+   Many users complained that it is quite strange to configure the prod 
+   mode when running Ninja as war inside a  servlet container. 
+   Therefore Ninja assumes now mode prod by default.
+
+   The downside of this is that you have to set the mode for dev now manually if 
+   you need it. Ninja's SuperDevMode handles this for you and you can simply
+   use "mvn ninja:run" to start Ninja in dev mode.
+
+   But if you are using e.g. Jetty's maven plugin you have to set the system
+   property like that:
+
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                   ....
+                    <systemProperties>
+                        <systemProperty>
+                            <name>ninja.mode</name>
+                            <value>dev</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+   The archetypes are already equipped with the new versions.
+  
+
+to 2.3.0
+---------
+ 
+ * File naming convention for message files have changed. Previously it was
+   messages.en.properties or messages.en-US.properties. Now it is 
+   messages_en.properties or messages_en-US.properties. Please rename
+   them in your application and you are ready to go.
+   
+   This change allows you to use a lot more i18n translation tools than 
+   before. For instance IntelliJ and Netbeans now automatically detect the files
+   as i18n files and help you with translating them efficiently.
+
+
+
 From 1.6 to 2.0.0
 -----------------
 

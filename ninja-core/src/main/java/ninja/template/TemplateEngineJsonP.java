@@ -21,12 +21,16 @@ import java.io.OutputStream;
 import java.util.regex.Pattern;
 import ninja.Context;
 import ninja.Result;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TemplateEngineJsonP implements TemplateEngine {
+    
+    private final Logger logger = LoggerFactory.getLogger(TemplateEngineJsonP.class);
 
     static final String DEFAULT_CALLBACK_PARAMETER_NAME = "callback";
 
@@ -35,17 +39,16 @@ public class TemplateEngineJsonP implements TemplateEngine {
     private static final Pattern CALLBACK_VALIDATION_REGEXP =
             Pattern.compile("^[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.]?[a-zA-Z0-9\\$_]+$");
 
-    private final Logger logger;
-
     private final ObjectMapper objectMapper;
 
     private final String callbackParameterName;
 
     @Inject
-    public TemplateEngineJsonP(Logger logger, ObjectMapper objectMapper, NinjaProperties properties) {
-        this.logger = logger;
+    public TemplateEngineJsonP(ObjectMapper objectMapper, NinjaProperties properties) {
+        
         this.objectMapper = objectMapper;
-        this.callbackParameterName = properties.getWithDefault("ninja.jsonp.callbackParameter",
+        this.callbackParameterName = properties.getWithDefault(
+                NinjaConstant.NINJA_JSONP_CALLBACK_PARAMETER,
                 DEFAULT_CALLBACK_PARAMETER_NAME);
     }
 

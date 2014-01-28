@@ -17,91 +17,76 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>ninja-test-utilities</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>ninja-test-utilities</artifactId>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>2.2.0-SNAPSHOT</version>
+        <version>2.5.2-SNAPSHOT</version>
     </parent>
     
     <url>http://www.ninjaframework.org</url>
 
-	<dependencies>
+    <dependencies>
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
-		<!-- Testing is mainly done by mockito: -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-            <!-- junit-dep has all dependencies declared, rather than bundled (bundled
-                 causes massive classpath headaches) -->
-            <artifactId>junit-dep</artifactId>
-			<version>4.10</version>
-		</dependency>
-
+        <!-- Testing is mainly done by mockito: -->
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.version}</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <!-- A very nice abstraction for making selenum tests: -->
-		<dependency>
-			<groupId>org.fluentlenium</groupId>
-			<artifactId>fluentlenium-core</artifactId>
-			<version>0.6.0</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>org.fluentlenium</groupId>
+            <artifactId>fluentlenium-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
         
         <!--HttpCient is used to mainly test low level Json Apis -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.2.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
-		<dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>4.2.1</version>
+            <artifactId>httpclient</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.devbliss.doctest</groupId>
-            <artifactId>doctest</artifactId>
-            <version>0.6.5</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <scope>compile</scope>
         </dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>org.doctester</groupId>
+            <artifactId>doctester-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        
+        <!-- devbliss doctester should be removed at some point 
+             - superseeded by docterster.org -->
+        <dependency>
+            <groupId>com.devbliss.doctest</groupId>
+            <artifactId>doctest</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+
+
+    </dependencies>
 
 </project>

@@ -42,6 +42,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.common.collect.Maps;
 
 import ch.qos.logback.core.db.dialect.MySQLDialect;
+import java.io.StringWriter;
+import java.io.Writer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultTest {
@@ -352,9 +354,9 @@ public class ResultTest {
         
         // Setup some stuff to catch the output that gets written to the
         // output stream.
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Writer writer = new StringWriter();
         when(context.finalizeHeaders(result)).thenReturn(responseStreams);
-        when(responseStreams.getOutputStream()).thenReturn(byteArrayOutputStream);
+        when(responseStreams.getWriter()).thenReturn(writer);
         
         
         Renderable renderable = (Renderable) result.getRenderable();
@@ -367,7 +369,7 @@ public class ResultTest {
         verify(context).finalizeHeaders(result);
         
         // make sure we did render the string to the OutputStream.
-        assertEquals(byteArrayOutputStream.toString(), stringToRender);
+        assertEquals(writer.toString(), stringToRender);
         
         // also make sure the content type is set correctly.
         assertEquals(Result.APPLICATON_JSON, result.getContentType());

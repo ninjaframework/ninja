@@ -28,18 +28,20 @@ import org.slf4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TemplateEngineJson implements TemplateEngine {
 
-    private final Logger logger;
-    
+    private final Logger logger = LoggerFactory.getLogger(TemplateEngineJson.class);
+
     private final ObjectMapper objectMapper;
 
     @Inject
-    public TemplateEngineJson(Logger logger, ObjectMapper objectMapper) {
-        this.logger = logger;
+    public TemplateEngineJson(ObjectMapper objectMapper) {
+        
         this.objectMapper = objectMapper;
+        
     }
 
     @Override
@@ -47,11 +49,9 @@ public class TemplateEngineJson implements TemplateEngine {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
-        try {
+        try (OutputStream outputStream  = responseStreams.getOutputStream()) {
             
-            OutputStream outputStream  = responseStreams.getOutputStream();
             objectMapper.writeValue(outputStream, result.getRenderable());
-            outputStream.close();
             
         } catch (IOException e) {
 

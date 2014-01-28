@@ -16,24 +16,43 @@
 
 package example;
 
-import static org.junit.Assert.assertTrue;
+import com.google.inject.Injector;
+import etc.GreetingService;
 import ninja.NinjaTest;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class ExampleApiTest extends NinjaTest {
 
 
-	@Test
-	public void testThatStaticAssetsWork() {
+    @Test
+    public void testThatStaticAssetsWork() {
 
-		String apiCallResult = ninjaTestBrowser.makeJsonRequest(getServerAddress() + "api/person.json");
-		
-		assertTrue(apiCallResult.startsWith("{\"name\":\"zeeess name -"));
-		
-	}
+        String apiCallResult = ninjaTestBrowser.makeJsonRequest(getServerAddress() + "api/person.json");
 
-	
+        assertTrue(apiCallResult.startsWith("{\"name\":\"zeeess name -"));
+
+    }
+
+    @Test
+    public void testThatInjectorAccessibleFromNinjaTestIsTheApplicationInjector() {
+
+        // this is the application guice injector
+        Injector injector = getInjector();
+
+        // We know that this service is a singleton and it provides the application initialization time.
+        long serviceInitializationTime = injector.getInstance(GreetingService.class).getServiceInitializationTime();
+
+        // provide a json with information about the application initialization time.
+        String serviceInitTimeResult = ninjaTestBrowser.makeJsonRequest(getServerAddress() + "/serviceInitTime");
+
+        //The response information must match the internal application state
+        assertEquals("{\"initTime\":" + serviceInitializationTime + "}", serviceInitTimeResult);
+
+    }
+
 
 }

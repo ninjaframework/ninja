@@ -17,44 +17,56 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.ninjaframework</groupId>
-	<artifactId>ninja</artifactId>
-	<packaging>pom</packaging>
-	<version>2.2.0-SNAPSHOT</version>
-	<url>http://www.ninjaframework.org</url>
+    <groupId>org.ninjaframework</groupId>
+    <artifactId>ninja</artifactId>
+    <packaging>pom</packaging>
+    <version>2.5.2-SNAPSHOT</version>
+    <url>http://www.ninjaframework.org</url>
 
-	<!-- Deploy to central maven using the oss-parent of sonatype -->
-	<!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
+    <!-- Deploy to central maven using the oss-parent of sonatype -->
+    <!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
-	<modules>
-		<module>ninja-core</module>
-		<module>ninja-servlet</module>
+    <modules>
+        <module>ninja-core</module>
+        <module>ninja-servlet</module>
         <module>ninja-standalone</module>
-		<module>ninja-test-utilities</module>
-		<module>ninja-servlet-integration-test</module>
+        <module>ninja-test-utilities</module>
+        <module>ninja-servlet-integration-test</module>
         <module>ninja-servlet-jpa-blog-integration-test</module>
         <module>ninja-servlet-jpa-blog-archetype</module>
-	</modules>
+        <module>ninja-maven-plugin</module>
+    </modules>
 
-	<!-- pin encoding to utf-8 -->
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<siteProjectVersion>${project.version}</siteProjectVersion>
+    <!-- pin encoding to utf-8 -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <siteProjectVersion>${project.version}</siteProjectVersion>
         <jetty.version>9.0.5.v20130815</jetty.version>
-	</properties>
+        <hibernate.version>4.2.3.Final</hibernate.version>
+        <jackson.version>2.3.0</jackson.version>
+        <!-- Formatting options for Netbeans IDE -->
+        <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>80</org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>none</org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>
+        <!-- end formatting options for Netbeans -->
+    </properties>
 
-	<!-- Fix version 1.7 of java compiler in all submodules: -->
-	<build>
+    <!-- Fix version 1.7 of java compiler in all submodules: -->
+    <build>
 
-		<pluginManagement>
+        <pluginManagement>
         
             <plugins>
             
@@ -68,115 +80,515 @@
                         <target>1.7</target>
                     </configuration>
                 </plugin>
+                <!--
+                        This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the
+                        Maven build itself.
+                -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-enforcer-plugin</artifactId>
+                                        <versionRange>[1.0,)</versionRange>
+                                        <goals>
+                                            <goal>enforce</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
+
+                    <configuration>
+                        <reportPlugins>
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-javadoc-plugin</artifactId>
+                                <version>2.9.1</version>
+                            </plugin>
+                        </reportPlugins>
+                    </configuration>
+
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.ju-n.maven.doxia</groupId>
+                            <artifactId>doxia-module-markdown</artifactId>
+                            <version>1.0.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+            
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>${jetty.version}</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-archetype-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.0</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-banned-dependencies</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedDependencies>
+                                        <excludes>
+                                            <exclude>commons-logging</exclude>
+                                        </excludes>
+                                    </bannedDependencies>
+                                </rules>
+                                <fail>true</fail>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <scm>
+        <url>https://github.com/ninjaframework/ninja</url>
+        <connection>scm:git://github.com/ninjaframework/ninja.git</connection>
+        <developerConnection>scm:git:git@github.com:ninjaframework/ninja.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/ninjaframework/ninja/issues/</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Ninja Web Framework Users</name>
+            <post>ninja-framework@googlegroups.com</post>
+            <archive>http://groups.google.com/group/ninja-framework</archive>
+        </mailingList>
+    </mailingLists>
 
 
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+    <profiles>
+        <!-- Do a license check by running : mvn -P license license:check -->
+        <!-- Update the license check by running : mvn -P license license:format -->
+        <profile>
+            <id>license</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <quiet>false</quiet>
+                            <header>src/main/resources/license-header.txt</header>
+                            <aggregate>true</aggregate>
+                            <includes>
+                                <include>**/src/**</include>
+                                <include>**/pom.xml</include>
+                            </includes>
+                            <excludes>
+                                <!-- ignore files produced during a build -->
+                                <exclude>**/target/**</exclude>
+                                <exclude>**/WEB-INF/classes/**</exclude>
+                                <exclude>**/site/**</exclude>
+                                <exclude>**/.DS_Store</exclude>
+
+                                <!-- ignore binary files -->
+                                <exclude>**/assets/**</exclude>
+                                <exclude>**/views/**</exclude>
+                            </excludes>
+                            <useDefaultExcludes>false</useDefaultExcludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+    
+    <dependencyManagement>
+        <dependencies>
+            
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-servlet</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-standalone</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-test-utilities</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+    
+            <!-- Thread-safe alternative for Java JDK time stuff -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.2</version>
+            </dependency>
+
+            <!-- Our favorite dependency injection framework: -->
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>3.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-servlet</artifactId>
+                <version>3.0</version>
+            </dependency>
+
+            <!-- We use Jackson for rendering jsons: -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            
+            <!-- XML parsing -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            
+            <!-- Afterburner lib optimizes Jackson and improves
+                 performance -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-afterburner</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            
+
+            <!-- freemarker is our templating engine: -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker-gae</artifactId>
+                <version>2.3.20</version>
+            </dependency>
+
+            <!-- guava is just cool -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>15.0</version>
+            </dependency>
+
+            <!-- Needed for Hex transforms (security, cookies) and more... -->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.8</version>
+            </dependency>
+
+            <!-- Enrcyption library providing support for blowfish -->
+            <dependency>
+                <groupId>org.mindrot</groupId>
+                <artifactId>jbcrypt</artifactId>
+                <version>0.3m</version>
+            </dependency>
+
+            <!-- Logback is the successor of log4j. We use it: -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.0.13</version>
+            </dependency>
 		
-				<!--
-					This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the
-					Maven build itself.
-				-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-enforcer-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-										  <goal>enforce</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
+            <!-- Replace commons-logging with slf4j bridge (that will use logback)-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>1.7.5</version>
+            </dependency>
+        
+            <!-- Replace log4j with slf4j bridge (that will use logback)-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>1.7.5</version>
+            </dependency>
 
-			</plugins>
-		</pluginManagement>
-	</build>
+            <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
 
-	<scm>
-		<url>https://github.com/ninjaframework/ninja</url>
-		<connection>scm:git://github.com/ninjaframework/ninja.git</connection>
-		<developerConnection>scm:git:git@github.com:ninjaframework/ninja.git</developerConnection>
-	</scm>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.1</version>
+            </dependency>
 
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/ninjaframework/ninja/issues/</url>
-	</issueManagement>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-email</artifactId>
+                <version>1.3.1</version>
+            </dependency>
 
-	<mailingLists>
-		<mailingList>
-			<name>Ninja Web Framework Users</name>
-			<post>ninja-framework@googlegroups.com</post>
-			<archive>http://groups.google.com/group/ninja-framework</archive>
-		</mailingList>
-	</mailingLists>
+            <!-- Commons configuration makes handling of properties files really simple. -->
+            <!-- We use it to parse languages and the application properties. -->
+            <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>1.9</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- For uploading files we are using: -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.3</version>
+            </dependency>
+
+            <!-- Bean validation and reference implementation for JSR 303 -->
+            <!-- IMPORTANT: still using 4.3.1.Final because 5.0.1.Final NOT compatible with GAE -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>4.3.1.Final</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>jboss-logging</artifactId>
+                        <groupId> org.jboss.logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        
+            <!-- ehcache implementation -->
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>2.7.4</version>
+            </dependency>
+        
+            <!-- memcached client -->
+            <dependency>
+                <groupId>net.spy</groupId>
+                <artifactId>spymemcached</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+	
+            <!-- Migration framework -->
+            <dependency>
+                <groupId>com.googlecode.flyway</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>2.2</version>
+            </dependency>
+
+            <!-- JPA dependencies -->
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-persist</artifactId>
+                <version>3.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.0-api</artifactId>
+                <version>1.0.1.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlet</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>tinymce-jquery</artifactId>
+                <version>3.4.9</version>
+            </dependency>
 
 
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.3.172</version>
+            </dependency>
+            
+            
+            <!--HttpCient is used to mainly test low level Json Apis -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.2.1</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>4.2.1</version>
+            </dependency>
+        
+            <!-- Testing -->
+            <!-- devbliss doctester should be removed at some point 
+             - superseeded by docterster.org -->
+            <dependency>
+                <groupId>com.devbliss.doctest</groupId>
+                <artifactId>doctest</artifactId>
+                <version>0.6.5</version>
+            </dependency>
 
+            <dependency>
+                <groupId>org.doctester</groupId>
+                <artifactId>doctester-core</artifactId>
+                <version>1.1.1</version>
+            </dependency>
 
-	<profiles>
-		<!-- Do a license check by running : mvn -P license license:check -->
-		<!-- Update the license check by running : mvn -P license license:format -->
-		<profile>
-			<id>license</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.mycila.maven-license-plugin</groupId>
-						<artifactId>maven-license-plugin</artifactId>
-						<version>1.6.0</version>
-						<configuration>
-							<quiet>false</quiet>
-							<header>src/main/resources/license-header.txt</header>
-							<aggregate>true</aggregate>
-							<includes>
-								<include>**/src/**</include>
-								<include>**/pom.xml</include>
-							</includes>
-							<excludes>
-								<!-- ignore files produced during a build -->
-								<exclude>**/target/**</exclude>
-								<exclude>**/WEB-INF/classes/**</exclude>
-								<exclude>**/site/**</exclude>
-								<exclude>**/.DS_Store</exclude>
+            <!-- A very nice abstraction for making selenum tests: -->
+            <dependency>
+                <groupId>org.fluentlenium</groupId>
+                <artifactId>fluentlenium-core</artifactId>
+                <version>0.9.1</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>1.9.5</version>
+                <scope>test</scope>
+            </dependency>
 
-								<!-- ignore binary files -->
-								<exclude>**/assets/**</exclude>
-								<exclude>**/views/**</exclude>
-							</excludes>
-							<useDefaultExcludes>false</useDefaultExcludes>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>check</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
 
-	</profiles>
+            <dependency>
+                <groupId>com.icegreen</groupId>
+                <artifactId>greenmail</artifactId>
+                <version>1.3.1b</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+        
+        
+    </dependencyManagement>
+    
 </project>

@@ -307,5 +307,57 @@ public class SessionCookieTest {
         // after removing, value should not be there anymore:
         assertNull(sessionCookie.get(key));
     }
+    
+    @Test
+    public void testGetAuthenticityTokenWorks() {
+        
+        SessionCookie sessionCookie = new SessionCookieImpl(
+                crypto,
+                ninjaProperties);
+        
+        sessionCookie.init(context);
+
+        String authenticityToken = sessionCookie.getAuthenticityToken();
+        
+        sessionCookie.save(context, result);
+        
+        // a cookie will be set
+        verify(result).addCookie(cookieCaptor.capture());
+        
+        
+        String cookieValue = cookieCaptor.getValue().getValue();
+        
+        //verify that the authenticity token is set
+        assertTrue(cookieValue.contains("___AT=" + authenticityToken));
+        // also make sure the timestamp is there:
+        assertTrue(cookieValue.contains("___TS="));
+
+    }
+    
+    @Test
+    public void testGetIdTokenWorks() {
+        
+        SessionCookie sessionCookie = new SessionCookieImpl(
+                crypto,
+                ninjaProperties);
+        
+        sessionCookie.init(context);
+
+        String idToken = sessionCookie.getId();
+        
+        sessionCookie.save(context, result);
+        
+        // a cookie will be set
+        verify(result).addCookie(cookieCaptor.capture());
+        
+        
+        String cookieValue = cookieCaptor.getValue().getValue();
+        
+        //verify that the id token is set:
+        assertTrue(cookieValue.contains("___ID=" + idToken));
+        // also make sure the timestamp is there:
+        assertTrue(cookieValue.contains("___TS="));
+
+    }
 
 }

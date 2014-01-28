@@ -35,6 +35,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.base.Optional;
+import java.util.Locale;
+import org.junit.Before;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LangImplTest {
@@ -48,7 +50,11 @@ public class LangImplTest {
     @Captor
     ArgumentCaptor<Cookie> captor = ArgumentCaptor.forClass(Cookie.class);
     
-   
+    @Before
+    public void before() {
+         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"en"});
+    }
+    
 
     @Test
     public void testGetLanguage() {
@@ -133,6 +139,55 @@ public class LangImplTest {
         assertTrue(lang.isLanguageDirectlySupportedByThisApplication("se"));
         assertFalse(lang.isLanguageDirectlySupportedByThisApplication("tk"));
         
+        
+    }
+    
+    
+    @Test
+    public void testGetLocaleFromStringOrDefault() {
+        
+        // ONE DEFAULT LOCALE
+        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"en"});
+        Lang lang = new LangImpl(ninjaProperties);
+        
+        Optional<String> language = Optional.absent();
+        Locale locale = lang.getLocaleFromStringOrDefault(language);
+        
+        assertEquals(Locale.ENGLISH, locale);
+        
+        // GERMAN LOCALE
+        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"de", "en"});
+        lang = new LangImpl(ninjaProperties);
+        
+        language = Optional.absent();
+        locale = lang.getLocaleFromStringOrDefault(language);
+        
+        assertEquals(Locale.GERMAN, locale);
+        
+        // GERMANY LOCALE
+        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"de-DE", "en"});
+        lang = new LangImpl(ninjaProperties);
+        
+        language = Optional.absent();
+        locale = lang.getLocaleFromStringOrDefault(language);
+        
+        assertEquals(Locale.GERMANY, locale);
+        
+    
+    }
+    
+    
+    @Test(expected = IllegalStateException.class)
+    public void testGetLocaleFromStringOrDefaultISEWhenNoApplicationLanguageDefined() {
+        
+        // ONE DEFAULT LOCALE
+        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {});
+        Lang lang = new LangImpl(ninjaProperties);
+        
+        Optional<String> language = Optional.absent();
+        lang.getLocaleFromStringOrDefault(language);
+        
+        // ISE expected
         
     }
     

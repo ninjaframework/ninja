@@ -6,11 +6,12 @@ Great you want to contribute!
 
 Contributing to Ninja is really simple. Well. There are some rules that you should follow:
 
-- Make sure your feature is well tested.
-- Make sure your feature runs inside ninja-demo-application.
-- Make sure your feature is well documented (Javadoc).
-- Make sure there is a tutorial inside the website (ninja-core/src/site/markdown).
 - Make sure you are following the code style below.
+- Make sure your feature is well tested.
+- Make sure your feature is well documented (Javadoc).
+- Make sure there is documentation for your feature at ninja-core/src/site/markdown.
+- Make sure your feature runs inside ninja-integration-test
+  or ninja-servlet-jpa-blog-integration-test if you wrote a feature related to JPA.
 - Add your changes to changelog.md and your name to team.md.
 
 Then send us a pull request and you become a happy member of the Ninja family :)
@@ -21,7 +22,7 @@ Code style
 
 - Default Sun Java / Eclipse code style (a default config for eclipse can be found at the project root eclipse-ninja-format.xml.
 - If you change only tiny things only reformat stuff you actually changed. Otherwise reviewing is really hard.
-- We use spaces.
+- We use spaces / 4 spaces as a tab in all files (java, xml...).
 - All files are UTF-8.
 
 

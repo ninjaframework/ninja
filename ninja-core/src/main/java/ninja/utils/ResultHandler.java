@@ -17,6 +17,8 @@
 package ninja.utils;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,13 +80,13 @@ public class ResultHandler {
             if (objectToBeRendered instanceof NoHttpBody) {
                 // This indicates that we do not want to render anything in the body.
                 // Can be used e.g. for a 204 No Content response.
-                // and surpasses the rendering engines.
+                // and bypasses the rendering engines.
                 context.finalizeHeaders(result);
                 
             } else {
                 // normal mode of operation: we render the stuff via the
-                // template renderer.
-                renderWithTemplateEngine(context, result);
+                // template renderer:
+                renderWithTemplateEngineOrRaw(context, result);
             }
         }
     }
@@ -99,7 +101,7 @@ public class ResultHandler {
         }
     }
 
-    private void renderWithTemplateEngine(Context context, Result result) {
+    private void renderWithTemplateEngineOrRaw(Context context, Result result) {
         // try to get a suitable rendering engine...
         TemplateEngine templateEngine = templateEngineManager
                 .getTemplateEngineForContentType(result.getContentType());
@@ -111,37 +113,44 @@ public class ResultHandler {
         } else {
 
             if (result.getRenderable() instanceof String) {
+                
                 // Simply write it out
-                try {
-                    if (result.getContentType() == null) {
-                        // if content type not explicitly set, text/plain is a good default value:
-                        result.contentType(Result.TEXT_PLAIN);
-                    }
+                
+                if (result.getContentType() == null) {
+                    // if content type not explicitly set, text/plain is a good default value:
+                    result.contentType(Result.TEXT_PLAIN);
+                }
+                
+                ResponseStreams responseStreams = context
+                    .finalizeHeaders(result);
 
-                    ResponseStreams responseStreams = context
-                            .finalizeHeaders(result);
-                    responseStreams.getWriter().write(
-                            (String) result.getRenderable());
+                try (Writer writer = responseStreams.getWriter()) {
+                    
+                    writer.write((String) result.getRenderable());
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
             } else if (result.getRenderable() instanceof byte[]) {
-                // Simply write it out
-                try {
-                    // if content type not explicitly set, application/octet-stream 
-                    // is a good default value:
-                    if (result.getContentType() == null) {
-                        result.contentType(Result.APPLICATION_OCTET_STREAM);
-                    }
-                    ResponseStreams responseStreams = context
-                            .finalizeHeaders(result);
-                    responseStreams.getOutputStream().write(
-                            (byte[]) result.getRenderable());
+                
+                // If content type not explicitly set, application/octet-stream 
+                // is a good default value:
+                if (result.getContentType() == null) {
+                    result.contentType(Result.APPLICATION_OCTET_STREAM);
+                }
+                
+                ResponseStreams responseStreams = context
+                        .finalizeHeaders(result);
+                
+                try (OutputStream outputStream = responseStreams.getOutputStream()) {
+
+                    outputStream.write((byte[]) result.getRenderable());
+                    
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                
             } else {
                 
                 context.finalizeHeaders(result);

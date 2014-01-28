@@ -61,7 +61,12 @@ Configuring the modes
 ---------------------
 
 Ninja uses three predefined modes (test, dev and prod as defined in NinjaConstant.java). 
-By default Ninja will use the **dev** mode.
+If no mode is set explicitly Ninja will use the **prod** mode. That means if you 
+deploy Ninja via a war file to an arbitrary servlet container Ninja will use the prod
+mode.
+
+Ninja's SuperDevMode will set the mode to dev. And Ninja's
+testcases will use mode test by default.
 
 You can set the
 modes by setting a Java system property called "ninja.mode".
