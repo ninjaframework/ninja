@@ -2,8 +2,8 @@ Routing
 =======
 
 Ninja features <b>one central route file</b>. 
-We think this is important, because you
-can see immediately what routes your application provides. It especially 
+We think this is important, because you immediately
+can see  what routes your application provides. It especially 
 facilitates designing a nice restful application and Api, because you have a good 
 overview what is going on.
 
@@ -33,7 +33,7 @@ public class Routes implements ApplicationRoutes {
 </pre>
 
 
-The <code>init</code> method provides us with the router and router allows us to
+The <code>init(...)</code> method provides us with the <code>Router</code> and router allows us to
 define what happens for GET, POST, PUT and DELETE requests.
 
 <div class="alert alert-info">
@@ -68,7 +68,7 @@ In the second example <code>.\*</code> lets the router match arbitrary character
 This example also shows what happens if two routes match.
 For instance a request to <code>/assets/00012</code> is matched by
 both route definitions. In that case the first matching route from top will be 
-executed it is executed. In our case method <code>serveDigits</code>.
+executed. In our case method <code>serveDigits</code>.
 
 More on regular expressions: 
 http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html
@@ -87,7 +87,7 @@ GET /user/12345/my@email.com/userDashboard
 
 Looks like a GET request to the userDashboard. The request seems to contain
 an <code>id</code> and an <code>email</code>. As application developer you want to have a convenient
-way to get <code>id</code> and <code>email</code> inside your controller. To that end Ninja 
+way to get <code>id</code> and <code>email</code> inside your controller. Ninja 
 allows you to define and name parts of your routes via 
 curly braces <code>{...}</code>:
 
@@ -111,7 +111,6 @@ public class AppController {
         //do something with the parameters...
     }
 
-
 }
 </pre>
 
@@ -128,6 +127,7 @@ Regular expressions in variable route parts
 
 Ninja allows you to specify regular expressions 
 that will be used to match arbitrary parts of your url.
+
 The syntax is <code>{PRAMETER_NAME: REGEX}</code> (with a whitespace after the ":").
 
 For instance a route like <code>/assets/{fileName: .*}</code> will match everything
@@ -184,23 +184,19 @@ that the original raw route looked like a simple <code>"/"</code>.
 You can get the final url by injecting the router into your controller and then calling getReverseRoute
 
 <pre class="prettyprint">
+@Inject
+Router router;
 
-    @Inject
-    Router router;
-        
+...
+
+public void myMethod() {
+
+    // will result into "/"
+    String generatedReverseRoute 
+        = router.getReverseRoute(ApplicationController.class, "index");
     ...
-        
-    public void myMethod() {
-        
-        // will result into "/"
-        String generatedReverseRoute 
-            = router.getReverseRoute(
-                ApplicationController.class, 
-                "index");
-        
-        ...
-    }    
-   
+
+}      
 </pre>
 
 Now consider a more complex example. Say the original raw route contained placeholders on the following form:
@@ -210,30 +206,28 @@ placeholders their value will be added as query parameters:
 
 
 <pre class="prettyprint">
+@Inject
+Router router;
 
-    @Inject
-    Router router;
-    
+...
+
+public void myMethod() {
+
+    map = Maps.newHashMap();
+    map.put("id","myId");
+    map.put("email","myEmail");
+    map.put("paging_size","100");
+    map.put("page","1");
+
+    // this will result into "/user/myId/myEmail/userDashboard?paging_size=100&page=1"
+    String generatedReverseRoute 
+        = router.getReverseRoute(
+            ApplicationController.class, 
+            "userDashboard", 
+            map);
+
     ...
-    
-    public void myMethod() {
-    
-        map = Maps.newHashMap();
-        map.put("id","myId");
-        map.put("email","myEmail");
-        map.put("paging_size","100");
-        map.put("page","1");
-    
-        // this will result into "/user/myId/myEmail/userDashboard?paging_size=100&page=1"
-        String generatedReverseRoute 
-            = router.getReverseRoute(
-                ApplicationController.class, 
-                "userDashboard", 
-                map);
-
-        ...
-    } 
-      
+}      
 </pre>
 
 
@@ -241,7 +235,8 @@ A note on encoding / decoding
 -----------------------------
 
 Encoding / Decoding of Urls is not as easy as you think it is. Ninja tries to simplify everything
-as much as possible, but as user of the Api you have to know what you are submitting to Ninja.
+as much as possible, but as user of the Api you have to know what you are 
+submitting to Ninja.
 
 We recommend the following [excellent article from Lunatech](http://www.lunatech-research.com/archives/2009/02/03/what-every-web-developer-must-know-about-url-encoding) 
 before you use encoding / decoding actively in your application.
@@ -249,34 +244,36 @@ before you use encoding / decoding actively in your application.
 Let's reconsider the controller method from above:
 
 <pre class="prettyprint">
+package controllers;
 
-    package controllers;
+@Singleton
+public class ApplicationController {
 
-    @Singleton
-    public class ApplicationController {
-        
-        public Result index(
-                @PathParam("id") String id, 
-                @PathParam("email") String email, 
-                @Param("debug") String debug) {
-                
-            //do something with the parameters...
-        }
+    public Result index(
+            @PathParam("id") String id, 
+            @PathParam("email") String email, 
+            @Param("debug") String debug) {
 
+        //do something with the parameters...
     }
 
+}
 </pre>
 
-You can expect that String **id** and String **debug** are both correctly decoded values. **BUT** This assumes that
-you are encoding the values correctly on the client side. And encoding is different for
-query parameters or stuff in the path. And not - do not even think about using URLEncoder for encoding urls. This
-is wrong.
+You can expect that String **id** and String **debug** are both correctly decoded values. 
+**BUT** This assumes that
+you are encoding the values correctly on the client side. 
+And encoding is different for
+query parameters or stuff in the path. Do not even think about using 
+URLEncoder for encoding urls. This is wrong.
 
 Simple example that outlines some of the difficulties:
 Think of a route "/user/{id}/userDashboard".
 
-Let's say your **id** is "rootuser/domain". If you do not encode the slash in the middle you end up with a
-url like /user/rootuser/domain/userDashboard. And the this url does not match the route
+Let's say your **id** is "rootuser/domain". If you do not encode the slash in 
+the middle you end up with a
+url like /user/rootuser/domain/userDashboard. 
+And the this url does not match the route
 because of the "/".
 
 Therefore you have to encode your id correctly. In that case it would be: rootuser%2Fdomain.

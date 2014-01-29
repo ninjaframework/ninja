@@ -9,7 +9,7 @@ By convention Ninja will look for a configuration file at <code>conf/application
 <code>application.conf</code> is a simple properties file with keys and values. "#" is a comment.
 
 <pre class="prettyprint">
-# an arbitrary content
+# an arbitrary comment
 application.name=Ninja demo application
 application.cookie.prefix=NINJA
 </pre>

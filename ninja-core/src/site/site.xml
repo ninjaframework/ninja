@@ -51,9 +51,10 @@
             
             
             <item name="Basic concepts" collapse="true" href="./documentation/basic_concepts/basic_concepts.html">
+                <item name="SuperDevMode" href="./documentation/basic_concepts/super_dev_mode.html"/>
                 <item name="Routing" href="./documentation/basic_concepts/routing.html"/>
                 <item name="Controllers" href="./documentation/basic_concepts/controllers.html"/>
-                <item name="Filtering" href="./documentation/basic_concepts/filtering.html"/>
+                <item name="Filters" href="./documentation/basic_concepts/filters.html"/>
                 <item name="Argument extractors" href="./documentation/basic_concepts/argument_extractors.html"/>
                 <item name="Dependency injection" href="./documentation/basic_concepts/dependency_injection.html"/>
                 <item name="Sessions" href="./documentation/basic_concepts/sessions.html"/>
@@ -74,10 +75,7 @@
             
             <item name="Validation" href="./documentation/validation.html"/>
             
-            <item name="Uploading files" collapse="true" href="./documentation/getting_started.html">                
-                <item name="Installing" href="#"/>
-                <item name="Creating a new application" href="#"/>
-            </item>
+            <item name="Uploading files" collapse="true" href="./documentation/uploading_files.html"/>
             
             <item name="Scheduler" href="./documentation/scheduler.html"/>
             <item name="Lifecycle" href="./documentation/lifecycle.html"/>
@@ -91,6 +89,9 @@
             <item name="Internationalization" collapse="true" href="./documentation/internationalization.html"/>
             
             <item name="Static assets" collapse="true" href="./documentation/static_assets.html"/>
+            
+            <item name="Sending mail" href="./documentation/sending_mail.html"/>
+
             <item name="Logging" href="./documentation/logging.html"/>
             
             <item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>
@@ -114,10 +115,13 @@
             <item name="Deployment" collapse="true" href="./documentation/deployment/getting_started.html">                
                 <item name="Ninja standalone" href="./documentation/deployment/ninja_standalone.html"/>                
                 <item name="War based deployment" href="./documentation/deployment/war_based_deployment.html"/>
-                <item name="Cloud hosting options" href="./documentation/deployment/cloud_hosting_optinos.html"/>                                
+                <item name="Cloud hosting options" href="./documentation/deployment/cloud_hosting_options.html"/>                                
             </item>
             
             <item name="Upgrade guide" href="./documentation/upgrade_guide.html"/>
+            <item name="Api" href="./apidocs/index.html"/>
+            
+            
             
             
         </menu>
@@ -158,7 +162,7 @@
             <gitHub>
                 <projectId>ninjaframework/ninja</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
-                <ribbonColor>black</ribbonColor>
+                <ribbonColor>gray</ribbonColor>
             </gitHub>
         </fluidoSkin>
     </custom>

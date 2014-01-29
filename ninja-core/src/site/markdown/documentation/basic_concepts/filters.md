@@ -37,7 +37,6 @@ public class SecureFilter implements Filter {
         if (context.getSession() == null
                 || context.getSession().get(USERNAME) == null) {
 
-
             return Results.forbidden().html().template("/views/forbidden403.ftl.html");
 
         } else {

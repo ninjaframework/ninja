@@ -148,7 +148,7 @@ public class CommonsmailHelperImpl implements CommonsmailHelper {
         // /set config params:
         multiPartEmail.setHostName(smtpHost);
         multiPartEmail.setSmtpPort(smtpPort);
-        multiPartEmail.setSSL(smtpSsl);
+        multiPartEmail.setSSLOnConnect(smtpSsl);
 
         if (smtpUser != null) {
             multiPartEmail.setAuthentication(smtpUser, smtpPassword);

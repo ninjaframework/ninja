@@ -38,21 +38,17 @@ are already ready to go.
 If not add the following plugin to your pom.xml file:
 
 <pre class="prettyprint">
-
-    &lt;plugin&gt;
-       &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
-       &lt;artifactId&gt;ninja-maven-plugin&lt;/artifactId&gt;
-       &lt;version&gt;${ninja.version}&lt;/version&gt;
-    &lt;/plugin&gt;  
- 
+&lt;plugin&gt;
+   &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
+   &lt;artifactId&gt;ninja-maven-plugin&lt;/artifactId&gt;
+   &lt;version&gt;${ninja.version}&lt;/version&gt;
+&lt;/plugin&gt;  
 </pre>
 
 You can then call:
 
 <pre class="prettyprint">
-
-    mvn ninja:run
-
+mvn ninja:run
 </pre>
 
 And have a damn fast hot-reload code server running.
@@ -63,26 +59,24 @@ And have a damn fast hot-reload code server running.
 An example configuration looks like:
 
 <pre class="prettyprint">
-
-    &lt;plugin&gt;
-        &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
-        &lt;artifactId&gt;ninja-maven-plugin&lt;/artifactId&gt;
-        &lt;version&gt;${project.version}&lt;/version&gt;
-        &lt;configuration&gt;
-            &lt;useDefaultExcludes&gt;true&lt;/useDefaultExcludes&gt;
-            &lt;excludes&gt;
-                &lt;exclude&gt;(.*)png$&lt;/exclude&gt;
-            &lt;/excludes&gt;
-        &lt;/configuration&gt;
-    &lt;/plugin&gt;
-
+&lt;plugin&gt;
+    &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
+    &lt;artifactId&gt;ninja-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;${project.version}&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;useDefaultExcludes&gt;true&lt;/useDefaultExcludes&gt;
+        &lt;excludes&gt;
+            &lt;exclude&gt;(.*)png$&lt;/exclude&gt;
+        &lt;/excludes&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
 </pre>
 
 You can configure the plugin via the following parameters:
  
 ### useDefaultExcludes
 
-Can be true or false / false. Ninja's SuperDevMode will not restart when
+Can be true or false. Ninja's SuperDevMode will not restart when
 you make changes inside templates (ftl.html) or your assets directory. These changes
 will be picked up anyway by Ninja in devmode. But there might be cases were
 you want Ninja to restart. Then simply set useDefaultExcludes to false.
