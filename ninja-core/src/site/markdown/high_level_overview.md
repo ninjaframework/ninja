@@ -10,6 +10,11 @@ and parsing to management of different environments, database persistence, testi
 
 Here is an overview:
 
+Build and development support
+-----------------------------
+- Apache Maven based. Easy to import in any IDE, simple to build on any continuous integration system.
+- SuperDevMode hot reloading server for quick development turnaround.
+
 Frontend
 --------
 - Html rendering (Freemaker)

@@ -33,7 +33,6 @@
         <menu name="Introduction">
             <item name="The problem we solve" href="./introduction.html"/>
             <item name="Ninja - high level overview" href="./high_level_overview.html"/>
-            <item name="Comparing to other technologies" href="#"/>
             <item name="The team" href="./team.html"/>
         </menu>
         
@@ -65,16 +64,15 @@
             
             <item name="Html templating" collapse="true" href="./documentation/html_templating/getting_started.html">                
                 <item name="Rendering objects" href="./documentation/html_templating/rendering_objects.html"/>
+                <item name="Form parsing" href="./documentation/html_templating/form_parsing.html"/>
                 <item name="Security, i18n and more" href="./documentation/html_templating/advanced_topics.html"/>
             </item>
-            <item name="Form submission and validation" collapse="true" href="./documentation/getting_started.html">                
-                <item name="Installing" href="#"/>
-                <item name="Creating a new application" href="#"/>
-            </item>
             
-            <item name="Working with Json" collapse="true" href="./documentation/working_with_json.html"/>                
+            <item name="Working with Json" href="./documentation/working_with_json.html"/>                
             
-            <item name="Working with Xml" collapse="true" href="./documentation/working_with_xml.html"/>
+            <item name="Working with Xml" href="./documentation/working_with_xml.html"/>
+            
+            <item name="Validation" href="./documentation/validation.html"/>
             
             <item name="Uploading files" collapse="true" href="./documentation/getting_started.html">                
                 <item name="Installing" href="#"/>

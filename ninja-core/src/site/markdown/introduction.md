@@ -4,40 +4,39 @@ The Ninja Web Framework
 The problem
 -----------
 
-We are in the business of software development since 1998. And
-we successfully wrote applications with different frameworks for our customers.
+We successfully developed and maintained 
+applications with different frameworks. For our own
+businesses and for our customers. Frameworks we used were mainly
 JEE, Spring but also Play framework (1 and 2).
 
-But often those widely used frameworks were more a burden than a help.
+To make it clear: All these frameworks are awesome. 
+They are a huge help in developing large scale applications in Java.
+
+But for our use cases those frameworks often did not feel right for many many reasons.
 
 Somewhere in 2012 we took a deep breath and began developing ideas about
-the framework of our dreams. How should such a framework look like? What are
-the key features we always needed to complete and maintain a project successfully?
+the web framework of our dreams. How should such a framework look like? What are
+the key features we always needed to complete and maintain a software project successfully?
 
 
 Key features we wanted to see
 -----------------------------
 
-We discussed a lot of things. What are the key features that helped to make
-a project a success? What helped us as company to deliver a successful
-project?
+After long hours of discussions and a lot of prototypes we came 
+up with the following key features:
 
-We came up with the following bullet points:
-
- * First class citizen of the Java ecosystem / First class IDE integration
- * Super fast development cycles.
- * Build-in authentication.
- * Html rendering / form submission parsing.
- * Simple Json reading / writing.
  * Web friendly. Restful architecture. Simple programming model.
- * Dependency injection.
- * First class testability.
- * Different environments for production, testing, development.
+ * Plain vanilla Java. Dependency Injection. First class IDE integration.
+ * Super fast development cycles.
+ * Simple and fast to test (Mocked tests / Integration tests).
  * Excellent build and CI support.
- * No bytecode magic.
+ * Simple Json consumption and rendering for clean restful Apis.
+ * Html rendering / form submission validation and parsing.
+ * Built-in support for authentication of users.
+ * Not much bytecode magic. Clean codebase - easy to extend.
 
 And because we have many customers that run their applications on the 
 Google App Engine (GAE) we needed to support the GAE, too.
 
-Back in 2010 there was no (!) single Java framework that supported our use case 
+Back in 2012 there was not a single Java framework (!) that supported our use case 
 out of the box.
