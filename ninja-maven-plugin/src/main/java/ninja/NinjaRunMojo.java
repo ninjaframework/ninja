@@ -89,7 +89,7 @@ public class NinjaRunMojo extends AbstractMojo {
         List<String> classpathItems = Lists.newArrayList();
         
         
-        alertUserIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+        alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
             buildOutputDirectory);
         
         classpathItems.add(buildOutputDirectory);
@@ -195,12 +195,16 @@ public class NinjaRunMojo extends AbstractMojo {
     }
     
     
-    public void alertUserIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+    public void alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
         String directoryWithCompiledClassesOfThisProject) {
         
         if (!new File(directoryWithCompiledClassesOfThisProject).exists()) {
+            
             getLog().error("Directory with classes does not exist: " + directoryWithCompiledClassesOfThisProject);
             getLog().error("Maybe running 'mvn compile'  before running 'mvn ninja:run' helps :)");
+            
+            // BAM!
+            System.exit(1);
         }
     
     }
