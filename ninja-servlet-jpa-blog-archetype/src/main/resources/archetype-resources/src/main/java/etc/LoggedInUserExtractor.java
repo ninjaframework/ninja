@@ -13,9 +13,9 @@ public class LoggedInUserExtractor implements ArgumentExtractor<String> {
     public String extract(Context context) {
         
         // if we got no cookies we break:
-        if (context.getSessionCookie() != null) {
+        if (context.getSession() != null) {
             
-            String username = context.getSessionCookie().get("username");
+            String username = context.getSession().get("username");
             
             return username;
             
@@ -25,7 +25,7 @@ public class LoggedInUserExtractor implements ArgumentExtractor<String> {
     }
 
     @Override
-    public Class getExtractedType() {
+    public Class<String> getExtractedType() {
         return String.class;
     }
 
