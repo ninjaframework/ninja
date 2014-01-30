@@ -10,6 +10,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.Lists;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.apache.maven.artifact.Artifact;
@@ -19,7 +20,6 @@ import org.apache.maven.model.Plugin;
  * Starts Ninja's SuperDevMode.
  * 
  * @goal run
- * @phase test
  * @threadSafe
  * @requiresDependencyResolution compile
  */
@@ -31,6 +31,16 @@ public class NinjaRunMojo extends AbstractMojo {
      * @readonly
      */
     protected MavenProject mavenProject;
+    
+    /**
+     * Directory containing the build files.
+     * 
+     * For webapps this is usually
+     * something like /User/username/workspace/project/target/classes
+     * 
+     * @parameter expression="${project.build.outputDirectory}"
+     */
+    private String buildOutputDirectory;
     
     /** 
      * @parameter default-value="${plugin.artifacts}" 
@@ -65,6 +75,9 @@ public class NinjaRunMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         
+        getLog().debug(
+                "Directory for classes is (used to start local jetty and watch for changes: " 
+                + buildOutputDirectory);
         
         getLog().info("------------------------------------------------------------------------");
         getLog().info("Launching Ninja SuperDevMode...");
@@ -72,15 +85,14 @@ public class NinjaRunMojo extends AbstractMojo {
 
         initMojoFromUserSubmittedParameters();
         
-        
+
         List<String> classpathItems = Lists.newArrayList();
         
         
-        String directoryWithCompiledClassesOfThisProject 
-                = System.getProperty(NinjaMavenPluginConstants.USER_DIR) 
-                + NinjaMavenPluginConstants.DEFAULT_CLASSES_DIRECTORY;
+        alertUserIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+            buildOutputDirectory);
         
-        classpathItems.add(directoryWithCompiledClassesOfThisProject);
+        classpathItems.add(buildOutputDirectory);
 
        
         for (org.apache.maven.artifact.Artifact artifact : mavenProject.getArtifacts()) {
@@ -102,7 +114,7 @@ public class NinjaRunMojo extends AbstractMojo {
         
         Path directoryToWatchRecursivelyForChanges 
                 = FileSystems.getDefault().getPath(
-                        directoryWithCompiledClassesOfThisProject);
+                        buildOutputDirectory);
         
         try {
             
@@ -181,5 +193,18 @@ public class NinjaRunMojo extends AbstractMojo {
         return resultingArtifacts;
     
     }
+    
+    
+    public void alertUserIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+        String directoryWithCompiledClassesOfThisProject) {
+        
+        if (!new File(directoryWithCompiledClassesOfThisProject).exists()) {
+            getLog().error("Directory with classes does not exist: " + directoryWithCompiledClassesOfThisProject);
+            getLog().error("Maybe running 'mvn compile'  before running 'mvn ninja:run' helps :)");
+        }
+    
+    }
+            
+                
 
 }
