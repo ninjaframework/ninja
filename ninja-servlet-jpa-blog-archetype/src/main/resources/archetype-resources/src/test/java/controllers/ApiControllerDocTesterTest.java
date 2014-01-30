@@ -120,24 +120,6 @@ public class ApiControllerDocTesterTest extends NinjaDocTester {
                 , CoreMatchers.is(4));
         
         
-        
-        // /////////////////////////////////////////////////////////////////////
-        // Fetch single article
-        // /////////////////////////////////////////////////////////////////////
-        say("We can also fetch an individual article via the Json Api.");
-        say("That's a GET request to: " + GET_ARTICLE_URL);
-        response = sayAndMakeRequest(
-                Request.GET().url(
-                        testServerUrl().path(
-                                GET_ARTICLE_URL
-                                        .replace("{username}", "bob@gmail.com")
-                                        .replace("{id}", "1"))));
-
-        Article article = getGsonWithLongToDateParsing().fromJson(response.payload, Article.class);
-        // one new result:
-        sayAndAssertThat("And we got back the first article"
-                , article.id
-                , CoreMatchers.is(1L));
     }
 
 
