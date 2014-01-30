@@ -1,6 +1,9 @@
 Our philosophy
 ==============
 
+Ninja is open source and will be open source forever
+----------------------------------------------------
+
 The Ninja team is made up of open source enthusiasts. We really
 think that open source leads to better software and better value for users and
 businesses. We love to collaborate and share our code with the world.
@@ -10,6 +13,9 @@ Ninja at a daily basis. Ninja is a key component to earn money - for our
 business backends, in consulting and more. 
 Therefore we know how important it is to provide stable and mature support 
 for Ninja in the long run.
+
+To back up your business we offer commercial grade support
+----------------------------------------------------------
 
 Ninja offers you the best of both worlds!
 

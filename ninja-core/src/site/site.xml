@@ -35,6 +35,13 @@
             <item name="Ninja - high level overview" href="./high_level_overview.html"/>
             <item name="The team" href="./team.html"/>
         </menu>
+        
+        <menu name="Commercial support"> 
+            <item name="Philosophy" href="./commercial_support/philosophy.html"/>
+            <item name="Training" href="./commercial_support/training.html"/>
+            <item name="Support plans" href="./commercial_support/support_plans.html"/>
+            <item name="Custom development" href="./commercial_support/agile_custom_development.html"/>
+        </menu>
             
         <menu name="Documentation">
             
@@ -139,12 +146,7 @@
         </menu>
         
                 
-        <menu name="Commercial support"> 
-            <item name="Philosophy" href="./commercial_support/philosophy.html"/>
-            <item name="Training" href="./commercial_support/training.html"/>
-            <item name="Support plans" href="./commercial_support/support_plans.html"/>
-            <item name="Custom development" href="./commercial_support/agile_custom_development.html"/>
-        </menu>
+
 
     </body>
     <skin>

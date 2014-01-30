@@ -25,7 +25,6 @@ import java.util.Map;
 
 import models.ArticleDto;
 import models.ArticlesDto;
-import ninja.NinjaApiDocTest;
 
 import org.junit.Test;
 
@@ -37,18 +36,23 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-import de.devbliss.apitester.ApiResponse;
+import models.Article;
+import ninja.NinjaDocTester;
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
+import org.hamcrest.CoreMatchers;
 
-public class ApiControllerDocTest extends NinjaApiDocTest {
+public class ApiControllerDocTesterTest extends NinjaDocTester {
     
     String GET_ARTICLES_URL = "/api/{username}/articles.json";
+    String GET_ARTICLE_URL = "/api/{username}/article/{id}.json";
     String POST_ARTICLE_URL = "/api/{username}/article.json";
     String LOGIN_URL = "/login";
     
     String USER = "bob@gmail.com";
 
     @Test
-    public void testGetAndPostArticleViaJson() throws Exception {
+    public void testGetAndPostArticleViaJson() {
 
         // /////////////////////////////////////////////////////////////////////
         // Test initial data:
@@ -58,11 +62,15 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
         
         say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
         
-        ApiResponse apiResponse = makeGetRequest(buildUri(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com")));
+        Response response = sayAndMakeRequest(
+                Request.GET().url(
+                        testServerUrl().path(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com"))));
 
-        ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, ArticlesDto.class);
+        ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
 
-        assertEqualsAndSay(3, articlesDto.articles.size(), "We get back all 3 articles of that user");
+        sayAndAssertThat("We get back all 3 articles of that user",
+                articlesDto.articles.size(), 
+                CoreMatchers.is(3));
 
         // /////////////////////////////////////////////////////////////////////
         // Post new article:
@@ -76,26 +84,60 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
         articleDto.content = "contentcontent";
         articleDto.title = "new title new title";
 
-        apiResponse = makePostRequest(buildUri(POST_ARTICLE_URL.replace("{username}", USER)), articleDto);
-        assertEqualsAndSay(403, apiResponse.httpStatus, "You have to be authenticated in order to post articles");
+        response = sayAndMakeRequest(
+                Request.POST().url(
+                    testServerUrl().path(POST_ARTICLE_URL.replace("{username}", USER)))
+                .payload(articleDto));
+        
+        sayAndAssertThat(
+                "You have to be authenticated in order to post articles" 
+                , response.httpStatus 
+                , CoreMatchers.is(403));
         
         doLogin();
 
         say("Now we are authenticated and expect the post to succeed...");
-        apiResponse = makePostRequest(buildUri(POST_ARTICLE_URL.replace("{username}", USER)), articleDto);
-        assertEqualsAndSay(200, apiResponse.httpStatus, "After successful login we are able to post articles");
+        response = sayAndMakeRequest(Request.POST().url(
+                testServerUrl().path(POST_ARTICLE_URL.replace("{username}", USER)))
+                .contentTypeApplicationJson()
+                .payload(articleDto));
+
+        sayAndAssertThat("After successful login we are able to post articles"
+                , response.httpStatus
+                , CoreMatchers.is(200));
 
         // /////////////////////////////////////////////////////////////////////
         // Fetch articles again => assert we got a new one ...
         // /////////////////////////////////////////////////////////////////////
         
         say("If we now fetch the articles again we are getting a new article (the one we have posted successfully");
-        apiResponse = makeGetRequest(buildUri(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com")));
+        response = sayAndMakeRequest(Request.GET().url(testServerUrl().path(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com"))));
 
-        articlesDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, ArticlesDto.class);
+        articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
         // one new result:
-        assertEqualsAndSay(4, articlesDto.articles.size(), "We are now getting 4 articles.");
+        sayAndAssertThat("We are now getting 4 articles."
+                , articlesDto.articles.size()
+                , CoreMatchers.is(4));
+        
+        
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Fetch single article
+        // /////////////////////////////////////////////////////////////////////
+        say("We can also fetch an individual article via the Json Api.");
+        say("That's a GET request to: " + GET_ARTICLE_URL);
+        response = sayAndMakeRequest(
+                Request.GET().url(
+                        testServerUrl().path(
+                                GET_ARTICLE_URL
+                                        .replace("{username}", "bob@gmail.com")
+                                        .replace("{id}", "1"))));
 
+        Article article = getGsonWithLongToDateParsing().fromJson(response.payload, Article.class);
+        // one new result:
+        sayAndAssertThat("And we got back the first article"
+                , article.id
+                , CoreMatchers.is(1L));
     }
 
 
@@ -117,7 +159,7 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
         return gson;
     }
 
-    private void doLogin() throws Exception {
+    private void doLogin() {
 
         say("To authenticate we send our credentials to " + LOGIN_URL);
         say("We are then issued a cookie from the server that authenticates us in further requests");
@@ -126,13 +168,11 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
         formParameters.put("username", "bob@gmail.com");
         formParameters.put("password", "secret");
         
-        makePostRequest(buildUri(LOGIN_URL, formParameters));
-
-    }
-
-    @Override
-    protected String getFileName() {
-        return this.getClass().getSimpleName();
-    }
+        makeRequest(
+                Request.POST().url(
+                    testServerUrl().path(LOGIN_URL))
+                .addFormParameter("username", "bob@gmail.com")
+                .addFormParameter("password", "secret"));
+         }
 
 }
