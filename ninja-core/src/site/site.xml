@@ -71,7 +71,7 @@
                 <item name="Security, i18n and more" href="./documentation/html_templating/advanced_topics.html"/>
             </item>
             
-            <item name="Working with Json" href="./documentation/working_with_json.html"/>                
+            <item name="Working with Json / JsonP" href="./documentation/working_with_json_jsonp.html"/>                
             
             <item name="Working with Xml" href="./documentation/working_with_xml.html"/>
             

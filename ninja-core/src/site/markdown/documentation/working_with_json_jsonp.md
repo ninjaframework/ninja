@@ -85,6 +85,33 @@ public class ApplicationController {
 </pre>
 
 
+Rendering JsonP
+---------------
+
+Rendering JsonP (Json wrapped by Javascript function call) is quite
+similar to rendering plain Json:
+
+<pre class="prettyprint">
+Results.jsonp().render(person);
+</pre>
+
+The only important difference that the function name to render must be
+defined via parameter <code>callback</code>. For instance
+<code>?callback=MyApp.Path.myCallback123</code> would then produce
+the following output:
+
+<pre class="prettyprint">
+MyApp.Path.myCallback123({'response': 'data'})
+</pre>
+
+You can change the name of the callback parameter (<code>callback</code> by
+default) in your <code>application.conf</code> via
+
+<pre class="prettyprint">
+ninja.jsonp.callbackParameter=... // specify your custom callback parameter name
+</pre>
+
+
 Advanced Json usage
 -------------------
 
