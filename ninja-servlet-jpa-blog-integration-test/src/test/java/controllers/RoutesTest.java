@@ -20,6 +20,13 @@ import ninja.NinjaRouterTest;
 
 import org.junit.Test;
 
+/**
+ * Remove me once NinjaRouterTest has been put to rest.
+ * 
+ * @author ra
+ * @deprecated
+ */
+@Deprecated
 public class RoutesTest extends NinjaRouterTest {
 
     @Test

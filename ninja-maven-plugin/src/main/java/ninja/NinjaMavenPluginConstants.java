@@ -28,15 +28,19 @@ import ninja.utils.NinjaConstant;
  */
 public interface NinjaMavenPluginConstants {
     
-    String DEFAULT_CLASSES_DIRECTORY = File.separator + "target" + File.separator + "classes";
-    
     String [] DEFAULT_EXCLUDE_PATTERNS = {
             "(.*)" + Pattern.quote(File.separator) + NinjaConstant.VIEWS_DIR + Pattern.quote(File.separator) + "(.*)ftl\\.html$",
             "(.*)" + Pattern.quote(File.separator) + AssetsController.ASSETS_DIR + Pattern.quote(File.separator) + "(.*)"
         };
     
+    /** 
+     * Base directory where the ninja:run mode has its root.
+     * Is the place where the project pom.xml is.
+     */
     String USER_DIR = "user.dir";
     
     String NINJA_JETTY_CLASSNAME = NinjaJetty.class.getName();
+    
+    public String NINJA_STANDALONE_ARTIFACT_ID = "ninja-standalone";
     
 }

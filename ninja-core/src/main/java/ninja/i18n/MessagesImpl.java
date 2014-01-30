@@ -208,9 +208,9 @@ public class MessagesImpl implements Messages {
             // This is strange. If you defined the language in application.conf
             // it should be there propably.
             if (configuration == null) {
-                logger.info(String
-                        .format("Did not find conf/messages_%s.properties but it was specified in application.conf. Using default language instead.",
-                                lang));
+                logger.info(
+                        "Did not find conf/messages_{}.properties but it was specified in application.conf. Using default language instead.",
+                        lang);
 
             } else {
 

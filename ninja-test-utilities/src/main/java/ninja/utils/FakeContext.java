@@ -32,8 +32,8 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
 
@@ -55,8 +55,8 @@ public class FakeContext implements Context {
     /** please use the requestPath stuff */
     @Deprecated
     private String requestUri;
-    private FlashCookie flashCookie;
-    private SessionCookie sessionCookie;
+    private FlashScope flashScope;
+    private Session session;
     private List<Cookie> addedCookies = new ArrayList<Cookie>();
     private Map<String, String> cookieValues = new HashMap<String, String>();
     private ListMultimap<String, String> params = ArrayListMultimap.create();
@@ -108,26 +108,36 @@ public class FakeContext implements Context {
         return requestUri;
     }
 
-    public FakeContext setFlashCookie(FlashCookie flashCookie) {
-        this.flashCookie = flashCookie;
+    public FakeContext setFlashCookie(FlashScope flashCookie) {
+        this.flashScope = flashCookie;
+        return this;
+    }
+
+    public FakeContext setSessionCookie(Session sessionCookie) {
+        this.session = sessionCookie;
         return this;
     }
 
     @Override
-    public FlashCookie getFlashCookie() {
-        return flashCookie;
-    }
-
-    public FakeContext setSessionCookie(SessionCookie sessionCookie) {
-        this.sessionCookie = sessionCookie;
-        return this;
+    public Session getSessionCookie() {
+        return session;
     }
 
     @Override
-    public SessionCookie getSessionCookie() {
-        return sessionCookie;
+    public FlashScope getFlashCookie() {
+        return flashScope;
+    }
+    
+    @Override
+    public Session getSession() {
+        return session;
     }
 
+    @Override
+    public FlashScope getFlashScope() {
+        return flashScope;
+    }
+    
     public FakeContext addParameter(String key, String value) {
         params.put(key, value);
         return this;

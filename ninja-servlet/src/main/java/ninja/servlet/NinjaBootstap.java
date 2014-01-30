@@ -40,6 +40,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.servlet.ServletModule;
+import ninja.logging.LogbackConfigurator;
 
 public class NinjaBootstap {
     
@@ -71,6 +72,10 @@ public class NinjaBootstap {
     }
 
     public synchronized void boot() {
+        
+        // init logging at the very very top
+        LogbackConfigurator.initConfiguration(ninjaProperties);
+        
         if (injector != null) {
             throw new RuntimeException("NinjaBootstap already booted");
         }

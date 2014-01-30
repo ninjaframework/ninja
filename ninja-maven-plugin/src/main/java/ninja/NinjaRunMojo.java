@@ -10,25 +10,44 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.Lists;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Plugin;
 
 /**
  * Starts Ninja's SuperDevMode.
  * 
  * @goal run
- * @phase test
  * @threadSafe
  * @requiresDependencyResolution compile
  */
 public class NinjaRunMojo extends AbstractMojo {
     
-
     /**
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @required
      * @readonly
      */
     protected MavenProject mavenProject;
+    
+    /**
+     * Directory containing the build files.
+     * 
+     * For webapps this is usually
+     * something like /User/username/workspace/project/target/classes
+     * 
+     * @parameter expression="${project.build.outputDirectory}"
+     */
+    private String buildOutputDirectory;
+    
+    /** 
+     * @parameter default-value="${plugin.artifacts}" 
+     */
+    private java.util.List<org.apache.maven.artifact.Artifact> pluginArtifacts;
+    
+    Plugin plugin;
     
     /**
      * Exludes in Java regex format. If you want to exclude all
@@ -56,29 +75,46 @@ public class NinjaRunMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         
-        System.out.println("-----------------------");
-        System.out.println("Ninja SuperDevMode BETA");
-        System.out.println("-----------------------");
+        getLog().debug(
+                "Directory for classes is (used to start local jetty and watch for changes: " 
+                + buildOutputDirectory);
+        
+        getLog().info("------------------------------------------------------------------------");
+        getLog().info("Launching Ninja SuperDevMode...");
+        getLog().info("------------------------------------------------------------------------");
 
         initMojoFromUserSubmittedParameters();
         
-        
+
         List<String> classpathItems = Lists.newArrayList();
         
         
-        String directoryWithCompiledClassesOfThisProject 
-                = System.getProperty(NinjaMavenPluginConstants.USER_DIR) 
-                + NinjaMavenPluginConstants.DEFAULT_CLASSES_DIRECTORY;
+        alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+            buildOutputDirectory);
         
-        classpathItems.add(directoryWithCompiledClassesOfThisProject);
+        classpathItems.add(buildOutputDirectory);
 
+       
         for (org.apache.maven.artifact.Artifact artifact : mavenProject.getArtifacts()) {
             classpathItems.add(artifact.getFile().toString());           
         }       
         
+        List<Artifact> allArtifactsFromNinjaStandaloneInPlugin 
+            = getAllArtifactsComingFromNinjaStandalone(pluginArtifacts);
+        
+        for (Artifact artifact : allArtifactsFromNinjaStandaloneInPlugin) {
+            
+            //only add once...
+            if (!classpathItems.contains(artifact.getFile().toString())) {
+                classpathItems.add(artifact.getFile().toString());
+            }
+        
+        }       
+                
+        
         Path directoryToWatchRecursivelyForChanges 
                 = FileSystems.getDefault().getPath(
-                        directoryWithCompiledClassesOfThisProject);
+                        buildOutputDirectory);
         
         try {
             
@@ -113,5 +149,66 @@ public class NinjaRunMojo extends AbstractMojo {
         }
     
     }
+    
+    /**
+     * This might be a bit hacks. But just a little bit.
+     * 
+     * We have to add ninja-standalone and all of its dependencies to
+     * the classpath, so that NinjaJetty can start.
+     * 
+     * But we do not want the user to declare the dependencies inside his
+     * project pom.xml.
+     * 
+     * Therefore we declare the dependency in this plugin pom.xml.
+     * But we do not want to include all of this plugin's dependencies in the
+     * classpath for NinjaJetty. Therefore this method filters everything and 
+     * only adds  dependencies (also transitive deps) that originate
+     * from ninja-standalone. That way we get all deps we need.
+     * 
+     * @param artifacts A list of artifacts that will be filtered.
+     * @return All artifacts coming from artifactId "ninja-standalone" 
+     *         (including transitive dependencies)
+     */
+    private List<org.apache.maven.artifact.Artifact> getAllArtifactsComingFromNinjaStandalone(
+        List<org.apache.maven.artifact.Artifact> artifacts) {
+    
+        List<org.apache.maven.artifact.Artifact> resultingArtifacts = new ArrayList<>();
+        
+        for (org.apache.maven.artifact.Artifact artifact : artifacts) {
+        
+            for (String dependencyTrail : artifact.getDependencyTrail()) {
+            
+                // something like:  org.ninjaframework:ninja-standalone:jar:2.5.2
+                if (dependencyTrail.contains(NinjaMavenPluginConstants.NINJA_STANDALONE_ARTIFACT_ID)) {
+                
+                    resultingArtifacts.add(artifact);
+                    break;
+                
+                }
+                
+            }
+        
+        }
+
+        return resultingArtifacts;
+    
+    }
+    
+    
+    public void alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+        String directoryWithCompiledClassesOfThisProject) {
+        
+        if (!new File(directoryWithCompiledClassesOfThisProject).exists()) {
+            
+            getLog().error("Directory with classes does not exist: " + directoryWithCompiledClassesOfThisProject);
+            getLog().error("Maybe running 'mvn compile'  before running 'mvn ninja:run' helps :)");
+            
+            // BAM!
+            System.exit(1);
+        }
+    
+    }
+            
+                
 
 }

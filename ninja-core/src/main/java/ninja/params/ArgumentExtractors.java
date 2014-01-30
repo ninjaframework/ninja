@@ -19,8 +19,8 @@ package ninja.params;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import ninja.Context;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 import ninja.validation.Validation;
 
 import java.util.Map;
@@ -36,8 +36,8 @@ public class ArgumentExtractors {
         ImmutableMap.<Class<?>, ArgumentExtractor<?>>builder()
                 .put(Context.class, new ContextExtractor())
                 .put(Validation.class, new ValidationExtractor())
-                .put(SessionCookie.class, new SessionExtractor())
-                .put(FlashCookie.class, new FlashExtractor())
+                .put(Session.class, new SessionExtractor())
+                .put(FlashScope.class, new FlashExtractor())
                 .build();
 
     public static ArgumentExtractor<?> getExtractorForType(Class<?> type) {
@@ -78,15 +78,15 @@ public class ArgumentExtractors {
         }
     }
 
-    public static class SessionExtractor implements ArgumentExtractor<SessionCookie> {
+    public static class SessionExtractor implements ArgumentExtractor<Session> {
         @Override
-        public SessionCookie extract(Context context) {
+        public Session extract(Context context) {
             return context.getSessionCookie();
         }
 
         @Override
-        public Class<SessionCookie> getExtractedType() {
-            return SessionCookie.class;
+        public Class<Session> getExtractedType() {
+            return Session.class;
         }
 
         @Override
@@ -95,15 +95,15 @@ public class ArgumentExtractors {
         }
     }
 
-    public static class FlashExtractor implements ArgumentExtractor<FlashCookie> {
+    public static class FlashExtractor implements ArgumentExtractor<FlashScope> {
         @Override
-        public FlashCookie extract(Context context) {
+        public FlashScope extract(Context context) {
             return context.getFlashCookie();
         }
 
         @Override
-        public Class<FlashCookie> getExtractedType() {
-            return FlashCookie.class;
+        public Class<FlashScope> getExtractedType() {
+            return FlashScope.class;
         }
 
         @Override

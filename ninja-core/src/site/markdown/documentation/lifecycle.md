@@ -17,36 +17,36 @@ Example
 The class and method then looks like:
 
 <pre class="prettyprint">
-    @Singleton
-    public class MyService {
+@Singleton
+public class MyService {
 
-        @Start(order = 90)
-        public void startService() {
-            //do something       
-        }
+    @Start(order = 90)
+    public void startService() {
+        //do something       
+    }
 
-        @Dispose(order = 90)
-        public void stopService() {
-           //do something
-        }
+    @Dispose(order = 90)
+    public void stopService() {
+       //do something
+    }
 
-        public Result getCount(Context ctx) {
-            return Results.json(count.get());
-        }
+    public Result getCount(Context ctx) {
+        return Results.json(count.get());
+    }
     }    
 </pre>
 
 Don't forget to bind the class explicitly inside conf/Module.java
 
 <pre class="prettyprint">
-    public class Module extends AbstractModule {
+public class Module extends AbstractModule {
 
-        protected void configure() {
+    protected void configure() {
 
-            bind(MyService.class);
+        bind(MyService.class);
 
-        }
     }
+}
 </pre> 
 
 By that Ninja will start MyService and also stop it nicely.

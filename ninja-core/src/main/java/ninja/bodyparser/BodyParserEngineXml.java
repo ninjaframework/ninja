@@ -29,26 +29,20 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class BodyParserEngineXml implements BodyParserEngine {
     
-    private final XmlMapper xmlMapper;
+    private final static Logger logger = LoggerFactory.getLogger(BodyParserEngineXml.class);
     
-    private final Logger logger;
+    private final XmlMapper xmlMapper;
     
 
     @Inject
-    public BodyParserEngineXml(Logger logger) {
-        this.logger = logger;
+    public BodyParserEngineXml(XmlMapper xmlMapper) {
         
-        JacksonXmlModule module = new JacksonXmlModule();
-        // Check out: https://github.com/FasterXML/jackson-dataformat-xml
-        // setDefaultUseWrapper produces more similar output to
-        // the Json output. You can change that with annotations in your
-        // models.
-        module.setDefaultUseWrapper(false);
-        this.xmlMapper = new XmlMapper(module); 
+        this.xmlMapper = xmlMapper;
 
     }
 

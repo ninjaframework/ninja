@@ -166,7 +166,7 @@ public class AssetsController {
      * Request to /public/css/app.css will be served from /assets/css/app.css.
      * 
      */
-    public Result serveWebjars(Context context) {
+    public Result serveWebJars(Context context) {
         Object renderable = new Renderable() {
 
             @Override
