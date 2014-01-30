@@ -128,7 +128,7 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
     }
 
     @Override
-    protected String getFileName() {
+    public String getFileName() {
         return this.getClass().getSimpleName();
     }
 

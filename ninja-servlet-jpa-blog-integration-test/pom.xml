@@ -143,13 +143,7 @@
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
+        
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-test-utilities</artifactId>

@@ -1,6 +1,32 @@
 Version XXX
 ===========
 
+ * 2014-01-30 ninja-maven-plugin now no longer needs ninja-standalone in
+              User's pom.xml. (ra)
+ * 2014-01-29 Bump to latest dependencies (ra).
+    * com.devbliss.doctest:doctest .......................... 0.6.5 -> 0.7.0
+    * com.fasterxml.jackson.core:jackson-core ............... 2.3.0 -> 2.3.1
+    * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.3.0 -> 2.3.1
+    * com.fasterxml.jackson.module:jackson-module-afterburner ... 2.3.0 -> 2.3.1
+    * com.google.inject.extensions:guice-persist ........... 3.0 -> 4.0-beta
+    * com.googlecode.flyway:flyway-core ....................... 2.2 -> 2.3.1
+    * com.h2database:h2 ................................. 1.3.172 -> 1.3.175
+    * commons-codec:commons-codec ............................... 1.8 -> 1.9
+    * commons-configuration:commons-configuration .............. 1.9 -> 1.10
+    * javax.servlet:javax.servlet-api ....................... 3.0.1 -> 3.1.0
+    * joda-time:joda-time ....................................... 2.2 -> 2.3
+    * net.sf.ehcache:ehcache ................................ 2.7.4 -> 2.8.0
+    * net.spy:spymemcached ................................. 2.9.0 -> 2.10.4
+    * org.apache.commons:commons-email ...................... 1.3.1 -> 1.3.2
+    * org.apache.commons:commons-lang3 ........................ 3.1 -> 3.2.1
+    * org.apache.httpcomponents:httpclient .................. 4.2.1 -> 4.3.2
+    * org.apache.httpcomponents:httpmime .................... 4.2.1 -> 4.3.2
+    * org.eclipse.jetty:jetty-server .... 9.0.5.v20130815 -> 9.1.1.v20140108
+    * org.eclipse.jetty:jetty-servlet ... 9.0.5.v20130815 -> 9.1.1.v20140108
+    * org.fluentlenium:fluentlenium-core .................... 0.9.1 -> 0.9.2
+    * org.hibernate:hibernate-c3p0 .............. 4.2.3.Final -> 4.3.1.Final
+    * org.hibernate:hibernate-entitymanager ..... 4.2.3.Final -> 4.3.1.Final
+    * org.webjars:tinymce-jquery ........................... 3.4.9 -> 4.0.12
  * 2014-01-29 Bump to latest Guava 16.0 (ra) 
  * 2013-01-28 XmlMapper now singleton configured in one place via a provider. (ra).
  * 2013-01-28 Added afterburner support to XmlMapper (ra).

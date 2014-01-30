@@ -14,9 +14,10 @@ for Ninja in the long run.
 Ninja offers you the best of both worlds!
 
 From an open source perspective
-Ninja is distributed under the Apache 2 license. The Apache 2 license is known 
+Ninja is distributed under the Apache 2 license. The license is known 
 as one of the most business friendly
-licenses around. Therefore Ninja will always stay under the open source domain.
+licenses around. This also ensures that Ninja will always stay under 
+the open source domain.
 
 From a business perspective we provide exceptional support in three areas:
 Training, Support packages and custom development.

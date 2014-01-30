@@ -28,6 +28,14 @@ import com.google.common.collect.Maps;
 import controllers.ApplicationController;
 import ninja.NinjaRouterTest;
 
+/**
+ * 
+ * Remove me once NinjaRouterTest has been put to rest.
+ * 
+ * @author ra
+ * @deprecated
+ */
+@Deprecated
 public class RoutesTest extends NinjaRouterTest {
     
     @Test

@@ -31,7 +31,6 @@ test setups to make sure that testing works.
 Tests at your disposal:
 -----------------------
 
- * <code>NinjaRouterTest</code> - Making sure that your routes work.
  * <code>Mocked Tests</code> - Testing parts of your application in isolation.
  * <code>NinjaTest</code> - Testing a running server on Http level.
  * <code>NinjaDocTester</code> - Ideal for documenting and testing Json Apis.

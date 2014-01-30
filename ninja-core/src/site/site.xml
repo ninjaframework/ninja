@@ -4,8 +4,8 @@
          name="Ninja Web Framework | Full stack web framework for Java. Fast and productive. Built on Maven - runs on servlet containers.">
     
     
-    <publishDate position="navigation-bottom"/>
-    <version position="navigation-bottom"/>
+    <publishDate position="right"/>
+    <version position="right"/>
     <bannerLeft>
         <name>Ninja web framework</name>
         <href>http://www.ninjaframework.org</href>
@@ -34,11 +34,6 @@
             <item name="The problem we solve" href="./introduction.html"/>
             <item name="Ninja - high level overview" href="./high_level_overview.html"/>
             <item name="The team" href="./team.html"/>
-        </menu>
-        
-        <menu name="Commercial support"> 
-            <item name="Philosophy" href="./commercial_support/philosophy.html"/>
-            <item name="Support options" href="./commercial_support/support_options.html"/>
         </menu>
             
         <menu name="Documentation">
@@ -73,6 +68,8 @@
             
             <item name="Working with Xml" href="./documentation/working_with_xml.html"/>
             
+        </menu>    
+        <menu name="Advanced topics">
             <item name="Validation" href="./documentation/validation.html"/>
             
             <item name="Uploading files" collapse="true" href="./documentation/uploading_files.html"/>
@@ -98,7 +95,6 @@
             
 
             <item name="Testing" collapse="true" href="./documentation/testing_your_application/getting_started.html">                
-                <item name="Ninja router test" href="./documentation/testing_your_application/ninja_router_test.html"/>
                 <item name="Mocked tests" href="./documentation/testing_your_application/mocked_tests.html"/> 
                 <item name="Ninja Test" href="./documentation/testing_your_application/ninja_test.html"/> 
                 <item name="Ninja DocTester" href="./documentation/testing_your_application/ninja_doctester.html"/> 
@@ -120,12 +116,10 @@
             
             <item name="Upgrade guide" href="./documentation/upgrade_guide.html"/>
             <item name="Api" href="./apidocs/index.html"/>
-            
-            
-            
-            
+
         </menu>
-        <menu name="Modules">
+        
+        <menu name="Ninja Modules">
             <item name="Overview" href="./documentation/modules.html"/>
         </menu>  
 
@@ -142,6 +136,14 @@
             <item name="Changelog" href="./developer/changelog.html"/>
             <item name="Roadmap" href="./developer/roadmap.html"/>
             <item name="How to contribute" href="./developer/getting_started.html"/>
+        </menu>
+        
+                
+        <menu name="Commercial support"> 
+            <item name="Philosophy" href="./commercial_support/philosophy.html"/>
+            <item name="Training" href="./commercial_support/training.html"/>
+            <item name="Support plans" href="./commercial_support/support_plans.html"/>
+            <item name="Custom development" href="./commercial_support/agile_custom_development.html"/>
         </menu>
 
     </body>

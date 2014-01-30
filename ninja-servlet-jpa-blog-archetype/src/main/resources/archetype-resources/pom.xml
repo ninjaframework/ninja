@@ -17,8 +17,8 @@
     
     
     <properties>
-        <ninja.version>2.3.0</ninja.version>
-        <jetty.version>9.0.5.v20130815</jetty.version>
+        <ninja.version>2.5.2-SNAPSHOT</ninja.version>
+        <jetty.version>9.1.1.v20140108</jetty.version>
     </properties>
 
 
@@ -181,13 +181,6 @@
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
             <version>${ninja.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

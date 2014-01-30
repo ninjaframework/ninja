@@ -21,24 +21,55 @@ import static org.junit.Assert.assertTrue;
 import ninja.servlet.NinjaBootstap;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
+import org.junit.After;
 
+/**
+ * NinjaRouterTest had a lot of sideffects. Mainly because Ninja is started in
+ * prod mode, what also means that - well - stuff is loaded in prod mode.
+ * Which means real services are started, real logging is started and so on.
+ * 
+ * Therefore it is a bad idea using NinjaRouterTest.
+ * 
+ * @author ra
+ * @deprecated
+ */
+@Deprecated
 public class NinjaRouterTest {
 
     /** The router - initiated from a real server. Routes are verified with this router */
     public Router router;
     
+    NinjaBootstap ninjaBootup;
+    
     /**
      * Start the server and load the routes.
      */
     public void startServer(NinjaMode ninjaMode) {
-        // in this case servletContext can be null
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
-        NinjaBootstap ninjaBootup = new NinjaBootstap(ninjaProperties);
+        
+        if (ninjaMode == null) {
+            ninjaBootup = new NinjaBootstap();
+        } else {
+            // in this case servletContext can be null
+            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
+            
+            ninjaBootup = new NinjaBootstap(ninjaProperties);
+        }
+
         ninjaBootup.boot();
 
         router = ninjaBootup.getInjector().getInstance(Router.class);
 
     }
+    
+    @After
+    public void stopServer() {
+        
+        if (ninjaBootup != null) {
+            ninjaBootup.shutdown();
+        }
+        
+    }
+    
     
     /**
      * Start the server and load the routes.
@@ -46,12 +77,7 @@ public class NinjaRouterTest {
      * No special mode is set. By default the mode "dev" is then used by the server.
      */
     public void startServer() {
-        // in this case servletContext can be null
-        NinjaBootstap ninjaBootup = new NinjaBootstap();
-        ninjaBootup.boot();
-
-        router = ninjaBootup.getInjector().getInstance(Router.class);
-
+        startServer(null);
     }
 
     /**

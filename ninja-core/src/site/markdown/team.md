@@ -30,11 +30,12 @@ contributed to Ninja. In some random order:
  * amsz
  * Max Garmash (linx56)
 
-(Do you feel you are missing from that list? Please let us know - this did not happen
+<div class="alert alert-info">
+Do you feel you are missing from that list? Please let us know - this did not happen
 intentionally. You can even add yourself to the list:
 You can do so easily by checking out the source code of Ninja and changing the file
-ninja/ninja-core/site/markdown/team.md .)
-
+ninja/ninja-core/site/markdown/team.md .
+</div>
 
 Technical lead
 --------------
@@ -47,12 +48,12 @@ the [FinalFrontierLabs](http://www.finalfrontierlabs.com)
 and [Raphael](http://raphaelbauer.com) as lead architect. 
 
 If you want to take over a more official role in the Ninja platform don't hesitate
-to contact us! There is always a lot to do :) And the framework offers excellent
+to contact us! The framework offers excellent
 opportunities to collaborate with nice people and drive an extraordinary project.
 
 
-Contributing
-------------
+Become part of the team!
+------------------------
 
 Ninja is open source and driven by enthusiasts. We love what we
 do and we have a long term goal: Ensuring that Ninja is the best web framework

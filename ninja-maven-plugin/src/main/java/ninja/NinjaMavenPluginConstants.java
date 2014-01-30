@@ -39,4 +39,6 @@ public interface NinjaMavenPluginConstants {
     
     String NINJA_JETTY_CLASSNAME = NinjaJetty.class.getName();
     
+    public String NINJA_STANDALONE_ARTIFACT_ID = "ninja-standalone";
+    
 }

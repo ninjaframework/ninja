@@ -15,6 +15,8 @@ Build and development support
 - Apache Maven based. Easy to import in any IDE, simple to build on any continuous integration system.
 - SuperDevMode hot reloading server for quick development turnaround.
 
+
+
 Frontend
 --------
 - Html rendering (Freemaker)
@@ -36,7 +38,7 @@ Core libraries
 - Scheduler (Ninja)
 - Object validation - JSR 303 (Hibernate-validation)
 - Support library: (Google Guava)
-- Logging (logback / slf4j)
+- Logging (slf4j and logback)
 
 Relational data persistence
 ---------------------------
@@ -50,15 +52,16 @@ Cache layer
 
 Testing support
 ---------------
-- NinjaRouterTest (Ninja)
 - Mocked Tests (Mockito)
 - NinjaTest (Ninja)
 - NinjaDocTester (DocTester)
 - NinjaFluentLeniumTest (FluentLenium)
 
 
-Ninja makes sure that all libraries mentioned above work together nicely. And as you can see we are standing
-on the shoulder of giants. Ninja is really small compared to all the great libraries we can build on.
+Deployment to live
+------------------
 
-
+- Either as war in your favorite application container
+- Or in standalone mode as self executing jar package with a bundled Jetty.
+- In general synchronous programming style.
  
