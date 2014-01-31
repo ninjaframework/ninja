@@ -13,7 +13,7 @@ You should use that archetype as starting point to create your own application.
 The command to do so is:
 
 <pre class="prettyprint">
-mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype -DarchetypeVersion=2.5.1
+mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-jpa-blog-archetype
 </pre>
 
 Please enter sensible values for "groupId" and "artifactId" and let Maven 

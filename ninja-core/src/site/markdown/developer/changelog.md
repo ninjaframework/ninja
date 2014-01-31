@@ -1,5 +1,5 @@
-Version XXX
-===========
+Version 3.0.0
+=============
 
  * 2014-01-30 ninja-maven-plugin now no longer needs ninja-standalone in
               User's pom.xml. (ra)
