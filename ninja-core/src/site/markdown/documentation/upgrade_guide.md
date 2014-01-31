@@ -7,7 +7,7 @@ your application to the latest Ninja version. Simply start with your current
 version and then work your way up to the top of the document.
 
 
-to 2.6.0
+to 3.0.0
 --------
 
 ### Session and Flash scopes
