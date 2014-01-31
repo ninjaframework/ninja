@@ -4,6 +4,7 @@ ninja.classesfortest
 ninja.i18n
 ninja.jpa
 ninja.lifecycle
+ninja.logging
 ninja.params
 ninja.postoffice.common
 ninja.postoffice.commonsmail

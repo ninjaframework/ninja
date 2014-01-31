@@ -5,6 +5,7 @@ ninja.cache
 ninja.i18n
 ninja.jpa
 ninja.lifecycle
+ninja.logging
 ninja.migrations
 ninja.params
 ninja.postoffice
