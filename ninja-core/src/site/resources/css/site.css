@@ -19,6 +19,7 @@ h1 > *, h2 > *, h3 > *,
 div.hero-unit > h1 {
     color: #68006C; /* dark violet */
     font-family: "Droid Sans", sans-serif;
+    font-weight: normal;
 }
 
 a {
