@@ -1,7 +1,9 @@
 Training
 ========
 
-We offer two distinct training packages.
+We offer two distinct training packages. A basic introduction course and
+one for advanced users and use cases. In general we are quite flexible regarding
+topics.
 
 ## Training 1: Introduction
 
@@ -9,12 +11,12 @@ Covers basic concepts of Ninja. The participants should have basic
 knowledge in Java. The course gives participants a jump start into
 successful Ninja web development.
 
-Duration is two days and will. The course is hands-on and understanding
-of the topics is developed via a real application.
+Duration is two days. The course is hands-on. 
+Expect an exciting real world application we develop together.
 
 Topics include:
 
- * Introduction: Routes, Controllers and sessions
+ * Routes, Controllers and sessions
  * Html programming / Form handling and validation
  * Json / xml support
  * Database support 
@@ -31,7 +33,7 @@ Topics include:
  * Module development
  * Agile test setups / Jenkins integration / Different stages in you CI setup
  * Advanced logging configuration
- * Monitoring a Ninja application in production best practises
+ * Monitoring a Ninja application in production best practices
  * Database setups and migration
  * Deployment options (Resin, Jetty, Tomcat, nginx)
  * Orchestration of many teams working on the same code base

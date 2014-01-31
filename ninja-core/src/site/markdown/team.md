@@ -43,8 +43,7 @@ Technical lead
 Someone has to be in charge of integrating pull requests. Reviewing code. Cutting
 new releases. And driving the platform as a whole.
 
-That leadership role is currently performed by the team of 
-the [FinalFrontierLabs](http://www.finalfrontierlabs.com) 
+That leadership role is currently performed by the team of [FinalFrontierLabs](http://www.finalfrontierlabs.com) 
 and [Raphael](http://raphaelbauer.com) as lead architect. 
 
 If you want to take over a more official role in the Ninja platform don't hesitate

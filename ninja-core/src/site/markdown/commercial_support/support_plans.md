@@ -3,7 +3,7 @@ Support plans
 
 We offer yearly support plans that help to secure your investment in Ninja. 
 If you subscribe to a plan we offer you guaranteed responses to your inquiries.
-No matter if you got questions about development best practises, deployment
+No matter if you got questions about development best practices, deployment
 options or possible bugs - we'll be there for you. If your plan offers
 priority bugfixes we guarantee that your reported bug will be fixed
 in the next release.

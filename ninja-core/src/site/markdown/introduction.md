@@ -9,10 +9,11 @@ applications with different frameworks. For our own
 businesses and for our customers. Frameworks we used were mainly
 JEE, Spring but also Play framework (1 and 2).
 
-To make it clear: All these frameworks are awesome. 
+To make it clear: All these frameworks are awesome. We love them and enjoy working with them :)
 They are a huge help in developing large scale applications in Java.
 
-But for our use cases those frameworks often did not feel right for many many reasons.
+But for our particular 
+use cases those frameworks often did not feel right for many many reasons.
 
 Somewhere in 2012 we took a deep breath and began developing ideas about
 the web framework of our dreams. How should such a framework look like? What are

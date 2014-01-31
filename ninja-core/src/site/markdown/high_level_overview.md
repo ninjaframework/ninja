@@ -1,9 +1,9 @@
 High level overview - what does Ninja do for you?
 =================================================
 
-Ninja is an integrated package and the aim is that you don't have to setup everything yourself.
-Ideally you just generate a new project from our maven archetype, import the project into your
-IDE and start hacking.
+Ninja is an integrated software stack. The aim is that you don't have to 
+setup everything yourself. Ideally you just generate a new project from our 
+maven archetype, import the project into your IDE and start hacking.
 
 Therefore Ninja is made up of libraries that deliver everything. From Html, Json and Xml rendering
 and parsing to management of different environments, database persistence, testing and much more.
@@ -14,7 +14,6 @@ Build and development support
 -----------------------------
 - Apache Maven based. Easy to import in any IDE, simple to build on any continuous integration system.
 - SuperDevMode hot reloading server for quick development turnaround.
-
 
 
 Frontend

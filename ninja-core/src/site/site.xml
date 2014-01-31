@@ -131,7 +131,7 @@
         </menu>  
 
         
-        <menu name="Get involved">
+        <menu name="Great community">
             <item name="@ninjaframework" href="https://twitter.com/ninjaframework"/>
             <item name="Mailing list" href="https://groups.google.com/d/forum/ninja-framework"/>
             <item name="Source code" href="https://github.com/ninjaframework/ninja"/>
@@ -139,13 +139,11 @@
             <item name="Security issues" href="./security.html"/>
         </menu>
         
-        <menu name="Develop">
+        <menu name="For developers">
             <item name="Changelog" href="./developer/changelog.html"/>
             <item name="Roadmap" href="./developer/roadmap.html"/>
             <item name="How to contribute" href="./developer/getting_started.html"/>
         </menu>
-        
-                
 
 
     </body>
