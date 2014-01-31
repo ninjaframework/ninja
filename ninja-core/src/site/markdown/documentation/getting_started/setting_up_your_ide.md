@@ -29,6 +29,6 @@ Fortunately IDE based compilation works out of the box for Eclipse
 
 <div class="alert alert-info">
 Sometimes Ninja's SuperDevMode does no longer pick up changes you made.
-In almost automatic compilation by the IDE is broken. If you run into that problem
-it helps to "clean and build" the project.
+In many cases automatic compilation by the IDE is broken. If you run into that problem
+it helps to "clean and build" the project from within your IDE.
 </div>
