@@ -57,55 +57,55 @@ public class BodyParserEnginePost implements BodyParserEngine {
                 String value = ent.getValue()[0];
                 
                 if (fieldType == int.class) {
-                	field.setInt(t, Integer.parseInt(value));
-                	
+                    field.setInt(t, Integer.parseInt(value));
+                    
                 } else if (fieldType == Integer.class) {
-                	field.set(t, Integer.valueOf(value));
-                	
+                    field.set(t, Integer.valueOf(value));
+                    
                 } else if (fieldType == long.class) {
-                	field.setLong(t, Long.parseLong(value));
-                	
+                    field.setLong(t, Long.parseLong(value));
+                    
                 } else if (fieldType == Long.class) {
-                	field.set(t, Long.valueOf(value));
-                	
+                    field.set(t, Long.valueOf(value));
+                    
                 } else if (fieldType == float.class) {
-                	field.setFloat(t, Float.parseFloat(value));
-                	
+                    field.setFloat(t, Float.parseFloat(value));
+                    
                 } else if (fieldType == Float.class) {
-                	field.set(t, Float.valueOf(value));
-                	
+                    field.set(t, Float.valueOf(value));
+                    
                 } else if (fieldType == double.class) {
-                	field.setDouble(t, Double.parseDouble(value));
-                	
+                    field.setDouble(t, Double.parseDouble(value));
+                    
                 } else if (fieldType == Double.class) {
-                	field.set(t, Double.valueOf(value));
-                	
+                    field.set(t, Double.valueOf(value));
+                    
                 } else if (fieldType == boolean.class) {
-                	field.setBoolean(t, Boolean.parseBoolean(value));
-                	
+                    field.setBoolean(t, Boolean.parseBoolean(value));
+                    
                 } else if (fieldType == Boolean.class) {
-                	field.set(t, Boolean.valueOf(value));
-                	
-                } else if (fieldType ==  byte.class) {
-                	field.setByte(t, Byte.parseByte(value));
-                	
+                    field.set(t, Boolean.valueOf(value));
+                    
+                } else if (fieldType == byte.class) {
+                    field.setByte(t, Byte.parseByte(value));
+                    
                 } else if (fieldType == Byte.class) {
-                	field.set(t, Byte.valueOf(value));
-                	
+                    field.set(t, Byte.valueOf(value));
+                    
                 } else if (fieldType == short.class) {
-                	field.setShort(t, Short.parseShort(value));
-                	
+                    field.setShort(t, Short.parseShort(value));
+                    
                 } else if (fieldType == Short.class) {
-                	field.set(t, Short.valueOf(value));
-                	
+                    field.set(t, Short.valueOf(value));
+                    
                 } else if (fieldType == char.class) {
-                	field.setChar(t, value.charAt(0));
-                	
+                    field.setChar(t, value.charAt(0));
+                    
                 } else if (fieldType == Character.class) {
-                	field.set(t, Character.valueOf(value.charAt(0)));
-                	
+                    field.set(t, Character.valueOf(value.charAt(0)));
+                    
                 } else {
-                	field.set(t, value);
+                    field.set(t, value);
                 }
                 
             } catch (Exception e) {
