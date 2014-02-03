@@ -56,29 +56,53 @@ public class BodyParserEnginePost implements BodyParserEngine {
                 Class<?> fieldType = field.getType();
                 String value = ent.getValue()[0];
                 
-                if (fieldType == int.class || fieldType == Integer.class) {
+                if (fieldType == int.class) {
                 	field.setInt(t, Integer.parseInt(value));
                 	
-                } else if (fieldType == long.class || fieldType == Long.class) {
+                } else if (fieldType == Integer.class) {
+                	field.set(t, Integer.valueOf(value));
+                	
+                } else if (fieldType == long.class) {
                 	field.setLong(t, Long.parseLong(value));
                 	
-                } else if (fieldType == float.class || fieldType == Float.class) {
+                } else if (fieldType == Long.class) {
+                	field.set(t, Long.valueOf(value));
+                	
+                } else if (fieldType == float.class) {
                 	field.setFloat(t, Float.parseFloat(value));
                 	
-                } else if (fieldType == double.class || fieldType == Double.class) {
+                } else if (fieldType == Float.class) {
+                	field.set(t, Float.valueOf(value));
+                	
+                } else if (fieldType == double.class) {
                 	field.setDouble(t, Double.parseDouble(value));
                 	
-                } else if (fieldType == boolean.class || fieldType == Boolean.class) {
+                } else if (fieldType == Double.class) {
+                	field.set(t, Double.valueOf(value));
+                	
+                } else if (fieldType == boolean.class) {
                 	field.setBoolean(t, Boolean.parseBoolean(value));
                 	
-                } else if (fieldType ==  byte.class || fieldType == Byte.class) {
+                } else if (fieldType == Boolean.class) {
+                	field.set(t, Boolean.valueOf(value));
+                	
+                } else if (fieldType ==  byte.class) {
                 	field.setByte(t, Byte.parseByte(value));
                 	
-                } else if (fieldType == short.class || fieldType == Short.class) {
+                } else if (fieldType == Byte.class) {
+                	field.set(t, Byte.valueOf(value));
+                	
+                } else if (fieldType == short.class) {
                 	field.setShort(t, Short.parseShort(value));
                 	
-                } else if (fieldType == char.class || fieldType == Character.class) {
+                } else if (fieldType == Short.class) {
+                	field.set(t, Short.valueOf(value));
+                	
+                } else if (fieldType == char.class) {
                 	field.setChar(t, value.charAt(0));
+                	
+                } else if (fieldType == Character.class) {
+                	field.set(t, Character.valueOf(value.charAt(0)));
                 	
                 } else {
                 	field.set(t, value);
