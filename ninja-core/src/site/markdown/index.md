@@ -1,6 +1,6 @@
 
 <div class="hero-unit">
-	<p><b>Ninja</b> is a <b> Java full stack web framework</b>.
+	<p><b>Ninja</b> is a <b>full stack web framework</b> for <b>Java</b>.
         Rock solid, fast and super productive.
            </p>
 
@@ -95,7 +95,7 @@
     
     <div class="span4">
 
-        <h2>100% Java</h2>
+        <h2>Java. 100%</h2>
         <p>
         You get all goodies that make Java great: <b>Excellent IDE support</b>.
         A <b>statically typed language</b>. <b>Huge and mature eco-system</b>. 
