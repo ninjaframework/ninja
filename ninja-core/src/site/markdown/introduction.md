@@ -1,8 +1,8 @@
-The Ninja Web Framework
-=======================
+The problem we solve
+====================
 
-The problem
------------
+Introduction
+------------
 
 We successfully developed and maintained 
 applications with different frameworks. For our own

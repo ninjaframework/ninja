@@ -3,6 +3,11 @@ body {
     font-family: "Droid Serif", serif;
     font-size: 14px;
     line-height: 23px;
+    min-width: 800px;
+}
+
+.container-fluid {
+    width: 960px;
 }
 
 li {
@@ -48,13 +53,22 @@ a:visited {
     background-color: white; 
 }
 
+.breadcrumb li {
+    color: gray;
+    font-family: "Droid Sans", sans-serif;
+}
+
 .hero-unit {
     border-radius: 0px;
     background-color: #F5F5F5; /* very light gray */
 }
 
 div.hero-unit > p {
-    margin-top: 20px;
+    color: #68006C; /* dark violet */
+    font-family: "Droid Sans", sans-serif;
+    font-size: 30px;
+    line-height:45px;
+    font-weight: normal;
 }
 
 .nav-header {
