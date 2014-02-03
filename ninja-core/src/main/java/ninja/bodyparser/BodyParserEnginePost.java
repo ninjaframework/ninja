@@ -51,10 +51,39 @@ public class BodyParserEnginePost implements BodyParserEngine {
         for (Entry<String, String[]> ent : context.getParameters().entrySet()) {
             try {
                 Field field = classOfT.getDeclaredField(ent.getKey());
-               
                 field.setAccessible(true);
-                field.set(t, ent.getValue()[0]);
-               
+                
+                Class<?> fieldType = field.getType();
+                String value = ent.getValue()[0];
+                
+                if (fieldType == int.class || fieldType == Integer.class) {
+                	field.setInt(t, Integer.parseInt(value));
+                	
+                } else if (fieldType == long.class || fieldType == Long.class) {
+                	field.setLong(t, Long.parseLong(value));
+                	
+                } else if (fieldType == float.class || fieldType == Float.class) {
+                	field.setFloat(t, Float.parseFloat(value));
+                	
+                } else if (fieldType == double.class || fieldType == Double.class) {
+                	field.setDouble(t, Double.parseDouble(value));
+                	
+                } else if (fieldType == boolean.class || fieldType == Boolean.class) {
+                	field.setBoolean(t, Boolean.parseBoolean(value));
+                	
+                } else if (fieldType ==  byte.class || fieldType == Byte.class) {
+                	field.setByte(t, Byte.parseByte(value));
+                	
+                } else if (fieldType == short.class || fieldType == Short.class) {
+                	field.setShort(t, Short.parseShort(value));
+                	
+                } else if (fieldType == char.class || fieldType == Character.class) {
+                	field.setChar(t, value.charAt(0));
+                	
+                } else {
+                	field.set(t, value);
+                }
+                
             } catch (Exception e) {
                 logger.warn(
                         "Error parsing incoming Post for key " + ent.getKey()
