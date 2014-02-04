@@ -97,6 +97,7 @@ The corresponding html site would then look like:
 &lt;li&gt;${contact.name}&lt;/li&gt;
 &lt;li&gt;${contact.email}&lt;/li&gt;
 &lt;li&gt;${contact.description}&lt;/li&gt;
+&lt;li&gt;${contact.id}&lt;/li&gt;
 </pre>
 
 "contact" is the lower camel case version of the object name. And you can then access the fields (or getters / setters in case
