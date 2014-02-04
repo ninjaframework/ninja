@@ -17,6 +17,7 @@ public class Contact {
     private String name;
     private String email;
     public String description;
+    public int id;
 
     public Contact() {}
 
@@ -59,6 +60,12 @@ public class Contact {
             &lt;td&gt;&lt;input class=&quot;input_full&quot; type=&quot;text&quot; id=&quot;description&quot;
                 name=&quot;description&quot; /&gt;&lt;/td&gt;
         &lt;/tr&gt;
+        
+        &lt;tr&gt;
+            &lt;th&gt;&lt;label for=&quot;id&quot;&gt; ID number &lt;/label&gt;&lt;/th&gt;
+            &lt;td&gt;&lt;input class=&quot;input_full&quot; type=&quot;number&quot; id=&quot;id&quot;
+                name=&quot;id&quot; /&gt;&lt;/td&gt;
+        &lt;/tr&gt;
     &lt;/table&gt;
 
     &lt;p&gt;
@@ -78,7 +85,9 @@ public Result postContactForm(Context context, Contact contact) {
 </pre>
 
 
-Really simple. Ninja maps the post request form parameters directly to the object you specified.
+Really simple. Ninja maps the post request form parameters directly to the object you specified. Primitive types 
+(or their object wrapper types) will be automatically converted and mapped.
+
 
 But wait - there is a bit more: You can even render the object directly via "Results.html().render(contact)".
 
