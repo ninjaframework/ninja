@@ -195,8 +195,7 @@ public class ApplicationController {
 
     public Result postForm(Context context, FormObject formObject) {
         // formObject is parsed into the method
-        // and automatically gets rendered via the html
-        // templating engine.
+        // and automatically gets rendered as json
         return Results.json().render(formObject);
     }
 
