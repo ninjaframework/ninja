@@ -187,15 +187,9 @@ public class ApplicationController {
         return Results.html().render(contact);
     }
     
-    public Result form(Context context) {
-
-        return Results.html();
-
-    }
-
     public Result postForm(Context context, FormObject formObject) {
         // formObject is parsed into the method
-        // and automatically gets rendered as json
+        // and rendered as json
         return Results.json().render(formObject);
     }
 
