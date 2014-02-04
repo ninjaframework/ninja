@@ -94,6 +94,9 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/contactForm").with(ApplicationController.class, "contactForm");
         router.POST().route("/contactForm").with(ApplicationController.class, "postContactForm");
+        
+        router.GET().route("/form").with(ApplicationController.class, "form");
+        router.POST().route("/form").with(ApplicationController.class, "postForm");
 
         // /////////////////////////////////////////////////////////////////////
         // Cache support test

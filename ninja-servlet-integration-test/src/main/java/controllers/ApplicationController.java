@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Contact;
+import models.FormObject;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -43,6 +44,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import ninja.session.FlashScope;
 import ninja.session.Session;
 
@@ -183,6 +185,19 @@ public class ApplicationController {
         // and automatically gets rendered via the html
         // templating engine.
         return Results.html().render(contact);
+    }
+    
+    public Result form(Context context) {
+
+        return Results.html();
+
+    }
+
+    public Result postForm(Context context, FormObject formObject) {
+        // formObject is parsed into the method
+        // and automatically gets rendered via the html
+        // templating engine.
+        return Results.json().render(formObject);
     }
 
     public Result htmlEscaping(Context context) {
