@@ -17,7 +17,7 @@
     
     
     <properties>
-        <ninja.version>2.5.2-SNAPSHOT</ninja.version>
+        <ninja.version>3.0.0-rc2</ninja.version>
         <jetty.version>9.1.1.v20140108</jetty.version>
     </properties>
 
