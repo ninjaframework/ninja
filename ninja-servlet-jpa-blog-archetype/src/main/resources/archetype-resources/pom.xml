@@ -17,8 +17,8 @@
     
     
     <properties>
-        <ninja.version>3.0.0-rc2</ninja.version>
-        <jetty.version>9.1.1.v20140108</jetty.version>
+        <ninja.version>@project.version@</ninja.version>
+        <jetty.version>@jetty.version@</jetty.version>
     </properties>
 
 
