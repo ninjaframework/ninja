@@ -206,22 +206,22 @@ Let's have a look at a controller that does some querying:
 
 <pre class="prettyprint">
 @Inject 
-Provider<EntityManager> entitiyManagerProvider;
+Provider&lt;EntityManager&gt; entitiyManagerProvider;
 
 @UnitOfWork
 public Result getIndex() {
 
     EntityManager entityManager = entitiyManagerProvider.get();
 
-    Query q = entityManager.createQuery("SELECT x FROM GuestbookEntry x");
-    List<GuestbookEntry> guestbookEntries = (List<GuestbookEntry>) q.getResultList();
+    Query q = entityManager.createQuery(&quot;SELECT x FROM GuestbookEntry x&quot;);
+    List&lt;GuestbookEntry&gt; guestbookEntries = (List&lt;GuestbookEntry&gt;) q.getResultList();
 
-    String postRoute = router.getReverseRoute(ApplicationController.class, "postIndex");
+    String postRoute = router.getReverseRoute(ApplicationController.class, &quot;postIndex&quot;);
 
     return Results
             .html()
-            .render("guestbookEntries", guestbookEntries).
-            render("postRoute", postRoute);
+            .render(&quot;guestbookEntries&quot;, guestbookEntries).
+            render(&quot;postRoute&quot;, postRoute);
 
 
 }

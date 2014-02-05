@@ -14,7 +14,7 @@ can use the noescape directive around that particular variable.
 i18n and the view
 ----------------
 
-You can access all messages by using a simple <html>
+You can access all messages by using a simple method inside your templates.
 
 Lets say your message.properties looks like:
 

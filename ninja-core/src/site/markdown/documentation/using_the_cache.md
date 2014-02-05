@@ -32,10 +32,10 @@ NinjaCache ninjaCache;
 
 public Result allPosts() {
 
-    List<Post> posts = ninjaCache.get("posts", List.class);
+    List&lt;Post&gt; posts = ninjaCache.get(&quot;posts&quot;, List.class);
     if(products == null) {
         posts = postDao.findAll();
-        ninjaCache.set("posts", posts, "30mn");
+        ninjaCache.set(&quot;posts&quot;, posts, &quot;30mn&quot;);
     }
 
     return Results.html().render(posts);

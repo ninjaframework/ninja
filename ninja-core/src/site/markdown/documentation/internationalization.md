@@ -81,18 +81,18 @@ public class ApplicationController {
 
     public Result controllerMethod(Context context) {
 
-        Optional<String> language = Optional.of("en");
-        Optional<Result> optResult = Optional.absent();
+        Optional&lt;String&gt; language = Optional.of(&quot;en&quot;);
+        Optional&lt;Result&gt; optResult = Optional.absent();
 
         // messages use messageFormat. If you use placeholders, messages can format them for you.
-        Object [] messageParamters = {"kevin"};
+        Object [] messageParamters = {&quot;kevin&quot;};
 
-       String message1 = "localized message1: " + msg.get("casinoRegistrationTitle", language);
+       String message1 = &quot;localized message1: &quot; + msg.get(&quot;casinoRegistrationTitle&quot;, language);
 
        // This will determine the language from context and result:
-       String message2 = "localized message2: " + msg.get("casinoYourUsername", context, optResult, messageParamters);
+       String message2 = &quot;localized message2: &quot; + msg.get(&quot;casinoYourUsername&quot;, context, optResult, messageParamters);
 
-       return Results.text(message1 + " " + message2);
+       return Results.text(message1 + &quot; &quot; + message2);
 
     }
 
@@ -202,7 +202,7 @@ public Result flashError(Context context) {
 
     Result result = Results.html();
 
-    Optional<String> flashMessage = messages.get("flashError", context, Optional.of(result), "PLACEHOLDER");
+    Optional&lt;String&gt; flashMessage = messages.get(&quot;flashError&quot;, context, Optional.of(result), &quot;PLACEHOLDER&quot;);
 
     if (flashMessage.isPresent()) {
         context.getFlashScope().error(flashMessage.get());

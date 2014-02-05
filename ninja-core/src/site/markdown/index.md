@@ -7,7 +7,7 @@
 
 </div>
 
-<hr>
+<hr/>
 
 <!-- Example row-fluid of columns -->
 <div class="row-fluid">
@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<hr>
+<hr/>
 
 
 <div class="row-fluid">	

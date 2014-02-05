@@ -348,7 +348,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>16.0</version>
+                <version>16.0.1</version>
             </dependency>
 
             <!-- Needed for Hex transforms (security, cookies) and more... -->

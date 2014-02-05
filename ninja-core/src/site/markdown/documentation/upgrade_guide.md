@@ -158,28 +158,29 @@ From 1.1 to 1.2
  * Please use "ninja.Messages" instead of "ninja.Lang" for getting messages.
  * Your web.xml must be adapted and should resemble:
 
-    <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-            version="3.0">
+<pre class="prettyprint">
+&lt;web-app xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot;
+        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+        xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd&quot;
+        version=&quot;3.0&quot;&gt;
 
-        <display-name>ninja</display-name>
+    &lt;display-name&gt;ninja&lt;/display-name&gt;
 
-        <listener>
-            <listener-class>ninja.servlet.NinjaServletListener</listener-class>
-        </listener>
+    &lt;listener&gt;
+        &lt;listener-class&gt;ninja.servlet.NinjaServletListener&lt;/listener-class&gt;
+    &lt;/listener&gt;
 
-        <filter>
-            <filter-name>guiceFilter</filter-name>
-            <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-        </filter>
-        <filter-mapping>
-            <filter-name>guiceFilter</filter-name>
-            <url-pattern>/*</url-pattern>
-        </filter-mapping>
+    &lt;filter&gt;
+        &lt;filter-name&gt;guiceFilter&lt;/filter-name&gt;
+        &lt;filter-class&gt;com.google.inject.servlet.GuiceFilter&lt;/filter-class&gt;
+    &lt;/filter&gt;
+    &lt;filter-mapping&gt;
+        &lt;filter-name&gt;guiceFilter&lt;/filter-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/filter-mapping&gt;
 
-    </web-app>
-    
+&lt;/web-app&gt;
+</pre>    
     
 From 1.0 to 1.1
 ---------------

@@ -30,7 +30,6 @@ critical information. Storing a user id, oder username is fine. Storing
 credit card information is really bad practise.
 </div>
 
-
 Reading a session value
 -----------------------
 
@@ -55,7 +54,7 @@ public Result getUserNameFromSession(Session session) {
 Saving data inside a session
 ----------------------------
 
-You can store data by using method </code>put(key, value)</code> of the 
+You can store data by using method <code>put(key, value)</code> of the 
 <code>Session</code> object.
 
 <pre class="prettyprint">

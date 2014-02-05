@@ -58,7 +58,7 @@ public @interface LoggedInUser {}
 ... and the argument extractor itself:
 
 <pre class="prettyprint">
-public class LoggedInUserExtractor implements ArgumentExtractor<String> {
+public class LoggedInUserExtractor implements ArgumentExtractor&lt;String&gt; {
 
     @Override
     public String extract(Context context) {

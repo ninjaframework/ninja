@@ -72,7 +72,7 @@ public Result flashSuccess(FlashScope flashScope, Context context) {
 
     Result result = Results.html();
 
-    Optional<String> flashMessage = messages.get("flashSuccess", context, Optional.of(result), "PLACEHOLDER");
+    Optional&lt;String&gt; flashMessage = messages.get("flashSuccess", context, Optional.of(result), "PLACEHOLDER");
     if (flashMessage.isPresent()) {
         flashScope.success(flashMessage.get());
     }

@@ -214,16 +214,16 @@ Router router;
 public void myMethod() {
 
     map = Maps.newHashMap();
-    map.put("id","myId");
-    map.put("email","myEmail");
-    map.put("paging_size","100");
-    map.put("page","1");
+    map.put(&quot;id&quot;,&quot;myId&quot;);
+    map.put(&quot;email&quot;,&quot;myEmail&quot;);
+    map.put(&quot;paging_size&quot;,&quot;100&quot;);
+    map.put(&quot;page&quot;,&quot;1&quot;);
 
-    // this will result into "/user/myId/myEmail/userDashboard?paging_size=100&page=1"
+    // this will result into &quot;/user/myId/myEmail/userDashboard?paging_size=100&amp;page=1&quot;
     String generatedReverseRoute 
         = router.getReverseRoute(
             ApplicationController.class, 
-            "userDashboard", 
+            &quot;userDashboard&quot;, 
             map);
 
     ...
