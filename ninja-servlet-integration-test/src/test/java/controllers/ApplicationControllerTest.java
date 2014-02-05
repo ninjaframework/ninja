@@ -135,22 +135,68 @@ public class ApplicationControllerTest extends NinjaTest {
         Map<String, String> headers = Maps.newHashMap();
         Map<String, String> formParameters = Maps.newHashMap();
 
-        formParameters.put("description", "test3");
-        formParameters.put("email", "test2@email.com");
-        formParameters.put("name", "test1");
+        formParameters.put("name", "tester");
+        formParameters.put("email", "test@email.com");
+
+        formParameters.put("primInt", "593765");
+        formParameters.put("objInt", "593766");
+        
+        formParameters.put("primLong", "-3957393");
+        formParameters.put("objLong", "-3957394");
+        
+        formParameters.put("primFloat", "78.12");
+        formParameters.put("objFloat", "79.22");
+        
+        formParameters.put("primDouble", "694.56");
+        formParameters.put("objDouble", "696.56");
+        
+        formParameters.put("primBoolean", "false");
+        formParameters.put("objBoolean", "true");
+        
+        
+        formParameters.put("primByte", "111");
+        formParameters.put("objByte", "112");
+        
+        formParameters.put("primShort", "32456");
+        formParameters.put("objShort", "32455");
+        
+        formParameters.put("primChar", "Z");
+        formParameters.put("objChar", "X");
 
         String response =
                 ninjaTestBrowser.makePostRequestWithFormParameters(
-                        getServerAddress() + "/contactForm",
+                        getServerAddress() + "/form",
                         headers,
                         formParameters);
 
         // And assert that stuff is visible on page:
-        assertTrue(response.contains("test3"));
-        assertTrue(response.contains("test2@email.com"));
-        assertTrue(response.contains("test1"));
-
-
+        assertTrue(response.contains("tester"));
+        assertTrue(response.contains("test@email.com"));
+        
+        assertTrue(response.contains("593765"));
+        assertTrue(response.contains("593766"));
+        
+        assertTrue(response.contains("-3957393"));
+        assertTrue(response.contains("-3957394"));
+        
+        assertTrue(response.contains("78.12"));
+        assertTrue(response.contains("79.22"));
+        
+        assertTrue(response.contains("694.56"));
+        assertTrue(response.contains("696.56"));
+        
+        assertTrue(response.contains("true"));
+        assertTrue(response.contains("false"));
+        
+        assertTrue(response.contains("111"));
+        assertTrue(response.contains("112"));
+        
+        assertTrue(response.contains("32456"));
+        assertTrue(response.contains("32455"));
+        
+        assertTrue(response.contains("Z"));
+        assertTrue(response.contains("X"));
+        
     }
     
     @Test
