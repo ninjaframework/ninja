@@ -27,6 +27,7 @@
                     <!-- generation process.  -->
                     <!-- By redefining the delimimter we can access  -->
                     <!-- variables like @jetty.version@ or @project.version@ -->
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
                     <delimiters>
                         <delimiter>@</delimiter>
                     </delimiters>
