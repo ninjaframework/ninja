@@ -19,14 +19,19 @@ package controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Map;
 
+import models.FormObject;
 import ninja.NinjaTest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 
 public class ApplicationControllerTest extends NinjaTest {
@@ -130,7 +135,7 @@ public class ApplicationControllerTest extends NinjaTest {
     }
 
     @Test
-    public void testPostFormParsingWorks() {
+    public void testPostFormParsingWorks() throws IOException {
         // Some empty headers for now...
         Map<String, String> headers = Maps.newHashMap();
         Map<String, String> formParameters = Maps.newHashMap();
@@ -148,7 +153,7 @@ public class ApplicationControllerTest extends NinjaTest {
         formParameters.put("objFloat", "79.22");
         
         formParameters.put("primDouble", "694.56");
-        formParameters.put("objDouble", "696.56");
+        formParameters.put("objDouble", "696.76");
         
         formParameters.put("primBoolean", "false");
         formParameters.put("objBoolean", "true");
@@ -168,35 +173,48 @@ public class ApplicationControllerTest extends NinjaTest {
                         getServerAddress() + "/form",
                         headers,
                         formParameters);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        FormObject returnedObject = objectMapper.readValue(response, FormObject.class);
 
-        // And assert that stuff is visible on page:
-        assertTrue(response.contains("tester"));
-        assertTrue(response.contains("test@email.com"));
+        // And assert that returned object has same values
+        assertEquals("tester", returnedObject.name);
+        assertEquals("test@email.com", returnedObject.getEmail());
         
-        assertTrue(response.contains("593765"));
-        assertTrue(response.contains("593766"));
+        assertEquals(593765, returnedObject.primInt);
+        assertEquals(593766, returnedObject.objInt.intValue());
         
-        assertTrue(response.contains("-3957393"));
-        assertTrue(response.contains("-3957394"));
+        assertEquals(-3957393, returnedObject.primLong);
+        assertEquals(-3957394, returnedObject.objLong.longValue());
         
-        assertTrue(response.contains("78.12"));
-        assertTrue(response.contains("79.22"));
+        assertEquals(78.12, returnedObject.primFloat, 0.001);
+        assertEquals(79.22, returnedObject.objFloat.floatValue(), 0.001);
         
-        assertTrue(response.contains("694.56"));
-        assertTrue(response.contains("696.56"));
+        assertEquals(694.56, returnedObject.primDouble, 0.001);
+        assertEquals(696.76, returnedObject.objDouble.doubleValue(), 0.001);
         
-        assertTrue(response.contains("true"));
-        assertTrue(response.contains("false"));
+        assertEquals(false, returnedObject.isPrimBoolean());
+        assertEquals(true, returnedObject.getObjBoolean().booleanValue());
         
-        assertTrue(response.contains("111"));
-        assertTrue(response.contains("112"));
+        assertEquals(111, returnedObject.getPrimByte());
+        assertEquals(112, returnedObject.getObjByte().byteValue());
         
-        assertTrue(response.contains("32456"));
-        assertTrue(response.contains("32455"));
+        assertEquals(32456, returnedObject.getPrimShort());
+        assertEquals(32455, returnedObject.getObjShort().shortValue());
         
-        assertTrue(response.contains("Z"));
-        assertTrue(response.contains("X"));
+        assertEquals('Z', returnedObject.getPrimChar());
+        assertEquals('X', returnedObject.getObjChar().charValue());
+    }
+
+    @Test
+    public void testDirectObjectRenderingWorks() {
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/direct_rendering");
         
+        // And assert that object values are visible on page:
+        assertTrue(response.contains("test_name"));
+        assertTrue(response.contains("13579"));
+        assertTrue(response.contains("-2954"));
     }
     
     @Test
