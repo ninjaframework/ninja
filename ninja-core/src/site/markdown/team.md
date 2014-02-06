@@ -29,6 +29,7 @@ contributed to Ninja. In some random order:
  * Miguel Triana (emiguelt)
  * amsz
  * Max Garmash (linx56)
+ * Mikko Oksa (metacity)
 
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

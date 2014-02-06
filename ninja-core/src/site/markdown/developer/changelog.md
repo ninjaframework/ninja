@@ -1,6 +1,7 @@
 Version 3.0.0
 =============
 
+ * 2014-02-06 Primitive type field mapping for Post form parameters (metacity).
  * 2014-01-30 ninja-maven-plugin now no longer needs ninja-standalone in
               User's pom.xml. (ra)
  * 2014-01-29 Bump to latest dependencies (ra).
