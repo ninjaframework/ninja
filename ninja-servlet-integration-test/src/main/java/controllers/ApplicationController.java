@@ -174,23 +174,21 @@ public class ApplicationController {
 
     }
 
-    public Result contactForm(Context context) {
-
-        return Results.html();
-
-    }
-
-    public Result postContactForm(Context context, Contact contact) {
-        // contact is parsed into the method
-        // and automatically gets rendered via the html
-        // templating engine.
-        return Results.html().render(contact);
-    }
-    
     public Result postForm(Context context, FormObject formObject) {
         // formObject is parsed into the method
         // and rendered as json
         return Results.json().render(formObject);
+    }
+
+    public Result directObjectTemplateRendering() {
+        // Uses Results.html().render(Object) to directly 
+        // render an object with a Freemarker template
+        FormObject testObject = new FormObject();
+        testObject.name = "test_name";
+        testObject.primInt = 13579;
+        testObject.setObjShort((short)-2954);
+        
+        return Results.html().render(testObject);
     }
 
     public Result htmlEscaping(Context context) {
