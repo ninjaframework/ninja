@@ -1,6 +1,8 @@
 Version 3.0.0
 =============
 
+ * 2014-02-06 Added simple archetype to begin with (ninja-servlet-archetype-simple (ra).
+ * 2014-02-06 Fixed bug where css was not included in servlet-jpa archetype. (ra).
  * 2014-02-06 Bump to slf4j 1.7.6 and logback 1.1.1 (ra).
  * 2014-02-05 Fool proof creation of archetypes without manual work (ra).
  * 2014-02-06 Primitive type field mapping for Post form parameters (metacity).

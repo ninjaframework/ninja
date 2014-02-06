@@ -41,6 +41,7 @@
         <module>ninja-servlet-integration-test</module>
         <module>ninja-servlet-jpa-blog-integration-test</module>
         <module>ninja-servlet-jpa-blog-archetype</module>
+        <module>ninja-servlet-archetype-simple</module>
         <module>ninja-maven-plugin</module>
     </modules>
 
