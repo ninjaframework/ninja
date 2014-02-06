@@ -369,21 +369,21 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1</version>
             </dependency>
 		
             <!-- Replace commons-logging with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.5</version>
+                <version>1.7.6</version>
             </dependency>
         
             <!-- Replace log4j with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.5</version>
+                <version>1.7.6</version>
             </dependency>
 
             <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
