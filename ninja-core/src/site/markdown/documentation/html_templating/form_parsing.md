@@ -100,5 +100,5 @@ The corresponding html site would then look like:
 &lt;li&gt;${contact.id}&lt;/li&gt;
 </pre>
 
-"contact" is the lower camel case version of the object name. And you can then access the fields (or getters / setters in case
+"contact" is the lower camel case version of the object's class name. And you can then access the fields (or getters / setters in case
 fields are private) via "contact.name".
