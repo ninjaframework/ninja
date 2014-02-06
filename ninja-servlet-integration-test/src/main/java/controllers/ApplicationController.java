@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Contact;
+import models.FormObject;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -43,6 +44,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import ninja.session.FlashScope;
 import ninja.session.Session;
 
@@ -172,17 +174,21 @@ public class ApplicationController {
 
     }
 
-    public Result contactForm(Context context) {
-
-        return Results.html();
-
+    public Result postForm(Context context, FormObject formObject) {
+        // formObject is parsed into the method
+        // and rendered as json
+        return Results.json().render(formObject);
     }
 
-    public Result postContactForm(Context context, Contact contact) {
-        // contact is parsed into the method
-        // and automatically gets rendered via the html
-        // templating engine.
-        return Results.html().render(contact);
+    public Result directObjectTemplateRendering() {
+        // Uses Results.html().render(Object) to directly 
+        // render an object with a Freemarker template
+        FormObject testObject = new FormObject();
+        testObject.name = "test_name";
+        testObject.primInt = 13579;
+        testObject.setObjShort((short)-2954);
+        
+        return Results.html().render(testObject);
     }
 
     public Result htmlEscaping(Context context) {

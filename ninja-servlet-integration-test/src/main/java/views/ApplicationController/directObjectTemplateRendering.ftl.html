@@ -1,0 +1,15 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+
+<li>${formObject.name}</li>
+<li>${formObject.primInt}</li>
+<li>${formObject.objShort}</li>
+
+The content of this template is:
+<pre>
+&lt;li>${r"${formObject.name}"}&lt;/li>
+&lt;li>${r"${formObject.primInt}"}&lt;/li>
+&lt;li>${r"${formObject.objShort}"}&lt;/li>
+</pre>
+
+</@layout.myLayout>
