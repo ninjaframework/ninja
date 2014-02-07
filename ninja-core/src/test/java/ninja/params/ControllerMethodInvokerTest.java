@@ -36,8 +36,8 @@ import javax.validation.constraints.Size;
 import ninja.Context;
 import ninja.Result;
 import ninja.RoutingException;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 import ninja.validation.JSR303Validation;
 import ninja.validation.NumberValue;
 import ninja.validation.Required;
@@ -63,9 +63,9 @@ public class ControllerMethodInvokerTest {
     @Mock
     private Context context;
     @Mock
-    private SessionCookie session;
+    private Session session;
     @Mock
-    private FlashCookie flash;
+    private FlashScope flash;
 
     private Validation validation;
 
@@ -546,8 +546,8 @@ public class ControllerMethodInvokerTest {
     public interface MockController {
         public Result noParameter();
         public Result context(Context context);
-        public Result session(SessionCookie session);
-        public Result flash(FlashCookie flash);
+        public Result session(Session session);
+        public Result flash(FlashScope flash);
         public Result param(@Param("param1") String param1);
         public Result pathParam(@PathParam("param1") String param1);
         public Result sessionParam(@SessionParam("param1") String param1);
@@ -566,7 +566,7 @@ public class ControllerMethodInvokerTest {
         public Result classArgArgumentExtractor(@ClassArg String param1);
         public Result guiceArgumentExtractor(@GuiceAnnotation(foo = "bar") String param1);
         public Result multiple(@Param("param1") String param1, @PathParam("param2") int param2,
-                Context context, SessionCookie session);
+                Context context, Session session);
         public Result required(@Param("param1") @Required String param1);
         public Result requiredInt(@Param("param1") @Required @NumberValue(min = 10) int param1);
         public Result badValidator(@Param("param1") @NumberValue(min = 10) String param1);

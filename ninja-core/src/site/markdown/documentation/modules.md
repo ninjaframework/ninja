@@ -30,5 +30,8 @@ Jade4Ninja (Jade) templates
 
  * https://github.com/mysu/jade4ninja
 
+
+<div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 
 (ninja/ninja-core/src/site/markdown/documentation/modules.md)
+</div>

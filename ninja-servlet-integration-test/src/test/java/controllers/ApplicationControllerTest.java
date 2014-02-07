@@ -19,14 +19,19 @@ package controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Map;
 
+import models.FormObject;
 import ninja.NinjaTest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 
 public class ApplicationControllerTest extends NinjaTest {
@@ -130,27 +135,86 @@ public class ApplicationControllerTest extends NinjaTest {
     }
 
     @Test
-    public void testPostFormParsingWorks() {
+    public void testPostFormParsingWorks() throws IOException {
         // Some empty headers for now...
         Map<String, String> headers = Maps.newHashMap();
         Map<String, String> formParameters = Maps.newHashMap();
 
-        formParameters.put("description", "test3");
-        formParameters.put("email", "test2@email.com");
-        formParameters.put("name", "test1");
+        formParameters.put("name", "tester");
+        formParameters.put("email", "test@email.com");
+
+        formParameters.put("primInt", "593765");
+        formParameters.put("objInt", "593766");
+        
+        formParameters.put("primLong", "-3957393");
+        formParameters.put("objLong", "-3957394");
+        
+        formParameters.put("primFloat", "78.12");
+        formParameters.put("objFloat", "79.22");
+        
+        formParameters.put("primDouble", "694.56");
+        formParameters.put("objDouble", "696.76");
+        
+        formParameters.put("primBoolean", "false");
+        formParameters.put("objBoolean", "true");
+        
+        
+        formParameters.put("primByte", "111");
+        formParameters.put("objByte", "112");
+        
+        formParameters.put("primShort", "32456");
+        formParameters.put("objShort", "32455");
+        
+        formParameters.put("primChar", "Z");
+        formParameters.put("objChar", "X");
 
         String response =
                 ninjaTestBrowser.makePostRequestWithFormParameters(
-                        getServerAddress() + "/contactForm",
+                        getServerAddress() + "/form",
                         headers,
                         formParameters);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        FormObject returnedObject = objectMapper.readValue(response, FormObject.class);
 
-        // And assert that stuff is visible on page:
-        assertTrue(response.contains("test3"));
-        assertTrue(response.contains("test2@email.com"));
-        assertTrue(response.contains("test1"));
+        // And assert that returned object has same values
+        assertEquals("tester", returnedObject.name);
+        assertEquals("test@email.com", returnedObject.getEmail());
+        
+        assertEquals(593765, returnedObject.primInt);
+        assertEquals(593766, returnedObject.objInt.intValue());
+        
+        assertEquals(-3957393, returnedObject.primLong);
+        assertEquals(-3957394, returnedObject.objLong.longValue());
+        
+        assertEquals(78.12, returnedObject.primFloat, 0.001);
+        assertEquals(79.22, returnedObject.objFloat.floatValue(), 0.001);
+        
+        assertEquals(694.56, returnedObject.primDouble, 0.001);
+        assertEquals(696.76, returnedObject.objDouble.doubleValue(), 0.001);
+        
+        assertEquals(false, returnedObject.isPrimBoolean());
+        assertEquals(true, returnedObject.getObjBoolean().booleanValue());
+        
+        assertEquals(111, returnedObject.getPrimByte());
+        assertEquals(112, returnedObject.getObjByte().byteValue());
+        
+        assertEquals(32456, returnedObject.getPrimShort());
+        assertEquals(32455, returnedObject.getObjShort().shortValue());
+        
+        assertEquals('Z', returnedObject.getPrimChar());
+        assertEquals('X', returnedObject.getObjChar().charValue());
+    }
 
-
+    @Test
+    public void testDirectObjectRenderingWorks() {
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/direct_rendering");
+        
+        // And assert that object values are visible on page:
+        assertTrue(response.contains("test_name"));
+        assertTrue(response.contains("13579"));
+        assertTrue(response.contains("-2954"));
     }
     
     @Test

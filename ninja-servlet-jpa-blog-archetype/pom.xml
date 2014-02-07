@@ -9,11 +9,42 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>2.5.2-SNAPSHOT</version>
+        <version>3.0.0-rc3-SNAPSHOT</version>
     </parent>
   
 
     <build>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <!-- Redefining delimiters. So that we can filter the -->
+                    <!-- archetype resources. -->
+                    <!-- The regular delimiter is already used by the archetype -->
+                    <!-- generation process.  -->
+                    <!-- By redefining the delimimter we can access  -->
+                    <!-- variables like @jetty.version@ or @project.version@ -->
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
+        </plugins>
+        
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource> 
+        </resources>
+        
         <extensions>
             <extension>
                 <groupId>org.apache.maven.archetype</groupId>

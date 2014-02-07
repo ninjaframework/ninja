@@ -30,25 +30,19 @@ import org.slf4j.Logger;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TemplateEngineXml implements TemplateEngine {
 
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(TemplateEngineXml.class);
     
     private final XmlMapper xmlMapper;
 
     @Inject
-    public TemplateEngineXml(Logger logger) {
-        this.logger = logger;
-        
-        JacksonXmlModule module = new JacksonXmlModule();
-        // Check out: https://github.com/FasterXML/jackson-dataformat-xml
-        // setDefaultUseWrapper produces more similar output to
-        // the Json output. You can change that with annotations in your
-        // models.
-        module.setDefaultUseWrapper(false);
-        this.xmlMapper = new XmlMapper(module);
+    public TemplateEngineXml(XmlMapper xmlMapper) {
+
+        this.xmlMapper = xmlMapper;
     }
 
     @Override

@@ -211,19 +211,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         // put all entries of the session cookie to the map.
         // You can access the values by their key in the cookie
-        if (!context.getSessionCookie().isEmpty()) {
-            map.put("session", context.getSessionCookie().getData());
+        if (!context.getSession().isEmpty()) {
+            map.put("session", context.getSession().getData());
         }
         
         map.put("contextPath", context.getContextPath());
-
-        ///////////////////////////////////////////////////////////////////////
-        // this will be deprecated soon. Please use ${i18n("mykey")} 
-        // to render i18n messages
-        //////////////////////////////////////////////////////////////////////
-        // merge messages with this template...
-        Map<Object, Object> i18nMap = messages.getAll(context, Optional.of(result));
-        map.putAll(i18nMap);
+        
         
         //////////////////////////////////////////////////////////////////////
         // A method that renders i18n messages and can also render messages with 
@@ -245,7 +238,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // get keys via ${flash.KEYNAME}
         //////////////////////////////////////////////////////////////////////
         Map<String, String> translatedFlashCookieMap = Maps.newHashMap();
-        for (Entry<String, String> entry : context.getFlashCookie().getCurrentFlashCookieData().entrySet()) {
+        for (Entry<String, String> entry : context.getFlashScope().getCurrentFlashCookieData().entrySet()) {
             
             String messageValue = null;
 

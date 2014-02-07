@@ -16,8 +16,8 @@
 
 package ninja;
 
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 import ninja.utils.ResponseStreams;
 
 import ninja.validation.Validation;
@@ -46,13 +46,23 @@ public class WrappedContext implements Context {
     }
 
     @Override
-    public FlashCookie getFlashCookie() {
+    public FlashScope getFlashCookie() {
         return wrapped.getFlashCookie();
     }
 
     @Override
-    public SessionCookie getSessionCookie() {
+    public Session getSessionCookie() {
         return wrapped.getSessionCookie();
+    }
+    
+    @Override
+    public FlashScope getFlashScope() {
+        return wrapped.getFlashScope();
+    }
+
+    @Override
+    public Session getSession() {
+        return wrapped.getSession();
     }
 
     @Override

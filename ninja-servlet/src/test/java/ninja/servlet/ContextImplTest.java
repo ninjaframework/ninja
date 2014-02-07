@@ -36,8 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import ninja.*;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
@@ -56,10 +56,10 @@ import com.google.common.collect.Maps;
 public class ContextImplTest {
 
     @Mock
-    private SessionCookie sessionCookie;
+    private Session sessionCookie;
 
     @Mock
-    private FlashCookie flashCookie;
+    private FlashScope flashCookie;
 
     @Mock
     private BodyParserEngineManager bodyParserEngineManager;

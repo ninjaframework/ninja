@@ -36,6 +36,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Locale;
 
 @Singleton
 public class MessagesImpl implements Messages {
@@ -48,8 +49,6 @@ public class MessagesImpl implements Messages {
 
     private final Lang lang;
 
-    private String messageConfigurationFile;
-
     @Inject
     public MessagesImpl(
                         NinjaProperties ninjaProperties,
@@ -57,10 +56,8 @@ public class MessagesImpl implements Messages {
 
         this.ninjaProperties = ninjaProperties;
         this.lang = lang;
-        this.messageConfigurationFile =
-                "conf/messages" + ninjaProperties.getWithDefault("application.languages.delimiter", ".") + "%s.properties";
-
         this.langToKeyAndValuesMapping = loadAllMessageFilesForRegisteredLanguages();
+
 
     }
     
@@ -84,7 +81,11 @@ public class MessagesImpl implements Messages {
         String value = configuration.getString(key);
 
         if (value != null) {
-            return Optional.of(MessageFormat.format(value, params));
+
+            MessageFormat messageFormat = getMessageFormatForLocale(value, language);
+            
+            return Optional.of(messageFormat.format(params));
+            
         } else {
             return Optional.absent();
         }
@@ -131,11 +132,16 @@ public class MessagesImpl implements Messages {
 
         if (value.isPresent()) {
 
-            return MessageFormat.format(value.get(), params);
+            MessageFormat messageFormat = getMessageFormatForLocale(value.get(), language);
+            
+            return messageFormat.format(params);
 
         } else {
+            
             // return default message
-            return MessageFormat.format(defaultMessage, params);
+            MessageFormat messageFormat = getMessageFormatForLocale(defaultMessage, language);
+            
+            return messageFormat.format(params);
 
         }
 
@@ -179,7 +185,8 @@ public class MessagesImpl implements Messages {
 
             // First step: Load complete language eg. en-US
             Configuration configuration = SwissKnife
-                    .loadConfigurationInUtf8(String.format(messageConfigurationFile, lang));
+                    .loadConfigurationInUtf8(String.format(
+                            "conf/messages_%s.properties", lang));
 
             Configuration configurationLangOnly = null;
 
@@ -193,16 +200,17 @@ public class MessagesImpl implements Messages {
 
                 // And load the configuraion
                 configurationLangOnly = SwissKnife
-                        .loadConfigurationInUtf8(String.format(messageConfigurationFile, langOnly));
+                        .loadConfigurationInUtf8(String.format(
+                                "conf/messages_%s.properties", langOnly));
 
             }
 
             // This is strange. If you defined the language in application.conf
             // it should be there propably.
             if (configuration == null) {
-                logger.info(String
-                        .format("Did not find " + messageConfigurationFile + " but it was specified in application.conf. Using default language instead.",
-                                lang));
+                logger.info(
+                        "Did not find conf/messages_{}.properties but it was specified in application.conf. Using default language instead.",
+                        lang);
 
             } else {
 
@@ -298,7 +306,14 @@ public class MessagesImpl implements Messages {
 
 
 
-
+    MessageFormat getMessageFormatForLocale(String value, Optional<String> language) {
+    
+        Locale locale = lang.getLocaleFromStringOrDefault(language);
+        MessageFormat messageFormat = new MessageFormat(value, locale);
+        
+        return messageFormat;
+    
+    }
 
 
 

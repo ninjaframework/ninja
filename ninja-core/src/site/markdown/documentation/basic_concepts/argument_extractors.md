@@ -1,0 +1,95 @@
+Argument extractors
+===================
+
+
+Injecting stuff into your controller - method scope
+---------------------------------------------------
+
+Ninja can inject a lot of stuff into your methods by default. For instance 
+variable parts of routes via <code>@PathParam</code>. 
+Or query / form parameters via <code>@Param</code>.  
+
+Argument extractors allow you to use the very same mechanism 
+(annotations of method parameters) to 
+inject inject arbitrary things into the method of a controller. 
+
+This allows you to process a request, extract things 
+(like a user currently logged in), and provide this via an annotation.
+
+
+How to write an argument extractor
+----------------------------------
+
+Let's write an argument extractor that lets us inject the user currently logged in into
+our method via an annotation. At the end our controller should look like:
+
+<pre class="prettyprint">
+package controllers;
+
+@Singleton
+public class ApplicationController {
+
+    public Result index(
+            @LoggedInUser String loggedInUser) {
+
+        //do something with the parameters...
+    }
+
+}
+</pre>
+
+The <code>@LoggedInUser</code> is a so called argument extractor
+and allow you to extract arbitrary things out
+of the request and re-package them into anything you want. 
+<code>@LoggedInUser</code> for instance determines 
+the user and injects the username into the field annotated with <code>@LoggedInUser</code>.
+
+Argument extractors consist of two things: A marker interface and an implementation.
+
+First the marker interface:
+
+<pre class="prettyprint">
+@WithArgumentExtractor(LoggedInUserExtractor.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER})
+public @interface LoggedInUser {}
+</pre>
+
+... and the argument extractor itself:
+
+<pre class="prettyprint">
+public class LoggedInUserExtractor implements ArgumentExtractor&lt;String&gt; {
+
+    @Override
+    public String extract(Context context) {
+        
+        // if we got no session we break:
+        if (context.getSession() != null) {
+            
+            String username = context.getSession().get("username");
+            
+            return username;
+            
+        }
+        
+        return null;
+    }
+
+    @Override
+    public Class getExtractedType() {
+        return String.class;
+    }
+
+    @Override
+    public String getFieldName() {
+        return null;
+    }
+}
+</pre>
+
+As you can see the interface of the argument extractor references 
+<code>@WithArgumentExtractor(LoggedInUserExtractor.class)</code>.
+<code>LoggedInUserExtractor</code> itself has full access to the context (and the incoming request) 
+and will return the object
+annotated initially by 
+<code>@LoggedInUser</code>. In our example this was <code>@LoggedInUser String loggedInUser</code>.

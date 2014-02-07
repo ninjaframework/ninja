@@ -4,15 +4,92 @@ Static assets
 Intro
 -----
 
-By default you can put static assets into the <code>src/main/java/assets</code> folder. Usually you want to put css files, js files, images and so on into that folder.
+Ninja provides a special controller that helps to serve static assets: 
+<code>AssetsController</code>. <code>AssetsController</code> 
+serves static assets (like css, javascript and images) 
+from the <code>src/main/java/assets</code> folder
+It provides support for ETags and caching out of the box.
 
-You can then reference those files in your html templates via (for instance) 
-    
-    <img src="assets/myimage.png" />
+<div class="alert alert-info"><code>AssetsController</code> will serve all assets
+below your src/main/java/assets folder. Therefore you have to make sure
+that no sensible information is available in that folder and subfolders.</div>
 
-Please note that "assets" is a convention you should follow.
+Serving static assets from a subdirectory
+-----------------------------------------
+
+You can enable the AssetsController via the following route:
+
+<pre class="prettyprint">
+router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
+</pre>
+
+If a website references an image at <code>&lt;img src=&quot;/assets/images/logo.png&quot; /&gt;</code>
+Ninja will serve the file at <code>src/main/java/assets/images/logo.png</code>. (Usually this
+happens inside a jar file - but for clarity we used <code>src/main/java</code>).
+
+Serving static files from root
+------------------------------
+
+You can also serve specific files from your assets directory. A usecase is robots.txt that
+should be available at <code>myserver.com/robots.txt</code>.
+
+To that end you can use the following route:
+
+<pre class="prettyprint">
+router.GET().route("/robots.txt").with(AssetsController.class, "serveStatic");
+</pre>
+
+This route will serve your static robots.txt from <code>src/main/java/assets/robots.txt</code>.
 
 
+Webjars
+-------
+
+The webjars project (http://www.webjars.org/) started by James Ward is 
+an excellent initiative that unites good old Java dependency management 
+with static web libraries like bootstrap.
+
+That means that you can for instance include bootstrap into your project via:
+
+<pre class="prettyprint">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.webjars&lt;/groupId&gt;
+    &lt;artifactId&gt;bootstrap&lt;/artifactId&gt;
+    &lt;version&gt;2.1.1&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+
+The dependency is of course transitive, and will also pull in jQuery (needed by bootstrap). 
+That way copying of dependencies into your assets folder is no longer needed.
+
+In order to activate support for WebJars you need to add the following route to
+your project:
+
+<pre class="prettyprint">
+router.GET().route("/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
+</pre>
+
+You can reference bootstrap from your html pages via the following url:
+
+<pre class="prettyprint">
+&lt;link href=&quot;/webjars/bootstrap/2.1.1/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+</pre>
+
+And Bootstrap is only an example. There are a lot more WebJars available at your
+disposal: jQuery, ember.js, angular and much more. 
+And everything without the need for downloading and updating stuff inside 
+your assets directory.
+
+<div class="alert alert-info">
+Actually WebJars do nothing magic. 
+It simply uses a Java Servlet 3.x convention that allows to reference
+and arbitrary static resources of a libraries' META-INF/resources folder in your 
+application.
+</div>
+ 
+ 
+ 
+ 
 Caching
 -------
 
@@ -25,8 +102,8 @@ Ninja handles caching automatically. It will just work. Well. To make developing
 by default in test and dev mode.
 
 
-Settings
---------
+Caching settings
+----------------
 
 You can control caching via two parameters in your application.conf file:
  
@@ -35,37 +112,3 @@ You can control caching via two parameters in your application.conf file:
  
 <code>http.useEtag</code> will let you turn on and off etag based caching of assets. 
 <code>http.cache_control</code> will set the maxAge=XXX cache-control header.
-
-
-Webjars
--------
-
-The webjars project (http://www.webjars.org/) started by James Ward is an excellent initiative that
-unites good old Java dependency management with web libraries like bootstrap.
-
-That means that you can for instance include bootstrap into your project via:
-
-    <dependency>
-        <groupId>org.webjars</groupId>
-        <artifactId>bootstrap</artifactId>
-        <version>2.1.1</version>
-    </dependency>
-
-The dependency is of course transitive, and will also pull in jQuery (needed by bootstrap). No more
-copying of dependencies into your assets folder needed.
-
-You can then reference this library in your templates then by including 
-
-    <link href="assets/webjars/bootstrap/2.1.1/css/bootstrap.min.css" rel="stylesheet">
-    
-The important part is the "webjars" part after the assets subdirectory. But webjars provides
-a lot more - from Angular to Ember to jQuery. Simply check out their website.
-
-<b>Advanced</b> Actually webjars does nothing magic. It simply uses a Java Servlet 3.x convention that allows to reference
-and arbitrary static resources of a libraries' META-INF/resources folder in your application. Ninja
-fully supports that and makes the content of your META-INF/resources available under the assets subdirectory.
- 
- 
- 
- 
- 

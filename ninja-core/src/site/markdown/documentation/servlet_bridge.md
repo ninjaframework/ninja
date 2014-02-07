@@ -17,26 +17,26 @@ The servlet bridge supports this use case and makes it really simple to combine 
 and Ninja to get the best of both worlds.
 
 
-The Servlet-bridge
+The Servlet bridge
 ------------------
 
-The best way to add servlets and filters to Ninja is to use Ninja's SevletModule at /conf/ServletModule.java .
+The best way to add servlets and filters to Ninja is to use Ninja's SevletModule 
+at <code>/conf/ServletModule.java</code>.
 
 <pre class="prettyprint">
-    public class ServletModule extends com.google.inject.servlet.ServletModule {
-    
-    
-        @Override
-        protected void configureServlets() {
+public class ServletModule extends com.google.inject.servlet.ServletModule {
 
-            bind(LegacyServletFilter.class).asEagerSingleton();
-            bind(NinjaServletDispatcher.class).asEagerSingleton();
-        
-            filter("/*").through(LegacyServletFilter.class);
-            serve("/*").with(NinjaServletDispatcher.class);
-        }
-    
+    @Override
+    protected void configureServlets() {
+
+        bind(LegacyServletFilter.class).asEagerSingleton();
+        bind(NinjaServletDispatcher.class).asEagerSingleton();
+
+        filter("/*").through(LegacyServletFilter.class);
+        serve("/*").with(NinjaServletDispatcher.class);
     }
+
+}
 </pre>
 
 
@@ -51,12 +51,17 @@ Ninja.
 Note of caution
 ---------------
 
-1) Using serlvets and servlet filters is a really convenient way. But there is a big danger: If you don't know
-what you are doing you might end up with a framework that does not scale. Please remember: Ninja is stateless
-and does not use and servlet sessions. If you combine Ninja with servlets that use servlet sessions you can no
+1) Using servlets and servlet filters can be really convenient. 
+But there is a big danger: If you don't know
+what you are doing you might end up with a framework that does not scale. 
+Please remember: Ninja is stateless
+and does not use and servlet sessions. If you combine Ninja with servlets that 
+use servlet sessions you can no
 longer count on the fact that your Ninja app scales with ease.
 
-It is usually a better idea writing a module for Ninja and use Ninja's session mechanism to circumvent that problem.
+It is usually a better idea writing a module for Ninja and use Ninja's session 
+mechanism to circumvent that problem.
 
-2) ServletModule only works when Ninja is actually running inside a servlet container. If you are running Ninja
+2) ServletModule only works when Ninja is actually running inside a servlet container. 
+If you are running Ninja
 inside a Netty this will not work as Netty does not understand the servlet spec.

@@ -31,6 +31,8 @@ import controllers.InjectionExampleController;
 import controllers.PersonController;
 import controllers.UdpPingController;
 import controllers.UploadController;
+import ninja.Context;
+import ninja.servlet.ContextImpl;
 
 public class Routes implements ApplicationRoutes {
     
@@ -90,8 +92,12 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         // Form parsing support
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/contactForm").with(ApplicationController.class, "contactForm");
-        router.POST().route("/contactForm").with(ApplicationController.class, "postContactForm");
+        router.POST().route("/form").with(ApplicationController.class, "postForm");
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Direct object rendering with template test
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/direct_rendering").with(ApplicationController.class, "directObjectTemplateRendering");
 
         // /////////////////////////////////////////////////////////////////////
         // Cache support test
@@ -139,7 +145,9 @@ public class Routes implements ApplicationRoutes {
             router.GET().route("/_test/testPage").with(ApplicationController.class, "testPage");
         }
 
-        router.GET().route("/assets/.*").with(AssetsController.class, "serve");
+        router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
+        router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
+        
     }
 
 }

@@ -11,10 +11,12 @@ Contributing to Ninja is really simple. Well. There are some rules that you shou
 - Make sure your feature is well documented (Javadoc).
 - Make sure there is documentation for your feature at ninja-core/src/site/markdown.
 - Make sure your feature runs inside ninja-integration-test
-  or ninja-servlet-jpa-blog-integration-test if you wrote a feature related to JPA.
+  or ninja-servlet-jpa-blog-integrationt-est if you wrote a feature related to JPA.
 - Add your changes to changelog.md and your name to team.md.
 
-Then send us a pull request and you become a happy member of the Ninja family :)
+Sign the [contributor agreement (electronically)](https://docs.google.com/forms/d/1Yasrxa17kYfaNDgbRvn77rM3WTnU_Um0rwz3GfzPp9g/viewform) and
+send us a pull request to become a happy member of the Ninja family :)
+
 
 
 Code style
@@ -34,6 +36,7 @@ Making a Ninja release
 1) Preliminary
 
 - Make sure changelog.md is updated
+- Make sure upgrade-guide top version is updated
 - Make sure the archetypes are up-to-date (Ninja version must match release version)
 - Make sure the archetypes version in docu (JPA + getting_started) matches release version
 

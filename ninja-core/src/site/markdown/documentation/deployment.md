@@ -93,7 +93,7 @@ Running the fat jar (and your app) is as simple as calling:
             -jar MY-APPLICATION-jar-with-dependencies.jar
 </pre>
 
-code>ninja.port</code> allows you to select the port on which your application is starting. By default
+<code>ninja.port</code> allows you to select the port on which your application is starting. By default
 Ninja will start in the fast production mode.
 Context path is default to "/" in standalone mode but can be changed by providing additional system property: -Dninja.context=/your_context_path
 

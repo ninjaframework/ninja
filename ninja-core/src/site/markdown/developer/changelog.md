@@ -1,3 +1,49 @@
+Version 3.0.0
+=============
+
+ * 2014-02-06 Added simple archetype to begin with (ninja-servlet-archetype-simple (ra).
+ * 2014-02-06 Fixed bug where css was not included in servlet-jpa archetype. (ra).
+ * 2014-02-06 Bump to slf4j 1.7.6 and logback 1.1.1 (ra).
+ * 2014-02-05 Fool proof creation of archetypes without manual work (ra).
+ * 2014-02-06 Primitive type field mapping for Post form parameters (metacity).
+ * 2014-01-30 ninja-maven-plugin now no longer needs ninja-standalone in
+              User's pom.xml. (ra)
+ * 2014-01-29 Bump to latest dependencies (ra).
+    * com.devbliss.doctest:doctest .......................... 0.6.5 -> 0.7.0
+    * com.fasterxml.jackson.core:jackson-core ............... 2.3.0 -> 2.3.1
+    * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.3.0 -> 2.3.1
+    * com.fasterxml.jackson.module:jackson-module-afterburner ... 2.3.0 -> 2.3.1
+    * com.google.inject.extensions:guice-persist ........... 3.0 -> 4.0-beta
+    * com.googlecode.flyway:flyway-core ....................... 2.2 -> 2.3.1
+    * com.h2database:h2 ................................. 1.3.172 -> 1.3.175
+    * commons-codec:commons-codec ............................... 1.8 -> 1.9
+    * commons-configuration:commons-configuration .............. 1.9 -> 1.10
+    * javax.servlet:javax.servlet-api ....................... 3.0.1 -> 3.1.0
+    * joda-time:joda-time ....................................... 2.2 -> 2.3
+    * net.sf.ehcache:ehcache ................................ 2.7.4 -> 2.8.0
+    * net.spy:spymemcached ................................. 2.9.0 -> 2.10.4
+    * org.apache.commons:commons-email ...................... 1.3.1 -> 1.3.2
+    * org.apache.commons:commons-lang3 ........................ 3.1 -> 3.2.1
+    * org.apache.httpcomponents:httpclient .................. 4.2.1 -> 4.3.2
+    * org.apache.httpcomponents:httpmime .................... 4.2.1 -> 4.3.2
+    * org.eclipse.jetty:jetty-server .... 9.0.5.v20130815 -> 9.1.1.v20140108
+    * org.eclipse.jetty:jetty-servlet ... 9.0.5.v20130815 -> 9.1.1.v20140108
+    * org.fluentlenium:fluentlenium-core .................... 0.9.1 -> 0.9.2
+    * org.hibernate:hibernate-c3p0 .............. 4.2.3.Final -> 4.3.1.Final
+    * org.hibernate:hibernate-entitymanager ..... 4.2.3.Final -> 4.3.1.Final
+    * org.webjars:tinymce-jquery ........................... 3.4.9 -> 4.0.12
+ * 2014-01-29 Bump to latest Guava 16.0 (ra) 
+ * 2013-01-28 XmlMapper now singleton configured in one place via a provider. (ra).
+ * 2013-01-28 Added afterburner support to XmlMapper (ra).
+ * 2014-01-28 Added support for custom regex in variable part of routes (ra).
+ * 2014-01-27 Added support to serve arbitrary paths via AssetsController via
+              serveStatic method (ra).
+ * 2014-01-16 Removed deprecated (and slow) option to access i18n messages in 
+              freemarker templates directly via ${messagekey}. This was replaced by
+              by ${i18n("messageKey")} a long time ago (ra).
+ * 2014-01-14 Renaming SessionCookie => Session and FlashCookie => FlashScope (ra)
+
+
 Version 2.5.1
 =============
  

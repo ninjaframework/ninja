@@ -65,7 +65,7 @@ public class FlashCookieTest {
     @Test
     public void testFlashScopeDoesNothingWhenFlashCookieEmpty() {
 
-        FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+        FlashScope flashCookie = new FlashScopeImpl(ninjaProperties);
 
         flashCookie.init(context);
 
@@ -80,7 +80,7 @@ public class FlashCookieTest {
     @Test
     public void testFlashCookieSettingWorks() {
 
-        FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+        FlashScope flashCookie = new FlashScopeImpl(ninjaProperties);
 
         flashCookie.init(context);
 
@@ -99,9 +99,9 @@ public class FlashCookieTest {
                 .getValue());
         assertEquals(-1, cookieCaptor.getValue().getMaxAge());
 
-        assertEquals(1, ((FlashCookieImpl) flashCookie)
+        assertEquals(1, ((FlashScopeImpl) flashCookie)
                 .getCurrentFlashCookieData().size());
-        assertEquals(1, ((FlashCookieImpl) flashCookie)
+        assertEquals(1, ((FlashScopeImpl) flashCookie)
                 .getOutgoingFlashCookieData().size());
 
     }
@@ -113,7 +113,7 @@ public class FlashCookieTest {
                 "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
-        FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+        FlashScope flashCookie = new FlashScopeImpl(ninjaProperties);
 
         flashCookie.init(context);
 
@@ -135,9 +135,9 @@ public class FlashCookieTest {
         assertEquals(
                 "another+message=is+there...&yet+another+message=is+there...",
                 cookieCaptor.getValue().getValue());
-        assertEquals(3, ((FlashCookieImpl) flashCookie)
+        assertEquals(3, ((FlashScopeImpl) flashCookie)
                 .getCurrentFlashCookieData().size());
-        assertEquals(2, ((FlashCookieImpl) flashCookie)
+        assertEquals(2, ((FlashScopeImpl) flashCookie)
                 .getOutgoingFlashCookieData().size());
     }
 
@@ -148,7 +148,7 @@ public class FlashCookieTest {
                 "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
-        FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+        FlashScope flashCookie = new FlashScopeImpl(ninjaProperties);
 
         flashCookie.init(context);
 
@@ -160,9 +160,9 @@ public class FlashCookieTest {
         // now test clearCurrentFlashCookieData
         flashCookie.clearCurrentFlashCookieData();
 
-        assertEquals(0, ((FlashCookieImpl) flashCookie)
+        assertEquals(0, ((FlashScopeImpl) flashCookie)
                 .getCurrentFlashCookieData().size());
-        assertEquals(1, ((FlashCookieImpl) flashCookie)
+        assertEquals(1, ((FlashScopeImpl) flashCookie)
                 .getOutgoingFlashCookieData().size());
 
     }
@@ -174,7 +174,7 @@ public class FlashCookieTest {
                 "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
-        FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+        FlashScope flashCookie = new FlashScopeImpl(ninjaProperties);
 
         flashCookie.init(context);
 
@@ -186,9 +186,9 @@ public class FlashCookieTest {
         // now test clearCurrentFlashCookieData
         flashCookie.discard();
 
-        assertEquals(2, ((FlashCookieImpl) flashCookie)
+        assertEquals(2, ((FlashScopeImpl) flashCookie)
                 .getCurrentFlashCookieData().size());
-        assertEquals(0, ((FlashCookieImpl) flashCookie)
+        assertEquals(0, ((FlashScopeImpl) flashCookie)
                 .getOutgoingFlashCookieData().size());
 
     }
@@ -200,7 +200,7 @@ public class FlashCookieTest {
                 "hello=flashScope").build();
         when(context.getCookie("NINJA_FLASH")).thenReturn(cookie);
 
-        FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+        FlashScope flashCookie = new FlashScopeImpl(ninjaProperties);
 
         flashCookie.init(context);
 
@@ -208,17 +208,17 @@ public class FlashCookieTest {
         assertEquals("flashScope", flashCookie.get("hello"));
 
         // make sure outgoing is 0
-        assertEquals(1, ((FlashCookieImpl) flashCookie)
+        assertEquals(1, ((FlashScopeImpl) flashCookie)
                 .getCurrentFlashCookieData().size());
-        assertEquals(0, ((FlashCookieImpl) flashCookie)
+        assertEquals(0, ((FlashScopeImpl) flashCookie)
                 .getOutgoingFlashCookieData().size());
 
         // now call keep.
         flashCookie.keep();
         // => now both queues must be 1
-        assertEquals(1, ((FlashCookieImpl) flashCookie)
+        assertEquals(1, ((FlashScopeImpl) flashCookie)
                 .getCurrentFlashCookieData().size());
-        assertEquals(1, ((FlashCookieImpl) flashCookie)
+        assertEquals(1, ((FlashScopeImpl) flashCookie)
                 .getOutgoingFlashCookieData().size());
 
     }
@@ -226,7 +226,7 @@ public class FlashCookieTest {
     @Test
     public void testThatCorrectMethodOfNinjaPropertiesIsUsedSoThatStuffBreaksWhenPropertyIsAbsent() {
 
-        FlashCookie flashCookie = new FlashCookieImpl(ninjaProperties);
+        FlashScope flashCookie = new FlashScopeImpl(ninjaProperties);
 
         // Make sure that getOrDie has been called. This makes sure we have set
         // a cookie prefix:

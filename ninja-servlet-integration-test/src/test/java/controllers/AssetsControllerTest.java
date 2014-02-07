@@ -45,7 +45,7 @@ public class AssetsControllerTest extends NinjaTest {
         // found:
         // default charset is always utf-8 by convention.
         assertEquals(
-                "application/dxf;charset=UTF-8", 
+                "application/dxf; charset=UTF-8", 
                 httpResponse.getHeaders("Content-Type")[0].getValue());
 
     }

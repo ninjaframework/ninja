@@ -25,8 +25,8 @@ import java.util.Map;
 import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.bodyparser.BodyParserEngineXml;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 import ninja.utils.ResponseStreams;
 
 import ninja.validation.Validation;
@@ -113,12 +113,18 @@ public interface Context {
      * Returns the flash cookie. Flash cookies only live for one request. Good
      * uses are error messages to display. Almost everything else is bad use of
      * Flash Cookies.
+     * A FlashScope is usually not signed. Don't trust the content.
      * 
-     * A FlashCookie is usually not signed. Don't trust the content.
-     * 
-     * @return the flash cookie of that request.
+     * @return the flash scope of that request.
      */
-    FlashCookie getFlashCookie();
+    FlashScope getFlashScope();
+    
+    /**
+     * Deprecated  => please use getFlashScope()
+     * @return FlashScope of this request.
+     */
+    @Deprecated
+    FlashScope getFlashCookie();
 
     /**
      * Returns the client side session. It is a cookie. Therefore you cannot
@@ -129,7 +135,14 @@ public interface Context {
      * 
      * @return the Session of that request / response cycle.
      */
-    SessionCookie getSessionCookie();
+    Session getSession();
+    
+    /**
+     * Deprecated => please use getSession();
+     * @return the Session of that request / response cycle.
+     */
+    @Deprecated
+    Session getSessionCookie();
     
     /**
      * Get cookie from context.

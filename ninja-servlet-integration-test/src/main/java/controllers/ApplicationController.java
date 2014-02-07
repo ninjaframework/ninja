@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Contact;
+import models.FormObject;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -43,6 +44,9 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import ninja.session.FlashScope;
+import ninja.session.Session;
 
 @Singleton
 public class ApplicationController {
@@ -124,63 +128,67 @@ public class ApplicationController {
 
     }
 
-    public Result session(Context context) {
+    public Result session(Session session) {
         // Sets the username "kevin" in the session-cookie
-        context.getSessionCookie().put("username", "kevin");
+        session.put("username", "kevin");
 
         return Results.html();
 
     }
 
-    public Result flashSuccess(Context context) {
+    public Result flashSuccess(FlashScope flashScope, Context context) {
         
         Result result = Results.html();
         
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashSuccess", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().success(flashMessage.get());
+            flashScope.success(flashMessage.get());
         }
 
         return result;
 
     }
     
-    public Result flashError(Context context) {
+    public Result flashError(Context context, FlashScope flashScope) {
         Result result = Results.html();
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashError", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().error(flashMessage.get());
+            flashScope.error(flashMessage.get());
         }
 
         return result;
 
     }
     
-    public Result flashAny(Context context) {
+    public Result flashAny(Context context, FlashScope flashScope) {
         Result result = Results.html();
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashAny", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().put("any", flashMessage.get());
+            flashScope.put("any", flashMessage.get());
         }
 
         return result;
 
     }
 
-    public Result contactForm(Context context) {
-
-        return Results.html();
-
+    public Result postForm(Context context, FormObject formObject) {
+        // formObject is parsed into the method
+        // and rendered as json
+        return Results.json().render(formObject);
     }
 
-    public Result postContactForm(Context context, Contact contact) {
-        // contact is parsed into the method
-        // and automatically gets rendered via the html
-        // templating engine.
-        return Results.html().render(contact);
+    public Result directObjectTemplateRendering() {
+        // Uses Results.html().render(Object) to directly 
+        // render an object with a Freemarker template
+        FormObject testObject = new FormObject();
+        testObject.name = "test_name";
+        testObject.primInt = 13579;
+        testObject.setObjShort((short)-2954);
+        
+        return Results.html().render(testObject);
     }
 
     public Result htmlEscaping(Context context) {

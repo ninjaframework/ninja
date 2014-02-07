@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>2.5.2-SNAPSHOT</version>
+        <version>3.0.0-rc3-SNAPSHOT</version>
     </parent>
     
     <url>http://www.ninjaframework.org</url>
@@ -150,12 +150,6 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

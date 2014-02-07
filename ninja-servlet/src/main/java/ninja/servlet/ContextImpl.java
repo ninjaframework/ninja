@@ -41,8 +41,8 @@ import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 import ninja.utils.HttpHeaderUtils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResponseStreams;
@@ -69,9 +69,9 @@ public class ContextImpl implements Context.Impl {
 
     private final BodyParserEngineManager bodyParserEngineManager;
 
-    private final FlashCookie flashCookie;
+    private final FlashScope flashScope;
 
-    private final SessionCookie sessionCookie;
+    private final Session session;
     private final ResultHandler resultHandler;
     private final Validation validation;
 
@@ -80,14 +80,14 @@ public class ContextImpl implements Context.Impl {
 
     @Inject
     public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
-                       FlashCookie flashCookie,
-                       SessionCookie sessionCookie,
+                       FlashScope flashCookie,
+                       Session sessionCookie,
                        ResultHandler resultHandler,
                        Validation validation) {
 
         this.bodyParserEngineManager = bodyParserEngineManager;
-        this.flashCookie = flashCookie;
-        this.sessionCookie = sessionCookie;
+        this.flashScope = flashCookie;
+        this.session = sessionCookie;
         this.resultHandler = resultHandler;
         this.validation = validation;
     }
@@ -98,10 +98,10 @@ public class ContextImpl implements Context.Impl {
         this.httpServletResponse = httpServletResponse;
 
         // init flash scope:
-        flashCookie.init(this);
+        flashScope.init(this);
 
         // init session scope:
-        sessionCookie.init(this);
+        session.init(this);
 
     }
 
@@ -244,13 +244,23 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
-    public FlashCookie getFlashCookie() {
-        return flashCookie;
+    public FlashScope getFlashCookie() {
+        return flashScope;
     }
 
     @Override
-    public SessionCookie getSessionCookie() {
-        return sessionCookie;
+    public Session getSessionCookie() {
+        return session;
+    }
+    
+    @Override
+    public FlashScope getFlashScope() {
+        return flashScope;
+    }
+
+    @Override
+    public Session getSession() {
+        return session;
     }
     
     @Override
@@ -363,8 +373,8 @@ public class ContextImpl implements Context.Impl {
 
         // copy ninja cookies / flash and session
         if (handleFlashAndSessionCookie) {
-            flashCookie.save(this, result);
-            sessionCookie.save(this, result);
+            flashScope.save(this, result);
+            session.save(this, result);
         }
 
 
@@ -598,5 +608,5 @@ public class ContextImpl implements Context.Impl {
     public HttpServletResponse getHttpServletResponse() {
         return httpServletResponse;
     }
-
+    
 }

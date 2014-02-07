@@ -26,7 +26,10 @@ import ninja.lifecycle.LifecycleService;
 import com.google.inject.Inject;
 
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main implementation of the ninja framework.
@@ -48,36 +51,44 @@ import ninja.utils.ResultHandler;
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class NinjaImpl implements Ninja {
+    
+    private static final Logger logger = LoggerFactory.getLogger(NinjaImpl.class);
 
     /**
      * The most important thing: A cool logo.
      */
-    private final String NINJA_LOGO = 
-              " _______  .___ _______        ____.  _____   \n"
+    private final String NINJA_LOGO = "\n"
+            + " _______  .___ _______        ____.  _____   \n"
             + " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
             + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
             + "/    |    \\   /    |    \\/\\__|    /    |    \\  http://www.ninjaframework.org\n"
             + "\\____|__  /___\\____|__  /\\________\\____|__  /  @ninjaframework\n"
-            + "     web\\/framework   \\/                  \\/   %s\n";
+            + "     web\\/framework   \\/                  \\/   {}\n";
     
 
     private final LifecycleService lifecycleService;
+    private final NinjaProperties ninjaProperties;
     private final Router router;
     private final ResultHandler resultHandler;
 
     @Inject
     public NinjaImpl(LifecycleService lifecycleService,
+                     NinjaProperties ninjaProperties,
                      Router router,
                      ResultHandler resultHandler) {
 
         this.router = router;
+        this.ninjaProperties = ninjaProperties;
         this.lifecycleService = lifecycleService;
         this.resultHandler = resultHandler;
         
         String ninjaVersion = readNinjaVersion();
 
-        // This system out println is intended.
-        System.out.println(String.format(NINJA_LOGO, ninjaVersion));
+        // log Ninja splash screen
+        logger.info(NINJA_LOGO, ninjaVersion);
+      
+        logNinjaMode(logger, ninjaProperties);
+        
     }
 
     /**
@@ -150,6 +161,27 @@ public class NinjaImpl implements Ninja {
         
         return ninjaVersion;
         
+    }
+    
+    public final void logNinjaMode(Logger logger, NinjaProperties ninjaProperties) {
+        
+        if (logger.isInfoEnabled()) {
+            
+            // print out mode:
+            String mode = "";
+            if (ninjaProperties.isDev()) {
+                mode = "dev";
+            } else if (ninjaProperties.isTest()) {
+                mode = "test";
+            } else if (ninjaProperties.isProd()) {
+                mode = "prod";
+            }
+        
+            logger.info("Ninja is running in mode: {}", mode); 
+        }
+    
+    
+    
     }
 
 }
