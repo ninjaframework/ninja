@@ -75,7 +75,8 @@ public class RouterImpl implements Router {
 
         for (Route route : routes) {
 
-            if (route.getControllerClass().equals(controllerClass)
+            if (route.getControllerClass() != null
+                    && route.getControllerClass().equals(controllerClass)
                     && route.getControllerMethod().getName().equals(controllerMethodName)) {
                 
                 // The original url. Something like route/user/{id}/{email}/userDashboard
