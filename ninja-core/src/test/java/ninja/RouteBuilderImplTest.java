@@ -279,6 +279,19 @@ public class RouteBuilderImplTest {
 
     }
 
+    @Test
+    public void testRouteWithResult() {
+        String template = "/directly_result/stuff";
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/directly_result/route").with(Results.html().template(template));
+
+        Route route = routeBuilder.buildRoute(injector);
+        assertTrue(route.matches("GET", "/directly_result/route"));
+
+        Result result = route.getFilterChain().next(null);
+        assertEquals(result.getTemplate(), template);
+    }
+
     private Route buildRoute(RouteBuilderImpl builder) {
         builder.with(MockController.class, "execute");
         return builder.buildRoute(injector);

@@ -157,6 +157,11 @@ class RouteBuilderImpl implements RouteBuilder {
      *            The injector to build the route with
      */
     public Route buildRoute(Injector injector) {
+        if(controller == null && result == null) {
+            log.error("Error in route configuration for {}", uri);
+            throw new IllegalStateException("Route not with a controller or result");
+        }
+
         // Calculate filters
         LinkedList<Class<? extends Filter>> filters = new LinkedList<Class<? extends Filter>>();
         if(controller != null) {
