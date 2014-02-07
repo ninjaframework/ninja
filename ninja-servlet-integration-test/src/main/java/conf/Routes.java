@@ -17,6 +17,7 @@
 package conf;
 
 import ninja.AssetsController;
+import ninja.Results;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
@@ -61,6 +62,8 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         // simply render a page:
         router.GET().route("/").with(ApplicationController.class, "index");
+
+        router.GET().route("/route_with_result").with(Results.html().template("/views/routeWithResult.ftl.html"));
 
         // render a page with variable route parts:
         router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
