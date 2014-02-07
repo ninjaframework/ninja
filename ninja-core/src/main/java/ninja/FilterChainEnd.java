@@ -21,12 +21,17 @@ import com.google.inject.Provider;
 
 /**
  * The end of the filter chain
- * 
+ *
  * @author James Roper
  */
 class FilterChainEnd implements FilterChain {
-    private final Provider<?> controllerProvider;
-    private final ControllerMethodInvoker controllerMethodInvoker;
+    private Provider<?> controllerProvider;
+    private ControllerMethodInvoker controllerMethodInvoker;
+    private Result result;
+
+    FilterChainEnd(Result result) {
+        this.result = result;
+    }
 
     FilterChainEnd(Provider<?> controllerProvider,
                    ControllerMethodInvoker controllerMethodInvoker) {
@@ -36,18 +41,17 @@ class FilterChainEnd implements FilterChain {
 
     @Override
     public Result next(Context context) {
+        if(result == null) {
+            result = (Result) controllerMethodInvoker.invoke(
+                    controllerProvider.get(), context);
 
-        Result result;
-
-        result = (Result) controllerMethodInvoker.invoke(
-                controllerProvider.get(), context);
-
-        if (result instanceof AsyncResult) {
-            // Make sure handle async has been called
-            context.handleAsync();
-            Result newResult = context.controllerReturned();
-            if (newResult != null) {
-                result = newResult;
+            if (result instanceof AsyncResult) {
+                // Make sure handle async has been called
+                context.handleAsync();
+                Result newResult = context.controllerReturned();
+                if (newResult != null) {
+                    result = newResult;
+                }
             }
         }
 

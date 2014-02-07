@@ -42,6 +42,31 @@ two routes, the route defined first is executed.
 </div>
 
 
+With result directly
+--------------------
+You can use Result object to render a static page simply without controller.
+
+<pre class="prettyprint">
+public class Routes implements ApplicationRoutes {
+
+    @Override
+    public void init(Router router) {
+        
+        // a GET request to "/" will be redirect to "/dashboard"
+        router.GET().route("/").with(Results.redirect("/dashboard"));
+        
+        // show a static page
+        router.GET().route("/dashboard").with(Results.html().template("/dashboard.html"));
+
+        ...
+
+    }
+}
+</pre>
+
+
+
+
 Regex in your routes
 --------------------
 
@@ -282,4 +307,3 @@ a @PathParam("id") would then be rootuser/domain as it is decoded by Ninja.
 
 In principle it is really simple. But it is even simpler to mess encoding / decoding up.
 The article from Lunatech mentioned earlier is awesome and explains everything.
-

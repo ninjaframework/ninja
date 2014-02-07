@@ -37,6 +37,7 @@ class RouteBuilderImpl implements RouteBuilder {
     private String uri;
     private Class controller;
     private Method controllerMethod;
+    private Result result;
 
     public RouteBuilderImpl GET() {
         httpMethod = "GET";
@@ -71,6 +72,11 @@ class RouteBuilderImpl implements RouteBuilder {
     }
 
     @Override
+    public void with(Result result) {
+        this.result = result;
+    }
+
+    @Override
     public RouteBuilder route(String uri) {
         this.uri = uri;
         return this;
@@ -79,13 +85,13 @@ class RouteBuilderImpl implements RouteBuilder {
     /**
      * Routes are usually defined in conf/Routes.java as
      * router.GET().route("/teapot").with(FilterController.class, "teapot");
-     * 
+     *
      * Unfortunately "teapot" is not checked by the compiler. We do that here at
      * runtime.
-     * 
+     *
      * We are reloading when there are changes. So this is almost as good as
      * compile time checking.
-     * 
+     *
      * @param controller
      *            The controller class
      * @param controllerMethod
@@ -146,33 +152,43 @@ class RouteBuilderImpl implements RouteBuilder {
 
     /**
      * Build the route
-     * 
+     *
      * @param injector
      *            The injector to build the route with
      */
     public Route buildRoute(Injector injector) {
+        if(controller == null && result == null) {
+            log.error("Error in route configuration for {}", uri);
+            throw new IllegalStateException("Route not with a controller or result");
+        }
+
         // Calculate filters
         LinkedList<Class<? extends Filter>> filters = new LinkedList<Class<? extends Filter>>();
-        filters.addAll(calculateFiltersForClass(controller));
-        FilterWith filterWith = controllerMethod
-                .getAnnotation(FilterWith.class);
-        if (filterWith != null) {
-            filters.addAll(Arrays.asList(filterWith.value()));
+        if(controller != null) {
+            filters.addAll(calculateFiltersForClass(controller));
+            FilterWith filterWith = controllerMethod
+                    .getAnnotation(FilterWith.class);
+            if (filterWith != null) {
+                filters.addAll(Arrays.asList(filterWith.value()));
+            }
         }
+
         return new Route(httpMethod, uri, controller, controllerMethod,
                 buildFilterChain(injector, filters, controller,
-                        controllerMethod));
+                        controllerMethod, result));
     }
 
     private FilterChain buildFilterChain(Injector injector,
                                          LinkedList<Class<? extends Filter>> filters,
                                          Class<?> controller,
-                                         Method controllerMethod) {
+                                         Method controllerMethod,
+                                         Result result) {
 
         if (filters.isEmpty()) {
 
-            return new FilterChainEnd(injector.getProvider(controller),
-                    ControllerMethodInvoker.build(controllerMethod, injector));
+            return result != null ? new FilterChainEnd(result) :
+                    new FilterChainEnd(injector.getProvider(controller),
+                            ControllerMethodInvoker.build(controllerMethod, injector));
 
         } else {
 
@@ -180,7 +196,7 @@ class RouteBuilderImpl implements RouteBuilder {
 
             return new FilterChainImpl(injector.getProvider(filter),
                     buildFilterChain(injector, filters, controller,
-                            controllerMethod));
+                            controllerMethod, result));
 
         }
     }

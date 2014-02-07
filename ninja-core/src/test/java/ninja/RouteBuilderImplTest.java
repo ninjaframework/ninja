@@ -154,7 +154,7 @@ public class RouteBuilderImplTest {
         assertEquals("20", map.get("id"));
 
     }
-    
+
         @Test
     public void testBasicPlaceholersParametersAndRegexInsideVariableParts() {
 
@@ -163,7 +163,7 @@ public class RouteBuilderImplTest {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/assets/{file: .*}");
         Route route = buildRoute(routeBuilder);
-        
+
         String pathUnderTest = "/assets/css/app.css";
         assertTrue(route.matches("GET", pathUnderTest));
         Map<String, String> map = route.getPathParametersEncoded(pathUnderTest);
@@ -277,6 +277,19 @@ public class RouteBuilderImplTest {
         assertEquals("my%2fid", route.getPathParametersEncoded(routeFromServer)
                 .get("id"));
 
+    }
+
+    @Test
+    public void testRouteWithResult() {
+        String template = "/directly_result/stuff";
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/directly_result/route").with(Results.html().template(template));
+
+        Route route = routeBuilder.buildRoute(injector);
+        assertTrue(route.matches("GET", "/directly_result/route"));
+
+        Result result = route.getFilterChain().next(null);
+        assertEquals(result.getTemplate(), template);
     }
 
     private Route buildRoute(RouteBuilderImpl builder) {
