@@ -1,6 +1,7 @@
 Version 3.0.0
 =============
 
+ * 2014-02-11 Removed hibernate-jpa-2.0-api (already included by hibernate in version 2.1). (smallufo).   
  * 2014-02-07 Added result support for route (amsz).
  * 2014-02-06 Added simple archetype to begin with (ninja-servlet-archetype-simple (ra).
  * 2014-02-06 Fixed bug where css was not included in servlet-jpa archetype. (ra).
