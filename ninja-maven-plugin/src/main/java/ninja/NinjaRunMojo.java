@@ -71,16 +71,31 @@ public class NinjaRunMojo extends AbstractMojo {
      */
     protected boolean useDefaultExcludes;
     
-
+    /**
+     * Context path for SuperDevMode.
+     * 
+     * @parameter
+     */
+    private String contextPath;
+    
     @Override
     public void execute() throws MojoExecutionException {
+        
+        // Read property from system properties.
+        String contextPathProperty = System.getProperty("ninja.context", "/");
+        // If not set up in pom.xml then use system property.
+        if (contextPath == null) {
+            contextPath = contextPathProperty;
+        }
         
         getLog().debug(
                 "Directory for classes is (used to start local jetty and watch for changes: " 
                 + buildOutputDirectory);
         
         getLog().info("------------------------------------------------------------------------");
-        getLog().info("Launching Ninja SuperDevMode...");
+        if (getLog().isInfoEnabled()) {
+            getLog().info("Launching Ninja SuperDevMode with '" + contextPath + "' context path.");
+        }
         getLog().info("------------------------------------------------------------------------");
 
         initMojoFromUserSubmittedParameters();
@@ -122,7 +137,8 @@ public class NinjaRunMojo extends AbstractMojo {
                     NinjaMavenPluginConstants.NINJA_JETTY_CLASSNAME,
                     directoryToWatchRecursivelyForChanges,
                     classpathItems,
-                    excludesAsList);
+                    excludesAsList, 
+                    contextPath);
             
             nWatchAndTerminate.startWatching();
             
