@@ -74,9 +74,13 @@ public class RunClassInSeparateJvmMachine {
         String systemPropertyDevMode 
                 = "-D" + NinjaConstant.MODE_KEY_NAME + "=" + NinjaConstant.MODE_DEV;
         
+        String contextPath = System.getProperty("ninja.context", "/");
+        
+        String systemPropertyContextPath = "-Dninja.context=" + contextPath;
+        
         ProcessBuilder builder = new ProcessBuilder(
-                javaBin, systemPropertyDevMode, "-cp", classpathAsString,
-                classNameWithMainToRun);
+                javaBin, systemPropertyDevMode, systemPropertyContextPath, 
+                "-cp", classpathAsString, classNameWithMainToRun);
         
         builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));
 
