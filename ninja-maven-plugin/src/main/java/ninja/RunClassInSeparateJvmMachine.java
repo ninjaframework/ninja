@@ -18,14 +18,19 @@ public class RunClassInSeparateJvmMachine {
     private String classNameWithMainToRun;
 
     private List<String> classpath;
+    
+    // Context path for web app.
+    private String contextPath;
 
     public RunClassInSeparateJvmMachine(
             String classNameWithMainToRun,
-            List<String> classpath) {
+            List<String> classpath, String contextPath) {
 
         this.classNameWithMainToRun = classNameWithMainToRun;
 
         this.classpath = classpath;
+        
+        this.contextPath = contextPath;
 
         // initial startup
         try {
@@ -74,9 +79,11 @@ public class RunClassInSeparateJvmMachine {
         String systemPropertyDevMode 
                 = "-D" + NinjaConstant.MODE_KEY_NAME + "=" + NinjaConstant.MODE_DEV;
         
+        String systemPropertyContextPath = "-Dninja.context=" + contextPath;
+        
         ProcessBuilder builder = new ProcessBuilder(
-                javaBin, systemPropertyDevMode, "-cp", classpathAsString,
-                classNameWithMainToRun);
+                javaBin, systemPropertyDevMode, systemPropertyContextPath, 
+                "-cp", classpathAsString, classNameWithMainToRun);
         
         builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));
 

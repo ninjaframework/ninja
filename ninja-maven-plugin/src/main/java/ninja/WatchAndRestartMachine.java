@@ -38,8 +38,6 @@ public class WatchAndRestartMachine {
 
     private final Map<WatchKey, Path> mapOfWatchKeysToPaths;
 
-
-
     /**
      * Creates a WatchService and registers the given
  pathectoryToWatchRecursivelyForChangesectory
@@ -48,13 +46,14 @@ public class WatchAndRestartMachine {
             String classNameWithMainToRun,
             Path directoryToWatchRecursivelyForChanges,
             List<String> classpath,
-            List<String> excludeRegexPatterns) throws IOException {
+            List<String> excludeRegexPatterns, 
+            String contextPath) throws IOException {
 
         
         this.exludePatterns = excludeRegexPatterns;
         
         this.ninjaJettyInsideSeparateJvm = new RunClassInSeparateJvmMachine(
-                classNameWithMainToRun, classpath);
+                classNameWithMainToRun, classpath, contextPath);
 
         this.restartAfterSomeTimeAndChanges 
                 = new DelayedRestartTrigger(
