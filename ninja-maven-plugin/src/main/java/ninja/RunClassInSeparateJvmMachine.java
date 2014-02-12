@@ -24,7 +24,8 @@ public class RunClassInSeparateJvmMachine {
 
     public RunClassInSeparateJvmMachine(
             String classNameWithMainToRun,
-            List<String> classpath, String contextPath) {
+            List<String> classpath, 
+            String contextPath) {
 
         this.classNameWithMainToRun = classNameWithMainToRun;
 
@@ -82,8 +83,12 @@ public class RunClassInSeparateJvmMachine {
         String systemPropertyContextPath = "-Dninja.context=" + contextPath;
         
         ProcessBuilder builder = new ProcessBuilder(
-                javaBin, systemPropertyDevMode, systemPropertyContextPath, 
-                "-cp", classpathAsString, classNameWithMainToRun);
+                javaBin, 
+                systemPropertyDevMode, 
+                systemPropertyContextPath, 
+                "-cp", 
+                classpathAsString, 
+                classNameWithMainToRun);
         
         builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));
 

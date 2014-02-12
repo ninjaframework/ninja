@@ -167,7 +167,7 @@ public class NinjaRunMojo extends AbstractMojo {
     }
     
     /**
-     * This might be a bit hacks. But just a little bit.
+     * This might be a bit hacky. But just a little bit.
      * 
      * We have to add ninja-standalone and all of its dependencies to
      * the classpath, so that NinjaJetty can start.

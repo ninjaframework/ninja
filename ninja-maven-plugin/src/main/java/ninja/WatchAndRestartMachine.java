@@ -86,7 +86,7 @@ public class WatchAndRestartMachine {
         ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //// BUT THIS IS DAMN SLOW (at least on a Mac)
         //// THEREFORE WE USE EVENTS FROM COM.SUN PACKAGES THAT ARE WAY FASTER
-        //// THIS MIGHT BREAK COMPATABILITY WITH OTHER JDKS
+        //// THIS MIGHT BREAK COMPATIBILITY WITH OTHER JDKs
         //// MORE: http://stackoverflow.com/questions/9588737/is-java-7-watchservice-slow-for-anyone-else
         ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         

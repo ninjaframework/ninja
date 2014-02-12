@@ -1,6 +1,7 @@
 Version 3.0.0
 =============
 
+ * 2014-02-12 Adding support of ninja.context for SuperDevMode (nobullet)
  * 2014-02-11 Removed hibernate-jpa-2.0-api (already included by hibernate in version 2.1). (smallufo).   
  * 2014-02-07 Added result support for route (amsz).
  * 2014-02-06 Added simple archetype to begin with (ninja-servlet-archetype-simple (ra).
