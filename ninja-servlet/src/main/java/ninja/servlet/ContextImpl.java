@@ -43,10 +43,7 @@ import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.session.FlashScope;
 import ninja.session.Session;
-import ninja.utils.HttpHeaderUtils;
-import ninja.utils.NinjaConstant;
-import ninja.utils.ResponseStreams;
-import ninja.utils.ResultHandler;
+import ninja.utils.*;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
@@ -178,6 +175,22 @@ public class ContextImpl implements Context.Impl {
 
         try {
             return Integer.parseInt(parameter);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    @Override
+    public <T> T getParameterAs(String key, Class<T> clazz) {
+        return getParameterAs(key, clazz, null);
+    }
+
+    @Override
+    public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
+        String parameter = getParameter(key);
+
+        try {
+            return SwissKnife.convert(parameter, clazz);
         } catch (Exception e) {
             return defaultValue;
         }

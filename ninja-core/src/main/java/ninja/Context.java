@@ -244,6 +244,33 @@ public interface Context {
      */
     Integer getParameterAsInteger(String name, Integer defaultValue);
 
+
+    /**
+     * Same like {@link #getParameter(String)}, but converts the parameter to
+     * Class type if found.
+     *
+     * The parameter is decoded by default.
+     *
+     * @param name
+     *            The name of the post or query parameter
+     * @return The value of the parameter or null if not found.
+     */
+    <T> T getParameterAs(String name, Class<T> clazz);
+
+    /**
+     * Same like {@link #getParameter(String, String)}, but converts the
+     * parameter to Class type if found.
+     *
+     * The parameter is decoded by default.
+     *
+     * @param name
+     *            The name of the post or query parameter
+     * @param defaultValue
+     *            A default value if parameter not found.
+     * @return The value of the parameter of the defaultValue if not found.
+     */
+    <T> T getParameterAs(String name, Class<T> clazz, T defaultValue);
+
     /**
      * Get the path parameter for the given key.
      * 

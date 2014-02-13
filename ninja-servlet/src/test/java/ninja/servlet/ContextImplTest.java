@@ -314,6 +314,27 @@ public class ContextImplTest {
     }
 
     @Test
+    public void testGetParameterAs() {
+        //init the context
+        context.init(httpServletRequest, httpServletResponse);
+
+        //and return the parameter map when any parameter is called...
+        when(httpServletRequest.getParameter("key1")).thenReturn("100");
+        when(httpServletRequest.getParameter("key2")).thenReturn("true");
+        when(httpServletRequest.getParameter("key3")).thenReturn("10.1");
+        when(httpServletRequest.getParameter("key4")).thenReturn("x");
+
+        //this will not work and return null
+        assertEquals(null, context.getParameterAs("key", Long.class));
+
+        assertEquals(new Integer(100), context.getParameterAs("key1", Integer.class));
+        assertEquals(new Long(100), context.getParameterAs("key1", Long.class));
+        assertEquals(Boolean.TRUE, context.getParameterAs("key2", Boolean.class));
+        assertEquals(new Float(10.1), context.getParameterAs("key3", Float.class));
+        assertEquals(new Character('x'), context.getParameterAs("key4", Character.class));
+    }
+
+    @Test
     public void testContentTypeGetsConvertedProperlyUponFinalize() {
 
         //init the context

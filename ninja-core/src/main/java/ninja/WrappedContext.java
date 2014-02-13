@@ -91,6 +91,16 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public <T> T getParameterAs(String key, Class<T> clazz) {
+        return wrapped.getParameterAs(key, clazz);
+    }
+
+    @Override
+    public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
+        return wrapped.getParameterAs(key, clazz, defaultValue);
+    }
+
+    @Override
     public String getPathParameter(String key) {
         return wrapped.getPathParameter(key);
     }

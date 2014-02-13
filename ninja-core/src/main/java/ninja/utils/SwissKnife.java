@@ -16,12 +16,17 @@
 
 package ninja.utils;
 
+import com.google.common.primitives.Primitives;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.CaseFormat;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A helper class that contains a lot of random stuff that helps to get things
@@ -33,6 +38,18 @@ import com.google.common.base.CaseFormat;
 public class SwissKnife {
 
     private static final Logger logger = LoggerFactory.getLogger(SwissKnife.class);
+
+    private static final Map<String, Method> CONVERTERS = new HashMap<>();
+
+    static {
+        Method[] methods = Converter.class.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.getParameterTypes().length == 1
+                    && method.getParameterTypes()[0].getName().equals("java.lang.String")) {
+                CONVERTERS.put(method.getReturnType().getName(), method);
+            }
+        }
+    }
 
     /**
      * This is important: We load stuff as UTF-8.
@@ -59,8 +76,6 @@ public class SwissKnife {
      * @param fileOrUrlOrClasspathUrl
      *            Location of the file. Can be on file system, or on the
      *            classpath. Will both work.
-     * @param clazz
-     *            We need a classloader and clazz provides the classloader.
      * @return A PropertiesConfiguration or null if there were problems getting it.
      */
     public static PropertiesConfiguration loadConfigurationInUtf8(String fileOrUrlOrClasspathUrl) {
@@ -97,6 +112,71 @@ public class SwissKnife {
         
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
     
+    }
+
+    /**
+     * Convert value to class type value
+     * @param from string value
+     * @param to type of the class
+     * @return class type value
+     */
+    public static <T> T convert(String from, Class<T> to) {
+        if (from == null) {
+            return null;
+        }
+        to = Primitives.wrap(to);
+
+        if (to.isAssignableFrom(from.getClass())) {
+            return to.cast(from);
+        }
+
+        Method converter = CONVERTERS.get(to.getName());
+        if (converter == null) {
+            throw new UnsupportedOperationException("Cannot convert from string to " + to.getName());
+        }
+
+        try {
+            return to.cast(converter.invoke(to, from));
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot convert from "
+                    + from.getClass().getName() + " to " + to.getName()
+                    + ". Conversion failed with " + e.getMessage(), e);
+        }
+    }
+
+    static class Converter {
+        public static Integer toInteger(String value) {
+            return Integer.valueOf(value);
+        }
+
+        public static Long toLong(String value) {
+            return Long.valueOf(value);
+        }
+
+        public static Float toFloat(String value) {
+            return Float.valueOf(value);
+        }
+
+        public static Double toDouble(String value) {
+            return Double.valueOf(value);
+        }
+
+        public static Boolean toBoolean(String value) {
+            return Boolean.valueOf(value);
+        }
+
+        public static Byte toByte(String value) {
+            return Byte.valueOf(value);
+        }
+
+
+        public static Short toShort(String value) {
+            return Short.valueOf(value);
+        }
+
+        public static Character toCharacter(String value) {
+            return value.charAt(0);
+        }
     }
 
 }
