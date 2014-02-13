@@ -183,6 +183,20 @@ public class FakeContext implements Context {
         }
     }
 
+    @Override
+    public <T> T getParameterAs(String key, Class<T> clazz) {
+        return getParameterAs(key, clazz, null);
+    }
+
+    @Override
+    public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
+        try {
+            return SwissKnife.convert(key, clazz);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     public FakeContext addPathParameter(String key, String value) {
         pathParams.put(key, value);
         return this;

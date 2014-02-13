@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import ninja.ContentTypes;
 import ninja.Context;
 
+import ninja.utils.SwissKnife;
 import org.slf4j.Logger;
 
 import com.google.inject.Inject;
@@ -53,37 +54,12 @@ public class BodyParserEnginePost implements BodyParserEngine {
                 Field field = classOfT.getDeclaredField(ent.getKey());
                 field.setAccessible(true);
                 
-                Class<?> fieldType = field.getType();
                 String value = ent.getValue()[0];
-                
-                if (fieldType == int.class || fieldType == Integer.class) {
-                    field.set(t, Integer.valueOf(value));
-                    
-                } else if (fieldType == long.class || fieldType == Long.class) {
-                    field.set(t, Long.valueOf(value));
-                    
-                } else if (fieldType == float.class || fieldType == Float.class) {
-                    field.set(t, Float.valueOf(value));
-                    
-                } else if (fieldType == double.class || fieldType == Double.class) {
-                    field.set(t, Double.valueOf(value));
-                    
-                } else if (fieldType == boolean.class || fieldType == Boolean.class) {
-                    field.set(t, Boolean.valueOf(value));
-                    
-                } else if (fieldType == byte.class || fieldType == Byte.class) {
-                    field.set(t, Byte.valueOf(value));
-                    
-                } else if (fieldType == short.class || fieldType == Short.class) {
-                    field.set(t, Short.valueOf(value));
-                    
-                } else if (fieldType == char.class || fieldType == Character.class) {
-                    field.set(t, Character.valueOf(value.charAt(0)));
-                    
-                } else {
+                try {
+                    field.set(t, SwissKnife.convert(value, field.getType()));
+                } catch (UnsupportedOperationException e) {
                     field.set(t, value);
                 }
-                
             } catch (Exception e) {
                 logger.warn(
                         "Error parsing incoming Post for key " + ent.getKey()
