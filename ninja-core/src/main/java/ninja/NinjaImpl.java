@@ -107,9 +107,24 @@ public class NinjaImpl implements Ninja {
 
         if (route != null) {
 
-            Result result = route.getFilterChain().next(context);
+            try {
+                
+                Result result = route.getFilterChain().next(context);
 
-            resultHandler.handleResult(result, context);
+                resultHandler.handleResult(result, context);
+                
+            } catch (Exception e) {
+                
+                logger.error(
+                        "Emitting bad request 400. Something really wrong when calling route: {} (class: {} method: {})", 
+                        context.getRequestPath(), route.getControllerClass(), route.getControllerMethod(), e);
+            
+                 Result result = Results.html().status(Result.SC_400_BAD_REQUEST).template(
+                        NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
+                 
+                 resultHandler.handleResult(result, context);
+                            
+            }
 
         } else {
             // throw a 404 "not found" because we did not find the route

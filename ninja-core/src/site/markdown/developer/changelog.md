@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+ * 2014-02-14 Proper handling of exceptions in controllers => now 
+              emitted as 400 - bad request by the framework. (ra)
+
 Version 3.0.0
 =============
 

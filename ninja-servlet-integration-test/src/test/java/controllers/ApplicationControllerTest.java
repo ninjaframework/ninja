@@ -275,4 +275,13 @@ public class ApplicationControllerTest extends NinjaTest {
                 ninjaTestBrowser.makeRequest(getServerAddress() + "/jsonp?callback=App.callback");
         assertEquals("App.callback({\"object\":\"value\"})", response);
     }
+    
+    @Test
+    public void testThatBadRequestWorks() {
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/bad_request");
+        assertTrue(response.contains("400 - Bad Request."));
+    }
+    
+    
 }

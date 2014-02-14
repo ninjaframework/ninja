@@ -228,4 +228,10 @@ public class ApplicationController {
     public Result testJsonP() {
         return Results.jsonp().render("object", "value");
     }
+    
+    public Result badRequest() {
+    
+        throw new NullPointerException("Just a test to make sure 400 bad request works :)");
+        
+    }
 }

@@ -148,6 +148,8 @@ public class Routes implements ApplicationRoutes {
         if (!ninjaProperties.isProd()) {
             router.GET().route("/_test/testPage").with(ApplicationController.class, "testPage");
         }
+        
+        router.GET().route("/bad_request").with(ApplicationController.class, "badRequest");
 
         router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
         router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
