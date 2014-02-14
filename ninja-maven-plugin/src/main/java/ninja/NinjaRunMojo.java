@@ -38,7 +38,7 @@ public class NinjaRunMojo extends AbstractMojo {
      * For webapps this is usually
      * something like /User/username/workspace/project/target/classes
      * 
-     * @parameter expression="${project.build.outputDirectory}"
+     * @parameter property="project.build.outputDirectory"
      */
     private String buildOutputDirectory;
     
