@@ -8,21 +8,25 @@ public class SwissKnifeTest {
 
     @Test
     public void testGetRealClassNameLowerCamelCase() {
-        
+
         MySuperTestObject mySuperTestObject = new MySuperTestObject();
-        
+
         assertEquals("mySuperTestObject",
                 SwissKnife.getRealClassNameLowerCamelCase(mySuperTestObject));
-         
+
     }
 
     @Test
     public void testConvert() {
+        
+        String aString = "aString";
         String str = "1024";
         String doubleStr = "1024.24";
         String boolStr = "true";
         String byteStr = "89";
         char charStr = 'x';
+        String emptyString = "";
+
         assertEquals(Integer.valueOf(str), SwissKnife.convert(str, int.class));
         assertEquals(Integer.valueOf(str), SwissKnife.convert(str, Integer.class));
         assertEquals(Long.valueOf(str), SwissKnife.convert(str, long.class));
@@ -36,9 +40,17 @@ public class SwissKnifeTest {
         assertEquals(Byte.valueOf(byteStr), SwissKnife.convert(byteStr, Byte.class));
         assertEquals(Character.valueOf(charStr), SwissKnife.convert(String.valueOf(charStr), char.class));
         assertEquals(Character.valueOf(charStr), SwissKnife.convert(String.valueOf(charStr), Character.class));
+        assertEquals(null, SwissKnife.convert(String.valueOf(emptyString), char.class));
+        assertEquals(null, SwissKnife.convert(String.valueOf(emptyString), Character.class));
+        
+        assertEquals(null, SwissKnife.convert(String.valueOf(aString), StringBuffer.class));
+        assertEquals(null, SwissKnife.convert(String.valueOf(aString), Integer.class));
+        
+        assertEquals(aString, SwissKnife.convert(String.valueOf(aString), String.class));
     }
-    
+
     // just for testing that camel case conversion stuff works
-    public class MySuperTestObject {}
+    public class MySuperTestObject {
+    }
 
 }
