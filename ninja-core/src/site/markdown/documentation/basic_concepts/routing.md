@@ -34,7 +34,11 @@ public class Routes implements ApplicationRoutes {
 
 
 The <code>init(...)</code> method provides us with the <code>Router</code> and router allows us to
-define what happens for GET, POST, PUT and DELETE requests.
+define what happens for GET, POST, PUT, OPTIONS, HEAD and DELETE requests.
+
+And if you want to route a http method not yet supported by Ninja out of
+the box you can always use
+<code>route.METHOD("MY_CUSTOM_HTTP_METHOD").route(...)...</code>.
 
 <div class="alert alert-info">
 Routes are matched top down. If an incoming request potentially maps to
