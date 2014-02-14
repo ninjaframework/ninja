@@ -199,5 +199,22 @@ public class RouterImpl implements Router {
 
         return routeBuilder;
     }
+    
+    @Override
+    public RouteBuilder HEAD() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().HEAD();
+        allRouteBuilders.add(routeBuilder);
+
+        return routeBuilder;
+    }
+    
+    
+    @Override
+    public RouteBuilder METHOD(String method) {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().METHOD(method);
+        allRouteBuilders.add(routeBuilder);
+
+        return routeBuilder;
+    }
 
 }

@@ -82,4 +82,13 @@ public interface Router {
     public RouteBuilder DELETE();
 
     public RouteBuilder OPTIONS();
+    
+    public RouteBuilder HEAD();
+    
+    /**
+     * To match any http method. E.g. METHOD("PROPFIND") would route PROPFIND methods.
+     * @param method The http method like "GET" or "PROPFIND"
+     * @return the routeBuilder for chaining.
+     */
+    public RouteBuilder METHOD(String method);
 }

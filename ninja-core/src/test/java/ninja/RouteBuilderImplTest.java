@@ -74,6 +74,26 @@ public class RouteBuilderImplTest {
         assertTrue(buildRoute(routeBuilder).matches("OPTIONS", "/index"));
 
     }
+    
+    @Test
+    public void testBasisHEAD() {
+
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.HEAD().route("/index");
+
+        assertTrue(buildRoute(routeBuilder).matches("HEAD", "/index"));
+
+    }
+    
+    @Test
+    public void testBasicAnyHttpMethod() {
+
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.METHOD("PROPFIND").route("/index");
+
+        assertTrue(buildRoute(routeBuilder).matches("PROPFIND", "/index"));
+
+    }
 
     @Test
     public void testBasicRoutesWithRegex() {

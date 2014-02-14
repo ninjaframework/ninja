@@ -63,6 +63,16 @@ class RouteBuilderImpl implements RouteBuilder {
         httpMethod = "OPTIONS";
         return this;
     }
+    
+    public RouteBuilderImpl HEAD() {
+        httpMethod = "HEAD";
+        return this;
+    }
+        
+    public RouteBuilderImpl METHOD(String method) {
+        httpMethod = method;
+        return this;
+    }
 
     @Override
     public void with(Class controller, String controllerMethod) {
