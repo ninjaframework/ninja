@@ -379,4 +379,46 @@ public class AssetsControllerTest {
 
     }
 
+    @Test
+    public void testServingFromUserSpecifiedStaticAssetDir() throws Exception{
+        when( ninjaProperties.get( "application.static.asset.basedir") ).thenReturn( System.getProperty("user.dir") + "/ninja-core/src/test/resources/assets" );
+
+        AssetsController assetsController = new AssetsController(
+                httpCacheToolkit, mimeTypes, ninjaProperties);
+
+        Result result = Results.ok();
+
+        when(contextRenerable.getRequestPath()).thenReturn(
+                "/assets/testasset.txt");
+
+        when(mimeTypes.getContentType(Mockito.eq(contextRenerable),
+                Mockito.anyString())).thenReturn("mimetype");
+
+        when(contextRenerable.finalizeHeadersWithoutFlashAndSessionCookie( Mockito.eq( result ) )).thenReturn(
+                responseStreams);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        when(responseStreams.getOutputStream()).thenReturn(
+                byteArrayOutputStream);
+        Result result2 = assetsController.serveStatic(null);
+
+        Renderable renderable = (Renderable) result2.getRenderable();
+
+        renderable.render(contextRenerable, result);
+        // test streaming of resource:
+        // => not modified:
+        // check etag has been called
+        verify(httpCacheToolkit).addEtag(Mockito.eq(contextRenerable),
+                Mockito.eq(result), Mockito.anyLong());
+
+        verify(contextRenerable).finalizeHeadersWithoutFlashAndSessionCookie( resultCaptor.capture() );
+
+        // make sure we get the correct result...
+        assertEquals(Result.SC_200_OK, resultCaptor.getValue().getStatusCode());
+        // we mocked this one:
+        assertEquals("mimetype", result.getContentType());
+
+        // make sure the content is okay...
+        assertEquals("testasset", byteArrayOutputStream.toString());
+    }
 }
