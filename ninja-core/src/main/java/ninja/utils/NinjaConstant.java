@@ -57,6 +57,9 @@ public interface NinjaConstant {
      */
     final String LANG_COOKIE_SUFFIX = "_LANG";
 
+    /** Used to specify static asset directory **/
+    final String APPLICATION_STATIC_ASSET_BASEDIR = "application.static.asset.basedir";
+
     /**
      * Prefix used for all Ninja cookies.
      * 
