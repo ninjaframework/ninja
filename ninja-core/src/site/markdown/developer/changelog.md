@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+ * 2014-02-17 Fixed possible glitch in the matrix: BodyParserEnginePost.invoke()
+              may set Strings to unsupported fields (amsz, ra).
  * 2014-02-14 Proper handling of exceptions in controllers => now 
               emitted as 400 - bad request by the framework. (ra)
 
