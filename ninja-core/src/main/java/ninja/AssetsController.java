@@ -16,32 +16,20 @@
 
 package ninja;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-
 import com.google.common.base.Optional;
-import ninja.utils.HttpCacheToolkit;
-import ninja.utils.MimeTypes;
-import ninja.utils.NinjaProperties;
-import ninja.utils.ResponseStreams;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import ninja.utils.*;
+import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.swing.text.html.Option;
-
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 /**
  * This controller serves public resources under /public
  * 
@@ -314,7 +302,7 @@ public class AssetsController {
         //Serve from the static asset base directory specified by user in application conf.
         if(assetBaseDir.isPresent()){
 
-            File possibleFile = new File(assetBaseDir.get() + finalNameWithoutLeadingSlash);
+            File possibleFile = new File(assetBaseDir.get() + File.separator + finalNameWithoutLeadingSlash);
 
             if(possibleFile.exists()){
                 url = getUrlForFile(possibleFile);
@@ -356,7 +344,7 @@ public class AssetsController {
 
             logger.error("Error in dev mode while streaming files from src dir. ", malformedURLException);
         }
-        return null;
+        return Optional.absent();
     }
 
     /**
@@ -462,19 +450,7 @@ public class AssetsController {
     }
 
     private Optional<String> getNormalizedAssetPath(NinjaProperties ninjaProperties){
-
-        Optional<String> assetBaseDir = Optional.absent();
-        String baseDir = ninjaProperties.get( "application.static.asset.basedir");
-
-        if(baseDir != null){
-
-            String pathSeparator = baseDir.substring( baseDir.length() - 1 );
-
-            if(!pathSeparator.matches( "[/\\\\]" )){
-                baseDir += File.separator;
-            }
-            assetBaseDir = Optional.of(baseDir);
-        }
-        return assetBaseDir;
+        String baseDir = ninjaProperties.get( NinjaConstant.APPLICATION_STATIC_ASSET_BASEDIR );
+        return Optional.fromNullable(FilenameUtils.normalizeNoEndSeparator(baseDir));
     }
 }
