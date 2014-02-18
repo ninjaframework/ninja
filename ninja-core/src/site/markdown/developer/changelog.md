@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+ * 2014-02-18 Ninja now uses utf-8 for everything in a request. Otherwise
+              e.g. post requests are encoded in a platform dependent way (mallowlabs)
  * 2014-02-17 Fixed possible glitch in the matrix: BodyParserEnginePost.invoke()
               may set Strings to unsupported fields (amsz, ra).
  * 2014-02-17 Added support for custom static asset location (sojin)
