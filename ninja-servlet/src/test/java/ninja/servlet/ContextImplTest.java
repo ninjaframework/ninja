@@ -638,15 +638,20 @@ public class ContextImplTest {
        public Long count;
     }
 
+    /**
+     * Make sure the correct character encoding is set after init.
+     */
+    @Test
+    public void testInitEnforcingOfCorrectEncoding() throws Exception {
+        context.init(httpServletRequest, httpServletResponse);
+
+        //this proofs that the encoding has been set:
+        verify(httpServletRequest).setCharacterEncoding(NinjaConstant.UTF_8);
+    }
 
     /**
      * Make sure the correct character encoding is set before the
      * reader is returned.
-     *
-     *
-     * Otherwise we might get strange default encodings
-     * from the servlet engine.
-     *
      */
     @Test
     public void testGetReaderEnforcingOfCorrectEncoding() throws Exception {
@@ -663,10 +668,6 @@ public class ContextImplTest {
     /**
      * Make sure the correct character encoding is set before the
      * inputStream is returned.
-     *
-     * Otherwise we might get strange default encodings
-     * from the servlet engine.
-     *
      */
     @Test
     public void testGetInputStreamEnforcingOfCorrectEncoding() throws Exception {

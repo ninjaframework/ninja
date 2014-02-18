@@ -94,6 +94,8 @@ public class ContextImpl implements Context.Impl {
         this.httpServletRequest = httpServletRequest;
         this.httpServletResponse = httpServletResponse;
 
+        enforceCorrectEncodingOfRequest();
+
         // init flash scope:
         flashScope.init(this);
 
@@ -360,17 +362,11 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public InputStream getInputStream() throws IOException {
-
-        enforeCorrectEncodingOfRequest();
-
         return httpServletRequest.getInputStream();
     }
 
     @Override
     public BufferedReader getReader() throws IOException {
-
-        enforeCorrectEncodingOfRequest();
-
         return httpServletRequest.getReader();
     }
 
@@ -575,7 +571,7 @@ public class ContextImpl implements Context.Impl {
      * 
      * Therefore we'll set utf-8 as request encoding if it is not set.
      */
-    private void enforeCorrectEncodingOfRequest() {
+    private void enforceCorrectEncodingOfRequest() {
         
         String charset = NinjaConstant.UTF_8;
         
