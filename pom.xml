@@ -50,7 +50,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.1.1.v20140108</jetty.version>
+        <jetty.version>9.1.2.v20140210</jetty.version>
         <hibernate.version>4.3.1.Final</hibernate.version>
         <jackson.version>2.3.1</jackson.version>
         <!-- Formatting options for Netbeans IDE -->
