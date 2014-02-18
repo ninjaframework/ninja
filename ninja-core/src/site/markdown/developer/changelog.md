@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.0.1
 =============
 
  * 2014-02-18 Bump to Jetty 9.1.2.v20140210 (ra)
