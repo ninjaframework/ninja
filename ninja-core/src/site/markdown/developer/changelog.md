@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.0.2
 =============
 
   * 2014-02-19 Bugfix #145. Shutdown hooks not executed in SuperDevMode and
