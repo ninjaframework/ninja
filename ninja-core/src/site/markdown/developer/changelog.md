@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+  * 2014-02-19 Bugfix #145. Shutdown hooks not executed in SuperDevMode and
+               standalone mode.  (ra)
+
 Version 3.0.1
 =============
 

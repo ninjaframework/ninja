@@ -2,7 +2,11 @@ package ninja.standalone;
 
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import ninja.servlet.NinjaServletListener;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
@@ -40,12 +44,21 @@ public class NinjaJetty {
         int port = tryToGetPortFromSystemPropertyOrReturnDefault();
         String contextPath = tryToGetContextPathFromSystemPropertyOrReturnDefault();
         
-        NinjaJetty ninjaJetty = new NinjaJetty();
+        final NinjaJetty ninjaJetty = new NinjaJetty();
         ninjaJetty.setNinjaMode(ninjaMode);
         ninjaJetty.setPort(port);
         ninjaJetty.setNinjaContextPath(contextPath);
         
         ninjaJetty.start();
+        
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            
+            @Override
+            public void run() {
+                ninjaJetty.shutdown();
+            }
+            
+        });
         
     }
     
