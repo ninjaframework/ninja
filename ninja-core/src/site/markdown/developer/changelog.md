@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+  * 2014-02-26 Bugfix. Dependecy resolution for SuperDevMode was "compile" and 
+               not "runtime". => Changed to "runtime"  (ra)
+
 Version 3.0.2
 =============
 

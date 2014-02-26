@@ -21,7 +21,7 @@ import org.apache.maven.model.Plugin;
  * 
  * @goal run
  * @threadSafe
- * @requiresDependencyResolution compile
+ * @requiresDependencyResolution runtime
  */
 public class NinjaRunMojo extends AbstractMojo {
     
