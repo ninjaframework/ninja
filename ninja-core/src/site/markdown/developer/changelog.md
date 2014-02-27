@@ -1,8 +1,8 @@
-Version X.X.X
+Version 3.0.3
 =============
 
   * 2014-02-26 Bugfix. Dependecy resolution for SuperDevMode was "compile" and 
-               not "runtime". => Changed to "runtime"  (ra)
+               not "runtime". => Changed to "runtime"  (zoran, ra)
 
 Version 3.0.2
 =============
