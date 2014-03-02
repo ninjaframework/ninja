@@ -27,7 +27,7 @@ public class NinjaRunner extends BlockJUnit4ClassRunner {
     Object testObj = super.createTest();
 
     for (Field field : testObj.getClass().getDeclaredFields()) {
-      if (field.isAnnotationPresent(Inject.class)) {
+      if (field.isAnnotationPresent(Inject.class) || field.isAnnotationPresent(javax.inject.Inject.class)) {
         Object value = injector.getInstance(field.getType());
         logger.debug("try to inject {} to {}", value, testObj);
         try {
