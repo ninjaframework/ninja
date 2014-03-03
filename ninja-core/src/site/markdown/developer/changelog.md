@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+  * 2014-03-03 Added support for contextPath to NinjaProperties. That's a better
+               place than Context (context is only available in request). (ra)
   * 2014-03-03 Using a map no longer needed for generating parameterized
                reverse route. Now we can specify parameters via simple array. (ra)
 

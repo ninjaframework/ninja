@@ -47,6 +47,7 @@ import com.google.inject.Singleton;
 
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.utils.NinjaProperties;
 
 @Singleton
 public class ApplicationController {
@@ -71,11 +72,16 @@ public class ApplicationController {
     
     @Inject
     NinjaCache ninjaCache;
+    
+    @Inject 
+    NinjaProperties ninjaProperties;
 
     public Result index(@Request HttpServletRequest httpServletRequest,
                            @Response HttpServletResponse httpServletResponse,
                            Context context) {
         logger.info("In index ");
+        
+        logger.info("context is: " + ninjaProperties.getContextPath().or("NOT AVAILABLE"));
         
         // test that the injected httpservlet request and response are not null
         Preconditions.checkNotNull(httpServletRequest);
