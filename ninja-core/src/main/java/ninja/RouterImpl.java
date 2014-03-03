@@ -26,8 +26,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RouterImpl implements Router {
+    
+    private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
     private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<RouteBuilderImpl>();
     private final Injector injector;
@@ -63,6 +67,27 @@ public class RouterImpl implements Router {
         return getReverseRoute(controllerClass, controllerMethodName, map);
         
         
+    }
+    
+    public String getReverseRoute(Class<?> controllerClass,
+                             String controllerMethodName,
+                             Object ... parameterMap) {
+        
+        if (parameterMap.length % 2 != 0) {
+            logger.error("Always provide key (as String) value (as Object) pairs in parameterMap. That means providing e.g. 2, 4, 6... objects.");
+            return null;
+            
+        }
+        
+        Map<String, Object> map = Maps.newHashMap();
+        for (int i = 0;  i < parameterMap.length; i+=2) {
+            map.put((String) parameterMap[i], parameterMap[i+1]);
+        }
+
+        
+        
+        return getReverseRoute(controllerClass, controllerMethodName, map);
+
     }
 
     public String getReverseRoute(Class<?> controllerClass,
