@@ -48,9 +48,9 @@ public class NinjaServletListener extends GuiceServletContextListener {
     }
 
     @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {  
-        super.contextInitialized(servletContextEvent);
+    public void contextInitialized(ServletContextEvent servletContextEvent) { 
         contextPath = servletContextEvent.getServletContext().getContextPath();
+        super.contextInitialized(servletContextEvent);
     }
    
     @Override
