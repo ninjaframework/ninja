@@ -3,6 +3,8 @@ Version X.X.X
 
   * 2014-03-03 Using a map no longer needed for generating parameterized
                reverse route. Now we can specify parameters via simple array. (ra)
+  * 2014-03-03 RouterImpl.getReverseRoute() now prefixes the returned url with
+               the context path if one is configured. (zz)
 
 Version 3.0.3
 =============
