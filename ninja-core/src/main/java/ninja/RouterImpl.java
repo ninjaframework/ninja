@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ninja.utils.NinjaProperties;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -31,6 +33,9 @@ import org.slf4j.LoggerFactory;
 
 public class RouterImpl implements Router {
     
+    @Inject
+    NinjaProperties ninjaProperties;
+
     private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
     private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<RouteBuilderImpl>();
@@ -160,6 +165,12 @@ public class RouterImpl implements Router {
                              + "?" 
                              + queryParameterStringBuffer.toString();
                 
+                }
+                
+                // Respect the context path
+                String contextPath = ninjaProperties.getContextPath().orNull();
+                if (contextPath != null) {
+                    return contextPath + urlWithReplacedPlaceholders;
                 }
                 
                 
