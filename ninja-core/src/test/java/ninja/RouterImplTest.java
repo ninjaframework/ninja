@@ -1,0 +1,103 @@
+/**
+ * Copyright (C) 2013 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package ninja;
+
+import com.google.common.base.Optional;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
+import ninja.utils.NinjaProperties;
+import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.equalTo;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
+
+/**
+ * => Most tests are done via class RoutesTest 
+ * in project ninja-servlet-integration-test.
+ */
+@RunWith(MockitoJUnitRunner.class)
+public class RouterImplTest {
+    
+    Router router;
+    
+    @Mock
+    NinjaProperties ninjaProperties;
+    
+    @Mock
+    Injector injector;
+    
+    @Mock
+    Provider<TestController> testControllerProvider;
+    
+    @Before
+    public void before() {
+        
+        when(testControllerProvider.get()).thenReturn(new TestController());
+        when(injector.getProvider(TestController.class)).thenReturn(testControllerProvider);
+        router = new RouterImpl(injector, ninjaProperties);
+        
+        // add route:
+        router.GET().route("/testroute").with(TestController.class, "index");
+    
+        router.compileRoutes();
+    }
+
+    @Test
+    public void testWithNoContextPathWorks() {
+        
+        Optional<String> contextPath = Optional.absent();
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+        
+        String route = router.getReverseRoute(TestController.class, "index");
+                
+        assertThat(route, CoreMatchers.equalTo("/testroute"));
+                
+        
+    }
+    
+    @Test
+    public void testContextPathWorks() {
+        
+        Optional<String> contextPath = Optional.of("/myappcontext");
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+        
+        String route = router.getReverseRoute(TestController.class, "index");
+                
+        assertThat(route, equalTo("/myappcontext/testroute"));
+          
+        
+    }
+    
+    
+    // Just a dummy TestController for mocking...
+    public static class TestController {
+    
+        public Result index() {
+        
+            return Results.ok();
+            
+        }
+    
+    }
+    
+}

@@ -33,19 +33,21 @@ import org.slf4j.LoggerFactory;
 
 public class RouterImpl implements Router {
     
-    @Inject
-    NinjaProperties ninjaProperties;
+    private final NinjaProperties ninjaProperties;
 
     private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
-    private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<RouteBuilderImpl>();
+    private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<>();
     private final Injector injector;
 
     private List<Route> routes;
 
     @Inject
-    public RouterImpl(Injector injector) {
+    public RouterImpl(
+            Injector injector,
+            NinjaProperties ninjaProperties) {
         this.injector = injector;
+        this.ninjaProperties = ninjaProperties;
     }
 
     @Override
@@ -65,6 +67,7 @@ public class RouterImpl implements Router {
 
     }
     
+    @Override
     public String getReverseRoute(Class<?> controllerClass,
                                   String controllerMethodName) {
         
@@ -74,6 +77,7 @@ public class RouterImpl implements Router {
         
     }
     
+    @Override
     public String getReverseRoute(Class<?> controllerClass,
                              String controllerMethodName,
                              Object ... parameterMap) {
@@ -95,6 +99,7 @@ public class RouterImpl implements Router {
 
     }
 
+    @Override
     public String getReverseRoute(Class<?> controllerClass,
                                  String controllerMethodName,
                                  Map<String, Object> parameterMap) {
@@ -184,11 +189,12 @@ public class RouterImpl implements Router {
 
     }
 
+    @Override
     public void compileRoutes() {
         if (routes != null) {
             throw new IllegalStateException("Routes already compiled");
         }
-        List<Route> routes = new ArrayList<Route>();
+        List<Route> routes = new ArrayList<>();
         for (RouteBuilderImpl routeBuilder : allRouteBuilders) {
             routes.add(routeBuilder.buildRoute(injector));
         }
