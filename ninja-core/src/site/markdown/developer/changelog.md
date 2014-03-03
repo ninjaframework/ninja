@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+  * 2014-03-03 Using a map no longer needed for generating parameterized
+               reverse route. Now we can specify parameters via simple array. (ra)
+
 Version 3.0.3
 =============
 

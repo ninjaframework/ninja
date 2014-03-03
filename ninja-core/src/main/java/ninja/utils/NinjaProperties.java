@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import com.google.common.base.Optional;
 import java.util.Properties;
 
 import com.google.inject.ImplementedBy;
@@ -164,6 +165,18 @@ public interface NinjaProperties {
      * @return True if we are in prod mode
      */
     boolean isProd();
+    
+    /**
+     * Returns context under which the application is currently running.
+     * For instance on Java application servers it is common to use someting like
+     * http://www.myserver.com/myapplication/index.html - where myapplication
+     * would be set by the applcation server.
+     * 
+     * We need the context to generate for instance correct reversed routes.
+     * 
+     * @return The context or "" if empty.
+     */
+    Optional<String> getContextPath();
 
     /**
      * 

@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import com.google.common.base.Optional;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -43,6 +44,8 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             .getLogger(NinjaPropertiesImpl.class);
 
     private NinjaMode ninjaMode;
+    
+    private Optional<String> contextPath;
 
     private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
@@ -54,10 +57,19 @@ public class NinjaPropertiesImpl implements NinjaProperties {
      */
     private CompositeConfiguration compositeConfiguration;
 
+    public NinjaPropertiesImpl(
+            NinjaMode ninjaMode) {
+            
+        this(ninjaMode, null);
+    
+    }
 
-    public NinjaPropertiesImpl(NinjaMode ninjaMode) {
+    public NinjaPropertiesImpl(
+            NinjaMode ninjaMode,
+            String contextPath) {
         
         this.ninjaMode = ninjaMode;
+        this.contextPath = Optional.fromNullable(contextPath);
 
         // This is our main configuration.
         // In the following we'll read the individual configurations and merge
@@ -282,6 +294,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         return (ninjaMode.equals(NinjaMode.prod));
     }
 
+    @Override
     public boolean isDev() {
         return (ninjaMode.equals(NinjaMode.dev));
     }
@@ -289,6 +302,11 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     @Override
     public boolean isTest() {
         return (ninjaMode.equals(NinjaMode.test));
+    }
+    
+    @Override
+    public Optional<String> getContextPath() {
+        return contextPath;
     }
 
     @Override

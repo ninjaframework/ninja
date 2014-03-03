@@ -113,7 +113,7 @@ public class NinjaJetty {
             // We are using an embeded jetty for quick server testing. The
             // problem is that the port will change.
             // Therefore we inject the server name here:
-            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
+            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode, ninjaContextPath);
             ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
 
             ninjaServletListener.setNinjaProperties(ninjaProperties);

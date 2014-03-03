@@ -39,6 +39,8 @@ public class NinjaServletListener extends GuiceServletContextListener {
     private NinjaBootstap ninjaBootstap;
 
     NinjaPropertiesImpl ninjaProperties;
+    
+    String contextPath;
 
     public void setNinjaProperties(NinjaPropertiesImpl ninjaProperties) {
         this.ninjaProperties = ninjaProperties; 
@@ -46,8 +48,9 @@ public class NinjaServletListener extends GuiceServletContextListener {
     }
 
     @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {      
+    public void contextInitialized(ServletContextEvent servletContextEvent) {  
         super.contextInitialized(servletContextEvent);
+        contextPath = servletContextEvent.getServletContext().getContextPath();
     }
    
     @Override
@@ -69,7 +72,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
             ninjaBootstap = new NinjaBootstap(ninjaProperties);
             
         } else {
-            ninjaBootstap = new NinjaBootstap();
+            ninjaBootstap = new NinjaBootstap(contextPath);
         }
         
         ninjaBootstap.boot();

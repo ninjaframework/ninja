@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import com.google.common.base.Optional;
 import java.util.Properties;
 
 import org.apache.commons.configuration.Configuration;
@@ -31,6 +32,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class MockNinjaProperties implements NinjaProperties {
 
+    private String contextPath;
     /**
      * Create a mock ninja properties, with the given args as the properties.
      *
@@ -41,7 +43,7 @@ public class MockNinjaProperties implements NinjaProperties {
      * @throws AssertionError If an odd number of arguments is supplied.
      */
     public static MockNinjaProperties create(String... args) {
-        return createWithMode(NinjaConstant.MODE_TEST, args);
+        return createWithMode(NinjaConstant.MODE_TEST, null, args);
     }
 
     /**
@@ -54,7 +56,7 @@ public class MockNinjaProperties implements NinjaProperties {
      * @param args The key value pairs.
      * @throws AssertionError If an odd number of arguments is supplied.
      */
-    public static MockNinjaProperties createWithMode(String mode, String... args) {
+    public static MockNinjaProperties createWithMode(String mode, String contextPath, String... args) {
         assertTrue("You must supply an even number of arguments to form key value pairs",
                 args.length % 2 == 0);
         PropertiesConfiguration props = new PropertiesConfiguration();
@@ -62,14 +64,15 @@ public class MockNinjaProperties implements NinjaProperties {
         for (int i = 0; i < args.length; i+= 2) {
             props.addProperty(args[i], args[i + 1]);
         }
-        return new MockNinjaProperties(mode, props);
+        return new MockNinjaProperties(mode, contextPath, props);
     }
 
     private final String mode;
     private final Configuration configuration;
 
-    public MockNinjaProperties(String mode, Configuration configuration) {
+    public MockNinjaProperties(String mode, String contextPath, Configuration configuration) {
         this.mode = mode;
+        this.contextPath = contextPath;
         this.configuration = configuration;
     }
 
@@ -141,6 +144,11 @@ public class MockNinjaProperties implements NinjaProperties {
     @Override
     public boolean isProd() {
         return mode.equals("prod");
+    }
+
+    @Override
+    public Optional<String> getContextPath() {
+        return Optional.fromNullable(contextPath);
     }
 
     @Override
