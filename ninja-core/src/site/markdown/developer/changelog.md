@@ -1,6 +1,10 @@
 Version X.X.X
 =============
 
+  * 2014-03-04 Fixed bug where reverse routing was not properly working for
+               routes with regex. (ra)
+  * 2014-03-04 Added reverse routing to Freemarker templates via ${reverseRoute(...)},
+               ${assetsAt(...)}, ${webJarsAt(...)} (ra)
   * 2014-03-03 Added support for contextPath to NinjaProperties. That's a better
                place than Context (context is only available in request). (ra)
   * 2014-03-03 Using a map no longer needed for generating parameterized
