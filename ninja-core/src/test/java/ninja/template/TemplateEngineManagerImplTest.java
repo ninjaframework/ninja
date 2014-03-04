@@ -35,6 +35,8 @@ import org.slf4j.Logger;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import ninja.Router;
+import ninja.RouterImpl;
 
 public class TemplateEngineManagerImplTest {
 
@@ -123,6 +125,7 @@ public class TemplateEngineManagerImplTest {
             	
             	bind(Logger.class).toProvider(LoggerProvider.class);  
             	bind(Lang.class).to(LangImpl.class);
+                bind(Router.class).to(RouterImpl.class);
             	
             	bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
             	

@@ -28,6 +28,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import static ninja.Route.PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +44,10 @@ public class RouterImpl implements Router {
     private final Injector injector;
 
     private List<Route> routes;
-
+    
+    // This regex works for both {myParam} AND {myParam: .*} (with regex)
+    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
+    
     @Inject
     public RouterImpl(
             Injector injector,
@@ -114,30 +120,38 @@ public class RouterImpl implements Router {
                     && route.getControllerClass().equals(controllerClass)
                     && route.getControllerMethod().getName().equals(controllerMethodName)) {
                 
-                // The original url. Something like route/user/{id}/{email}/userDashboard
+                // The original url. Something like route/user/{id}/{email}/userDashboard/{name: .*}
                 String urlWithReplacedPlaceholders = route.getUrl();
                 
                 Map<String, Object> queryParameterMap = Maps.newHashMap();
                 
                 for (Entry<String, Object> parameterPair : parameterMap.entrySet()) {
                     
-                    // The original regex. For the example above this results in {id}
-                    String originalRegex = String.format("{%s}", parameterPair.getKey());
-                    String originalRegexEscaped = String.format("\\{%s\\}", parameterPair.getKey());
+                    boolean foundAsPathParameter = false;
                     
-                    // The value that will be added into the regex => myId for instance...
-                    String resultingRegexReplacement = parameterPair.getValue().toString();
+                    StringBuffer stringBuffer = new StringBuffer();
+
+                    String buffer = String.format(
+                            VARIABLE_PART_PATTERN_WITH_PLACEHOLDER, 
+                            parameterPair.getKey());
+            
+                    Pattern PATTERN = Pattern.compile(buffer);
+                    Matcher matcher = PATTERN.matcher(urlWithReplacedPlaceholders);
                     
-                    // If regex is in the url as placeholder we replace the placeholder
-                    if (urlWithReplacedPlaceholders.contains(originalRegex)) {
+                    while (matcher.find()) {
                         
-                        urlWithReplacedPlaceholders = urlWithReplacedPlaceholders.replaceAll(
-                                originalRegexEscaped, 
-                                resultingRegexReplacement);
+                        String resultingRegexReplacement = parameterPair.getValue().toString();
+                        
+                        matcher.appendReplacement(stringBuffer, resultingRegexReplacement);
                     
-                    // If the parameter is not there as placeholder we add it as queryParameter
-                    } else {
+                        foundAsPathParameter = true;
+                    }
                     
+                    matcher.appendTail(stringBuffer);
+                    urlWithReplacedPlaceholders = stringBuffer.toString();
+
+                    if (!foundAsPathParameter) {
+
                         queryParameterMap.put(parameterPair.getKey(), parameterPair.getValue());
                         
                     }
@@ -172,10 +186,17 @@ public class RouterImpl implements Router {
                 
                 }
                 
-                // Respect the context path
-                String contextPath = ninjaProperties.getContextPath().orNull();
-                if (contextPath != null) {
-                    return contextPath + urlWithReplacedPlaceholders;
+                // Respect the context path.
+                if (ninjaProperties.getContextPath().isPresent()) {
+                
+                    // If we get the default context path we don't do anything.
+                    // because our roots by default should start with "/".
+                    if (!ninjaProperties.getContextPath().get().equals("/")) {
+                    
+                        return ninjaProperties.getContextPath().get() 
+                            + urlWithReplacedPlaceholders;
+                    }
+                
                 }
                 
                 

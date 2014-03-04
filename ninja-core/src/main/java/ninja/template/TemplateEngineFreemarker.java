@@ -62,6 +62,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     private final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
 
+    private final TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod;
+            
+    private final TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod;
+    
+    private final TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
+    
     @Inject
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
@@ -69,12 +75,18 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                                     TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
                                     TemplateEngineHelper templateEngineHelper,
                                     TemplateEngineManager templateEngineManager,
+                                    TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod,
+                                    TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod,
+                                    TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod,
                                     NinjaProperties ninjaProperties) throws Exception {
         this.messages = messages;
         this.lang = lang;
         this.logger = logger;
         this.templateEngineFreemarkerExceptionHandler = templateEngineFreemarkerExceptionHandler;
         this.templateEngineHelper = templateEngineHelper;
+        this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
+        this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
+        this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
         
         cfg = new Configuration();
         
@@ -226,7 +238,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("i18n", new TemplateEngineFreemarkerI18nMethod(messages, context, result));
         
         
-        
+        map.put("reverseRoute", templateEngineFreemarkerReverseRouteMethod);
+        map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
+        map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.

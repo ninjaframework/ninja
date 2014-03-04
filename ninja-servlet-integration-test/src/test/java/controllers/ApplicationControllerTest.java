@@ -283,5 +283,16 @@ public class ApplicationControllerTest extends NinjaTest {
         assertTrue(response.contains("400 - Bad Request."));
     }
     
+    @Test
+    public void testThatReverseRoutingWorks() {
+        
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/test_reverse_routing");
+    
+        assertTrue(response.contains("<li>/user/100000/me@me.com/userDashboard</li>"));
+        assertTrue(response.contains("<li>/assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css</li>"));
+        assertTrue(response.contains("<li>/assets/css/custom.css</li>"));
+    }
+    
     
 }

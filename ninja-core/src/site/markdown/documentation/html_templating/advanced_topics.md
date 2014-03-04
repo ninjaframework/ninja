@@ -78,6 +78,52 @@ Implicit variables available in templates
  * <code>${contextPath}</code> resolves the context path of the application 
    (empty if running on root)
 
+Implicit functions available in templates
+-----------------------------------------
+
+### reverseRoute(...)
+
+Reverse route allows you to calculate a reverse route inside your templates.
+For instance via <code>${reverseRoute("controllers.ApplicationController", 
+"userDashboard", "email", email, "id", id)}</code>.
+
+First parameter is the controller name, second parameter the method name. All
+other parameters are optional and used to replace variable parts inside the route with
+appropriate values. 
+
+In the example above the user rendered the variable parts
+with <code>Results.html().render("id", 1000).render("email", "my@email.com") </code>.
+
+For a route like 
+<code>router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");</code> 
+the result is: <code>/me/user/1000/my@email.com/userDashboard</code>.
+
+
+### assetsAt(...)
+
+assetsAt is a shortcut to get a reverse route for an asset of your assets directory.
+<code>${assetsAt("css/custom.css")}</code> would render
+the location of custom.css. The corresponding route could be 
+<code>router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");</code>.
+
+This would then result in the following output: <code>/assets/css/custom.css</code>.
+
+
+### webJarsAt(...)
+
+webJarsAt allows you to render webjar contents. For instance
+<code>${webJarsAt("bootstrap/3.0.0/css/bootstrap.min.css")}</code> would render
+a css file from a webJars jar. The corresponding route could be 
+<code>router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");</code>.
+
+This would then result in the following output: <code>/assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css</code>.
+
+### i18n(...)
+
+i18n allows you to render translated strings. For instance <code>${i18n(&quot;myi18nKey&quot;)}</code> allows
+you to render the value for myi18nKey in the correct language for your user.
+Please refer to chapter "internationalization" for more informations.
+
 Advanced usage of Freemarker
 ----------------------------
 

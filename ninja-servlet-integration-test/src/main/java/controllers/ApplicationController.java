@@ -240,4 +240,12 @@ public class ApplicationController {
         throw new NullPointerException("Just a test to make sure 400 bad request works :)");
         
     }
+    
+    public Result testReverseRouting() {
+    
+        return Results.html()
+                .render("email", "me@me.com")
+                .render("id", "100000");
+        
+    }
 }
