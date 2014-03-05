@@ -1,7 +1,8 @@
 Version X.X.X
 =============
 
-  * 2014-03-04 #154 Some performance improvements for reverse routing. (ra)
+  * 2014-04-05 NinjaRunner that allows to auto inject resources into NinjaTests (smallufo)
+  * 2014-03-05 #154 Some performance improvements for reverse routing. (ra)
   * 2014-03-04 Fixed bug where reverse routing was not properly working for
                routes with regex. (ra)
   * 2014-03-04 Added reverse routing to Freemarker templates via ${reverseRoute(...)},

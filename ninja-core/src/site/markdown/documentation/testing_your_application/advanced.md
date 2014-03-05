@@ -1,6 +1,39 @@
 Advanced
 ========
 
+NinjaRunner
+-----------
+
+NinjaRunner makes it easy to test DAOs and service objects.
+Service objects are generally the place where business logic executed.
+Each service object may be injected a lot of DAOs.
+
+Suppose you have some service objects ,
+without NinjaRunner , the only way to test service objects is to <code>getInstance()</code>
+of these DAOs
+from Guice's injector and manually constructor-injecting to the service object
+in NinjaTest's <code>@Before</code> method.
+
+With NinjaRunner, you just add <code>@RunWith(NinjaRunner.class)</code> to your test class ,
+and declare <code>@Inject private ServiceObj serviceObj</code> and you'll get an
+injected serviceObj. No more <code>@Before</code> methods.
+
+Code Example:
+ 
+<pre class="prettyprint">
+&#064;RunWith(NinjaRunner.class)
+public class DataServiceTest  {
+    &#064;Inject private ServiceObj serviceObj;
+
+    &#064;Test
+    public void testDataService() {
+        assert (serviceObj != null);
+    }
+}
+</pre>
+
+
+
 NinjaDaoTestBase
 ----------------
 
