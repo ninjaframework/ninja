@@ -44,6 +44,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.Version;
 import java.io.Writer;
+import java.util.logging.Level;
 import ninja.utils.NinjaConstant;
 
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -187,8 +188,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         Object object = result.getRenderable();
 
-        ResponseStreams responseStreams = context.finalizeHeaders(result);
-
         Map map;
         // if the object is null we simply render an empty map...
         if (object == null) {            
@@ -271,22 +270,39 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // now we can retrieve flash cookie messages via ${flash.MESSAGE_KEY}
         map.put("flash", translatedFlashCookieMap);        
 
-
+        // Specify the data source where the template files come from.
+        // Here I set a file directory for it:
         String templateName = templateEngineHelper.getTemplateForResult(
                 context.getRoute(), result, FILE_SUFFIX);
 
-        // Specify the data source where the template files come from.
-        // Here I set a file directory for it:
+        
+        Template freemarkerTemplate = null;
+        
+        try {
+            
+            freemarkerTemplate = cfg.getTemplate(templateName);
+            
+        } catch (IOException iOException) {
+            
+            logger.error(
+                    "Error reading Freemarker Template {} ", templateName, iOException);
+            
+            throw new RuntimeException(iOException);
+        }
+        
+        
+        ResponseStreams responseStreams = context.finalizeHeaders(result);
+
         try (Writer writer = responseStreams.getWriter()) {
-
-            Template freemarkerTemplate = cfg.getTemplate(templateName);
-
-            // convert tuples:
+            
             freemarkerTemplate.process(map, writer);
 
         } catch (Exception e) {
+            
             logger.error(
-                    "Error processing Freemarker Template " + templateName, e);
+                    "Error processing Freemarker Template {} ", templateName, e);
+            
+            throw new RuntimeException(e);
             
         }
 

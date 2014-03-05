@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+  * 2014-04-05 #155 Fixed glitch were Freemarker did not emit a proper 400 when
+               template not found.
   * 2014-04-05 Fix so that ninjaProperties.getContextPath() and context.getContextPath() 
                are always in sync. No matter what contextpath you 
                supply via the command line and -Dninja.context= ... (ra)

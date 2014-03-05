@@ -85,7 +85,7 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/htmlEscaping").with(ApplicationController.class, "htmlEscaping");
         router.GET().route("/test_reverse_routing").with(ApplicationController.class, "testReverseRouting");
         router.GET().route("/test_get_context_path_works").with(ApplicationController.class, "testGetContextPathWorks");
-        
+        router.GET().route("/test_that_freemarker_emits_400_when_template_not_found").with(Results.html().template("/views/A_TEMPLATE_THAT_DOES_NOT_EXIST.ftl.html"));
         // /////////////////////////////////////////////////////////////////////
         // Json support
         // /////////////////////////////////////////////////////////////////////

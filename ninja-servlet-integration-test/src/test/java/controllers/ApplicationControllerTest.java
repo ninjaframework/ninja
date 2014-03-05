@@ -306,4 +306,15 @@ public class ApplicationControllerTest extends NinjaTest {
     }
     
     
+    public void test_that_freemarker_emits_400_when_template_not_found() {
+        
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/test_that_freemarker_emits_400_when_template_not_found");
+    
+        // both should be blank. We make sure we don't get any strange "/" delimiters or so...
+        assertTrue(response.contains("<title>400 - Bad Request.</title>"));
+        
+    }
+    
+    
 }
