@@ -70,7 +70,7 @@ public class ApiController {
         if (!succeeded) {
             return Results.notFound();
         } else {
-            return Results.ok();
+            return Results.json();
         }
 
     }
@@ -84,7 +84,7 @@ public class ApiController {
         if (!succeeded) {
             return Results.notFound();
         } else {
-            return Results.ok();
+            return Results.xml();
         }
 
     }
