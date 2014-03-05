@@ -124,7 +124,7 @@ public class RoutesTest extends NinjaRouterTest {
         
         String generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard", map);
         
-        assertEquals("/user/myId/myEmail/userDashboard?paging_size=100&page=1", generatedReverseRoute);
+        assertEquals("/user/myId/myEmail/userDashboard?page=1&paging_size=100", generatedReverseRoute);
 
     }
     
@@ -141,7 +141,7 @@ public class RoutesTest extends NinjaRouterTest {
                 "paging_size","100",
                 "page","1");
         
-        assertEquals("/user/myId/myEmail/userDashboard?paging_size=100&page=1", generatedReverseRoute);
+        assertEquals("/user/myId/myEmail/userDashboard?page=1&paging_size=100", generatedReverseRoute);
 
     }
     
