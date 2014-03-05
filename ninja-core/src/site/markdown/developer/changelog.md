@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.1.0
 =============
 
   * 2014-04-05 #155 Fixed glitch were Freemarker did not emit a proper 400 when
