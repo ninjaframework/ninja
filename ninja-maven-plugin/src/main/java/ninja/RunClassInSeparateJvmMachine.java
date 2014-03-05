@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ninja.utils.NinjaConstant;
@@ -80,27 +81,35 @@ public class RunClassInSeparateJvmMachine {
 
     private Process startNewNinjaJetty() throws IOException,
             InterruptedException {
+        
+        List<String> commandLine = Lists.newArrayList();
+        
+        
 
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator
                 + "java";
-
-        String pathSeparator = System.getProperty("path.separator");
-
-        String classpathAsString = Joiner.on(pathSeparator).join(classpath);
+        
+        commandLine.add(javaBin);
 
         String systemPropertyDevMode 
                 = "-D" + NinjaConstant.MODE_KEY_NAME + "=" + NinjaConstant.MODE_DEV;
         
-        String systemPropertyContextPath = "-Dninja.context=" + contextPath;
+        commandLine.add(systemPropertyDevMode);
         
-        ProcessBuilder builder = new ProcessBuilder(
-                javaBin, 
-                systemPropertyDevMode, 
-                systemPropertyContextPath, 
-                "-cp", 
-                classpathAsString, 
-                classNameWithMainToRun);
+        if (contextPath != null) {
+            String systemPropertyContextPath = "-Dninja.context=" + contextPath;
+            commandLine.add(systemPropertyContextPath);
+        }
+
+        String pathSeparator = System.getProperty("path.separator");
+
+        String classpathAsString = Joiner.on(pathSeparator).join(classpath);
+        commandLine.add("-cp");
+        commandLine.add(classpathAsString);
+        commandLine.add(classNameWithMainToRun);
+        
+        ProcessBuilder builder = new ProcessBuilder(commandLine);
         
         builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));
 

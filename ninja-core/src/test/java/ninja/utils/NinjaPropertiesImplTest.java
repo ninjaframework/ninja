@@ -37,6 +37,10 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.equalTo;
+import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 
 public class NinjaPropertiesImplTest {
 

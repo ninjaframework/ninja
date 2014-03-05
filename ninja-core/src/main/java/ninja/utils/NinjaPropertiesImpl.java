@@ -45,31 +45,24 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
     private NinjaMode ninjaMode;
     
-    private Optional<String> contextPath;
+    private String contextPath = "";
 
     private final String ERROR_KEY_NOT_FOUND = "Key %s does not exist. Please include it in your application.conf. Otherwise this app will not work";
 
     /**
-     * This is the final configuration holding all information from 1.
-     * application.conf. 2. Special properties for the mode you are running on
-     * extracted from application.cof 3. An external configuration file defined
-     * by a system property and on the classpath.
+     * This is the final configuration holding all information from 
+     * 1. application.conf. 
+     * 2. Special properties for the mode you are running on extracted 
+     *    from application.conf 
+     * 3. An external configuration file defined
+     *    by a system property and on the classpath.
      */
     private CompositeConfiguration compositeConfiguration;
 
     public NinjaPropertiesImpl(
             NinjaMode ninjaMode) {
-            
-        this(ninjaMode, null);
-    
-    }
-
-    public NinjaPropertiesImpl(
-            NinjaMode ninjaMode,
-            String contextPath) {
         
         this.ninjaMode = ninjaMode;
-        this.contextPath = Optional.fromNullable(contextPath);
 
         // This is our main configuration.
         // In the following we'll read the individual configurations and merge
@@ -304,9 +297,36 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         return (ninjaMode.equals(NinjaMode.test));
     }
     
+    /**
+     * Get the context path on which the application is running
+     * 
+     * That means:
+     * - when running on root the context path is empty
+     * - when running on context there is NEVER a trailing slash
+     * 
+     * We conform to the following rules:
+     * Returns the portion of the request URI that indicates the context of the 
+     * request. The context path always comes first in a request URI. 
+     * The path starts with a "/" character but does not end with a "/" character. 
+     * For servlets in the default (root) context, this method returns "". 
+     * The container does not decode this string.
+     * 
+     * As outlined by: http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html#getContextPath()
+     * 
+     * @return the context-path with a leading "/" or "" if running on root
+     */
     @Override
-    public Optional<String> getContextPath() {
+    public String getContextPath() {
+        
         return contextPath;
+        
+    }
+    
+    @Override
+    public void setContextPath(String contextPath) {
+        
+        this.contextPath = contextPath;
+        
     }
 
     @Override

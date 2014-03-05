@@ -67,12 +67,15 @@ public class NinjaServletListener extends GuiceServletContextListener {
             return ninjaBootstap.getInjector();
         }
         
+        // we set the contextpath.
+        ninjaProperties.setContextPath(contextPath);
+        
         // Otherwise create a new bootstrap and generate a new injector.
         if (ninjaProperties != null) {
             ninjaBootstap = new NinjaBootstap(ninjaProperties);
             
         } else {
-            ninjaBootstap = new NinjaBootstap(contextPath);
+            ninjaBootstap = new NinjaBootstap();
         }
         
         ninjaBootstap.boot();

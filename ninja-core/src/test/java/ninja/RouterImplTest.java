@@ -65,19 +65,7 @@ public class RouterImplTest {
     @Test
     public void testGetReverseRouteWithNoContextPathWorks() {
 
-        Optional<String> contextPath = Optional.absent();
-        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
-
-        String route = router.getReverseRoute(TestController.class, "index");
-
-        assertThat(route, CoreMatchers.equalTo("/testroute"));
-
-    }
-
-    @Test
-    public void testGetReverseRouteWithSimpleContextPathWorks() {
-
-        Optional<String> contextPath = Optional.of("/");
+        String contextPath = "";
         when(ninjaProperties.getContextPath()).thenReturn(contextPath);
 
         String route = router.getReverseRoute(TestController.class, "index");
@@ -89,7 +77,7 @@ public class RouterImplTest {
     @Test
     public void testGetReverseRouteContextPathWorks() {
 
-        Optional<String> contextPath = Optional.of("/myappcontext");
+        String contextPath = "/myappcontext";
         when(ninjaProperties.getContextPath()).thenReturn(contextPath);
 
         String route = router.getReverseRoute(TestController.class, "index");
@@ -101,7 +89,7 @@ public class RouterImplTest {
     @Test
     public void testGetReverseRouteWithRegexWorks() {
 
-        Optional<String> contextPath = Optional.absent();
+        String contextPath = "";
         when(ninjaProperties.getContextPath()).thenReturn(contextPath);
 
         String route = router.getReverseRoute(
@@ -119,7 +107,7 @@ public class RouterImplTest {
     @Test
     public void testGetReverseRouteWithRegexAndQueryParametersWorks() {
 
-        Optional<String> contextPath = Optional.absent();
+        String contextPath = "";
         when(ninjaProperties.getContextPath()).thenReturn(contextPath);
 
         String route = router.getReverseRoute(

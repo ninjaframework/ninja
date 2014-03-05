@@ -56,14 +56,7 @@ public class NinjaBootstap {
     public NinjaBootstap() {
 
         this(new NinjaPropertiesImpl(
-                NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet(), null));
-        
-    }
-        
-    public NinjaBootstap(String contextPath) {
-
-        this(new NinjaPropertiesImpl(
-                NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet(), contextPath));
+                NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet()));
         
     }
 

@@ -12,6 +12,7 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
+import ninja.utils.SwissKnife;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -19,9 +20,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 public class NinjaJetty {
     
+    public final static String COMMAND_LINE_PARAMETER_NINJA_CONTEXT = "ninja.context";
+    public final static String COMMAND_LINE_PARAMETER_NINJA_PORT = "ninja.port";
+    
     static final int DEFAULT_PORT = 8080;
-
-    static final String DEFAULT_CONTEXT_PATH = "/";
     
     Integer port;
     
@@ -105,15 +107,18 @@ public class NinjaJetty {
         server = new Server(port);
 
         try {
+            
             ServerConnector http = new ServerConnector(server);
 
             server.addConnector(http);
             context = new ServletContextHandler(server, ninjaContextPath);
 
+            
+            NinjaPropertiesImpl ninjaProperties 
+                    = new NinjaPropertiesImpl(ninjaMode);
             // We are using an embeded jetty for quick server testing. The
             // problem is that the port will change.
             // Therefore we inject the server name here:
-            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode, ninjaContextPath);
             ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
 
             ninjaServletListener.setNinjaProperties(ninjaProperties);
@@ -161,7 +166,7 @@ public class NinjaJetty {
         Integer port;
         
         try {
-            String portAsString = System.getProperty("ninja.port");
+            String portAsString = System.getProperty(COMMAND_LINE_PARAMETER_NINJA_PORT);
             port = Integer.parseInt(portAsString);
         } catch (Exception e) {
             
@@ -173,11 +178,17 @@ public class NinjaJetty {
     }
 
     public static String tryToGetContextPathFromSystemPropertyOrReturnDefault() {
+        
         try {
-            String contextPath = System.getProperty("ninja.context");
-            return contextPath != null ? contextPath : DEFAULT_CONTEXT_PATH;
+            
+            String contextPath = System.getProperty(COMMAND_LINE_PARAMETER_NINJA_CONTEXT);
+            
+            return contextPath;
+            
         } catch (Exception e) {
-            return DEFAULT_CONTEXT_PATH;
+            
+            return null;
         }
     }
+    
 }

@@ -168,7 +168,7 @@ public interface NinjaProperties {
     
     /**
      * Returns context under which the application is currently running.
-     * For instance on Java application servers it is common to use someting like
+     * For instance on Java application servers it is common to use something like
      * http://www.myserver.com/myapplication/index.html - where myapplication
      * would be set by the applcation server.
      * 
@@ -176,7 +176,9 @@ public interface NinjaProperties {
      * 
      * @return The context or "" if empty.
      */
-    Optional<String> getContextPath();
+    String getContextPath();
+    
+    void setContextPath(String contextPath);
 
     /**
      * 

@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import ninja.standalone.NinjaJetty;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 
@@ -81,10 +82,12 @@ public class NinjaRunMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         
-        // Read property from system properties.
-        String contextPathProperty = System.getProperty("ninja.context", "/");
         // If not set up in pom.xml then use system property.
         if (contextPath == null) {
+            String contextPathProperty 
+                    = System.getProperty(
+                        NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_CONTEXT);
+            
             contextPath = contextPathProperty;
         }
         
@@ -92,11 +95,15 @@ public class NinjaRunMojo extends AbstractMojo {
                 "Directory for classes is (used to start local jetty and watch for changes: " 
                 + buildOutputDirectory);
         
+        
         getLog().info("------------------------------------------------------------------------");
-        if (getLog().isInfoEnabled()) {
+        if (contextPath != null) {
             getLog().info("Launching Ninja SuperDevMode with '" + contextPath + "' context path.");
+        } else {
+             getLog().info("Launching Ninja SuperDevMode on root context");
         }
         getLog().info("------------------------------------------------------------------------");
+        
 
         initMojoFromUserSubmittedParameters();
         

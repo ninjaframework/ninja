@@ -294,5 +294,16 @@ public class ApplicationControllerTest extends NinjaTest {
         assertTrue(response.contains("<li>/assets/css/custom.css</li>"));
     }
     
+    @Test
+    public void testGetContextPathWorks() {
+        
+        String response =
+                ninjaTestBrowser.makeRequest(getServerAddress() + "/test_get_context_path_works");
+    
+        // both should be blank. We make sure we don't get any strange "/" delimiters or so...
+        assertTrue(response.contains("<li>ninjaProperties.getContextPath(): </li>"));
+        assertTrue(response.contains("<li>context.getContextPath(): </li>"));
+    }
+    
     
 }

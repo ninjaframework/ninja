@@ -84,8 +84,9 @@ public class Routes implements ApplicationRoutes {
 
         router.GET().route("/htmlEscaping").with(ApplicationController.class, "htmlEscaping");
         router.GET().route("/test_reverse_routing").with(ApplicationController.class, "testReverseRouting");
+        router.GET().route("/test_get_context_path_works").with(ApplicationController.class, "testGetContextPathWorks");
         
-// /////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////
         // Json support
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/api/person.json").with(PersonController.class, "getPersonJson");

@@ -171,6 +171,20 @@ public interface Context {
     
     /**
      * Get the context path on which the application is running
+     * 
+     * That means:
+     * - when running on root the context path is empty
+     * - when running on context there is NEVER a trailing slash
+     * 
+     * We conform to the following rules:
+     * Returns the portion of the request URI that indicates the context of the 
+     * request. The context path always comes first in a request URI. 
+     * The path starts with a "/" character but does not end with a "/" character. 
+     * For servlets in the default (root) context, this method returns "". 
+     * The container does not decode this string.
+     * 
+     * As outlined by: http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html#getContextPath()
+     * 
      * @return the context-path with a leading "/" or "" if running on root
      */
     String getContextPath();

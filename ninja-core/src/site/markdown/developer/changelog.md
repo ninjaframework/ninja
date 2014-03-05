@@ -1,6 +1,9 @@
 Version X.X.X
 =============
 
+  * 2014-04-05 Fix so that ninjaProperties.getContextPath() and context.getContextPath() 
+               are always in sync. No matter what contextpath you 
+               supply via the command line and -Dninja.context= ... (ra)
   * 2014-04-05 NinjaRunner that allows to auto inject resources into NinjaTests (smallufo)
   * 2014-03-05 #154 Some performance improvements for reverse routing. (ra)
   * 2014-03-04 Fixed bug where reverse routing was not properly working for

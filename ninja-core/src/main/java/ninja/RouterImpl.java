@@ -323,22 +323,12 @@ public class RouterImpl implements Router {
             String routeWithoutContextPath,
             NinjaProperties ninjaProperties) {
 
-        // Respect the context path.
-        if (ninjaProperties.getContextPath().isPresent()) {
-
-            // If we get the default context path we don't do anything.
-            // because our roots by default should start with "/".
-            if (!ninjaProperties.getContextPath().get().equals("/")) {
-
-                return ninjaProperties.getContextPath().get()
-                        + routeWithoutContextPath;
-            }
-
-        }
-            
         
-        return routeWithoutContextPath;
-        
+
+        // contextPath can only be empty. never null.
+        return ninjaProperties.getContextPath()
+                    + routeWithoutContextPath;
+
 
     }
 

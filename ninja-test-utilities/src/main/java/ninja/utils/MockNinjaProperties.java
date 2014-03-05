@@ -147,8 +147,13 @@ public class MockNinjaProperties implements NinjaProperties {
     }
 
     @Override
-    public Optional<String> getContextPath() {
-        return Optional.fromNullable(contextPath);
+    public String getContextPath() {
+        return contextPath;
+    }
+    
+    @Override
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
     }
 
     @Override

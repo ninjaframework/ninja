@@ -79,9 +79,10 @@ public class ApplicationController {
     public Result index(@Request HttpServletRequest httpServletRequest,
                            @Response HttpServletResponse httpServletResponse,
                            Context context) {
-        logger.info("In index ");
         
-        logger.info("context is: " + ninjaProperties.getContextPath().or("NOT AVAILABLE"));
+        logger.info("In index ");
+        logger.info("nc: " + ninjaProperties.getContextPath());
+        logger.info("co: " + context.getContextPath());
         
         // test that the injected httpservlet request and response are not null
         Preconditions.checkNotNull(httpServletRequest);
@@ -246,6 +247,14 @@ public class ApplicationController {
         return Results.html()
                 .render("email", "me@me.com")
                 .render("id", "100000");
+        
+    }
+    
+    public Result testGetContextPathWorks(Context context) {
+    
+        return Results.html()
+                .render("ninjaPropertiesGetContextPath", ninjaProperties.getContextPath())
+                .render("contextGetContextPath", context.getContextPath());
         
     }
 }
