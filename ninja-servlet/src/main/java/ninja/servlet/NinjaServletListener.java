@@ -64,7 +64,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
      * with volatile keyword for thread safety.
      * See also: http://en.wikipedia.org/wiki/Double-checked_locking
      * 
-     * @return The injector for this applcation.
+     * @return The injector for this application.
      */
     @Override
     public Injector getInjector() {
