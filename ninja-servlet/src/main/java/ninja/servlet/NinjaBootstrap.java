@@ -42,9 +42,9 @@ import com.google.inject.Stage;
 import com.google.inject.servlet.ServletModule;
 import ninja.logging.LogbackConfigurator;
 
-public class NinjaBootstap {
+public class NinjaBootstrap {
     
-    private Logger logger = LoggerFactory.getLogger(NinjaBootstap.class);
+    private Logger logger = LoggerFactory.getLogger(NinjaBootstrap.class);
 
     private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
     private static final String APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION = "conf.ServletModule";
@@ -53,14 +53,14 @@ public class NinjaBootstap {
 
     private Injector injector = null;
 
-    public NinjaBootstap() {
+    public NinjaBootstrap() {
 
         this(new NinjaPropertiesImpl(
                 NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet()));
         
     }
 
-    public NinjaBootstap(
+    public NinjaBootstrap(
                          NinjaPropertiesImpl ninjaProperties) {
 
         this.ninjaProperties = ninjaProperties;
@@ -106,7 +106,7 @@ public class NinjaBootstap {
     private Injector initInjector() {
 
         try {
-            List<Module> modulesToLoad = new ArrayList<Module>();
+            List<Module> modulesToLoad = new ArrayList<>();
 
             // Bind lifecycle support
             modulesToLoad.add(LifecycleSupport.getModule());

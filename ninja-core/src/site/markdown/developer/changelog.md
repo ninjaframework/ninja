@@ -1,3 +1,10 @@
+Version X.X.X
+=============
+
+ * 2014-04-06 Fixed potential multi threading issue upon application startup.
+              method getInjector() method of GuiceInjector was not thread safe (ra). 
+
+
 Version 3.1.0
 =============
 

@@ -18,7 +18,7 @@ package ninja;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import ninja.servlet.NinjaBootstap;
+import ninja.servlet.NinjaBootstrap;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 import org.junit.After;
@@ -39,7 +39,7 @@ public class NinjaRouterTest {
     /** The router - initiated from a real server. Routes are verified with this router */
     public Router router;
     
-    NinjaBootstap ninjaBootup;
+    NinjaBootstrap ninjaBootup;
     
     /**
      * Start the server and load the routes.
@@ -47,12 +47,12 @@ public class NinjaRouterTest {
     public void startServer(NinjaMode ninjaMode) {
         
         if (ninjaMode == null) {
-            ninjaBootup = new NinjaBootstap();
+            ninjaBootup = new NinjaBootstrap();
         } else {
             // in this case servletContext can be null
             NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
             
-            ninjaBootup = new NinjaBootstap(ninjaProperties);
+            ninjaBootup = new NinjaBootstrap(ninjaProperties);
         }
 
         ninjaBootup.boot();
