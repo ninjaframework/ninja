@@ -1,6 +1,8 @@
-Version X.X.X
+Version 3.1.1
 =============
 
+ * 2014-04-06 Fixed bug that prevented some applications running inside
+              servlet container to start up properly. (ra). 
  * 2014-04-06 Fixed potential multi threading issue upon application startup.
               method getInjector() method of GuiceInjector was not thread safe (ra). 
 

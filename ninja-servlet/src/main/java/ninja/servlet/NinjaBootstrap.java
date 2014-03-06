@@ -53,15 +53,9 @@ public class NinjaBootstrap {
 
     private Injector injector = null;
 
-    public NinjaBootstrap() {
-
-        this(new NinjaPropertiesImpl(
-                NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet()));
+    public NinjaBootstrap(NinjaPropertiesImpl ninjaProperties) {
         
-    }
-
-    public NinjaBootstrap(
-                         NinjaPropertiesImpl ninjaProperties) {
+        Preconditions.checkNotNull(ninjaProperties);
 
         this.ninjaProperties = ninjaProperties;
     }

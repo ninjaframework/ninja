@@ -20,6 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import ninja.servlet.NinjaBootstrap;
 import ninja.utils.NinjaMode;
+import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
 import org.junit.After;
 
@@ -47,7 +48,12 @@ public class NinjaRouterTest {
     public void startServer(NinjaMode ninjaMode) {
         
         if (ninjaMode == null) {
-            ninjaBootup = new NinjaBootstrap();
+            
+            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
+                    NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
+            
+            ninjaBootup = new NinjaBootstrap(
+                    ninjaProperties);
         } else {
             // in this case servletContext can be null
             NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);

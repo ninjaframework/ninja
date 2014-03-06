@@ -23,6 +23,8 @@ import ninja.utils.NinjaPropertiesImpl;
 
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaModeHelper;
 
 /**
  * define in web.xml:
@@ -38,12 +40,21 @@ public class NinjaServletListener extends GuiceServletContextListener {
     
     private volatile NinjaBootstrap ninjaBootstrap;
 
-    NinjaPropertiesImpl ninjaProperties;
+    NinjaPropertiesImpl ninjaProperties = null;
     
     String contextPath;
 
-    public void setNinjaProperties(NinjaPropertiesImpl ninjaProperties) {
-        this.ninjaProperties = ninjaProperties; 
+    public synchronized void setNinjaProperties(NinjaPropertiesImpl ninjaPropertiesImpl) {
+        
+        if (this.ninjaProperties != null) {
+            
+            throw new IllegalStateException("NinjaProperties already set.");
+        
+        } else {
+        
+            this.ninjaProperties = ninjaPropertiesImpl;
+            
+        }
         
     }
 
@@ -80,6 +91,15 @@ public class NinjaServletListener extends GuiceServletContextListener {
                 ninjaBootstapLocal = ninjaBootstrap;
                 
                 if (ninjaBootstapLocal == null) {
+                    
+                    // if properties 
+                    if (ninjaProperties == null) {
+                        
+                        ninjaProperties 
+                                = new NinjaPropertiesImpl(
+                                        NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
+                    
+                    }
                 
                     ninjaBootstrap 
                             = createNinjaBootstrap(ninjaProperties, contextPath);
