@@ -1,3 +1,10 @@
+Version X.X.X
+=============
+
+ * 2014-04-07 Now caching virtually infinite amount of template files in memory
+              as weak references (before it was a max of 250). (ra)
+
+
 Version 3.1.1
 =============
 

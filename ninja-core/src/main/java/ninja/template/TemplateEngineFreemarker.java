@@ -109,7 +109,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         ///////////////////////////////////////////////////////////////////////
         // 1) In dev we load templates from src/java/main first, then from the
         //    classpath.
-        //    Therefire Freemarker can handle reloading of changed templates without
+        //    Therefore Freemarker can handle reloading of changed templates without
         //    the need to restart the server (e.g automatic reload of jetty:run) 
         // 2) In test and prod we never refresh templates and load them
         //    from the classpath
@@ -158,7 +158,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             
             // Hold 20 templates as strong references as recommended by:
             // http://freemarker.sourceforge.net/docs/pgui_config_templateloading.html
-            cfg.setSetting(Configuration.CACHE_STORAGE_KEY, "strong:20, soft:250");
+            cfg.setCacheStorage(new freemarker.cache.MruCacheStorage(20, Integer.MAX_VALUE));
 
         }
         
