@@ -25,6 +25,7 @@ import ninja.utils.NinjaProperties;
 import controllers.ApiController;
 import controllers.ApplicationController;
 import controllers.ArticleController;
+import controllers.BugReproductionController;
 import controllers.LoginLogoutController;
 
 public class Routes implements ApplicationRoutes {
@@ -48,6 +49,9 @@ public class Routes implements ApplicationRoutes {
         if (!ninjaProperties.isProd()) {
             router.GET().route("/setup").with(ApplicationController.class, "setup");
         }
+        
+        router.GET().route("/test_against_bug_157_test1").with(BugReproductionController.class, "testAgainstBug157Test1");
+        router.GET().route("/test_against_bug_157_test2").with(BugReproductionController.class, "testAgainstBug157Test2");
         
         ///////////////////////////////////////////////////////////////////////
         // Login / Logout

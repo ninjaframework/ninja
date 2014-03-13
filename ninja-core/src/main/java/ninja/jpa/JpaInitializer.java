@@ -36,7 +36,7 @@ import com.google.inject.persist.PersistService;
 @Singleton
 public class JpaInitializer {
     
-    private PersistService persistService;
+    private final PersistService persistService;
 
 
     @Inject
