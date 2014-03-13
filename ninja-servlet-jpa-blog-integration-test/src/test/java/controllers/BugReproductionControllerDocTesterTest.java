@@ -50,20 +50,24 @@ public class BugReproductionControllerDocTesterTest extends NinjaDocTester {
     @Test
     public void testThatBug157IsFixedTest1() {
         
-        Response response 
+        for (int i = 0; i < 100; i++) {
+            Response response 
                 = makeRequest(Request.GET().url(testServerUrl().path(GET_TEST_AGAINST_BUG_157_TEST_1)));
         
-        assertThat(response.payload, equalTo("ok"));
+            assertThat(response.payload, equalTo("ok"));
+        }
         
     } 
     
     @Test
     public void testThatBug157IsFixedTest2() {
         
-        Response response 
+        for (int i = 0; i < 100; i++) {
+            Response response 
                 = makeRequest(Request.GET().url(testServerUrl().path(GET_TEST_AGAINST_BUG_157_TEST_2)));
         
-        assertThat(response.payload, equalTo("ok"));
+            assertThat(response.payload, equalTo("ok"));
+        }
         
     }
 
