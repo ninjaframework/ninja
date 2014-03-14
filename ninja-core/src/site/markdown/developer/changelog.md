@@ -1,6 +1,12 @@
 Version X.X.X
 =============
 
+ * 2014-04-14 Added error-prone bug checking to build lifecycle of Ninja. (ra)
+
+
+Version 3.1.2
+=============
+
  * 2014-04-13 BugFix #157. @UnitOfWork did not work when nested with
               @Transactional or other @UnitOfWork annotations. (ra)
  * 2014-04-07 Now caching virtually infinite amount of template files in memory
