@@ -1,36 +1,36 @@
 Version X.X.X
 =============
 
- * 2014-04-14 Added error-prone bug checking to build lifecycle of Ninja. (ra)
+ * 2014-03-14 Added error-prone bug checking to build lifecycle of Ninja. (ra)
 
 
 Version 3.1.2
 =============
 
- * 2014-04-13 BugFix #157. @UnitOfWork did not work when nested with
+ * 2014-03-13 BugFix #157. @UnitOfWork did not work when nested with
               @Transactional or other @UnitOfWork annotations. (ra)
- * 2014-04-07 Now caching virtually infinite amount of template files in memory
+ * 2014-03-07 Now caching virtually infinite amount of template files in memory
               as weak references (before it was a max of 250). (ra)
 
 
 Version 3.1.1
 =============
 
- * 2014-04-06 Fixed bug that prevented some applications running inside
+ * 2014-03-06 Fixed bug that prevented some applications running inside
               servlet container to start up properly. (ra). 
- * 2014-04-06 Fixed potential multi threading issue upon application startup.
+ * 2014-03-06 Fixed potential multi threading issue upon application startup.
               method getInjector() method of GuiceInjector was not thread safe (ra). 
 
 
 Version 3.1.0
 =============
 
-  * 2014-04-05 #155 Fixed glitch were Freemarker did not emit a proper 400 when
+  * 2014-03-05 #155 Fixed glitch were Freemarker did not emit a proper 400 when
                template not found.
-  * 2014-04-05 Fix so that ninjaProperties.getContextPath() and context.getContextPath() 
+  * 2014-03-05 Fix so that ninjaProperties.getContextPath() and context.getContextPath() 
                are always in sync. No matter what contextpath you 
                supply via the command line and -Dninja.context= ... (ra)
-  * 2014-04-05 NinjaRunner that allows to auto inject resources into NinjaTests (smallufo)
+  * 2014-03-05 NinjaRunner that allows to auto inject resources into NinjaTests (smallufo)
   * 2014-03-05 #154 Some performance improvements for reverse routing. (ra)
   * 2014-03-04 Fixed bug where reverse routing was not properly working for
                routes with regex. (ra)
