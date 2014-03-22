@@ -119,8 +119,15 @@
                         <reportPlugins>
                             <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-javadoc-plugin</artifactId>
+                                <artifactId>amven-javadoc-plugin</artifactId>
                                 <version>2.9.1</version>
+                                <configuration>
+                                    <!-- 
+                                        jdk8 is too strict on parsing javadoc for now:
+                                        http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
+                                    -->
+                                    <additionalparam>-Xdoclint:none</additionalparam>
+                                </configuration>
                             </plugin>
                         </reportPlugins>
                     </configuration>
