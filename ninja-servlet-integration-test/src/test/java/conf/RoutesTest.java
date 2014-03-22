@@ -27,6 +27,10 @@ import com.google.common.collect.Maps;
 
 import controllers.ApplicationController;
 import ninja.NinjaRouterTest;
+import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.containsString;
+import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 
 /**
  * 
@@ -124,7 +128,9 @@ public class RoutesTest extends NinjaRouterTest {
         
         String generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard", map);
         
-        assertEquals("/user/myId/myEmail/userDashboard?page=1&paging_size=100", generatedReverseRoute);
+        assertThat(generatedReverseRoute, containsString("page=1"));
+        assertThat(generatedReverseRoute, containsString("paging_size=100"));
+        assertThat(generatedReverseRoute, containsString("/user/myId/myEmail/userDashboard?"));
 
     }
     
@@ -140,9 +146,10 @@ public class RoutesTest extends NinjaRouterTest {
                 "email","myEmail",
                 "paging_size","100",
                 "page","1");
-        
-        assertEquals("/user/myId/myEmail/userDashboard?page=1&paging_size=100", generatedReverseRoute);
 
+        assertThat(generatedReverseRoute, containsString("page=1"));
+        assertThat(generatedReverseRoute, containsString("paging_size=100"));
+        assertThat(generatedReverseRoute, containsString("/user/myId/myEmail/userDashboard?"));
     }
     
     

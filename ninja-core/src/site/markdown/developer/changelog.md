@@ -1,6 +1,7 @@
 Version 3.1.3
 =============
 
+ * 2014-03-22 Fixed build to work with JDK 8. (ra)
  * 2014-03-22 Fixed bug in archetype. Reordered modules, so that testing of archetypes works. (ra)
  * 2014-03-22 Removed error-prone again (not yet compatible with JDK 8) (ra)
  * 2014-03-14 Added error-prone bug checking to build lifecycle of Ninja. (ra)
