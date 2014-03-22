@@ -71,6 +71,18 @@
         <pluginManagement>
         
             <plugins>
+                
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <!-- bump submodule versions automatically -->
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <!-- install next final version in local repo, so that
+                             tests on archetypes work -->
+                        <completionGoals>clean install</completionGoals>
+                    </configuration>
+                </plugin>
             
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
