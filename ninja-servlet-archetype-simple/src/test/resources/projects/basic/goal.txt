@@ -1,1 +1,1 @@
-clean compile test
+test
