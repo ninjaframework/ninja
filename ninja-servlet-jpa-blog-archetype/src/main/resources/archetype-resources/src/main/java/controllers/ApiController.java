@@ -32,7 +32,6 @@ import com.google.inject.Singleton;
 import dao.ArticleDao;
 import etc.LoggedInUser;
 
-@Singleton
 public class ApiController {
 
     @Inject
@@ -63,7 +62,7 @@ public class ApiController {
         if (!succeeded) {
             return Results.notFound();
         } else {
-            return Results.ok();
+            return Results.json();
         }
 
     }
@@ -77,7 +76,7 @@ public class ApiController {
         if (!succeeded) {
             return Results.notFound();
         } else {
-            return Results.ok();
+            return Results.xml();
         }
 
     }

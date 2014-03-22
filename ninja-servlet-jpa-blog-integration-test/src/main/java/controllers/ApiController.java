@@ -31,7 +31,6 @@ import etc.LoggedInUser;
 import models.Article;
 import ninja.params.PathParam;
 
-@Singleton
 public class ApiController {
 
     @Inject

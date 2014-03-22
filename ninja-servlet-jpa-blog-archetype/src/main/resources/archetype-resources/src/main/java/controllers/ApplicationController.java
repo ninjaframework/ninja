@@ -33,7 +33,6 @@ import com.google.inject.Singleton;
 import dao.ArticleDao;
 import dao.SetupDao;
 
-@Singleton
 public class ApplicationController {
 
     @Inject
