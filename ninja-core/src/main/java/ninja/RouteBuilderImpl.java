@@ -22,7 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import ninja.params.ControllerMethodInvoker;
+import ninja.params.ControllerMethodInvokerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,7 +198,7 @@ class RouteBuilderImpl implements RouteBuilder {
 
             return result != null ? new FilterChainEnd(result) :
                     new FilterChainEnd(injector.getProvider(controller),
-                            ControllerMethodInvoker.build(controllerMethod, injector));
+                            injector.getInstance(ControllerMethodInvokerBuilder.class).build(controllerMethod, injector));
 
         } else {
 

@@ -19,9 +19,12 @@ package ninja;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
+import ninja.params.ControllerMethodInvokerBuilder;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -34,6 +37,14 @@ public class RouteBuilderImplTest {
 
     @Mock
     Injector injector;
+
+    @Mock
+    ControllerMethodInvokerBuilder controllerMethodInvokerBuilder;
+
+    @Before
+    public void before() {
+        when(injector.getInstance(ControllerMethodInvokerBuilder.class)).thenReturn(controllerMethodInvokerBuilder);
+    }
 
     @Test
     public void testBasicGETRoute() {

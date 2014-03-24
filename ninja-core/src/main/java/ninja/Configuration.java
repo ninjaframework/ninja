@@ -22,6 +22,8 @@ import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
 import ninja.jpa.JpaModule;
 import ninja.migrations.MigrationInitializer;
+import ninja.params.ControllerMethodInvokerBuilder;
+import ninja.params.ControllerMethodInvokerBuilderImpl;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.guice.PostofficeProvider;
 import ninja.utils.LoggerProvider;
@@ -61,6 +63,8 @@ public class Configuration extends AbstractModule {
         bind(Router.class).to(RouterImpl.class).in(Singleton.class);
 
         bind(Ninja.class).to(NinjaImpl.class).in(Singleton.class);
+
+        bind(ControllerMethodInvokerBuilder.class).to(ControllerMethodInvokerBuilderImpl.class).in(Singleton.class);
 
         // provide logging
         bind(Logger.class).toProvider(LoggerProvider.class);

@@ -16,9 +16,9 @@
 
 package ninja;
 
-import com.google.common.base.Optional;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
+import ninja.params.ControllerMethodInvokerBuilder;
 import ninja.utils.NinjaProperties;
 import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -49,11 +49,15 @@ public class RouterImplTest {
     @Mock
     Provider<TestController> testControllerProvider;
 
+    @Mock
+    ControllerMethodInvokerBuilder controllerMethodInvokerBuilder;
+
     @Before
     public void before() {
 
         when(testControllerProvider.get()).thenReturn(new TestController());
         when(injector.getProvider(TestController.class)).thenReturn(testControllerProvider);
+        when(injector.getInstance(ControllerMethodInvokerBuilder.class)).thenReturn(controllerMethodInvokerBuilder);
         router = new RouterImpl(injector, ninjaProperties);
 
         // add route:

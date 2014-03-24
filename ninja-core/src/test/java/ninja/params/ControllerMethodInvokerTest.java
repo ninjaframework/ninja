@@ -533,7 +533,7 @@ public class ControllerMethodInvokerTest {
                 break;
             }
         }
-        return ControllerMethodInvoker.build(method, Guice.createInjector(new AbstractModule() {
+        return new ControllerMethodInvokerBuilderImpl().build(method, Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
                 for (Object o : toBind) {
