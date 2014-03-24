@@ -16,28 +16,15 @@
 
 package ninja.params;
 
-import java.lang.reflect.Type;
 
-/**
- * This is used to hold the argument class, so that it can be injected into
- * extractors/validators so they can know what type they are extracting.
- */
-public class ArgumentClassHolder {
-    private final Class<?> argumentClass;
+public class ParamIndex {
+    private final int index;
 
-    private final Type genericArgumentType;
-
-    public ArgumentClassHolder(Class<?> argumentClass, Type genericArgumentType) {
-        this.argumentClass = argumentClass;
-        this.genericArgumentType = genericArgumentType;
+    public ParamIndex(final int index) {
+        this.index = index;
     }
 
-    public Class<?> getArgumentClass() {
-        return argumentClass;
+    public int getIndex() {
+        return index;
     }
-
-    public Type getGenericArgumentType() {
-        return genericArgumentType;
-    }
-
 }

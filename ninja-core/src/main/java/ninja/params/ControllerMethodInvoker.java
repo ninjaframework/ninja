@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,7 @@ public class ControllerMethodInvoker {
     public static ControllerMethodInvoker build(Method method, Injector injector) {
         // get both the parameters...
         final Class[] paramTypes = method.getParameterTypes();
+        final Type[] genericParamTypes = method.getGenericParameterTypes();
         // ... and all annotations for the parameters
         final Annotation[][] paramAnnotations = method
                 .getParameterAnnotations();
@@ -78,8 +80,8 @@ public class ControllerMethodInvoker {
         // now we skip through the parameters and process the annotations
         for (int i = 0; i < paramTypes.length; i++) {
             try {
-                argumentExtractors[i] = getArgumentExtractor(paramTypes[i], paramAnnotations[i],
-                        injector);
+                argumentExtractors[i] = getArgumentExtractor(paramTypes[i], genericParamTypes[i], i,
+                        paramAnnotations[i], injector);
             } catch (RoutingException e) {
                 throw new RoutingException("Error building argument extractor for parameter " + i +
                         " in method " + method.getDeclaringClass().getName() + "." + method.getName() + "()", e);
@@ -104,15 +106,15 @@ public class ControllerMethodInvoker {
         // parameters
         for (int i = 0; i < argumentExtractors.length; i++) {
             argumentExtractors[i] =
-                    validateArgumentWithExtractor(paramTypes[i], paramAnnotations[i], injector,
-                    argumentExtractors[i]);
+                    validateArgumentWithExtractor(paramTypes[i], genericParamTypes[i], i,
+                            paramAnnotations[i], injector, argumentExtractors[i]);
         }
 
         return new ControllerMethodInvoker(method, argumentExtractors);
     }
 
     private static ArgumentExtractor<?> getArgumentExtractor(Class<?> paramType,
-            Annotation[] annotations, Injector injector) {
+            Type genericParamType, int paramIndex, Annotation[] annotations, Injector injector) {
         // First check if we have a static extractor
         ArgumentExtractor<?> extractor = ArgumentExtractors.getExtractorForType(paramType);
 
@@ -123,7 +125,7 @@ public class ControllerMethodInvoker {
                         .getAnnotation(WithArgumentExtractor.class);
                 if (withArgumentExtractor != null) {
                     extractor = instantiateComponent(withArgumentExtractor.value(), annotation,
-                            paramType, injector);
+                            paramType, genericParamType, paramIndex, injector);
                     break;
                 }
             }
@@ -133,7 +135,8 @@ public class ControllerMethodInvoker {
     }
 
     private static ArgumentExtractor<?> validateArgumentWithExtractor(Class<?> paramType,
-            Annotation[] annotations, Injector injector, ArgumentExtractor<?> extractor) {
+            Type genericParamType, int paramIndex, Annotation[] annotations,
+            Injector injector, ArgumentExtractor<?> extractor) {
         // We have validators that get applied before parsing, and validators
         // that get applied after parsing.
         List<Validator<?>> preParseValidators = new ArrayList<Validator<?>>();
@@ -150,7 +153,7 @@ public class ControllerMethodInvoker {
                     .getAnnotation(WithValidator.class);
             if (withValidator != null) {
                 Validator<?> validator = instantiateComponent(withValidator.value(), annotation,
-                        paramType, injector);
+                        paramType, genericParamType, paramIndex, injector);
                 // If the validator can validate the extractors type, then it's a pre parse validator
                 if (validator.getValidatedType().isAssignableFrom(extractor.getExtractedType())) {
                     preParseValidators.add(validator);
@@ -205,8 +208,8 @@ public class ControllerMethodInvoker {
     }
 
     private static <T> T instantiateComponent(Class<? extends T> argumentExtractor,
-            final Annotation annotation, final Class<?> paramType,
-            Injector injector) {
+            final Annotation annotation, final Class<?> paramType, final Type genericParamType,
+            final int paramIndex, Injector injector) {
         // Noarg constructor
         Constructor noarg = getNoArgConstructor(argumentExtractor);
         if (noarg != null) {
@@ -239,7 +242,8 @@ public class ControllerMethodInvoker {
             @Override
             protected void configure() {
                 bind((Class<Annotation>) annotation.annotationType()).toInstance(annotation);
-                bind(ArgumentClassHolder.class).toInstance(new ArgumentClassHolder(paramType));
+                bind(ArgumentClassHolder.class).toInstance(new ArgumentClassHolder(paramType, genericParamType));
+                bind(ParamIndex.class).toInstance(new ParamIndex(paramIndex));
             }
         }).getInstance(argumentExtractor);
     }
