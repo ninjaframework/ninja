@@ -19,6 +19,7 @@ package ninja.servlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.util.Modules;
 import ninja.Configuration;
 import ninja.Context;
 import ninja.Ninja;
@@ -47,6 +48,7 @@ public class NinjaBootstrap {
     private Logger logger = LoggerFactory.getLogger(NinjaBootstrap.class);
 
     private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
+    private static final String APPLICATION_GUICE_OVERRIDE_CORE_MODULE_CONVENTION_LOCATION = "conf.OverrideCoreModule";
     private static final String APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION = "conf.ServletModule";
     private static final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
     private NinjaPropertiesImpl ninjaProperties;
@@ -108,7 +110,7 @@ public class NinjaBootstrap {
             modulesToLoad.add(SchedulerSupport.getModule());
 
             // Get base configuration of Ninja:
-            modulesToLoad.add(new Configuration(ninjaProperties));
+            modulesToLoad.add(createCoreModule());
             modulesToLoad.add(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -177,6 +179,16 @@ public class NinjaBootstrap {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Module createCoreModule() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        final Module base = new Configuration(ninjaProperties);
+        if (doesClassExist(APPLICATION_GUICE_OVERRIDE_CORE_MODULE_CONVENTION_LOCATION)) {
+            final Class<?> clazz = Class.forName(APPLICATION_GUICE_OVERRIDE_CORE_MODULE_CONVENTION_LOCATION);
+            return Modules.override(base).with((Module) clazz.newInstance());
+        } else {
+            return base;
+        }
     }
 
     private boolean doesClassExist(String nameWithPackage) {
