@@ -49,9 +49,21 @@ Ninja will look for specified files in three places in the following order:
  * On the filesystem
  * and if the "file" is a http url it will try to load the configuration from there.
 
+
+
 <div class="alert alert-info">
+There is one tiny drawback with using application.conf to configure logging:
+
+Logging can start before Ninja starts up. Think of Jetty starting up and once
+startup is finished Ninja begins to load. Jetty already might write some log messages,
+but these are not configured by Ninja's applications.conf.
+
+In that early phase it might be the case that Logback uses a default
+configuration that prints out messages to System.out.
+
 Using the Java system property <code>-Dlogback.configurationFile</code> to configure
-logging will always override all settings in application.conf.
+logging will always override all settings in application.conf. This also configures
+logging from the very beginning.
 </div>
 
 Quick intro to Logback
