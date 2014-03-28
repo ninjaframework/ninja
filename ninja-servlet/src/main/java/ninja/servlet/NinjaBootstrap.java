@@ -44,7 +44,7 @@ import ninja.logging.LogbackConfigurator;
 
 public class NinjaBootstrap {
     
-    private Logger logger = LoggerFactory.getLogger(NinjaBootstrap.class);
+    private static final Logger logger = LoggerFactory.getLogger(NinjaBootstrap.class);
 
     private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
     private static final String APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION = "conf.ServletModule";

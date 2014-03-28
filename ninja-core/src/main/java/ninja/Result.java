@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.io.Writer;
+import ninja.utils.NoHttpBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,11 @@ public class Result {
     public static final String APPLICATION_XML = "application/xml";
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
+    // This is a marker. Returning something like
+    // Result.html().render(NO_HTTP_BODY) will cause all body rendering
+    // to be bypassed. This effectively means you'll return only headers and no body
+    // useful for "no content" style responses.
+    public static final NoHttpBody NO_HTTP_BODY = new NoHttpBody();
     
     // /////////////////////////////////////////////////////////////////////////
     // Finally we got to the core of this class...

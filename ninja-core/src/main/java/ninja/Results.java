@@ -16,8 +16,6 @@
 
 package ninja;
 
-import ninja.utils.NoHttpBody;
-
 
 /**
  * Convenience methods for the generation of Results.
@@ -56,7 +54,7 @@ public class Results {
 
     public static Result noContent() {
         return status(Result.SC_204_NO_CONTENT)
-                .render(new NoHttpBody());
+                .render(Result.NO_HTTP_BODY);
     }
 
     public static Result internalServerError() {
@@ -82,7 +80,7 @@ public class Results {
 
         Result result = status(Result.SC_303_SEE_OTHER);
         result.addHeader(Result.LOCATION, url);
-        result.render(new NoHttpBody());
+        result.render(Result.NO_HTTP_BODY);
 
         return result;
     }
@@ -106,7 +104,7 @@ public class Results {
 
         Result result = status(Result.SC_307_TEMPORARY_REDIRECT);
         result.addHeader(Result.LOCATION, url);
-        result.render(new NoHttpBody());
+        result.render(Result.NO_HTTP_BODY);
 
         return result;
     }
