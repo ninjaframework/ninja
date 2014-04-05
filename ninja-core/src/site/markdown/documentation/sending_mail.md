@@ -70,7 +70,7 @@ public class MailController {
 
         // finally send the mail
 		try {
-			postoffice.send(mail);
+		    postoffice.send(mail);
 		} catch (Exception e) {
 		    // ...
 		}
