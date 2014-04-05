@@ -39,7 +39,7 @@ public class MailController {
     @Inject
     Postoffice postoffice;
 
-    public Result sendMail() {
+    public void sendMail() {
     
         Mail mail = mailProvider.get();
 
@@ -69,10 +69,12 @@ public class MailController {
         mail.setBodyText("bodyText");
 
         // finally send the mail
-        postoffice.send(mail);
-
+		try {
+			postoffice.send(mail);
+		} catch (Exception e) {
+		    // ...
+		}
     }
-
 }
 </pre>
 
