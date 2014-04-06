@@ -44,9 +44,10 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.Version;
 import java.io.Writer;
-import java.util.logging.Level;
+import javax.inject.Singleton;
 import ninja.utils.NinjaConstant;
 
+@Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
 
     private final String FILE_SUFFIX = ".ftl.html";

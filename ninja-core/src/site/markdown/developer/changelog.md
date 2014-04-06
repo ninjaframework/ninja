@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+ * 2014-04-06 Fixed bug (#165) that caused that html template caching did 
+              not work properly. (Nomi + ra)
  * 2014-03-28 Added support for static Result.NO_HTTP_CONTENT. No need
               to create new() class all the time. (ra)
 
