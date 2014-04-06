@@ -22,7 +22,7 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>3.1.4-SNAPSHOT</version>
+    <version>3.1.4</version>
     <url>http://www.ninjaframework.org</url>
 
     <!-- Deploy to central maven using the oss-parent of sonatype -->
@@ -80,7 +80,7 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <!-- install next final version in local repo, so that
                              tests on archetypes work -->
-                        <completionGoals>clean install</completionGoals>
+                        <preparationGoals>clean install</preparationGoals>
                     </configuration>
                 </plugin>
             
@@ -208,7 +208,7 @@
         <url>https://github.com/ninjaframework/ninja</url>
         <connection>scm:git://github.com/ninjaframework/ninja.git</connection>
         <developerConnection>scm:git:git@github.com:ninjaframework/ninja.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>ninja-3.1.4</tag>
   </scm>
 
     <issueManagement>
