@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.1.4
 =============
 
  * 2014-04-06 Fixed bug (#165) that caused that html template caching did 
