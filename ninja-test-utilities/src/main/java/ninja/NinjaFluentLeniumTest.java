@@ -16,6 +16,7 @@
 
 package ninja;
 
+import com.google.inject.Injector;
 import ninja.utils.NinjaTestServer;
 
 import org.fluentlenium.adapter.FluentTest;
@@ -50,6 +51,10 @@ public abstract class NinjaFluentLeniumTest extends FluentTest {
     @After
     public void shutdownServer() {
         ninjaTestServer.shutdown();
+    }
+    
+    public Injector getInjector() {
+        return ninjaTestServer.getInjector();
     }
 
 }
