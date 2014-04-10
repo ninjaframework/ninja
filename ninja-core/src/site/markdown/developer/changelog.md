@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+ * 2014-04-10 "username" of SecureFilter now static final and can be referenced 
+              from other modules in a typesafe way. (ra)
  * 2014-04-10 Support getInjector() on FluentLenium testcases (ra)
  * 2014-04-07 Logback is now only configured when on classpath. Allows to use
               jul logging on App Engine. (Nomi + ra)

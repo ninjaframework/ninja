@@ -37,14 +37,14 @@ import ninja.utils.NinjaConstant;
 public class SecureFilter implements Filter {
 
     /** If a username is saved we assume the session is valid */
-    public final String USERNAME = "username";
+    public static final String USERNAME = "username";
 
     @Override
     public Result filter(FilterChain chain, Context context) {
 
         // if we got no cookies we break:
-        if (context.getSessionCookie() == null
-                || context.getSessionCookie().get(USERNAME) == null) {
+        if (context.getSession() == null
+                || context.getSession().get(USERNAME) == null) {
 
             return Results.forbidden().html()
                     .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
