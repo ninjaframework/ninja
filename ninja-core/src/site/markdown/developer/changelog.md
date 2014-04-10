@@ -1,3 +1,10 @@
+Version X.X.X
+=============
+
+ * 2014-04-07 Logback is now only configured when on classpath. Allows to use
+              jul logging on App Engine. (Nomi + ra)
+
+
 Version 3.1.4
 =============
 

@@ -26,8 +26,6 @@ import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.scheduler.SchedulerSupport;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
 
 import org.slf4j.Logger;
@@ -66,8 +64,7 @@ public class NinjaBootstrap {
 
     public synchronized void boot() {
         
-        // init logging at the very very top
-        LogbackConfigurator.initConfiguration(ninjaProperties);
+        initLogbackIfLogbackIsOnTheClassPath();
         
         if (injector != null) {
             throw new RuntimeException("NinjaBootstap already booted");
@@ -193,6 +190,19 @@ public class NinjaBootstrap {
 
         return exists;
 
+    }
+    
+    private void initLogbackIfLogbackIsOnTheClassPath() {
+            // init logging at the very very top
+        try {
+            Class.forName("ch.qos.logback.classic.joran.JoranConfigurator");
+            LogbackConfigurator.initConfiguration(ninjaProperties);
+            logger.info("Successfully configured Logback.");
+             // It is available
+        } catch (ClassNotFoundException exception) {
+            logger.info("Logback is not on classpath (you are probably using slf4j-jdk14). I did not configure anything. It's up to you now...");
+        }
+    
     }
 
 }
