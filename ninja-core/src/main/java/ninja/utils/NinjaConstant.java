@@ -60,6 +60,9 @@ public interface NinjaConstant {
     /** Used to specify static asset directory **/
     final String APPLICATION_STATIC_ASSET_BASEDIR = "application.static.asset.basedir";
 
+    /** Used to specify static base package for configuration modules and routes **/
+    final String APPLICATION_MODULES_BASE_PACKAGE = "application.modules.package";
+
     /**
      * Prefix used for all Ninja cookies.
      * 
