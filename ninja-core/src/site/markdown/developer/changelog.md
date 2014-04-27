@@ -2,7 +2,7 @@ Version X.X.X
 =============
 
  * 2014-04-27 Added possibility to define custom package for application
-              module and routes
+              module and routes (avarabyeu)
  * 2014-04-10 "username" of SecureFilter now static final and can be referenced
               from other modules in a typesafe way. (ra)
  * 2014-04-10 Support getInjector() on FluentLenium testcases (ra)
