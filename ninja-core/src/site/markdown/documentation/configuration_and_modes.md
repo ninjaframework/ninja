@@ -99,6 +99,22 @@ database.name=database_production   # will be used when no mode is set (or prod)
 
 The convention is to use a "%" and the name of the mode followed by ".".
 
+Configuring application's base package
+------------------------------------
+
+If you'd like to keep all java code in specific package you can define
+<pre class="prettyprint">
+application.modules.package=com.someorganinization.somepackage
+</pre>
+
+In this case you must put your Routes at<br>
+<code>com.someorganization.somepackage.conf.Routes.java</code>
+
+and Guice application configuration modules at<br>
+<code>com.someorganization.somepackage.conf.Module.java</code>
+<code>com.someorganization.somepackage.conf.ServletModule.java</code>
+accordingly.
+
 
 External configuration for deployment
 -------------------------------------
