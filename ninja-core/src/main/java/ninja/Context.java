@@ -88,6 +88,15 @@ public interface Context {
     String getRequestUri();
 
     /**
+     * Returns the hostname as seen by the server.
+     *
+     * http://example.com/index would return "example.com".
+     *
+     * @return the host name as seen by the server
+     */
+    String getHostname();
+
+    /**
      * Returns the path that Ninja should act upon.
      * 
      * For instance in servlets you could have soemthing like a context prefix.

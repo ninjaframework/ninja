@@ -326,6 +326,11 @@ public class ContextImpl implements Context.Impl {
         return httpServletRequest.getRequestURI();
     }
 
+    @Override
+    public String getHostname() {
+        return httpServletRequest.getHeader("host");
+    }
+
     public void handleAsync() {
         synchronized (asyncLock) {
             if (asyncStrategy == null) {
