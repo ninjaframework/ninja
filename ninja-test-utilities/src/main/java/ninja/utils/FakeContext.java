@@ -113,7 +113,9 @@ public class FakeContext implements Context {
     public String getHostname() {
         return hostname;
     }
-    public void setHostname(String hostname) {this.hostname = hostname;}
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
 
     public FakeContext setFlashCookie(FlashScope flashCookie) {
         this.flashScope = flashCookie;

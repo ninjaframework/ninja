@@ -32,6 +32,7 @@ contributed to Ninja. In some random order:
  * Mikko Oksa (metacity)
  * Zoran Zaric
  * Andrei Varabyeu (avarabyeu)
+ * Matt Jones (mattjonesorg)
 
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

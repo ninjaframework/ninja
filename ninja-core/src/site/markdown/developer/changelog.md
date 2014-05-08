@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-05-08 Added getHostname() method to context as a wrapper to getting the Host header.
  * 2014-05-08 Fixed issue #173. NinjaJetty was listening on two http ports.
  * 2014-04-27 Added possibility to define custom package for application
               module and routes (avarabyeu)
@@ -9,7 +10,6 @@ Version X.X.X
  * 2014-04-10 Support getInjector() on FluentLenium testcases (ra)
  * 2014-04-07 Logback is now only configured when on classpath. Allows to use
               jul logging on App Engine. (Nomi + ra)
-
 
 Version 3.1.4
 =============
