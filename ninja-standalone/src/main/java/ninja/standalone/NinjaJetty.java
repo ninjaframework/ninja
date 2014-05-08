@@ -18,19 +18,13 @@ package ninja.standalone;
 
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ninja.servlet.NinjaServletListener;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
-import ninja.utils.SwissKnife;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
@@ -124,11 +118,7 @@ public class NinjaJetty {
 
         try {
             
-            ServerConnector http = new ServerConnector(server);
-
-            server.addConnector(http);
             context = new ServletContextHandler(server, ninjaContextPath);
-
             
             NinjaPropertiesImpl ninjaProperties 
                     = new NinjaPropertiesImpl(ninjaMode);

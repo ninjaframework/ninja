@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-05-08 Fixed issue #173. NinjaJetty was listening on two http ports.
  * 2014-04-27 Added possibility to define custom package for application
               module and routes (avarabyeu)
  * 2014-04-10 "username" of SecureFilter now static final and can be referenced
