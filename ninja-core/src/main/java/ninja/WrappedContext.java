@@ -46,6 +46,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public String getHostname() {
+        return wrapped.getHostname();
+    }
+
+    @Override
     public FlashScope getFlashCookie() {
         return wrapped.getFlashCookie();
     }

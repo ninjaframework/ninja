@@ -55,6 +55,7 @@ public class FakeContext implements Context {
     /** please use the requestPath stuff */
     @Deprecated
     private String requestUri;
+    private String hostname;
     private FlashScope flashScope;
     private Session session;
     private List<Cookie> addedCookies = new ArrayList<Cookie>();
@@ -107,6 +108,12 @@ public class FakeContext implements Context {
     public String getRequestUri() {
         return requestUri;
     }
+
+    @Override
+    public String getHostname() {
+        return hostname;
+    }
+    public void setHostname(String hostname) {this.hostname = hostname;}
 
     public FakeContext setFlashCookie(FlashScope flashCookie) {
         this.flashScope = flashCookie;
