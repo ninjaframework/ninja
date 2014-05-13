@@ -239,11 +239,14 @@ your method with that annotation and guice-persist will handle all boilerplate f
 
 But <code>@UnitOfWork</code> only handles connections and does not help you with transactions.
 This is what <code>@Transactional</code> is for. <code>@Transactional</code> automatically opens and closes
-transactions around the annotated method.
+transactions around the annotated method. Make sure you are using
+<code>import com.google.inject.persist.Transactional;</code> for <code>@Transactional</code>.
 
 Saving is also straight forward:
 
 <pre class="prettyprint">
+import com.google.inject.persist.Transactional;
+
 @Transactional
 public Result postIndex(GuestbookEntry guestbookEntry) {
 
