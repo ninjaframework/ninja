@@ -42,17 +42,17 @@ a restful architecture.
 Rendering the flash error and success messages is straight forward.
 
 Please note that all variables of the flash scope are prefixed with
-"flash_".
+"flash.".
 
 A simple demo of that
 
 <pre class="prettyprint"> 
-&lt;#if flash_error??&gt;
-        &lt;p class=&quot;error&quot;&gt;${flash_error}&lt;/p&gt;
+&lt;#if (flash.error)??&gt;
+        &lt;p class=&quot;error&quot;&gt;${flash.error}&lt;/p&gt;
 &lt;/#if&gt;
 
-&lt;#if flash_success??&gt;
-        &lt;p class=&quot;success&quot;&gt;${flash_success}&lt;/p&gt;
+&lt;#if (flash.success)??&gt;
+        &lt;p class=&quot;success&quot;&gt;${flash.success}&lt;/p&gt;
 &lt;/#if&gt;
 </pre>
 
