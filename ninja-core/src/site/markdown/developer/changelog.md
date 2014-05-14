@@ -1,8 +1,9 @@
-Version X.X.X
+Version 3.1.5
 =============
 
- * 2014-05-08 Added getHostname() method to context as a wrapper to getting the Host header.
- * 2014-05-08 Fixed issue #173. NinjaJetty was listening on two http ports.
+ * 2014-05-08 Added getHostname() method to context as a wrapper to getting the 
+              Host header. (mattjonesorg)
+ * 2014-05-08 Fixed issue #173. NinjaJetty was listening on two http ports. (ra)
  * 2014-04-27 Added possibility to define custom package for application
               module and routes (avarabyeu)
  * 2014-04-10 "username" of SecureFilter now static final and can be referenced
