@@ -16,23 +16,23 @@
 
 package ninja;
 
-import java.io.OutputStream;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import ninja.utils.DateUtil;
+import ninja.utils.NoHttpBody;
 import ninja.utils.ResponseStreams;
 import ninja.utils.SwissKnife;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import java.io.IOException;
-import java.io.Writer;
-import ninja.utils.NoHttpBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class Result {
     
@@ -53,6 +53,7 @@ public class Result {
     public static int SC_307_TEMPORARY_REDIRECT = 307;
 
     public static int SC_400_BAD_REQUEST = 400;
+    public static int SC_401_UNAUTHORIZED = 401;
     public static int SC_403_FORBIDDEN = 403;
     public static int SC_404_NOT_FOUND = 404;
 
