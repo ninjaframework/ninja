@@ -34,6 +34,10 @@ Mustache templates
 Jade4Ninja (Jade) templates
 
  * https://github.com/mysu/jade4ninja
+ 
+Morphia (MongoDB) support
+
+ * https://github.com/svenkubiak/ninja-morphia
 
 
 <div class="alert alert-info">
