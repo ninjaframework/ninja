@@ -94,7 +94,14 @@ public class NinjaRunMojo extends AbstractMojo {
      * @parameter
      */
     private String contextPath;
-    
+
+    /**
+    *
+    * Port for superDev Mode
+    * @parameter
+    */
+    private String devPort;
+
     @Override
     public void execute() throws MojoExecutionException {
         
@@ -106,6 +113,13 @@ public class NinjaRunMojo extends AbstractMojo {
             
             contextPath = contextPathProperty;
         }
+
+        devPort = System.getProperty(NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT);
+
+        if(devPort == null){
+            devPort = "8080"; //default of 8080
+        }
+
         
         getLog().debug(
                 "Directory for classes is (used to start local jetty and watch for changes: " 
@@ -118,6 +132,7 @@ public class NinjaRunMojo extends AbstractMojo {
         } else {
              getLog().info("Launching Ninja SuperDevMode on root context");
         }
+        getLog().info("Ninja Will launch on the following port: " + devPort);
         getLog().info("------------------------------------------------------------------------");
         
 
@@ -161,7 +176,8 @@ public class NinjaRunMojo extends AbstractMojo {
                     directoryToWatchRecursivelyForChanges,
                     classpathItems,
                     excludesAsList, 
-                    contextPath);
+                    contextPath,
+                    devPort);
             
             nWatchAndTerminate.startWatching();
             

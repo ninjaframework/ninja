@@ -1,6 +1,8 @@
 Version 3.1.5
 =============
 
+ * 2014-05-19 Added port selection to SuperDevMode. (Naum/Buffer0verflow)
+
  * 2014-05-08 Added getHostname() method to context as a wrapper to getting the 
               Host header. (mattjonesorg)
  * 2014-05-08 Fixed issue #173. NinjaJetty was listening on two http ports. (ra)
