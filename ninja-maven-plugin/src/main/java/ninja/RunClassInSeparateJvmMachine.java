@@ -43,13 +43,13 @@ public class RunClassInSeparateJvmMachine {
     // Context path for web app.
     private String contextPath;
 
-    private String developmentPort;
+    private String port;
 
     public RunClassInSeparateJvmMachine(
             String classNameWithMainToRun,
             List<String> classpath, 
             String contextPath,
-            String developmentPort) {
+            String port) {
 
         this.classNameWithMainToRun = classNameWithMainToRun;
 
@@ -57,7 +57,7 @@ public class RunClassInSeparateJvmMachine {
         
         this.contextPath = contextPath;
 
-        this.developmentPort = developmentPort;
+        this.port = port;
 
         // initial startup
         try {
@@ -121,7 +121,7 @@ public class RunClassInSeparateJvmMachine {
         commandLine.add(systemPropertyDevMode);
 
         String portSelection
-                = "-D" + NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT + "=" + developmentPort;
+                = "-D" + NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT + "=" + port;
 
         commandLine.add(portSelection);
         
