@@ -98,3 +98,12 @@ If the option is omitted you can provide it by system property:
 <pre class="prettyprint">
 mvn ninja:run -Dninja.context=/your_context_path
 </pre>
+
+### port
+
+Allows you to set a custom port when running SuperDevMode (8080 default).
+If the option is omitted you can provide it by system property:
+
+<pre class="prettyprint">
+mvn ninja:run -Dninja.port=YourPortNumber
+</pre>
