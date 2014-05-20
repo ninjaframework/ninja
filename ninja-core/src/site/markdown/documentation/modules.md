@@ -34,6 +34,10 @@ Morphia (MongoDB) support
 
  * https://github.com/svenkubiak/ninja-morphia
 
+Quartz Scheduler support
+
+ * https://github.com/svenkubiak/ninja-quartz
+
 
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 
