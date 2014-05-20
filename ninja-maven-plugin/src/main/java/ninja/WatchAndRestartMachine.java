@@ -63,13 +63,14 @@ public class WatchAndRestartMachine {
             Path directoryToWatchRecursivelyForChanges,
             List<String> classpath,
             List<String> excludeRegexPatterns, 
-            String contextPath) throws IOException {
+            String contextPath,
+            String port) throws IOException {
 
         
         this.exludePatterns = excludeRegexPatterns;
         
         this.ninjaJettyInsideSeparateJvm = new RunClassInSeparateJvmMachine(
-                classNameWithMainToRun, classpath, contextPath);
+                classNameWithMainToRun, classpath, contextPath, port);
 
         this.restartAfterSomeTimeAndChanges 
                 = new DelayedRestartTrigger(

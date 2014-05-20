@@ -77,8 +77,7 @@ public class NinjaJetty {
     public NinjaJetty() {
         
         //some sensible defaults
-        port = 8080;
-        serverUri = URI.create("http://localhost:" + port);
+        serverUri = URI.create("http://localhost:" + DEFAULT_PORT);
         ninjaMode = NinjaMode.dev;
         ninjaServletListener = new NinjaServletListener();
     }
