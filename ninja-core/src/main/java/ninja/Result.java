@@ -42,6 +42,7 @@ public class Result {
     // HTTP Status codes (for convenience)
     // /////////////////////////////////////////////////////////////////////////
     public static int SC_200_OK = 200;
+    public static int SC_201_CREATED = 201;
     public static int SC_204_NO_CONTENT = 204;
 
     // for redirects:
