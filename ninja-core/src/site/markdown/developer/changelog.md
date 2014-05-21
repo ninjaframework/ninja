@@ -1,6 +1,7 @@
 Version 3.1.5
 =============
-
+ * 2014-05-21 Added created(Optional<String>) and unauthorized() methods to the
+              Results class. (metacity)
  * 2014-05-19 Added port selection to SuperDevMode. (Naum/Buffer0verflow)
  * 2014-05-08 Added getHostname() method to context as a wrapper to getting the 
               Host header. (mattjonesorg)
