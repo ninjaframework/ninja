@@ -1,8 +1,8 @@
 Version X.X.X
 =============
 
- * 2014-05-21 Added created(Optional<String>) and unauthorized() methods to the
-              Results class. (metacity)
+ * 2014-05-21 Added <code>created(Optional<String>)</code> and <code>unauthorized()</code> 
+              methods to the <code>Results</code> class. (metacity)
  * 2014-05-19 Added port selection to SuperDevMode. (Naum/Buffer0verflow)
 
 Version 3.1.5
