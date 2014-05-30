@@ -16,13 +16,11 @@
 
 package ninja.utils;
 
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import ninja.AsyncResult;
@@ -31,6 +29,7 @@ import ninja.Renderable;
 import ninja.Result;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
+import org.slf4j.Logger;
 
 /**
  * Handles the result
@@ -97,7 +96,7 @@ public class ResultHandler {
         try {
             renderable.render(context, result);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error while handling renderable", e);
+            logger.error("Error while handling renderable", e);
         }
     }
 

@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+ * 2014-05-30 Fixed wrong Logger in ResultHandler. Changed javax @Inject to Guice @Inject
+              to make Ninja more compatible with Weld. 
  * 2014-05-21 Added <code>created(Optional&lt;String&gt;)</code> and <code>unauthorized()</code> 
               methods to the <code>Results</code> class. (metacity)
  * 2014-05-19 Added port selection to SuperDevMode. (Naum/Buffer0verflow)
