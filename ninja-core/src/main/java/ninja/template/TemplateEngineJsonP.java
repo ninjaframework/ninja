@@ -40,8 +40,8 @@ public class TemplateEngineJsonP implements TemplateEngine {
 
     static final String DEFAULT_CALLBACK_PARAMETER_VALUE = "onResponse";
 
-    private static final Pattern CALLBACK_VALIDATION_REGEXP =
-            Pattern.compile("^[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.]?[a-zA-Z0-9\\$_]+$");
+    static final Pattern CALLBACK_VALIDATION_REGEXP =
+            Pattern.compile("^([a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.]?[a-zA-Z0-9\\$_]+){1,}$");
 
     private final ObjectMapper objectMapper;
 

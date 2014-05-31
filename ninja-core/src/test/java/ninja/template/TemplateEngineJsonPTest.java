@@ -16,11 +16,6 @@
 
 package ninja.template;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.junit.Assert.assertEquals;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,10 +25,15 @@ import ninja.Result;
 import ninja.Results;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
+
+import static org.junit.Assert.assertEquals;
 import org.junit.After;
 import org.junit.Before;
-import org.slf4j.Logger;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.slf4j.Logger;
 
 /**
  * Tests for JSONP render.
