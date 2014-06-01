@@ -40,11 +40,11 @@ public class TemplateEngineJsonPValidatorTest {
         assertFalse("period in the front, object function", TemplateEngineJsonP.isValidCallback(".MyPath.path"));
         assertFalse("period in the end, complex path", TemplateEngineJsonP.isValidCallback("MyPath.path.path2."));
         assertFalse("two subsequent periods", TemplateEngineJsonP.isValidCallback("MyPath..path.path2"));
-        assertFalse("simple array", TemplateEngineJsonP.isValidCallback("alert(document.cookie)"));
+        assertFalse("function call", TemplateEngineJsonP.isValidCallback("alert(document.cookie)"));
         
         // Cases not supported by the validator.
         assertFalse("simple array", TemplateEngineJsonP.isValidCallback("somearray[12345]"));
-        assertFalse("simple array", TemplateEngineJsonP.isValidCallback("\\u0062oo"));
-        assertFalse("simple array", TemplateEngineJsonP.isValidCallback("\\u0020"));
+        assertFalse("unicode characters", TemplateEngineJsonP.isValidCallback("\\u0062oo"));
+        assertFalse("unicode characters", TemplateEngineJsonP.isValidCallback("\\u0020"));
     }
 }
