@@ -52,7 +52,7 @@ public class TemplateEngineJsonP implements TemplateEngine {
 
     static final String DEFAULT_CALLBACK_PARAMETER_VALUE = "onResponse";
 
-    static final Pattern CALLBACK_VALIDATION_REGEXP
+    static final Pattern CALLBACK_SECURITY_VALIDATION_REGEXP
             = Pattern.compile("^([a-zA-Z$_]{1}[a-zA-Z0-9$_.]*[a-zA-Z0-9$_]{1}){1,}$");
 
     private final ObjectMapper objectMapper;
@@ -92,7 +92,7 @@ public class TemplateEngineJsonP implements TemplateEngine {
 
     private String getCallbackName(Context context) {
         String callback = context.getParameter(this.callbackParameterName, DEFAULT_CALLBACK_PARAMETER_VALUE);
-        return isValidCallback(callback) ? callback : DEFAULT_CALLBACK_PARAMETER_VALUE;
+        return isThisASecureCallbackName(callback) ? callback : DEFAULT_CALLBACK_PARAMETER_VALUE;
     }
 
     /**
@@ -103,9 +103,9 @@ public class TemplateEngineJsonP implements TemplateEngine {
      * @return Whether the given function name is a valid JSONP function
      * name/path.
      */
-    public static boolean isValidCallback(String callback) {
+    public static boolean isThisASecureCallbackName(String callback) {
         return !Strings.isNullOrEmpty(callback)
-                && CALLBACK_VALIDATION_REGEXP.matcher(callback).matches()
-                && !callback.contains("..");
+                && !callback.contains("..") 
+                && CALLBACK_SECURITY_VALIDATION_REGEXP.matcher(callback).matches();
     }
 }

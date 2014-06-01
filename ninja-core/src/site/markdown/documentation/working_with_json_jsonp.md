@@ -111,6 +111,13 @@ default) in your <code>application.conf</code> via
 ninja.jsonp.callbackParameter=... // specify your custom callback parameter name
 </pre>
 
+<div class="alert alert-info">
+The name of the callback parameter is sanitized for security reasons. Only
+plain callback parameter names are possible. Something like 
+<code>?callback=MyApp.Path.myCallback123</code> 
+works, but <code>?callback=alert(document.cookie)</code> does not work.
+</div>
+
 
 Advanced Json usage
 -------------------
