@@ -15,7 +15,6 @@
  */
 package ninja.template;
 
-import java.util.regex.Pattern;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -23,19 +22,29 @@ import org.junit.Test;
 /**
  * Test for JSONP regular expression callback.
  */
-public class TemplateEngineJsonPRegexpTest {
+public class TemplateEngineJsonPValidatorTest {
 
     @Test
     public void testRegularExpression() {
-        Pattern re = TemplateEngineJsonP.CALLBACK_VALIDATION_REGEXP;
-        assertTrue("simple function", re.matcher("onResponse").matches());
-        assertTrue("object function", re.matcher("MyPath.path").matches());
-        assertTrue("complex path", re.matcher("Ext.data.JsonP.callback4").matches());
+        assertTrue("simple function", TemplateEngineJsonP.isValidCallback("onResponse"));
+        assertTrue("object function", TemplateEngineJsonP.isValidCallback("MyPath.path"));
+        assertTrue("object function", TemplateEngineJsonP.isValidCallback("MyApp.Path.myCallback123"));
+        assertTrue("object function, path with numbers", 
+                TemplateEngineJsonP.isValidCallback("MyApp123.Path789.myCallback123"));
+        assertTrue("complex path", TemplateEngineJsonP.isValidCallback("Ext.data.JsonP.callback4"));
+        assertTrue("complex path, $ in identity.", TemplateEngineJsonP.isValidCallback("$42.ajaxHandler"));
 
-        assertFalse("period in the front, simple", re.matcher(".onResponse").matches());
-        assertFalse("period in the end, simple", re.matcher("onResponse.").matches());
-        assertFalse("period in the front, object function", re.matcher(".MyPath.path").matches());
-        assertFalse("period in the end, complex path", re.matcher("MyPath.path.path2.").matches());
-        assertFalse("two subsequent periods", re.matcher("MyPath..path.path2").matches());
+        assertFalse("wrong first character", TemplateEngineJsonP.isValidCallback("42$.q"));
+        assertFalse("period in the front, simple", TemplateEngineJsonP.isValidCallback(".onResponse"));
+        assertFalse("period in the end, simple", TemplateEngineJsonP.isValidCallback("onResponse."));
+        assertFalse("period in the front, object function", TemplateEngineJsonP.isValidCallback(".MyPath.path"));
+        assertFalse("period in the end, complex path", TemplateEngineJsonP.isValidCallback("MyPath.path.path2."));
+        assertFalse("two subsequent periods", TemplateEngineJsonP.isValidCallback("MyPath..path.path2"));
+        assertFalse("simple array", TemplateEngineJsonP.isValidCallback("alert(document.cookie)"));
+        
+        // Cases not supported by the validator.
+        assertFalse("simple array", TemplateEngineJsonP.isValidCallback("somearray[12345]"));
+        assertFalse("simple array", TemplateEngineJsonP.isValidCallback("\\u0062oo"));
+        assertFalse("simple array", TemplateEngineJsonP.isValidCallback("\\u0020"));
     }
 }
