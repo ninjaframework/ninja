@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+ * 2014-06-03 Added <code>getRemoteAddr()</code> method which returns IP of the
+              client (or last proxy) that sent the request to the context object. (Kokol)
  * 2014-06-01 Enhanced security check for callback in JsonP (nobullet).
  * 2014-05-30 Fixed wrong Logger in ResultHandler. Changed javax @Inject to Guice @Inject
               to make Ninja more compatible with Weld. 
