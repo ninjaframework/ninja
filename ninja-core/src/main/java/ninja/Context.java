@@ -97,6 +97,17 @@ public interface Context {
     String getHostname();
 
     /**
+     * Returns the Internet Protocol (IP) address of the client
+     * or last proxy that sent the request.
+     * For HTTP servlets, same as the value of the
+     * CGI variable <code>REMOTE_ADDR</code>.
+     *
+     * @return a <code>String</code> containing the
+     * IP address of the client that sent the request
+     */
+    public String getRemoteAddr();
+
+    /**
      * Returns the path that Ninja should act upon.
      * 
      * For instance in servlets you could have soemthing like a context prefix.
