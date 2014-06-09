@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-06-09 Fixed a wrong variable when logging (metacity)
  * 2014-06-01 Enhanced security check for callback in JsonP (nobullet).
  * 2014-05-30 Fixed wrong Logger in ResultHandler. Changed javax @Inject to Guice @Inject
               to make Ninja more compatible with Weld. 
