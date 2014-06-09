@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.1.6
 =============
 
  * 2014-06-09 Fixed a wrong variable when logging (metacity)
