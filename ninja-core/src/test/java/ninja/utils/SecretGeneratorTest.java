@@ -16,7 +16,6 @@
 
 package ninja.utils;
 
-import java.security.SecureRandom;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
@@ -36,13 +35,6 @@ public class SecretGeneratorTest {
         
         assertEquals("0C27oI94jXZkXyB0ID8ZPq1zinxNmrenSwItFwRXphCKOC6ZwGTFX3nYZsYKafxw",
                 SecretGenerator.generateSecret(new Random(3L)));
-        
-        assertEquals("Ac6TZUupXMSMt96dxCu0x56MvaXdckxIP6FoeBtujabkMVrnIBnDJumIoX5uS9nh", 
-                SecretGenerator.generateSecret(new SecureRandom(new byte[] {3, 5, 7, 11, 13})));
-        
-        assertEquals("gkbYww3X72rEhsffof2nJo00tFrKDk4jFYFzkOydgU0Umw4kdHgtLIuprE0rTjdq", 
-                SecretGenerator.generateSecret(new SecureRandom(new byte[] {83, 71, 113, 17, 47})));
-
     }
 
 }
