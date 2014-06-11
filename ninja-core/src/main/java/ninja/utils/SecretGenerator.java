@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 
@@ -29,7 +30,7 @@ public class SecretGenerator {
      */
     public static String generateSecret() {
         
-        return generateSecret(new Random());
+        return generateSecret(new SecureRandom());
 
     }
     
@@ -46,16 +47,16 @@ public class SecretGenerator {
         
         String charsetForSecret = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder(64);
         
         for (int i = 0; i < 64; i++) {
             
             int charToPoPickFromCharset = random.nextInt(charsetForSecret.length());            
-            stringBuffer.append(charsetForSecret.charAt(charToPoPickFromCharset));
+            stringBuilder.append(charsetForSecret.charAt(charToPoPickFromCharset));
             
         }
 
-        return stringBuffer.toString(); 
+        return stringBuilder.toString(); 
         
     }
     

@@ -35,7 +35,6 @@ public class SecretGeneratorTest {
         
         assertEquals("0C27oI94jXZkXyB0ID8ZPq1zinxNmrenSwItFwRXphCKOC6ZwGTFX3nYZsYKafxw",
                 SecretGenerator.generateSecret(new Random(3L)));
-
     }
 
 }
