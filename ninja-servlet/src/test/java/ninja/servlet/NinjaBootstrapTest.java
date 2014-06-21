@@ -16,20 +16,13 @@
 
 package ninja.servlet;
 
-import controllers.DummyControllerForTesting;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
-import ninja.Ninja;
-import ninja.NinjaDefault;
 import ninja.Route;
 import ninja.Router;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
-import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
