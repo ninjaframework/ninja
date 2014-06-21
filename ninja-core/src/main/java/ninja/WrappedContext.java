@@ -51,6 +51,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public String getRemoteAddr() {
+        return wrapped.getRemoteAddr();
+    }
+
+    @Override
     public FlashScope getFlashCookie() {
         return wrapped.getFlashCookie();
     }
