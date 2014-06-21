@@ -123,6 +123,19 @@ public class ContextImplTest {
     }
 
     @Test
+    public void testGetRemoteAddr() {
+
+        //say the httpServletRequest to return a certain value:
+        when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
+
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+
+        //make sure this is correct
+        assertEquals("mockedRemoteAddr", context.getRemoteAddr());
+    }
+
+    @Test
     public void testAddCookieViaResult() {
         Cookie cookie = Cookie.builder("cookie", "yum").setDomain("domain").build();
         context.init(httpServletRequest, httpServletResponse);
