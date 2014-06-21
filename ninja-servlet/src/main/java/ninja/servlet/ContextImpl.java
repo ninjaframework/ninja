@@ -331,6 +331,7 @@ public class ContextImpl implements Context.Impl {
         return httpServletRequest.getHeader("host");
     }
 
+    @Override
     public void handleAsync() {
         synchronized (asyncLock) {
             if (asyncStrategy == null) {

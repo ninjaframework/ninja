@@ -326,7 +326,7 @@ public class Result {
         Renderable renderable = new Renderable() {
  
             @Override
-            public void render(Context context, Result result) throws Exception {
+            public void render(Context context, Result result) {
  
                 ResponseStreams resultJsonCustom = context
                         .finalizeHeaders(result);

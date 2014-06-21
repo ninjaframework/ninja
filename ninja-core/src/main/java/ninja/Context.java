@@ -34,6 +34,10 @@ import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {
 
+    /**
+     * Impl is used to hide stuff that a user should not see on 
+     * code completion. Internal stuff like setting routes should go here.
+     */
     interface Impl extends Context {
         void setRoute(Route route);
     }

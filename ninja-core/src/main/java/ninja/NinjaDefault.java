@@ -24,35 +24,19 @@ import javax.management.RuntimeErrorException;
 import ninja.lifecycle.LifecycleService;
 
 import com.google.inject.Inject;
+import ninja.exceptions.BadRequestException;
+import ninja.exceptions.InternalServerErrorException;
 
 import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Main implementation of the ninja framework.
- * 
- * Roughly works in the following order:
- * 
- * - Gets a request
- * 
- * - Searches for a matching route
- * 
- * - Applies filters
- * 
- * - Executes matching controller
- * 
- * - Returns result
- * 
- * @author ra
- * 
- */
+
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class NinjaImpl implements Ninja {
+public class NinjaDefault implements Ninja {
     
-    private static final Logger logger = LoggerFactory.getLogger(NinjaImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(NinjaDefault.class);
 
     /**
      * The most important thing: A cool logo.
@@ -66,39 +50,19 @@ public class NinjaImpl implements Ninja {
             + "     web\\/framework   \\/                  \\/   {}\n";
     
 
-    private final LifecycleService lifecycleService;
-    private final NinjaProperties ninjaProperties;
-    private final Router router;
-    private final ResultHandler resultHandler;
-
     @Inject
-    public NinjaImpl(LifecycleService lifecycleService,
-                     NinjaProperties ninjaProperties,
-                     Router router,
-                     ResultHandler resultHandler) {
+    protected LifecycleService lifecycleService;
+    
+    @Inject
+    protected Router router;
+    
+    @Inject
+    protected ResultHandler resultHandler;
 
-        this.router = router;
-        this.ninjaProperties = ninjaProperties;
-        this.lifecycleService = lifecycleService;
-        this.resultHandler = resultHandler;
+
+    @Override
+    public void onRouteRequest(Context.Impl context) {
         
-        String ninjaVersion = readNinjaVersion();
-
-        // log Ninja splash screen
-        logger.info(NINJA_LOGO, ninjaVersion);
-      
-        logNinjaMode(logger, ninjaProperties);
-        
-    }
-
-    /**
-     * I do all the main work.
-     * 
-     * @param context
-     *            context
-     */
-    public void invoke(Context.Impl context) {
-
         String httpMethod = context.getMethod();
 
         Route route = router.getRouteFor(httpMethod, context.getRequestPath());
@@ -113,36 +77,85 @@ public class NinjaImpl implements Ninja {
 
                 resultHandler.handleResult(result, context);
                 
-            } catch (Exception e) {
+            } catch (BadRequestException badRequestException) {
                 
-                logger.error(
-                        "Emitting bad request 400. Something really wrong when calling route: {} (class: {} method: {})", 
-                        context.getRequestPath(), route.getControllerClass(), route.getControllerMethod(), e);
-            
-                 Result result = Results.html().status(Result.SC_400_BAD_REQUEST).template(
-                        NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
-                 
-                 resultHandler.handleResult(result, context);
+                onBadRequest(context, badRequestException);
+                            
+            } catch (Exception exception) {
+                
+                // Exception inlcudes InternalServerErrorException
+                onError(context, exception);
                             
             }
 
         } else {
             // throw a 404 "not found" because we did not find the route
+            onNotFound(context);
 
-            Result result = Results.html().status(Result.SC_404_NOT_FOUND).template(
-                    NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
-
-            resultHandler.handleResult(result, context);
         }
+    
+
+        
     }
+    
+    @Override
+    public void onError(Context context, Exception exception) {
+            
+        logger.error(
+                "Emitting bad request 500. Something really wrong when calling route: {} (class: {} method: {})",
+                context.getRequestPath(), 
+                context.getRoute().getControllerClass(), 
+                context.getRoute().getControllerMethod(), 
+                exception);
+
+        Result result = Results
+                .html()
+                .status(Result.SC_500_INTERNAL_SERVER_ERROR)
+                .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+
+
+        handleRenderableAndCatchAndLogExceptions(result, context);
+
+
+    }
+    
+    @Override
+    public void onNotFound(Context context) {
+            
+        Result result = Results
+                        .html()
+                        .status(Result.SC_404_NOT_FOUND)
+                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
+        
+        
+        handleRenderableAndCatchAndLogExceptions(result, context);
+
+    }
+    
+    @Override
+    public void onBadRequest(Context context, Exception exception) {
+            
+        Result result = Results
+                        .html()
+                        .status(Result.SC_400_BAD_REQUEST)
+                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
+        
+        
+        handleRenderableAndCatchAndLogExceptions(result, context);
+
+    }
+    
 
     @Override
-    public void start() {
+    public void onFrameworkStart() {
+
+        showSplashScreenViaLogger();
+                
         lifecycleService.start();
     }
 
     @Override
-    public void shutdown() {
+    public void onFrameworkShutdown() {
         lifecycleService.stop();
     }
     
@@ -152,7 +165,7 @@ public class NinjaImpl implements Ninja {
      * 
      * @return The version of Ninja. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
      */
-    public String readNinjaVersion() {
+    private final String readNinjaVersion() {
         
         // location of the properties file
         String LOCATION_OF_NINJA_BUILTIN_PROPERTIES = "ninja/ninja-builtin.properties";
@@ -178,24 +191,38 @@ public class NinjaImpl implements Ninja {
         
     }
     
-    public final void logNinjaMode(Logger logger, NinjaProperties ninjaProperties) {
+    private final void showSplashScreenViaLogger() {
         
-        if (logger.isInfoEnabled()) {
-            
-            // print out mode:
-            String mode = "";
-            if (ninjaProperties.isDev()) {
-                mode = "dev";
-            } else if (ninjaProperties.isTest()) {
-                mode = "test";
-            } else if (ninjaProperties.isProd()) {
-                mode = "prod";
-            }
+        String ninjaVersion = readNinjaVersion();
         
-            logger.info("Ninja is running in mode: {}", mode); 
+        // log Ninja splash screen
+        logger.info(NINJA_LOGO, ninjaVersion);
+        
+    }
+    
+    private void handleRenderableAndCatchAndLogExceptions(
+            Result result, Context context) {
+    
+        try {
+            resultHandler.handleResult(result, context);
+        } catch (Exception exceptionCausingRenderError) {
+            logger.error("Unable to handle result. "
+                    + "That's really realy fishy. "
+                    + "Original stack trace: {} ... "
+                    + "Stack trace causing this error: {}", 
+                    exceptionCausingRenderError);
         }
+    }
     
-    
+    // Simple tool to render an error message if request accepts only json
+    // or xml.
+    public static class MessagePojo {
+        
+        public String message;
+   
+        public MessagePojo(String message) {
+            this.message = message;
+        }
     
     }
 

@@ -80,7 +80,7 @@ public class NinjaServletDispatcher extends HttpServlet {
 
         // And invoke ninja on it.
         // Ninja handles all defined routes, filters and much more:
-        ninja.invoke(context);
+        ninja.onRouteRequest(context);
 
     }
 }

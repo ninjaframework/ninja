@@ -70,6 +70,7 @@
                 <item name="Dependency injection" href="./documentation/basic_concepts/dependency_injection.html"/>
                 <item name="Sessions" href="./documentation/basic_concepts/sessions.html"/>
                 <item name="Flash scope" href="./documentation/basic_concepts/flash_scope.html"/>
+                <item name="Error handling" href="./documentation/basic_concepts/error_handling.html"/>
             </item>
             
             <item name="Configuration and modes" href="./documentation/configuration_and_modes.html"/>
@@ -86,6 +87,7 @@
             
         </menu>    
         <menu name="Advanced topics">
+
             <item name="Validation" href="./documentation/validation.html"/>
             
             <item name="Uploading files" collapse="true" href="./documentation/uploading_files.html"/>
@@ -107,8 +109,9 @@
 
             <item name="Logging" href="./documentation/logging.html"/>
             
+            <item name="Custom routing" href="./documentation/custom_routing.html"/>
+
             <item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>
-            
 
             <item name="Testing" collapse="true" href="./documentation/testing_your_application/getting_started.html">                
                 <item name="Mocked tests" href="./documentation/testing_your_application/mocked_tests.html"/> 

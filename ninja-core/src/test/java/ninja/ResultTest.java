@@ -214,7 +214,7 @@ public class ResultTest {
         Renderable renderable = new Renderable() {
             
             @Override
-            public void render(Context context, Result result) throws Exception {
+            public void render(Context context, Result result) {
                 // do nothing
                 
             }
