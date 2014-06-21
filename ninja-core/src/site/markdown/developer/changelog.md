@@ -1,6 +1,28 @@
 Version X.X.X
 =============
 
+ * 2014-06-22 Updated libraries:
+    * ch.qos.logback:logback-classic ........................ 1.1.1 -> 1.1.2
+    * com.fasterxml.jackson.core:jackson-core ............... 2.3.1 -> 2.4.1
+    * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.3.1 -> 2.4.1
+    * com.fasterxml.jackson.module:jackson-module-afterburner ...
+    * com.google.guava:guava ................................ 16.0.1 -> 17.0
+    * com.google.inject.extensions:guice-persist .......... 3.0 -> 4.0-beta4
+    * com.h2database:h2 ................................. 1.3.175 -> 1.4.178
+    * commons-fileupload:commons-fileupload ................... 1.3 -> 1.3.1
+    * net.sf.ehcache:ehcache ................................ 2.8.0 -> 2.8.3
+    * net.spy:spymemcached ................................ 2.10.4 -> 2.11.3
+    * org.apache.commons:commons-lang3 ...................... 3.2.1 -> 3.3.2
+    * org.apache.httpcomponents:httpclient .................. 4.3.2 -> 4.3.4
+    * org.apache.httpcomponents:httpmime .................... 4.3.2 -> 4.3.4
+    * org.doctester:doctester-core .......................... 1.1.1 -> 1.1.3
+    * org.eclipse.jetty:jetty-server .... 9.1.2.v20140210 -> 9.2.1.v20140609
+    * org.eclipse.jetty:jetty-servlet ... 9.1.2.v20140210 -> 9.2.1.v20140609
+    * org.fluentlenium:fluentlenium-core ................... 0.9.2 -> 0.10.2
+    * org.hibernate:hibernate-c3p0 .............. 4.3.1.Final -> 4.3.5.Final
+    * org.hibernate:hibernate-entitymanager ..... 4.3.1.Final -> 4.3.5.Final
+    * org.slf4j:jcl-over-slf4j .............................. 1.7.6 -> 1.7.7
+    * org.slf4j:log4j-over-slf4j ............................ 1.7.6 -> 1.7.7
  * 2014-06-21 Fixed issue https://github.com/ninjaframework/ninja/issues/183. Test
               is now using date fixed to UTC at MessagesImplTest.
  * 2014-06-21 Replaced all javax.inject.Inject imports with com.google.inject.Inject.

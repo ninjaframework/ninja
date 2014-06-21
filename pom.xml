@@ -51,9 +51,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.1.2.v20140210</jetty.version>
-        <hibernate.version>4.3.1.Final</hibernate.version>
-        <jackson.version>2.3.1</jackson.version>
+        <jetty.version>9.2.1.v20140609</jetty.version>
+        <hibernate.version>4.3.5.Final</hibernate.version>
+        <jackson.version>2.4.1</jackson.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
@@ -330,13 +330,13 @@
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
-                <version>3.0</version>
+                <version>4.0-beta4</version>
             </dependency>
             
             <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-servlet</artifactId>
-                <version>3.0</version>
+                <version>4.0-beta4</version>
             </dependency>
 
             <!-- We use Jackson for rendering jsons: -->
@@ -373,7 +373,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>16.0.1</version>
+                <version>17.0</version>
             </dependency>
 
             <!-- Needed for Hex transforms (security, cookies) and more... -->
@@ -394,21 +394,21 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.1</version>
+                <version>1.1.2</version>
             </dependency>
 		
             <!-- Replace commons-logging with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.6</version>
+                <version>1.7.7</version>
             </dependency>
         
             <!-- Replace log4j with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.6</version>
+                <version>1.7.7</version>
             </dependency>
 
             <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
@@ -421,7 +421,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.2.1</version>
+                <version>3.3.2</version>
             </dependency>
 
             <dependency>
@@ -448,7 +448,7 @@
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
-                <version>1.3</version>
+                <version>1.3.1</version>
             </dependency>
 
             <!-- Bean validation and reference implementation for JSR 303 -->
@@ -469,14 +469,14 @@
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
-                <version>2.8.0</version>
+                <version>2.8.3</version>
             </dependency>
         
             <!-- memcached client -->
             <dependency>
                 <groupId>net.spy</groupId>
                 <artifactId>spymemcached</artifactId>
-                <version>2.10.4</version>
+                <version>2.11.3</version>
             </dependency>
 	
             <!-- Migration framework -->
@@ -490,7 +490,7 @@
             <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-persist</artifactId>
-                <version>3.0</version>
+                <version>4.0-beta4</version>
             </dependency>
 
             <dependency>
@@ -549,7 +549,7 @@
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>1.3.175</version>
+                <version>1.4.178</version>
             </dependency>
             
             
@@ -557,7 +557,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.3.2</version>
+                <version>4.3.4</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
@@ -569,7 +569,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
-                <version>4.3.2</version>
+                <version>4.3.4</version>
             </dependency>
         
             <!-- Testing -->
@@ -584,14 +584,14 @@
             <dependency>
                 <groupId>org.doctester</groupId>
                 <artifactId>doctester-core</artifactId>
-                <version>1.1.1</version>
+                <version>1.1.3</version>
             </dependency>
 
             <!-- A very nice abstraction for making selenum tests: -->
             <dependency>
                 <groupId>org.fluentlenium</groupId>
                 <artifactId>fluentlenium-core</artifactId>
-                <version>0.9.2</version>
+                <version>0.10.2</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
