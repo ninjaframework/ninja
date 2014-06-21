@@ -123,6 +123,13 @@ You can also format messages automatically:
 </pre>
 
 
+<div class="alert alert-info">
+If a value for a requested key is missing you'll get the key inside the rendered
+template as value. For instance <code>${i18n(&quot;my.message.key&quot;)}</code>
+will be displayed as "my.message.key" inside the template if your messages.properties
+file is missing that key.
+</div>
+
 
 Fallback messages
 -----------------

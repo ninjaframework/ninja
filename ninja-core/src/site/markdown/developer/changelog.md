@@ -1,6 +1,9 @@
 Version X.X.X
 =============
 
+* 2014-06-21 i18n Freemarker engine now displays i18n keys when
+             i18n values are missing. The behavior before was to throw an exception. 
+             Also added battery of tests. (ra)
 * 2014-06-10 Use SecureRandom instead of Random to generate the application secret. (metacity)
 
 Version 3.1.6

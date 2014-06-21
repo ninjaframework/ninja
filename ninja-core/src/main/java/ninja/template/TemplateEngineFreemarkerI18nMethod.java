@@ -30,9 +30,14 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TemplateEngineFreemarkerI18nMethod implements
         TemplateMethodModelEx {
+    
+    public final static Logger logger 
+            = LoggerFactory.getLogger(TemplateEngineFreemarkerAssetsAtMethod.class);
 
     final Messages messages;
     final Context context;
@@ -49,25 +54,18 @@ public class TemplateEngineFreemarkerI18nMethod implements
 
     public TemplateModel exec(List args) throws TemplateModelException {
 
-        if (args.size() == 0) {
+        if (args.size() == 1) {
+            
+            String messageKey = ((SimpleScalar) args.get(0)).getAsString();
 
-            throw new TemplateModelException(
-                    "Using i18n without any key is not possible.");
-
-        } else if (args.size() == 1) {
-
-            Optional<String> optionalString = messages
-                    .get(((SimpleScalar) args.get(0)).getAsString(), context,
-                            result);
-
-            if (!optionalString.isPresent()) {
-                throw new TemplateModelException(
-                        "Could not find translated message for: "
-                                + (((SimpleScalar) args.get(0)).getAsString()));
-
-            } else {
-                return new SimpleScalar(optionalString.get());
-            }
+            String messageValue = messages
+                    .get(messageKey, context, result)
+                    .or(messageKey);
+            
+            logIfMessageKeyIsMissing(messageKey, messageValue);
+            
+            return new SimpleScalar(messageValue);
+            
 
         } else if (args.size() > 1) {
 
@@ -83,26 +81,40 @@ public class TemplateEngineFreemarkerI18nMethod implements
                 }
                 
             }
+            
+            String messageKey = strings.get(0);
 
-            Optional<String> optionalString = messages.get(strings.get(0),
-                    context, result, strings.subList(1, strings.size())
-                            .toArray());
-
-            if (!optionalString.isPresent()) {
-                throw new TemplateModelException(
-                        "Could not find translated message for: "
-                                + (((SimpleScalar) args.get(0)).getAsString()));
-
-            } else {
-                return new SimpleScalar(optionalString.get());
-            }
+            String messageValue 
+                    = messages.get(
+                            messageKey,
+                            context, 
+                            result, 
+                            strings.subList(1, strings.size()).toArray())
+                    .or(messageKey);
+            
+            logIfMessageKeyIsMissing(messageKey, messageValue);
+            
+            return new SimpleScalar(messageValue);
 
         } else {
-
             throw new TemplateModelException(
-                    "Using i18n without any key is not possible.");
-
+                "Using i18n without any key is not possible.");
         }
 
+    }
+    
+    public void logIfMessageKeyIsMissing(
+            String messageKey,
+            String messageValue) {
+        
+        // If key equals value then Messages gave us back the key as value
+        // We have to tell the user...
+        if (messageKey.equals(messageValue)) {
+            logger.error(
+                "Message key {} missing. Using key as value inside template"
+                        + " - but this is most likely not what you want."
+                , messageKey);
+        }
+        
     }
 }
