@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+ * 2014-06-21 Fixed issue https://github.com/ninjaframework/ninja/issues/183. Test
+              is now using date fixed to UTC at MessagesImplTest.
  * 2014-06-21 Replaced all javax.inject.Inject imports with com.google.inject.Inject.
               That way JEE containers do not try to inject stuff into Ninja 
               applications that run with Guice anyway. (ra)
