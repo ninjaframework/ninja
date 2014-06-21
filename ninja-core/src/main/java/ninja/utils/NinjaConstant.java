@@ -38,7 +38,21 @@ public interface NinjaConstant {
     // location of the default views for errors:
     String LOCATION_VIEW_FTL_HTML_NOT_FOUND = "views/system/404notFound.ftl.html";
     String LOCATION_VIEW_FTL_HTML_BAD_REQUEST = "views/system/400badRequest.ftl.html";
+    String LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR = "views/system/500internalServerError.ftl.html";
     String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbidden.ftl.html";
+    
+    // i18n keys and default messages of Ninja
+    // create the keys in your own messages.properties file to customize the message
+    String I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY = "ninja.system.bad_request.text";
+    String I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT = "Oops. That's a bad request and all we know.";
+    
+    String I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY = "ninja.system.internal_server_error.text";
+    String I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT = "Oops. That's an internal server error and all we know.";
+    
+    String I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY = "ninja.system.not_found.text";
+    String I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT = "Oops. The requested route cannot be found.";
+    
+                   
 
     /**
      * Comma separated list in application.conf. Determines which languages are

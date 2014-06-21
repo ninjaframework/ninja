@@ -16,29 +16,55 @@
 
 package ninja;
 
-/**
- * The main entry class for the framework.
- * 
- * The context contains the context to handle.
- * 
- * 
- * @author ra
- *
- */
 public interface Ninja {
 
 	/**
-	 * Please ninja framwork - handle this context...
+	 * When a route is requested this method is called.
 	 */
-	void invoke(Context.Impl context);
+	void onRouteRequest(Context.Impl context);
+    
+    /**
+     * Should handle cases where an exception is thrown
+     * when handling a route that let to an internal server error.
+     * 
+     * Should lead to a html error 500 - internal sever error
+     * (and be used with the same mindset).
+     * 
+     * Usually used by onRouteRequest(...).
+     */
+    void onError(Context context, Exception exception);
+    
+    /**
+     * Should handle cases where the client sent strange date that
+     * led to an error.
+     * 
+     * Should lead to a html error 400 - bad request
+     * (and be used with the same mindset).
+     * 
+     * Usually used by onRouteRequest(...).
+     */
+    void onBadRequest(Context context, Exception exception);
+    
+    /**
+     * Should handle cases where no route can be found for a given request.
+     * 
+     * Should lead to a html error 404 - not found
+     * (and be used with the same mindset).
+     * 
+     * Usually used by onRouteRequest(...).
+     */
+    void onNotFound(Context context);
 
     /**
-     * Start the Ninja Framework
+     * Invoked when the framework starts. Usually inits stuff like the scheduler
+     * and so on.
      */
-    void start();
+    void onFrameworkStart();
 
     /**
-     * Stop the Ninja Framework
+     * Invoked when the server hosting Ninja is being stopped. Usually
+     * shuts down the guice injector and stopps all services.
      */
-    void shutdown();
+    void onFrameworkShutdown();
+
 }

@@ -28,29 +28,62 @@ import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+import ninja.NinjaDocTester;
+import ninja.utils.Message;
+import ninja.utils.NinjaConstant;
+import org.doctester.DocTester;
+import org.doctester.testbrowser.HttpConstants;
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 
-public class NotFoundTest extends NinjaTest {
+public class NotFoundTest extends NinjaDocTester {
 
 	@Test
-	public void testThatNotFoundWorks() {
+	public void testThatNotFoundWorksHtml() {
+        
+        Response response 
+                = makeRequest(Request.GET().url(testServerUrl().path("/_non_existing_url")));
 
-		// Some empty headers for now...
-		Map<String, String> headers = Maps.newHashMap();
-
-		// Get raw response
-		HttpResponse httpResponse = ninjaTestBrowser.makeRequestAndGetResponse(getServerAddress()
-				+ "/_non_existing_url", headers);
-
-		// make sure the status code is correct:
-		assertEquals(404, httpResponse.getStatusLine().getStatusCode());
+		assertEquals(404, response.httpStatus);
 		
-		// Now get the content in another request...
-		String content = ninjaTestBrowser.makeRequest(getServerAddress()
-				+ "/_non_existing_url", headers);
-		
-		// Check that we get a working "not found" template from views/system/404notFound.ftl.html
-		assertTrue(content
-				.contains("Oops. Not found."));
+		assertTrue(response.payload
+				.contains("The requested route cannot be found."));
+
+	}
+    
+    @Test
+	public void testThatNotFoundWorksJson() {
+        
+        Response response 
+                = makeRequest(
+                        Request
+                                .GET()
+                                .url(testServerUrl().path("/_non_existing_url"))
+                                .addHeader(HttpConstants.HEADER_ACCEPT, HttpConstants.APPLICATION_JSON));
+
+		assertEquals(404, response.httpStatus);
+        
+		Message message = response.payloadJsonAs(Message.class);
+        Assert.assertThat(message.text, CoreMatchers.equalTo(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT));
+
+	}
+    
+    @Test
+	public void testThatNotFoundWorksXml() {
+        
+        Response response 
+                = makeRequest(
+                        Request
+                                .GET()
+                                .url(testServerUrl().path("/_non_existing_url"))
+                                .addHeader(HttpConstants.HEADER_ACCEPT, HttpConstants.APPLICATION_XML));
+
+		assertEquals(404, response.httpStatus);
+
+		Message message = response.payloadXmlAs(Message.class);
+        Assert.assertThat(message.text, CoreMatchers.equalTo(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT));
 
 	}
 

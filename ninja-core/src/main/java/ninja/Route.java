@@ -80,7 +80,7 @@ public class Route {
         return uri;
     }
 
-    public Class getControllerClass() {
+    public Class<?> getControllerClass() {
         return controllerClass;
     }
 
