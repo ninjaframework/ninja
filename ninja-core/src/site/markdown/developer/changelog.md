@@ -1,6 +1,9 @@
 Version X.X.X
 =============
 
+* 2014-06-21 Replaced all javax.inject.Inject imports with com.google.inject.Inject.
+             That way JEE containers do not try to inject stuff into Ninja 
+             applications that run with Guice anyway. (ra)
 * 2014-06-21 i18n Freemarker engine now displays i18n keys when
              i18n values are missing. The behavior before was to throw an exception. 
              Also added battery of tests. (ra)

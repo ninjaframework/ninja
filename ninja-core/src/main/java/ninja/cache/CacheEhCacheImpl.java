@@ -19,7 +19,7 @@ package ninja.cache;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;

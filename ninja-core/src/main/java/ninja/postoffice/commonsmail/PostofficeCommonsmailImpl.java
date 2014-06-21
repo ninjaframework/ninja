@@ -22,7 +22,7 @@ import ninja.postoffice.guice.PostofficeConstant;
 import ninja.utils.NinjaProperties;
 import org.apache.commons.mail.MultiPartEmail;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 public class PostofficeCommonsmailImpl implements Postoffice {
 

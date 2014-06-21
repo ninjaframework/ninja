@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.ConnectionFactory;

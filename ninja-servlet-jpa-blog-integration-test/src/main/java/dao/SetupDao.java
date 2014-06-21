@@ -19,7 +19,7 @@ package dao;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 

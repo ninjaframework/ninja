@@ -16,7 +16,7 @@
 
 package ninja.jpa;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;

@@ -24,7 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
