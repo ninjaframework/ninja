@@ -44,6 +44,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import ninja.exceptions.BadRequestException;
 
 import ninja.session.FlashScope;
 import ninja.session.Session;
@@ -238,7 +239,7 @@ public class ApplicationController {
     
     public Result badRequest() {
     
-        throw new NullPointerException("Just a test to make sure 400 bad request works :)");
+        throw new BadRequestException("Just a test to make sure 400 bad request works :)");
         
     }
     

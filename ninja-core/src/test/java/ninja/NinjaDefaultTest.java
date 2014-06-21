@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 ra.
+ * Copyright (C) 2012-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package ninja;
 
+import com.google.common.base.Optional;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.InternalServerErrorException;
+import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
-import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
-import org.hibernate.classic.Lifecycle;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -52,6 +52,9 @@ public class NinjaDefaultTest {
     @Mock
     Context.Impl contextImpl;
     
+    @Mock
+    Messages messages;
+    
     Route route;
     
     @Captor
@@ -67,6 +70,7 @@ public class NinjaDefaultTest {
         ninjaDefault.lifecycleService = lifecylceService;
         ninjaDefault.resultHandler = resultHandler;
         ninjaDefault.router = router;
+        ninjaDefault.messages = messages;
         
         // Just a dummy to make logging work without
         // Null pointer exceptions.
@@ -80,7 +84,15 @@ public class NinjaDefaultTest {
         Mockito.when(contextImpl.getRequestPath()).thenReturn("requestPath");
         Mockito.when(router.getRouteFor(Matchers.eq("httpMethod"), Matchers.eq("requestPath"))).thenReturn(route);
 
-
+        // just a default answer so we don't get a nullpointer exception.
+        // can be verified later...
+        Mockito.when(
+                messages.getWithDefault(
+                        Matchers.anyString(), 
+                        Matchers.anyString(), 
+                        any(Optional.class)))
+                .thenReturn("NOT_IMPORTANT_MESSAGE");
+                
     }
     
     @Test
@@ -96,13 +108,21 @@ public class NinjaDefaultTest {
         
         verify(contextImpl).setRoute(route);
         verify(resultHandler).handleResult(result, contextImpl);
-    
+
         verify(ninjaDefault, Mockito.never()).onError(any(Context.class), any(Exception.class));
+        verify(ninjaDefault, Mockito.never()).onBadRequest(any(Context.class), any(Exception.class));
         verify(ninjaDefault, Mockito.never()).onNotFound(any(Context.class));
     }
     
     @Test
     public void testOnRouteRequestWhenException() throws Exception {
+        
+        Mockito.when(
+                messages.getWithDefault(
+                        Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY), 
+                        Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT), 
+                        any(Optional.class)))
+                .thenReturn(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT);
     
         FilterChain filterChain = Mockito.mock(FilterChain.class);
         Mockito.when(route.getFilterChain()).thenReturn(filterChain);
@@ -120,7 +140,7 @@ public class NinjaDefaultTest {
     
         @Test
     public void testOnRouteRequestWhenInternalServerErrorException() throws Exception {
-    
+
         FilterChain filterChain = Mockito.mock(FilterChain.class);
         Mockito.when(route.getFilterChain()).thenReturn(filterChain);
           
@@ -190,9 +210,40 @@ public class NinjaDefaultTest {
                 any(Context.class));
         
         assertThat(resultCaptor.getValue().getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
-        assertThat(resultCaptor.getValue().getContentType(), equalTo(Result.TEXT_HTML));
+        assertThat("we perform content-negotiation because", resultCaptor.getValue().getContentType(), equalTo(null));
         assertThat(resultCaptor.getValue().getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
 
+        verify(messages).getWithDefault(
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY), 
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT), 
+            Matchers.eq(contextImpl),
+            any(Optional.class));
+                
+    }
+    
+    @Test
+    public void testOnBadRequest() throws Exception {
+        
+        // real test:
+        ninjaDefault.onBadRequest(
+                contextImpl,
+                new BadRequestException("not important"));
+        
+        // and verify that everything is ok
+        verify(resultHandler).handleResult(
+                resultCaptor.capture(), 
+                any(Context.class));
+        
+        assertThat(resultCaptor.getValue().getStatusCode(), equalTo(Result.SC_400_BAD_REQUEST));
+        assertThat("we perform content-negotiation because", resultCaptor.getValue().getContentType(), equalTo(null));
+        assertThat(resultCaptor.getValue().getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
+
+        verify(messages).getWithDefault(
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY), 
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT), 
+            Matchers.eq(contextImpl),
+            any(Optional.class));
+                
     }
     
     @Test
@@ -205,9 +256,15 @@ public class NinjaDefaultTest {
                 any(Context.class));
         
         assertThat(resultCaptor.getValue().getStatusCode(), equalTo(Result.SC_404_NOT_FOUND));
-        assertThat(resultCaptor.getValue().getContentType(), equalTo(Result.TEXT_HTML));
+        assertThat("we perform content-negotiation because", resultCaptor.getValue().getContentType(), equalTo(null));
         assertThat(resultCaptor.getValue().getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
 
+        verify(messages).getWithDefault(
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY), 
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT), 
+            Matchers.eq(contextImpl),
+            any(Optional.class));
+                
     }
     
     @Test

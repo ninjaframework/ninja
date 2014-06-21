@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+* 2014-06-21 Support for conf.Ninja. Makes it possible for user to customize
+             request and error handling (ra).
 * 2014-06-10 Use SecureRandom instead of Random to generate the application secret. (metacity)
 
 Version 3.1.6

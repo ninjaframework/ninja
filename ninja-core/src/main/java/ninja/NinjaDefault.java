@@ -16,6 +16,7 @@
 
 package ninja;
 
+import com.google.common.base.Optional;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -25,7 +26,9 @@ import ninja.lifecycle.LifecycleService;
 
 import com.google.inject.Inject;
 import ninja.exceptions.BadRequestException;
-import ninja.exceptions.InternalServerErrorException;
+import ninja.i18n.Lang;
+import ninja.i18n.Messages;
+import ninja.utils.Message;
 
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
@@ -58,6 +61,9 @@ public class NinjaDefault implements Ninja {
     
     @Inject
     protected ResultHandler resultHandler;
+    
+    @Inject
+    Messages messages;
 
 
     @Override
@@ -107,24 +113,40 @@ public class NinjaDefault implements Ninja {
                 context.getRoute().getControllerClass(), 
                 context.getRoute().getControllerMethod(), 
                 exception);
+        
+        String messageI18n 
+                = messages.getWithDefault(
+                        NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY,
+                        NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT,
+                        context,
+                        Optional.<Result>absent());
+        
+        Message message = new Message(messageI18n);
 
         Result result = Results
-                .html()
-                .status(Result.SC_500_INTERNAL_SERVER_ERROR)
+                .internalServerError()
+                .render(message)
                 .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
 
-
         handleRenderableAndCatchAndLogExceptions(result, context);
-
 
     }
     
     @Override
     public void onNotFound(Context context) {
             
+        String messageI18n 
+                = messages.getWithDefault(
+                        NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY,
+                        NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT,
+                        context,
+                        Optional.<Result>absent());
+        
+        Message message = new Message(messageI18n); 
+        
         Result result = Results
-                        .html()
-                        .status(Result.SC_404_NOT_FOUND)
+                        .notFound()
+                        .render(message)
                         .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
         
         
@@ -134,12 +156,20 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public void onBadRequest(Context context, Exception exception) {
-            
-        Result result = Results
-                        .html()
-                        .status(Result.SC_400_BAD_REQUEST)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
         
+        String messageI18n 
+                = messages.getWithDefault(
+                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY,
+                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT,
+                        context,
+                        Optional.<Result>absent());
+        
+        Message message = new Message(messageI18n); 
+           
+        Result result = Results
+                        .badRequest()
+                        .render(message)
+                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
         
         handleRenderableAndCatchAndLogExceptions(result, context);
 
@@ -176,7 +206,7 @@ public class NinjaDefault implements Ninja {
          
         try {
 
-            Properties prop = new Properties();   
+            Properties prop = new Properties();
             InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES);
             prop.load(stream);
             
@@ -212,18 +242,6 @@ public class NinjaDefault implements Ninja {
                     + "Stack trace causing this error: {}", 
                     exceptionCausingRenderError);
         }
-    }
-    
-    // Simple tool to render an error message if request accepts only json
-    // or xml.
-    public static class MessagePojo {
-        
-        public String message;
-   
-        public MessagePojo(String message) {
-            this.message = message;
-        }
-    
     }
 
 }

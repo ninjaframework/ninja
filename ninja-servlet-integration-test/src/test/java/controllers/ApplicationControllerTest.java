@@ -280,7 +280,7 @@ public class ApplicationControllerTest extends NinjaTest {
     public void testThatBadRequestWorks() {
         String response =
                 ninjaTestBrowser.makeRequest(getServerAddress() + "/bad_request");
-        assertTrue(response.contains("internal server error."));
+        assertTrue(response.contains("bad request"));
     }
     
     @Test
