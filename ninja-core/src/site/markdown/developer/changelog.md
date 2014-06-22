@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-06-22 Improved binding between slf4j and Freemarker
  * 2014-06-22 Updated libraries:
     * ch.qos.logback:logback-classic ........................ 1.1.1 -> 1.1.2
     * com.fasterxml.jackson.core:jackson-core ............... 2.3.1 -> 2.4.1
