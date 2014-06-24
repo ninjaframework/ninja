@@ -33,6 +33,6 @@ package ninja;
  */
 public interface Renderable {
 
-    void render(Context context, Result result) throws Exception;
+    void render(Context context, Result result);
 
 }

@@ -32,9 +32,11 @@ Version X.X.X
  * 2014-06-21 i18n Freemarker engine now displays i18n keys when
               i18n values are missing. The behavior before was to throw an exception. 
               Also added battery of tests. (ra)
- * 2014-06-10 Use SecureRandom instead of Random to generate the application secret. (metacity)
  * 2014-06-03 Added <code>getRemoteAddr()</code> method which returns IP of the
               client (or last proxy) that sent the request to the context object. (Kokol)
+ * 2014-06-21 Support for conf.Ninja. Makes it possible for user to customize
+              request and error handling (ra).
+ * 2014-06-10 Use SecureRandom instead of Random to generate the application secret. (metacity)
 
 Version 3.1.6
 =============

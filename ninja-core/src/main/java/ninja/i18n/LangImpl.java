@@ -207,8 +207,9 @@ public class LangImpl implements Lang {
         if (applicationLanguages == null || applicationLanguages.length == 0) {
             
             String EXCEPTION_TEXT = 
-                    "Please define at least one language in your application.conf file. "
-                    + "For instance application.languages=en to make en your default language.";
+                    "Can not retrieve application languages from ninjaProperties."
+                    + " Did you forget to define at least one language in your application.conf file?"
+                    + " For instance 'application.languages=en' makes 'en' your default language.";
             
             throw new IllegalStateException(EXCEPTION_TEXT);
             
