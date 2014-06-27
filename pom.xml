@@ -39,7 +39,9 @@
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
         <module>ninja-servlet-integration-test</module>
+        <module>ninja-servlet-async-integration-test</module>
         <module>ninja-servlet-jpa-blog-integration-test</module>
+        <module>ninja-router-annotation</module>
         <module>ninja-maven-plugin</module>
         <!-- archetypes -->
         <module>ninja-servlet-jpa-blog-archetype</module>
@@ -336,6 +338,12 @@
             <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-servlet</artifactId>
+                <version>4.0-beta4</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-assistedinject</artifactId>
                 <version>4.0-beta4</version>
             </dependency>
 

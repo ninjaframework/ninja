@@ -336,6 +336,14 @@ public class ContextImpl implements Context.Impl {
         return httpServletRequest.getRemoteAddr();
     }
 
+    public boolean isAsync() {
+        if (asyncStrategy == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
     public void handleAsync() {
         synchronized (asyncLock) {
             if (asyncStrategy == null) {
@@ -363,6 +371,7 @@ public class ContextImpl implements Context.Impl {
     /**
      * Used to indicate that the controller has finished executing
      */
+    @Override
     public Result controllerReturned() {
         if (asyncStrategy != null) {
             return asyncStrategy.controllerReturned();

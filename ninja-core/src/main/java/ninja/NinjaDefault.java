@@ -83,20 +83,17 @@ public class NinjaDefault implements Ninja {
 
                 resultHandler.handleResult(result, context);
                 
-            } catch (BadRequestException badRequestException) {
-                
-                onBadRequest(context, badRequestException);
-                            
             } catch (Exception exception) {
                 
-                // Exception inlcudes InternalServerErrorException
-                onError(context, exception);
+                Result result = onException(context, exception);
+                renderErrorResultAndCatchAndLogExceptions(result, context);
                             
             }
 
         } else {
             // throw a 404 "not found" because we did not find the route
-            onNotFound(context);
+            Result result = getNotFoundResult(context);
+            renderErrorResultAndCatchAndLogExceptions(result, context);
 
         }
     
@@ -105,7 +102,26 @@ public class NinjaDefault implements Ninja {
     }
     
     @Override
-    public void onError(Context context, Exception exception) {
+    public Result onException(Context context, Exception exception) {
+        
+        Result result;
+        
+        if (exception instanceof BadRequestException) {
+            
+            result = getBadRequestResult(context, exception);
+        
+        } else {
+            
+            result = getInternalServerErrorResult(context, exception);
+
+        }
+        
+        return result;
+        
+    }
+    
+    @Override
+    public Result getInternalServerErrorResult(Context context, Exception exception) {
             
         logger.error(
                 "Emitting bad request 500. Something really wrong when calling route: {} (class: {} method: {})",
@@ -128,14 +144,14 @@ public class NinjaDefault implements Ninja {
                 .render(message)
                 .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
 
-        handleRenderableAndCatchAndLogExceptions(result, context);
+        return result;
 
     }
     
     @Override
-    public void onNotFound(Context context) {
+    public Result getNotFoundResult(Context context) {
             
-        String messageI18n 
+        String messageI18n
                 = messages.getWithDefault(
                         NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY,
                         NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT,
@@ -148,14 +164,13 @@ public class NinjaDefault implements Ninja {
                         .notFound()
                         .render(message)
                         .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
-        
-        
-        handleRenderableAndCatchAndLogExceptions(result, context);
+          
+        return result;
 
     }
     
     @Override
-    public void onBadRequest(Context context, Exception exception) {
+    public Result getBadRequestResult(Context context, Exception exception) {
         
         String messageI18n 
                 = messages.getWithDefault(
@@ -171,7 +186,7 @@ public class NinjaDefault implements Ninja {
                         .render(message)
                         .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
         
-        handleRenderableAndCatchAndLogExceptions(result, context);
+        return result;
 
     }
     
@@ -187,6 +202,26 @@ public class NinjaDefault implements Ninja {
     @Override
     public void onFrameworkShutdown() {
         lifecycleService.stop();
+    }
+    
+        
+    @Override
+    public void renderErrorResultAndCatchAndLogExceptions(
+            Result result, Context context) {
+    
+        try {
+            if (context.isAsync()) {
+                context.returnResultAsync(result);
+            } else {
+                resultHandler.handleResult(result, context);
+            }
+        } catch (Exception exceptionCausingRenderError) {
+            logger.error("Unable to handle result. "
+                    + "That's really realy fishy. "
+                    + "Original stack trace: {} ... "
+                    + "Stack trace causing this error: {}", 
+                    exceptionCausingRenderError);
+        }
     }
     
     /**
@@ -228,20 +263,6 @@ public class NinjaDefault implements Ninja {
         // log Ninja splash screen
         logger.info(NINJA_LOGO, ninjaVersion);
         
-    }
-    
-    private void handleRenderableAndCatchAndLogExceptions(
-            Result result, Context context) {
-    
-        try {
-            resultHandler.handleResult(result, context);
-        } catch (Exception exceptionCausingRenderError) {
-            logger.error("Unable to handle result. "
-                    + "That's really realy fishy. "
-                    + "Original stack trace: {} ... "
-                    + "Stack trace causing this error: {}", 
-                    exceptionCausingRenderError);
-        }
     }
 
 }

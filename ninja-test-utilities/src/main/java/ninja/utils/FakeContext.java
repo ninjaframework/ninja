@@ -296,6 +296,11 @@ public class FakeContext implements Context {
     }
 
     @Override
+    public boolean isAsync() {
+        throw new UnsupportedOperationException("Not supported in fake context");
+    }
+    
+    @Override
     public void handleAsync() {
         throw new UnsupportedOperationException("Not supported in fake context");
     }

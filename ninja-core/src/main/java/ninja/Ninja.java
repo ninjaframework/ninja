@@ -23,6 +23,8 @@ public interface Ninja {
 	 */
 	void onRouteRequest(Context.Impl context);
     
+    Result onException(Context context, Exception exception);
+    
     /**
      * Should handle cases where an exception is thrown
      * when handling a route that let to an internal server error.
@@ -32,7 +34,7 @@ public interface Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    void onError(Context context, Exception exception);
+    Result getInternalServerErrorResult(Context context, Exception exception);
     
     /**
      * Should handle cases where the client sent strange date that
@@ -43,7 +45,7 @@ public interface Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    void onBadRequest(Context context, Exception exception);
+    Result getBadRequestResult(Context context, Exception exception);
     
     /**
      * Should handle cases where no route can be found for a given request.
@@ -53,7 +55,7 @@ public interface Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    void onNotFound(Context context);
+    Result getNotFoundResult(Context context);
 
     /**
      * Invoked when the framework starts. Usually inits stuff like the scheduler
@@ -66,5 +68,8 @@ public interface Ninja {
      * shuts down the guice injector and stopps all services.
      */
     void onFrameworkShutdown();
+    
+    
+    void renderErrorResultAndCatchAndLogExceptions(Result result, Context context);
 
 }

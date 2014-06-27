@@ -151,6 +151,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public boolean isAsync() {
+        return wrapped.isAsync();
+    }
+    
+    @Override
     public void handleAsync() {
         wrapped.handleAsync();
     }

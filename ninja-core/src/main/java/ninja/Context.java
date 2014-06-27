@@ -410,6 +410,9 @@ public interface Context {
      */
     <T> T parseBody(Class<T> classOfT);
 
+    
+    boolean isAsync();
+        
     /**
      * Indicate that this request is going to be handled asynchronously
      */
