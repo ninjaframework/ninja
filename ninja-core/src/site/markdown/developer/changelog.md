@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.2.0
 =============
 
  * 2014-06-22 Improved binding between slf4j and Freemarker
