@@ -39,10 +39,11 @@
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
         <module>ninja-servlet-integration-test</module>
-        <module>ninja-servlet-async-integration-test</module>
         <module>ninja-servlet-jpa-blog-integration-test</module>
-        <module>ninja-router-annotation</module>
         <module>ninja-maven-plugin</module>
+        <module>ninja-annotation-router</module>
+        <module>ninja-yoda-async-machine</module>
+
         <!-- archetypes -->
         <module>ninja-servlet-jpa-blog-archetype</module>
         <module>ninja-servlet-archetype-simple</module>
