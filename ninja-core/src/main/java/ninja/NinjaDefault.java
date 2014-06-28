@@ -217,9 +217,7 @@ public class NinjaDefault implements Ninja {
             }
         } catch (Exception exceptionCausingRenderError) {
             logger.error("Unable to handle result. "
-                    + "That's really realy fishy. "
-                    + "Original stack trace: {} ... "
-                    + "Stack trace causing this error: {}", 
+                    + "That's really realy fishy. ",
                     exceptionCausingRenderError);
         }
     }
