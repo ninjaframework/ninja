@@ -21,22 +21,16 @@ public class UserDao {
     public boolean isUserAndPasswordValid(String username, String password) {
         
         if (username != null && password != null) {
-            
-            EntityManager entityManager = entityManagerProvider.get();
-            
-            Query q = entityManager.createQuery("SELECT x FROM User x WHERE username = :usernameParam");
-            User user = (User) q.setParameter("usernameParam", username).getSingleResult();   
-
-            
-            if (user != null) {
-                
+            try {
+                EntityManager entityManager = entityManagerProvider.get();
+                Query q = entityManager.createQuery("SELECT x FROM User x WHERE username = :usernameParam");
+                User user = (User) q.setParameter("usernameParam", username).getSingleResult();
                 if (user.password.equals(password)) {
-
                     return true;
                 }
-                
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-
         }
         
         return false;
