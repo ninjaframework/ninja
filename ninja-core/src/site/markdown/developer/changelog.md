@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+ * 2014-06-05 Fixed dependency problems with scope test and ninja-test-utilities (ra) 
+
+
 Version 3.2.0
 =============
 
