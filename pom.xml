@@ -42,7 +42,7 @@
         <module>ninja-servlet-jpa-blog-integration-test</module>
         <module>ninja-maven-plugin</module>
         <module>ninja-annotation-router</module>
-        <module>ninja-yoda-async-machine</module>
+        <module>ninja-async-machine</module>
 
         <!-- archetypes -->
         <module>ninja-servlet-jpa-blog-archetype</module>
