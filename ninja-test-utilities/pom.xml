@@ -25,12 +25,21 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>3.1.7-SNAPSHOT</version>
+        <version>3.2.1-SNAPSHOT</version>
     </parent>
     
     <url>http://www.ninjaframework.org</url>
 
     <dependencies>
+        
+        <!-- ninja-core is needed so that correct dependencies are on classpath.  -->
+        <!-- with ninja-standalone alone it is one level too deep and other dependencies -->
+        <!-- get higher priority. -->
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
@@ -83,6 +92,20 @@
             <groupId>com.devbliss.doctest</groupId>
             <artifactId>doctest</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>freemarker</artifactId>
+                    <groupId>org.freemarker</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>mockito-all</artifactId>
+                    <groupId>org.mockito</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>junit-dep</artifactId>
+                    <groupId>junit</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 

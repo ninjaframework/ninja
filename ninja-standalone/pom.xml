@@ -32,7 +32,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>3.1.7-SNAPSHOT</version>
+        <version>3.2.1-SNAPSHOT</version>
     </parent>
     
     <url>http://www.ninjaframework.org</url>

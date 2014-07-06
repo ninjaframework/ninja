@@ -1,6 +1,13 @@
 Version X.X.X
 =============
 
+ * 2014-06-06 Fixed testcase that was flaky in GMT-5 timezones. (ra) 
+ * 2014-06-05 Fixed dependency problems with scope test and ninja-test-utilities (ra) 
+
+
+Version 3.2.0
+=============
+
  * 2014-06-22 Improved binding between slf4j and Freemarker
  * 2014-06-22 Updated libraries:
     * ch.qos.logback:logback-classic ........................ 1.1.1 -> 1.1.2
