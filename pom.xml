@@ -41,7 +41,6 @@
         <module>ninja-servlet-integration-test</module>
         <module>ninja-servlet-async-integration-test</module>
         <module>ninja-servlet-jpa-blog-integration-test</module>
-        <module>ninja-router-annotation</module>
         <module>ninja-maven-plugin</module>
         <!-- archetypes -->
         <module>ninja-servlet-jpa-blog-archetype</module>
