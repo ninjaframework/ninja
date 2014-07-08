@@ -28,7 +28,7 @@
         <h2>Makes devs happy</h2>
         <p>
         Doesn't matter if you build <b>huge enterprise apps</b> or 
-        small <b>restful Json Apis</b>. Ninja provides everything you need to 
+        small <b>RESTful Json microservices</b>. Ninja provides everything you need to 
         get productive at once. Development, testing, deployment, refactoring and maintenance.
         </p>
     </div>
