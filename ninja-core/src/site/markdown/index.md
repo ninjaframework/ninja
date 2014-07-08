@@ -37,6 +37,45 @@
 <hr/>
 
 
+<div class="row-fluid"> 
+    <div class="span4">
+        <h2>Rock solid</h2>
+        <p><b>Ninja does not reinvent the wheel</b> - instead we are standing on the shoulders of giants.
+        Ninja is built using the <b>most mature and solid technologies in the industry</b>. 
+        Servlets, Guice, JPA, Flyway migrations and Maven - just to name a few.
+        </p>
+    </div>
+    
+
+    
+    
+   <div class="span4">
+        <h2>Scalable</h2>
+        <p>
+        Ninja uses the <b>share nothing approach</b>. Servers do not 
+        share any common session information. 
+        That means you can <b>scale Ninja horizontally with ease</b>.
+        </p>
+    </div>
+    
+    
+    
+    <div class="span4">
+
+        <h2>100% Java</h2>
+        <p>
+        You get all goodies that make Java great: <b>Excellent IDE support</b>.
+        A <b>statically typed language</b>. <b>Huge and mature eco-system</b>. 
+        <b>First class testing support</b> and much much more. Ninja is 
+        licensed under <b>Apache 2.0 Open Source license</b> 
+        - our codebase will be open forever.</p>
+    </div>  
+</div>
+
+
+<hr/>
+
+
 <div class="row-fluid">	
 
     <div class="span4">
@@ -66,43 +105,6 @@
         </p>
     </div>
     
-</div>
-
-<hr/>
-
-<div class="row-fluid"> 
-    <div class="span4">
-        <h2>Rock solid</h2>
-        <p><b>Ninja does not reinvent the wheel</b> - instead we are standing on the shoulders of giants.
-        Ninja is built using the <b>most mature and solid technologies in the industry</b>. 
-        Servlets, Guice, JPA, Flyway migrations and Maven - just to name a few.
-        </p>
-    </div>
-    
-
-    
-    
-   <div class="span4">
-        <h2>Scalable</h2>
-        <p>
-        Ninja uses the <b>share nothing approach</b>. Servers do not 
-        share any common session information. 
-        That means you can <b>scale Ninja horizontally with ease</b>.
-        </p>
-    </div>
-    
-    
-    
-    <div class="span4">
-
-        <h2>Java. 100%</h2>
-        <p>
-        You get all goodies that make Java great: <b>Excellent IDE support</b>.
-        A <b>statically typed language</b>. <b>Huge and mature eco-system</b>. 
-        <b>First class testing support</b> and much much more. Ninja is 
-        licensed under <b>Apache 2.0 Open Source license</b> 
-        - our codebase will be open forever.</p>
-    </div>  
 </div>
 
 <br/>
