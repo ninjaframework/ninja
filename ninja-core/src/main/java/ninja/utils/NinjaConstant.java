@@ -52,6 +52,9 @@ public interface NinjaConstant {
     String I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY = "ninja.system.not_found.text";
     String I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT = "Oops. The requested route cannot be found.";
     
+    String I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY = "ninja.system.forbidden.text";
+    String I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT = "Oops. That''s forbidden and all we know.";
+    
                    
 
     /**

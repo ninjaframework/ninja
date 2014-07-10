@@ -56,6 +56,16 @@ public interface Ninja {
      * Usually used by onRouteRequest(...).
      */
     Result getNotFoundResult(Context context);
+    
+    /**
+     * Should handle cases where access is forbidden
+     * 
+     * Should lead to a html error 403 - not found
+     * (and be used with the same mindset).
+     * 
+     * Usually used by SecureFilter for instance(...).
+     */
+    Result getForbiddenResult(Context context);
 
     /**
      * Invoked when the framework starts. Usually inits stuff like the scheduler
