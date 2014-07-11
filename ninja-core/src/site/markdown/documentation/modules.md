@@ -37,7 +37,7 @@ Jade4Ninja (Jade) templates
  
 Morphia (MongoDB) support
 
- * https://github.com/svenkubiak/ninja-morphia
+ * https://github.com/svenkubiak/ninja-mongodb
 
 Quartz Scheduler support
 
