@@ -170,6 +170,14 @@ public class RouterImpl implements Router {
     }
 
     @Override
+    public List<Route> getRoutes() {
+        if (routes == null) {
+            throw new IllegalStateException("Routes have not been compiled");
+        }
+        return routes;
+    }
+
+    @Override
     public RouteBuilder GET() {
 
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl().GET();
