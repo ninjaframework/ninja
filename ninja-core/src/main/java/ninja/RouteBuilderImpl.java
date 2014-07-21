@@ -175,6 +175,10 @@ class RouteBuilderImpl implements RouteBuilder {
         // Calculate filters
         LinkedList<Class<? extends Filter>> filters = new LinkedList<Class<? extends Filter>>();
         if(controller != null) {
+            if (controllerMethod == null) {
+                throw new IllegalStateException(
+                        "Route does not have a controller method");
+            }
             filters.addAll(calculateFiltersForClass(controller));
             FilterWith filterWith = controllerMethod
                     .getAnnotation(FilterWith.class);
