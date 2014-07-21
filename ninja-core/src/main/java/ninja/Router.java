@@ -101,7 +101,15 @@ public interface Router {
     public String getReverseRoute(Class<?> controllerClass,
                                  String controllerMethodName,
                                  Optional<Map<String, Object>> parameterMap);
-        
+
+
+    /**
+     * Build routes for all annotated methods in a controller.
+     *
+     * @param controllerClass
+     */
+    public void register(Class<?> controllerClass);
+
     /**
      * Compile all the routes that have been registered with the router. This
      * should be called once, during initialization, before the application
@@ -136,4 +144,45 @@ public interface Router {
      * @return the routeBuilder for chaining.
      */
     public RouteBuilder METHOD(String method);
+
+    // /////////////////////////////////////////////////////////////////////////
+    // convenience methods for reverse route generation using the specified HTTP
+    // method. This will return the first registered method in the controller
+    // that matches the HTTP method.
+    // /////////////////////////////////////////////////////////////////////////
+
+    public String getReverseGET(Class<?> controllerClass);
+
+    public String getReverseGET(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReverseGET(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReverseGET(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReversePUT(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReversePUT(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReversePUT(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReversePOST(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReversePOST(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReversePOST(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReverseDELETE(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReverseDELETE(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReverseDELETE(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Object... parameterMap);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
 }

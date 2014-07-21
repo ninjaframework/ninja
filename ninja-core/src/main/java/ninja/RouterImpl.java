@@ -17,12 +17,16 @@
 package ninja;
 
 import com.google.common.base.Optional;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ninja.Route.HttpMethod;
 import ninja.utils.NinjaProperties;
 
 import com.google.common.collect.ImmutableList;
@@ -234,6 +238,88 @@ public class RouterImpl implements Router {
         return routeBuilder;
     }
 
+    @Override
+    public void register(final Class<?> controllerClass) {
+        Map<String, Method> bindings = Maps.newHashMap();
+        try {
+            // 1. Validate specified priority.
+            // 2. Make sure only one named method is there. Otherwise we cannot really
+            //    know what to do with the parameters for named method reverse routing.
+            // 3. Ensure method return type is ninja.Result
+            for (Method method : controllerClass.getDeclaredMethods()) {
+                RouteDef def = method.getAnnotation(RouteDef.class);
+                if (def != null) {
+                    if (def.order() < 1) {
+                        String msg = String.format("Invalid priority %d specified for %s.%s()",
+                                def.order(), controllerClass.getName(), method.getName());
+                        throw new NoSuchMethodException(msg);
+                    }
+                    if (bindings.containsKey(method.getName())) {
+                        String msg = String.format("Multiple methods named '%s' in %s",
+                                method.getName(), controllerClass.getName());
+                        throw new NoSuchMethodException(msg);
+                    } else {
+                        // make sure that the return type of that controller method
+                        // is of type Result.
+                        if (method.getReturnType().isAssignableFrom(Result.class)) {
+                            bindings.put(method.getName(), method);
+                        } else {
+                            String msg = String.format("%s.%s() does not return ninja.Result",
+                                    controllerClass.getName(), method.getName());
+                            throw new NoSuchMethodException(msg);
+                        }
+                    }
+                }
+            }
+
+            if (bindings.isEmpty()) {
+                String msg = String.format("Can not find any @%s annotated methods in %s",
+                        RouteDef.class.getSimpleName(), controllerClass.getName());
+                throw new NoSuchMethodException(msg);
+            }
+
+            // group by http method & sort by order
+            List<Method> methods = new ArrayList<Method>(bindings.values());
+            Collections.sort(methods, new Comparator<Method>() {
+
+                @Override
+                public int compare(Method m1, Method m2) {
+                    RouteDef def1 = m1.getAnnotation(RouteDef.class);
+                    RouteDef def2 = m2.getAnnotation(RouteDef.class);
+                    int methodComparison = def1.method().compareTo(def2.method());
+                    if (methodComparison == 0) {
+                        if (def1.order() < def2.order()) {
+                            return -1;
+                        } else if (def1.order() > def2.order()) {
+                            return 1;
+                        }
+                        String msg = String.format("Ambiguous order for %s routes '%s.%s()' and '%s.%s()'",
+                                def1.method(),
+                                controllerClass.getName(), m1.getName(),
+                                controllerClass.getName(), m2.getName());
+                        throw new RuntimeException(msg);
+                    }
+                    return methodComparison;
+                }
+            });
+
+            // register sorted routes
+            for (Method method : methods) {
+                RouteDef def = method.getAnnotation(RouteDef.class);
+                for (String uri : def.uri()) {
+                    METHOD(def.method()).route(uri).with(controllerClass, method.getName());
+                }
+            }
+
+        } catch (SecurityException e) {
+            logger.error(
+                    "Error while checking for a valid annotated Controller", e);
+        } catch (RuntimeException|NoSuchMethodException e) {
+            logger.error("Error in route configuration!!!");
+            logger.error(e.getMessage());
+        }
+    }
+
     private Optional<Route> getRouteForControllerClassAndMethod(
             Class<?> controllerClass,
             String controllerMethodName) {
@@ -251,6 +337,27 @@ public class RouterImpl implements Router {
         }
 
         return Optional.absent();
+
+    }
+
+    private List<Route> getRoutesForControllerClassAndHttpMethod(
+            Class<?> controllerClass,
+            String httpMethod) {
+
+        List<Route> list = new ArrayList<>();
+        for (Route route : routes) {
+
+            if (route.getControllerClass() != null
+                    && route.getControllerClass().equals(controllerClass)
+                    && route.getHttpMethod().equals(httpMethod)) {
+
+                list.add(route);
+
+            }
+
+        }
+
+        return list;
 
     }
 
@@ -341,4 +448,159 @@ public class RouterImpl implements Router {
 
     }
 
+    @Override
+    public String getReverseGET(Class<?> controllerClass) {
+        Optional<Map<String, Object>> parameterMap = Optional.absent();
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseGET(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseGET(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseGET(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePUT(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.PUT, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePUT(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.PUT, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePUT(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.PUT, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePOST(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.POST, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePOST(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.POST, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePOST(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.POST, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseDELETE(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.DELETE, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseDELETE(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.DELETE, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseDELETE(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.DELETE, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass) {
+        Optional<Map<String, Object>> parameterMapOptional = Optional.absent();
+
+        return getReverseMETHOD(httpMethod, controllerClass, parameterMapOptional);
+
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Object... parameterMap) {
+
+        if (parameterMap.length % 2 != 0) {
+            logger.error("Odd parameter count! Always provide key-value pairs for reverse route generation.");
+        }
+
+        Map<String, Object> map = new HashMap<>(parameterMap.length / 2);
+        for (int i = 0; i < parameterMap.length; i += 2) {
+            map.put((String) parameterMap[i], parameterMap[i + 1]);
+        }
+
+        return getReverseMETHOD(httpMethod, controllerClass, map);
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Map<String, Object> parameterMap) {
+        Optional<Map<String, Object>> parameterMapOptional
+        = Optional.fromNullable(parameterMap);
+
+        return getReverseMETHOD(httpMethod, controllerClass, parameterMapOptional);
+
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return urlFor(httpMethod, controllerClass, parameterMap);
+    }
+
+    private String urlFor(String httpMethod, Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        if (routes == null) {
+            throw new IllegalStateException(
+                    "Attempt to get route when routes not compiled");
+        }
+
+        List<Route> routes = getRoutesForControllerClassAndHttpMethod(
+                controllerClass,
+                httpMethod);
+
+        if (!routes.isEmpty()) {
+
+            String url = null;
+            int urlQueryParameterCount = Integer.MAX_VALUE;
+
+            // identify the "best-fit" reverse route for the http method
+            // by choosing the route with the fewest query parameters
+            for (Route route : routes) {
+
+                // The original url. Something like route/user/{id}/{email}/userDashboard/{name: .*}
+                String urlWithReplacedPlaceholders
+                = replaceVariablePartsOfUrlWithValuesProvidedByUser(
+                        route.getUrl(),
+                        parameterMap);
+
+                // count the query parameters
+                int queryParameterCount = 0;
+                for (char c : urlWithReplacedPlaceholders.toCharArray()) {
+                    if ('?' == c || '&' == c) {
+                        queryParameterCount++;
+                    }
+                }
+
+                if (queryParameterCount < urlQueryParameterCount) {
+                    url = urlWithReplacedPlaceholders;
+                    urlQueryParameterCount = queryParameterCount;
+                }
+            }
+
+            // return the best-fit url
+            if (url != null) {
+                String finalUrl = addContextPathToUrlIfAvailable(
+                        url,
+                        ninjaProperties);
+
+                return finalUrl;
+            }
+
+        }
+
+        return null;
+    }
 }

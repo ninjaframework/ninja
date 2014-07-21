@@ -22,13 +22,34 @@ public class Routes implements ApplicationRoutes {
     @Override
     public void init(Router router) {
         
-        // a GET request to "index" will be handled by a class called
-        // "AppController" its method "index".
+        // a GET request to "/index" will be handled by a class called
+        // "AppController" and it's method "index".
         router.GET().route("/index").with(AppController.class, "index");
+
+        // all @RouteDef annotated controller methods will be added to the router
+        // using the annotation's attributes.
+        router.register(PersonsController.class);
 
         ...
 
     }
+}
+
+// Example controller using annotated route registration
+public class PersonsController {
+
+    @RouteDef(uri="/users/new", method=Route.POST)
+    public Result newUser() {
+    }
+
+    @RouteDef(uri="/users/{username}")
+    public Result getUser(@PathParam("username") String username) {
+    }
+
+    @RouteDef(uri="/users/{username}", method=Route.PUT)
+    public Result updateUser(@PathParam("username") String username) {
+    }
+
 }
 </pre>
 
@@ -38,13 +59,36 @@ define what happens for GET, POST, PUT, OPTIONS, HEAD and DELETE requests.
 
 And if you want to route a http method not yet supported by Ninja out of
 the box you can always use
-<code>route.METHOD("MY_CUSTOM_HTTP_METHOD").route(...)...</code>.
+<code>route.METHOD("MY_CUSTOM_HTTP_METHOD").route(...)...with(Controller.class, "method")</code>.
 
 <div class="alert alert-info">
 Routes are matched top down. If an incoming request potentially maps to
 two routes, the route defined first is executed.
 </div>
 
+### Named vs. Annotated Registration
+
+In the above two routing examples you can see that the *named* approach of naming the target
+controller method is powerful, but it requires effort to ensure that all references to the *named*
+method are correct. At runtime, Ninja will confirm that all registered routes are valid but
+unfortunately reverse routing of *named* methods does not have this same verification.
+
+The *annotated* route definitions give you the same power and flexibility of the *named* approach
+but do not have the fragile dependence on the method name.  The downside to this approach is that
+you no longer have a single-file definition of all your *uri* paths.
+
+<div class="alert alert-info">
+Unfortunately, Java reflection does not preserve the order of method declarations.  This becomes
+important when ordering the registration of multiple annotated routes that specify the same HTTP
+method (e.g. multiple GET handlers in your controller).
+
+You may control the annotated route registration order by specifying the `order` attribute.  This
+value is 1-indexed and can not be repeated for the same HTTP method within the controller (e.g. you
+can not register two GET handlers with the same *order*).
+</div>
+
+Choose the registration technique that suits your needs.  You may also mix and match both approaches
+within the same controller.
 
 With result directly
 --------------------
@@ -225,8 +269,18 @@ public void myMethod() {
         = router.getReverseRoute(ApplicationController.class, "index");
     ...
 
-}      
+    // will result into "/users/foo"
+    String fooRoute
+        = router.getReverseGET(UsersController.class, "username", "foo");
+
+}
 </pre>
+
+<div class="alert alert-info">
+The second form of the reverse route method which specifies the HTTP method, `getReverseGET`, will
+return the **best-fit** registered route that matches the HTTP method.  **Best-fit** is defined as
+a route that matches the requested HTTP method and has the fewest query parameters.
+</div>
 
 Now consider a more complex example. Say the original raw route contained placeholders on the following form:
 <code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final url, but you must
