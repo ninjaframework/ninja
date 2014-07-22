@@ -25,6 +25,7 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
@@ -80,7 +81,15 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod;
     
     private final TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
-    
+
+    private final TemplateEngineFreemarkerGETRouteMethod templateEngineFreemarkerGETRouteMethod;
+
+    private final TemplateEngineFreemarkerPOSTRouteMethod templateEngineFreemarkerPOSTRouteMethod;
+
+    private final TemplateEngineFreemarkerPUTRouteMethod templateEngineFreemarkerPUTRouteMethod;
+
+    private final TemplateEngineFreemarkerDELETERouteMethod templateEngineFreemarkerDELETERouteMethod;
+
     @Inject
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
@@ -91,6 +100,10 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                                     TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod,
                                     TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod,
                                     TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod,
+                                    TemplateEngineFreemarkerGETRouteMethod templateEngineFreemarkerGETRouteMethod,
+                                    TemplateEngineFreemarkerPOSTRouteMethod templateEngineFreemarkerPOSTRouteMethod,
+                                    TemplateEngineFreemarkerPUTRouteMethod templateEngineFreemarkerPUTRouteMethod,
+                                    TemplateEngineFreemarkerDELETERouteMethod templateEngineFreemarkerDELETERouteMethod,
                                     NinjaProperties ninjaProperties) throws Exception {
         this.messages = messages;
         this.lang = lang;
@@ -100,7 +113,11 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
-        
+        this.templateEngineFreemarkerGETRouteMethod = templateEngineFreemarkerGETRouteMethod;
+        this.templateEngineFreemarkerPOSTRouteMethod = templateEngineFreemarkerPOSTRouteMethod;
+        this.templateEngineFreemarkerPUTRouteMethod = templateEngineFreemarkerPUTRouteMethod;
+        this.templateEngineFreemarkerDELETERouteMethod = templateEngineFreemarkerDELETERouteMethod;
+
         cfg = new Configuration();
         
         // This is important to enable html escaping of apostrophes
@@ -252,6 +269,10 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("reverseRoute", templateEngineFreemarkerReverseRouteMethod);
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
+        map.put("reverseGET", templateEngineFreemarkerGETRouteMethod);
+        map.put("reversePOST", templateEngineFreemarkerPOSTRouteMethod);
+        map.put("reversePUT", templateEngineFreemarkerPUTRouteMethod);
+        map.put("reverseDELETE", templateEngineFreemarkerDELETERouteMethod);
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.
