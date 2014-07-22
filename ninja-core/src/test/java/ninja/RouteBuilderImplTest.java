@@ -312,6 +312,19 @@ public class RouteBuilderImplTest {
         assertEquals(result.getTemplate(), template);
     }
 
+    @Test
+    public void testFailedControllerRegistration() {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/failure").with(MockController.class, "DoesNotExist");
+
+        try {	
+            Route route = routeBuilder.buildRoute(injector);
+            assertTrue(route == null);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalStateException);
+        }
+    }
+
     private Route buildRoute(RouteBuilderImpl builder) {
         builder.with(MockController.class, "execute");
         return builder.buildRoute(injector);

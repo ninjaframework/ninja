@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-07-22 Throw IllegalStateException when a registered controller method does not exist (gitblit)
  * 2014-06-06 Fixed testcase that was flaky in GMT-5 timezones. (ra) 
  * 2014-06-05 Fixed dependency problems with scope test and ninja-test-utilities (ra) 
 
