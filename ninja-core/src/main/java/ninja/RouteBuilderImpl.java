@@ -22,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import ninja.Route.HttpMethod;
 import ninja.params.ControllerMethodInvoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,32 +41,32 @@ class RouteBuilderImpl implements RouteBuilder {
     private Result result;
 
     public RouteBuilderImpl GET() {
-        httpMethod = "GET";
+        httpMethod = HttpMethod.GET;
         return this;
     }
 
     public RouteBuilderImpl POST() {
-        httpMethod = "POST";
+        httpMethod = HttpMethod.POST;
         return this;
     }
 
     public RouteBuilderImpl PUT() {
-        httpMethod = "PUT";
+        httpMethod = HttpMethod.PUT;
         return this;
     }
 
     public RouteBuilderImpl DELETE() {
-        httpMethod = "DELETE";
+        httpMethod = HttpMethod.DELETE;
         return this;
     }
 
     public RouteBuilderImpl OPTIONS() {
-        httpMethod = "OPTIONS";
+        httpMethod = HttpMethod.OPTIONS;
         return this;
     }
     
     public RouteBuilderImpl HEAD() {
-        httpMethod = "HEAD";
+        httpMethod = HttpMethod.HEAD;
         return this;
     }
         

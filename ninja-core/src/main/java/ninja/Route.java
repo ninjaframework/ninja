@@ -32,6 +32,16 @@ import java.util.regex.Pattern;
  */
 public class Route {
 
+    public static class HttpMethod {
+        public final static String OPTIONS = "OPTIONS";
+        public final static String HEAD = "HEAD";
+        public final static String GET = "GET";
+        public final static String PUT = "PUT";
+        public final static String POST = "POST";
+        public final static String DELETE = "DELETE";
+    }
+
+
     //Matches: {id} AND {id: .*?}
     // group(1) extracts the name of the group (in that case "id").
     // group(3) extracts the regex if defined

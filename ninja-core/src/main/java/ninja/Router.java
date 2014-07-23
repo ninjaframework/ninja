@@ -130,4 +130,45 @@ public interface Router {
      * @return the routeBuilder for chaining.
      */
     public RouteBuilder METHOD(String method);
+
+    // /////////////////////////////////////////////////////////////////////////
+    // convenience methods for reverse route generation using the specified HTTP
+    // method. This will return the best-fit registered method in the controller
+    // that matches the HTTP method.
+    // /////////////////////////////////////////////////////////////////////////
+
+    public String getReverseGET(Class<?> controllerClass);
+
+    public String getReverseGET(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReverseGET(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReverseGET(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReversePUT(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReversePUT(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReversePUT(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReversePOST(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReversePOST(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReversePOST(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReverseDELETE(Class<?> controllerClass, Object... parameterMap);
+
+    public String getReverseDELETE(Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReverseDELETE(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Object... parameterMap);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Map<String, Object> parameterMap);
+
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Optional<Map<String, Object>> parameterMap);
+
 }

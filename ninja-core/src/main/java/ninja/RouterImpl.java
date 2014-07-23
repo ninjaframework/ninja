@@ -17,12 +17,16 @@
 package ninja;
 
 import com.google.common.base.Optional;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ninja.Route.HttpMethod;
 import ninja.utils.NinjaProperties;
 
 import com.google.common.collect.ImmutableList;
@@ -246,6 +250,27 @@ public class RouterImpl implements Router {
 
     }
 
+    private List<Route> getRoutesForControllerClassAndHttpMethod(
+            Class<?> controllerClass,
+            String httpMethod) {
+
+        List<Route> list = new ArrayList<>();
+        for (Route route : routes) {
+
+            if (route.getControllerClass() != null
+                    && route.getControllerClass().equals(controllerClass)
+                    && route.getHttpMethod().equals(httpMethod)) {
+
+                list.add(route);
+
+            }
+
+        }
+
+        return list;
+
+    }
+
     private String replaceVariablePartsOfUrlWithValuesProvidedByUser(
             String routeUrlWithVariableParts,
             Optional<Map<String, Object>> parameterMap) {
@@ -333,4 +358,159 @@ public class RouterImpl implements Router {
 
     }
 
+    @Override
+    public String getReverseGET(Class<?> controllerClass) {
+        Optional<Map<String, Object>> parameterMap = Optional.absent();
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseGET(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseGET(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseGET(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.GET, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePUT(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.PUT, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePUT(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.PUT, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePUT(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.PUT, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePOST(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.POST, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePOST(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.POST, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReversePOST(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.POST, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseDELETE(Class<?> controllerClass, Object... parameterMap) {
+        return getReverseMETHOD(HttpMethod.DELETE, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseDELETE(Class<?> controllerClass, Map<String, Object> parameterMap) {
+        return getReverseMETHOD(HttpMethod.DELETE, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseDELETE(Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return getReverseMETHOD(HttpMethod.DELETE, controllerClass, parameterMap);
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass) {
+        Optional<Map<String, Object>> parameterMapOptional = Optional.absent();
+
+        return getReverseMETHOD(httpMethod, controllerClass, parameterMapOptional);
+
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Object... parameterMap) {
+
+        if (parameterMap.length % 2 != 0) {
+            logger.error("Odd parameter count! Always provide key-value pairs for reverse route generation.");
+        }
+
+        Map<String, Object> map = new HashMap<>(parameterMap.length / 2);
+        for (int i = 0; i < parameterMap.length; i += 2) {
+            map.put((String) parameterMap[i], parameterMap[i + 1]);
+        }
+
+        return getReverseMETHOD(httpMethod, controllerClass, map);
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Map<String, Object> parameterMap) {
+        Optional<Map<String, Object>> parameterMapOptional
+        = Optional.fromNullable(parameterMap);
+
+        return getReverseMETHOD(httpMethod, controllerClass, parameterMapOptional);
+
+    }
+
+    @Override
+    public String getReverseMETHOD(String httpMethod, Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        return urlFor(httpMethod, controllerClass, parameterMap);
+    }
+
+    private String urlFor(String httpMethod, Class<?> controllerClass, Optional<Map<String, Object>> parameterMap) {
+        if (routes == null) {
+            throw new IllegalStateException(
+                    "Attempt to get route when routes not compiled");
+        }
+
+        List<Route> routes = getRoutesForControllerClassAndHttpMethod(
+                controllerClass,
+                httpMethod);
+
+        if (!routes.isEmpty()) {
+
+            String url = null;
+            int urlQueryParameterCount = Integer.MAX_VALUE;
+
+            // identify the "best-fit" reverse route for the http method
+            // by choosing the route with the fewest query parameters
+            for (Route route : routes) {
+
+                // The original url. Something like route/user/{id}/{email}/userDashboard/{name: .*}
+                String urlWithReplacedPlaceholders
+                = replaceVariablePartsOfUrlWithValuesProvidedByUser(
+                        route.getUrl(),
+                        parameterMap);
+
+                // count the query parameters
+                int queryParameterCount = 0;
+                for (char c : urlWithReplacedPlaceholders.toCharArray()) {
+                    if ('?' == c || '&' == c) {
+                        queryParameterCount++;
+                    }
+                }
+
+                if (queryParameterCount < urlQueryParameterCount) {
+                    url = urlWithReplacedPlaceholders;
+                    urlQueryParameterCount = queryParameterCount;
+                }
+            }
+
+            // return the best-fit url
+            if (url != null) {
+                String finalUrl = addContextPathToUrlIfAvailable(
+                        url,
+                        ninjaProperties);
+
+                return finalUrl;
+            }
+
+        }
+
+        return null;
+    }
 }

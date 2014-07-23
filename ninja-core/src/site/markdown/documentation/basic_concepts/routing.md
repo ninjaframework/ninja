@@ -225,8 +225,18 @@ public void myMethod() {
         = router.getReverseRoute(ApplicationController.class, "index");
     ...
 
-}      
+    // will result into "/users/foo"
+    String fooRoute
+        = router.getReverseGET(UsersController.class, "username", "foo");
+
+}
 </pre>
+
+<div class="alert alert-info">
+The second form of the reverse route method which specifies the HTTP method, `getReverseGET`, will
+return the **best-fit** registered route that matches the HTTP method.  **Best-fit** is defined as
+a route that matches the requested HTTP method and has the fewest query parameters.
+</div>
 
 Now consider a more complex example. Say the original raw route contained placeholders on the following form:
 <code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final url, but you must
