@@ -31,6 +31,7 @@ import ninja.Router;
 import ninja.cache.NinjaCache;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.metrics.Timed;
 import ninja.params.Param;
 import ninja.params.PathParam;
 import ninja.servlet.util.Request;
@@ -77,6 +78,7 @@ public class ApplicationController {
     @Inject 
     NinjaProperties ninjaProperties;
 
+    @Timed
     public Result index(@Request HttpServletRequest httpServletRequest,
                            @Response HttpServletResponse httpServletResponse,
                            Context context) {
@@ -95,11 +97,13 @@ public class ApplicationController {
 
     }
 
+    @Timed
     public Result testPage() {
         return Results.html();
 
     }
 
+    @Timed
     public Result userDashboard(@PathParam("email") String email,
                                 @PathParam("id") Integer id,
                                 Context context) {
@@ -119,6 +123,7 @@ public class ApplicationController {
         return Results.html().render(map);
     }
 
+    @Timed
     public Result validation(Validation validation,
                              @Param("email") @Required String email) {
 
@@ -130,12 +135,14 @@ public class ApplicationController {
         }
     }
 
+    @Timed
     public Result redirect(Context context) {
         // Redirects back to the main page simply call redirect
         return Results.redirect("/");
 
     }
 
+    @Timed
     public Result session(Session session) {
         // Sets the username "kevin" in the session-cookie
         session.put("username", "kevin");
@@ -144,6 +151,7 @@ public class ApplicationController {
 
     }
 
+    @Timed
     public Result flashSuccess(FlashScope flashScope, Context context) {
         
         Result result = Results.html();
@@ -157,7 +165,8 @@ public class ApplicationController {
         return result;
 
     }
-    
+
+    @Timed    
     public Result flashError(Context context, FlashScope flashScope) {
         Result result = Results.html();
         // sets a 18n flash message and adds a timestamp to make sure formatting works
@@ -169,7 +178,8 @@ public class ApplicationController {
         return result;
 
     }
-    
+
+    @Timed    
     public Result flashAny(Context context, FlashScope flashScope) {
         Result result = Results.html();
         // sets a 18n flash message and adds a timestamp to make sure formatting works
@@ -182,12 +192,14 @@ public class ApplicationController {
 
     }
 
+    @Timed
     public Result postForm(Context context, FormObject formObject) {
         // formObject is parsed into the method
         // and rendered as json
         return Results.json().render(formObject);
     }
 
+    @Timed
     public Result directObjectTemplateRendering() {
         // Uses Results.html().render(Object) to directly 
         // render an object with a Freemarker template
@@ -199,6 +211,7 @@ public class ApplicationController {
         return Results.html().render(testObject);
     }
 
+    @Timed
     public Result htmlEscaping(Context context) {
 
         // just an example of html escaping in action.
@@ -210,7 +223,7 @@ public class ApplicationController {
 
     }
     
-    
+    @Timed    
     public Result testCaching() {
         
         // Simple integration test to check if ehcache works:
@@ -233,16 +246,19 @@ public class ApplicationController {
 
     }
 
+    @Timed
     public Result testJsonP() {
         return Results.jsonp().render("object", "value");
     }
     
+    @Timed
     public Result badRequest() {
     
         throw new BadRequestException("Just a test to make sure 400 bad request works :)");
         
     }
-    
+
+    @Timed    
     public Result testReverseRouting() {
     
         return Results.html()
@@ -250,7 +266,8 @@ public class ApplicationController {
                 .render("id", "100000");
         
     }
-    
+
+    @Timed    
     public Result testGetContextPathWorks(Context context) {
     
         return Results.html()

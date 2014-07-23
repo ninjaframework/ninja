@@ -73,6 +73,7 @@
                 <item name="Sessions" href="./documentation/basic_concepts/sessions.html"/>
                 <item name="Flash scope" href="./documentation/basic_concepts/flash_scope.html"/>
                 <item name="Error handling" href="./documentation/basic_concepts/error_handling.html"/>
+                <item name="Metrics" href="./documentation/basic_concepts/metrics.html"/>
             </item>
 
             <item name="Configuration and modes" href="./documentation/configuration_and_modes.html"/>
