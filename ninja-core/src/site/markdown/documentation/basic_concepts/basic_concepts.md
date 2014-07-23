@@ -23,6 +23,8 @@ public class Routes implements ApplicationRoutes {
 
         router.GET().route("/").with(ApplicationController.class, "index");
 
+        router.register(UsersController.class);
+
     }
 }
 </pre>
@@ -56,6 +58,28 @@ Controller methods always return a <code>Result</code>.
 a little helper that lets you create results easily. 
 In the case of the application controller the result is a html response.
 
+
+Alternately, you may register your routes using annotations.
+
+<pre class="prettyprint">
+package controllers;
+
+@Singleton
+public class UsersController {       
+
+    @RouteDef("/users")
+    public Result index() {
+        return Results.html();
+
+    }
+
+    @RouteDef("/users/{username}", order=2)
+    public Result getUser(@PathParam("username") String username) {
+        return Results.html();
+
+    }
+}
+</pre>
 
 Now we got one side of the equation - 
 from Ninja to the routes to our controller. But how does Ninja generate the html

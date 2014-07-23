@@ -84,10 +84,13 @@ Implicit functions available in templates
 ### reverseRoute(...)
 
 Reverse route allows you to calculate a reverse route inside your templates.
+
+#### Named controller method reverse routing
+
 For instance via <code>${reverseRoute("controllers.ApplicationController", 
 "userDashboard", "email", email, "id", id)}</code>.
 
-First parameter is the controller name, second parameter the method name. All
+First parameter is the controller name, second parameter the *controller method name*. All
 other parameters are optional and used to replace variable parts inside the route with
 appropriate values. 
 
@@ -98,6 +101,21 @@ For a route like
 <code>router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");</code> 
 the result is: <code>/me/user/1000/my@email.com/userDashboard</code>.
 
+#### Http method reverse routing
+
+For instance via <code>${reverseGET("controllers.ApplicationController", "email", email, "id", id)}</code>.
+
+First parameter is the controller name. All other parameters are optional and used to replace variable
+parts inside the route with appropriate values. 
+
+In the example above the user rendered the variable parts
+with <code>Results.html().render("id", 1000).render("email", "my@email.com") </code>.
+
+For a route like 
+<code>router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class);</code> 
+the result is: <code>/me/user/1000/my@email.com/userDashboard</code>.
+
+**NOTE**: Http method reverse routing will return the first matching route for the controller.
 
 ### assetsAt(...)
 
