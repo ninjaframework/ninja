@@ -10,6 +10,19 @@ version and then work your way up to the top of the document.
 to latest
 ---------
 
+to 3.3.0
+--------
+
+### Vastly improved conf.Ninja
+
+Results you now generate can be customized and are usging content-negotiation.
+A json request will get a json error message. Html request will get an html
+error message. Please have a look at interface ninja.Ninja and ninja.NinjaDefault.
+They show how the improved approach works.
+
+to 3.2.0
+---------
+
 ### i18n handling in templates has changed.
 
 Let's say you used $i18n{"my.message.key"} and your messages.properties was missing a
