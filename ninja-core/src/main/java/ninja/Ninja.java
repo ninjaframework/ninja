@@ -23,6 +23,13 @@ public interface Ninja {
 	 */
 	void onRouteRequest(Context.Impl context);
     
+    /**
+     * This result should be used when an error occurs.
+     * 
+     * @param context The context for this request
+     * @param exception The exception to handle. Can be used to customize error message.
+     * @return a result you can use to render the error.
+     */
     Result onException(Context context, Exception exception);
     
     /**
@@ -56,6 +63,16 @@ public interface Ninja {
      * Usually used by onRouteRequest(...).
      */
     Result getNotFoundResult(Context context);
+    
+    /**
+     * Should handle cases where access is forbidden
+     * 
+     * Should lead to a html error 403 - not found
+     * (and be used with the same mindset).
+     * 
+     * Usually used by SecureFilter for instance(...).
+     */
+    Result getForbiddenResult(Context context);
 
     /**
      * Invoked when the framework starts. Usually inits stuff like the scheduler
@@ -69,7 +86,14 @@ public interface Ninja {
      */
     void onFrameworkShutdown();
     
-    
+    /**
+     * Should be used to render an error. Any errors should be catched
+     * and not reported in any way to the request.
+     * 
+     * For instance if your application catches a sever internal computation
+     * error use this method and its implementations to render out
+     * an error html page.
+     */
     void renderErrorResultAndCatchAndLogExceptions(Result result, Context context);
 
 }

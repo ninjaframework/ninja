@@ -61,12 +61,21 @@ has to extend <code>ninja.Ninja</code> (That's the interface from the ninja fram
 <pre class="prettyprint">
 package conf;
 
-public class Ninja implements ninja.Ninja {
+public interface Ninja {
 
-    /**
+	/**
 	 * When a route is requested this method is called.
 	 */
 	void onRouteRequest(Context.Impl context);
+    
+    /**
+     * This result should be used when an error occurs.
+     * 
+     * @param context The context for this request
+     * @param exception The exception to handle. Can be used to customize error message.
+     * @return a result you can use to render the error.
+     */
+    Result onException(Context context, Exception exception);
     
     /**
      * Should handle cases where an exception is thrown
@@ -77,7 +86,7 @@ public class Ninja implements ninja.Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    void onError(Context context, Exception exception);
+    Result getInternalServerErrorResult(Context context, Exception exception);
     
     /**
      * Should handle cases where the client sent strange date that
@@ -88,7 +97,7 @@ public class Ninja implements ninja.Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    void onBadRequest(Context context, Exception exception);
+    Result getBadRequestResult(Context context, Exception exception);
     
     /**
      * Should handle cases where no route can be found for a given request.
@@ -98,7 +107,17 @@ public class Ninja implements ninja.Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    void onNotFound(Context context);
+    Result getNotFoundResult(Context context);
+    
+    /**
+     * Should handle cases where access is forbidden
+     * 
+     * Should lead to a html error 403 - not found
+     * (and be used with the same mindset).
+     * 
+     * Usually used by SecureFilter for instance(...).
+     */
+    Result getForbiddenResult(Context context);
 
     /**
      * Invoked when the framework starts. Usually inits stuff like the scheduler
@@ -111,6 +130,16 @@ public class Ninja implements ninja.Ninja {
      * shuts down the guice injector and stopps all services.
      */
     void onFrameworkShutdown();
+    
+    /**
+     * Should be used to render an error. Any errors should be catched
+     * and not reported in any way to the request.
+     * 
+     * For instance if your application catches a sever internal computation
+     * error use this method and its implementations to render out
+     * an error html page.
+     */
+    void renderErrorResultAndCatchAndLogExceptions(Result result, Context context);
 
 }
 </pre>

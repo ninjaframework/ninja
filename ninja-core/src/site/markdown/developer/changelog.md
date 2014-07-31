@@ -1,8 +1,12 @@
 Version X.X.X
 =============
 
+ * 2014-07-31 Improved conf.Ninja - better content negotiation based error handling (ra)
+ * 2014-07-31 new ninja-async-machine-beta (darren,ra)
+ * 2014-07-31 new ninja-annotation-router-beta (darren,ra)
  * 2014-07-22 Add Router.getRoutes() accessor (gitblit)
  * 2014-07-22 Throw IllegalStateException when a registered controller method does not exist (gitblit)
+ * 2014-07-10 Added support for forbidden error to Ninja default results. (ra)
  * 2014-06-06 Fixed testcase that was flaky in GMT-5 timezones. (ra) 
  * 2014-06-05 Fixed dependency problems with scope test and ninja-test-utilities (ra) 
 

@@ -190,6 +190,27 @@ public class NinjaDefault implements Ninja {
 
     }
     
+    @Override
+    public Result getForbiddenResult(Context context) {
+        
+        String messageI18n 
+                = messages.getWithDefault(
+                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY,
+                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT,
+                        context,
+                        Optional.<Result>absent());
+        
+        Message message = new Message(messageI18n); 
+           
+        Result result = Results
+                        .forbidden()
+                        .render(message)
+                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
+        
+        return result;
+
+    }
+    
 
     @Override
     public void onFrameworkStart() {

@@ -16,6 +16,7 @@
 
 package ninja;
 
+import com.google.inject.Inject;
 import ninja.utils.NinjaConstant;
 
 /**
@@ -38,6 +39,13 @@ public class SecureFilter implements Filter {
 
     /** If a username is saved we assume the session is valid */
     public static final String USERNAME = "username";
+    
+    private final Ninja ninja;
+    
+    @Inject
+    public SecureFilter(Ninja ninja) {
+        this.ninja = ninja;
+    }
 
     @Override
     public Result filter(FilterChain chain, Context context) {
@@ -45,9 +53,9 @@ public class SecureFilter implements Filter {
         // if we got no cookies we break:
         if (context.getSession() == null
                 || context.getSession().get(USERNAME) == null) {
-
-            return Results.forbidden().html()
-                    .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
+            
+            Result result = ninja.getForbiddenResult(context);
+            return result;
 
         } else {
             return chain.next(context);
