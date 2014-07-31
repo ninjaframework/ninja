@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.3.0
 =============
 
  * 2014-07-31 Improved conf.Ninja - better content negotiation based error handling (ra)
