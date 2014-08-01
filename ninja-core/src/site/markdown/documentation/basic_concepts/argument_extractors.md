@@ -7,7 +7,7 @@ Injecting stuff into your controller - method scope
 
 Ninja can inject a lot of stuff into your methods by default. For instance 
 variable parts of routes via <code>@PathParam</code>. 
-Or query / form parameters via <code>@Param</code>.  
+Or query / form parameters via <code>@Param</code> and <code>@Params</code>.  
 
 Argument extractors allow you to use the very same mechanism 
 (annotations of method parameters) to 
@@ -16,6 +16,25 @@ inject inject arbitrary things into the method of a controller.
 This allows you to process a request, extract things 
 (like a user currently logged in), and provide this via an annotation.
 
+### Built-in Supported Types
+
+- String
+- Boolean (boolean)
+- Byte (byte)
+- Short (short)
+- Character (char)
+- Integer (int)
+- Long (long)
+- Float (float)
+- Double (double)
+- Enum *requires runtime class registration in your conf.Module*
+- Arrays of all these types (e.g. String[], int[], Enum[])
+
+**NOTE:**
+Collections and generics are not supported for parameter injection.  Types
+must be explicitly declared and basic arrays must be used to ensure runtime
+type-safety.
+ 
 
 How to write an argument extractor
 ----------------------------------

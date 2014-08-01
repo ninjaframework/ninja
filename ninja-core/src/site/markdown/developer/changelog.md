@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2014-08-01 Added type support for byte, char, short, enums, and arrays (gitblit)
+
 Version 3.3.0
 =============
 

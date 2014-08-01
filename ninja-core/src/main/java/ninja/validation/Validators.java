@@ -232,6 +232,40 @@ public class Validators {
         }
     }
 
+    public static class EnumValidator implements Validator<String> {
+        private final IsEnum isEnum;
+
+        public EnumValidator(IsEnum anEnum) {
+            isEnum = anEnum;
+        }
+
+        @Override
+        public void validate(String value, String field, Validation validation) {
+            if (value != null) {
+                Enum<?>[] values = isEnum.enumClass().getEnumConstants();
+                for (Enum<?> v : values) {
+                    if (isEnum.caseSensitive()) {
+                        if (v.name().equals(value)) {
+                            return;
+                        }
+                    } else {
+                        if (v.name().equalsIgnoreCase(value)) {
+                            return;
+                        }
+                    }
+                }
+
+                validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                        IsEnum.KEY, field, IsEnum.MESSAGE, new Object [] {value, isEnum.enumClass().getName()}));
+            }
+        }
+
+        @Override
+        public Class<String> getValidatedType() {
+            return String.class;
+        }
+    }
+
     private static String fieldKey(String fieldName, String configuredFieldKey) {
         if (configuredFieldKey.length() > 0) {
             return configuredFieldKey;
