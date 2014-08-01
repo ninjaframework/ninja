@@ -39,6 +39,7 @@ public interface NinjaConstant {
     String LOCATION_VIEW_FTL_HTML_NOT_FOUND = "views/system/404notFound.ftl.html";
     String LOCATION_VIEW_FTL_HTML_BAD_REQUEST = "views/system/400badRequest.ftl.html";
     String LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR = "views/system/500internalServerError.ftl.html";
+    String LOCATION_VIEW_FTL_HTML_UNAUTHORIZED = "views/system/401unauthorized.ftl.html";
     String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbidden.ftl.html";
     
     // i18n keys and default messages of Ninja
@@ -51,7 +52,10 @@ public interface NinjaConstant {
     
     String I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY = "ninja.system.not_found.text";
     String I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT = "Oops. The requested route cannot be found.";
-    
+
+    String I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY = "ninja.system.unauthorized.text";
+    String I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_DEFAULT = "Oops. You are unauthorized.";
+
     String I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY = "ninja.system.forbidden.text";
     String I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT = "Oops. That''s forbidden and all we know.";
     

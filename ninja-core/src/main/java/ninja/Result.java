@@ -88,6 +88,8 @@ public class Result {
     public static final String DATE = "Date";
     public static final String EXPIRES = "Expires";
 
+    public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
+
     private int statusCode;
 
     /* The object that will be rendered. Could be a Java Pojo. Or a map. Or xyz. Will be
