@@ -45,15 +45,18 @@ Getting parameters into your controllers
 A controller usually not only renders stuff, 
 but also takes some inputs and does something with them.
 
-You can get parts of the url inside your controller via two annotations:
-<code>@Param</code> and <code>@PathParam</code>. Via @PathParam you can get 
-variable parts of a route (described in more details in the routing section).
-And @Param allows you to get Query or Form parameters.
+You can get parts of the url inside your controller via three annotations:
+<code>@Param</code>, <code>@Params</code> and <code>@PathParam</code>. Via
+@PathParam you can get variable parts of a route (described in more details
+in the routing section).
+
+@Param allows you to get single-value Query or Form parameters.
+@Params allows you to get multi-value Query parameters.
 
 Let's say and the user visits the following Url...
 
 <pre class="prettyprint">
-/user/12345/my@email.com/userDashboard?debug=false
+/user/12345/my@email.com/userDashboard?debug=false&filter=new&filter=urgent
 </pre>
 
 ... and we got a route definition like that:
@@ -74,7 +77,9 @@ public class AppController {
     public Result userDashboard(
             @PathParam("id") String id, 
             @PathParam("email") String email, 
-            @Param("debug") String debug) {
+            @Param("debug") String debug,
+            @Params("filters") String [] filters,
+            @Header("user-agent") String userAgent) {
 
         //do something with the parameters...
 
@@ -109,7 +114,7 @@ public class ApplicationController {
 }
 </pre>
 
-Ninja can not only inject PathParam and Param objects. But also the Context.
+Ninja can not only inject @PathParam and @Param objects. But also the Context.
 The context is a request scoped object that holds all informations of the current
 request - parameters, headers and so on...
 
