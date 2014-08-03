@@ -56,7 +56,7 @@ in the routing section).
 Let's say and the user visits the following Url...
 
 <pre class="prettyprint">
-/user/12345/my@email.com/userDashboard?debug=false&filter=new&filter=urgent
+/user/12345/my@email.com/userDashboard?debug=false&filters=new&filters=urgent
 </pre>
 
 ... and we got a route definition like that:
