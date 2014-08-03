@@ -27,6 +27,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -132,6 +134,41 @@ public class ControllerMethodInvokerTest {
     }
 
     @Test
+    public void headerAnnotatedArgumentShouldBePassed() throws Exception {
+        when(context.getHeader("param1")).thenReturn("value");
+        create("header").invoke(mockController, context);
+        verify(mockController).header("value");
+    }
+
+    @Test
+    public void headerAnnotatedArgumentShouldHandleNull() throws Exception {
+        when(context.getHeader("param1")).thenReturn(null);
+        create("header").invoke(mockController, context);
+        verify(mockController).header(null);
+    }
+
+    @Test
+    public void headersAnnotatedArgumentShouldReturnNull() throws Exception {
+        when(context.getHeaders("param1")).thenReturn(new ArrayList<String>());
+        create("headers").invoke(mockController, context);
+        verify(mockController).headers(null);
+    }
+
+    @Test
+    public void headersAnnotatedArgumentShouldBePassed() throws Exception {
+        when(context.getHeaders("param1")).thenReturn(Arrays.asList("a", "b", "c"));
+        create("headers").invoke(mockController, context);
+        verify(mockController).headers(new String [] {"a", "b", "c"});
+    }
+
+    @Test
+    public void headersAnnotatedArgumentShouldHandleNull() throws Exception {
+        when(context.getHeader("param1")).thenReturn(null);
+        create("headers").invoke(mockController, context);
+        verify(mockController).headers(null);
+    }
+
+    @Test
     public void integerParamShouldBeParsedToInteger() throws Exception {
         when(context.getParameter("param1")).thenReturn("20");
         create("integerParam").invoke(mockController, context);
@@ -172,6 +209,122 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("intParam").invoke(mockController, context);
         verify(mockController).intParam(0);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void shortParamShouldBeParsedToShort() throws Exception {
+        when(context.getParameter("param1")).thenReturn("20");
+        create("shortParam").invoke(mockController, context);
+        verify(mockController).shortParam((short)20);
+    }
+
+    @Test
+    public void shortParamShouldHandleNull() throws Exception {
+        create("shortParam").invoke(mockController, context);
+        verify(mockController).shortParam(null);
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void shortValidationShouldWork() throws Exception {
+        when(context.getParameter("param1")).thenReturn("blah");
+        create("shortParam").invoke(mockController, context);
+        verify(mockController).shortParam(null);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void primShortParamShouldBeParsedToShort() throws Exception {
+        when(context.getParameter("param1")).thenReturn("20");
+        create("primShortParam").invoke(mockController, context);
+        verify(mockController).primShortParam((short) 20);
+    }
+
+    @Test
+    public void primShortParamShouldHandleNull() throws Exception {
+        create("primShortParam").invoke(mockController, context);
+        verify(mockController).primShortParam((short)0);
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void primShortValidationShouldWork() throws Exception {
+        when(context.getParameter("param1")).thenReturn("blah");
+        create("primShortParam").invoke(mockController, context);
+        verify(mockController).primShortParam((short)0);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void characterParamShouldBeParsedToCharacter() throws Exception {
+        when(context.getParameter("param1")).thenReturn("ABC");
+        create("characterParam").invoke(mockController, context);
+        verify(mockController).characterParam('A');
+    }
+
+    @Test
+    public void characterParamShouldHandleNull() throws Exception {
+        create("characterParam").invoke(mockController, context);
+        verify(mockController).characterParam(null);
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void charParamShouldBeParsedToCharacter() throws Exception {
+        when(context.getParameter("param1")).thenReturn("ABC");
+        create("charParam").invoke(mockController, context);
+        verify(mockController).charParam('A');
+    }
+
+    @Test
+    public void charParamShouldHandleNull() throws Exception {
+        create("charParam").invoke(mockController, context);
+        verify(mockController).charParam('\0');
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void byteParamShouldBeParsedToByte() throws Exception {
+        when(context.getParameter("param1")).thenReturn("20");
+        create("byteParam").invoke(mockController, context);
+        verify(mockController).byteParam((byte)20);
+    }
+
+    @Test
+    public void byteParamShouldHandleNull() throws Exception {
+        create("byteParam").invoke(mockController, context);
+        verify(mockController).byteParam(null);
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void byteValidationShouldWork() throws Exception {
+        when(context.getParameter("param1")).thenReturn("blah");
+        create("byteParam").invoke(mockController, context);
+        verify(mockController).byteParam(null);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void primByteParamShouldBeParsedToByte() throws Exception {
+        when(context.getParameter("param1")).thenReturn("20");
+        create("primByteParam").invoke(mockController, context);
+        verify(mockController).primByteParam((byte) 20);
+    }
+
+    @Test
+    public void primByteParamShouldHandleNull() throws Exception {
+        create("primByteParam").invoke(mockController, context);
+        verify(mockController).primByteParam((byte) 0);
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void primByteValidationShouldWork() throws Exception {
+        when(context.getParameter("param1")).thenReturn("blah");
+        create("primByteParam").invoke(mockController, context);
+        verify(mockController).primByteParam((byte) 0);
         assertTrue(validation.hasFieldViolation("param1"));
     }
 
@@ -334,6 +487,130 @@ public class ControllerMethodInvokerTest {
         create("primDoubleParam").invoke(mockController, context);
         verify(mockController).primDoubleParam(0);
         assertTrue(validation.hasFieldViolation("param1"));
+    }
+
+    @Test
+    public void enumParamShouldBeParsedToEnumCaseSensitive() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameter("param1")).thenReturn("Red");
+        create("enumParam").invoke(mockController, context);
+        verify(mockController).enumParam(Rainbow.Red);
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumParamShouldBeParsedToEnumCaseInsensitive() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class, false);
+        when(context.getParameter("param1")).thenReturn("red");
+        create("enumParam").invoke(mockController, context);
+        verify(mockController).enumParam(Rainbow.Red);
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumParamShouldHandleNull() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        create("enumParam").invoke(mockController, context);
+        verify(mockController).enumParam(null);
+        assertFalse(validation.hasViolations());
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumParamValidationShouldWork() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameter("param1")).thenReturn("blah");
+        create("enumParam").invoke(mockController, context);
+        verify(mockController).enumParam(null);
+        assertTrue(validation.hasFieldViolation("param1"));
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumParamUnregisteredShouldFail() throws Exception {
+        try {
+            when(context.getParameter("param1")).thenReturn("red");
+            create("enumParam").invoke(mockController, context);
+            assertTrue("Enum was unregistered! This should have failed.", false);
+        } catch (Exception e) {
+            assertTrue(e instanceof RoutingException);
+        }
+    }
+
+    @Test
+    public void enumCsvParamSingleShouldBeParsed() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameter("param1")).thenReturn("Red");
+        create("enumCsvParam").invoke(mockController, context);
+        verify(mockController).enumCsvParam(new Rainbow[] { Rainbow.Red });
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumCsvParamMultipleShouldBeParsed() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameter("param1")).thenReturn("Red,Orange,Yellow");
+        create("enumCsvParam").invoke(mockController, context);
+        verify(mockController).enumCsvParam(new Rainbow[] { Rainbow.Red, Rainbow.Orange, Rainbow.Yellow});
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumCsvParamShouldReturnNull() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameter("param1")).thenReturn("");
+        create("enumCsvParam").invoke(mockController, context);
+        verify(mockController).enumCsvParam(null);
+        assertFalse(validation.hasFieldViolation("param1"));
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumCsvParamValidationShouldWork() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameter("param1")).thenReturn("red,orange,yellow");
+        create("enumCsvParam").invoke(mockController, context);
+        verify(mockController).enumCsvParam(null);
+        assertTrue(validation.hasFieldViolation("param1"));
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumArrayParamSingleShouldBeParsed() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("Blue"));
+        create("enumArrayParam").invoke(mockController, context);
+        verify(mockController).enumArrayParam(new Rainbow[] { Rainbow.Blue });
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumArrayParamMultipleShouldBeParsed() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("Blue", "Indigo", "Violet"));
+        create("enumArrayParam").invoke(mockController, context);
+        verify(mockController).enumArrayParam(new Rainbow[] { Rainbow.Blue, Rainbow.Indigo, Rainbow.Violet});
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumArrayParamShouldReturnNull() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameterValues("param1")).thenReturn(new ArrayList<String>());
+        create("enumArrayParam").invoke(mockController, context);
+        verify(mockController).enumArrayParam(null);
+        assertFalse(validation.hasFieldViolation("param1"));
+        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+
+    @Test
+    public void enumArrayParamValidationShouldWork() throws Exception {
+        ParamParsers.registerEnum(Rainbow.class);
+        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("blue", "indigo", "violet"));
+        create("enumArrayParam").invoke(mockController, context);
+        verify(mockController).enumArrayParam(null);
+        assertTrue(validation.hasFieldViolation("param1"));
+        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
@@ -552,8 +829,16 @@ public class ControllerMethodInvokerTest {
         public Result pathParam(@PathParam("param1") String param1);
         public Result sessionParam(@SessionParam("param1") String param1);
         public Result attribute(@Attribute("param1") Dep param1);
+        public Result header(@Header("param1") String param1);
+        public Result headers(@Headers("param1") String [] param1);
         public Result integerParam(@Param("param1") Integer param1);
         public Result intParam(@Param("param1") int param1);
+        public Result shortParam(@Param("param1") Short param1);
+        public Result primShortParam(@Param("param1") short param1);
+        public Result characterParam(@Param("param1") Character param1);
+        public Result charParam(@Param("param1") char param1);
+        public Result byteParam(@Param("param1") Byte param1);
+        public Result primByteParam(@Param("param1") byte param1);
         public Result booleanParam(@Param("param1") Boolean param1);
         public Result primBooleanParam(@Param("param1") boolean param1);
         public Result longParam(@Param("param1") Long param1);
@@ -562,6 +847,9 @@ public class ControllerMethodInvokerTest {
         public Result primFloatParam(@Param("param1") float param1);
         public Result doubleParam(@Param("param1") Double param1);
         public Result primDoubleParam(@Param("param1") double param1);
+        public Result enumParam(@Param("param1") Rainbow param1);
+        public Result enumCsvParam(@Param("param1") Rainbow [] param1);
+        public Result enumArrayParam(@Params("param1") Rainbow [] param1);
         public Result noArgArgumentExtractor(@NoArg String param1);
         public Result classArgArgumentExtractor(@ClassArg String param1);
         public Result guiceArgumentExtractor(@GuiceAnnotation(foo = "bar") String param1);
@@ -694,4 +982,8 @@ public class ControllerMethodInvokerTest {
         public int range;
     }
 
+
+    public enum Rainbow {
+        Red, Orange, Yellow, Green, Blue, Indigo, Violet
+    }
 }

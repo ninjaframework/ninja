@@ -16,14 +16,16 @@
 
 package ninja.params;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.inject.Inject;
+import java.util.List;
+import java.util.Map;
+
 import ninja.Context;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
 
-import java.util.Map;
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
 
 /**
  * Built in argument extractors
@@ -150,6 +152,83 @@ public class ArgumentExtractors {
         @Override
         public Class<String> getExtractedType() {
             return String.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class ParamsExtractor implements ArgumentExtractor<String[]> {
+        private final String key;
+
+        public ParamsExtractor(Params param) {
+            this.key = param.value();
+        }
+
+        @Override
+        public String[] extract(Context context) {
+            List<String> values = context.getParameterValues(key);
+            if (values == null || values.isEmpty()) {
+                return null;
+            }
+            return values.toArray(new String[values.size()]);
+        }
+
+        @Override
+        public Class<String[]> getExtractedType() {
+            return String[].class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class HeaderExtractor implements ArgumentExtractor<String> {
+        private final String key;
+
+        public HeaderExtractor(Header header) {
+            this.key = header.value();
+        }
+
+        @Override
+        public String extract(Context context) {
+            return context.getHeader(key);
+        }
+
+        @Override
+        public Class<String> getExtractedType() {
+            return String.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class HeadersExtractor implements ArgumentExtractor<String[]> {
+        private final String key;
+
+        public HeadersExtractor(Headers headers) {
+            this.key = headers.value();
+        }
+
+        @Override
+        public String[] extract(Context context) {
+            List<String> values = context.getHeaders(key);
+            if (values == null || values.isEmpty()) {
+                return null;
+            }
+            return values.toArray(new String[values.size()]);
+        }
+
+        @Override
+        public Class<String[]> getExtractedType() {
+            return String[].class;
         }
 
         @Override
