@@ -21,24 +21,25 @@ import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
 
-import com.google.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import router.AnnotationRouter;
 
+import com.google.inject.Inject;
+
 public class Routes implements ApplicationRoutes {
-    
+
     /**
      * Path of the entities
      */
     public static final String CONTROLLERS_PACKAGE = "responders";
-    
-    
+
+
     Logger logger = LoggerFactory.getLogger(Routes.class);
 
     private NinjaProperties ninjaProperties;
-    
+
     @Inject
     AnnotationRouter annotationRouter;
 
@@ -59,13 +60,13 @@ public class Routes implements ApplicationRoutes {
      */
     @Override
     public void init(Router router) {
-        
-        annotationRouter.addAnnotatedRoutes(router);
+
+        annotationRouter.init(router);
 
         router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
         router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
 
     }
-    
-  
+
+
 }

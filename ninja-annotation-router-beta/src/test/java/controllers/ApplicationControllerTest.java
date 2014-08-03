@@ -17,6 +17,8 @@
 package controllers;
 
 import ninja.NinjaDocTester;
+import ninja.Result;
+
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;
@@ -29,12 +31,92 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
 
     @Test
-    public void testIndex() {
+    public void testGet() {
 
         Response response = makeRequest(
-                Request.GET().url(testServerUrl().path("/index")));
-        
-        Assert.assertThat(response.payload, CoreMatchers.equalTo("works."));
+                Request.GET().url(testServerUrl().path("/get")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("get works."));
+
+    }
+
+    @Test
+    public void testPut() {
+
+        Response response = makeRequest(
+                Request.PUT().url(testServerUrl().path("/put")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("put works."));
+
+    }
+
+    @Test
+    public void testPost() {
+
+        Response response = makeRequest(
+                Request.POST().url(testServerUrl().path("/post")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("post works."));
+
+    }
+
+    @Test
+    public void testDelete() {
+
+        Response response = makeRequest(
+                Request.DELETE().url(testServerUrl().path("/delete")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("delete works."));
+
+    }
+
+    @Test
+    public void testTestModeIndex() {
+
+        Response response = makeRequest(
+                Request.GET().url(testServerUrl().path("/mode/test")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("test mode works."));
+
+    }
+
+    @Test
+    public void testDevModeIndexMissing() {
+    	// Server runs in Test mode making pure "dev" routes unavailable
+        Response response = makeRequest(
+                Request.GET().url(testServerUrl().path("/mode/dev")));
+
+        Assert.assertThat(response.httpStatus, CoreMatchers.equalTo(Result.SC_404_NOT_FOUND));
+
+    }
+
+    @Test
+    public void testDevAndTestMode() {
+    	// Server runs in Test mode. This route is Dev & Test.
+        Response response = makeRequest(
+                Request.GET().url(testServerUrl().path("/mode/dev/and/test")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("dev and test works."));
+
+    }
+
+    @Test
+    public void testProdMode() {
+    	// Server runs in Test mode. This route is Prod.
+        Response response = makeRequest(
+                Request.GET().url(testServerUrl().path("/mode/prod")));
+
+        Assert.assertThat(response.httpStatus, CoreMatchers.equalTo(Result.SC_404_NOT_FOUND));
+
+    }
+
+    @Test
+    public void testProdAndTestMode() {
+    	// Server runs in Test mode. This route is Prod & Test.
+        Response response = makeRequest(
+                Request.GET().url(testServerUrl().path("/mode/prod/and/test")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("prod and test works."));
 
     }
 
