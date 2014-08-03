@@ -191,12 +191,36 @@ public class NinjaDefault implements Ninja {
     }
     
     @Override
+    public Result getUnauthorizedResult(Context context) {
+
+        String messageI18n
+                = messages.getWithDefault(
+                        NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY,
+                        NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_DEFAULT,
+                        context,
+                        Optional.<Result>absent());
+
+        Message message = new Message(messageI18n);
+
+        // WWW-Authenticate must be included per the spec
+        // http://www.ietf.org/rfc/rfc2617.txt 3.2.1 The WWW-Authenticate Response Header
+        Result result = Results
+                        .unauthorized()
+                        .addHeader(Result.WWW_AUTHENTICATE, "None")
+                        .render(message)
+                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED);
+
+        return result;
+
+    }
+
+    @Override
     public Result getForbiddenResult(Context context) {
         
         String messageI18n 
                 = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT,
+                        NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY,
+                        NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT,
                         context,
                         Optional.<Result>absent());
         

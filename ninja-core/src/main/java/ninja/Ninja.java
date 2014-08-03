@@ -65,9 +65,21 @@ public interface Ninja {
     Result getNotFoundResult(Context context);
     
     /**
+     * Should handle cases where access is unauthorized
+     *
+     * Should lead to a html error 401 - unauthorized
+     * (and be used with the same mindset).
+     *
+     * By default, WWW-Authenticate is set to None.
+     *
+     * Usually used by BasicAuthFilter for instance(...).
+     */
+    Result getUnauthorizedResult(Context context);
+
+    /**
      * Should handle cases where access is forbidden
-     * 
-     * Should lead to a html error 403 - not found
+     *
+     * Should lead to a html error 403 - forbidden
      * (and be used with the same mindset).
      * 
      * Usually used by SecureFilter for instance(...).
