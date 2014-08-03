@@ -3,7 +3,7 @@ Version X.X.X
 
  * 2014-08-01 Implement proper 401 unauthorized support (gitblit)
  * 2014-08-01 Add an HTTP Basic Authentication filter and a UsernamePasswordValidator interface (gitblit)
-
+ * 2014-08-01 Added type support for byte, char, short, enums, and arrays (gitblit)
 
 Version 3.3.0
 =============
