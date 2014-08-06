@@ -30,14 +30,17 @@ Jade4Ninja (Jade) templates
 
  * https://github.com/mysu/jade4ninja
  
-Morphia (MongoDB) support
+MongoDB support
 
- * https://github.com/svenkubiak/ninja-morphia
+ * https://github.com/svenkubiak/ninja-mongodb
 
 Quartz Scheduler support
 
  * https://github.com/svenkubiak/ninja-quartz
 
+Validation module
+
+ * https://github.com/svenkubiak/ninja-validation
 
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 
