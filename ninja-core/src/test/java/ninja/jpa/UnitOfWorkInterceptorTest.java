@@ -32,7 +32,7 @@ public class UnitOfWorkInterceptorTest {
     MethodInvocation methodInvocation;
     
     @Mock
-    com.google.inject.persist.UnitOfWork UnitOfWork;
+    com.google.inject.persist.UnitOfWork unitOfWork;
     
     
     @Test
@@ -41,7 +41,7 @@ public class UnitOfWorkInterceptorTest {
         // only the most outer annotation should open and close stuff...
 
         UnitOfWorkInterceptor unitOfWorkInterceptor = new UnitOfWorkInterceptor();
-        unitOfWorkInterceptor.unitOfWork = UnitOfWork;
+        unitOfWorkInterceptor.unitOfWork = unitOfWork;
         // already started...
         unitOfWorkInterceptor.didWeStartWork.set(Boolean.TRUE);
         
@@ -49,9 +49,9 @@ public class UnitOfWorkInterceptorTest {
         unitOfWorkInterceptor.invoke(methodInvocation);
         
         // no unitOfWork begin
-        Mockito.verify(UnitOfWork, Mockito.never()).begin();
+        Mockito.verify(unitOfWork, Mockito.never()).begin();
         // no unitOfWork ended
-        Mockito.verify(UnitOfWork, Mockito.never()).end();
+        Mockito.verify(unitOfWork, Mockito.never()).end();
         
         // but method has been invoked
         Mockito.verify(methodInvocation).proceed();
@@ -65,15 +65,15 @@ public class UnitOfWorkInterceptorTest {
         // only the most outer annotation should open and close stuff...
 
         UnitOfWorkInterceptor unitOfWorkInterceptor = new UnitOfWorkInterceptor();
-        unitOfWorkInterceptor.unitOfWork = UnitOfWork;
+        unitOfWorkInterceptor.unitOfWork = unitOfWork;
         
         // execute method invocation
         unitOfWorkInterceptor.invoke(methodInvocation);
         
         // no unitOfWork begin
-        Mockito.verify(UnitOfWork).begin();
+        Mockito.verify(unitOfWork).begin();
         // no unitOfWork ended
-        Mockito.verify(UnitOfWork).end();
+        Mockito.verify(unitOfWork).end();
         
         // but method has been invoked
         Mockito.verify(methodInvocation).proceed();
