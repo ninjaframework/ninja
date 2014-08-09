@@ -16,13 +16,10 @@
 
 package ninja.jpa;
 
-import javax.persistence.EntityManager;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -30,48 +27,31 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class UnitOfWorkInterceptorTest {
     
+
     @Mock
     MethodInvocation methodInvocation;
     
     @Mock
-    com.google.inject.persist.UnitOfWork unitOfWork;
+    com.google.inject.persist.UnitOfWork UnitOfWork;
     
-    @Mock
-    com.google.inject.Provider<com.google.inject.persist.UnitOfWork> unitOfWorkProvider;
-    
-    @Mock
-    EntityManager entityManager;
-        
-    @Mock
-    com.google.inject.Provider<EntityManager> entityManagerProvider;
-    
-    @Before
-    public void before() {
-    
-        Mockito.when(unitOfWorkProvider.get()).thenReturn(unitOfWork);
-        Mockito.when(entityManagerProvider.get()).thenReturn(entityManager);
-       
-    }
     
     @Test
     public void assertThatSimultaneouslyUsingAnnotationOnManyLevelsWorks() throws Throwable {
         
         // only the most outer annotation should open and close stuff...
 
-        UnitOfWorkInterceptor unitOfWorkInterceptor 
-                = new UnitOfWorkInterceptor(unitOfWorkProvider, entityManagerProvider);
-        
-        // EntityManager already started (not null) therefore we should NOT
-        // start a unitOfWork
-        Mockito.when(entityManagerProvider.get()).thenReturn(entityManager);
+        UnitOfWorkInterceptor unitOfWorkInterceptor = new UnitOfWorkInterceptor();
+        unitOfWorkInterceptor.unitOfWork = UnitOfWork;
+        // already started...
+        unitOfWorkInterceptor.didWeStartWork.set(Boolean.TRUE);
         
         // execute method invocation
         unitOfWorkInterceptor.invoke(methodInvocation);
         
         // no unitOfWork begin
-        Mockito.verify(unitOfWork, Mockito.never()).begin();
+        Mockito.verify(UnitOfWork, Mockito.never()).begin();
         // no unitOfWork ended
-        Mockito.verify(unitOfWork, Mockito.never()).end();
+        Mockito.verify(UnitOfWork, Mockito.never()).end();
         
         // but method has been invoked
         Mockito.verify(methodInvocation).proceed();
@@ -84,19 +64,16 @@ public class UnitOfWorkInterceptorTest {
         
         // only the most outer annotation should open and close stuff...
 
-        UnitOfWorkInterceptor unitOfWorkInterceptor 
-                = new UnitOfWorkInterceptor(unitOfWorkProvider, entityManagerProvider);
-        
-        // not started => unitOfWork should be started
-        Mockito.when(entityManagerProvider.get()).thenReturn(null);
+        UnitOfWorkInterceptor unitOfWorkInterceptor = new UnitOfWorkInterceptor();
+        unitOfWorkInterceptor.unitOfWork = UnitOfWork;
         
         // execute method invocation
         unitOfWorkInterceptor.invoke(methodInvocation);
         
         // no unitOfWork begin
-        Mockito.verify(unitOfWork).begin();
+        Mockito.verify(UnitOfWork).begin();
         // no unitOfWork ended
-        Mockito.verify(unitOfWork).end();
+        Mockito.verify(UnitOfWork).end();
         
         // but method has been invoked
         Mockito.verify(methodInvocation).proceed();

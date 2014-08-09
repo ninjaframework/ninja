@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-08-09 BugFix #185. Rollback of #157. UnitOfWork heabior fixed.
  * 2014-08-01 Implement proper 401 unauthorized support (gitblit)
  * 2014-08-01 Add an HTTP Basic Authentication filter and a UsernamePasswordValidator interface (gitblit)
  * 2014-08-01 Added type support for byte, char, short, enums, and arrays (gitblit)
@@ -106,7 +107,6 @@ Version 3.1.2
  * 2014-03-13 BugFix #157. @UnitOfWork did not work when nested with
               @Transactional or other @UnitOfWork annotations. (ra)
  * 2014-03-07 Now caching virtually infinite amount of template files in memory
-              as weak references (before it was a max of 250). (ra)
 
 
 Version 3.1.1
