@@ -273,7 +273,7 @@ there are no transactions started). You can wrap either a controller method or m
 your service class.
 2. For saving / updating and deleting data always use <code>@Transactional</code>. The same
 here: you can wrap either a controller method or method of your service class.
-3. For several transcations within one HTTP request or scheduler invocation:
+3. For several transactions within one HTTP request or scheduler invocation:
  * a. use <code>@UnitOfWork</code> around the controller or service method and use 
 <code>@Transactional</code> or programmatic API of the <code>EntityManager</code> to demarcate 
 transaction within the same <code>@UnitOfWork</code>
