@@ -266,9 +266,19 @@ public Result postIndex(GuestbookEntry guestbookEntry) {
 Saving really is just a call to entityManager.perist(...). It can not get much simpler. 
 But again - don't forget to annotate your method with <code>@Transactional</code>.
 
-Summing up: For read-only queries you should use <code>@UnitOfWork</code> (and it may be faster because
-there are no transactions started). But for saving / updating and deleting data
-always use <code>@Transactional</code>.
+**Summing up:** 
+
+1. For read-only queries you should use <code>@UnitOfWork</code> (and it may be faster because
+there are no transactions started). You can wrap either a controller method or method of 
+your service class.
+2. For saving / updating and deleting data always use <code>@Transactional</code>. The same
+here: you can wrap either a controller method or method of your service class.
+3. For several transcations within one HTTP request or scheduler invocation:
+ * a. use <code>@UnitOfWork</code> around the controller or service method and use 
+<code>@Transactional</code> or programmatic API of the <code>EntityManager</code> to demarcate 
+transaction within the same <code>@UnitOfWork</code>
+ * b. use <code>@Transactional</code> or programmatic API of the <code>EntityManager</code> to 
+demarcate transaction within the same request without <code>@UnitOfWork</code>
 
 
 More
@@ -276,7 +286,9 @@ More
 
 The default way to operate you persistence units is by using transaction-type=RESOURCE_LOCAL. It gives
 you a lot more control and predictability over what is happening and when stuff gets saved. Ninja
-works best in that mode.
+works best in that mode because the framework is responsible for setting up/shutting down the JPA's 
+<code>EntityManagerFactory</code> and <code>EntityManagers</code> in oppose to JTA mode where 
+transactions and <code>EntityManagers</code> are injected/managed by JEE containers.
 
 If you want to know more about JPA please refer to the official docs at: 
 http://docs.oracle.com/javaee/7/tutorial/doc/persistence-intro.htm .
