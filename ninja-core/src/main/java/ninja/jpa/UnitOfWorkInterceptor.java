@@ -17,10 +17,6 @@
 package ninja.jpa;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.persist.PersistService;
-import com.google.inject.persist.UnitOfWork;
-import javax.persistence.EntityManager;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -33,7 +29,8 @@ import org.aopalliance.intercept.MethodInvocation;
  */
 public class UnitOfWorkInterceptor implements MethodInterceptor {
 
-    final Provider<com.google.inject.persist.UnitOfWork> unitOfWorkProvider;
+    @Inject
+    com.google.inject.persist.UnitOfWork unitOfWork;
     
     // ThreadLocal<Boolean> tracks if the unit of work was begun 
     // implicitly by this thread.
@@ -47,38 +44,15 @@ public class UnitOfWorkInterceptor implements MethodInterceptor {
     // That way all begin() and end() calls are balanced
     // because we only have one unit for this thread.
     final ThreadLocal<Boolean> didWeStartWork = new ThreadLocal<>();
-    
-    final Provider<EntityManager> entityManagerProvider;
-
-    @Inject
-    public UnitOfWorkInterceptor(
-            Provider<com.google.inject.persist.UnitOfWork> unitOfWorkProvider,
-            Provider<EntityManager> entityManagerProvider) {
-        this.unitOfWorkProvider = unitOfWorkProvider;
-        this.entityManagerProvider = entityManagerProvider;
-    }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         
-        final UnitOfWork unitOfWork;
-        
-        // Only start a new unit of work if the entitymanager is empty
-        // otherwise someone else has started the unit of work already
-        // and we do nothing
-        // Please compare to com.google.inject.persist.jpa.JpaLocalTxnInterceptor
-        // we just mimick that interceptor
-        //
-        // IMPORTANT:
-        // Nesting of begin() end() of unitOfWork is NOT allowed. Contrary to
-        // the documentation of Google Guice as of March 2014.
-        // Related Ninja issue: https://github.com/ninjaframework/ninja/issues/157
-        if (entityManagerProvider.get() == null) {
-        
-            unitOfWork = unitOfWorkProvider.get();
+        if (null == didWeStartWork.get()) {
+            
             unitOfWork.begin();
             didWeStartWork.set(Boolean.TRUE);
-
+            
         } else {
             // If unit of work already started we don't do anything here...
             // another UnitOfWorkInterceptor point point will take care...

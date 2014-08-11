@@ -24,7 +24,6 @@ import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.any;
 import com.google.inject.persist.jpa.JpaPersistModule;
 import java.util.Properties;
-import javax.persistence.EntityManager;
 
 public class JpaModule extends AbstractModule {
     
@@ -72,10 +71,9 @@ public class JpaModule extends AbstractModule {
             install(new JpaPersistModule(persistenceUnitName).properties(jpaProperties));
             
             
-            UnitOfWorkInterceptor unitOfWorkInterceptor 
-                    = new UnitOfWorkInterceptor(
-                            getProvider(com.google.inject.persist.UnitOfWork.class),
-                            getProvider(EntityManager.class));
+            UnitOfWorkInterceptor unitOfWorkInterceptor = new UnitOfWorkInterceptor();
+        
+            requestInjection(unitOfWorkInterceptor);
 
             // class-level @UnitOfWork
             bindInterceptor(

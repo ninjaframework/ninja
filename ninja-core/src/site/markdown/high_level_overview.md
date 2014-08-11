@@ -18,7 +18,7 @@ Build and development support
 
 Frontend
 --------
-- Html rendering (Freemaker)
+- Html rendering (Freemarker)
 - Json rendering / parsing (Jackson)
 - Xml rendering / parsing (Jackson)
 
