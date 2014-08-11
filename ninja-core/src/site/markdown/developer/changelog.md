@@ -1,4 +1,4 @@
-Version X.X.X
+Version 3.3.1
 =============
 
  * 2014-08-09 BugFix #185. Rollback of #157. UnitOfWork behavior fixed. (nobullet, cpisto, ra).
