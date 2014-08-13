@@ -20,3 +20,12 @@ project.
 And if you make a left click on your project you get the option "Debug as...". Hit that and generate a profile
 that debugs the goal jetty:run. That's all. Now eclipse starts your application and you can cleanly debug
 all stuff that is going on
+
+Debugging via Netbeans
+----------------------
+1. Right click your Project and open "Project"
+2. Click on "Action" on the left.
+3. Choose "Debug project"
+4. Enter "jetty:run" into the "Execute Goals" input field
+5. Enter "jpda.listen=maven" into the "Set Properties" field
+6. Click the "OK"-Button and start a Debug-Session with Ctrl+F5 or the Debug-Button
