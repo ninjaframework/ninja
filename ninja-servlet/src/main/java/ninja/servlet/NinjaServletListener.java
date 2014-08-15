@@ -82,15 +82,15 @@ public class NinjaServletListener extends GuiceServletContextListener {
         
         // fetch instance variable into method, so that we access the volatile
         // global variable only once - that's better performance wise.
-        NinjaBootstrap ninjaBootstapLocal = ninjaBootstrap;
+        NinjaBootstrap ninjaBootstrapLocal = ninjaBootstrap;
         
-        if (ninjaBootstapLocal == null) {
-        
+        if (ninjaBootstrapLocal == null) {
+
             synchronized(this) {
                 
-                ninjaBootstapLocal = ninjaBootstrap;
+                ninjaBootstrapLocal = ninjaBootstrap;
                 
-                if (ninjaBootstapLocal == null) {
+                if (ninjaBootstrapLocal == null) {
                     
                     // if properties 
                     if (ninjaProperties == null) {
@@ -103,7 +103,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
                 
                     ninjaBootstrap 
                             = createNinjaBootstrap(ninjaProperties, contextPath);
-                    ninjaBootstapLocal = ninjaBootstrap;
+                    ninjaBootstrapLocal = ninjaBootstrap;
 
                 }
             
@@ -111,7 +111,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
         
         }
         
-        return ninjaBootstapLocal.getInjector();
+        return ninjaBootstrapLocal.getInjector();
 
     }
     
