@@ -16,7 +16,7 @@
 
 package ninja.jpa;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
@@ -36,7 +36,7 @@ import com.google.inject.persist.PersistService;
 @Singleton
 public class JpaInitializer {
     
-    private final PersistService persistService;
+    private PersistService persistService;
 
 
     @Inject

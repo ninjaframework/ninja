@@ -41,12 +41,23 @@ public class SecureFilterTest {
 
     @Mock
     private FilterChain filterChain;
+    
+    @Mock
+    Ninja ninja;
 
+    @Mock
+    Result result;
+    
     SecureFilter secureFilter;
+    
+    
 
     @Before
     public void setup() {
-        secureFilter = new SecureFilter();
+        secureFilter = new SecureFilter(ninja);
+        
+        when(result.getTemplate()).thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
+        when(ninja.getForbiddenResult(context)).thenReturn(result);
 
     }
 

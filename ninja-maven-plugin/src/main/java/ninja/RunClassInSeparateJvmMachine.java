@@ -27,6 +27,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import ninja.standalone.NinjaJetty;
 import ninja.utils.NinjaConstant;
 
 public class RunClassInSeparateJvmMachine {
@@ -41,16 +43,21 @@ public class RunClassInSeparateJvmMachine {
     // Context path for web app.
     private String contextPath;
 
+    private String port;
+
     public RunClassInSeparateJvmMachine(
             String classNameWithMainToRun,
             List<String> classpath, 
-            String contextPath) {
+            String contextPath,
+            String port) {
 
         this.classNameWithMainToRun = classNameWithMainToRun;
 
         this.classpath = classpath;
         
         this.contextPath = contextPath;
+
+        this.port = port;
 
         // initial startup
         try {
@@ -112,6 +119,11 @@ public class RunClassInSeparateJvmMachine {
                 = "-D" + NinjaConstant.MODE_KEY_NAME + "=" + NinjaConstant.MODE_DEV;
         
         commandLine.add(systemPropertyDevMode);
+
+        String portSelection
+                = "-D" + NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT + "=" + port;
+
+        commandLine.add(portSelection);
         
         if (contextPath != null) {
             String systemPropertyContextPath = "-Dninja.context=" + contextPath;

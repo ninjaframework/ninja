@@ -25,6 +25,7 @@ import java.util.List;
 
 import ninja.Context;
 import ninja.RoutingException;
+import ninja.params.ParamParsers.ArrayParamParser;
 import ninja.validation.Validator;
 import ninja.validation.WithValidator;
 
@@ -177,7 +178,7 @@ public class ControllerMethodInvoker {
         if (!boxedParamType.isAssignableFrom(extractor.getExtractedType())) {
             if (extractor.getFieldName() != null) {
                 if (String.class.isAssignableFrom(extractor.getExtractedType())) {
-                    // Look up a parser
+                    // Look up a parser for a single-valued parameter
                     ParamParser<?> parser = ParamParsers.getParamParser(paramType);
                     if (parser == null) {
                         throw new RoutingException("Can't find parameter parser for type "
@@ -185,7 +186,18 @@ public class ControllerMethodInvoker {
                                 + extractor.getFieldName());
                     } else {
                         extractor =
-                                new ParsingArgumentExtractor((ArgumentExtractor) extractor, parser);
+                                new ParsingArgumentExtractor(extractor, parser);
+                    }
+                } else if (String[].class.isAssignableFrom(extractor.getExtractedType())) {
+                    // Look up a parser for a multi-valued parameter
+                    ArrayParamParser<?> parser = ParamParsers.getArrayParser(paramType);
+                    if (parser == null) {
+                        throw new RoutingException("Can't find parameter array parser for type "
+                                + extractor.getExtractedType() + " on field "
+                                + extractor.getFieldName());
+                    } else {
+                        extractor =
+                                new ParsingArrayExtractor(extractor, parser);
                     }
 
                 } else {
@@ -275,6 +287,12 @@ public class ControllerMethodInvoker {
             return Float.class;
         } else if (typeToBox == double.class) {
             return Double.class;
+        } else if (typeToBox == byte.class) {
+            return Byte.class;
+        } else if (typeToBox == short.class) {
+            return Short.class;
+        } else if (typeToBox == char.class) {
+            return Character.class;
         }
         throw new IllegalArgumentException("Don't know how to box type of " + typeToBox);
     }

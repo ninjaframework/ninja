@@ -49,6 +49,17 @@ import ninja.utils.NinjaConstant;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
+    
+    // Selection of logging library has to be done manually until Freemarker 2.4
+    // more: http://freemarker.org/docs/api/freemarker/log/Logger.html
+    static {
+        try {
+            freemarker.log.Logger.selectLoggerLibrary(freemarker.log.Logger.LIBRARY_SLF4J);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    // end
 
     private final String FILE_SUFFIX = ".ftl.html";
 

@@ -16,27 +16,23 @@
 
 package ninja.utils;
 
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import ninja.AsyncResult;
 import ninja.Context;
 import ninja.Renderable;
 import ninja.Result;
+import ninja.exceptions.InternalServerErrorException;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
+import org.slf4j.Logger;
 
-/**
- * Handles the result
- * 
- * @author James Roper
- */
+
 @Singleton
 public class ResultHandler {
 
@@ -94,11 +90,9 @@ public class ResultHandler {
     private void handleRenderable(Renderable renderable,
                                   Context context,
                                   Result result) {
-        try {
-            renderable.render(context, result);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error while handling renderable", e);
-        }
+        
+        renderable.render(context, result);
+
     }
 
     private void renderWithTemplateEngineOrRaw(Context context, Result result) {
@@ -128,8 +122,8 @@ public class ResultHandler {
                     
                     writer.write((String) result.getRenderable());
 
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (IOException ioException) {
+                    throw new InternalServerErrorException(ioException);
                 }
 
             } else if (result.getRenderable() instanceof byte[]) {
@@ -147,15 +141,15 @@ public class ResultHandler {
 
                     outputStream.write((byte[]) result.getRenderable());
                     
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (IOException ioException) {
+                    throw new InternalServerErrorException(ioException);
                 }
                 
             } else {
                 
                 context.finalizeHeaders(result);
                 
-                throw new IllegalArgumentException(
+                throw new InternalServerErrorException(
                         "No template engine found for result content type "
                                 + result.getContentType());
             }

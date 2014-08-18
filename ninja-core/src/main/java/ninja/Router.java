@@ -16,6 +16,7 @@
 
 package ninja;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Optional;
@@ -107,6 +108,11 @@ public interface Router {
      * starts serving requests.
      */
     public void compileRoutes();
+
+    /**
+     * Returns the list of compiled routes.
+     */
+    public List<Route> getRoutes();
 
     // /////////////////////////////////////////////////////////////////////////
     // convenience methods to use the route in a DSL like way

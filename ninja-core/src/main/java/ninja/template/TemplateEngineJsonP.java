@@ -1,23 +1,23 @@
 /**
  * Copyright (C) 2012-2014 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package ninja.template;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -31,17 +31,29 @@ import ninja.utils.ResponseStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * JSONP engine. Outputs the given result as JSONP output: Javascript callback
+ * with data as a parameter. Contains JSONP validation regular expression to
+ * test the validness of the JSONP callback. The valid callbacks are simple
+ * functions like myJsFunction or simple object path looking like:
+ * something1.something2.something3 . 
+ * See {@linkplain ninja.template.TemplateEngineJsonPValidatorTest} for supported cases tests.
+ * This is a subset of rules from the
+ * following article:
+ *
+ * @see <a href="http://tav.espians.com/sanitising-jsonp-callback-identifiers-for-security.html">Sanitizing JSONP callbacks</a>
+ */
 @Singleton
 public class TemplateEngineJsonP implements TemplateEngine {
-    
+
     private final Logger logger = LoggerFactory.getLogger(TemplateEngineJsonP.class);
 
     static final String DEFAULT_CALLBACK_PARAMETER_NAME = "callback";
 
     static final String DEFAULT_CALLBACK_PARAMETER_VALUE = "onResponse";
 
-    private static final Pattern CALLBACK_VALIDATION_REGEXP =
-            Pattern.compile("^[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.]?[a-zA-Z0-9\\$_]+$");
+    static final Pattern CALLBACK_SECURITY_VALIDATION_REGEXP
+            = Pattern.compile("^([a-zA-Z$_]{1}[a-zA-Z0-9$_.]*[a-zA-Z0-9$_]{1}){1,}$");
 
     private final ObjectMapper objectMapper;
 
@@ -49,7 +61,7 @@ public class TemplateEngineJsonP implements TemplateEngine {
 
     @Inject
     public TemplateEngineJsonP(ObjectMapper objectMapper, NinjaProperties properties) {
-        
+
         this.objectMapper = objectMapper;
         this.callbackParameterName = properties.getWithDefault(
                 NinjaConstant.NINJA_JSONP_CALLBACK_PARAMETER,
@@ -80,9 +92,20 @@ public class TemplateEngineJsonP implements TemplateEngine {
 
     private String getCallbackName(Context context) {
         String callback = context.getParameter(this.callbackParameterName, DEFAULT_CALLBACK_PARAMETER_VALUE);
-        if (callback != null && CALLBACK_VALIDATION_REGEXP.matcher(callback).matches()) {
-            return callback;
-        }
-        return DEFAULT_CALLBACK_PARAMETER_VALUE;
+        return isThisASecureCallbackName(callback) ? callback : DEFAULT_CALLBACK_PARAMETER_VALUE;
+    }
+
+    /**
+     * Tests whether the given function name is a valid JSONP function
+     * name/path.
+     *
+     * @param callback Callback value to test.
+     * @return Whether the given function name is a valid JSONP function
+     * name/path.
+     */
+    public static boolean isThisASecureCallbackName(String callback) {
+        return !Strings.isNullOrEmpty(callback)
+                && !callback.contains("..") 
+                && CALLBACK_SECURITY_VALIDATION_REGEXP.matcher(callback).matches();
     }
 }

@@ -1,12 +1,88 @@
-Version X.X.X
+Version 3.3.1
 =============
 
- * 2014-04-10 "username" of SecureFilter now static final and can be referenced 
+ * 2014-08-09 BugFix #185. Rollback of #157. UnitOfWork behavior fixed. (nobullet, cpisto, ra).
+ * 2014-08-01 Implement proper 401 unauthorized support (gitblit)
+ * 2014-08-01 Add an HTTP Basic Authentication filter and a UsernamePasswordValidator interface (gitblit)
+ * 2014-08-01 Added type support for byte, char, short, enums, and arrays (gitblit)
+
+Version 3.3.0
+=============
+
+ * 2014-07-31 Improved conf.Ninja - better content negotiation based error handling (ra)
+ * 2014-07-31 new ninja-async-machine-beta (darren,ra)
+ * 2014-07-31 new ninja-annotation-router-beta (darren,ra)
+ * 2014-07-22 Add Router.getRoutes() accessor (gitblit)
+ * 2014-07-22 Throw IllegalStateException when a registered controller method does not exist (gitblit)
+ * 2014-07-10 Added support for forbidden error to Ninja default results. (ra)
+ * 2014-06-06 Fixed testcase that was flaky in GMT-5 timezones. (ra) 
+ * 2014-06-05 Fixed dependency problems with scope test and ninja-test-utilities (ra) 
+
+
+Version 3.2.0
+=============
+
+ * 2014-06-22 Improved binding between slf4j and Freemarker
+ * 2014-06-22 Updated libraries:
+    * ch.qos.logback:logback-classic ........................ 1.1.1 -> 1.1.2
+    * com.fasterxml.jackson.core:jackson-core ............... 2.3.1 -> 2.4.1
+    * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.3.1 -> 2.4.1
+    * com.fasterxml.jackson.module:jackson-module-afterburner ...
+    * com.google.guava:guava ................................ 16.0.1 -> 17.0
+    * com.google.inject.extensions:guice-persist .......... 3.0 -> 4.0-beta4
+    * com.h2database:h2 ................................. 1.3.175 -> 1.4.178
+    * commons-fileupload:commons-fileupload ................... 1.3 -> 1.3.1
+    * net.sf.ehcache:ehcache ................................ 2.8.0 -> 2.8.3
+    * net.spy:spymemcached ................................ 2.10.4 -> 2.11.3
+    * org.apache.commons:commons-lang3 ...................... 3.2.1 -> 3.3.2
+    * org.apache.httpcomponents:httpclient .................. 4.3.2 -> 4.3.4
+    * org.apache.httpcomponents:httpmime .................... 4.3.2 -> 4.3.4
+    * org.doctester:doctester-core .......................... 1.1.1 -> 1.1.3
+    * org.eclipse.jetty:jetty-server .... 9.1.2.v20140210 -> 9.2.1.v20140609
+    * org.eclipse.jetty:jetty-servlet ... 9.1.2.v20140210 -> 9.2.1.v20140609
+    * org.fluentlenium:fluentlenium-core ................... 0.9.2 -> 0.10.2
+    * org.hibernate:hibernate-c3p0 .............. 4.3.1.Final -> 4.3.5.Final
+    * org.hibernate:hibernate-entitymanager ..... 4.3.1.Final -> 4.3.5.Final
+    * org.slf4j:jcl-over-slf4j .............................. 1.7.6 -> 1.7.7
+    * org.slf4j:log4j-over-slf4j ............................ 1.7.6 -> 1.7.7
+ * 2014-06-21 Fixed issue https://github.com/ninjaframework/ninja/issues/183. Test
+              is now using date fixed to UTC at MessagesImplTest.
+ * 2014-06-21 Replaced all javax.inject.Inject imports with com.google.inject.Inject.
+              That way JEE containers do not try to inject stuff into Ninja 
+              applications that run with Guice anyway. (ra)
+ * 2014-06-21 i18n Freemarker engine now displays i18n keys when
+              i18n values are missing. The behavior before was to throw an exception. 
+              Also added battery of tests. (ra)
+ * 2014-06-03 Added <code>getRemoteAddr()</code> method which returns IP of the
+              client (or last proxy) that sent the request to the context object. (Kokol)
+ * 2014-06-21 Support for conf.Ninja. Makes it possible for user to customize
+              request and error handling (ra).
+ * 2014-06-10 Use SecureRandom instead of Random to generate the application secret. (metacity)
+
+Version 3.1.6
+=============
+
+ * 2014-06-09 Fixed a wrong variable when logging (metacity)
+ * 2014-06-01 Enhanced security check for callback in JsonP (nobullet).
+ * 2014-05-30 Fixed wrong Logger in ResultHandler. Changed javax @Inject to Guice @Inject
+              to make Ninja more compatible with Weld. 
+ * 2014-05-21 Added <code>created(Optional&lt;String&gt;)</code> and <code>unauthorized()</code> 
+              methods to the <code>Results</code> class. (metacity)
+ * 2014-05-19 Added port selection to SuperDevMode. (Naum/Buffer0verflow)
+
+Version 3.1.5
+=============
+
+ * 2014-05-08 Added getHostname() method to context as a wrapper to getting the 
+              Host header. (mattjonesorg)
+ * 2014-05-08 Fixed issue #173. NinjaJetty was listening on two http ports. (ra)
+ * 2014-04-27 Added possibility to define custom package for application
+              module and routes (avarabyeu)
+ * 2014-04-10 "username" of SecureFilter now static final and can be referenced
               from other modules in a typesafe way. (ra)
  * 2014-04-10 Support getInjector() on FluentLenium testcases (ra)
  * 2014-04-07 Logback is now only configured when on classpath. Allows to use
               jul logging on App Engine. (Nomi + ra)
-
 
 Version 3.1.4
 =============
@@ -31,7 +107,6 @@ Version 3.1.2
  * 2014-03-13 BugFix #157. @UnitOfWork did not work when nested with
               @Transactional or other @UnitOfWork annotations. (ra)
  * 2014-03-07 Now caching virtually infinite amount of template files in memory
-              as weak references (before it was a max of 250). (ra)
 
 
 Version 3.1.1

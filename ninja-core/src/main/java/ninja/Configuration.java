@@ -60,8 +60,6 @@ public class Configuration extends AbstractModule {
 
         bind(Router.class).to(RouterImpl.class).in(Singleton.class);
 
-        bind(Ninja.class).to(NinjaImpl.class).in(Singleton.class);
-
         // provide logging
         bind(Logger.class).toProvider(LoggerProvider.class);
 

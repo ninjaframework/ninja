@@ -55,6 +55,8 @@ public class FakeContext implements Context {
     /** please use the requestPath stuff */
     @Deprecated
     private String requestUri;
+    private String hostname;
+    private String remoteAddr;
     private FlashScope flashScope;
     private Session session;
     private List<Cookie> addedCookies = new ArrayList<Cookie>();
@@ -106,6 +108,20 @@ public class FakeContext implements Context {
     @Deprecated
     public String getRequestUri() {
         return requestUri;
+    }
+
+    @Override
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        return remoteAddr;
     }
 
     public FakeContext setFlashCookie(FlashScope flashCookie) {
@@ -279,6 +295,11 @@ public class FakeContext implements Context {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
 
+    @Override
+    public boolean isAsync() {
+        throw new UnsupportedOperationException("Not supported in fake context");
+    }
+    
     @Override
     public void handleAsync() {
         throw new UnsupportedOperationException("Not supported in fake context");

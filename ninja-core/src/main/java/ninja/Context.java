@@ -34,6 +34,10 @@ import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {
 
+    /**
+     * Impl is used to hide stuff that a user should not see on 
+     * code completion. Internal stuff like setting routes should go here.
+     */
     interface Impl extends Context {
         void setRoute(Route route);
     }
@@ -86,6 +90,26 @@ public interface Context {
      */
     @Deprecated
     String getRequestUri();
+
+    /**
+     * Returns the hostname as seen by the server.
+     *
+     * http://example.com/index would return "example.com".
+     *
+     * @return the host name as seen by the server
+     */
+    String getHostname();
+
+    /**
+     * Returns the Internet Protocol (IP) address of the client
+     * or last proxy that sent the request.
+     * For HTTP servlets, same as the value of the
+     * CGI variable <code>REMOTE_ADDR</code>.
+     *
+     * @return a <code>String</code> containing the
+     * IP address of the client that sent the request
+     */
+    public String getRemoteAddr();
 
     /**
      * Returns the path that Ninja should act upon.
@@ -386,6 +410,9 @@ public interface Context {
      */
     <T> T parseBody(Class<T> classOfT);
 
+    
+    boolean isAsync();
+        
     /**
      * Indicate that this request is going to be handled asynchronously
      */

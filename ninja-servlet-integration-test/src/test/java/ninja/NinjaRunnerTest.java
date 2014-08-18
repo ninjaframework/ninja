@@ -17,7 +17,7 @@
 package ninja;
 
 import etc.GreetingService;
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;

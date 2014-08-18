@@ -16,6 +16,7 @@
 
 package ninja.servlet;
 
+import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +26,10 @@ import ninja.Ninja;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
+import ninja.logging.LogbackConfigurator;
 import ninja.scheduler.SchedulerSupport;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaPropertiesImpl;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,23 +38,27 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.servlet.ServletModule;
-import ninja.logging.LogbackConfigurator;
+import ninja.NinjaDefault;
+
 
 public class NinjaBootstrap {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(NinjaBootstrap.class);
 
     private static final String APPLICATION_GUICE_MODULE_CONVENTION_LOCATION = "conf.Module";
     private static final String APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION = "conf.ServletModule";
     private static final String ROUTES_CONVENTION_LOCATION = "conf.Routes";
-    private NinjaPropertiesImpl ninjaProperties;
+    private static final String NINJA_CONVENTION_LOCATION = "conf.Ninja";
+
+    private final NinjaPropertiesImpl ninjaProperties;
 
     private Injector injector = null;
 
     public NinjaBootstrap(NinjaPropertiesImpl ninjaProperties) {
-        
+
         Preconditions.checkNotNull(ninjaProperties);
 
         this.ninjaProperties = ninjaProperties;
@@ -63,40 +69,41 @@ public class NinjaBootstrap {
     }
 
     public synchronized void boot() {
-        
-        initLogbackIfLogbackIsOnTheClassPath();
-        
+
+        initLogbackIfLogbackIsOnTheClassPathOtherwiseDoNotInitLogging();
+
         if (injector != null) {
             throw new RuntimeException("NinjaBootstap already booted");
         }
-        
+
         long startTime = System.currentTimeMillis();
-        
+
         injector = initInjector();
-        
+
         long injectorStartupTime = System.currentTimeMillis() - startTime;
         logger.info("Ninja injector started in " + injectorStartupTime + " ms.");
-        
+
         Preconditions.checkNotNull(injector, "Ninja injector cannot be generated. Please check log for further errors.");
-        
+
         Ninja ninja = injector.getInstance(Ninja.class);
-        ninja.start();
+        ninja.onFrameworkStart();
     }
 
     public synchronized void shutdown() {
-        if (injector != null) {            
+        if (injector != null) {
             Ninja ninja = injector.getInstance(Ninja.class);
-            ninja.shutdown();
+            ninja.onFrameworkShutdown();
             injector = null;
             ninja = null;
-        } else {           
-            logger.info("Shutdown of Ninja not clean => injector already null.");
+        } else {
+            logger.error("Shutdown of Ninja not clean => injector already null.");
         }
     }
 
     private Injector initInjector() {
 
         try {
+            
             List<Module> modulesToLoad = new ArrayList<>();
 
             // Bind lifecycle support
@@ -113,65 +120,77 @@ public class NinjaBootstrap {
                 }
             });
 
+            // get custom base package for application modules and routes
+            Optional<String> applicationModulesBasePackage 
+                    = Optional.fromNullable(ninjaProperties.get(
+                            NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
+            
             // Load main application module:
-            if (doesClassExist(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION)) {
-                Class<?> applicationConfigurationClass = Class
-                        .forName(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
+            String applicationConfigurationClassName = getClassNameWithOptionalUserDefinedPrefix(
+                    applicationModulesBasePackage, 
+                    APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
 
-              
+            if (doesClassExist(applicationConfigurationClassName)) {
+                
+                Class<?> applicationConfigurationClass = Class
+                        .forName(applicationConfigurationClassName);
+
                 AbstractModule applicationConfiguration = (AbstractModule) applicationConfigurationClass
                         .getConstructor().newInstance();
- 
+
                 modulesToLoad.add(applicationConfiguration);
+                
             }
-            
+
             // Load servlet module. By convention this is a ServletModule where 
             // the user can register other servlets and servlet filters
             // If the file does not exist we simply load the default servlet
-            if (doesClassExist(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION)) {
+            String servletModuleClassName = 
+                getClassNameWithOptionalUserDefinedPrefix(
+                    applicationModulesBasePackage,
+                    APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
+            
+            if (doesClassExist(servletModuleClassName)) {
+                
                 Class<?> servletModuleClass = Class
-                        .forName(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
+                        .forName(servletModuleClassName);
 
                 ServletModule servletModule = (ServletModule) servletModuleClass
                         .getConstructor().newInstance();
- 
+
                 modulesToLoad.add(servletModule);
-                
+
             } else {
                 // The servlet Module does not exist => we load the default one.                
                 ServletModule servletModule = new ServletModule() {
-                    
+
                     @Override
-                    protected void configureServlets() {   
-                        bind(NinjaServletDispatcher.class).asEagerSingleton();                        
+                    protected void configureServlets() {
+                        bind(NinjaServletDispatcher.class).asEagerSingleton();
                         serve("/*").with(NinjaServletDispatcher.class);
                     }
-                    
+
                 };
-                
+
                 modulesToLoad.add(servletModule);
-                
+
             }
             
+            
+            initializeUserSuppliedConfNinjaOrNinjaDefault(
+                    applicationModulesBasePackage, 
+                    modulesToLoad);
+
 
             // And let the injector generate all instances and stuff:
             injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
 
-            // Init routes
-            if (doesClassExist(ROUTES_CONVENTION_LOCATION)) {
-                Class<?> clazz = Class.forName(ROUTES_CONVENTION_LOCATION);
-                ApplicationRoutes applicationRoutes = (ApplicationRoutes) injector
-                        .getInstance(clazz);
-
-                // System.out.println("init routes");
-                Router router = injector.getInstance(Router.class);
-
-                applicationRoutes.init(router);
-                router.compileRoutes();
-            }
+            initializeRouterWithRoutesOfUserApplication(applicationModulesBasePackage);
+            
             return injector;
-        } catch (Exception e) {
-            e.printStackTrace();
+            
+        } catch (Exception exception) {
+            logger.error("Fatal error booting Ninja", exception);
         }
         return null;
     }
@@ -191,16 +210,106 @@ public class NinjaBootstrap {
         return exists;
 
     }
-    
-    private void initLogbackIfLogbackIsOnTheClassPath() {
-            // init logging at the very very top
+
+    private String getClassNameWithOptionalUserDefinedPrefix(
+            Optional<String> optionalUserDefinedPrefixForPackage, 
+            String classLocationAsDefinedByNinja) {
+        
+        if (optionalUserDefinedPrefixForPackage.isPresent()) {
+            return new StringBuilder(
+                    optionalUserDefinedPrefixForPackage.get())
+                    .append('.')
+                    .append(classLocationAsDefinedByNinja)
+                    .toString();
+        } else {
+            return classLocationAsDefinedByNinja;
+        }
+    }
+
+    private void initLogbackIfLogbackIsOnTheClassPathOtherwiseDoNotInitLogging() {
+        // init logging at the very very top
         try {
             Class.forName("ch.qos.logback.classic.joran.JoranConfigurator");
             LogbackConfigurator.initConfiguration(ninjaProperties);
             logger.info("Successfully configured Logback.");
              // It is available
         } catch (ClassNotFoundException exception) {
-            logger.info("Logback is not on classpath (you are probably using slf4j-jdk14). I did not configure anything. It's up to you now...");
+            logger.info(
+                    "Logback is not on classpath (you are probably using slf4j-jdk14). I did not configure anything. It's up to you now...", exception);
+        }
+
+    }
+    
+    private final void initializeUserSuppliedConfNinjaOrNinjaDefault(
+            Optional<String> applicationModulesBasePacakge,
+            List<Module> modulesToLoad) throws Exception {
+    
+            String ninjaClassName = 
+                    getClassNameWithOptionalUserDefinedPrefix(
+                            applicationModulesBasePacakge,
+                            NINJA_CONVENTION_LOCATION);
+            
+            final Class<? extends Ninja> ninjaClass;
+                    
+            if (doesClassExist(ninjaClassName)) {
+                
+                final Class<?> clazzPotentially = Class.forName(ninjaClassName);
+                
+                if (Ninja.class.isAssignableFrom(clazzPotentially)) {
+                    
+                    ninjaClass = (Class<? extends Ninja>) clazzPotentially;
+                        
+                } else {
+                    
+                    final String ERROR_MESSAGE = String.format(
+                            "Found a class %s in your application's conf directory."
+                            + " This class does not implement Ninja interface %s. "
+                            + " Please implement the interface or remove the class.",
+                            ninjaClassName, 
+                            Ninja.class.getName());
+                    
+                    logger.error(ERROR_MESSAGE);  
+                    
+                    throw new IllegalStateException(ERROR_MESSAGE);
+
+                }
+
+            } else {
+                
+               ninjaClass = NinjaDefault.class;
+                
+            }
+            
+            modulesToLoad.add(new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bind(Ninja.class).to(ninjaClass).in(Singleton.class);
+                }
+            });
+
+    }
+    
+    
+    public void initializeRouterWithRoutesOfUserApplication(
+            Optional<String> applicationModulesBasePackage) 
+            throws Exception {
+        // Init routes
+        String routesClassName = 
+                getClassNameWithOptionalUserDefinedPrefix(
+                        applicationModulesBasePackage,
+                        ROUTES_CONVENTION_LOCATION);
+
+        if (doesClassExist(routesClassName)) {
+
+            Class<?> clazz = Class.forName(routesClassName);
+            ApplicationRoutes applicationRoutes = (ApplicationRoutes) injector
+                    .getInstance(clazz);
+
+            Router router = injector.getInstance(Router.class);
+
+            applicationRoutes.init(router);
+            router.compileRoutes();
+
         }
     
     }

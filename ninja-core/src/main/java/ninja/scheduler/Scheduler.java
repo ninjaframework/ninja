@@ -118,7 +118,7 @@ public class Scheduler {
         }
 
         log.info("Scheduling method " + method.getName() + " on " + target + " to be run every " + delay
-                + " " + timeUnit + " after " + delay + " " + timeUnit);
+                + " " + timeUnit + " after " + initialDelay + " " + timeUnit);
         executor.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {

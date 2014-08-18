@@ -31,6 +31,8 @@ import ninja.Results;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 import org.junit.After;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.junit.Test;
@@ -63,11 +65,6 @@ public class TemplateEngineJsonPTest {
         when(responseStreams.getOutputStream()).thenReturn(outputStream);
     }
 
-    @After
-    public void tearDown() {
-        verify(context).finalizeHeaders(result);
-    }
-
     @Test
     public void testCorrectFlow() throws IOException {
         when(context.getParameter("callback", TemplateEngineJsonP.DEFAULT_CALLBACK_PARAMETER_VALUE)).thenReturn("App.callback");
@@ -77,6 +74,7 @@ public class TemplateEngineJsonPTest {
 
         String jsonp = new String(outputStream.toByteArray(), "UTF-8");
         assertEquals("App.callback([123])", jsonp);
+        verify(context).finalizeHeaders(result);
     }
 
     @Test
@@ -86,6 +84,7 @@ public class TemplateEngineJsonPTest {
 
         String jsonp = new String(outputStream.toByteArray(), "UTF-8");
         assertEquals(TemplateEngineJsonP.DEFAULT_CALLBACK_PARAMETER_VALUE + "([123])", jsonp);
+        verify(context).finalizeHeaders(result);
     }
 
     @Test
@@ -97,5 +96,30 @@ public class TemplateEngineJsonPTest {
 
         String jsonp = new String(outputStream.toByteArray(), "UTF-8");
         assertEquals(TemplateEngineJsonP.DEFAULT_CALLBACK_PARAMETER_VALUE + "([123])", jsonp);
+        verify(context).finalizeHeaders(result);
+    }
+    
+    @Test
+    public void testIsThisASecureCallbackName() {
+        assertTrue("simple function", TemplateEngineJsonP.isThisASecureCallbackName("onResponse"));
+        assertTrue("object function", TemplateEngineJsonP.isThisASecureCallbackName("MyPath.path"));
+        assertTrue("object function", TemplateEngineJsonP.isThisASecureCallbackName("MyApp.Path.myCallback123"));
+        assertTrue("object function, path with numbers", 
+                TemplateEngineJsonP.isThisASecureCallbackName("MyApp123.Path789.myCallback123"));
+        assertTrue("complex path", TemplateEngineJsonP.isThisASecureCallbackName("Ext.data.JsonP.callback4"));
+        assertTrue("complex path, $ in identity.", TemplateEngineJsonP.isThisASecureCallbackName("$42.ajaxHandler"));
+
+        assertFalse("wrong first character", TemplateEngineJsonP.isThisASecureCallbackName("42$.q"));
+        assertFalse("period in the front, simple", TemplateEngineJsonP.isThisASecureCallbackName(".onResponse"));
+        assertFalse("period in the end, simple", TemplateEngineJsonP.isThisASecureCallbackName("onResponse."));
+        assertFalse("period in the front, object function", TemplateEngineJsonP.isThisASecureCallbackName(".MyPath.path"));
+        assertFalse("period in the end, complex path", TemplateEngineJsonP.isThisASecureCallbackName("MyPath.path.path2."));
+        assertFalse("two subsequent periods", TemplateEngineJsonP.isThisASecureCallbackName("MyPath..path.path2"));
+        assertFalse("function call", TemplateEngineJsonP.isThisASecureCallbackName("alert(document.cookie)"));
+        
+        // Cases not supported by the validator.
+        assertFalse("simple array", TemplateEngineJsonP.isThisASecureCallbackName("somearray[12345]"));
+        assertFalse("unicode characters", TemplateEngineJsonP.isThisASecureCallbackName("\\u0062oo"));
+        assertFalse("unicode characters", TemplateEngineJsonP.isThisASecureCallbackName("\\u0020"));
     }
 }

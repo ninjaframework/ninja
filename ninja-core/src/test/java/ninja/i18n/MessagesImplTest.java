@@ -37,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.base.Optional;
 import java.util.Date;
+import org.joda.time.DateTime;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagesImplTest {
@@ -208,6 +209,7 @@ public class MessagesImplTest {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
 
+        Date DATE_1970_JAN = new DateTime(1970, 1, 1, 1, 1).toDate();
         
         Lang lang = new LangImpl(ninjaProperties);
         Messages messages = new MessagesImpl(ninjaProperties, lang);
@@ -215,31 +217,31 @@ public class MessagesImplTest {
         
         // test fallback to default (english in that case)
         Optional<String> language = Optional.absent();
-        Optional<String> result = messages.get("message_with_placeholder_date", language, new Date(0));
+        Optional<String> result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
         
-         assertEquals("that's a date: Jan 1, 1970", result.get());
-         
-         // de as language
-         language = Optional.of("de");
-         result = messages.get("message_with_placeholder_date", language, new Date(0));
-        
-         assertEquals("das ist ein datum: 01.01.1970", result.get());
-         
-         
-                  
-         // fr as language
-         language = Optional.of("fr-FR");
-         result = messages.get("message_with_placeholder_date", language, new Date(0));
-        
-         assertEquals("c`est la date: 1 janv. 1970", result.get());
-    
-         
-         
-         // en as language
-         language = Optional.of("en");
-         result = messages.get("message_with_placeholder_date", language, new Date(0));
-        
-         assertEquals("that's a date: Jan 1, 1970", result.get());
+        assertEquals("that's a date: Jan 1, 1970", result.get());
+
+        // de as language
+        language = Optional.of("de");
+        result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
+
+        assertEquals("das ist ein datum: 01.01.1970", result.get());
+
+
+
+        // fr as language
+        language = Optional.of("fr-FR");
+        result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
+
+        assertEquals("c`est la date: 1 janv. 1970", result.get());
+
+
+
+        // en as language
+        language = Optional.of("en");
+        result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
+
+        assertEquals("that's a date: Jan 1, 1970", result.get());
     
     }
     

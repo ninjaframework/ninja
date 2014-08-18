@@ -9,7 +9,9 @@
 
 Ninja - web framework
 =====================
-Ninja is the best way to develop large scale web applications in Java.
+
+Ninja is a full stack web framework for Java.
+Rock solid, fast and super productive.
 
 Getting started
 ---------------

@@ -46,6 +46,16 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public String getHostname() {
+        return wrapped.getHostname();
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        return wrapped.getRemoteAddr();
+    }
+
+    @Override
     public FlashScope getFlashCookie() {
         return wrapped.getFlashCookie();
     }
@@ -140,6 +150,11 @@ public class WrappedContext implements Context {
         return wrapped.parseBody(classOfT);
     }
 
+    @Override
+    public boolean isAsync() {
+        return wrapped.isAsync();
+    }
+    
     @Override
     public void handleAsync() {
         wrapped.handleAsync();

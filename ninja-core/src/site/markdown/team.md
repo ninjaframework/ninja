@@ -31,6 +31,11 @@ contributed to Ninja. In some random order:
  * Max Garmash (linx56)
  * Mikko Oksa (metacity)
  * Zoran Zaric
+ * Andrei Varabyeu (avarabyeu)
+ * Matt Jones (mattjonesorg)
+ * Naum Naumovski (Buffer0verflow)
+ * Primož Kokol
+ * James Moger (gitblit)
 
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

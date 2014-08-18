@@ -4,7 +4,7 @@ Filtering
 Introduction
 ------------
 
-Powerful powerful powerful. This is what filers are.
+Powerful powerful powerful. This is what filters are.
 
 Let's say you want to implement authorization in your application. Only users
 authorized should be able to access a certain route and controller. Otherwise
@@ -97,3 +97,37 @@ be filtered.
 Sometimes it is also useful to have a <code>BaseController</code> that is annotated with 
 <code>@FilterWith</code>. Other controllers extending <code>BaseContoller</code> will automatically
 inherit <code>@FilterWith</code>.
+
+BasicAuthFilter
+---------------
+
+Ninja ships with an implementation of HTTP Basic Authentication.  You need to bind a 
+`UsernamePasswordValidator` in your `conf.Modules` class and then annotate your secured
+controllers or controller methods with `@FilterWith(BasicAuthFilter)`.
+
+<pre class="prettyprint">
+public class Module extends AbstractModule {
+
+    @Override
+    protected void configure() {
+
+		// bind a UsernamePasswordValidator
+		bind(UsernamePasswordValidator.class).toInstance(new UsernamePasswordValidator() {
+
+			@Override
+			public boolean validateCredentials(String username, String password) {
+				return "user".equals(username) && "password".equals(password);
+			}
+		});
+    }
+}
+
+public MyController {
+
+    @FilterWith(BasicAuthFilter.class)
+    public Result secureMethod(Context context) {
+        // do something
+    }
+    
+}    
+</pre>

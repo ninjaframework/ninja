@@ -2,13 +2,12 @@ Create your first application
 =============================
 
 Ninja features so called "Maven archetypes". These archetypes are blueprints
-that allow you to generate a new project based on a predefined blueprint.
+that allow you to generate a new project with a single command.
 
 In Ninja's case we recommend to create a new Ninja project based on our
-"ninja-servlet-jpa-blog-archetype". This archetype is a blog-like application
-and shows a real world application written in Ninja.
+"ninja-servlet-archetype-simple".
 
-You should use that archetype as starting point to create your own application.
+You can use that archetype as starting point to create your own application.
 
 The command to do so is:
 

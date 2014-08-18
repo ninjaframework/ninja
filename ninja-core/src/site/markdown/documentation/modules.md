@@ -6,6 +6,11 @@ available for Ninja. Usually the linked pages contain
 a short description how to setup stuff:
 
 
+Activity support - light-weight workflow and Business Process Management (BPM)
+
+ * http://mortezaadi.github.io/ninja-activiti-module/ 
+
+
 EBean RDBMS ORM support
 
  * https://github.com/ninjaframework/ninja-ebean
