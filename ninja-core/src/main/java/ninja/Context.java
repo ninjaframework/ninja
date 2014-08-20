@@ -48,6 +48,11 @@ public interface Context {
     public String CONTENT_TYPE = "Content-Type";
 
     /**
+     * X Forwarded for header, used when behind fire walls and proxies.
+     */
+    public String X_FORWARD_HEADER = "X-Forwarded-For";
+        
+    /**
      * please use Result.SC_*
      * 
      * @author rbauer
@@ -105,6 +110,9 @@ public interface Context {
      * or last proxy that sent the request.
      * For HTTP servlets, same as the value of the
      * CGI variable <code>REMOTE_ADDR</code>.
+     * 
+     * This will honour the X-Forwarded-For flag if set. If you require the raw 
+     * IP address use {@code getHttpServletRequest().getRemoteAddr()}
      *
      * @return a <code>String</code> containing the
      * IP address of the client that sent the request
@@ -624,4 +632,22 @@ public interface Context {
      * @see #getAttribute(String, Class)
      */
     void setAttribute(String name, Object value);
+    
+    /**
+     * Check to see if the request content type is JSON.
+     * <p>
+     * Checks to see if the request content type has been set application/json 
+     * </p>
+     * @return true if the content type is to set {@code application/json} 
+     */
+    boolean isRequestJson();
+
+    /**
+     * Check to see if the request content type is XML.
+     * <p>
+     * Checks to see if the request content type has been set application/xml 
+     * </p>
+     * @return true if the content type is to set {@code application/xml} 
+     */
+    boolean isRequestXml();
 }
