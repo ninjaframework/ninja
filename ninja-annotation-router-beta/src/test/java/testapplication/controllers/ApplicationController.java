@@ -27,7 +27,7 @@ public class ApplicationController {
     @Route(httpMethod = Route.GET, path = "/index")
     public Result testAnnoatedRoute() {
         
-        return Results.text().render("works.");
+        return Results.text().renderRaw("works.");
         
     }    
     

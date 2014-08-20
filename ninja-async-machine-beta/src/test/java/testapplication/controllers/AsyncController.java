@@ -29,7 +29,7 @@ public class AsyncController {
     public Result async() {
         
         // a regular async operation
-        return Results.text().render("Async works!");
+        return Results.text().renderRaw("Async works!");
     
     }
     

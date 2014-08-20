@@ -94,6 +94,9 @@ public class Routes implements ApplicationRoutes {
 
         router.GET().route("/api/person.xml").with(PersonController.class, "getPersonXml");
         router.POST().route("/api/person.xml").with(PersonController.class, "postPersonXml");
+        
+        router.GET().route("/api/person").with(PersonController.class, "getPersonViaContentNegotiation");
+        router.GET().route("/api/person_with_content_negotiation_fallback").with(PersonController.class, "getPersonViaContentNegotiationAndFallback");
 
         // /////////////////////////////////////////////////////////////////////
         // Form parsing support

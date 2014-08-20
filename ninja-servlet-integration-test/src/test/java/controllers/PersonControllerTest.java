@@ -24,6 +24,12 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.google.common.collect.Maps;
+import java.util.Map;
+import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.equalTo;
+import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 
 public class PersonControllerTest extends NinjaTest {
     
@@ -34,8 +40,6 @@ public class PersonControllerTest extends NinjaTest {
 
         String response = ninjaTestBrowser.postJson(getServerAddress()
                 + "api/person.json", person);
-
-        System.out.println("j: " + response);
 
         Person result = new ObjectMapper().readValue(response, Person.class);
         assertEquals(person.name, result.name);
@@ -56,4 +60,55 @@ public class PersonControllerTest extends NinjaTest {
         assertEquals(person.name, result.name);
     }
     
+    @Test
+    public void testThatContentNegotiationWithoutFallbackWorks() throws Exception {
+
+        Map<String, String> headers = Maps.newHashMap();
+        
+        
+        headers.put("Accept", "text/html");
+        String response = ninjaTestBrowser
+                .makeRequest(getServerAddress() + "api/person", headers);
+        assertThat(response, equalTo("Person is: zeeess name - and some utf8 =&gt; öäü"));
+        
+        headers.put("Accept", "application/json");
+        response = ninjaTestBrowser
+                .makeRequest(getServerAddress() + "api/person", headers);
+        assertThat(response, equalTo("{\"name\":\"zeeess name - and some utf8 => öäü\"}"));
+        
+        headers.put("Accept", "application/xml");
+        response = ninjaTestBrowser
+            .makeRequest(getServerAddress() + "api/person", headers);
+        assertThat(response, equalTo("<Person xmlns=\"\"><name>zeeess name - and some utf8 =&gt; öäü</name></Person>"));
+        
+        //not supported => expecting error result:
+        headers.put("Accept", "text/plain");
+        response = ninjaTestBrowser
+                .makeRequest(getServerAddress() + "api/person", headers);
+        assertThat(response, equalTo("<html><head><title>Oops. That&#39;s a bad request and all we know.</title></head><body>	<h1>Oops. That&#39;s a bad request and all we know.</h1></body></html>"));
+        
+    }
+    
+    @Test
+    public void testThatContentNegotiationWithFallbackWorks() throws Exception {
+
+        Map<String, String> headers = Maps.newHashMap();
+        
+        
+        headers.put("Accept", "text/html");
+        String response = ninjaTestBrowser
+                .makeRequest(getServerAddress() + "api/person_with_content_negotiation_fallback", headers);
+        assertThat(response, equalTo("Person is: zeeess name - and some utf8 =&gt; öäü"));
+        
+        headers.put("Accept", "application/xml");
+        response = ninjaTestBrowser
+                .makeRequest(getServerAddress() + "api/person_with_content_negotiation_fallback", headers);
+        assertThat(response, equalTo("Person is: zeeess name - and some utf8 =&gt; öäü"));
+        
+        headers.put("Accept", "application/unknown_content_type");
+        response = ninjaTestBrowser
+                .makeRequest(getServerAddress() + "api/person_with_content_negotiation_fallback", headers);
+        assertThat(response, equalTo("Person is: zeeess name - and some utf8 =&gt; öäü"));
+          
+    }
 }

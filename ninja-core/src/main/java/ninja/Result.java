@@ -16,6 +16,8 @@
 
 package ninja;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.AbstractMap;
@@ -33,6 +35,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.io.OutputStream;
+import java.util.Arrays;
+import ninja.exceptions.InternalServerErrorException;
 
 public class Result {
     
@@ -100,6 +105,27 @@ public class Result {
      * Something like: "text/html" or "application/json"
      */
     private String contentType;
+    
+    /**
+     * If content type is not set AND supported type does not match accept
+     * header of request this fallback will be used. If it is not set 
+     * a bad request exception will be thrown.
+     */
+    private Optional<String> fallbackContentType = Optional.absent();
+    
+    /**
+     * A list of content types this result will handle. If you got a general
+     * person object you can render it via application/json and application/xml
+     * without changing anything inside your controller for instance.
+     * 
+     */
+    private List<String> supportedContentTypes = Lists.newArrayList();
+    
+    /**
+     * Something like: "text/html" or "application/json"
+     */
+    private List<String> DEFAULT_SUPPORTED_CONTENT_TYPES
+            = ImmutableList.of(TEXT_HTML, APPLICATON_JSON, APPLICATION_XML);
 
     /**
      * Something like: "utf-8" => will be appended to the content-type. eg
@@ -329,6 +355,10 @@ public class Result {
  
             @Override
             public void render(Context context, Result result) {
+                
+                if (result.getContentType() == null) {
+                    result.contentType(Result.TEXT_PLAIN);
+                }
  
                 ResponseStreams resultJsonCustom = context
                         .finalizeHeaders(result);
@@ -352,6 +382,34 @@ public class Result {
         return this;
         
     }
+    
+    public Result renderRaw(final byte [] bytes) {
+ 
+        Renderable renderable = new Renderable() {
+                    
+            @Override
+            public void render(Context context, Result result) {
+                if (result.getContentType() == null) {
+                    result.contentType(Result.APPLICATION_OCTET_STREAM);
+                }
+                ResponseStreams responseStreams = context
+                        .finalizeHeaders(result);
+                
+                try (OutputStream outputStream = responseStreams.getOutputStream()) {
+
+                    outputStream.write(bytes);
+                    
+                } catch (IOException ioException) {
+                    throw new InternalServerErrorException(ioException);
+                }
+            }
+        };
+                    
+        render(renderable);
+ 
+        return this;
+
+   }
 
     public String getContentType() {
         return contentType;
@@ -396,6 +454,47 @@ public class Result {
      */
     public Result contentType(String contentType) {
         this.contentType = contentType;
+        return this;
+    }
+    
+    public Result addSupportedContentType(String contentTypeSupportedByThisResult) {
+        supportedContentTypes.add(contentTypeSupportedByThisResult);
+        return this;
+    }
+    
+    public Result supportedContentTypes(String ... contentTypesSupportedByThisResult) {
+        supportedContentTypes.addAll(Arrays.asList(contentTypesSupportedByThisResult));
+        return this;
+    }
+    
+    /**
+     * Returns immutable list of supported content types by this request.
+     *
+     * @return immutable list of supported content types. Either the default
+     *         content types if no one has been set (html, json, xml) or the
+     *         content types set by the user and addSupportedContentType(...).
+     */
+    public List<String> getSupportedContentTypes() {
+        if (supportedContentTypes.isEmpty()) {
+            return DEFAULT_SUPPORTED_CONTENT_TYPES;
+        } else {
+            return ImmutableList.copyOf(supportedContentTypes);
+        }
+    }
+    
+    public Optional<String> getFallbackContentType() {
+        return fallbackContentType;
+    }
+    
+    /**
+     * 
+     * @param fallbackContentType The content type to use as fallback when
+     *                            neither contentType set and supportedContentTypes
+     *                            do not match request.
+     * @return This result for chaining.
+     */
+    public Result fallbackContentType(String fallbackContentType) {
+        this.fallbackContentType = Optional.of(fallbackContentType);
         return this;
     }
 
