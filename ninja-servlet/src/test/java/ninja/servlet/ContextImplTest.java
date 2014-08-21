@@ -596,6 +596,32 @@ public class ContextImplTest {
     }
 
     /**
+     * Test for isJson
+     */
+    @Test
+    public void testIsJsonWorks() {
+        when(httpServletRequest.getContentType()).thenReturn(ContentTypes.APPLICATION_JSON);
+
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+        
+        assertTrue(context.isRequestJson());
+    }
+    
+    /**
+     * Test is isXml
+     */
+    @Test
+    public void testIsXmlWorks() {
+        when(httpServletRequest.getContentType()).thenReturn(ContentTypes.APPLICATION_XML);
+
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+        
+        assertTrue(context.isRequestXml());
+    }
+    
+    /**
      * This is the default mode.
      *
      * We get a Content-Type: application/json and want to parse the incoming json.
