@@ -1,3 +1,10 @@
+Version 3.3.2
+=============
+
+* 2014-08-21 Added utility methods on Context for isRequestXml and isRequestJson. (dazhudson)
+* 2014-08-21 Fixed bug where getRequestPath would return null in async mode. (dazhudson)
+* 2014-08-21 Modified Context.getRemoteAddr() to honour the X-Forwarded-For header. (dazhudson) 
+
 Version 3.3.1
 =============
 
