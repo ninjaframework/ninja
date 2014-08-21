@@ -85,7 +85,7 @@ public class PersonControllerTest extends NinjaTest {
         headers.put("Accept", "text/plain");
         response = ninjaTestBrowser
                 .makeRequest(getServerAddress() + "api/person", headers);
-        assertThat(response, equalTo("<html><head><title>Oops. That&#39;s a bad request and all we know.</title></head><body>	<h1>Oops. That&#39;s a bad request and all we know.</h1></body></html>"));
+        assertThat(response.contains("Oops. That&#39;s a bad request and all we know."), equalTo(true));
         
     }
     

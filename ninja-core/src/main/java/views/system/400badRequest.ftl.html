@@ -1,12 +1,50 @@
 <html>
-<head>
-<title>${message.text}</title>
-</head>
-<body>
-	<h1>${message.text}</h1>
-</body>
+    <head>
+        <title>${message.text}</title>
+        <style type="text/css">
+
+            .error-code {
+                font-family: "Times New Roman", Times, serif;
+                margin-top: 5%;
+                width: 50%;
+                border: 15px solid black;
+                padding: 50px;
+            }
+
+            .centered {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .error-code__smiley {
+                font-family: "Times New Roman", Times, serif;
+                text-align:center; 
+                font-size: 120pt;
+                margin-bottom: 60px;
+            }
+
+            .error-code__text {
+                font-family: "Times New Roman", Times, serif;
+                text-align:center; 
+                font-size: 18pt;
+                padding-bottom: 10px;
+            }
+
+            .error-code__link {
+                font-family: "Times New Roman", Times, serif;
+                color: black;
+                text-decoration: none;
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="error-code centered">
+            <div class="error-code__smiley">◔̯◔</div>
+            <div class="error-code__text">${message.text}</div>
+            <div class="error-code__text"><a class="error-code__link" href="/">Back to homepage</a></div>
+        </div>
+    </body>
 </html>
-
-
 
 
