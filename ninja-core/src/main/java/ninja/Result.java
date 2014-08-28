@@ -119,12 +119,13 @@ public class Result {
      * without changing anything inside your controller for instance.
      * 
      */
-    private List<String> supportedContentTypes = Lists.newArrayList();
+    private final List<String> supportedContentTypes = Lists.newArrayList();
     
     /**
-     * Something like: "text/html" or "application/json"
+     * A newly created Result will handle those three result types out of 
+     * the box.
      */
-    private List<String> DEFAULT_SUPPORTED_CONTENT_TYPES
+    private final static List<String> DEFAULT_SUPPORTED_CONTENT_TYPES
             = ImmutableList.of(TEXT_HTML, APPLICATON_JSON, APPLICATION_XML);
 
     /**
@@ -144,7 +145,8 @@ public class Result {
      * Refer to {@link Result#SC_200_OK}, {@link Result#SC_204_NO_CONTENT} and so on
      * for some short cuts to predefined results. 
      * 
-     * @param statusCode The status code to set for the result. Shortcuts to the code at: {@link Result#SC_200_OK}
+     * @param statusCode The status code to set for the result. 
+     *                    Shortcuts to the code at: {@link Result#SC_200_OK}
      */
     public Result(int statusCode) {
 
@@ -171,7 +173,7 @@ public class Result {
      * If the converted camelCase key of this object already exists an {@link IllegalArgumentException}
      * is being thrown.
      * 
-     * @param Object The object to add (either an arbitrary class or Renderable).
+     * @param object The object to add (either an arbitrary class or Renderable).
      * @return Result this result for chaining.
      * 
      */
@@ -234,13 +236,13 @@ public class Result {
     }
     
     /**
-     * Handles two cases:
-     * 1) If this.renderable is null a new HashMap is generated and this entry being added
+     * Handles following cases:
+     * 1) If this.renderable is null: a new HashMap is generated and this entry being added
      *    to the map.
-     * 2) If this.renderable is a Map the entry is added
-     * 3) If this.renderable is an object (not a renderable) a Map is generated and both
+     * 2) If this.renderable is a Map: the entry is added
+     * 3) If this.renderable is an object (not a renderable): a Map is generated and both
      *    the former object and the new entry are being added.
-     * 3) If this.renderable is a Renderable an {@link IllegalArgumentException} is thrown.
+     * 4) If this.renderable is a Renderable: an {@link IllegalArgumentException} is thrown.
      * 
      * If the entry key already exists in the map of this.renderable an {@link IllegalArgumentException}
      * is thrown.
@@ -331,7 +333,7 @@ public class Result {
      * 
      * Thus you can render anything you want.
      * 
-     * Chaining of resultRaw is NOT supported. Mixing with render()
+     * Chaining of resultRaw().resultRaw()... is NOT supported. Mixing with render()
      * is NOT supported.
      * 
      * It is always recommended to implement your own RenderingEngine OR
@@ -383,6 +385,21 @@ public class Result {
         
     }
     
+    /**
+     * This method directly renders the byte array to the output. It
+     * completely bypasses any rendering engine.
+     * 
+     * Thus you can render anything you want.
+     * 
+     * Chaining of resultRaw().resultRaw()... is NOT supported. Mixing with render()
+     * is NOT supported.
+     * 
+     * It is always recommended to implement your own RenderingEngine OR
+     * use existing rendering engines.
+     * 
+     * @param bytes The bytes to render.
+     * @return A result that will render the string directly to the output stream.
+     */
     public Result renderRaw(final byte [] bytes) {
  
         Renderable renderable = new Renderable() {
@@ -424,10 +441,12 @@ public class Result {
     }
 
     /**
-     * @return Set the charset of the result. Is "utf-8" by default.
+     * @param charset Set the charset of the result. Is "utf-8" by default.
+     * @return The result for chaining.
      */
-    public void charset(String charset) {
+    public Result charset(String charset) {
         this.charset = charset;
+        return this;
     }
 
     /**
@@ -451,17 +470,33 @@ public class Result {
      * @param contentType
      *            (without encoding) something like "text/html" or
      *            "application/json"
+     * @return The result for chaining.
      */
     public Result contentType(String contentType) {
         this.contentType = contentType;
         return this;
     }
     
-    public Result addSupportedContentType(String contentTypeSupportedByThisResult) {
+    /**
+     * Will add a content type to the list of supported content types.
+     * Calling that method two times with different content types will add both
+     * content types.
+     * 
+     * @param contentTypeSupportedByThisResult The content type to add. Eg. "application/xml"
+     * @return The result for chaining.
+     */
+    public Result supportedContentType(String contentTypeSupportedByThisResult) {
         supportedContentTypes.add(contentTypeSupportedByThisResult);
         return this;
     }
     
+    /**
+     * Will add the content types to the list of supported content types.
+     * 
+     * @param contentTypesSupportedByThisResult The content type to add. Eg. 
+     *        "application/xml", "applcation/json"
+     * @return The result for chaining.
+     */
     public Result supportedContentTypes(String ... contentTypesSupportedByThisResult) {
         supportedContentTypes.addAll(Arrays.asList(contentTypesSupportedByThisResult));
         return this;
@@ -471,10 +506,10 @@ public class Result {
      * Returns immutable list of supported content types by this request.
      *
      * @return immutable list of supported content types. Either the default
-     *         content types if no one has been set (html, json, xml) or the
-     *         content types set by the user and addSupportedContentType(...).
+         content types if no one has been set (html, json, xml) or the
+         content types set by the user and supportedContentType(...).
      */
-    public List<String> getSupportedContentTypes() {
+    public List<String> supportedContentTypes() {
         if (supportedContentTypes.isEmpty()) {
             return DEFAULT_SUPPORTED_CONTENT_TYPES;
         } else {
@@ -482,7 +517,13 @@ public class Result {
         }
     }
     
-    public Optional<String> getFallbackContentType() {
+    /**
+     * 
+     * @return The fallback content type. This will be the content type used
+     * when none of the supported content types matches the accept content
+     * type of the request.
+     */
+    public Optional<String> fallbackContentType() {
         return fallbackContentType;
     }
     

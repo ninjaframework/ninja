@@ -99,10 +99,10 @@ public class ResultHandler {
         // request accept header
         if (result.getContentType() == null) {
             
-            if (result.getSupportedContentTypes().contains(context.getAcceptContentType())) {
+            if (result.supportedContentTypes().contains(context.getAcceptContentType())) {
                 result.contentType(context.getAcceptContentType());
-            } else if (result.getFallbackContentType().isPresent()) {
-                result.contentType(result.getFallbackContentType().get());
+            } else if (result.fallbackContentType().isPresent()) {
+                result.contentType(result.fallbackContentType().get());
             } else {
                 throw new BadRequestException(
                     "No idea how to handle incoming request with Accept:" + context.getAcceptContentType()

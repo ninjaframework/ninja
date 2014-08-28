@@ -228,7 +228,7 @@ public class NinjaDefaultTest {
        Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
        Result result = ninjaDefault.getInternalServerErrorResult(contextImpl, new Exception("not important"));
        assertThat(result.getContentType(), equalTo(null));
-       assertThat(result.getSupportedContentTypes().size(), equalTo(3));
+       assertThat(result.supportedContentTypes().size(), equalTo(3));
 
     }
         
@@ -236,7 +236,7 @@ public class NinjaDefaultTest {
     public void testThatGetInternalServerErrorDoesFallsBackToHtml() throws Exception {
         Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
         Result result = ninjaDefault.getInternalServerErrorResult(contextImpl, new Exception("not important"));
-        assertThat(result.getFallbackContentType().get(), equalTo(Result.TEXT_HTML));
+        assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
     }
 
     @Test
@@ -264,7 +264,7 @@ public class NinjaDefaultTest {
        Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
        Result result = ninjaDefault.getBadRequestResult(contextImpl, new Exception("not important"));
        assertThat(result.getContentType(), equalTo(null));
-       assertThat(result.getSupportedContentTypes().size(), equalTo(3));
+       assertThat(result.supportedContentTypes().size(), equalTo(3));
 
     }
         
@@ -272,7 +272,7 @@ public class NinjaDefaultTest {
     public void testThatGetBadRequestDoesFallsBackToHtml() throws Exception {
         Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
         Result result = ninjaDefault.getBadRequestResult(contextImpl, new Exception("not important"));
-        assertThat(result.getFallbackContentType().get(), equalTo(Result.TEXT_HTML));
+        assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
     }
     
     @Test
@@ -300,7 +300,7 @@ public class NinjaDefaultTest {
        Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
        Result result = ninjaDefault.getNotFoundResult(contextImpl);
        assertThat(result.getContentType(), equalTo(null));
-       assertThat(result.getSupportedContentTypes().size(), equalTo(3));
+       assertThat(result.supportedContentTypes().size(), equalTo(3));
 
     }
         
@@ -308,7 +308,7 @@ public class NinjaDefaultTest {
     public void testThatGetOnNotFoundDoesFallsBackToHtml() throws Exception {
         Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
         Result result = ninjaDefault.getNotFoundResult(contextImpl);
-        assertThat(result.getFallbackContentType().get(), equalTo(Result.TEXT_HTML));
+        assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
     }
     
     @Test
