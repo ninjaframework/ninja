@@ -16,19 +16,19 @@
 
 package ninja.utils;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.primitives.Primitives;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.CaseFormat;
 import java.lang.reflect.InvocationTargetException;
-
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * A helper class that contains a lot of random stuff that helps to get things
@@ -201,6 +201,14 @@ public class SwissKnife {
 
         public static Short toShort(String value) {
             return Short.valueOf(value);
+        }
+
+        public static Date toDate(String value){
+            if(value != null && value.length() > 0){
+              return new LocalDateTime(value).toDate();
+            }else{
+                return null;
+            }
         }
 
         public static Character toCharacter(String value) {

@@ -1,3 +1,5 @@
+* 2014-08-28 Added support for java.util.Date on BodyParserEnginePost. (pedro-stanaka)
+
 Version 3.3.2
 =============
 
