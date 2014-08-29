@@ -1,27 +1,29 @@
 Content negotiation
 ===================
 
-A http request by a client usually sends a header called "Accept:...". That header signals
-the web server (and hence Ninja) what kind of content the client wants to get.
+A http request by a client usually sends a header called <code>Accept</code>. That header signals
+the web server (and hence Ninja) what kind of content the client wants to get. In the request
+itself the header usually looks like <code>Accept:application/json</code>.
 
-For instance a regular web browser sends a header "Accept:text/html" and wants
-to get back html content. An API client would send a "Accept:application/json"
+The value of the header field tells the server which kind of response the 
+client wants to get back. For instance a regular web browser 
+sends a header <code>Accept:text/html</code> and wants to get back html content. 
+An API client would send a <code>Accept:application/json</code>
 to signal that the web server should send the content as json.
 
 That means that one route like myserver.com/api/person can return the result
-in different formattings and switch the content based on the Accept header sent
-by the request.
+in different representations. And that's what content negotiation is all about.
 
 By the way - in reality content negotiation can become quite complex. There is 
 a good article on wikipedia about it: http://en.wikipedia.org/wiki/Content_negotiation
 
 <div class="alert alert-info">
-Content negotiation is very cool - but sometimes it adds more complexity than
-needed. Another way is defining different routes for different result types.
+Content negotiation is very cool - but sometimes it adds more problems than
+it solves. Another way is defining different routes for different result types.
 myserver.com/api/person.json for json, myserver.com/api/person.xml for xml
-and so on.
+and so on. That means you have to write your controller methods more than
+once, but you have more control and less magic is going on.
 </div>
-
 
 
 Basic behavior of a Ninja Result
@@ -66,19 +68,20 @@ public Result getPerson() {
 }
 </pre>
 
-Route /api/person would then handle Accept:application/json and Accept:application/xml.
-The cool thing is that you write your code once, but Ninja handles the rendering
-via the matching rendering engine for you. If the Accept type dies not match you'll
-get a bad request error response.
+Route /api/person would then handle <code>Accept:application/json</code> 
+and <code>Accept:application/xml</code>. The cool thing is that you write 
+your controller code once, but Ninja handles the rendering
+via the matching rendering engine for you. 
+
+If the Accept type does not match you'll get a bad request error response.
 
 
 ### fallbackContentType(...)
 
 In the example above we saw that you'll get a bad request error response when
-a content type does not match. But sometimes you want to nevertheless render
-something. That's what fallbackContentType is for. 
-
-If we'd extend the result like that:
+an incoming Accept content type does not match. 
+But sometimes you want to nevertheless render something. 
+That's what fallbackContentType is for. 
 
 <pre class="prettyprint">
 public Result getPerson() {
@@ -95,12 +98,13 @@ public Result getPerson() {
 </pre>
 
 Extending the result via <code>.fallbackContentType(Result.APPLICATION_JSON)</code> 
-means that we'll always get a json response as callback. That's the case even
-when the Accept header was something completely unsupported by this request.
+means that we'll always get a json response as fallback. That's the case even
+when the Accept header was something completely unsupported by this controller.
 
 ### The default behavior
 
-If you do not set anything and just create a new result via e,g, <code>Results.ok().render(myObject)</code>
+If you do not set anything and just create a new result via e.g. 
+<code>Results.ok().render(myObject)</code>
 the following rules apply:
 
 1. The result will handle json, xml and html. That means you have to make sure
