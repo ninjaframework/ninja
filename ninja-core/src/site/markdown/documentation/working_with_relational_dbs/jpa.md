@@ -93,7 +93,7 @@ To make that finally come to live you have to configure the second JPA component
 
     &lt;!-- Database settings for development and for tests --&gt;
     &lt;persistence-unit name=&quot;postgresql&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
-        &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
+        &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
 
         &lt;properties&gt;
             &lt;property name=&quot;hibernate.connection.driver_class&quot; value=&quot;org.postgresql.Driver&quot;/&gt;
@@ -117,7 +117,7 @@ To make that finally come to live you have to configure the second JPA component
 
     &lt;!-- production database - with sensible connect strings optimized for the real servers. --&gt;
     &lt;persistence-unit name=&quot;prod_unit&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
-        &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
+        &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
 
         &lt;properties&gt;
             &lt;property name=&quot;hibernate.connection.driver_class&quot; value=&quot;org.postgresql.Driver&quot;/&gt;
