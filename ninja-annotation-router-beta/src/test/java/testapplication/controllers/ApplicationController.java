@@ -18,17 +18,106 @@ package testapplication.controllers;
 
 import ninja.Result;
 import ninja.Results;
+import router.DELETE;
+import router.Dev;
+import router.GET;
+import router.PATCH;
+import router.POST;
+import router.PUT;
+import router.Path;
+import router.Prod;
+import router.Test;
+
 import com.google.inject.Singleton;
-import router.Route;
 
 @Singleton
+@Path("/")
 public class ApplicationController {
 
-    @Route(httpMethod = Route.GET, path = "/index")
-    public Result testAnnoatedRoute() {
-        
-        return Results.text().render("works.");
-        
-    }    
-    
+	/*
+	 * HTTP METHOD TEST ROUTES
+	 */
+    @Path("get")
+    @GET
+    public Result testAnnotatedGetRoute() {
+
+        return Results.text().render("get works.");
+
+    }
+
+    @Path("put")
+    @PUT
+    public Result testAnnotatedPutRoute() {
+
+        return Results.text().render("put works.");
+
+    }
+
+    @Path("post")
+    @POST
+    public Result testAnnotatedPostRoute() {
+
+        return Results.text().render("post works.");
+
+    }
+
+    @Path("patch")
+    @PATCH
+    public Result testAnnotatedPatchRoute() {
+
+        return Results.text().render("patch works.");
+
+    }
+
+    @Path("delete")
+    @DELETE
+    public Result testAnnotatedDeleteRoute() {
+
+        return Results.text().render("delete works.");
+
+    }
+
+    /*
+     * MODE TEST ROUTES
+     */
+    @Path("mode/test")
+    @GET @Test
+    public Result testAnnotatedTestRoute() {
+
+        return Results.text().render("test mode works.");
+
+    }
+
+    @Path("mode/dev")
+    @GET @Dev
+    public Result testAnnotatedDevRoute() {
+
+        return Results.text().render("dev mode works.");
+
+    }
+
+    @Path("mode/dev/and/test")
+    @GET @Dev @Test
+    public Result testAnnotatedDevAndTestRoute() {
+
+        return Results.text().render("dev and test works.");
+
+    }
+
+    @Path("mode/prod")
+    @GET @Prod
+    public Result testAnnotatedProdRoute() {
+
+        return Results.text().render("prod works.");
+
+    }
+
+    @Path("mode/prod/and/test")
+    @GET @Prod @Test
+    public Result testAnnotatedProdAndTestRoute() {
+
+        return Results.text().render("prod and test works.");
+
+    }
+
 }
