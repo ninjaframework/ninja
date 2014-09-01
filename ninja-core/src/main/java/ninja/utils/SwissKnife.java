@@ -203,10 +203,10 @@ public class SwissKnife {
             return Short.valueOf(value);
         }
 
-        public static Date toDate(String value){
-            if(value != null && value.length() > 0){
+        public static Date toDate(String value) {
+            if (value != null && value.length() > 0) {
               return new LocalDateTime(value).toDate();
-            }else{
+            } else {
                 return null;
             }
         }
