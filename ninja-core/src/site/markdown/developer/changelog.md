@@ -1,8 +1,8 @@
-* 2014-08-28 Added support for java.util.Date on BodyParserEnginePost. (pedro-stanaka)
 
 Version 3.3.2
 =============
 
+* 2014-08-28 Added support for java.util.Date on BodyParserEnginePost. (pedro-stanaka)
 * 2014-08-24 HibernatePersistence is deprecated. Use HibernatePersistenceProvider instead. (eiryu)
 * 2014-08-24 Fix mistake in the sample code (eiryu)
 * 2014-08-21 Added utility methods on Context for isRequestXml and isRequestJson. (dazhudson)
