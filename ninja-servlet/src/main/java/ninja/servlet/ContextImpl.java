@@ -70,6 +70,8 @@ public class ContextImpl implements Context.Impl {
     private final BodyParserEngineManager bodyParserEngineManager;
 
     private final FlashScope flashScope;
+    
+    private final NinjaProperties ninjaProperties;
 
     private final Session session;
     private final ResultHandler resultHandler;
@@ -83,14 +85,17 @@ public class ContextImpl implements Context.Impl {
     Logger logger;
 
     @Inject
-    public ContextImpl(BodyParserEngineManager bodyParserEngineManager,
+    public ContextImpl(
+            BodyParserEngineManager bodyParserEngineManager,
             FlashScope flashCookie,
-            Session sessionCookie,
+            NinjaProperties ninjaProperties,
             ResultHandler resultHandler,
+            Session sessionCookie,
             Validation validation) {
 
         this.bodyParserEngineManager = bodyParserEngineManager;
         this.flashScope = flashCookie;
+        this.ninjaProperties = ninjaProperties;
         this.session = sessionCookie;
         this.resultHandler = resultHandler;
         this.validation = validation;
@@ -329,6 +334,24 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public String getRemoteAddr() {
+        
+        boolean isUsageOfXForwardedHeaderEnabled 
+                = ninjaProperties.getBooleanWithDefault(
+                        Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false);
+        
+        String remoteAddr;
+        
+        if (!isUsageOfXForwardedHeaderEnabled) {
+            remoteAddr = httpServletRequest.getRemoteAddr();
+        } else {
+            remoteAddr = calculateRemoteAddrAndTakeIntoAccountXForwardHeader();
+        }
+        
+        return remoteAddr;
+    }
+    
+    private String calculateRemoteAddrAndTakeIntoAccountXForwardHeader() {
+        
         String remoteAddr = getHeader(X_FORWARD_HEADER);
 
         if (remoteAddr != null) {
@@ -346,6 +369,7 @@ public class ContextImpl implements Context.Impl {
         } else {
             remoteAddr = httpServletRequest.getRemoteAddr();
         }
+        
         return remoteAddr;
     }
 
