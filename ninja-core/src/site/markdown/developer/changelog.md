@@ -3,6 +3,11 @@ Version 3.x.x
 
 * 2014-08-29 Added nicer error screens (ra)
 * 2014-08-29 Added fallbackContentType and supportedContentTypes to Result for better content negotiation (ra).
+* 2014-08-28 Added support for java.util.Date on BodyParserEnginePost. (pedro-stanaka)
+
+Version 3.3.2
+=============
+
 * 2014-08-24 HibernatePersistence is deprecated. Use HibernatePersistenceProvider instead. (eiryu)
 * 2014-08-24 Fix mistake in the sample code (eiryu)
 * 2014-08-21 Added utility methods on Context for isRequestXml and isRequestJson. (dazhudson)
