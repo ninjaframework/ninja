@@ -37,7 +37,8 @@ contributed to Ninja. In some random order:
  * Primož Kokol
  * James Moger (gitblit)
  * Hidetaka Koda (eiryu)
-
+ * Pedro Sena Tanaka (pedro-stanaka)
+ 
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen
 intentionally. You can even add yourself to the list:

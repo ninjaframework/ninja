@@ -121,6 +121,11 @@ request - parameters, headers and so on...
 Even better: Ninja will parse an arbitrary object given in the method.
 In the above case MyObject will be automatically parsed by Ninja. The way
 it will parsed (Json, Xml, PostForm) will be determined via the content type request header.
+If your custom object has a date/timestamp field, first make sure that you use the 
+<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Date.html">java.util.Date</a> 
+type and when you pass some date to the controller pass in the 
+<a href="http://joda-time.sourceforge.net/api-release/org/joda/time/format/ISODateTimeFormat.html#localDateOptionalTimeParser%28%29">format</a> 
+accepted by Joda Time library.
 
 Therefore you don't have to worry if
 input is for instance Xml or Json. You simply get a parsed object.

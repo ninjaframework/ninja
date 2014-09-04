@@ -16,13 +16,14 @@
 
 package ninja.bodyparser;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import ninja.Context;
 import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
+
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -42,13 +43,18 @@ public class BodyParserEnginePostTest {
 
     @Test
     public void testBodyParser() {
-        
+
         // some setup for this method:
+        String dateString = "2014-10-10";
+        String dateTimeString = "2014-10-10T20:09:10";
+
         Map<String, String[]> map = new HashMap<>();
         map.put("integer", new String [] {"1000"});
         map.put("string", new String [] {"aString"});
+        map.put("date", new String[]{dateString});
+        map.put("timestamp", new String[]{dateTimeString});
         map.put("somethingElseWhatShouldBeSkipped", new String [] {"somethingElseWhatShouldBeSkipped"});
-        
+
         Mockito.when(context.getParameters()).thenReturn(map);
 
         // do
@@ -58,6 +64,8 @@ public class BodyParserEnginePostTest {
         // and test:
         assertThat(testObject.string, equalTo("aString"));
         assertThat(testObject.integer, CoreMatchers.equalTo(1000));
+        assertThat(testObject.date, CoreMatchers.equalTo(new LocalDateTime(dateString).toDate()));
+        assertThat(testObject.timestamp, CoreMatchers.equalTo(new LocalDateTime(dateTimeString).toDate()));
         
     }
     
@@ -88,7 +96,9 @@ public class BodyParserEnginePostTest {
     
         public int integer;
         public String string;
-    
+        public java.util.Date date;
+        public java.util.Date timestamp;
+
     }
     
     public static class TestObjectWithUnsupportedFields {
