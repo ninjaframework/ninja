@@ -31,6 +31,8 @@ import ninja.Result;
 import ninja.Results;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,14 +76,13 @@ public class ResultHandlerTest {
         resultHandler = new ResultHandler(logger, templateEngineManager);
         when(responseStreams.getOutputStream()).thenReturn(outputStream);
         when(responseStreams.getWriter()).thenReturn(writer);
-        when(context.finalizeHeaders(any(Result.class))).thenReturn(
-                responseStreams);
-        when(
-                templateEngineManager
-                        .getTemplateEngineForContentType(Result.APPLICATON_JSON))
-                .thenReturn(templateEngine);
-        when(templateEngineManager.getTemplateEngineForContentType("text/html"))
-                .thenReturn(templateEngineHtml);
+        when(context.finalizeHeaders(any(Result.class)))
+            .thenReturn(responseStreams);
+        when(templateEngineManager
+            .getTemplateEngineForContentType(Result.APPLICATON_JSON))
+            .thenReturn(templateEngine);
+        when(templateEngineManager.getTemplateEngineForContentType(Result.TEXT_HTML))
+            .thenReturn(templateEngineHtml);
 
     }
 
@@ -128,8 +129,8 @@ public class ResultHandlerTest {
         resultHandler.handleResult(result, context);
 
         // make sure stuff is there:
-        assertEquals("must-revalidate",
-                result.getHeaders().get(Result.CACHE_CONTROL));
+        assertEquals("must-revalidate", 
+            result.getHeaders().get(Result.CACHE_CONTROL));
         assertNull(result.getHeaders().get(Result.DATE));
         assertNull(result.getHeaders().get(Result.EXPIRES));
     }
@@ -138,7 +139,7 @@ public class ResultHandlerTest {
     public void testRenderPlainStringAndSetDefaultContentType() {
         final String toRender = "this is just a plain string";
         Result result = Results.ok();
-        result.render(toRender);
+        result.renderRaw(toRender);
         resultHandler.handleResult(result, context);
         assertEquals(Result.TEXT_PLAIN, result.getContentType());
     }
@@ -158,7 +159,7 @@ public class ResultHandlerTest {
         final String contentType = "any/contenttype";
         Result result = Results.ok();
         result.contentType(contentType);
-        result.render(toRender);
+        result.renderRaw(toRender);
         resultHandler.handleResult(result, context);
         assertEquals(contentType, result.getContentType());
     }
@@ -169,7 +170,7 @@ public class ResultHandlerTest {
         final String contentType = "image/png";
         Result result = Results.ok();
         result.contentType(contentType);
-        result.render(toRender);
+        result.renderRaw(toRender);
         resultHandler.handleResult(result, context);
         assertEquals(contentType, result.getContentType());
     }
@@ -185,5 +186,17 @@ public class ResultHandlerTest {
         resultHandler.handleResult(result, context);
         verify(context).finalizeHeaders(result);
         
+    }
+    
+    @Test
+    public void testThatFallbackContentTypeWorks() {
+        Result result 
+            = new Result(200)
+                .fallbackContentType(Result.TEXT_HTML)
+                .contentType(null);
+        
+        resultHandler.handleResult(result, context);
+        
+        assertThat(result.getContentType(), equalTo(Result.TEXT_HTML));
     }
 }

@@ -222,6 +222,22 @@ public class NinjaDefaultTest {
 
     }
     
+     
+    @Test
+    public void testThatGetInternalServerErrorContentNegotiation() throws Exception {
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Result result = ninjaDefault.getInternalServerErrorResult(contextImpl, new Exception("not important"));
+       assertThat(result.getContentType(), equalTo(null));
+       assertThat(result.supportedContentTypes().size(), equalTo(3));
+
+    }
+        
+    @Test
+    public void testThatGetInternalServerErrorDoesFallsBackToHtml() throws Exception {
+        Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
+        Result result = ninjaDefault.getInternalServerErrorResult(contextImpl, new Exception("not important"));
+        assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
+    }
 
     @Test
     public void getInternalServerErrorResult() throws Exception {
@@ -232,7 +248,6 @@ public class NinjaDefaultTest {
                 new Exception("not important"));
         
         assertThat(result.getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
-        assertThat("we perform content-negotiation because", result.getContentType(), equalTo(null));
         assertThat(result.getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
         assertTrue(result.getRenderable() instanceof Message);
 
@@ -245,6 +260,22 @@ public class NinjaDefaultTest {
     }
     
     @Test
+    public void testThatGetBadRequestContentNegotiation() throws Exception {
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Result result = ninjaDefault.getBadRequestResult(contextImpl, new Exception("not important"));
+       assertThat(result.getContentType(), equalTo(null));
+       assertThat(result.supportedContentTypes().size(), equalTo(3));
+
+    }
+        
+    @Test
+    public void testThatGetBadRequestDoesFallsBackToHtml() throws Exception {
+        Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
+        Result result = ninjaDefault.getBadRequestResult(contextImpl, new Exception("not important"));
+        assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
+    }
+    
+    @Test
     public void testGetBadRequest() throws Exception {
         
         // real test:
@@ -253,7 +284,6 @@ public class NinjaDefaultTest {
                 new BadRequestException("not important"));
         
         assertThat(result.getStatusCode(), equalTo(Result.SC_400_BAD_REQUEST));
-        assertThat("we perform content-negotiation because", result.getContentType(), equalTo(null));
         assertThat(result.getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
         assertTrue(result.getRenderable() instanceof Message);
 
@@ -266,12 +296,27 @@ public class NinjaDefaultTest {
     }
     
     @Test
-    public void testGetOnNotFoundResult() throws Exception {
+    public void testThatGetOnNotFoundDoesContentNegotiation() throws Exception {
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Result result = ninjaDefault.getNotFoundResult(contextImpl);
+       assertThat(result.getContentType(), equalTo(null));
+       assertThat(result.supportedContentTypes().size(), equalTo(3));
+
+    }
+        
+    @Test
+    public void testThatGetOnNotFoundDoesFallsBackToHtml() throws Exception {
+        Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
+        Result result = ninjaDefault.getNotFoundResult(contextImpl);
+        assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
+    }
+    
+    @Test
+    public void testGetOnNotFoundResultWorks() throws Exception {
         
         Result result = ninjaDefault.getNotFoundResult(contextImpl);
         
         assertThat(result.getStatusCode(), equalTo(Result.SC_404_NOT_FOUND));
-        assertThat("we perform content-negotiation because", result.getContentType(), equalTo(null));
         assertThat(result.getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
         assertTrue(result.getRenderable() instanceof Message);
         
