@@ -1,6 +1,7 @@
 Version 3.x.x
 =============
 
+* 2014-09-12 Add ServletContext to ContextImpl to improve 3rd-party integration
 * 2014-08-29 Added nicer error screens (ra)
 * 2014-08-29 Added fallbackContentType and supportedContentTypes to Result for better content negotiation (ra).
 * 2014-08-28 Added support for java.util.Date on BodyParserEnginePost. (pedro-stanaka)
