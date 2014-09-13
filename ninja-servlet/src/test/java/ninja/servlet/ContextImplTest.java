@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
-
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,6 +64,9 @@ public class ContextImplTest {
 
     @Mock
     private BodyParserEngineManager bodyParserEngineManager;
+
+    @Mock
+    private ServletContext servletContext;
 
     @Mock
     private HttpServletRequest httpServletRequest;
@@ -103,7 +107,7 @@ public class ContextImplTest {
         when(httpServletRequest.getRequestURI()).thenReturn("/index");
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //make sure this is correct
         assertEquals("/index", context.getRequestUri());
@@ -116,7 +120,7 @@ public class ContextImplTest {
         when(httpServletRequest.getHeader("host")).thenReturn("test.com");
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //make sure this is correct
         assertEquals("test.com", context.getHostname());
@@ -129,7 +133,7 @@ public class ContextImplTest {
         when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //make sure this is correct
         assertEquals("mockedRemoteAddr", context.getRemoteAddr());
@@ -138,7 +142,7 @@ public class ContextImplTest {
     @Test
     public void testAddCookieViaResult() {
         Cookie cookie = Cookie.builder("cookie", "yum").setDomain("domain").build();
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         //context.addCookie(cookie);
 
         //generate an arbitrary result:
@@ -168,7 +172,7 @@ public class ContextImplTest {
 
         when(httpServletRequest.getCookies()).thenReturn(servletCookies);
 
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         // negative test:
         ninja.Cookie doesNotExist = context.getCookie("doesNotExist");
@@ -196,7 +200,7 @@ public class ContextImplTest {
 
         when(httpServletRequest.getCookies()).thenReturn(servletCookies);
 
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         // negative test:
         assertFalse(context.hasCookie("doesNotExist"));
@@ -218,7 +222,7 @@ public class ContextImplTest {
 
         when(httpServletRequest.getCookies()).thenReturn(servletCookiesEmpty);
 
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //test when there are no cookies.
         assertEquals(0, context.getCookies().size());
@@ -236,7 +240,7 @@ public class ContextImplTest {
     @Test
     public void testGetPathParameter() {
     	//init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //mock a parametermap:
         Map<String, String> parameterMap = Maps.newHashMap();
@@ -257,7 +261,7 @@ public class ContextImplTest {
     @Test
     public void testGetPathParameterDecodingWorks() {
         //init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //mock a parametermap:
         Map<String, String> parameterMap = Maps.newHashMap();
@@ -277,7 +281,7 @@ public class ContextImplTest {
     @Test
     public void testGetPathParameterAsInteger() {
     	//init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //mock a parametermap:
         Map<String, String> parameterMap = Maps.newHashMap();
@@ -303,7 +307,7 @@ public class ContextImplTest {
     public void testGetParameter() {
 
     	//init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //and return the parameter map when any parameter is called...
         when(httpServletRequest.getParameter("key")).thenReturn("value");
@@ -323,7 +327,7 @@ public class ContextImplTest {
     public void testGetParameterAsInteger() {
 
     	//init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //and return the parameter map when any parameter is called...
         when(httpServletRequest.getParameter("key")).thenReturn("1");
@@ -342,7 +346,7 @@ public class ContextImplTest {
     @Test
     public void testGetParameterAs() {
         //init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //and return the parameter map when any parameter is called...
         when(httpServletRequest.getParameter("key1")).thenReturn("100");
@@ -364,7 +368,7 @@ public class ContextImplTest {
     public void testContentTypeGetsConvertedProperlyUponFinalize() {
 
         //init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //this must be Content-Type: application/json; encoding=utf-8
         Result result = Results.json();
@@ -380,7 +384,7 @@ public class ContextImplTest {
     public void testContentTypeWithNullEncodingGetsConvertedProperlyUponFinalize() {
 
         //init the context
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //this must be Content-Type: application/json; encoding=utf-8
         Result result = Results.json();
@@ -404,7 +408,7 @@ public class ContextImplTest {
         when(httpServletRequest.getRequestURI()).thenReturn("/my/funky/prefix/myapp/is/here");
 
 
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
 
         assertEquals("/myapp/is/here", context.getRequestPath());
@@ -422,7 +426,7 @@ public class ContextImplTest {
         when(httpServletRequest.getRequestURI()).thenReturn("/myapp/is/here");
 
 
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
 
         assertEquals("/myapp/is/here", context.getRequestPath());
@@ -433,19 +437,19 @@ public class ContextImplTest {
     public void testGetRequestContentType() {
         String contentType = "text/html";
         when(httpServletRequest.getContentType()).thenReturn(contentType);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(contentType, context.getRequestContentType());
 
         contentType = null;
         when(httpServletRequest.getContentType()).thenReturn(contentType);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertNull(context.getRequestContentType());
 
         contentType = "text/html; charset=UTF-8";
         when(httpServletRequest.getContentType()).thenReturn(contentType);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(contentType, context.getRequestContentType());
     }
@@ -453,35 +457,35 @@ public class ContextImplTest {
     @Test
     public void testGetAcceptContentType() {
         when(httpServletRequest.getHeader("accept")).thenReturn(null);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("");
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("totally_unknown");
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("application/json");
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.APPLICATON_JSON, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("text/html, application/json");
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("application/xhtml, application/json");
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("text/plain");
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.TEXT_PLAIN, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("text/plain, application/json");
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.APPLICATON_JSON, context.getAcceptContentType());
     }
 
@@ -489,19 +493,19 @@ public class ContextImplTest {
     public void testGetAcceptEncoding() {
         String encoding = "compress, gzip";
         when(httpServletRequest.getHeader("accept-encoding")).thenReturn(encoding);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(encoding, context.getAcceptEncoding());
 
         encoding = null;
         when(httpServletRequest.getHeader("accept-encoding")).thenReturn(encoding);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertNull(context.getAcceptEncoding());
 
         encoding = "gzip;q=1.0, identity; q=0.5, *;q=0";
         when(httpServletRequest.getHeader("accept-encoding")).thenReturn(encoding);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(encoding, context.getAcceptEncoding());
     }
@@ -510,19 +514,19 @@ public class ContextImplTest {
     public void testGetAcceptLanguage() {
         String language = "de";
         when(httpServletRequest.getHeader("accept-language")).thenReturn(language);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(language, context.getAcceptLanguage());
 
         language = null;
         when(httpServletRequest.getHeader("accept-language")).thenReturn(language);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertNull(context.getAcceptLanguage());
 
         language = "da, en-gb;q=0.8, en;q=0.7";
         when(httpServletRequest.getHeader("accept-language")).thenReturn(language);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(language, context.getAcceptLanguage());
     }
@@ -531,19 +535,19 @@ public class ContextImplTest {
     public void testGetAcceptCharset() {
         String charset = "UTF-8";
         when(httpServletRequest.getHeader("accept-charset")).thenReturn(charset);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(charset, context.getAcceptCharset());
 
         charset = null;
         when(httpServletRequest.getHeader("accept-charset")).thenReturn(charset);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertNull(context.getAcceptCharset());
 
         charset = "iso-8859-5, unicode-1-1;q=0.8";
         when(httpServletRequest.getHeader("accept-charset")).thenReturn(charset);
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(charset, context.getAcceptCharset());
     }
@@ -560,7 +564,7 @@ public class ContextImplTest {
         when(httpServletRequest.getContentType()).thenReturn("application/json; charset=utf-8");
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         when(bodyParserEngineManager.getBodyParserEngineForContentType("application/json")).thenReturn(bodyParserEngine);
         when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
@@ -579,7 +583,7 @@ public class ContextImplTest {
         when(httpServletRequest.getContentType()).thenReturn(ContentTypes.APPLICATION_POST_FORM);
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         when(bodyParserEngineManager.getBodyParserEngineForContentType(ContentTypes.APPLICATION_POST_FORM)).thenReturn(bodyParserEngine);
         Dummy dummy = new Dummy();
@@ -603,11 +607,11 @@ public class ContextImplTest {
         when(httpServletRequest.getContentType()).thenReturn(ContentTypes.APPLICATION_JSON);
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
-        
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
         assertTrue(context.isRequestJson());
     }
-    
+
     /**
      * Test is isXml
      */
@@ -616,11 +620,11 @@ public class ContextImplTest {
         when(httpServletRequest.getContentType()).thenReturn(ContentTypes.APPLICATION_XML);
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
-        
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
         assertTrue(context.isRequestXml());
     }
-    
+
     /**
      * This is the default mode.
      *
@@ -633,7 +637,7 @@ public class ContextImplTest {
         when(httpServletRequest.getContentType()).thenReturn("application/xml");
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         when(bodyParserEngineManager.getBodyParserEngineForContentType("application/xml")).thenReturn(bodyParserEngine);
         when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
@@ -655,7 +659,7 @@ public class ContextImplTest {
         when(httpServletRequest.getContentType()).thenReturn(null);
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
 
         Object o = context.parseBody(Dummy.class);
@@ -675,7 +679,7 @@ public class ContextImplTest {
         when(httpServletRequest.getContentType()).thenReturn("application/UNKNOWN");
 
         //init the context from a (mocked) servlet
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         Object o = context.parseBody(Dummy.class);
 
@@ -695,7 +699,7 @@ public class ContextImplTest {
      */
     @Test
     public void testInitEnforcingOfCorrectEncoding() throws Exception {
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //this proofs that the encoding has been set:
         verify(httpServletRequest).setCharacterEncoding(NinjaConstant.UTF_8);
@@ -708,7 +712,7 @@ public class ContextImplTest {
     @Test
     public void testGetReaderEnforcingOfCorrectEncoding() throws Exception {
 
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         context.getReader();
       //this proofs that the encoding has been set:
@@ -724,12 +728,29 @@ public class ContextImplTest {
     @Test
     public void testGetInputStreamEnforcingOfCorrectEncoding() throws Exception {
 
-        context.init(httpServletRequest, httpServletResponse);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
 
         context.getInputStream();
         //this proofs that the encoding has been set:
         verify(httpServletRequest).setCharacterEncoding(anyString());
 
+
+    }
+
+    /**
+     * We get an conetnt type that does not match any registered parsers.
+     * This must also return null safely.
+     */
+    @Test
+    public void testGetServletContext() {
+
+        //init the context from a (mocked) servlet
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        Object o = context.getServletContext();
+
+        assertNotNull(o);
+        assertEquals(servletContext, o);
 
     }
 

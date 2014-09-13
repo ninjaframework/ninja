@@ -18,6 +18,7 @@ package ninja.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -71,12 +72,14 @@ public class NinjaServletDispatcher extends HttpServlet {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
+        ServletContext servletContext = getServletContext();
+
         // We generate a Ninja compatible context element
         ContextImpl context = (ContextImpl) injector.getProvider(Context.class)
                 .get();
 
         // And populate it
-        context.init(request, response);
+        context.init(servletContext, request, response);
 
         // And invoke ninja on it.
         // Ninja handles all defined routes, filters and much more:

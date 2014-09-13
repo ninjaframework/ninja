@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,6 +58,8 @@ import ninja.ContentTypes;
 import org.apache.commons.lang3.StringUtils;
 
 public class ContextImpl implements Context.Impl {
+
+    private ServletContext servletContext;
 
     private HttpServletRequest httpServletRequest;
 
@@ -96,8 +99,10 @@ public class ContextImpl implements Context.Impl {
         this.validation = validation;
     }
 
-    public void init(HttpServletRequest httpServletRequest,
+    public void init(ServletContext servletContext,
+            HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
+        this.servletContext = servletContext;
         this.httpServletRequest = httpServletRequest;
         this.httpServletResponse = httpServletResponse;
 
@@ -614,6 +619,15 @@ public class ContextImpl implements Context.Impl {
     @Override
     public String getContextPath() {
         return contextPath;
+    }
+
+    /**
+     * Convenience method to access ServletContext of this context.
+     *
+     * @return ServletContext of this Context
+     */
+    public ServletContext getServletContext() {
+        return servletContext;
     }
 
     /**
