@@ -52,6 +52,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
+import ninja.utils.NinjaProperties;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextImplTest {
@@ -85,6 +86,9 @@ public class ContextImplTest {
 
     @Mock
     private BodyParserEngine bodyParserEngine;
+    
+    @Mock
+    private NinjaProperties ninjaProperties;
 
     private ContextImpl context;
 
@@ -96,8 +100,13 @@ public class ContextImplTest {
         when(httpServletRequest.getRequestURI()).thenReturn("/");
 
 
-        context = new ContextImpl(bodyParserEngineManager, flashCookie, sessionCookie,
-                resultHandler, validation);
+        context = new ContextImpl(
+                bodyParserEngineManager, 
+                flashCookie, 
+                ninjaProperties,
+                resultHandler, 
+                sessionCookie,
+                validation);
     }
 
     @Test
@@ -127,10 +136,62 @@ public class ContextImplTest {
     }
 
     @Test
-    public void testGetRemoteAddr() {
+    public void testGetRemoteAddrReturnsDefaultRemoteAddr() {
 
         //say the httpServletRequest to return a certain value:
         when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
+        when(httpServletRequest.getHeader(Context.X_FORWARD_HEADER)).thenReturn("x-forwarded-for-mockedRemoteAddr");
+
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+
+        //make sure this is correct
+        assertEquals("mockedRemoteAddr", context.getRemoteAddr());
+    }
+    
+    @Test
+    public void testGetRemoteAddrParsesXForwardedForIfSetInApplicationConf() {
+
+        //say the httpServletRequest to return a certain value:
+        when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
+        when(httpServletRequest.getHeader(Context.X_FORWARD_HEADER)).thenReturn("192.168.1.44");
+
+        when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false))
+                .thenReturn(Boolean.TRUE);
+
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+
+        //make sure this is correct
+        assertEquals("192.168.1.44", context.getRemoteAddr());
+    }
+    
+    @Test
+    public void testGetRemoteAddrParsesXForwardedForIfMoreThanOneHostPresent() {
+
+        //say the httpServletRequest to return a certain value:
+        when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
+        when(httpServletRequest.getHeader(Context.X_FORWARD_HEADER)).thenReturn("192.168.1.1, 192.168.1.2, 192.168.1.3");
+
+        when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false))
+                .thenReturn(Boolean.TRUE);
+
+        //init the context from a (mocked) servlet
+        context.init(httpServletRequest, httpServletResponse);
+
+        //make sure this is correct
+        assertEquals("192.168.1.1", context.getRemoteAddr());
+    }
+    
+    @Test
+    public void testGetRemoteAddrUsesFallbackIfXForwardedForIsNotValidInetAddr() {
+
+        //say the httpServletRequest to return a certain value:
+        when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
+        when(httpServletRequest.getHeader(Context.X_FORWARD_HEADER)).thenReturn("I_AM_NOT_A_VALID_ADDRESS");
+
+        when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false))
+                .thenReturn(Boolean.TRUE);
 
         //init the context from a (mocked) servlet
         context.init(servletContext, httpServletRequest, httpServletResponse);
