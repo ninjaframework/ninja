@@ -17,6 +17,7 @@
 package ninja.servlet;
 
 import com.google.common.base.Optional;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ import ninja.lifecycle.LifecycleSupport;
 import ninja.logging.LogbackConfigurator;
 import ninja.scheduler.SchedulerSupport;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,8 +144,14 @@ public class NinjaBootstrap {
                 Class<?> applicationConfigurationClass = Class
                         .forName(applicationConfigurationClassName);
 
-                AbstractModule applicationConfiguration = (AbstractModule) applicationConfigurationClass
-                        .getConstructor().newInstance();
+                AbstractModule applicationConfiguration;
+                try {
+                    Constructor<?> propertiesConstructor = applicationConfigurationClass.getConstructor(NinjaProperties.class);
+                    applicationConfiguration = (AbstractModule) propertiesConstructor.newInstance(ninjaProperties);
+                } catch (NoSuchMethodException e) {
+                    applicationConfiguration = (AbstractModule) applicationConfigurationClass
+                            .getConstructor().newInstance();
+                }
 
                 modulesToLoad.add(applicationConfiguration);
                 
