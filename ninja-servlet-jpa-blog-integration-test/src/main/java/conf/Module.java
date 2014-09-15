@@ -16,6 +16,8 @@
 
 package conf;
 
+import ninja.freemarker.FreemarkerModule;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
@@ -25,8 +27,9 @@ public class Module extends AbstractModule {
 
     protected void configure() {
         
-        bind(StartupActions.class);    
-        
+        bind(StartupActions.class);
+
+        install(new FreemarkerModule());
     }
 
 }

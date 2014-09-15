@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja.template;
+package ninja.freemarker;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +25,9 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.template.TemplateEngine;
+import ninja.template.TemplateEngineHelper;
+import ninja.template.TemplateEngineManager;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
@@ -43,8 +46,11 @@ import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.Version;
+
 import java.io.Writer;
+
 import javax.inject.Singleton;
+
 import ninja.utils.NinjaConstant;
 
 @Singleton

@@ -13,9 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ninja.template;
+package ninja.freemarker;
 
 import javax.inject.Singleton;
+
+import ninja.freemarker.TemplateEngineFreemarker;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;

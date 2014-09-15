@@ -53,12 +53,6 @@ public class TemplateEngineManagerImplTest {
     }
 
     @Test
-    public void testGetFreemarker() {
-        assertThat(createTemplateEngineManager().getTemplateEngineForContentType(
-                ContentTypes.TEXT_HTML), instanceOf(TemplateEngineFreemarker.class));
-    }
-
-    @Test
     public void testGetCustom() {
         assertThat(createTemplateEngineManager(CustomTemplateEngine.class).getTemplateEngineForContentType(
                 "custom"), instanceOf(CustomTemplateEngine.class));

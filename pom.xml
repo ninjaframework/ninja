@@ -35,6 +35,7 @@
 
     <modules>
         <module>ninja-core</module>
+        <module>ninja-freemarker</module>
         <module>ninja-servlet</module>
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
@@ -302,7 +303,13 @@
                 <artifactId>ninja-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-freemarker</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.ninjaframework</groupId>
                 <artifactId>ninja-servlet</artifactId>

@@ -107,12 +107,6 @@
             <artifactId>jackson-module-afterburner</artifactId>
         </dependency>
 
-        <!-- freemarker is our templating engine: -->
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker-gae</artifactId>
-        </dependency>
-
         <!-- guava is just cool -->
         <dependency>
             <groupId>com.google.guava</groupId>

@@ -16,6 +16,8 @@
 
 package conf;
 
+import ninja.freemarker.FreemarkerModule;
+
 import com.google.inject.AbstractModule;
 
 import etc.GreetingService;
@@ -38,6 +40,7 @@ public class Module extends AbstractModule {
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
 
+        install(new FreemarkerModule());
     }
 
 }

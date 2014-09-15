@@ -38,8 +38,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
     private final Map<String, Provider<? extends TemplateEngine>> contentTypeToTemplateEngineMap;
 
     @Inject
-    public TemplateEngineManagerImpl(Provider<TemplateEngineFreemarker> templateEngineFreemarker,
-                                     Provider<TemplateEngineJson> templateEngineJson,
+    public TemplateEngineManagerImpl(Provider<TemplateEngineJson> templateEngineJson,
                                      Provider<TemplateEngineJsonP> templateEngineJsonP,
                                      Provider<TemplateEngineXml> templateEngineXmlProvider,
                                      Injector injector) {
@@ -48,8 +47,6 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
 
         // First put the built in ones in, this is so they can be overridden by
         // custom bindings
-        map.put(templateEngineFreemarker.get().getContentType(),
-                templateEngineFreemarker);
         map.put(templateEngineJson.get().getContentType(),
                 templateEngineJson);
         map.put(templateEngineJsonP.get().getContentType(),

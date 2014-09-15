@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja.template;
+package ninja.freemarker;
 
 import java.io.IOException;
 import java.io.Reader;

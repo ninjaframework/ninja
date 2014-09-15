@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja.template;
+package ninja.freemarker;
 
 import java.util.List;
 
@@ -32,23 +32,22 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ninja.AssetsController;
 import ninja.Router;
 
 @Singleton
-public class TemplateEngineFreemarkerWebJarsAtMethod implements
+public class TemplateEngineFreemarkerReverseRouteMethod implements
         TemplateMethodModelEx {
 
     final Router router;
     final TemplateEngineFreemarkerReverseRouteHelper templateEngineFreemarkerReverseRouteHelper;
 
     @Inject
-    public TemplateEngineFreemarkerWebJarsAtMethod(
+    public TemplateEngineFreemarkerReverseRouteMethod(
             Router router,
             TemplateEngineFreemarkerReverseRouteHelper templateEngineFreemarkerReverseRouteHelper) {
+        
         this.router = router;
         this.templateEngineFreemarkerReverseRouteHelper = templateEngineFreemarkerReverseRouteHelper;
 
@@ -56,14 +55,7 @@ public class TemplateEngineFreemarkerWebJarsAtMethod implements
 
     public TemplateModel exec(List args) throws TemplateModelException {
 
-       List argsWithControllerAndMethod = new ArrayList();
-       argsWithControllerAndMethod.add(AssetsController.class.getName());
-       argsWithControllerAndMethod.add("serveWebJars");
-       argsWithControllerAndMethod.add("fileName");
-       argsWithControllerAndMethod.addAll(args);
-       
-       return templateEngineFreemarkerReverseRouteHelper.computeReverseRoute(
-               argsWithControllerAndMethod);
+       return templateEngineFreemarkerReverseRouteHelper.computeReverseRoute(args);
 
     }
 }

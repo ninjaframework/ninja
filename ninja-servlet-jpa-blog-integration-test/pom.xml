@@ -151,7 +151,12 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-freemarker</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
