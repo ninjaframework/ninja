@@ -19,12 +19,15 @@ package ninja.servlet;
 import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import ninja.Configuration;
 import ninja.Context;
 import ninja.Ninja;
 import ninja.Route;
 import ninja.Router;
+import ninja.template.TemplateEngine;
+import ninja.template.TemplateEngineManager;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.logging.LogbackConfigurator;
@@ -188,9 +191,13 @@ public class NinjaBootstrap {
             injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
 
             initializeRouterWithRoutesOfUserApplication(applicationModulesBasePackage);
-            
+
+            TemplateEngineManager templateEngineManager = injector
+                    .getInstance(TemplateEngineManager.class);
+            logTemplateEngines(templateEngineManager);
+
             return injector;
-            
+
         } catch (Exception exception) {
             logger.error("Fatal error booting Ninja", exception);
         }
@@ -362,6 +369,50 @@ public class NinjaBootstrap {
               logger.info("{} {}", route.getHttpMethod(), route.getUri());
 
             }
+
+        }
+
+        logger.info(border);
+
+    }
+
+    protected void logTemplateEngines(TemplateEngineManager templateEngineManager) {
+        Set<String> outputTypes = templateEngineManager.getContentTypes();
+        if (outputTypes.isEmpty()) {
+
+            logger.error("No registered template engines?! Please install a template module!");
+            return;
+
+        }
+
+        int maxContentTypeLen = 0;
+        int maxTemplateEngineLen = 0;
+
+        for (String contentType : outputTypes) {
+
+            TemplateEngine templateEngine = templateEngineManager
+                    .getTemplateEngineForContentType(contentType);
+
+            maxContentTypeLen = Math.max(maxContentTypeLen,
+                    contentType.length());
+            maxTemplateEngineLen = Math.max(maxTemplateEngineLen,
+                    templateEngine.getClass().getName().length());
+
+        }
+
+        int borderLen = 10 + maxContentTypeLen + maxTemplateEngineLen;
+        String border = Strings.padEnd("", borderLen, '-');
+
+        logger.info("Registered response template engines");
+        logger.info(border);
+
+        for (String contentType : outputTypes) {
+
+            TemplateEngine templateEngine = templateEngineManager
+                    .getTemplateEngineForContentType(contentType);
+            logger.info("{}  =>  {}",
+                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
+                    templateEngine.getClass().getName());
 
         }
 

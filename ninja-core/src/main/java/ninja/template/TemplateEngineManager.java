@@ -16,8 +16,9 @@
 
 package ninja.template;
 
+import java.util.Set;
+
 import com.google.inject.ImplementedBy;
-import com.google.inject.Singleton;
 
 /**
  * Template engine manager. Has a number of built in template engines, and
@@ -27,9 +28,11 @@ import com.google.inject.Singleton;
 @ImplementedBy(TemplateEngineManagerImpl.class)
 public interface TemplateEngineManager {
 
+    Set<String> getContentTypes();
+
     /**
      * Find the template engine for the given content type
-     * 
+     *
      * @param contentType
      *            The content type
      * @return The template engine, if found
