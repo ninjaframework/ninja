@@ -169,6 +169,11 @@
 
         <dependency>
             <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-commonsmail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
         </dependency>
 
