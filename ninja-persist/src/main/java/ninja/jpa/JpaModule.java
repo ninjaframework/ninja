@@ -16,52 +16,55 @@
 
 package ninja.jpa;
 
+import static com.google.inject.matcher.Matchers.annotatedWith;
+import static com.google.inject.matcher.Matchers.any;
+
+import java.util.Properties;
+
+import ninja.migrations.MigrationInitializer;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
 import com.google.inject.AbstractModule;
-import static com.google.inject.matcher.Matchers.annotatedWith;
-import static com.google.inject.matcher.Matchers.any;
 import com.google.inject.persist.jpa.JpaPersistModule;
-import java.util.Properties;
 
 public class JpaModule extends AbstractModule {
-    
+
     NinjaProperties ninjaProperties;
-    
+
     public JpaModule(NinjaProperties ninjaProperties) {
         this.ninjaProperties = ninjaProperties;
     }
 
     @Override
     protected void configure() {
-        
+
         ///////////////////////////////////////////////////////////////
         // only start up Jpa when it is configured in application.conf
         ///////////////////////////////////////////////////////////////
         String persistenceUnitName = ninjaProperties.get(
                 NinjaConstant.PERSISTENCE_UNIT_NAME);
-        
+
         if (persistenceUnitName != null) {
-        
+
             // Get the connection credentials from application.conf
             String connectionUrl = ninjaProperties.get(NinjaConstant.DB_CONNECTION_URL);
             String connectionUsername = ninjaProperties.get(NinjaConstant.DB_CONNECTION_USERNAME);
             String connectionPassword = ninjaProperties.get(NinjaConstant.DB_CONNECTION_PASSWORD);
-        
+
             Properties jpaProperties = new Properties();
-            
+
             // We are using Hibernate, so we can set the connections stuff
             // via system properties:
             if (connectionUrl != null) {
                 jpaProperties.put("hibernate.connection.url", connectionUrl);
             }
-            
-            if (connectionUsername != null) {                
+
+            if (connectionUsername != null) {
                 jpaProperties.put("hibernate.connection.username", connectionUsername);
             }
-            
-            if (connectionPassword != null) {                
+
+            if (connectionPassword != null) {
                 jpaProperties.put("hibernate.connection.password", connectionPassword);
             }
 
@@ -69,10 +72,10 @@ public class JpaModule extends AbstractModule {
             // connection.password is set. But this may be okay e.g. when using JDNI to
             // configure your datasources...
             install(new JpaPersistModule(persistenceUnitName).properties(jpaProperties));
-            
-            
+
+
             UnitOfWorkInterceptor unitOfWorkInterceptor = new UnitOfWorkInterceptor();
-        
+
             requestInjection(unitOfWorkInterceptor);
 
             // class-level @UnitOfWork
@@ -80,21 +83,22 @@ public class JpaModule extends AbstractModule {
                 annotatedWith(UnitOfWork.class),
                 any(),
                 unitOfWorkInterceptor);
-            
+
             // method-level @UnitOfWork
             bindInterceptor(
                 any(),
                 annotatedWith(UnitOfWork.class),
                 unitOfWorkInterceptor);
-            
-            
+
+
+            bind(MigrationInitializer.class).asEagerSingleton();
             bind(JpaInitializer.class).asEagerSingleton();
-            
-            
-            
+
+
+
         }
-        
-        
+
+
     }
 
 }

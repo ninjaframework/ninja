@@ -156,6 +156,11 @@
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-persist</artifactId>
+        </dependency>
         
         <dependency>
             <groupId>org.ninjaframework</groupId>

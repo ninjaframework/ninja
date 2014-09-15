@@ -18,8 +18,6 @@ package ninja;
 
 import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
-import ninja.jpa.JpaModule;
-import ninja.migrations.MigrationInitializer;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.guice.PostofficeProvider;
 import ninja.utils.LoggerProvider;
@@ -33,9 +31,9 @@ import com.google.inject.Singleton;
 
 /**
  * The basic configuration of the main ninja framework.
- * 
+ *
  * @author ra
- * 
+ *
  */
 public class Configuration extends AbstractModule {
 
@@ -45,6 +43,7 @@ public class Configuration extends AbstractModule {
         this.ninjaProperties = ninjaProperties;
     }
 
+    @Override
     public void configure() {
 
         System.setProperty("file.encoding", "utf-8");
@@ -65,10 +64,7 @@ public class Configuration extends AbstractModule {
 
         // Cache
         bind(Cache.class).toProvider(CacheProvider.class);
-        
-        bind(MigrationInitializer.class).asEagerSingleton();
-        install(new JpaModule(ninjaProperties));
-        
+
     }
 
 }
