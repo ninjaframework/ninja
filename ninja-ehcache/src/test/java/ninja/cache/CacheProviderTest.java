@@ -16,6 +16,7 @@
 
 package ninja.cache;
 
+import static org.junit.Assert.assertTrue;
 import ninja.Configuration;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.utils.NinjaConstant;
@@ -36,25 +37,24 @@ public class CacheProviderTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+
     @Test
-    public void testThatSettingWrongCacheImplementationYieldsException() {
+    public void testEhCacheDefaulLoadingWorks() {
 
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
 
-        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, "not_existing_implementation");
+        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, null);
 
         Injector injector = Guice.createInjector(new Configuration(ninjaProperties), LifecycleSupport.getModule());
 
         Logger logger = injector.getInstance(Logger.class);
 
-        // this will not work => we expect a runtime exception...
-        thrown.expect(RuntimeException.class);
         CacheProvider cacheProvider = new CacheProvider(
                 injector,
                 ninjaProperties,
                 logger);
 
-        cacheProvider.get();
+        assertTrue(cacheProvider.get() instanceof CacheEhCacheImpl);
 
     }
 

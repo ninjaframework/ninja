@@ -16,6 +16,7 @@
 
 package ninja.cache;
 
+import ninja.cache.mock.CacheMockImpl;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
@@ -27,21 +28,23 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 /**
- * A provider that determines which implementation to load as Cache based on 
+ * A provider that determines which implementation to load as Cache based on
  * the value of key {@link CacheConstant#CACHE_IMPLEMENTATION} in
  * {@link NinjaProperties} (aka application.conf).
- * 
- * If this variable is set the instance for that class is 
+ *
+ * If this variable is set the instance for that class is
  * instantiated and used as cache implementation.
- * 
+ *
  * If the variable is not set {@link CacheEhCacheImpl} is used by default.
- * 
- * 
+ *
+ *
  * @author ra
  *
  */
 @Singleton
 public class CacheProvider implements Provider<Cache> {
+
+    private final String defaultImplementation = "ninja.cache.CacheEhCacheImpl";
 
     private final NinjaProperties ninjaProperties;
     private final Injector injector;
@@ -51,19 +54,19 @@ public class CacheProvider implements Provider<Cache> {
 
     @Inject
     public CacheProvider(
-                         Injector injector, 
-                         NinjaProperties ninjaProperties, 
+                         Injector injector,
+                         NinjaProperties ninjaProperties,
                          Logger logger) {
-        
+
         this.ninjaProperties = ninjaProperties;
         this.injector = injector;
         this.logger = logger;
-        
-      
+
+
         Class<? extends Cache> cacheClass = null;
 
         String cacheImplClassName = ninjaProperties.get(NinjaConstant.CACHE_IMPLEMENTATION);
-        
+
         if (cacheImplClassName != null) {
             try {
 
@@ -73,36 +76,44 @@ public class CacheProvider implements Provider<Cache> {
                 logger.info("Using the {} as implementation for caching.",  cacheClass);
 
             } catch (ClassNotFoundException e) {
-                
+
                 throw new RuntimeException(
                         "Class defined in configuration " + NinjaConstant.CACHE_IMPLEMENTATION +
                         "not found (" + cacheClass + ")", e);
-                
+
             } catch (ClassCastException e) {
-                
+
                 throw new RuntimeException(
-                        "Class defined in configuration " 
+                        "Class defined in configuration "
                                 + NinjaConstant.CACHE_IMPLEMENTATION +
-                                "is not an instance of interface cache (" 
+                                "is not an instance of interface cache ("
                                 + cacheClass + ")", e);
             }
         }
 
         if (cacheClass == null) {
-                // load default implementation
-                cacheClass = CacheEhCacheImpl.class;
-                logger.info("Using default eh cache implementation. ({}) ", cacheClass);
-            
+            // load default implementation
+            try {
+                Class<?> clazz = Class.forName(defaultImplementation);
+                cacheClass = clazz.asSubclass(Cache.class);
+
+                logger.info("Using EhCache implementation. ({}) ", cacheClass);
+            } catch (ClassNotFoundException e) {
+
+                cacheClass = CacheMockImpl.class;
+                logger.info("Using mock cache implementation. ({}) ", cacheClass);
+            }
+
         }
 
         cache = injector.getInstance(cacheClass);
-      
+
     }
 
     @Override
     public Cache get() {
         // only called once => reference cached by guice...
         return cache;
-        
+
     }
 }

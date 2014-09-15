@@ -20,7 +20,6 @@ import java.io.NotSerializableException;
 import java.io.Serializable;
 import java.util.Map;
 
-import net.sf.ehcache.CacheException;
 import ninja.utils.TimeUtil;
 
 import com.google.inject.Inject;
@@ -28,19 +27,19 @@ import com.google.inject.Singleton;
 
 /**
  * A convenience class to access the underlaying cache implementation.
- * 
+ *
  * Makes getting and setting of objects a lot simpler.
- * 
+ *
  * This class originates from Play 1.2.5's excellent cache implementation.
- * 
+ *
  * @author ra
  *
  */
 @Singleton
 public class NinjaCache {
-    
+
     final Cache cache;
-    
+
     @Inject
     public NinjaCache(Cache cache) {
         this.cache = cache;
@@ -58,7 +57,7 @@ public class NinjaCache {
     }
 
     /**
-     * Add an element only if it doesn't exist, and return only when 
+     * Add an element only if it doesn't exist, and return only when
      * the element is effectively cached.
      * @param key Element key
      * @param value Element value
@@ -125,7 +124,7 @@ public class NinjaCache {
     }
 
     /**
-     * Replace an element only if it already exists and return only when the 
+     * Replace an element only if it already exists and return only when the
      * element is effectively cached.
      * @param key Element key
      * @param value Element value
@@ -149,7 +148,7 @@ public class NinjaCache {
 
     /**
      * Increment the element value (must be a Number).
-     * @param key Element key 
+     * @param key Element key
      * @param by The incr value
      * @return The new value
      */
@@ -159,7 +158,7 @@ public class NinjaCache {
 
     /**
      * Increment the element value (must be a Number) by 1.
-     * @param key Element key 
+     * @param key Element key
      * @return The new value
      */
     public long incr(String key) {
@@ -168,7 +167,7 @@ public class NinjaCache {
 
     /**
      * Decrement the element value (must be a Number).
-     * @param key Element key 
+     * @param key Element key
      * @param by The decr value
      * @return The new value
      */
@@ -178,7 +177,7 @@ public class NinjaCache {
 
     /**
      * Decrement the element value (must be a Number) by 1.
-     * @param key Element key 
+     * @param key Element key
      * @return The new value
      */
     public long decr(String key) {
@@ -212,7 +211,7 @@ public class NinjaCache {
     }
 
     /**
-     * Delete an element from the cache and return only when the 
+     * Delete an element from the cache and return only when the
      * element is effectively removed.
      * @param key The element key
      * @return If the element an eventually been deleted
@@ -239,8 +238,8 @@ public class NinjaCache {
     public <T> T get(String key, Class<T> clazz) {
         return (T) cache.get(key);
     }
-    
-    
+
+
     /**
      * Utility that check that an object is serializable.
      */
