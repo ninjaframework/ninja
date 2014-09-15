@@ -26,6 +26,8 @@ import ninja.Context;
 import ninja.Ninja;
 import ninja.Route;
 import ninja.Router;
+import ninja.bodyparser.BodyParserEngine;
+import ninja.bodyparser.BodyParserEngineManager;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 import ninja.application.ApplicationRoutes;
@@ -195,6 +197,10 @@ public class NinjaBootstrap {
             TemplateEngineManager templateEngineManager = injector
                     .getInstance(TemplateEngineManager.class);
             logTemplateEngines(templateEngineManager);
+
+            BodyParserEngineManager bodyParserEngineManager = injector
+                    .getInstance(BodyParserEngineManager.class);
+            logBodyParserEngines(bodyParserEngineManager);
 
             return injector;
 
@@ -420,4 +426,41 @@ public class NinjaBootstrap {
 
     }
 
+    protected void logBodyParserEngines(BodyParserEngineManager bodyParserEngineManager) {
+        Set<String> outputTypes = bodyParserEngineManager.getContentTypes();
+
+        int maxContentTypeLen = 0;
+        int maxBodyParserEngineLen = 0;
+
+        for (String contentType : outputTypes) {
+
+            BodyParserEngine bodyParserEngine = bodyParserEngineManager
+                    .getBodyParserEngineForContentType(contentType);
+
+            maxContentTypeLen = Math.max(maxContentTypeLen,
+                    contentType.length());
+            maxBodyParserEngineLen = Math.max(maxBodyParserEngineLen,
+                    bodyParserEngine.getClass().getName().length());
+
+        }
+
+        int borderLen = 10 + maxContentTypeLen + maxBodyParserEngineLen;
+        String border = Strings.padEnd("", borderLen, '-');
+
+        logger.info("Registered request bodyparser engines");
+        logger.info(border);
+
+        for (String contentType : outputTypes) {
+
+            BodyParserEngine templateEngine = bodyParserEngineManager
+                    .getBodyParserEngineForContentType(contentType);
+            logger.info("{}  =>  {}",
+                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
+                    templateEngine.getClass().getName());
+
+        }
+
+        logger.info(border);
+
+    }
 }

@@ -17,6 +17,8 @@
 package ninja.bodyparser;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -68,6 +70,11 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
         contentTypeToBodyParserMap = ImmutableMap.copyOf(map);
         
 
+    }
+
+    @Override
+    public Set<String> getContentTypes() {
+        return new TreeSet<String>(contentTypeToBodyParserMap.keySet());
     }
 
     @Override
