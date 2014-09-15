@@ -18,6 +18,8 @@ package ninja.template;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Binding;
@@ -36,24 +38,9 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
     private final Map<String, Provider<? extends TemplateEngine>> contentTypeToTemplateEngineMap;
 
     @Inject
-    public TemplateEngineManagerImpl(Provider<TemplateEngineFreemarker> templateEngineFreemarker,
-                                     Provider<TemplateEngineJson> templateEngineJson,
-                                     Provider<TemplateEngineJsonP> templateEngineJsonP,
-                                     Provider<TemplateEngineXml> templateEngineXmlProvider,
-                                     Injector injector) {
+    public TemplateEngineManagerImpl(Injector injector) {
 
         Map<String, Provider<? extends TemplateEngine>> map = new HashMap<String, Provider<? extends TemplateEngine>>();
-
-        // First put the built in ones in, this is so they can be overridden by
-        // custom bindings
-        map.put(templateEngineFreemarker.get().getContentType(),
-                templateEngineFreemarker);
-        map.put(templateEngineJson.get().getContentType(),
-                templateEngineJson);
-        map.put(templateEngineJsonP.get().getContentType(),
-                templateEngineJsonP);
-        map.put(templateEngineXmlProvider.get().getContentType(),
-                templateEngineXmlProvider);
 
         // Now lookup all explicit bindings, and find the ones that implement
         // TemplateEngine
@@ -68,6 +55,11 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
         }
 
         contentTypeToTemplateEngineMap = ImmutableMap.copyOf(map);
+    }
+
+    @Override
+    public Set<String> getContentTypes() {
+        return new TreeSet<String>(contentTypeToTemplateEngineMap.keySet());
     }
 
     @Override

@@ -17,19 +17,26 @@
 package ninja.servlet;
 
 import com.google.common.base.Optional;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import ninja.Configuration;
 import ninja.Context;
 import ninja.Ninja;
 import ninja.Route;
 import ninja.Router;
+import ninja.bodyparser.BodyParserEngine;
+import ninja.bodyparser.BodyParserEngineManager;
+import ninja.template.TemplateEngine;
+import ninja.template.TemplateEngineManager;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.logging.LogbackConfigurator;
 import ninja.scheduler.SchedulerSupport;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,8 +144,14 @@ public class NinjaBootstrap {
                 Class<?> applicationConfigurationClass = Class
                         .forName(applicationConfigurationClassName);
 
-                AbstractModule applicationConfiguration = (AbstractModule) applicationConfigurationClass
-                        .getConstructor().newInstance();
+                AbstractModule applicationConfiguration;
+                try {
+                    Constructor<?> propertiesConstructor = applicationConfigurationClass.getConstructor(NinjaProperties.class);
+                    applicationConfiguration = (AbstractModule) propertiesConstructor.newInstance(ninjaProperties);
+                } catch (NoSuchMethodException e) {
+                    applicationConfiguration = (AbstractModule) applicationConfigurationClass
+                            .getConstructor().newInstance();
+                }
 
                 modulesToLoad.add(applicationConfiguration);
                 
@@ -188,9 +201,17 @@ public class NinjaBootstrap {
             injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
 
             initializeRouterWithRoutesOfUserApplication(applicationModulesBasePackage);
-            
+
+            TemplateEngineManager templateEngineManager = injector
+                    .getInstance(TemplateEngineManager.class);
+            logTemplateEngines(templateEngineManager);
+
+            BodyParserEngineManager bodyParserEngineManager = injector
+                    .getInstance(BodyParserEngineManager.class);
+            logBodyParserEngines(bodyParserEngineManager);
+
             return injector;
-            
+
         } catch (Exception exception) {
             logger.error("Fatal error booting Ninja", exception);
         }
@@ -369,4 +390,85 @@ public class NinjaBootstrap {
 
     }
 
+    protected void logTemplateEngines(TemplateEngineManager templateEngineManager) {
+        Set<String> outputTypes = templateEngineManager.getContentTypes();
+        if (outputTypes.isEmpty()) {
+
+            logger.error("No registered template engines?! Please install a template module!");
+            return;
+
+        }
+
+        int maxContentTypeLen = 0;
+        int maxTemplateEngineLen = 0;
+
+        for (String contentType : outputTypes) {
+
+            TemplateEngine templateEngine = templateEngineManager
+                    .getTemplateEngineForContentType(contentType);
+
+            maxContentTypeLen = Math.max(maxContentTypeLen,
+                    contentType.length());
+            maxTemplateEngineLen = Math.max(maxTemplateEngineLen,
+                    templateEngine.getClass().getName().length());
+
+        }
+
+        int borderLen = 10 + maxContentTypeLen + maxTemplateEngineLen;
+        String border = Strings.padEnd("", borderLen, '-');
+
+        logger.info("Registered response template engines");
+        logger.info(border);
+
+        for (String contentType : outputTypes) {
+
+            TemplateEngine templateEngine = templateEngineManager
+                    .getTemplateEngineForContentType(contentType);
+            logger.info("{}  =>  {}",
+                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
+                    templateEngine.getClass().getName());
+
+        }
+
+        logger.info(border);
+
+    }
+
+    protected void logBodyParserEngines(BodyParserEngineManager bodyParserEngineManager) {
+        Set<String> outputTypes = bodyParserEngineManager.getContentTypes();
+
+        int maxContentTypeLen = 0;
+        int maxBodyParserEngineLen = 0;
+
+        for (String contentType : outputTypes) {
+
+            BodyParserEngine bodyParserEngine = bodyParserEngineManager
+                    .getBodyParserEngineForContentType(contentType);
+
+            maxContentTypeLen = Math.max(maxContentTypeLen,
+                    contentType.length());
+            maxBodyParserEngineLen = Math.max(maxBodyParserEngineLen,
+                    bodyParserEngine.getClass().getName().length());
+
+        }
+
+        int borderLen = 10 + maxContentTypeLen + maxBodyParserEngineLen;
+        String border = Strings.padEnd("", borderLen, '-');
+
+        logger.info("Registered request bodyparser engines");
+        logger.info(border);
+
+        for (String contentType : outputTypes) {
+
+            BodyParserEngine templateEngine = bodyParserEngineManager
+                    .getBodyParserEngineForContentType(contentType);
+            logger.info("{}  =>  {}",
+                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
+                    templateEngine.getClass().getName());
+
+        }
+
+        logger.info(border);
+
+    }
 }

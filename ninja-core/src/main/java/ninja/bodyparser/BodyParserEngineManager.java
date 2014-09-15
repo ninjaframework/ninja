@@ -16,10 +16,14 @@
 
 package ninja.bodyparser;
 
+import java.util.Set;
+
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(BodyParserEngineManagerImpl.class)
 public interface BodyParserEngineManager {
+
+    Set<String> getContentTypes();
 
     BodyParserEngine getBodyParserEngineForContentType(String contentType);
 

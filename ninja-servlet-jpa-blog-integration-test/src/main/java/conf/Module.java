@@ -16,17 +16,31 @@
 
 package conf;
 
+import ninja.freemarker.FreemarkerModule;
+import ninja.jackson.JacksonModule;
+import ninja.jpa.JpaModule;
+import ninja.utils.NinjaProperties;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 @Singleton
 public class Module extends AbstractModule {
-    
 
-    protected void configure() {
-        
-        bind(StartupActions.class);    
-        
+	private final NinjaProperties ninjaProperties;
+
+	public Module(NinjaProperties ninjaProperties) {
+		this.ninjaProperties = ninjaProperties;
+	}
+
+    @Override
+	protected void configure() {
+
+        bind(StartupActions.class);
+
+        install(new FreemarkerModule());
+        install(new JacksonModule());
+        install(new JpaModule(ninjaProperties));
     }
 
 }

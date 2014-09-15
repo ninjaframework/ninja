@@ -154,6 +154,36 @@
             <artifactId>h2</artifactId>
             <version>1.4.180</version>
         </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-freemarker</artifactId>
+            <version>${ninja.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-jackson</artifactId>
+            <version>${ninja.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-ehcache</artifactId>
+            <version>${ninja.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-memcached</artifactId>
+            <version>${ninja.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-commonsmail</artifactId>
+            <version>${ninja.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-persist</artifactId>
+            <version>${ninja.version}</version>
+        </dependency>
         <!-- If you want to deploy to a war please -->
         <!-- comment ninja-standalone dependency and  -->
         <!-- uncomment the dependency for ninja-servlet -->

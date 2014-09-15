@@ -18,7 +18,7 @@ package ninja.postoffice.mock;
 
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
-import org.apache.commons.mail.EmailException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public class PostofficeMockImpl implements Postoffice {
     private static final Logger log = LoggerFactory.getLogger(PostofficeMockImpl.class);
 
     @Override
-    public void send(Mail mail) throws EmailException {
+    public void send(Mail mail) {
         this.lastSentMail = mail;
         prettyPrintLastSentMail(mail);
 
@@ -39,7 +39,7 @@ public class PostofficeMockImpl implements Postoffice {
     }
 
     private void prettyPrintLastSentMail(Mail mail) {
-        
+
         log.info("--------------------------------------------------------");
         log.info("Mock mailer received send email request");
         log.info("--------------------------------------------------------");

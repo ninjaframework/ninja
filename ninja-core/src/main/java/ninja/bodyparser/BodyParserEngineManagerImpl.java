@@ -17,6 +17,8 @@
 package ninja.bodyparser;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -29,30 +31,24 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
-    
+
     // Keep a reference of providers rather than instances, so body parser engines
     // don't have to be singleton if they don't want
     private final Map<String, Provider<? extends BodyParserEngine>> contentTypeToBodyParserMap;
 
     @Inject
     public BodyParserEngineManagerImpl(Provider<BodyParserEnginePost> bodyParserEnginePost,
-                                       Provider<BodyParserEngineJson> bodyParserEngineJson,
-                                       Provider<BodyParserEngineXml> bodyParserEngineXml,
                                        Injector injector) {
-        
-        
+
+
         Map<String, Provider<? extends BodyParserEngine>> map = Maps.newHashMap();
 
         // First put the built in ones in, this is so they can be overridden by
         // custom bindings
         map.put(bodyParserEnginePost.get().getContentType(),
                 bodyParserEnginePost);
-        map.put(bodyParserEngineJson.get().getContentType(),
-                bodyParserEngineJson);
-        map.put(bodyParserEngineXml.get().getContentType(),
-                bodyParserEngineXml);
-        
-        
+
+
         // Now lookup all explicit bindings, and find the ones that implement
         // BodyParserEngine
         for (Map.Entry<Key<?>, Binding<?>> binding : injector.getBindings()
@@ -66,8 +62,13 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
         }
 
         contentTypeToBodyParserMap = ImmutableMap.copyOf(map);
-        
 
+
+    }
+
+    @Override
+    public Set<String> getContentTypes() {
+        return new TreeSet<String>(contentTypeToBodyParserMap.keySet());
     }
 
     @Override

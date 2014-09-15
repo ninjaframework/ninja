@@ -43,6 +43,12 @@
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-persist</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
             <scope>compile</scope>
         </dependency>

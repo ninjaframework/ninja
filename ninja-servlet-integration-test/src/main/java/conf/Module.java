@@ -16,6 +16,11 @@
 
 package conf;
 
+import ninja.freemarker.FreemarkerModule;
+import ninja.jackson.JacksonModule;
+import ninja.jpa.JpaModule;
+import ninja.utils.NinjaProperties;
+
 import com.google.inject.AbstractModule;
 
 import etc.GreetingService;
@@ -23,13 +28,17 @@ import etc.GreetingServiceImpl;
 
 public class Module extends AbstractModule {
 
-    public Module() {
-        super();     
+	final NinjaProperties ninjaProperties;
+
+    public Module(NinjaProperties ninjaProperties) {
+        super();
+
+        this.ninjaProperties = ninjaProperties;
     }
 
-  
+
     @Override
-    protected void configure() {       
+    protected void configure() {
         // /////////////////////////////////////////////////////////////////////
         // Some guice bindings
         // /////////////////////////////////////////////////////////////////////
@@ -38,6 +47,10 @@ public class Module extends AbstractModule {
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
 
+        install(new FreemarkerModule());
+        install(new JacksonModule());
+
+        install(new JpaModule(ninjaProperties));
     }
 
 }

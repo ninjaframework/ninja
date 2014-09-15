@@ -16,20 +16,23 @@
 
 package ninja.postoffice.guice;
 
+import ninja.postoffice.Postoffice;
+import ninja.postoffice.mock.PostofficeMockImpl;
+import ninja.utils.NinjaProperties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import ninja.postoffice.Postoffice;
-import ninja.postoffice.commonsmail.PostofficeCommonsmailImpl;
-import ninja.postoffice.mock.PostofficeMockImpl;
-import ninja.utils.NinjaProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class PostofficeProvider implements Provider<Postoffice> {
     private static final Logger log = LoggerFactory.getLogger(PostofficeProvider.class);
+
+    private final String defaultImplementation = "ninja.postoffice.commonsmail.PostofficeCommonsmailImpl";
 
     private final NinjaProperties ninjaProperties;
     private final Injector injector;
@@ -43,7 +46,7 @@ public class PostofficeProvider implements Provider<Postoffice> {
     }
 
     @Override
-       
+
     public Postoffice get() {
 
         if (mailer == null) {
@@ -73,9 +76,18 @@ public class PostofficeProvider implements Provider<Postoffice> {
                     log.info("In dev mode - using mock Postoffice implementation "
                             + postofficeClass);
                 } else {
-                    postofficeClass = PostofficeCommonsmailImpl.class;
-                    log.info("In produdction mode - using default Postoffice implementation "
+                    try {
+                        Class<?> clazz = Class.forName(defaultImplementation);
+                        postofficeClass = clazz.asSubclass(Postoffice.class);
+
+                        log.info("In produdction mode - using default Postoffice implementation "
                             + postofficeClass);
+
+                    } catch (ClassNotFoundException e) {
+                        postofficeClass = PostofficeMockImpl.class;
+                        log.info("Default Postoffice not found - using mock Postoffice implementation "
+                                + postofficeClass);
+                    }
                 }
             }
 

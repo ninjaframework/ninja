@@ -94,25 +94,6 @@
             <artifactId>guice-assistedinject</artifactId>
         </dependency>
 
-        <!-- We use Jackson for rendering jsons: -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        
-        <!-- Afterburner lib optimizes Jackson and improves
-             performance -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-afterburner</artifactId>
-        </dependency>
-
-        <!-- freemarker is our templating engine: -->
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker-gae</artifactId>
-        </dependency>
-
         <!-- guava is just cool -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -160,11 +141,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-email</artifactId>
-        </dependency>
-
         <!-- Commons configuration makes handling of properties files really simple. -->
         <!-- We use it to parse languages and the application properties. -->
         <dependency>
@@ -185,47 +161,12 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
-        <!-- XML parsing -->
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-        
-        <!-- ehcache implementation -->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-        </dependency>
-        
-        <!-- memcached client -->
-        <dependency>
-            <groupId>net.spy</groupId>
-            <artifactId>spymemcached</artifactId>
+            <artifactId>jboss-logging</artifactId>
+            <groupId>org.jboss.logging</groupId>
         </dependency>
 
-        <!-- Migration framework -->
-        <dependency>
-            <groupId>com.googlecode.flyway</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
-
-        <!-- JPA dependencies -->
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-persist</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-        </dependency>
-        
-        <!-- Testing -->
+         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

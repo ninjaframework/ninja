@@ -22,9 +22,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
-import ninja.bodyparser.BodyParserEngineXml;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.ResponseStreams;

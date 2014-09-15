@@ -16,12 +16,8 @@
 
 package ninja;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
-import ninja.jpa.JpaModule;
-import ninja.migrations.MigrationInitializer;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.guice.PostofficeProvider;
 import ninja.utils.LoggerProvider;
@@ -32,14 +28,12 @@ import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import ninja.utils.ObjectMapperProvider;
-import ninja.utils.XmlMapperProvider;
 
 /**
  * The basic configuration of the main ninja framework.
- * 
+ *
  * @author ra
- * 
+ *
  */
 public class Configuration extends AbstractModule {
 
@@ -49,12 +43,10 @@ public class Configuration extends AbstractModule {
         this.ninjaProperties = ninjaProperties;
     }
 
+    @Override
     public void configure() {
 
         System.setProperty("file.encoding", "utf-8");
-        
-        bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
-        bind(XmlMapper.class).toProvider(XmlMapperProvider.class).in(Singleton.class);
 
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
 
@@ -72,10 +64,7 @@ public class Configuration extends AbstractModule {
 
         // Cache
         bind(Cache.class).toProvider(CacheProvider.class);
-        
-        bind(MigrationInitializer.class).asEagerSingleton();
-        install(new JpaModule(ninjaProperties));
-        
+
     }
 
 }

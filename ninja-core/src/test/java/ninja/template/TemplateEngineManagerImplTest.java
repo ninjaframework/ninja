@@ -22,6 +22,8 @@ import static org.junit.Assert.assertThat;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Result;
+import ninja.Router;
+import ninja.RouterImpl;
 import ninja.i18n.Lang;
 import ninja.i18n.LangImpl;
 import ninja.utils.LoggerProvider;
@@ -35,28 +37,8 @@ import org.slf4j.Logger;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import ninja.Router;
-import ninja.RouterImpl;
 
 public class TemplateEngineManagerImplTest {
-
-    @Test
-    public void testGetJson() {
-        assertThat(createTemplateEngineManager().getTemplateEngineForContentType(
-                ContentTypes.APPLICATION_JSON), instanceOf(TemplateEngineJson.class));
-    }
-
-    @Test
-    public void testGetJsonP() {
-        assertThat(createTemplateEngineManager().getTemplateEngineForContentType(
-                ContentTypes.APPLICATION_JSONP), instanceOf(TemplateEngineJsonP.class));
-    }
-
-    @Test
-    public void testGetFreemarker() {
-        assertThat(createTemplateEngineManager().getTemplateEngineForContentType(
-                ContentTypes.TEXT_HTML), instanceOf(TemplateEngineFreemarker.class));
-    }
 
     @Test
     public void testGetCustom() {
@@ -83,10 +65,12 @@ public class TemplateEngineManagerImplTest {
 	}
 
     public static abstract class MockTemplateEngine implements TemplateEngine {
+        @Override
         public void invoke(Context context, Result result) {
 
         }
 
+        @Override
         public String getSuffixOfTemplatingEngine() {
             return null;
 
@@ -122,17 +106,17 @@ public class TemplateEngineManagerImplTest {
         return Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-            	
-            	bind(Logger.class).toProvider(LoggerProvider.class);  
+
+            	bind(Logger.class).toProvider(LoggerProvider.class);
             	bind(Lang.class).to(LangImpl.class);
                 bind(Router.class).to(RouterImpl.class);
-            	
+
             	bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
-            	
+
                 for (Class<?> clazz : toBind) {
-                	
-                    bind(clazz);                 
-                    
+
+                    bind(clazz);
+
                 }
             }
         });
