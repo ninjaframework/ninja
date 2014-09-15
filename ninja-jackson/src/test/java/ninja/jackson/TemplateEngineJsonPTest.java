@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ninja.template;
+package ninja.jackson;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -22,17 +22,23 @@ import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
+import ninja.jackson.TemplateEngineJsonP;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
+
 import org.junit.After;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.junit.Test;

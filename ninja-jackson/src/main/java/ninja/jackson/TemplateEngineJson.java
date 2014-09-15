@@ -14,35 +14,36 @@
  * limitations under the License.
  */
 
-package ninja.template;
+package ninja.jackson;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.inject.Singleton;
-
 import ninja.Context;
 import ninja.Result;
+import ninja.template.TemplateEngine;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class TemplateEngineXml implements TemplateEngine {
+public class TemplateEngineJson implements TemplateEngine {
 
-    private static final Logger logger = LoggerFactory.getLogger(TemplateEngineXml.class);
-    
-    private final XmlMapper xmlMapper;
+    private final Logger logger = LoggerFactory.getLogger(TemplateEngineJson.class);
+
+    private final ObjectMapper objectMapper;
 
     @Inject
-    public TemplateEngineXml(XmlMapper xmlMapper) {
-
-        this.xmlMapper = xmlMapper;
+    public TemplateEngineJson(ObjectMapper objectMapper) {
+        
+        this.objectMapper = objectMapper;
+        
     }
 
     @Override
@@ -50,10 +51,9 @@ public class TemplateEngineXml implements TemplateEngine {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
-        
-        try (OutputStream outputStream = responseStreams.getOutputStream()) {
+        try (OutputStream outputStream  = responseStreams.getOutputStream()) {
             
-                xmlMapper.writeValue(outputStream, result.getRenderable());
+            objectMapper.writeValue(outputStream, result.getRenderable());
             
         } catch (IOException e) {
 
@@ -65,7 +65,7 @@ public class TemplateEngineXml implements TemplateEngine {
 
     @Override
     public String getContentType() {
-        return Result.APPLICATION_XML;
+        return Result.APPLICATON_JSON;
     }
 
     @Override

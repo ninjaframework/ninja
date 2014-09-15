@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package ninja.template;
+package ninja.jackson;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import ninja.ContentTypes;
-import ninja.Context;
-import ninja.Result;
 import ninja.Router;
 import ninja.RouterImpl;
 import ninja.i18n.Lang;
 import ninja.i18n.LangImpl;
+import ninja.jackson.TemplateEngineJson;
+import ninja.jackson.TemplateEngineJsonP;
+import ninja.template.TemplateEngineManager;
 import ninja.utils.LoggerProvider;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
@@ -41,61 +41,15 @@ import com.google.inject.Injector;
 public class TemplateEngineManagerImplTest {
 
     @Test
-    public void testGetCustom() {
-        assertThat(createTemplateEngineManager(CustomTemplateEngine.class).getTemplateEngineForContentType(
-                "custom"), instanceOf(CustomTemplateEngine.class));
+    public void testGetJson() {
+        assertThat(createTemplateEngineManager(TemplateEngineJson.class).getTemplateEngineForContentType(
+                ContentTypes.APPLICATION_JSON), instanceOf(TemplateEngineJson.class));
     }
 
     @Test
-    public void testOverrideJson() {
-        assertThat(createTemplateEngineManager(OverrideJsonTemplateEngine.class).getTemplateEngineForContentType(
-                ContentTypes.APPLICATION_JSON), instanceOf(OverrideJsonTemplateEngine.class));
-    }
-
-    @Test
-    public void testOverrideHtml() {
-        assertThat(createTemplateEngineManager(OverrideHtmlTemplateEngine.class).getTemplateEngineForContentType(
-                ContentTypes.TEXT_HTML), instanceOf(OverrideHtmlTemplateEngine.class));
-    }
-
-	@Test
-	public void testGetNonExistingProducesNoNPE() {
-		TemplateEngineManager manager = createTemplateEngineManager(OverrideJsonTemplateEngine.class);
-		assertNull(manager.getTemplateEngineForContentType("non/existing"));
-	}
-
-    public static abstract class MockTemplateEngine implements TemplateEngine {
-        @Override
-        public void invoke(Context context, Result result) {
-
-        }
-
-        @Override
-        public String getSuffixOfTemplatingEngine() {
-            return null;
-
-        }
-    }
-
-    public static class CustomTemplateEngine extends MockTemplateEngine {
-        @Override
-        public String getContentType() {
-            return "custom";
-        }
-    }
-
-    public static class OverrideJsonTemplateEngine extends MockTemplateEngine {
-        @Override
-        public String getContentType() {
-            return ContentTypes.APPLICATION_JSON;
-        }
-    }
-
-    public static class OverrideHtmlTemplateEngine extends MockTemplateEngine {
-        @Override
-        public String getContentType() {
-            return ContentTypes.TEXT_HTML;
-        }
+    public void testGetJsonP() {
+        assertThat(createTemplateEngineManager(TemplateEngineJsonP.class).getTemplateEngineForContentType(
+                ContentTypes.APPLICATION_JSONP), instanceOf(TemplateEngineJsonP.class));
     }
 
     private TemplateEngineManager createTemplateEngineManager(final Class<?>... toBind) {

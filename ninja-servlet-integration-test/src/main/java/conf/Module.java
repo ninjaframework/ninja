@@ -17,6 +17,7 @@
 package conf;
 
 import ninja.freemarker.FreemarkerModule;
+import ninja.jackson.JacksonModule;
 
 import com.google.inject.AbstractModule;
 
@@ -41,6 +42,7 @@ public class Module extends AbstractModule {
         // bind(UdpPingController.class);
 
         install(new FreemarkerModule());
+        install(new JacksonModule());
     }
 
 }

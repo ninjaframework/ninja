@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package ninja.bodyparser;
+package ninja.jackson;
 
 import java.io.IOException;
 
 import ninja.ContentTypes;
 import ninja.Context;
+import ninja.bodyparser.BodyParserEngine;
 
 import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import java.io.InputStream;
+
 import org.slf4j.LoggerFactory;
 
 @Singleton

@@ -16,8 +16,6 @@
 
 package ninja;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
 import ninja.jpa.JpaModule;
@@ -32,8 +30,6 @@ import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import ninja.utils.ObjectMapperProvider;
-import ninja.utils.XmlMapperProvider;
 
 /**
  * The basic configuration of the main ninja framework.
@@ -52,9 +48,6 @@ public class Configuration extends AbstractModule {
     public void configure() {
 
         System.setProperty("file.encoding", "utf-8");
-        
-        bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
-        bind(XmlMapper.class).toProvider(XmlMapperProvider.class).in(Singleton.class);
 
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
 

@@ -20,7 +20,6 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import javassist.NotFoundException;
 
 import javax.inject.Singleton;
 

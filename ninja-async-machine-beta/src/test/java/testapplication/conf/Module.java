@@ -17,6 +17,7 @@
 package testapplication.conf;
 
 import ninja.freemarker.FreemarkerModule;
+import ninja.jackson.JacksonModule;
 
 import com.google.inject.AbstractModule;
 
@@ -24,14 +25,14 @@ import com.google.inject.AbstractModule;
 public class Module extends AbstractModule {
 
     public Module() {
-        super();     
+        super();
     }
-  
+
     @Override
     protected void configure() {
 
         install(new FreemarkerModule());
-
+        install(new JacksonModule());
     }
 
 }

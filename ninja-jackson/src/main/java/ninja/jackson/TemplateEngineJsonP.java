@@ -13,21 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ninja.template;
+package ninja.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.regex.Pattern;
+
 import ninja.Context;
 import ninja.Result;
+import ninja.template.TemplateEngine;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

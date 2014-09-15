@@ -94,19 +94,6 @@
             <artifactId>guice-assistedinject</artifactId>
         </dependency>
 
-        <!-- We use Jackson for rendering jsons: -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        
-        <!-- Afterburner lib optimizes Jackson and improves
-             performance -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-afterburner</artifactId>
-        </dependency>
-
         <!-- guava is just cool -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -177,24 +164,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-        </dependency>
-
-        <!-- XML parsing -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-        
-        <!-- ehcache implementation -->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-        </dependency>
-        
-        <!-- memcached client -->
-        <dependency>
-            <groupId>net.spy</groupId>
-            <artifactId>spymemcached</artifactId>
         </dependency>
 
         <!-- Migration framework -->

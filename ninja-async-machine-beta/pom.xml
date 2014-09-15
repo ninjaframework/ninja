@@ -149,6 +149,11 @@
 
         <dependency>
             <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-jackson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
         </dependency>
         

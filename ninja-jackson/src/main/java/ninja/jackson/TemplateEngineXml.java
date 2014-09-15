@@ -14,34 +14,37 @@
  * limitations under the License.
  */
 
-package ninja.template;
+package ninja.jackson;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.inject.Singleton;
+
 import ninja.Context;
 import ninja.Result;
+import ninja.template.TemplateEngine;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class TemplateEngineJson implements TemplateEngine {
+public class TemplateEngineXml implements TemplateEngine {
 
-    private final Logger logger = LoggerFactory.getLogger(TemplateEngineJson.class);
-
-    private final ObjectMapper objectMapper;
+    private static final Logger logger = LoggerFactory.getLogger(TemplateEngineXml.class);
+    
+    private final XmlMapper xmlMapper;
 
     @Inject
-    public TemplateEngineJson(ObjectMapper objectMapper) {
-        
-        this.objectMapper = objectMapper;
-        
+    public TemplateEngineXml(XmlMapper xmlMapper) {
+
+        this.xmlMapper = xmlMapper;
     }
 
     @Override
@@ -49,9 +52,10 @@ public class TemplateEngineJson implements TemplateEngine {
 
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
-        try (OutputStream outputStream  = responseStreams.getOutputStream()) {
+        
+        try (OutputStream outputStream = responseStreams.getOutputStream()) {
             
-            objectMapper.writeValue(outputStream, result.getRenderable());
+                xmlMapper.writeValue(outputStream, result.getRenderable());
             
         } catch (IOException e) {
 
@@ -63,7 +67,7 @@ public class TemplateEngineJson implements TemplateEngine {
 
     @Override
     public String getContentType() {
-        return Result.APPLICATON_JSON;
+        return Result.APPLICATION_XML;
     }
 
     @Override
