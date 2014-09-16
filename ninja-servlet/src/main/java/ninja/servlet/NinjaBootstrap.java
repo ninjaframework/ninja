@@ -23,7 +23,6 @@ import ninja.Configuration;
 import ninja.Context;
 import ninja.Ninja;
 import ninja.NinjaDefault;
-import ninja.Route;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
@@ -37,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -313,60 +311,7 @@ public class NinjaBootstrap {
             applicationRoutes.init(router);
             router.compileRoutes();
 
-            logRoutes(router);
-
         }
-
-    }
-
-    protected void logRoutes(Router router) {
-        // determine the width of the columns
-        int maxMethodLen = 0;
-        int maxPathLen = 0;
-        int maxControllerLen = 0;
-
-        for (Route route : router.getRoutes()) {
-
-            maxMethodLen = Math.max(maxMethodLen, route.getHttpMethod().length());
-            maxPathLen = Math.max(maxPathLen, route.getUri().length());
-
-            if (route.getControllerClass() != null) {
-
-                int controllerLen = route.getControllerClass().getName().length()
-                    + route.getControllerMethod().getName().length();
-                maxControllerLen = Math.max(maxControllerLen, controllerLen);
-
-            }
-
-        }
-
-        // log the routing table
-        int borderLen = 10 + maxMethodLen + maxPathLen + maxControllerLen;
-        String border = Strings.padEnd("", borderLen, '-');
-
-        logger.info(border);
-        logger.info("Registered routes");
-        logger.info(border);
-
-        for (Route route : router.getRoutes()) {
-
-            if (route.getControllerClass() != null) {
-
-                logger.info("{} {}  =>  {}.{}()",
-                    Strings.padEnd(route.getHttpMethod(), maxMethodLen, ' '),
-                    Strings.padEnd(route.getUri(), maxPathLen, ' '),
-                    route.getControllerClass().getName(),
-                    route.getControllerMethod().getName());
-
-            } else {
-
-              logger.info("{} {}", route.getHttpMethod(), route.getUri());
-
-            }
-
-        }
-
-        logger.info(border);
 
     }
 
