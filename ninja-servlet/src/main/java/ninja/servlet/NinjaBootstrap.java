@@ -18,8 +18,8 @@ package ninja.servlet;
 
 import com.google.common.base.Optional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import ninja.Configuration;
 import ninja.Context;
@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -383,7 +384,9 @@ public class NinjaBootstrap {
     }
 
     protected void logTemplateEngines(TemplateEngineManager templateEngineManager) {
-        Set<String> outputTypes = templateEngineManager.getContentTypes();
+        List<String> outputTypes = Lists.newArrayList(templateEngineManager.getContentTypes());
+        Collections.sort(outputTypes);
+
         if (outputTypes.isEmpty()) {
 
             logger.error("No registered template engines?! Please install a template module!");
@@ -427,7 +430,8 @@ public class NinjaBootstrap {
     }
 
     protected void logBodyParserEngines(BodyParserEngineManager bodyParserEngineManager) {
-        Set<String> outputTypes = bodyParserEngineManager.getContentTypes();
+        List<String> outputTypes = Lists.newArrayList(bodyParserEngineManager.getContentTypes());
+        Collections.sort(outputTypes);
 
         int maxContentTypeLen = 0;
         int maxBodyParserEngineLen = 0;

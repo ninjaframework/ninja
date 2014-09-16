@@ -19,9 +19,9 @@ package ninja.template;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -74,7 +74,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
 
     @Override
     public Set<String> getContentTypes() {
-        return new TreeSet<String>(contentTypeToTemplateEngineMap.keySet());
+        return ImmutableSet.copyOf(contentTypeToTemplateEngineMap.keySet());
     }
 
     @Override

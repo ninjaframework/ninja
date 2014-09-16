@@ -18,9 +18,9 @@ package ninja.bodyparser;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
@@ -74,7 +74,7 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
     @Override
     public Set<String> getContentTypes() {
-        return new TreeSet<String>(contentTypeToBodyParserMap.keySet());
+        return ImmutableSet.copyOf(contentTypeToBodyParserMap.keySet());
     }
 
     @Override
