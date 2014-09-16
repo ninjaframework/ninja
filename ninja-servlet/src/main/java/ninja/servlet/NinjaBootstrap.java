@@ -16,32 +16,28 @@
 
 package ninja.servlet;
 
-import com.google.common.base.Optional;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ninja.Configuration;
 import ninja.Context;
 import ninja.Ninja;
+import ninja.NinjaDefault;
 import ninja.Route;
 import ninja.Router;
-import ninja.bodyparser.BodyParserEngine;
-import ninja.bodyparser.BodyParserEngineManager;
-import ninja.template.TemplateEngine;
-import ninja.template.TemplateEngineManager;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
 import ninja.logging.LogbackConfigurator;
 import ninja.scheduler.SchedulerSupport;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaPropertiesImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -49,7 +45,6 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.servlet.ServletModule;
-import ninja.NinjaDefault;
 
 
 public class NinjaBootstrap {
@@ -111,7 +106,7 @@ public class NinjaBootstrap {
     private Injector initInjector() {
 
         try {
-            
+
             List<Module> modulesToLoad = new ArrayList<>();
 
             // Bind lifecycle support
@@ -129,17 +124,17 @@ public class NinjaBootstrap {
             });
 
             // get custom base package for application modules and routes
-            Optional<String> applicationModulesBasePackage 
+            Optional<String> applicationModulesBasePackage
                     = Optional.fromNullable(ninjaProperties.get(
                             NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
-            
+
             // Load main application module:
             String applicationConfigurationClassName = getClassNameWithOptionalUserDefinedPrefix(
-                    applicationModulesBasePackage, 
+                    applicationModulesBasePackage,
                     APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
 
             if (doesClassExist(applicationConfigurationClassName)) {
-                
+
                 Class<?> applicationConfigurationClass = Class
                         .forName(applicationConfigurationClassName);
 
@@ -147,19 +142,19 @@ public class NinjaBootstrap {
                         .getConstructor().newInstance();
 
                 modulesToLoad.add(applicationConfiguration);
-                
+
             }
 
-            // Load servlet module. By convention this is a ServletModule where 
+            // Load servlet module. By convention this is a ServletModule where
             // the user can register other servlets and servlet filters
             // If the file does not exist we simply load the default servlet
-            String servletModuleClassName = 
+            String servletModuleClassName =
                 getClassNameWithOptionalUserDefinedPrefix(
                     applicationModulesBasePackage,
                     APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
-            
+
             if (doesClassExist(servletModuleClassName)) {
-                
+
                 Class<?> servletModuleClass = Class
                         .forName(servletModuleClassName);
 
@@ -169,7 +164,7 @@ public class NinjaBootstrap {
                 modulesToLoad.add(servletModule);
 
             } else {
-                // The servlet Module does not exist => we load the default one.                
+                // The servlet Module does not exist => we load the default one.
                 ServletModule servletModule = new ServletModule() {
 
                     @Override
@@ -183,10 +178,10 @@ public class NinjaBootstrap {
                 modulesToLoad.add(servletModule);
 
             }
-            
-            
+
+
             initializeUserSuppliedConfNinjaOrNinjaDefault(
-                    applicationModulesBasePackage, 
+                    applicationModulesBasePackage,
                     modulesToLoad);
 
 
@@ -194,14 +189,6 @@ public class NinjaBootstrap {
             injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
 
             initializeRouterWithRoutesOfUserApplication(applicationModulesBasePackage);
-
-            TemplateEngineManager templateEngineManager = injector
-                    .getInstance(TemplateEngineManager.class);
-            logTemplateEngines(templateEngineManager);
-
-            BodyParserEngineManager bodyParserEngineManager = injector
-                    .getInstance(BodyParserEngineManager.class);
-            logBodyParserEngines(bodyParserEngineManager);
 
             return injector;
 
@@ -228,9 +215,9 @@ public class NinjaBootstrap {
     }
 
     private String getClassNameWithOptionalUserDefinedPrefix(
-            Optional<String> optionalUserDefinedPrefixForPackage, 
+            Optional<String> optionalUserDefinedPrefixForPackage,
             String classLocationAsDefinedByNinja) {
-        
+
         if (optionalUserDefinedPrefixForPackage.isPresent()) {
             return new StringBuilder(
                     optionalUserDefinedPrefixForPackage.get())
@@ -255,47 +242,47 @@ public class NinjaBootstrap {
         }
 
     }
-    
+
     private final void initializeUserSuppliedConfNinjaOrNinjaDefault(
             Optional<String> applicationModulesBasePacakge,
             List<Module> modulesToLoad) throws Exception {
-    
-            String ninjaClassName = 
+
+            String ninjaClassName =
                     getClassNameWithOptionalUserDefinedPrefix(
                             applicationModulesBasePacakge,
                             NINJA_CONVENTION_LOCATION);
-            
+
             final Class<? extends Ninja> ninjaClass;
-                    
+
             if (doesClassExist(ninjaClassName)) {
-                
+
                 final Class<?> clazzPotentially = Class.forName(ninjaClassName);
-                
+
                 if (Ninja.class.isAssignableFrom(clazzPotentially)) {
-                    
+
                     ninjaClass = (Class<? extends Ninja>) clazzPotentially;
-                        
+
                 } else {
-                    
+
                     final String ERROR_MESSAGE = String.format(
                             "Found a class %s in your application's conf directory."
                             + " This class does not implement Ninja interface %s. "
                             + " Please implement the interface or remove the class.",
-                            ninjaClassName, 
+                            ninjaClassName,
                             Ninja.class.getName());
-                    
-                    logger.error(ERROR_MESSAGE);  
-                    
+
+                    logger.error(ERROR_MESSAGE);
+
                     throw new IllegalStateException(ERROR_MESSAGE);
 
                 }
 
             } else {
-                
+
                ninjaClass = NinjaDefault.class;
-                
+
             }
-            
+
             modulesToLoad.add(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -304,13 +291,13 @@ public class NinjaBootstrap {
             });
 
     }
-    
-    
+
+
     public void initializeRouterWithRoutesOfUserApplication(
-            Optional<String> applicationModulesBasePackage) 
+            Optional<String> applicationModulesBasePackage)
             throws Exception {
         // Init routes
-        String routesClassName = 
+        String routesClassName =
                 getClassNameWithOptionalUserDefinedPrefix(
                         applicationModulesBasePackage,
                         ROUTES_CONVENTION_LOCATION);
@@ -329,7 +316,7 @@ public class NinjaBootstrap {
             logRoutes(router);
 
         }
-    
+
     }
 
     protected void logRoutes(Router router) {
@@ -383,88 +370,4 @@ public class NinjaBootstrap {
 
     }
 
-    protected void logTemplateEngines(TemplateEngineManager templateEngineManager) {
-        List<String> outputTypes = Lists.newArrayList(templateEngineManager.getContentTypes());
-        Collections.sort(outputTypes);
-
-        if (outputTypes.isEmpty()) {
-
-            logger.error("No registered template engines?! Please install a template module!");
-            return;
-
-        }
-
-        int maxContentTypeLen = 0;
-        int maxTemplateEngineLen = 0;
-
-        for (String contentType : outputTypes) {
-
-            TemplateEngine templateEngine = templateEngineManager
-                    .getTemplateEngineForContentType(contentType);
-
-            maxContentTypeLen = Math.max(maxContentTypeLen,
-                    contentType.length());
-            maxTemplateEngineLen = Math.max(maxTemplateEngineLen,
-                    templateEngine.getClass().getName().length());
-
-        }
-
-        int borderLen = 10 + maxContentTypeLen + maxTemplateEngineLen;
-        String border = Strings.padEnd("", borderLen, '-');
-
-        logger.info("Registered response template engines");
-        logger.info(border);
-
-        for (String contentType : outputTypes) {
-
-            TemplateEngine templateEngine = templateEngineManager
-                    .getTemplateEngineForContentType(contentType);
-            logger.info("{}  =>  {}",
-                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
-                    templateEngine.getClass().getName());
-
-        }
-
-        logger.info(border);
-
-    }
-
-    protected void logBodyParserEngines(BodyParserEngineManager bodyParserEngineManager) {
-        List<String> outputTypes = Lists.newArrayList(bodyParserEngineManager.getContentTypes());
-        Collections.sort(outputTypes);
-
-        int maxContentTypeLen = 0;
-        int maxBodyParserEngineLen = 0;
-
-        for (String contentType : outputTypes) {
-
-            BodyParserEngine bodyParserEngine = bodyParserEngineManager
-                    .getBodyParserEngineForContentType(contentType);
-
-            maxContentTypeLen = Math.max(maxContentTypeLen,
-                    contentType.length());
-            maxBodyParserEngineLen = Math.max(maxBodyParserEngineLen,
-                    bodyParserEngine.getClass().getName().length());
-
-        }
-
-        int borderLen = 10 + maxContentTypeLen + maxBodyParserEngineLen;
-        String border = Strings.padEnd("", borderLen, '-');
-
-        logger.info("Registered request bodyparser engines");
-        logger.info(border);
-
-        for (String contentType : outputTypes) {
-
-            BodyParserEngine templateEngine = bodyParserEngineManager
-                    .getBodyParserEngineForContentType(contentType);
-            logger.info("{}  =>  {}",
-                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
-                    templateEngine.getClass().getName());
-
-        }
-
-        logger.info(border);
-
-    }
 }
