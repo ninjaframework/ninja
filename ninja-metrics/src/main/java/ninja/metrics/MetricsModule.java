@@ -18,6 +18,9 @@ package ninja.metrics;
 
 import com.codahale.metrics.MetricRegistry;
 import com.google.inject.AbstractModule;
+import static com.google.inject.matcher.Matchers.annotatedWith;
+import static com.google.inject.matcher.Matchers.any;
+import ninja.jpa.UnitOfWork;
 
 /**
  * Ninja Module for Metrics
@@ -33,6 +36,23 @@ public class MetricsModule extends AbstractModule {
         bind(MetricRegistry.class).toInstance(appMetrics);
 
         bind(MetricsService.class).to(MetricsServiceImpl.class);
+        
+        TimedInterceptor timedInterceptor 
+            = new TimedInterceptor(getProvider(MetricsService.class));
+        bindInterceptor(
+            any(),
+            annotatedWith(Timed.class),
+            timedInterceptor);
+            
+                        
+        MeteredInterceptor meteredInterceptor 
+            = new MeteredInterceptor(getProvider(MetricsService.class));                      
+        bindInterceptor(
+            any(),
+            annotatedWith(Metered.class),
+            meteredInterceptor);
+                        
+                        
 
     }
 

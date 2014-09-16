@@ -93,37 +93,37 @@ public class MetricsServiceImpl implements MetricsService {
 
         }
 
-        MetricRegistry routeRequestRegistry = getMetricRegistry(METRICS_REGISTRY_REQUESTS);
-        int timedRoutes = 0;
-        int meteredRoutes = 0;
-        for (Route route : router.getRoutes()) {
-            if (route.getControllerMethod() == null) {
-                // can occur in unit tests, not in real life
-                continue;
-            }
-
-            if (route.getControllerMethod().isAnnotationPresent(Timed.class)) {
-                String name = getName(route);
-                routeRequestRegistry.timer(name);
-                timedRoutes++;
-                log.debug("Registered @Timed route {}", name);
-            } else if (route.getControllerMethod().isAnnotationPresent(
-                    Metered.class)) {
-                String name = getName(route);
-                routeRequestRegistry.meter(name);
-                meteredRoutes++;
-                log.debug("Registered @Metered route {}", name);
-            }
-        }
-
-        if (timedRoutes > 0) {
-            log.info("Ninja Metrics registered {} @Timed routes.", timedRoutes);
-        }
-
-        if (meteredRoutes > 0) {
-            log.info("Ninja Metrics registered {} @Metered routes.",
-                    meteredRoutes);
-        }
+//        MetricRegistry routeRequestRegistry = getMetricRegistry(METRICS_REGISTRY_REQUESTS);
+//        int timedRoutes = 0;
+//        int meteredRoutes = 0;
+//        for (Route route : router.getRoutes()) {
+//            if (route.getControllerMethod() == null) {
+//                // can occur in unit tests, not in real life
+//                continue;
+//            }
+//
+//            if (route.getControllerMethod().isAnnotationPresent(Timed.class)) {
+//                String name = getName(route);
+//                routeRequestRegistry.timer(name);
+//                timedRoutes++;
+//                log.debug("Registered @Timed route {}", name);
+//            } else if (route.getControllerMethod().isAnnotationPresent(
+//                    Metered.class)) {
+//                String name = getName(route);
+//                routeRequestRegistry.meter(name);
+//                meteredRoutes++;
+//                log.debug("Registered @Metered route {}", name);
+//            }
+//        }
+//
+//        if (timedRoutes > 0) {
+//            log.info("Ninja Metrics registered {} @Timed routes.", timedRoutes);
+//        }
+//
+//        if (meteredRoutes > 0) {
+//            log.info("Ninja Metrics registered {} @Metered routes.",
+//                    meteredRoutes);
+//        }
 
         log.info("Ninja Metrics is ready for collection.");
     }
@@ -154,35 +154,35 @@ public class MetricsServiceImpl implements MetricsService {
                 .build();
     }
 
-    protected String getName(Route route) {
-        String name = null;
-        if (route.getControllerMethod().isAnnotationPresent(Timed.class)) {
-            Timed timed = route.getControllerMethod()
-                    .getAnnotation(Timed.class);
-            name = timed.value();
-        } else if (route.getControllerMethod().isAnnotationPresent(
-                Metered.class)) {
-            Metered metered = route.getControllerMethod().getAnnotation(
-                    Metered.class);
-            name = metered.value();
-        }
+//    protected String getName(Route route) {
+//        String name = null;
+//        if (route.getControllerMethod().isAnnotationPresent(Timed.class)) {
+//            Timed timed = route.getControllerMethod()
+//                    .getAnnotation(Timed.class);
+//            name = timed.value();
+//        } else if (route.getControllerMethod().isAnnotationPresent(
+//                Metered.class)) {
+//            Metered metered = route.getControllerMethod().getAnnotation(
+//                    Metered.class);
+//            name = metered.value();
+//        }
+//
+//        if (name == null || name.isEmpty()) {
+//            name = MetricRegistry.name(route.getControllerClass(), route
+//                    .getControllerMethod().getName());
+//        }
+//
+//        return name;
+//    }
 
-        if (name == null || name.isEmpty()) {
-            name = MetricRegistry.name(route.getControllerClass(), route
-                    .getControllerMethod().getName());
-        }
-
-        return name;
-    }
-
-    @Override
-    public MetricRegistry getAllMetrics() {
-        MetricRegistry allMetrics = new MetricRegistry();
-        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_APP));
-        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_REQUESTS));
-        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_CACHE));
-        return allMetrics;
-    }
+//    @Override
+//    public MetricRegistry getAllMetrics() {
+//        MetricRegistry allMetrics = new MetricRegistry();
+//        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_APP));
+//        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_REQUESTS));
+//        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_CACHE));
+//        return allMetrics;
+//    }
 
     @Override
     public MetricRegistry getMetricRegistry(String name) {
@@ -193,15 +193,15 @@ public class MetricsServiceImpl implements MetricsService {
         return metricRegistries.get(name);
     }
 
-    @Override
-    public Metric getRouteMetric(Route route) {
-        if (route.getControllerMethod() == null) {
-            return null;
-        }
-
-        MetricRegistry routeRequestRegistry = getMetricRegistry(METRICS_REGISTRY_REQUESTS);
-        String name = getName(route);
-        return routeRequestRegistry.getMetrics().get(name);
-    }
+//    @Override
+//    public Metric getRouteMetric(Route route) {
+//        if (route.getControllerMethod() == null) {
+//            return null;
+//        }
+//
+//        MetricRegistry routeRequestRegistry = getMetricRegistry(METRICS_REGISTRY_REQUESTS);
+//        String name = getName(route);
+//        return routeRequestRegistry.getMetrics().get(name);
+//    }
 
 }

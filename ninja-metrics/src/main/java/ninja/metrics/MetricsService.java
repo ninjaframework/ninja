@@ -54,12 +54,12 @@ public interface MetricsService {
      */
     void stop();
 
-    /**
-     * Return all collected metrics in a single metrics registry.
-     *
-     * @return the aggregate metrics registry
-     */
-    MetricRegistry getAllMetrics();
+//    /**
+//     * Return all collected metrics in a single metrics registry.
+//     *
+//     * @return the aggregate metrics registry
+//     */
+//    MetricRegistry getAllMetrics();
 
     /**
      * Returns the specified metric registry.
@@ -69,13 +69,13 @@ public interface MetricsService {
      */
     MetricRegistry getMetricRegistry(String name);
 
-    /**
-     * Returns the metric for this specific route. This will be null if the
-     * controller method was not annotated with @Timed or @Metered.
-     *
-     * @param route
-     * @return a metric or null
-     */
-    Metric getRouteMetric(Route route);
+//    /**
+//     * Returns the metric for this specific route. This will be null if the
+//     * controller method was not annotated with @Timed or @Metered.
+//     *
+//     * @param route
+//     * @return a metric or null
+//     */
+//    Metric getRouteMetric(Route route);
 
 }

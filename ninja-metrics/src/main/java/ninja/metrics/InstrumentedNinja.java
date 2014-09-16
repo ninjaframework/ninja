@@ -83,17 +83,6 @@ public class InstrumentedNinja extends NinjaDefault {
 
             allRequestsMeter.mark();
 
-            Timer.Context metricsContext = null;
-
-            Metric routeMetric = metricsService.getRouteMetric(route);
-            if (routeMetric != null) {
-                if (routeMetric instanceof Timer) {
-                    metricsContext = ((Timer) routeMetric).time();
-                } else if (routeMetric instanceof Meter) {
-                    ((Meter) routeMetric).mark();
-                }
-            }
-
             try {
 
                 Result result = route.getFilterChain().next(context);
@@ -114,14 +103,6 @@ public class InstrumentedNinja extends NinjaDefault {
 
                 Result result = onException(context, exception);
                 renderErrorResultAndCatchAndLogExceptions(result, context);
-
-            } finally {
-
-                if (metricsContext != null) {
-
-                    metricsContext.stop();
-
-                }
 
             }
 
