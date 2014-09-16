@@ -28,6 +28,11 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(TemplateEngineManagerImpl.class)
 public interface TemplateEngineManager {
 
+    /**
+     * Returns a set of the registered template engine content types.
+     *
+     * @return the registered content types
+     */
     Set<String> getContentTypes();
 
     /**
