@@ -58,11 +58,11 @@ public class BodyParserEngineManagerImplTest {
             @Override
             protected void configure() {
 
-            	bind(Logger.class).toProvider(LoggerProvider.class);
-            	bind(Lang.class).to(LangImpl.class);
+                bind(Logger.class).toProvider(LoggerProvider.class);
+                bind(Lang.class).to(LangImpl.class);
                 bind(Router.class).to(RouterImpl.class);
 
-            	bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
+                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
 
                 for (Class<?> clazz : toBind) {
 
