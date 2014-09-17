@@ -16,9 +16,18 @@
 
 package ninja.bodyparser;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
@@ -29,7 +38,9 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
-    
+
+    private final Logger logger = LoggerFactory.getLogger(BodyParserEngineManagerImpl.class);
+
     // Keep a reference of providers rather than instances, so body parser engines
     // don't have to be singleton if they don't want
     private final Map<String, Provider<? extends BodyParserEngine>> contentTypeToBodyParserMap;
@@ -39,8 +50,8 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
                                        Provider<BodyParserEngineJson> bodyParserEngineJson,
                                        Provider<BodyParserEngineXml> bodyParserEngineXml,
                                        Injector injector) {
-        
-        
+
+
         Map<String, Provider<? extends BodyParserEngine>> map = Maps.newHashMap();
 
         // First put the built in ones in, this is so they can be overridden by
@@ -51,8 +62,8 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
                 bodyParserEngineJson);
         map.put(bodyParserEngineXml.get().getContentType(),
                 bodyParserEngineXml);
-        
-        
+
+
         // Now lookup all explicit bindings, and find the ones that implement
         // BodyParserEngine
         for (Map.Entry<Key<?>, Binding<?>> binding : injector.getBindings()
@@ -65,9 +76,14 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
             }
         }
 
-        contentTypeToBodyParserMap = ImmutableMap.copyOf(map);
-        
+        this.contentTypeToBodyParserMap = ImmutableMap.copyOf(map);
 
+        logBodyParserEngines();
+    }
+
+    @Override
+    public Set<String> getContentTypes() {
+        return ImmutableSet.copyOf(contentTypeToBodyParserMap.keySet());
     }
 
     @Override
@@ -80,6 +96,42 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
             return provider.get();
         } else {
             return null;
+        }
+
+    }
+
+    protected void logBodyParserEngines() {
+        List<String> outputTypes = Lists.newArrayList(getContentTypes());
+        Collections.sort(outputTypes);
+
+        int maxContentTypeLen = 0;
+        int maxBodyParserEngineLen = 0;
+
+        for (String contentType : outputTypes) {
+
+            BodyParserEngine bodyParserEngine = getBodyParserEngineForContentType(contentType);
+
+            maxContentTypeLen = Math.max(maxContentTypeLen,
+                    contentType.length());
+            maxBodyParserEngineLen = Math.max(maxBodyParserEngineLen,
+                    bodyParserEngine.getClass().getName().length());
+
+        }
+
+        int borderLen = 6 + maxContentTypeLen + maxBodyParserEngineLen;
+        String border = Strings.padEnd("", borderLen, '-');
+
+        logger.info(border);
+        logger.info("Registered request bodyparser engines");
+        logger.info(border);
+
+        for (String contentType : outputTypes) {
+
+            BodyParserEngine templateEngine = getBodyParserEngineForContentType(contentType);
+            logger.info("{}  =>  {}",
+                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
+                    templateEngine.getClass().getName());
+
         }
 
     }
