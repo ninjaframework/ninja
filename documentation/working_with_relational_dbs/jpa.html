@@ -564,7 +564,7 @@ public class GuestbookEntry {
 </pre><p>In essence the model is a Pojo with some annotations. This is already enough to tell JPA where and
 what to save.</p><p>Please refer to <a href="http://docs.oracle.com/javaee/7/tutorial/doc/persistence-intro.htm">http://docs.oracle.com/javaee/7/tutorial/doc/persistence-intro.htm</a>
 for an exhaustive coverage of the topic.</p><p>Well. We configured the stuff - we know how to write models. But what can we do with the models?</p><h1>Saving and querying</h1><p>To be honest. Ninja is just reusing excellent libraries to provide you with JPA. In that case it is
-guice and especially guice-persist (<a href="https://code.google.com/p/google-guice/wiki/GuicePersist)">https://code.google.com/p/google-guice/wiki/GuicePersist)</a>.</p><p>Ninja just offers a convenient out of the box configuration and maps the modes to the persistence units.</p><p>Let&rsquo;s have a look at a controller that does some querying:</p>
+guice and especially guice-persist (<a href="https://github.com/google/guice/wiki/GuicePersist">https://github.com/google/guice/wiki/GuicePersist</a>).</p><p>Ninja just offers a convenient out of the box configuration and maps the modes to the persistence units.</p><p>Let&rsquo;s have a look at a controller that does some querying:</p>
 <pre class="prettyprint">
 @Inject 
 Provider&lt;EntityManager&gt; entitiyManagerProvider;
