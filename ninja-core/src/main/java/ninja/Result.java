@@ -328,29 +328,34 @@ public class Result {
     
 
     /**
-     * This method directly renders the String to the output. It
-     * completely bypasses any rendering engine.
-     * 
+     * This method directly renders the String to the output. It completely
+     * bypasses any rendering engine.
+     *
      * Thus you can render anything you want.
-     * 
-     * Chaining of resultRaw().resultRaw()... is NOT supported. Mixing with render()
-     * is NOT supported.
-     * 
-     * It is always recommended to implement your own RenderingEngine OR
-     * use existing rendering engines.
-     * 
-     * Example:
-     * <code>
+     *
+     * Chaining of resultRaw().resultRaw()... is NOT supported. Mixing with
+     * render() is NOT supported.
+     *
+     * It is always recommended to implement your own RenderingEngine OR use
+     * existing rendering engines.
+     *
+     * Example: <code>
      * public Result controllerMethod() {
      *    String customJson = "{\"user\" : \"john@woo.com\"}";
-     * 
+     *
      *    return Results.json().renderRaw(customJson);
      * }
      * </code>
-     * 
-     * @param string The string to render.
-     * @return A result that will render the string directly to the output stream.
+     *
+     * @param string
+     *            The string to render.
+     * @return A result that will render the string directly to the output
+     *         stream.
+     * @deprecated => use text().render(string), html().render(string),
+     *             json().render(string), xml().render(string), or
+     *             contentType(type).render(string).
      */
+    @Deprecated
     public Result renderRaw(final String string) {
  
         Renderable renderable = new Renderable() {
@@ -674,6 +679,16 @@ public class Result {
         return this;
     }
     
+    /**
+     * Set the content type of this result to {@link Result#TEXT_PLAIN}.
+     *
+     * @return the same result where you executed this method on. But the content type is now {@link Result#TEXT_PLAIN}.
+     */
+    public Result text() {
+        contentType = TEXT_PLAIN;
+        return this;
+    }
+
     /**
      * Set the content type of this result to {@link Result#APPLICATON_XML}.
      * 
