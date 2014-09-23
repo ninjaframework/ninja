@@ -87,7 +87,7 @@ public class TemplateEngineManagerImplTest {
         List<String> types = Lists.newArrayList(createTemplateEngineManager().getContentTypes());
         Collections.sort(types);
         assertThat(types.toString(),
-                equalTo("[application/javascript, application/json, application/xml, text/html]"));
+                equalTo("[application/javascript, application/json, application/xml, text/html, text/plain]"));
     }
 
 	@Test

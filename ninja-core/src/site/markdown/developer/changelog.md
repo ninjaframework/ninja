@@ -1,6 +1,7 @@
 Version 3.x.x
 =============
 
+* 2014-09-22 Add explicit `text/plain` template engine and deprecated Result.renderRaw(String). Results.text().render(myString) is the preferred syntax.  (gitblit)
 * 2014-09-12 Add ServletContext to ContextImpl to improve 3rd-party integration (gitblit)
 * 2014-09-12 Log registered routes on startup (gitblit)
 * 2014-08-29 Added nicer error screens (ra)

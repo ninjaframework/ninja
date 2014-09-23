@@ -51,6 +51,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
                                      Provider<TemplateEngineJson> templateEngineJson,
                                      Provider<TemplateEngineJsonP> templateEngineJsonP,
                                      Provider<TemplateEngineXml> templateEngineXmlProvider,
+                                     Provider<TemplateEngineText> templateEngineTextProvider,
                                      Injector injector) {
 
         Map<String, Provider<? extends TemplateEngine>> map = new HashMap<String, Provider<? extends TemplateEngine>>();
@@ -65,6 +66,8 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
                 templateEngineJsonP);
         map.put(templateEngineXmlProvider.get().getContentType(),
                 templateEngineXmlProvider);
+        map.put(templateEngineTextProvider.get().getContentType(),
+                templateEngineTextProvider);
 
         // Now lookup all explicit bindings, and find the ones that implement
         // TemplateEngine
