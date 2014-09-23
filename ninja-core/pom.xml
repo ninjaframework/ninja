@@ -27,8 +27,12 @@
         <artifactId>ninja</artifactId>
         <version>3.3.2-SNAPSHOT</version>
     </parent>
-    
-    <url>http://www.ninjaframework.org</url>
+
+    <organization>
+        <name>ninjaframework</name>
+        <url>http://www.ninjaframework.org</url>
+    </organization>
+
 
     <properties>
         <github.global.server>github</github.global.server>
