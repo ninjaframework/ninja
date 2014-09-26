@@ -1,0 +1,23 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">
+
+<header class="jumbotron subhead">
+	<h1>This demonstrates localized PrettyTime dates:</h1>
+
+</header>
+
+<hr>
+
+<h2>PrettyTime in the templates</h2>
+<ul>
+	<h1>${date?date} = ${prettyTime(date)}</h1>
+	
+	<li>Implicit language is: ${lang}</li>
+  
+	<li>A redirect at /redirects back to index... <a href="/redirect">/redirect</a></li>
+</ul>
+
+</@layout.myLayout>
+
+
+
