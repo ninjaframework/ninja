@@ -18,6 +18,7 @@ package ninja.template;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -247,8 +248,11 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // E.g.: ${i18n("mykey", myPlaceholderVariable)}
         //////////////////////////////////////////////////////////////////////
         map.put("i18n", new TemplateEngineFreemarkerI18nMethod(messages, context, result));
-        
-        
+
+        Optional<String> requestLang = lang.getLanguage(context, Optional.of(result));
+        Locale locale = lang.getLocaleFromStringOrDefault(requestLang);
+        map.put("prettyTime", new TemplateEngineFreemarkerPrettyTimeMethod(locale));
+
         map.put("reverseRoute", templateEngineFreemarkerReverseRouteMethod);
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
