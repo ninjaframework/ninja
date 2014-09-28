@@ -333,13 +333,13 @@
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
-                <version>4.0-beta4</version>
+                <version>4.0-beta5</version>
             </dependency>
             
             <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-servlet</artifactId>
-                <version>4.0-beta4</version>
+                <version>4.0-beta5</version>
             </dependency>
             
             <dependency>

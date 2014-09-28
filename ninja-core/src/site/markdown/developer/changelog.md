@@ -1,6 +1,7 @@
 Version 3.x.x
 =============
 
+* 2014-09-28 Bump to guice beta5 (ra).
 * 2014-09-26 Add support for ${prettyTime(date)} to FreeMarker integration for localized relative-date formatting like "2 days ago" (gitblit)
 * 2014-09-22 Add explicit `text/plain` template engine and deprecated Result.renderRaw(String). Results.text().render(myString) is the preferred syntax.  (gitblit)
 * 2014-09-12 Add ServletContext to ContextImpl to improve 3rd-party integration (gitblit)
