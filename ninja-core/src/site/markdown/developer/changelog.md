@@ -1,4 +1,4 @@
-Version 3.x.x
+Version 3.3.3
 =============
 
 * 2014-09-28 Bump to guice beta5 (ra).
