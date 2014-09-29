@@ -92,7 +92,7 @@ To make that finally come to live you have to configure the second JPA component
     version=&quot;2.0&quot;&gt;
 
     &lt;!-- Database settings for development and for tests --&gt;
-    &lt;persistence-unit name=&quot;postgresql&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
+    &lt;persistence-unit name=&quot;dev_unit&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
         &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
 
         &lt;properties&gt;
