@@ -11,7 +11,7 @@ public Result userDashboard(
         @PathParam("id") Integer id,
         Context context) {
 
-    Result result = result.html();
+    Result result = Results.html();
 
     result.render("id", Integer.toString(id));
     result.render("email", email);

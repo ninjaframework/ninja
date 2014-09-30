@@ -124,6 +124,15 @@ i18n allows you to render translated strings. For instance <code>${i18n(&quot;my
 you to render the value for myi18nKey in the correct language for your user.
 Please refer to chapter "internationalization" for more informations.
 
+
+### prettyTime(...)
+
+prettyTime allows you to format localized relative dates.
+<code>${prettyTime(myDate)}</code>
+
+For instance, if you had a date object that represented yesterday, prettyTime would format that as *1 day ago* in the
+preferred Locale of the request.
+
 Advanced usage of Freemarker
 ----------------------------
 

@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import javassist.NotFoundException;
 
 import javax.inject.Singleton;
 
@@ -27,7 +28,9 @@ import ninja.AsyncResult;
 import ninja.Context;
 import ninja.Renderable;
 import ninja.Result;
+import ninja.exceptions.BadRequestException;
 import ninja.exceptions.InternalServerErrorException;
+import ninja.exceptions.NinjaException;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
 import org.slf4j.Logger;
@@ -61,12 +64,6 @@ public class ResultHandler {
             handleRenderable((Renderable) objectToBeRendered, context, result);
         } else {
             
-            // if content type is not yet set in result we copy it over from the
-            // request accept header
-            if (result.getContentType() == null) {
-                result.contentType(context.getAcceptContentType());
-            }
-            
             // If result does not contain a Cache-control: ... header
             // we disable caching of this response by calling doNotCacheContent().
             if (!result.getHeaders().containsKey(Result.CACHE_CONTROL)) {
@@ -96,6 +93,24 @@ public class ResultHandler {
     }
 
     private void renderWithTemplateEngineOrRaw(Context context, Result result) {
+        
+
+        // if content type is not yet set in result we copy it over from the
+        // request accept header
+        if (result.getContentType() == null) {
+            
+            if (result.supportedContentTypes().contains(context.getAcceptContentType())) {
+                result.contentType(context.getAcceptContentType());
+            } else if (result.fallbackContentType().isPresent()) {
+                result.contentType(result.fallbackContentType().get());
+            } else {
+                throw new BadRequestException(
+                    "No idea how to handle incoming request with Accept:" + context.getAcceptContentType()
+                    + " at route " + context.getRequestPath());
+            }
+        }
+            
+            
         // try to get a suitable rendering engine...
         TemplateEngine templateEngine = templateEngineManager
                 .getTemplateEngineForContentType(result.getContentType());
@@ -104,55 +119,11 @@ public class ResultHandler {
 
             templateEngine.invoke(context, result);
 
-        } else {
-
-            if (result.getRenderable() instanceof String) {
-                
-                // Simply write it out
-                
-                if (result.getContentType() == null) {
-                    // if content type not explicitly set, text/plain is a good default value:
-                    result.contentType(Result.TEXT_PLAIN);
-                }
-                
-                ResponseStreams responseStreams = context
-                    .finalizeHeaders(result);
-
-                try (Writer writer = responseStreams.getWriter()) {
-                    
-                    writer.write((String) result.getRenderable());
-
-                } catch (IOException ioException) {
-                    throw new InternalServerErrorException(ioException);
-                }
-
-            } else if (result.getRenderable() instanceof byte[]) {
-                
-                // If content type not explicitly set, application/octet-stream 
-                // is a good default value:
-                if (result.getContentType() == null) {
-                    result.contentType(Result.APPLICATION_OCTET_STREAM);
-                }
-                
-                ResponseStreams responseStreams = context
-                        .finalizeHeaders(result);
-                
-                try (OutputStream outputStream = responseStreams.getOutputStream()) {
-
-                    outputStream.write((byte[]) result.getRenderable());
-                    
-                } catch (IOException ioException) {
-                    throw new InternalServerErrorException(ioException);
-                }
-                
-            } else {
-                
-                context.finalizeHeaders(result);
-                
-                throw new InternalServerErrorException(
-                        "No template engine found for result content type "
-                                + result.getContentType());
-            }
+        } else { 
+            throw new NinjaException(
+                    404,
+                    "No template engine found for result content type "
+                            + result.getContentType());
         }
     }
 

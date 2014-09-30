@@ -1,3 +1,24 @@
+Version 3.3.3
+=============
+
+* 2014-09-28 Bump to guice beta5 (ra).
+* 2014-09-26 Add support for ${prettyTime(date)} to FreeMarker integration for localized relative-date formatting like "2 days ago" (gitblit)
+* 2014-09-22 Add explicit `text/plain` template engine and deprecated Result.renderRaw(String). Results.text().render(myString) is the preferred syntax.  (gitblit)
+* 2014-09-12 Add ServletContext to ContextImpl to improve 3rd-party integration (gitblit)
+* 2014-09-12 Log registered routes on startup (gitblit)
+* 2014-08-29 Added nicer error screens (ra)
+* 2014-08-29 Added fallbackContentType and supportedContentTypes to Result for better content negotiation (ra).
+* 2014-08-28 Added support for java.util.Date on BodyParserEnginePost. (pedro-stanaka)
+
+Version 3.3.2
+=============
+
+* 2014-08-24 HibernatePersistence is deprecated. Use HibernatePersistenceProvider instead. (eiryu)
+* 2014-08-24 Fix mistake in the sample code (eiryu)
+* 2014-08-21 Added utility methods on Context for isRequestXml and isRequestJson. (dazhudson)
+* 2014-08-21 Fixed bug where getRequestPath would return null in async mode. (dazhudson)
+* 2014-08-21 Modified Context.getRemoteAddr() to honour the X-Forwarded-For header. (dazhudson) 
+
 Version 3.3.1
 =============
 

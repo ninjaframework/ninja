@@ -89,6 +89,7 @@
         <menu name="Advanced topics">
 
             <item name="Validation" href="./documentation/validation.html"/>
+            <item name="Content negotiation" href="./documentation/content_negotiation.html"/>
             
             <item name="Uploading files" collapse="true" href="./documentation/uploading_files.html"/>
             

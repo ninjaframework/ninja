@@ -39,6 +39,7 @@ public interface Context {
      * code completion. Internal stuff like setting routes should go here.
      */
     interface Impl extends Context {
+        
         void setRoute(Route route);
     }
 
@@ -47,6 +48,18 @@ public interface Context {
      */
     public String CONTENT_TYPE = "Content-Type";
 
+    /**
+     * X Forwarded for header, used when behind fire walls and proxies.
+     */
+    public String X_FORWARD_HEADER = "X-Forwarded-For";
+    
+    /**
+     * Used to enable or disable usage of X-Forwarded-For header in
+     * getRemoteAddr(). Can be set in application.conf to true or false. If
+     * not set it's assumed to be false;
+     */
+    public String NINJA_PROPERTIES_X_FORWARDED_FOR = "ninja.x_forwarded_for_enabled";
+        
     /**
      * please use Result.SC_*
      * 
@@ -102,12 +115,16 @@ public interface Context {
 
     /**
      * Returns the Internet Protocol (IP) address of the client
-     * or last proxy that sent the request.
-     * For HTTP servlets, same as the value of the
-     * CGI variable <code>REMOTE_ADDR</code>.
+     * or last proxy that sent the request. For HTTP servlets, same as the 
+     * value of the CGI variable <code>REMOTE_ADDR</code>.
+     * 
+     * To honour the X-Forwarded-For flag make sure you set 
+     * "ninja.ninja.x_forwarded_for_enabled=true" in your application.conf. Default
+     * behavior is NOT to take X-Forwarded-For flag into account.
      *
      * @return a <code>String</code> containing the
-     * IP address of the client that sent the request
+     *         IP address of the client that sent the request. Takes into 
+     *         account X-Forwarded-For header if configured to do so.
      */
     public String getRemoteAddr();
 
@@ -624,4 +641,22 @@ public interface Context {
      * @see #getAttribute(String, Class)
      */
     void setAttribute(String name, Object value);
+    
+    /**
+     * Check to see if the request content type is JSON.
+     * <p>
+     * Checks to see if the request content type has been set application/json 
+     * </p>
+     * @return true if the content type is to set {@code application/json} 
+     */
+    boolean isRequestJson();
+
+    /**
+     * Check to see if the request content type is XML.
+     * <p>
+     * Checks to see if the request content type has been set application/xml 
+     * </p>
+     * @return true if the content type is to set {@code application/xml} 
+     */
+    boolean isRequestXml();
 }

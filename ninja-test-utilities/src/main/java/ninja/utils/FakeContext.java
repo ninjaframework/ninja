@@ -41,6 +41,7 @@ import org.apache.commons.fileupload.FileItemIterator;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import ninja.ContentTypes;
 
 /**
  * A fake context
@@ -445,4 +446,25 @@ public class FakeContext implements Context {
 		this.contextPath = contextPath;
 	}
 
+    @Override
+    public boolean isRequestJson() {
+        String contentType = getRequestContentType();
+        if (contentType == null || contentType.isEmpty()) {
+            return false;
+        }
+
+        return contentType.startsWith(ContentTypes.APPLICATION_JSON);
+    }
+
+    @Override
+    public boolean isRequestXml() {
+        String contentType = getRequestContentType();
+        if (contentType == null || contentType.isEmpty()) {
+            return false;
+        }
+
+        return contentType.startsWith(ContentTypes.APPLICATION_XML);
+    }
+
+    
 }

@@ -16,10 +16,19 @@
 
 package ninja.template;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.inject.Binding;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -29,6 +38,8 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class TemplateEngineManagerImpl implements TemplateEngineManager {
+
+    private final Logger logger = LoggerFactory.getLogger(TemplateEngineManagerImpl.class);
 
     // Keep a reference of providers rather than instances, so template engines
     // don't have
@@ -40,6 +51,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
                                      Provider<TemplateEngineJson> templateEngineJson,
                                      Provider<TemplateEngineJsonP> templateEngineJsonP,
                                      Provider<TemplateEngineXml> templateEngineXmlProvider,
+                                     Provider<TemplateEngineText> templateEngineTextProvider,
                                      Injector injector) {
 
         Map<String, Provider<? extends TemplateEngine>> map = new HashMap<String, Provider<? extends TemplateEngine>>();
@@ -54,6 +66,8 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
                 templateEngineJsonP);
         map.put(templateEngineXmlProvider.get().getContentType(),
                 templateEngineXmlProvider);
+        map.put(templateEngineTextProvider.get().getContentType(),
+                templateEngineTextProvider);
 
         // Now lookup all explicit bindings, and find the ones that implement
         // TemplateEngine
@@ -67,7 +81,14 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
             }
         }
 
-        contentTypeToTemplateEngineMap = ImmutableMap.copyOf(map);
+        this.contentTypeToTemplateEngineMap = ImmutableMap.copyOf(map);
+
+        logTemplateEngines();
+    }
+
+    @Override
+    public Set<String> getContentTypes() {
+        return ImmutableSet.copyOf(contentTypeToTemplateEngineMap.keySet());
     }
 
     @Override
@@ -80,5 +101,48 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
         } else {
             return null;
         }
+    }
+
+    protected void logTemplateEngines() {
+        List<String> outputTypes = Lists.newArrayList(getContentTypes());
+        Collections.sort(outputTypes);
+
+        if (outputTypes.isEmpty()) {
+
+            logger.error("No registered template engines?! Please install a template module!");
+            return;
+
+        }
+
+        int maxContentTypeLen = 0;
+        int maxTemplateEngineLen = 0;
+
+        for (String contentType : outputTypes) {
+
+            TemplateEngine templateEngine = getTemplateEngineForContentType(contentType);
+
+            maxContentTypeLen = Math.max(maxContentTypeLen,
+                    contentType.length());
+            maxTemplateEngineLen = Math.max(maxTemplateEngineLen,
+                    templateEngine.getClass().getName().length());
+
+        }
+
+        int borderLen = 6 + maxContentTypeLen + maxTemplateEngineLen;
+        String border = Strings.padEnd("", borderLen, '-');
+
+        logger.info(border);
+        logger.info("Registered response template engines");
+        logger.info(border);
+
+        for (String contentType : outputTypes) {
+
+            TemplateEngine templateEngine = getTemplateEngineForContentType(contentType);
+            logger.info("{}  =>  {}",
+                    Strings.padEnd(contentType, maxContentTypeLen, ' '),
+                    templateEngine.getClass().getName());
+
+        }
+
     }
 }

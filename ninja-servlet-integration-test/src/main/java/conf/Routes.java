@@ -30,10 +30,9 @@ import controllers.FilterController;
 import controllers.I18nController;
 import controllers.InjectionExampleController;
 import controllers.PersonController;
+import controllers.PrettyTimeController;
 import controllers.UdpPingController;
 import controllers.UploadController;
-import ninja.Context;
-import ninja.servlet.ContextImpl;
 
 public class Routes implements ApplicationRoutes {
 
@@ -95,6 +94,9 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/api/person.xml").with(PersonController.class, "getPersonXml");
         router.POST().route("/api/person.xml").with(PersonController.class, "postPersonXml");
 
+        router.GET().route("/api/person").with(PersonController.class, "getPersonViaContentNegotiation");
+        router.GET().route("/api/person_with_content_negotiation_fallback").with(PersonController.class, "getPersonViaContentNegotiationAndFallback");
+
         // /////////////////////////////////////////////////////////////////////
         // Form parsing support
         // /////////////////////////////////////////////////////////////////////
@@ -139,6 +141,12 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/i18n/{language}").with(I18nController.class, "indexWithLanguage");
 
         // /////////////////////////////////////////////////////////////////////
+        // PrettyTime:
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/prettyTime").with(PrettyTimeController.class, "index");
+        router.GET().route("/prettyTime/{language}").with(PrettyTimeController.class, "indexWithLanguage");
+
+        // /////////////////////////////////////////////////////////////////////
         // Upload showcase
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/upload").with(UploadController.class, "upload");
@@ -150,7 +158,7 @@ public class Routes implements ApplicationRoutes {
         if (!ninjaProperties.isProd()) {
             router.GET().route("/_test/testPage").with(ApplicationController.class, "testPage");
         }
-        
+
         router.GET().route("/bad_request").with(ApplicationController.class, "badRequest");
 
         router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");

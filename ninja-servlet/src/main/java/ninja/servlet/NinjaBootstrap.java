@@ -16,13 +16,13 @@
 
 package ninja.servlet;
 
-import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
 import ninja.Configuration;
 import ninja.Context;
 import ninja.Ninja;
+import ninja.NinjaDefault;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.lifecycle.LifecycleSupport;
@@ -30,9 +30,11 @@ import ninja.logging.LogbackConfigurator;
 import ninja.scheduler.SchedulerSupport;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaPropertiesImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -41,7 +43,6 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.servlet.ServletModule;
-import ninja.NinjaDefault;
 
 
 public class NinjaBootstrap {
@@ -103,7 +104,7 @@ public class NinjaBootstrap {
     private Injector initInjector() {
 
         try {
-            
+
             List<Module> modulesToLoad = new ArrayList<>();
 
             // Bind lifecycle support
@@ -121,17 +122,17 @@ public class NinjaBootstrap {
             });
 
             // get custom base package for application modules and routes
-            Optional<String> applicationModulesBasePackage 
+            Optional<String> applicationModulesBasePackage
                     = Optional.fromNullable(ninjaProperties.get(
                             NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
-            
+
             // Load main application module:
             String applicationConfigurationClassName = getClassNameWithOptionalUserDefinedPrefix(
-                    applicationModulesBasePackage, 
+                    applicationModulesBasePackage,
                     APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
 
             if (doesClassExist(applicationConfigurationClassName)) {
-                
+
                 Class<?> applicationConfigurationClass = Class
                         .forName(applicationConfigurationClassName);
 
@@ -139,19 +140,19 @@ public class NinjaBootstrap {
                         .getConstructor().newInstance();
 
                 modulesToLoad.add(applicationConfiguration);
-                
+
             }
 
-            // Load servlet module. By convention this is a ServletModule where 
+            // Load servlet module. By convention this is a ServletModule where
             // the user can register other servlets and servlet filters
             // If the file does not exist we simply load the default servlet
-            String servletModuleClassName = 
+            String servletModuleClassName =
                 getClassNameWithOptionalUserDefinedPrefix(
                     applicationModulesBasePackage,
                     APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
-            
+
             if (doesClassExist(servletModuleClassName)) {
-                
+
                 Class<?> servletModuleClass = Class
                         .forName(servletModuleClassName);
 
@@ -161,7 +162,7 @@ public class NinjaBootstrap {
                 modulesToLoad.add(servletModule);
 
             } else {
-                // The servlet Module does not exist => we load the default one.                
+                // The servlet Module does not exist => we load the default one.
                 ServletModule servletModule = new ServletModule() {
 
                     @Override
@@ -175,10 +176,10 @@ public class NinjaBootstrap {
                 modulesToLoad.add(servletModule);
 
             }
-            
-            
+
+
             initializeUserSuppliedConfNinjaOrNinjaDefault(
-                    applicationModulesBasePackage, 
+                    applicationModulesBasePackage,
                     modulesToLoad);
 
 
@@ -186,9 +187,9 @@ public class NinjaBootstrap {
             injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
 
             initializeRouterWithRoutesOfUserApplication(applicationModulesBasePackage);
-            
+
             return injector;
-            
+
         } catch (Exception exception) {
             logger.error("Fatal error booting Ninja", exception);
         }
@@ -212,9 +213,9 @@ public class NinjaBootstrap {
     }
 
     private String getClassNameWithOptionalUserDefinedPrefix(
-            Optional<String> optionalUserDefinedPrefixForPackage, 
+            Optional<String> optionalUserDefinedPrefixForPackage,
             String classLocationAsDefinedByNinja) {
-        
+
         if (optionalUserDefinedPrefixForPackage.isPresent()) {
             return new StringBuilder(
                     optionalUserDefinedPrefixForPackage.get())
@@ -239,47 +240,47 @@ public class NinjaBootstrap {
         }
 
     }
-    
+
     private final void initializeUserSuppliedConfNinjaOrNinjaDefault(
             Optional<String> applicationModulesBasePacakge,
             List<Module> modulesToLoad) throws Exception {
-    
-            String ninjaClassName = 
+
+            String ninjaClassName =
                     getClassNameWithOptionalUserDefinedPrefix(
                             applicationModulesBasePacakge,
                             NINJA_CONVENTION_LOCATION);
-            
+
             final Class<? extends Ninja> ninjaClass;
-                    
+
             if (doesClassExist(ninjaClassName)) {
-                
+
                 final Class<?> clazzPotentially = Class.forName(ninjaClassName);
-                
+
                 if (Ninja.class.isAssignableFrom(clazzPotentially)) {
-                    
+
                     ninjaClass = (Class<? extends Ninja>) clazzPotentially;
-                        
+
                 } else {
-                    
+
                     final String ERROR_MESSAGE = String.format(
                             "Found a class %s in your application's conf directory."
                             + " This class does not implement Ninja interface %s. "
                             + " Please implement the interface or remove the class.",
-                            ninjaClassName, 
+                            ninjaClassName,
                             Ninja.class.getName());
-                    
-                    logger.error(ERROR_MESSAGE);  
-                    
+
+                    logger.error(ERROR_MESSAGE);
+
                     throw new IllegalStateException(ERROR_MESSAGE);
 
                 }
 
             } else {
-                
+
                ninjaClass = NinjaDefault.class;
-                
+
             }
-            
+
             modulesToLoad.add(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -288,13 +289,13 @@ public class NinjaBootstrap {
             });
 
     }
-    
-    
+
+
     public void initializeRouterWithRoutesOfUserApplication(
-            Optional<String> applicationModulesBasePackage) 
+            Optional<String> applicationModulesBasePackage)
             throws Exception {
         // Init routes
-        String routesClassName = 
+        String routesClassName =
                 getClassNameWithOptionalUserDefinedPrefix(
                         applicationModulesBasePackage,
                         ROUTES_CONVENTION_LOCATION);
@@ -311,7 +312,7 @@ public class NinjaBootstrap {
             router.compileRoutes();
 
         }
-    
+
     }
 
 }

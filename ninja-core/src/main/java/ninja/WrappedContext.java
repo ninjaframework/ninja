@@ -290,4 +290,14 @@ public class WrappedContext implements Context {
         return wrapped.getContextPath();
     }
 
+    @Override
+    public boolean isRequestJson() {
+        return wrapped.isRequestJson();
+    }
+
+    @Override
+    public boolean isRequestXml() {
+        return wrapped.isRequestXml();
+    }
+
 }

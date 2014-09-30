@@ -102,6 +102,39 @@ public class NinjaDefault implements Ninja {
     }
     
     @Override
+    public void renderErrorResultAndCatchAndLogExceptions(
+            Result result, Context context) {
+    
+        try {
+            if (context.isAsync()) {
+                context.returnResultAsync(result);
+            } else {
+                resultHandler.handleResult(result, context);
+            }
+        } catch (Exception exceptionCausingRenderError) {
+            logger.error("Unable to handle result. "
+                    + "That's really realy fishy. ",
+                    exceptionCausingRenderError);
+        }
+    }
+    
+    @Override
+    public void onFrameworkStart() {
+
+        showSplashScreenViaLogger();
+                
+        lifecycleService.start();
+    }
+
+    @Override
+    public void onFrameworkShutdown() {
+        lifecycleService.stop();
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Results for exceptions (404, 500 etc)
+    ////////////////////////////////////////////////////////////////////////////
+    @Override
     public Result onException(Context context, Exception exception) {
         
         Result result;
@@ -141,11 +174,13 @@ public class NinjaDefault implements Ninja {
 
         Result result = Results
                 .internalServerError()
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON, Result.APPLICATION_XML)
+                .fallbackContentType(Result.TEXT_HTML)
                 .render(message)
                 .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+        
 
         return result;
-
     }
     
     @Override
@@ -162,6 +197,8 @@ public class NinjaDefault implements Ninja {
         
         Result result = Results
                         .notFound()
+                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON, Result.APPLICATION_XML)
+                        .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
                         .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
           
@@ -183,6 +220,8 @@ public class NinjaDefault implements Ninja {
            
         Result result = Results
                         .badRequest()
+                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON, Result.APPLICATION_XML)
+                        .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
                         .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
         
@@ -207,6 +246,8 @@ public class NinjaDefault implements Ninja {
         Result result = Results
                         .unauthorized()
                         .addHeader(Result.WWW_AUTHENTICATE, "None")
+                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON, Result.APPLICATION_XML)
+                        .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
                         .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED);
 
@@ -228,43 +269,13 @@ public class NinjaDefault implements Ninja {
            
         Result result = Results
                         .forbidden()
+                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON, Result.APPLICATION_XML)
+                        .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
                         .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
         
         return result;
 
-    }
-    
-
-    @Override
-    public void onFrameworkStart() {
-
-        showSplashScreenViaLogger();
-                
-        lifecycleService.start();
-    }
-
-    @Override
-    public void onFrameworkShutdown() {
-        lifecycleService.stop();
-    }
-    
-        
-    @Override
-    public void renderErrorResultAndCatchAndLogExceptions(
-            Result result, Context context) {
-    
-        try {
-            if (context.isAsync()) {
-                context.returnResultAsync(result);
-            } else {
-                resultHandler.handleResult(result, context);
-            }
-        } catch (Exception exceptionCausingRenderError) {
-            logger.error("Unable to handle result. "
-                    + "That's really realy fishy. ",
-                    exceptionCausingRenderError);
-        }
     }
     
     /**

@@ -56,5 +56,24 @@ public class PersonController {
         // usually we would save something into a db or so..
         return Results.xml().render(person);
     }
+    
+    public Result getPersonViaContentNegotiation() {
+        Person person = new Person();
+        person.name = "zeeess name - and some utf8 => öäü";
+        
+        return Results.ok().render(person);
+    }
+    
+    public Result getPersonViaContentNegotiationAndFallback() {
+        Person person = new Person();
+        person.name = "zeeess name - and some utf8 => öäü";
+        
+        return Results
+                .ok()
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON)
+                .fallbackContentType(Result.TEXT_HTML)
+                .template("views/PersonController/getPersonViaContentNegotiation.ftl.html")
+                .render(person);
+    }
 
 }

@@ -267,7 +267,7 @@ Encoding / Decoding of Urls is not as easy as you think it is. Ninja tries to si
 as much as possible, but as user of the Api you have to know what you are 
 submitting to Ninja.
 
-We recommend the following [excellent article from Lunatech](http://www.lunatech-research.com/archives/2009/02/03/what-every-web-developer-must-know-about-url-encoding) 
+We recommend the following [excellent article from Lunatech](http://blog.lunatech.com/2009/02/03/what-every-web-developer-must-know-about-url-encoding)
 before you use encoding / decoding actively in your application.
 
 Let's reconsider the controller method from above:

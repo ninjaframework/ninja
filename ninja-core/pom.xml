@@ -25,10 +25,14 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>3.3.2-SNAPSHOT</version>
+        <version>3.3.4-SNAPSHOT</version>
     </parent>
-    
-    <url>http://www.ninjaframework.org</url>
+
+    <organization>
+        <name>ninjaframework</name>
+        <url>http://www.ninjaframework.org</url>
+    </organization>
+
 
     <properties>
         <github.global.server>github</github.global.server>
@@ -71,6 +75,12 @@
 
     <dependencies>
     
+        <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime</artifactId>
+            <version>3.2.1.Final</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
