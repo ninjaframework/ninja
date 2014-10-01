@@ -28,6 +28,8 @@ import ninja.utils.SwissKnife;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,6 +150,23 @@ public class MessagesImpl implements Messages {
     }
 
     /**
+     * Attempts to load a message file and sets the file changed reloading
+     * strategy on the configuration if the runtime mode is Dev.
+     */
+    private PropertiesConfiguration loadLanguageConfiguration(String fileOrUrl) {
+        PropertiesConfiguration configuration = SwissKnife
+                .loadConfigurationInUtf8(fileOrUrl);
+
+        if (configuration != null && ninjaProperties.isDev()) {
+            // enable runtime reloading of translations in dev mode
+            FileChangedReloadingStrategy strategy = new FileChangedReloadingStrategy();
+            configuration.setReloadingStrategy(strategy);
+        }
+
+        return configuration;
+    }
+
+    /**
      * Does all the loading of message files.
      * 
      * Only registered messages in application.conf are loaded.
@@ -158,8 +177,7 @@ public class MessagesImpl implements Messages {
         Map<String, Configuration> langToKeyAndValuesMappingMutable = Maps.newHashMap();
 
         // Load default messages:
-        Configuration defaultLanguage = SwissKnife
-                .loadConfigurationInUtf8("conf/messages.properties");
+        Configuration defaultLanguage = loadLanguageConfiguration("conf/messages.properties");
 
         // Make sure we got the file.
         // Everything else does not make much sense.
@@ -184,9 +202,8 @@ public class MessagesImpl implements Messages {
         for (String lang : applicationLangs) {
 
             // First step: Load complete language eg. en-US
-            Configuration configuration = SwissKnife
-                    .loadConfigurationInUtf8(String.format(
-                            "conf/messages_%s.properties", lang));
+            Configuration configuration = loadLanguageConfiguration(String
+                    .format("conf/messages_%s.properties", lang));
 
             Configuration configurationLangOnly = null;
 
@@ -199,9 +216,8 @@ public class MessagesImpl implements Messages {
                 String langOnly = lang.split("-")[0];
 
                 // And load the configuraion
-                configurationLangOnly = SwissKnife
-                        .loadConfigurationInUtf8(String.format(
-                                "conf/messages_%s.properties", langOnly));
+                configurationLangOnly = loadLanguageConfiguration(String
+                        .format("conf/messages_%s.properties", langOnly));
 
             }
 
