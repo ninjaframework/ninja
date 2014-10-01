@@ -18,9 +18,12 @@ package ninja.utils;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.primitives.Primitives;
+import com.google.inject.Inject;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +46,15 @@ public class SwissKnife {
 
     private static final Map<String, Method> CONVERTERS = new HashMap<>();
 
+    @Inject
+    static NinjaProperties ninjaProperties;
+
     static {
         Method[] methods = Converter.class.getDeclaredMethods();
         for (Method method : methods) {
             if (method.getParameterTypes().length == 1
                     && method.getParameterTypes()[0] == String.class) {
-                
+
                 CONVERTERS.put(method.getReturnType().getName(), method);
             }
         }
@@ -119,7 +125,7 @@ public class SwissKnife {
 
     /**
      * Convert value to class type value.
-     * 
+     *
      * If something goes wrong it returns null.
      *
      * @param from string value
@@ -127,15 +133,15 @@ public class SwissKnife {
      * @return class type value or null if something goes wrong.
      */
     public static <T> T convert(String from, Class<T> to) {
-       
+
         Class<T> toAsNonPrimitiveType;
-        
+
         if (from == null) {
             return null;
         }
-                      
+
         T t = null;
-         
+
         toAsNonPrimitiveType = Primitives.wrap(to);
 
         if (toAsNonPrimitiveType.isAssignableFrom(from.getClass())) {
@@ -143,22 +149,22 @@ public class SwissKnife {
         }
 
         Method converter = CONVERTERS.get(toAsNonPrimitiveType.getName());
-        
+
         if (converter == null) {
-            
+
             logger.error(
                     "No converter found to convert {}. "
                     + "Returning null. "
                     + "You may want to extend the class.", toAsNonPrimitiveType);
-            
+
         } else {
-            
+
             try {
 
                 t = toAsNonPrimitiveType.cast(converter.invoke(toAsNonPrimitiveType, from));
-                
-            } catch (IllegalAccessException 
-                    | IllegalArgumentException 
+
+            } catch (IllegalAccessException
+                    | IllegalArgumentException
                     | InvocationTargetException ex) {
 
                 logger.error(
@@ -168,7 +174,7 @@ public class SwissKnife {
             }
 
         }
-        
+
          return t;
 
     }
@@ -205,7 +211,20 @@ public class SwissKnife {
 
         public static Date toDate(String value) {
             if (value != null && value.length() > 0) {
-              return new LocalDateTime(value).toDate();
+                String format = "yyyy-MM-dd";
+
+                if (ninjaProperties != null && ninjaProperties.get("date_format") != null) {
+                    format = ninjaProperties.get("date_format");
+                }
+
+                DateTimeFormatter formatter = DateTimeFormat
+                  .forPattern(format);
+
+                try { // parse date with specified format
+                  return formatter.parseDateTime(value).toDate();
+                } catch (IllegalArgumentException ex) { // If couldn't do it, as fallback try standard format (ISO 8601)
+                  return new LocalDateTime(value).toDate();
+                }
             } else {
                 return null;
             }
