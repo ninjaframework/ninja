@@ -97,6 +97,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             prefixedDefaultConfiguration = defaultConfiguration.subset("%"
                     + ninjaMode.name());
 
+            // allow application.conf to be reloaded on changes in dev mode
+            if (NinjaMode.dev == ninjaMode) {
+                defaultConfiguration
+                        .setReloadingStrategy(new FileChangedReloadingStrategy());
+            }
+
         } else {
 
             // If the property was set, but the file not found we emit

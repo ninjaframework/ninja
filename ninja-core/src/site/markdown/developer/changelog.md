@@ -1,8 +1,9 @@
 Version 3.x.x
 =============
 
-* 2014-10-01 Add automatic hot reloading support for external (`-Dninja.external.conf`) configuration files for all runtime modes (gitblit)
-* 2014-10-01 Add automatic hot reloading support for language `messages` files in **dev** mode (gitblit)
+* 2014-10-01 Add automatic hot-reload support for `-Dninja.external.conf` external configuration for all runtime modes (gitblit)
+* 2014-10-01 Add automatic hot-reload support for `application.conf` in **dev** mode (gitblit)
+* 2014-10-01 Add automatic hot-reload support for language `messages` files in **dev** mode (gitblit)
 
 Version 3.3.3
 =============
