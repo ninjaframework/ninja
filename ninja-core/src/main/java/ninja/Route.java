@@ -36,7 +36,7 @@ public class Route {
     // group(1) extracts the name of the group (in that case "id").
     // group(3) extracts the regex if defined
     final static Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE 
-        = Pattern.compile("\\{(.*?)(:\\s(.*))?\\}");
+        = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
 
     /**
      * This regex matches everything in between path slashes.
