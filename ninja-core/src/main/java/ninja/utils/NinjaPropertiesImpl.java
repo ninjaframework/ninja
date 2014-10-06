@@ -145,8 +145,10 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
                 // allow the external configuration to be reloaded at
                 // runtime based on detected file changes
-                externalConfiguration
-                        .setReloadingStrategy(new FileChangedReloadingStrategy());
+                if (externalConfiguration.getBoolean(NinjaConstant.applicationHotReloadExternalConfig, false)) {
+                    externalConfiguration
+                            .setReloadingStrategy(new FileChangedReloadingStrategy());
+                }
 
                 // Copy special prefix of mode to parent configuration
                 // By convention it will be something like %test.myproperty
