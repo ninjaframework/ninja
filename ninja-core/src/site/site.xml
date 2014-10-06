@@ -2,8 +2,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
          name="Ninja - full stack web framework for Java">
-    
-    
+
+
     <publishDate position="right"/>
     <version position="right"/>
     <bannerLeft>
@@ -13,16 +13,18 @@
         <href>http://www.ninjaframework.org</href>
     </bannerLeft>
     <body>
-    
+
         <head>
-            
-            <meta name="description" 
-                  content="Ninja is a full stack web framework for Java. 
+
+            <meta name="description"
+                  content="Ninja is a full stack web framework for Java.
                     Rock solid, fast and super productive."/>
             <link rel="icon" type="image/png" href="favicon.png" />
 
-            <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'/>
-    
+            <link href='http://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'/>
+            <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+            <link href='//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'/>
+
             <script type="text/javascript">
 
                 var _gaq = _gaq || [];
@@ -43,24 +45,24 @@
             <item name="Ninja - high level overview" href="./high_level_overview.html"/>
             <item name="The team" href="./team.html"/>
         </menu>
-        
-    
-        <menu name="Commercial support"> 
+
+
+        <menu name="Commercial support">
             <item name="Philosophy" href="./commercial_support/philosophy.html"/>
             <item name="Training" href="./commercial_support/training.html"/>
             <item name="Support plans" href="./commercial_support/support_plans.html"/>
             <item name="Custom development" href="./commercial_support/agile_custom_development.html"/>
         </menu>
-            
+
         <menu name="Documentation">
-            
-            <item name="Getting Started" collapse="true" href="./documentation/getting_started/installing_ninja.html">                
+
+            <item name="Getting Started" collapse="true" href="./documentation/getting_started/installing_ninja.html">
                 <item name="Create your first Ninja application" href="./documentation/getting_started/create_your_first_application.html"/>
                 <item name="Setting up your IDE" href="./documentation/getting_started/setting_up_your_ide.html"/>
                 <item name="The anatomy of a Ninja application" href="./documentation/getting_started/the_anatomy_of_a_ninja_application.html"/>
             </item>
-            
-            
+
+
             <item name="Basic concepts" collapse="true" href="./documentation/basic_concepts/basic_concepts.html">
                 <item name="SuperDevMode" href="./documentation/basic_concepts/super_dev_mode.html"/>
                 <item name="Routing" href="./documentation/basic_concepts/routing.html"/>
@@ -72,78 +74,78 @@
                 <item name="Flash scope" href="./documentation/basic_concepts/flash_scope.html"/>
                 <item name="Error handling" href="./documentation/basic_concepts/error_handling.html"/>
             </item>
-            
+
             <item name="Configuration and modes" href="./documentation/configuration_and_modes.html"/>
-            
-            <item name="Html templating" collapse="true" href="./documentation/html_templating/getting_started.html">                
+
+            <item name="Html templating" collapse="true" href="./documentation/html_templating/getting_started.html">
                 <item name="Rendering objects" href="./documentation/html_templating/rendering_objects.html"/>
                 <item name="Form parsing" href="./documentation/html_templating/form_parsing.html"/>
                 <item name="Security, i18n and more" href="./documentation/html_templating/advanced_topics.html"/>
             </item>
-            
-            <item name="Working with Json / JsonP" href="./documentation/working_with_json_jsonp.html"/>                
-            
+
+            <item name="Working with Json / JsonP" href="./documentation/working_with_json_jsonp.html"/>
+
             <item name="Working with Xml" href="./documentation/working_with_xml.html"/>
-            
-        </menu>    
+
+        </menu>
         <menu name="Advanced topics">
 
             <item name="Validation" href="./documentation/validation.html"/>
             <item name="Content negotiation" href="./documentation/content_negotiation.html"/>
-            
+
             <item name="Uploading files" collapse="true" href="./documentation/uploading_files.html"/>
-            
+
             <item name="Scheduler" href="./documentation/scheduler.html"/>
             <item name="Lifecycle" href="./documentation/lifecycle.html"/>
-            
-            <item name="Working with relational DBs" collapse="true" href="./documentation/working_with_relational_dbs/jpa.html">                
+
+            <item name="Working with relational DBs" collapse="true" href="./documentation/working_with_relational_dbs/jpa.html">
                 <item name="DB Migrations" href="./documentation/working_with_relational_dbs/db_migrations.html"/>
             </item>
-            
+
             <item name="Using the cache" collapse="true" href="./documentation/using_the_cache.html"/>
-            
+
             <item name="Internationalization" collapse="true" href="./documentation/internationalization.html"/>
-            
+
             <item name="Static assets" collapse="true" href="./documentation/static_assets.html"/>
-            
+
             <item name="Sending mail" href="./documentation/sending_mail.html"/>
 
             <item name="Logging" href="./documentation/logging.html"/>
-            
+
             <item name="Custom routing" href="./documentation/custom_routing.html"/>
 
             <item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>
 
-            <item name="Testing" collapse="true" href="./documentation/testing_your_application/getting_started.html">                
-                <item name="Mocked tests" href="./documentation/testing_your_application/mocked_tests.html"/> 
-                <item name="Ninja Test" href="./documentation/testing_your_application/ninja_test.html"/> 
-                <item name="Ninja DocTester" href="./documentation/testing_your_application/ninja_doctester.html"/> 
-                <item name="Ninja FluentLenium Test" href="./documentation/testing_your_application/ninja_fluentlenium_test.html"/> 
-                <item name="Advanced" href="./documentation/testing_your_application/advanced.html"/>                
+            <item name="Testing" collapse="true" href="./documentation/testing_your_application/getting_started.html">
+                <item name="Mocked tests" href="./documentation/testing_your_application/mocked_tests.html"/>
+                <item name="Ninja Test" href="./documentation/testing_your_application/ninja_test.html"/>
+                <item name="Ninja DocTester" href="./documentation/testing_your_application/ninja_doctester.html"/>
+                <item name="Ninja FluentLenium Test" href="./documentation/testing_your_application/ninja_fluentlenium_test.html"/>
+                <item name="Advanced" href="./documentation/testing_your_application/advanced.html"/>
             </item>
-            
+
             <item name="Debugging" href="./documentation/debugging.html"/>
-            
+
             <item name="Security" collapse="true" href="./documentation/security/getting_started.html">
-                
-            </item>                
-            
-            <item name="Deployment" collapse="true" href="./documentation/deployment/getting_started.html">                
-                <item name="Ninja standalone" href="./documentation/deployment/ninja_standalone.html"/>                
-                <item name="War based deployment" href="./documentation/deployment/war_based_deployment.html"/>
-                <item name="Cloud hosting options" href="./documentation/deployment/cloud_hosting_options.html"/>                                
+
             </item>
-            
+
+            <item name="Deployment" collapse="true" href="./documentation/deployment/getting_started.html">
+                <item name="Ninja standalone" href="./documentation/deployment/ninja_standalone.html"/>
+                <item name="War based deployment" href="./documentation/deployment/war_based_deployment.html"/>
+                <item name="Cloud hosting options" href="./documentation/deployment/cloud_hosting_options.html"/>
+            </item>
+
             <item name="Upgrade guide" href="./documentation/upgrade_guide.html"/>
             <item name="Api" href="./apidocs/index.html"/>
 
         </menu>
-        
+
         <menu name="Ninja Modules">
             <item name="Overview" href="./documentation/modules.html"/>
-        </menu>  
+        </menu>
 
-        
+
         <menu name="Great community">
             <item name="@ninjaframework" href="https://twitter.com/ninjaframework"/>
             <item name="Mailing list" href="https://groups.google.com/d/forum/ninja-framework"/>
@@ -151,7 +153,7 @@
             <item name="Bug tracker" href="https://github.com/ninjaframework/ninja/issues"/>
             <item name="Security issues" href="./security.html"/>
         </menu>
-        
+
         <menu name="For developers">
             <item name="Changelog" href="./developer/changelog.html"/>
             <item name="Roadmap" href="./developer/roadmap.html"/>
@@ -167,7 +169,7 @@
     </skin>
 
 
- 
+
     <custom>
         Custom content
         <fluidoSkin>
