@@ -1,6 +1,7 @@
 Version 3.x.x
 =============
 
+* 2014-10-07 Add support for multiple variable parts *with regex* in routes
 * 2014-10-06 Add optional hot-reload support for `-Dninja.external.conf` external configuration for all runtime modes if *application.hotReloadExternalConfig=true* (gitblit)
 * 2014-10-06 Add automatic hot-reload support for `application.conf` in **dev** mode (gitblit)
 * 2014-10-06 Add automatic hot-reload support for language `messages` files in **dev** mode (gitblit)
