@@ -55,20 +55,19 @@ public class InstrumentedNinja extends NinjaDefault {
     public void onFrameworkStart() {
 
         MetricRegistry metrics = metricsService
-                .getMetricRegistry(MetricsService.METRICS_REGISTRY_REQUESTS);
+            .getMetricRegistry(MetricsService.METRICS_REGISTRY_REQUESTS);
 
         allRequestsMeter = metrics.meter(MetricsService.METER_ALL_REQUESTS);
-        activeRequests = metrics
-                .counter(MetricsService.COUNTER_ACTIVE_REQUESTS);
+        activeRequests = metrics.counter(MetricsService.COUNTER_ACTIVE_REQUESTS);
         badRequests = metrics.meter(MetricsService.METER_BAD_REQUESTS);
-        internalServerErrors = metrics
-                .meter(MetricsService.METER_INTERNAL_SERVER_ERRORS);
+        internalServerErrors = metrics.meter(MetricsService.METER_INTERNAL_SERVER_ERRORS);
         routesNotFound = metrics.meter(MetricsService.METER_ROUTES_NOT_FOUND);
 
         super.onFrameworkStart();
     }
 
     @Override
+    @Timed
     public void onRouteRequest(Context.Impl context) {
 
         activeRequests.inc();

@@ -42,8 +42,7 @@ public class MetricsModule extends AbstractModule {
         bindInterceptor(
             any(),
             annotatedWith(Timed.class),
-            timedInterceptor);
-            
+            timedInterceptor);   
                         
         MeteredInterceptor meteredInterceptor 
             = new MeteredInterceptor(getProvider(MetricsService.class));                      
@@ -51,9 +50,6 @@ public class MetricsModule extends AbstractModule {
             any(),
             annotatedWith(Metered.class),
             meteredInterceptor);
-                        
-                        
-
     }
 
 }

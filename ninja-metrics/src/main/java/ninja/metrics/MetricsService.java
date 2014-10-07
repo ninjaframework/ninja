@@ -29,19 +29,12 @@ import com.codahale.metrics.MetricRegistry;
 public interface MetricsService {
 
     String METRICS_REGISTRY_APP = "ninja.app";
-
     String METRICS_REGISTRY_REQUESTS = "ninja.requests";
-
     String METRICS_REGISTRY_CACHE = "ninja.cache";
-
     String METER_ALL_REQUESTS = "ninja.allRequests";
-
     String COUNTER_ACTIVE_REQUESTS = "ninja.activeRequests";
-
     String METER_BAD_REQUESTS = "ninja.badRequests";
-
     String METER_INTERNAL_SERVER_ERRORS = "ninja.internalServerErrors";
-
     String METER_ROUTES_NOT_FOUND = "ninja.routesNotFound";
 
     /**
@@ -54,13 +47,6 @@ public interface MetricsService {
      */
     void stop();
 
-//    /**
-//     * Return all collected metrics in a single metrics registry.
-//     *
-//     * @return the aggregate metrics registry
-//     */
-//    MetricRegistry getAllMetrics();
-
     /**
      * Returns the specified metric registry.
      *
@@ -68,14 +54,5 @@ public interface MetricsService {
      * @return the specified metric registry
      */
     MetricRegistry getMetricRegistry(String name);
-
-//    /**
-//     * Returns the metric for this specific route. This will be null if the
-//     * controller method was not annotated with @Timed or @Metered.
-//     *
-//     * @param route
-//     * @return a metric or null
-//     */
-//    Metric getRouteMetric(Route route);
 
 }

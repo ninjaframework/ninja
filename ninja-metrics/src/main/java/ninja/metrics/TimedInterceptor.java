@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 ra.
+ * Copyright (C) 2012-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package ninja.metrics;
 
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.google.inject.Inject;
@@ -40,7 +40,6 @@ public class TimedInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         
         String timerName = invocation.getMethod().getAnnotation(Timed.class).value();
-        
 
         if (timerName.isEmpty()) {
             timerName = MetricRegistry.name(invocation.getThis().getClass().getSuperclass(), invocation.getMethod().getName());

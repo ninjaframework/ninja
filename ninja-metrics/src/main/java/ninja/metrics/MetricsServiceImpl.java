@@ -45,17 +45,14 @@ import com.google.inject.Singleton;
 public class MetricsServiceImpl implements MetricsService {
 
     private final Logger log = LoggerFactory.getLogger(MetricsService.class);
-    private final Router router;
     private final Map<String, MetricRegistry> metricRegistries;
     private final NinjaProperties ninjaProps;
     private final List<JmxReporter> jmxReporters;
 
     @Inject
-    public MetricsServiceImpl(Router router,
-                              MetricRegistry appMetrics,
+    public MetricsServiceImpl(MetricRegistry appMetrics,
                               NinjaProperties ninjaProps) {
 
-        this.router = router;
         this.ninjaProps = ninjaProps;
 
         this.metricRegistries = new ConcurrentHashMap<>();
@@ -77,11 +74,8 @@ public class MetricsServiceImpl implements MetricsService {
             jmxReporters.add(createJmxReporter(METRICS_REGISTRY_CACHE));
 
             for (JmxReporter reporter : jmxReporters) {
-
                 reporter.start();
-
             }
-
         }
 
         reporterCount += jmxReporters.size();
@@ -92,38 +86,6 @@ public class MetricsServiceImpl implements MetricsService {
             log.debug("Started Ninja Metrics reporters in {} ms", time);
 
         }
-
-//        MetricRegistry routeRequestRegistry = getMetricRegistry(METRICS_REGISTRY_REQUESTS);
-//        int timedRoutes = 0;
-//        int meteredRoutes = 0;
-//        for (Route route : router.getRoutes()) {
-//            if (route.getControllerMethod() == null) {
-//                // can occur in unit tests, not in real life
-//                continue;
-//            }
-//
-//            if (route.getControllerMethod().isAnnotationPresent(Timed.class)) {
-//                String name = getName(route);
-//                routeRequestRegistry.timer(name);
-//                timedRoutes++;
-//                log.debug("Registered @Timed route {}", name);
-//            } else if (route.getControllerMethod().isAnnotationPresent(
-//                    Metered.class)) {
-//                String name = getName(route);
-//                routeRequestRegistry.meter(name);
-//                meteredRoutes++;
-//                log.debug("Registered @Metered route {}", name);
-//            }
-//        }
-//
-//        if (timedRoutes > 0) {
-//            log.info("Ninja Metrics registered {} @Timed routes.", timedRoutes);
-//        }
-//
-//        if (meteredRoutes > 0) {
-//            log.info("Ninja Metrics registered {} @Metered routes.",
-//                    meteredRoutes);
-//        }
 
         log.info("Ninja Metrics is ready for collection.");
     }
@@ -150,39 +112,8 @@ public class MetricsServiceImpl implements MetricsService {
     }
 
     protected JmxReporter createJmxReporter(String name) {
-        return JmxReporter.forRegistry(getMetricRegistry(name)).inDomain(name)
-                .build();
+        return JmxReporter.forRegistry(getMetricRegistry(name)).inDomain(name).build();
     }
-
-//    protected String getName(Route route) {
-//        String name = null;
-//        if (route.getControllerMethod().isAnnotationPresent(Timed.class)) {
-//            Timed timed = route.getControllerMethod()
-//                    .getAnnotation(Timed.class);
-//            name = timed.value();
-//        } else if (route.getControllerMethod().isAnnotationPresent(
-//                Metered.class)) {
-//            Metered metered = route.getControllerMethod().getAnnotation(
-//                    Metered.class);
-//            name = metered.value();
-//        }
-//
-//        if (name == null || name.isEmpty()) {
-//            name = MetricRegistry.name(route.getControllerClass(), route
-//                    .getControllerMethod().getName());
-//        }
-//
-//        return name;
-//    }
-
-//    @Override
-//    public MetricRegistry getAllMetrics() {
-//        MetricRegistry allMetrics = new MetricRegistry();
-//        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_APP));
-//        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_REQUESTS));
-//        allMetrics.registerAll(getMetricRegistry(METRICS_REGISTRY_CACHE));
-//        return allMetrics;
-//    }
 
     @Override
     public MetricRegistry getMetricRegistry(String name) {
@@ -192,16 +123,5 @@ public class MetricsServiceImpl implements MetricsService {
 
         return metricRegistries.get(name);
     }
-
-//    @Override
-//    public Metric getRouteMetric(Route route) {
-//        if (route.getControllerMethod() == null) {
-//            return null;
-//        }
-//
-//        MetricRegistry routeRequestRegistry = getMetricRegistry(METRICS_REGISTRY_REQUESTS);
-//        String name = getName(route);
-//        return routeRequestRegistry.getMetrics().get(name);
-//    }
 
 }

@@ -38,57 +38,18 @@ abstract class InstrumentedCache implements Cache {
     @Inject
     private MetricsService metricsService;
 
-    private Timer addTimer;
-
-    private Timer safeAddTimer;
-
-    private Timer setTimer;
-
-    private Timer safeSetTimer;
-
-    private Timer replaceTimer;
-
-    private Timer safeReplaceTimer;
-
-    private Timer getTimer;
-
-    private Timer getManyTimer;
-
-    private Timer incrTimer;
-
-    private Timer decrTimer;
-
-    private Timer clearTimer;
-
-    private Timer deleteTimer;
-
-    private Timer safeDeleteTimer;
-
     private Counter hitCounter;
 
     private Counter missCounter;
 
     public InstrumentedCache(Cache cache) {
         this.underlyingCache = cache;
+        init();
     }
 
     public void init() {
         MetricRegistry registry = metricsService
-                .getMetricRegistry(MetricsService.METRICS_REGISTRY_CACHE);
-
-        addTimer = getTimer(registry, "add");
-        safeAddTimer = getTimer(registry, "safeAdd");
-        setTimer = getTimer(registry, "set");
-        safeSetTimer = getTimer(registry, "safeSet");
-        replaceTimer = getTimer(registry, "replace");
-        safeReplaceTimer = getTimer(registry, "safeReplace");
-        getTimer = getTimer(registry, "get");
-        getManyTimer = getTimer(registry, "getMany");
-        incrTimer = getTimer(registry, "incr");
-        decrTimer = getTimer(registry, "decr");
-        clearTimer = getTimer(registry, "clear");
-        deleteTimer = getTimer(registry, "delete");
-        safeDeleteTimer = getTimer(registry, "safeDelete");
+            .getMetricRegistry(MetricsService.METRICS_REGISTRY_CACHE);
 
         hitCounter = getCounter(registry, "hits");
         missCounter = getCounter(registry, "miss");
@@ -105,163 +66,94 @@ abstract class InstrumentedCache implements Cache {
     }
 
     @Override
+    @Timed
     public void add(String key, Object value, int expiration) {
-        init();
-        final Timer.Context ctx = addTimer.time();
-        try {
-            underlyingCache.add(key, value, expiration);
-        } finally {
-            ctx.stop();
-        }
+        underlyingCache.add(key, value, expiration);
     }
 
     @Override
+    @Timed
     public boolean safeAdd(String key, Object value, int expiration) {
-        init();
-        final Timer.Context ctx = safeAddTimer.time();
-        try {
-            boolean result = underlyingCache.safeAdd(key, value, expiration);
-            return result;
-        } finally {
-            ctx.stop();
-        }
+        return underlyingCache.safeAdd(key, value, expiration);
     }
 
     @Override
+    @Timed
     public void set(String key, Object value, int expiration) {
-        init();
-        final Timer.Context ctx = setTimer.time();
-        try {
-            underlyingCache.set(key, value, expiration);
-        } finally {
-            ctx.stop();
-        }
+        underlyingCache.set(key, value, expiration);
     }
 
     @Override
+    @Timed
     public boolean safeSet(String key, Object value, int expiration) {
-        init();
-        final Timer.Context ctx = safeSetTimer.time();
-        try {
-            boolean result = underlyingCache.safeSet(key, value, expiration);
-            return result;
-        } finally {
-            ctx.stop();
-        }
+        return underlyingCache.safeSet(key, value, expiration);
     }
 
     @Override
+    @Timed
     public void replace(String key, Object value, int expiration) {
-        init();
-        final Timer.Context ctx = replaceTimer.time();
-        try {
-            underlyingCache.replace(key, value, expiration);
-        } finally {
-            ctx.stop();
-        }
+        underlyingCache.replace(key, value, expiration);
     }
 
     @Override
+    @Timed
     public boolean safeReplace(String key, Object value, int expiration) {
-        init();
-        final Timer.Context ctx = safeReplaceTimer.time();
-        try {
-            return underlyingCache.safeReplace(key, value, expiration);
-        } finally {
-            ctx.stop();
-        }
+        return underlyingCache.safeReplace(key, value, expiration);
     }
 
     @Override
+    @Timed
     public Object get(String key) {
-        init();
-        final Timer.Context ctx = getTimer.time();
-        try {
-            Object result = underlyingCache.get(key);
-            if (result == null) {
-                missCounter.inc();
-            } else {
-                hitCounter.inc();
-            }
-            return result;
-        } finally {
-            ctx.stop();
+        Object result = underlyingCache.get(key);
+        if (result == null) {
+            missCounter.inc();
+        } else {
+            hitCounter.inc();
         }
+        return result;
     }
 
     @Override
+    @Timed
     public Map<String, Object> get(String[] keys) {
-        init();
-        final Timer.Context ctx = getManyTimer.time();
-        try {
-            Map<String, Object> result = underlyingCache.get(keys);
-            if (result == null || result.isEmpty()) {
-                missCounter.inc(keys.length);
-            } else {
-                hitCounter.inc(result.size());
-                missCounter.inc(keys.length - result.size());
-            }
-            return result;
-        } finally {
-            ctx.stop();
+        Map<String, Object> result = underlyingCache.get(keys);
+        if (result == null || result.isEmpty()) {
+            missCounter.inc(keys.length);
+        } else {
+            hitCounter.inc(result.size());
+            missCounter.inc(keys.length - result.size());
         }
+        return result;
     }
 
     @Override
+    @Timed
     public long incr(String key, int by) {
-        init();
-        final Timer.Context ctx = incrTimer.time();
-        try {
-            long result = underlyingCache.incr(key, by);
-            return result;
-        } finally {
-            ctx.stop();
-        }
+        return underlyingCache.incr(key, by);
+
     }
 
     @Override
+    @Timed
     public long decr(String key, int by) {
-        init();
-        final Timer.Context ctx = decrTimer.time();
-        try {
-            long result = underlyingCache.decr(key, by);
-            return result;
-        } finally {
-            ctx.stop();
-        }
+        return underlyingCache.decr(key, by);
     }
 
     @Override
+    @Timed
     public void clear() {
-        init();
-        final Timer.Context ctx = clearTimer.time();
-        try {
-            underlyingCache.clear();
-        } finally {
-            ctx.stop();
-        }
+        underlyingCache.clear();
     }
 
     @Override
+    @Timed
     public void delete(String key) {
-        init();
-        final Timer.Context ctx = deleteTimer.time();
-        try {
-            underlyingCache.delete(key);
-        } finally {
-            ctx.stop();
-        }
+        underlyingCache.delete(key);
     }
 
     @Override
+    @Timed
     public boolean safeDelete(String key) {
-        init();
-        final Timer.Context ctx = safeDeleteTimer.time();
-        try {
-            boolean result = underlyingCache.safeDelete(key);
-            return result;
-        } finally {
-            ctx.stop();
-        }
+        return underlyingCache.safeDelete(key);
     }
 }
