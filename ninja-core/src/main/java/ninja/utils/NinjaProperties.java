@@ -42,6 +42,13 @@ public interface NinjaProperties {
     String NINJA_EXTERNAL_CONF = "ninja.external.configuration";
 
     /**
+     * The System property used to enable hot-reloading of the external
+     * configuration file at runtime.
+     *
+     */
+    String NINJA_EXTERNAL_RELOAD = "ninja.external.reload";
+
+    /**
      * The default configuration. Make sure that file exists. Otherwise the
      * application won't start up.
      */
