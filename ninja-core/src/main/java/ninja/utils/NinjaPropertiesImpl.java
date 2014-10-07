@@ -26,6 +26,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +78,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         Configuration prefixedDefaultConfiguration = null;
 
         // (Optional) Config set via a system property
-        Configuration externalConfiguration = null;
+        PropertiesConfiguration externalConfiguration = null;
 
         // (Optional) Config of prefixed mode corresponding to current mode (eg.
         // %test.myproperty=...)
@@ -95,6 +96,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             // By convention it will be something like %test.myproperty
             prefixedDefaultConfiguration = defaultConfiguration.subset("%"
                     + ninjaMode.name());
+
+            // allow application.conf to be reloaded on changes in dev mode
+            if (NinjaMode.dev == ninjaMode) {
+                defaultConfiguration
+                        .setReloadingStrategy(new FileChangedReloadingStrategy());
+            }
 
         } else {
 
@@ -135,6 +142,13 @@ public class NinjaPropertiesImpl implements NinjaProperties {
                 throw new RuntimeException(errorMessage);
 
             } else {
+
+                // allow the external configuration to be reloaded at
+                // runtime based on detected file changes
+                if (externalConfiguration.getBoolean(NinjaConstant.applicationHotReloadExternalConfig, false)) {
+                    externalConfiguration
+                            .setReloadingStrategy(new FileChangedReloadingStrategy());
+                }
 
                 // Copy special prefix of mode to parent configuration
                 // By convention it will be something like %test.myproperty

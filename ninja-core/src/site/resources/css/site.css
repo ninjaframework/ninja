@@ -1,7 +1,7 @@
 body {
     color: #333333;
-    font-family: "Droid Serif", serif;
-    font-size: 14px;
+    font-family: "Titillium Web", serif;
+    font-size: 16px;
     line-height: 23px;
     min-width: 800px;
 }
@@ -19,11 +19,11 @@ a.externalLink[href^="https"] {
 }
 
 /* general styling for headlines */
-h1, h2, h3, 
-h1 > *, h2 > *, h3 > *, 
+h1, h2, h3,
+h1 > *, h2 > *, h3 > *,
 div.hero-unit > h1 {
     color: #68006C; /* dark violet */
-    font-family: "Droid Sans", sans-serif;
+    font-family: "Titillium Web", sans-serif;
     font-weight: normal;
 }
 
@@ -39,7 +39,7 @@ a:visited {
 #bodyColumn > h1,
 #bodyColumn > h2 {
     border-top: 1px solid #F5EDF5; /* very light violet */
-    padding-top: 50px; 
+    padding-top: 50px;
 }
 
 /* All first elements do not have paddings... */
@@ -50,12 +50,12 @@ a:visited {
 
 /* remove default coloring of breadcrumb */
 .breadcrumb {
-    background-color: white; 
+    background-color: white;
 }
 
 .breadcrumb li {
     color: gray;
-    font-family: "Droid Sans", sans-serif;
+    font-family: "Titillium Web", sans-serif;
 }
 
 .hero-unit {
@@ -63,16 +63,20 @@ a:visited {
     background-color: #F5F5F5; /* very light gray */
 }
 
+div.hero-unit {
+    padding:30px;
+}
+
 div.hero-unit > p {
     color: #68006C; /* dark violet */
-    font-family: "Droid Sans", sans-serif;
+    font-family: "Titillium Web", sans-serif;
     font-size: 30px;
     line-height:45px;
-    font-weight: normal;
+    font-weight: normal;    
 }
 
 .nav-header {
-    color: #68006C; /* dark violet */  
+    color: #68006C; /* dark violet */
 }
 
 .nav-list > li > a {
@@ -87,25 +91,37 @@ div.hero-unit > p {
 }
 
 
-code, 
 pre,
 pre.prettyprint {
-    border: 0;
+    border: 1px solid #ddd;
     border-radius: 0;
-    padding: 2px;
+    padding: 5px;
+    font-family: 'Inconsolata', Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 
 code {
+	border: 0px;	
     color: #660066;
+    font-family: 'Inconsolata', Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 
 .well {
-    font-family: 'Droid Sans', sans-serif;
+    font-family: 'Titillium Web', sans-serif;
     border-radius: 0;
     box-shadow: 0px 0px 0px;
     border: 0px;
+    background-color: white;
+    border-right: 1px solid #ddd;
 }
 
+.nav-list .nav-header {
+    font-weight: bold;
+    font-size: medium;
+}
+
+.nav-list > li > a {
+    color: #333;
+}
 
 /* search bar => fix that search bar does not become bigger thatn sidebar */
 input.search-query {

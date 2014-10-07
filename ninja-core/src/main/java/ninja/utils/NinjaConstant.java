@@ -111,6 +111,9 @@ public interface NinjaConstant {
      */
     final String serverName = "application.server.name";
 
+    /** User to enable changed-file reloading of external file configuration. */
+    final String applicationHotReloadExternalConfig = "application.hotReloadExternalConfig";
+
     /**
      * Time until session expires.
      */
