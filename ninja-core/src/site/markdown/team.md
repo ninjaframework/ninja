@@ -38,6 +38,7 @@ contributed to Ninja. In some random order:
  * James Moger (gitblit)
  * Hidetaka Koda (eiryu)
  * Pedro Sena Tanaka (pedro-stanaka)
+ * Azilet Beishenaliev (bazi)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

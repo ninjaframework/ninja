@@ -202,6 +202,18 @@ public class RouteBuilderImplTest {
         assertEquals(1, map.entrySet().size());
         assertEquals("robots.txt", map.get("file"));
 
+        // multiple parameter parsing with regex expressions
+        routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/{name: .+}/photos/{id: [0-9]+}");
+        route = buildRoute(routeBuilder);
+
+        pathUnderTest = "/John/photos/2201";
+        assertTrue(route.matches("GET", pathUnderTest));
+        assertFalse(route.matches("GET", "John/photos/first"));
+        map = route.getPathParametersEncoded(pathUnderTest);
+        assertEquals(2, map.size());
+        assertEquals("John", map.get("name"));
+        assertEquals("2201", map.get("id"));
     }
 
     @Test
