@@ -56,8 +56,6 @@ public class MetricsServiceImpl implements MetricsService {
         this.ninjaProps = ninjaProps;
 
         this.metricRegistries = new ConcurrentHashMap<>();
-        this.metricRegistries.put(METRICS_REGISTRY_APP, appMetrics);
-
         this.jmxReporters = new ArrayList<>();
     }
 
@@ -69,13 +67,19 @@ public class MetricsServiceImpl implements MetricsService {
         int reporterCount = 0;
         if (ninjaProps.getBooleanWithDefault("metrics.jmx", true)) {
 
-            jmxReporters.add(createJmxReporter(METRICS_REGISTRY_APP));
-            jmxReporters.add(createJmxReporter(METRICS_REGISTRY_REQUESTS));
-            jmxReporters.add(createJmxReporter(METRICS_REGISTRY_CACHE));
+            String [] jmxReporterNames = { 
+                METRICS_REGISTRY_APP
+                    , METRICS_REGISTRY_REQUESTS
+                    , METRICS_REGISTRY_CACHE};
 
-            for (JmxReporter reporter : jmxReporters) {
-                reporter.start();
+            for (String jmxReporterName : jmxReporterNames) {
+                MetricRegistry metricRegistry = getMetricRegistry(jmxReporterName);
+                JmxReporter jmxReporter = JmxReporter.forRegistry(
+                        metricRegistry).inDomain(jmxReporterName).build();
+                jmxReporters.add(jmxReporter);
+                jmxReporter.start();
             }
+
         }
 
         reporterCount += jmxReporters.size();
@@ -109,10 +113,6 @@ public class MetricsServiceImpl implements MetricsService {
         }
 
         log.info("Ninja Metrics stopped.");
-    }
-
-    protected JmxReporter createJmxReporter(String name) {
-        return JmxReporter.forRegistry(getMetricRegistry(name)).inDomain(name).build();
     }
 
     @Override

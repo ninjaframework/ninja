@@ -47,7 +47,7 @@ abstract class InstrumentedCache implements Cache {
         init();
     }
 
-    public void init() {
+    private void init() {
         MetricRegistry registry = metricsService
             .getMetricRegistry(MetricsService.METRICS_REGISTRY_CACHE);
 
@@ -55,14 +55,8 @@ abstract class InstrumentedCache implements Cache {
         missCounter = getCounter(registry, "miss");
     }
 
-    protected Timer getTimer(MetricRegistry registry, String name) {
-        return registry.timer(MetricRegistry.name(underlyingCache.getClass(),
-                name));
-    }
-
-    protected Counter getCounter(MetricRegistry registry, String name) {
-        return registry.counter(MetricRegistry.name(underlyingCache.getClass(),
-                name));
+    private Counter getCounter(MetricRegistry registry, String name) {
+        return registry.counter(MetricRegistry.name(underlyingCache.getClass(), name));
     }
 
     @Override
