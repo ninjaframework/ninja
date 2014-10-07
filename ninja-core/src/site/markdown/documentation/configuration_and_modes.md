@@ -153,7 +153,6 @@ Ninja uses the excellent Apache Configurations library to do the loading. Please
 By default Ninja does not reload your external configuration. However for some installations it may be very
 useful to hot-reload this config instead of restarting your application.
 
-    application.hotReloadExternalConfig=true
+    java -Dninja.external.reload=true -Dninja.external.configuration=conf/production.conf
 
-That setting applied in your external config file will enable runtime reloading of the external file based
-on the modification time.
+This tells Ninja to reload your configuration if it is modified during runtime.

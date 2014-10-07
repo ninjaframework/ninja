@@ -145,7 +145,8 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
                 // allow the external configuration to be reloaded at
                 // runtime based on detected file changes
-                if (externalConfiguration.getBoolean(NinjaConstant.applicationHotReloadExternalConfig, false)) {
+                final boolean shouldReload = Boolean.getBoolean(NINJA_EXTERNAL_RELOAD);
+                if (shouldReload) {
                     externalConfiguration
                             .setReloadingStrategy(new FileChangedReloadingStrategy());
                 }
