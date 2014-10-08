@@ -117,10 +117,7 @@ public class MetricsServiceImpl implements MetricsService {
 
     @Override
     public MetricRegistry getMetricRegistry(String name) {
-        if (!metricRegistries.containsKey(name)) {
-            metricRegistries.put(name, new MetricRegistry());
-        }
-
+        metricRegistries.putIfAbsent(name, new MetricRegistry());
         return metricRegistries.get(name);
     }
 

@@ -23,6 +23,7 @@ import ninja.cache.Cache;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
 /**
@@ -31,19 +32,21 @@ import com.google.inject.Inject;
  * @author James Moger
  *
  */
-abstract class InstrumentedCache implements Cache {
+public class InstrumentedCache implements Cache {
 
     private final Cache underlyingCache;
 
-    @Inject
     private MetricsService metricsService;
 
     private Counter hitCounter;
 
     private Counter missCounter;
 
-    public InstrumentedCache(Cache cache) {
+    InstrumentedCache(
+            Cache cache,
+            MetricsService metricsService) {
         this.underlyingCache = cache;
+        this.metricsService = metricsService;
         init();
     }
 
@@ -56,7 +59,10 @@ abstract class InstrumentedCache implements Cache {
     }
 
     private Counter getCounter(MetricRegistry registry, String name) {
-        return registry.counter(MetricRegistry.name(underlyingCache.getClass(), name));
+        return registry.counter(
+                MetricRegistry.name(
+                        underlyingCache.getClass(), 
+                        name));
     }
 
     @Override

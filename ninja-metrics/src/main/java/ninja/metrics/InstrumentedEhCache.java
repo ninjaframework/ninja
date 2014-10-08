@@ -23,8 +23,10 @@ import com.google.inject.Inject;
 public class InstrumentedEhCache extends InstrumentedCache {
 
     @Inject
-    public InstrumentedEhCache(CacheEhCacheImpl cache) {
-        super(cache);
+    public InstrumentedEhCache(
+            CacheEhCacheImpl cache,
+            MetricsService metricsService) {
+        super(cache, metricsService);
     }
 
 }

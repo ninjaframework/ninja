@@ -20,7 +20,6 @@ import com.codahale.metrics.MetricRegistry;
 import com.google.inject.AbstractModule;
 import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.any;
-import ninja.jpa.UnitOfWork;
 
 /**
  * Ninja Module for Metrics
