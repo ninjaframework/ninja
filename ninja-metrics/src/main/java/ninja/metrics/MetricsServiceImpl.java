@@ -45,7 +45,7 @@ import com.google.inject.Singleton;
 public class MetricsServiceImpl implements MetricsService {
 
     private final Logger log = LoggerFactory.getLogger(MetricsService.class);
-    private final Map<String, MetricRegistry> metricRegistries;
+    private final ConcurrentHashMap<String, MetricRegistry> metricRegistries;
     private final NinjaProperties ninjaProps;
     private final List<JmxReporter> jmxReporters;
 
