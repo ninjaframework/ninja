@@ -102,3 +102,20 @@ The corresponding html site would then look like:
 
 "contact" is the lower camel case version of the object's class name. And you can then access the fields (or getters / setters in case
 fields are private) via "contact.name".
+
+
+Date parsing
+-------------------------------------
+
+
+While parsing date inside POJO's you should use java.util.Date type. This type allows you to use both simple date and timestamps on databases.
+
+You can also choose a custom format following the rules specified [here](http://joda-time.sourceforge.net/api-release/org/joda/time/format/ISODateTimeFormat.html#localDateOptionalTimeParser()) and declare this format on application.conf file.
+
+Example:
+
+<pre class="prettyprint">
+    date_format='dd/MM/yyyy'
+</pre>
+
+Make sure to use the key name exactly as in the example, it is, "date_format".
