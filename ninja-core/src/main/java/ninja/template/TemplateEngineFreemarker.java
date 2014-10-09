@@ -116,6 +116,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // templates may require for URL encoding and for generating META element
         // that uses http-equiv="Content-type".
         cfg.setOutputEncoding(NinjaConstant.UTF_8);
+        
+        // Ninja does the localization itself - lookup is not needed.
+        cfg.setLocalizedLookup(false);
 
         cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
