@@ -15,6 +15,7 @@ import models.User;
 
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
+import javax.persistence.FlushModeType;
 
 public class SetupDao {
     
@@ -46,6 +47,9 @@ public class SetupDao {
             // Create a new post
             Article bobPost1 = new Article(bob, post1Title, post1Content);
             entityManager.persist(bobPost1);
+            
+            entityManager.setFlushMode(FlushModeType.COMMIT);
+            entityManager.flush();
         }
 
     }
