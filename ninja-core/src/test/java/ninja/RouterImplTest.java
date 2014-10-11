@@ -59,7 +59,8 @@ public class RouterImplTest {
         // add route:
         router.GET().route("/testroute").with(TestController.class, "index");
         router.GET().route("/user/{email}/{id: .*}").with(TestController.class, "user");
-
+        router.GET().route("/user/profile/?").with(TestController.class, "userProfileWithWildChar");
+        router.GET().route("/user/profile/").with(TestController.class, "userProfileWithoutWildChar");
         router.compileRoutes();
     }
 
@@ -74,6 +75,22 @@ public class RouterImplTest {
         assertThat(route, CoreMatchers.equalTo("/testroute"));
 
     }
+
+    @Test
+    public void testGetReverseRouteWhenPathContainsWildCharacter() {
+
+        String contextPath = "";
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+
+        String route = router.getReverseRoute(TestController.class, "userProfileWithWildChar");
+
+        assertThat(route, CoreMatchers.equalTo("/user/profile/"));
+
+        route = router.getReverseRoute(TestController.class, "userProfileWithoutWildChar");
+
+        assertThat(route, CoreMatchers.equalTo("/user/profile/"));
+    }
+
 
     @Test
     public void testGetReverseRouteContextPathWorks() {
@@ -140,6 +157,17 @@ public class RouterImplTest {
 
         }
 
+        public Result userProfileWithoutWildChar() {
+
+            return Results.ok();
+
+        }
+
+        public Result userProfileWithWildChar(){
+
+            return Results.ok();
+
+        }
     }
 
 }

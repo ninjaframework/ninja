@@ -134,6 +134,10 @@ public class RouterImpl implements Router {
                     urlWithReplacedPlaceholders,
                     ninjaProperties);
 
+            if(finalUrl.endsWith("?")) {
+                finalUrl= finalUrl.substring(0, finalUrl.length() - 1);
+            }
+
             return finalUrl;
 
         }
