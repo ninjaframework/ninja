@@ -16,7 +16,6 @@
 
 package ninja.session;
 
-import java.text.MessageFormat;
 import java.util.Map;
 
 import ninja.Context;
