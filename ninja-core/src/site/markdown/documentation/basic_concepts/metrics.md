@@ -30,7 +30,7 @@ public class Module extends AbstractModule {
 }
 </pre>
 
-### Subclass InstrumentedNinja in your `conf.Ninja` class.
+### Subclass InstrumentedNinja in your `conf.Ninja` class. (optional)
 
 <pre class="prettyprint">
 package conf;
@@ -86,9 +86,32 @@ or
 
     cache.implementation = ninja.metrics.InstrumentedMemcached
 
-Reporting
-------------------
+### Collecting Additional Metrics
 
-By default, Ninja Metrics will expose your metrics over JMX. You may disable this behavior by setting *metrics.jmx=false* in your `application.conf` file.
+#### JVM Metrics
+
+You may optionally enable JVM-level details reporting by setting *metrics.jvm.enabled=true* in your `application.conf` file.
+
+    metrics.jvm.enabled = true
+
+#### Logback Metrics
+
+You may optionally enable reporting of Logback log-level counts by setting *metrics.logback.enabled=true* in your `application.conf` file.
+
+    metrics.logback.enabled = true
+
+### Reporting Metrics via JMX for VisualVM/JConsole
+
+### Exposing Metrics via JMX for VisualVM/JConsole
+
+By default, Ninja Metrics will expose your metrics over JMX. You may disable this behavior by setting *metrics.jmx.enable=false* in your `application.conf` file.
 
 You can view the collected metrics using VisualVM (with the MBeans plugin installed) or using JConsole.
+
+
+### Reporting Metrics to 3rd party services
+
+It is also possible to collect & report your Metrics data to several cloud-based services such as:
+
+- [Librato](http://www.librato.com)
+- [DataDog](http://www.datadoghq.com)

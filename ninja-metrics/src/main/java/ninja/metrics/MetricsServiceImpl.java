@@ -16,6 +16,12 @@
 
 package ninja.metrics;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 import ninja.utils.NinjaConstant;
@@ -24,8 +30,17 @@ import ninja.utils.NinjaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+
 import com.codahale.metrics.JmxReporter;
+import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.MetricSet;
+import com.codahale.metrics.jvm.ClassLoadingGaugeSet;
+import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
+import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
+import com.codahale.metrics.logback.InstrumentedAppender;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -40,7 +55,7 @@ public class MetricsServiceImpl implements MetricsService {
     private final Logger log = LoggerFactory.getLogger(MetricsService.class);
     private final NinjaProperties ninjaProps;
     private final MetricRegistry metricRegistry;
-    private JmxReporter jmxReporter;
+    private final List<Closeable> reporters;
 
     @Inject
     public MetricsServiceImpl(MetricRegistry appMetrics,
@@ -48,6 +63,7 @@ public class MetricsServiceImpl implements MetricsService {
 
         this.ninjaProps = ninjaProps;
         this.metricRegistry = appMetrics;
+        this.reporters = new ArrayList<>();
 
     }
 
@@ -55,15 +71,48 @@ public class MetricsServiceImpl implements MetricsService {
     @Override
     public void start() {
 
-        if (ninjaProps.getBooleanWithDefault("metrics.jmx", true)) {
+        String applicationName = ninjaProps.getWithDefault(
+                NinjaConstant.applicationName, "Ninja");
 
-            String applicationName = ninjaProps.getWithDefault(
-                    NinjaConstant.applicationName, "Ninja");
+        /*
+         * Register optional metrics
+         */
+        if (ninjaProps.getBooleanWithDefault("metrics.jvm.enabled", false)) {
 
-            jmxReporter = JmxReporter.forRegistry(metricRegistry)
+            registerAll("jvm.gc", new GarbageCollectorMetricSet());
+            registerAll("jvm.memory", new MemoryUsageGaugeSet());
+            registerAll("jvm.threads", new ThreadStatesGaugeSet());
+            registerAll("jvm.classes", new ClassLoadingGaugeSet());
+
+            log.debug("Registered JVM-Metrics integration");
+
+        }
+
+        if (ninjaProps.getBooleanWithDefault("metrics.logback.enabled", false)) {
+
+            final LoggerContext factory = (LoggerContext) LoggerFactory.getILoggerFactory();
+            final ch.qos.logback.classic.Logger root = factory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+            final InstrumentedAppender appender = new InstrumentedAppender(metricRegistry);
+            appender.setContext(root.getLoggerContext());
+            appender.start();
+            root.addAppender(appender);
+
+            log.debug("Registered Logback-Metrics integration");
+
+        }
+
+        /*
+         * JMX
+         */
+        if (ninjaProps.getBooleanWithDefault("metrics.jmx.enabled", true)) {
+
+            JmxReporter reporter = JmxReporter.forRegistry(metricRegistry)
                     .inDomain(applicationName).build();
 
-            jmxReporter.start();
+            reporter.start();
+
+            reporters.add(reporter);
 
             log.debug("Started Ninja Metrics JMX reporter");
 
@@ -76,11 +125,17 @@ public class MetricsServiceImpl implements MetricsService {
     @Override
     public void stop() {
 
-        if (jmxReporter != null) {
+        for (Closeable reporter : reporters) {
 
-            log.debug("Stopping Ninja Metrics JMX reporter...");
+            log.debug("Stopping {}", reporter.getClass().getName());
 
-            jmxReporter.stop();
+            try {
+
+                reporter.close();
+
+            } catch (IOException e) {
+                log.error("Failed to stop Metrics reporter", e);
+            }
 
         }
 
@@ -92,4 +147,13 @@ public class MetricsServiceImpl implements MetricsService {
         return metricRegistry;
     }
 
+    private void registerAll(String prefix, MetricSet metrics) throws IllegalArgumentException {
+        for (Map.Entry<String, Metric> entry : metrics.getMetrics().entrySet()) {
+            if (entry.getValue() instanceof MetricSet) {
+                registerAll(MetricRegistry.name(prefix, entry.getKey()), (MetricSet) entry.getValue());
+            } else {
+                metricRegistry.register(MetricRegistry.name(prefix, entry.getKey()), entry.getValue());
+            }
+        }
+    }
 }
