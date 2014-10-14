@@ -24,9 +24,7 @@ import ninja.exceptions.BadRequestException;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
-import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
 import com.google.inject.Inject;
 
 /**
@@ -54,8 +52,7 @@ public class InstrumentedNinja extends NinjaDefault {
     @Override
     public void onFrameworkStart() {
 
-        MetricRegistry metrics = metricsService
-            .getMetricRegistry(MetricsService.METRICS_REGISTRY_REQUESTS);
+        MetricRegistry metrics = metricsService.getMetricRegistry();
 
         allRequestsMeter = metrics.meter(MetricsService.METER_ALL_REQUESTS);
         activeRequests = metrics.counter(MetricsService.COUNTER_ACTIVE_REQUESTS);

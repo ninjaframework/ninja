@@ -22,9 +22,6 @@ import ninja.cache.Cache;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 
 /**
  * Instruments the configured Ninja Cache instance for Metrics collection.
@@ -42,67 +39,57 @@ public class InstrumentedCache implements Cache {
 
     private Counter missCounter;
 
-    InstrumentedCache(
-            Cache cache,
-            MetricsService metricsService) {
+    InstrumentedCache(Cache cache, MetricsService metricsService) {
         this.underlyingCache = cache;
         this.metricsService = metricsService;
         init();
     }
 
     private void init() {
-        MetricRegistry registry = metricsService
-            .getMetricRegistry(MetricsService.METRICS_REGISTRY_CACHE);
+        MetricRegistry registry = metricsService.getMetricRegistry();
 
-        hitCounter = getCounter(registry, "hits");
-        missCounter = getCounter(registry, "miss");
-    }
-
-    private Counter getCounter(MetricRegistry registry, String name) {
-        return registry.counter(
-                MetricRegistry.name(
-                        underlyingCache.getClass(), 
-                        name));
+        hitCounter = registry.counter("ninja.cache.hits");
+        missCounter = registry.counter("ninja.cache.miss");
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.add")
     public void add(String key, Object value, int expiration) {
         underlyingCache.add(key, value, expiration);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.safeAdd")
     public boolean safeAdd(String key, Object value, int expiration) {
         return underlyingCache.safeAdd(key, value, expiration);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.set")
     public void set(String key, Object value, int expiration) {
         underlyingCache.set(key, value, expiration);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.safeSet")
     public boolean safeSet(String key, Object value, int expiration) {
         return underlyingCache.safeSet(key, value, expiration);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.replace")
     public void replace(String key, Object value, int expiration) {
         underlyingCache.replace(key, value, expiration);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.safeReplace")
     public boolean safeReplace(String key, Object value, int expiration) {
         return underlyingCache.safeReplace(key, value, expiration);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.get")
     public Object get(String key) {
         Object result = underlyingCache.get(key);
         if (result == null) {
@@ -114,7 +101,7 @@ public class InstrumentedCache implements Cache {
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.getMany")
     public Map<String, Object> get(String[] keys) {
         Map<String, Object> result = underlyingCache.get(keys);
         if (result == null || result.isEmpty()) {
@@ -127,32 +114,32 @@ public class InstrumentedCache implements Cache {
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.incr")
     public long incr(String key, int by) {
         return underlyingCache.incr(key, by);
 
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.decr")
     public long decr(String key, int by) {
         return underlyingCache.decr(key, by);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.clear")
     public void clear() {
         underlyingCache.clear();
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.delete")
     public void delete(String key) {
         underlyingCache.delete(key);
     }
 
     @Override
-    @Timed
+    @Timed("ninja.cache.safeDelete")
     public boolean safeDelete(String key) {
         return underlyingCache.safeDelete(key);
     }

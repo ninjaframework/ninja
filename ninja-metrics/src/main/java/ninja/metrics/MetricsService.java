@@ -16,9 +16,6 @@
 
 package ninja.metrics;
 
-import ninja.Route;
-
-import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 
 /**
@@ -28,14 +25,11 @@ import com.codahale.metrics.MetricRegistry;
  */
 public interface MetricsService {
 
-    String METRICS_REGISTRY_APP = "ninja.app";
-    String METRICS_REGISTRY_REQUESTS = "ninja.requests";
-    String METRICS_REGISTRY_CACHE = "ninja.cache";
-    String METER_ALL_REQUESTS = "ninja.allRequests";
-    String COUNTER_ACTIVE_REQUESTS = "ninja.activeRequests";
-    String METER_BAD_REQUESTS = "ninja.badRequests";
-    String METER_INTERNAL_SERVER_ERRORS = "ninja.internalServerErrors";
-    String METER_ROUTES_NOT_FOUND = "ninja.routesNotFound";
+    String METER_ALL_REQUESTS = "ninja.requests.allRequests";
+    String COUNTER_ACTIVE_REQUESTS = "ninja.requests.activeRequests";
+    String METER_BAD_REQUESTS = "ninja.requests.badRequests";
+    String METER_INTERNAL_SERVER_ERRORS = "ninja.requests.internalServerErrors";
+    String METER_ROUTES_NOT_FOUND = "ninja.requests.routesNotFound";
 
     /**
      * Start the Ninja Metrics service.
@@ -48,11 +42,10 @@ public interface MetricsService {
     void stop();
 
     /**
-     * Returns the specified metric registry.
+     * Returns the metric registry.
      *
-     * @param name
-     * @return the specified metric registry
+     * @return the metric registry
      */
-    MetricRegistry getMetricRegistry(String name);
+    MetricRegistry getMetricRegistry();
 
 }

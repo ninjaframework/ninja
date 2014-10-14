@@ -16,28 +16,21 @@
 
 package ninja.metrics;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import ninja.Route;
-import ninja.Router;
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.JmxReporter;
-import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Implementation of the metrics service.
+ * Implementation of the Metrics service.
  *
  * @author James Moger
  */
@@ -45,49 +38,34 @@ import com.google.inject.Singleton;
 public class MetricsServiceImpl implements MetricsService {
 
     private final Logger log = LoggerFactory.getLogger(MetricsService.class);
-    private final ConcurrentHashMap<String, MetricRegistry> metricRegistries;
     private final NinjaProperties ninjaProps;
-    private final List<JmxReporter> jmxReporters;
+    private final MetricRegistry metricRegistry;
+    private JmxReporter jmxReporter;
 
     @Inject
     public MetricsServiceImpl(MetricRegistry appMetrics,
                               NinjaProperties ninjaProps) {
 
         this.ninjaProps = ninjaProps;
+        this.metricRegistry = new MetricRegistry();
 
-        this.metricRegistries = new ConcurrentHashMap<>();
-        this.jmxReporters = new ArrayList<>();
     }
 
     @Start(order = 10)
     @Override
     public void start() {
-        long startTime = System.currentTimeMillis();
 
-        int reporterCount = 0;
         if (ninjaProps.getBooleanWithDefault("metrics.jmx", true)) {
 
-            String [] jmxReporterNames = { 
-                METRICS_REGISTRY_APP
-                    , METRICS_REGISTRY_REQUESTS
-                    , METRICS_REGISTRY_CACHE};
+            String applicationName = ninjaProps.getWithDefault(
+                    NinjaConstant.applicationName, "Ninja");
 
-            for (String jmxReporterName : jmxReporterNames) {
-                MetricRegistry metricRegistry = getMetricRegistry(jmxReporterName);
-                JmxReporter jmxReporter = JmxReporter.forRegistry(
-                        metricRegistry).inDomain(jmxReporterName).build();
-                jmxReporters.add(jmxReporter);
-                jmxReporter.start();
-            }
+            jmxReporter = JmxReporter.forRegistry(metricRegistry)
+                    .inDomain(applicationName).build();
 
-        }
+            jmxReporter.start();
 
-        reporterCount += jmxReporters.size();
-
-        if (reporterCount > 0) {
-
-            long time = System.currentTimeMillis() - startTime;
-            log.debug("Started Ninja Metrics reporters in {} ms", time);
+            log.debug("Started Ninja Metrics JMX reporter");
 
         }
 
@@ -97,18 +75,12 @@ public class MetricsServiceImpl implements MetricsService {
     @Dispose(order = 10)
     @Override
     public void stop() {
-        long start = System.currentTimeMillis();
 
-        if (!jmxReporters.isEmpty()) {
+        if (jmxReporter != null) {
 
-            log.debug("Stopping Ninja Metrics reporters...");
+            log.debug("Stopping Ninja Metrics JMX reporter...");
 
-            for (JmxReporter reporter : jmxReporters) {
-                reporter.stop();
-            }
-
-            long time = System.currentTimeMillis() - start;
-            log.debug("Ninja Metrics reporters stopped in {} ms", time);
+            jmxReporter.stop();
 
         }
 
@@ -116,9 +88,8 @@ public class MetricsServiceImpl implements MetricsService {
     }
 
     @Override
-    public MetricRegistry getMetricRegistry(String name) {
-        metricRegistries.putIfAbsent(name, new MetricRegistry());
-        return metricRegistries.get(name);
+    public MetricRegistry getMetricRegistry() {
+        return metricRegistry;
     }
 
 }

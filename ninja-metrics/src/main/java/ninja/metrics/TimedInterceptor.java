@@ -16,39 +16,40 @@
 
 package ninja.metrics;
 
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 
 /**
  *
  * @author ra
  */
 public class TimedInterceptor implements MethodInterceptor {
-    
+
     final Provider<MetricsService> metricsServiceProvider;
-    
+
     @Inject
     public TimedInterceptor(Provider<MetricsService> metricsServiceProvider) {
         this.metricsServiceProvider = metricsServiceProvider;
-    }        
+    }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        
+
         String timerName = invocation.getMethod().getAnnotation(Timed.class).value();
 
         if (timerName.isEmpty()) {
             timerName = MetricRegistry.name(invocation.getThis().getClass().getSuperclass(), invocation.getMethod().getName());
         }
 
-        Timer.Context timerContext 
+        Timer.Context timerContext
             = metricsServiceProvider
                 .get()
-                .getMetricRegistry(MetricsService.METRICS_REGISTRY_APP)
+                .getMetricRegistry()
                 .timer(timerName)
                 .time();
 
