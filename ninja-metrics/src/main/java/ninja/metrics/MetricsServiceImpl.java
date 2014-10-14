@@ -47,7 +47,7 @@ public class MetricsServiceImpl implements MetricsService {
                               NinjaProperties ninjaProps) {
 
         this.ninjaProps = ninjaProps;
-        this.metricRegistry = new MetricRegistry();
+        this.metricRegistry = appMetrics;
 
     }
 
