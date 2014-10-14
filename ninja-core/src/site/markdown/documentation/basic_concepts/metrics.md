@@ -102,12 +102,28 @@ You may optionally enable reporting of Logback log-level counts by setting *metr
 
 ### Reporting Metrics via JMX for VisualVM/JConsole
 
-### Exposing Metrics via JMX for VisualVM/JConsole
+By default, Ninja Metrics will expose your metrics over JMX. You may disable this behavior by setting *metrics.jmx.enabled=false* in your `application.conf` file.
 
-By default, Ninja Metrics will expose your metrics over JMX. You may disable this behavior by setting *metrics.jmx.enable=false* in your `application.conf` file.
+    metrics.jmx.enabled = true
 
 You can view the collected metrics using VisualVM (with the MBeans plugin installed) or using JConsole.
 
+### Reporting Metrics to Graphite
+
+Ninja Metrics supports reporting to Graphite.
+
+    metrics.graphite.enabled = true
+    metrics.graphite.address = graphite.example.com
+    metrics.graphite.port = 2003
+    metrics.graphite.pickled = false
+
+### Reporting Metrics to Ganglia
+
+Ninja Metrics supports reporting to Ganglia.
+
+    metrics.ganglia.enabled = true
+    metrics.ganglia.address = ganglia.example.com
+    metrics.ganglia.port = 8649
 
 ### Reporting Metrics to 3rd party services
 

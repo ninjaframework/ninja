@@ -16,11 +16,18 @@
 
 package ninja.metrics;
 
+import info.ganglia.gmetric4j.gmetric.GMetric;
+import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
+
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
@@ -34,13 +41,20 @@ import ch.qos.logback.classic.LoggerContext;
 
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
+import com.codahale.metrics.ganglia.GangliaReporter;
+import com.codahale.metrics.graphite.Graphite;
+import com.codahale.metrics.graphite.GraphiteReporter;
+import com.codahale.metrics.graphite.GraphiteSender;
+import com.codahale.metrics.graphite.PickledGraphite;
 import com.codahale.metrics.jvm.ClassLoadingGaugeSet;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.codahale.metrics.logback.InstrumentedAppender;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -71,6 +85,7 @@ public class MetricsServiceImpl implements MetricsService {
     @Override
     public void start() {
 
+        String hostname = determineHostname();
         String applicationName = ninjaProps.getWithDefault(
                 NinjaConstant.applicationName, "Ninja");
 
@@ -118,7 +133,66 @@ public class MetricsServiceImpl implements MetricsService {
 
         }
 
+        /*
+         * Graphite
+         */
+        if (ninjaProps.getBooleanWithDefault("metrics.graphite.enabled", false)) {
+
+            String address = ninjaProps.getWithDefault("metrics.graphite.address", "graphite.example.com");
+            int port = ninjaProps.getIntegerWithDefault("metrics.graphite.port", 2003);
+            boolean isPickled = ninjaProps.getBooleanWithDefault("metrics.graphite.pickled", false);
+            InetSocketAddress graphiteAddress = new InetSocketAddress(address, port);
+
+            final GraphiteSender sender;
+            if (isPickled) {
+                sender = new PickledGraphite(graphiteAddress);
+            } else {
+                sender = new Graphite(graphiteAddress);
+            }
+
+            final GraphiteReporter reporter = GraphiteReporter.forRegistry(metricRegistry)
+                                                              .prefixedWith(hostname)
+                                                              .convertRatesTo(TimeUnit.SECONDS)
+                                                              .convertDurationsTo(TimeUnit.MILLISECONDS)
+                                                              .filter(MetricFilter.ALL)
+                                                              .build(sender);
+            reporter.start(1, TimeUnit.MINUTES);
+
+            reporters.add(reporter);
+
+            log.debug("Started Ninja Metrics Graphite reporter");
+
+        }
+
+        /*
+         * Ganglia
+         */
+        if (ninjaProps.getBooleanWithDefault("metrics.ganglia.enabled", false)) {
+
+            String address = ninjaProps.getWithDefault("metrics.ganglia.address", "ganglia.example.com");
+            int port = ninjaProps.getIntegerWithDefault("metrics.ganglia.port", 8649);
+
+            try {
+                GMetric ganglia = new GMetric(address, port, UDPAddressingMode.MULTICAST, 1);
+                final GangliaReporter reporter = GangliaReporter.forRegistry(metricRegistry)
+                        .convertRatesTo(TimeUnit.SECONDS)
+                        .convertDurationsTo(TimeUnit.MILLISECONDS)
+                        .build(ganglia);
+
+                reporters.add(reporter);
+
+                reporter.start(1, TimeUnit.MINUTES);
+
+                log.debug("Started Ninja Metrics Ganglia reporter");
+
+            } catch (IOException e) {
+                log.error("Failed to create Ganglia reporter!", e);
+            }
+
+        }
+
         log.info("Ninja Metrics is ready for collection.");
+
     }
 
     @Dispose(order = 10)
@@ -155,5 +229,30 @@ public class MetricsServiceImpl implements MetricsService {
                 metricRegistry.register(MetricRegistry.name(prefix, entry.getKey()), entry.getValue());
             }
         }
+    }
+
+    private String determineHostname() {
+        // try InetAddress.LocalHost first;
+        // NOTE -- InetAddress.getLocalHost().getHostName() will not work in
+        // certain environments.
+        try {
+            String result = InetAddress.getLocalHost().getHostName();
+            if (!Strings.isNullOrEmpty(result))
+                return result;
+        } catch (UnknownHostException e) {
+            // failed; try alternate means.
+        }
+
+        // try environment properties.
+        //
+        String host = System.getenv("COMPUTERNAME");
+        if (host != null)
+            return host;
+        host = System.getenv("HOSTNAME");
+        if (host != null)
+            return host;
+
+        // undetermined.
+        return "Ninja";
     }
 }
