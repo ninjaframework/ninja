@@ -39,6 +39,7 @@
         <module>ninja-metrics-graphite</module>
         <module>ninja-metrics-ganglia</module>
         <module>ninja-metrics-librato</module>
+        <module>ninja-metrics-influxdb</module>
         <module>ninja-servlet</module>
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>

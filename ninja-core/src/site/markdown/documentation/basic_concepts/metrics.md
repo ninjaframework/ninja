@@ -171,6 +171,40 @@ Add the following settings to your `application.conf`.
     metrics.ganglia.address = ganglia.example.com
     metrics.ganglia.port = 8649
 
+### Reporting Metrics to InfluxDB
+
+Ninja Metrics supports reporting to [InfluxDB](http://influxdb.com).
+
+Add the following dependency to your application `pom.xml`.
+
+    <dependency>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja-metrics-influxdb</artifactId>
+        <version>${ninja.version}</version>
+    </dependency>
+
+Bind the InfluxDB integration in your `Module.java`.
+
+<pre class="prettyprint">
+@Singleton
+public class Module extends AbstractModule {
+
+  @Override
+  protected void configure() {
+    bind(NinjaInfluxDB.class);
+  }
+}
+</pre>
+
+Add the following settings to your `application.conf`.
+
+    metrics.influxdb.enabled = true
+    metrics.influxdb.address = localhost
+    metrics.influxdb.port = 8086
+    metrics.influxdb.database = mydb
+    metrics.influxdb.username = root
+    metrics.influxdb.password = root
+
 ### Reporting Metrics to Librato
 
 [Librato](http://metrics.librato.com) is a cloud-based metrics database and dashboard service.
