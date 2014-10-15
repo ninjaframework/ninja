@@ -110,7 +110,30 @@ You can view the collected metrics using VisualVM (with the MBeans plugin instal
 
 ### Reporting Metrics to Graphite
 
-Ninja Metrics supports reporting to Graphite.
+Ninja Metrics supports reporting to [Graphite](https://github.com/graphite-project).
+
+Add the following dependency to your application `pom.xml`.
+
+    <dependency>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja-metrics-graphite</artifactId>
+        <version>${ninja.version}</version>
+    </dependency>
+
+Bind the Graphite integration in your `Module.java`.
+
+<pre class="prettyprint">
+@Singleton
+public class Module extends AbstractModule {
+
+  @Override
+  protected void configure() {
+    bind(NinjaGraphite.class);
+  }
+}
+</pre>
+
+Add the following settings to your `application.conf`.
 
     metrics.graphite.enabled = true
     metrics.graphite.address = graphite.example.com
@@ -119,15 +142,62 @@ Ninja Metrics supports reporting to Graphite.
 
 ### Reporting Metrics to Ganglia
 
-Ninja Metrics supports reporting to Ganglia.
+Ninja Metrics supports reporting to [Ganglia](http://ganglia.info).
+
+Add the following dependency to your application `pom.xml`.
+
+    <dependency>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja-metrics-ganglia</artifactId>
+        <version>${ninja.version}</version>
+    </dependency>
+
+Bind the Ganglia integration in your `Module.java`.
+
+<pre class="prettyprint">
+@Singleton
+public class Module extends AbstractModule {
+
+  @Override
+  protected void configure() {
+    bind(NinjaGanglia.class);
+  }
+}
+</pre>
+
+Add the following settings to your `application.conf`.
 
     metrics.ganglia.enabled = true
     metrics.ganglia.address = ganglia.example.com
     metrics.ganglia.port = 8649
 
-### Reporting Metrics to 3rd party services
+### Reporting Metrics to Librato
 
-It is also possible to collect & report your Metrics data to several cloud-based services such as:
+[Librato](http://metrics.librato.com) is a cloud-based metrics database and dashboard service.
 
-- [Librato](http://www.librato.com)
-- [DataDog](http://www.datadoghq.com)
+Add the following dependency to your application `pom.xml`.
+
+    <dependency>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja-metrics-librato</artifactId>
+        <version>${ninja.version}</version>
+    </dependency>
+
+Bind the Librato integration in your `Module.java`.
+
+<pre class="prettyprint">
+@Singleton
+public class Module extends AbstractModule {
+
+  @Override
+  protected void configure() {
+    bind(NinjaLibrato.class);
+  }
+}
+</pre>
+
+Add the following settings to your `application.conf`.
+
+    metrics.librato.enabled = true
+    metrics.librato.username = person@example.com
+    metrics.librato.apikey = 12345cafebabe

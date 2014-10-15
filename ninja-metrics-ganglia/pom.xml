@@ -11,7 +11,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>ninja-metrics</artifactId>
+	<artifactId>ninja-metrics-ganglia</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -21,10 +21,6 @@
 	</parent>
 
 	<url>http://www.ninjaframework.org</url>
-	
-	<properties>
-	   <metrics.version>3.1.0</metrics.version>
-	</properties>
 
 	<build>
 		<resources>
@@ -54,26 +50,14 @@
 
 		<dependency>
 			<groupId>org.ninjaframework</groupId>
-			<artifactId>ninja-core</artifactId>
+			<artifactId>ninja-metrics</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
-			<artifactId>metrics-core</artifactId>
+			<artifactId>metrics-ganglia</artifactId>
 			<version>${metrics.version}</version>
 		</dependency>
-
-        <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-jvm</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-logback</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
 
 		<!-- Testing -->
 		<dependency>

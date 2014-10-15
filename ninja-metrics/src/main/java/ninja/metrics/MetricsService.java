@@ -48,4 +48,10 @@ public interface MetricsService {
      */
     MetricRegistry getMetricRegistry();
 
+    /**
+     * Returns the hostname of the server.
+     *
+     * @return the hostname
+     */
+    String getHostname();
 }

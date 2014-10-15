@@ -36,6 +36,9 @@
     <modules>
         <module>ninja-core</module>
         <module>ninja-metrics</module>
+        <module>ninja-metrics-graphite</module>
+        <module>ninja-metrics-ganglia</module>
+        <module>ninja-metrics-librato</module>
         <module>ninja-servlet</module>
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
@@ -58,6 +61,7 @@
         <jetty.version>9.2.1.v20140609</jetty.version>
         <hibernate.version>4.3.5.Final</hibernate.version>
         <jackson.version>2.4.1</jackson.version>
+        <metrics.version>3.1.0</metrics.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
