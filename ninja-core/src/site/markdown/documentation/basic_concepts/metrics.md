@@ -43,19 +43,21 @@ public class Ninja extends InstrumentedNinja {
 
 </pre>
 
-### Collecting Route Metrics
+### Collecting Metrics
 
-Now you are ready to start annotating your controllers.
+Now you are ready to start annotating your controllers or any other methods.
 
-You have three choices in the collection of route metrics:
+You have several choices in the collection of metrics:
 
 - *Do nothing*
+- *Counted*
+A counter increments (and optionally decrements) when a method is executed.
 - *Metered*
 A meter measures the rate of events over time (e.g., “requests per second”). In addition to the mean rate, meters also track 1-, 5-, and 15-minute moving averages.
 - *Timed*
 A timer measures both the rate that a particular piece of code is called and the distribution of its duration.
 
-1. Start by sprinkling `@Metered` or `@Timed` on some of your controller methods.
+1. Start by sprinkling `@Counted`, `@Metered`, or `@Timed` on some of your controller methods.
 2. Start up VisualVM (and install the MBeans plugin) or JConsole.
 3. Browse your app and refresh the collected metrics.
 
