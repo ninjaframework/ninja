@@ -1,6 +1,7 @@
 Version X
 =========
 
+* 2014-10-16 Bump to Freemarker 2.3.21 (ra).
 * 2014-10-10 Stability improvement for Jpa blog archetype - setup works now in a predictable manner for testcases ra).
 * 2014-10-09 Removed localized lookup in Freemarker templates. Not needed as Ninja does i18n already (ra).
 * 2014-10-07 Add support for multiple variable parts *with regex* in routes

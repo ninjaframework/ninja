@@ -41,7 +41,10 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.Version;
 import java.io.Writer;
@@ -61,6 +64,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         }
     }
     // end
+    
+    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 21);
 
     private final String FILE_SUFFIX = ".ftl.html";
 
@@ -102,11 +107,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
         
-        cfg = new Configuration();
-        
-        // This is important to enable html escaping of apostrophes
-        // http://freemarker.org/docs/ref_builtins_string.html
-        cfg.setIncompatibleImprovements(new Version(2, 3, 20));
+        cfg = new Configuration(INCOMPATIBLE_IMPROVEMENTS_VERSION);
         
         // Set your preferred charset template files are stored in. UTF-8 is
         // a good choice in most applications:
@@ -186,16 +187,13 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         // We also do not want Freemarker to chose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"
-        // on some platform. This is not "least astonishemnt". It will also
+        // on some platforms. This is not "least astonishemnt". It will also
         // break stuff really badly sometimes.
         // See also: http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping
         cfg.setNumberFormat("0.######");  // now it will print 1000000
         
-        // The defaultObjectWrapper is a BeansWrapper
-        // => we fetch it and allow the wrapper to expose all fields
-        // for convenience
-        BeansWrapper beansWrapper = (BeansWrapper) cfg.getObjectWrapper();
-        beansWrapper.setExposeFields(true);
+
+        cfg.setObjectWrapper(createBeansWrapperWithExposedFields());
         
     }
 
@@ -335,6 +333,14 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     @Override
     public String getSuffixOfTemplatingEngine() {
         return FILE_SUFFIX;
+    }
+    
+    private BeansWrapper createBeansWrapperWithExposedFields() {
+        DefaultObjectWrapperBuilder defaultObjectWrapperBuilder 
+            = new DefaultObjectWrapperBuilder(INCOMPATIBLE_IMPROVEMENTS_VERSION);
+        defaultObjectWrapperBuilder.setExposeFields(true);
+        DefaultObjectWrapper defaultObjectWrapper = defaultObjectWrapperBuilder.build();
+        return defaultObjectWrapper;
     }
     
 }
