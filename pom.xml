@@ -40,6 +40,7 @@
         <module>ninja-metrics-ganglia</module>
         <module>ninja-metrics-librato</module>
         <module>ninja-metrics-influxdb</module>
+        <module>ninja-jaxrs-routes</module>
         <module>ninja-servlet</module>
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
@@ -312,6 +313,12 @@
             <dependency>
                 <groupId>org.ninjaframework</groupId>
                 <artifactId>ninja-metrics</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-jaxrs-routes</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
