@@ -149,6 +149,11 @@
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-metrics</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
         </dependency>
 

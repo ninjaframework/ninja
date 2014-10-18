@@ -2,9 +2,10 @@ Version X
 =========
 
 * 2014-10-16 Bump to Freemarker 2.3.21 (ra).
+* 2014-10-18 Added a Metrics module with reporters for Graphite, Ganglia, InfluxDB, and Librato (gitblit & ra)
 * 2014-10-10 Stability improvement for Jpa blog archetype - setup works now in a predictable manner for testcases ra).
 * 2014-10-09 Removed localized lookup in Freemarker templates. Not needed as Ninja does i18n already (ra).
-* 2014-10-07 Add support for multiple variable parts *with regex* in routes
+* 2014-10-07 Added support for multiple variable parts *with regex* in routes (bazi)
 * 2014-10-07 Added testcase for NinjaCache (ra)
 * 2014-10-06 Add optional hot-reload support for `-Dninja.external.conf` external configuration for all runtime modes if `-Dninja.external.reload=true` (gitblit)
 * 2014-10-06 Add automatic hot-reload support for `application.conf` in **dev** mode (gitblit)

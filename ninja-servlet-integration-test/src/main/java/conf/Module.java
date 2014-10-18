@@ -16,6 +16,8 @@
 
 package conf;
 
+import ninja.metrics.MetricsModule;
+
 import com.google.inject.AbstractModule;
 
 import etc.GreetingService;
@@ -37,6 +39,8 @@ public class Module extends AbstractModule {
         bind(GreetingService.class).to(GreetingServiceImpl.class).asEagerSingleton();
         // Bind the UDP ping controller so it starts up on server start
         // bind(UdpPingController.class);
+
+        install(new MetricsModule());
 
     }
 

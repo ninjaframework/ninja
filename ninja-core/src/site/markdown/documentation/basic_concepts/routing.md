@@ -164,6 +164,48 @@ after <code>/assets/</code>. Imagine a request to <code>/assets/css/app.css</cod
 This request will be handled by the route and accessing the path parameter 
 <code>fileName</code> will return <code>css/app.css</code>.
 
+Routes can contain multiple variable parts with regular expressions.
+
+For example, for a request to <code>/categories/1234/products/5678</code>, where category is
+expected to be an integer value and product to be either integer or string value, 
+you can define routes like that:
+
+<pre class="prettyprint">
+router.GET().route("/categories/{catId: [0-9]+}/products/{productId: [0-9]+}").with(ProductController.class, "product");
+router.GET().route("/categories/{catId: [0-9]+}/products/{productName: .*}").with(ProductController.class, "productByName");
+</pre>
+
+The request above will be handled by first route, and request to <code>/categories/1234/products/mouse</code>
+will be handled by second route.
+
+Values of variable parts of a route are injected into our controller (explained above)
+and are implicitly validated with regular expressions.
+So our controller for routes above would be like that (look at <code>@PathParam</code> argument types):
+<pre class="prettyprint">
+package controllers;
+
+@Singleton
+public class ProductController {
+
+    public Result product(
+            @PathParam("catId") int catId, 
+            @PathParam("productId") int productId) {
+
+        // find product by id in given category 
+    }
+
+    public Result productByName(
+            @PathParam("catId") int catId, 
+            @PathParam("productName") String productName) {
+
+        // find product(s) by name in given category 
+    }
+}
+</pre>
+
+Note at how regular expressions in routes can be used to validate path parameters and
+to define fine grained routing.
+
 You can use any Java compliant regular expressions for matching. Please refer to
 the official documentation at http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html.
 
