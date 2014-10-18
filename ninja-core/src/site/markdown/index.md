@@ -96,7 +96,7 @@
     </div>
     
     <div class="span4">
-        <h2><i class="fa fa-truck"></i> Deployment</h2>
+        <h2><i class="fa fa-truck"></i> DevOps</h2>
         <p>Package your Ninja application as war and run it
         on your <b>application server (Tomcat, Jetty...)</b>. Or create a 
         a <b>standalone application</b>, copy it to your server and start it in production.
