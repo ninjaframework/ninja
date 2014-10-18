@@ -106,9 +106,9 @@ public class MetricsServiceImpl implements MetricsService {
         }
 
         /*
-         * JMX
+         * MBeans for VisualVM, JConsole, or JMX
          */
-        if (ninjaProps.getBooleanWithDefault("metrics.jmx.enabled", true)) {
+        if (ninjaProps.getBooleanWithDefault("metrics.mbeans.enabled", true)) {
 
             JmxReporter reporter = JmxReporter.forRegistry(metricRegistry)
                     .inDomain(applicationName).build();
@@ -117,7 +117,7 @@ public class MetricsServiceImpl implements MetricsService {
 
             reporters.add(reporter);
 
-            log.debug("Started Ninja Metrics JMX reporter");
+            log.debug("Started Ninja Metrics MBeans reporter");
 
         }
 

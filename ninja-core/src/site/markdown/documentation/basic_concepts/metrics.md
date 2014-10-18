@@ -102,11 +102,11 @@ You may optionally enable reporting of Logback log-level counts by setting *metr
 
     metrics.logback.enabled = true
 
-### Reporting Metrics via JMX for VisualVM/JConsole
+### Reporting Metrics via MBeans for VisualVM, JConsole, or JMX
 
-By default, Ninja Metrics will expose your metrics over JMX. You may disable this behavior by setting *metrics.jmx.enabled=false* in your `application.conf` file.
+If you want to expose your metrics to VisualVM, JConsole, or JMX you must enable the MBeans reporter in your `application.conf` file.
 
-    metrics.jmx.enabled = true
+    metrics.mbeans.enabled = true
 
 You can view the collected metrics using VisualVM (with the MBeans plugin installed) or using JConsole.
 
