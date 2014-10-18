@@ -22,6 +22,7 @@ import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 import ninja.metrics.MetricsService;
 import ninja.utils.NinjaProperties;
+import ninja.utils.TimeUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ import com.librato.metrics.LibratoReporter;
 @Singleton
 public class NinjaLibrato {
 
-    private final Logger logger = LoggerFactory.getLogger(NinjaLibrato.class);
+    private final Logger log = LoggerFactory.getLogger(NinjaLibrato.class);
 
     private final NinjaProperties ninjaProperties;
 
@@ -62,12 +63,17 @@ public class NinjaLibrato {
                     .getOrDie("metrics.librato.username");
             final String apiKey = ninjaProperties
                     .getOrDie("metrics.librato.apikey");
+            final String period = ninjaProperties.getWithDefault(
+                    "metrics.librato.period", "60s");
+            final int delay = TimeUtil.parseDuration(period);
 
             LibratoReporter.enable(LibratoReporter.builder(
                     metricsService.getMetricRegistry(), username, apiKey,
-                    hostname), 10, TimeUnit.SECONDS);
+                    hostname), delay, TimeUnit.SECONDS);
 
-            logger.info("Started Librato Metrics reporter for '{}'", hostname);
+            log.info(
+                    "Started Librato Metrics reporter for '{}', updating every {}",
+                    hostname, period);
 
         }
 

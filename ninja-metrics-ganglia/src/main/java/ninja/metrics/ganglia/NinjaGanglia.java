@@ -26,6 +26,7 @@ import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 import ninja.metrics.MetricsService;
 import ninja.utils.NinjaProperties;
+import ninja.utils.TimeUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,9 @@ public class NinjaGanglia {
                     .getOrDie("metrics.ganglia.address");
             final int port = ninjaProperties.getIntegerWithDefault(
                     "metrics.ganglia.port", 8649);
+            final String period = ninjaProperties.getWithDefault(
+                    "metrics.ganglia.period", "60s");
+            final int delay = TimeUtil.parseDuration(period);
 
             try {
                 GMetric ganglia = new GMetric(address, port,
@@ -78,9 +82,11 @@ public class NinjaGanglia {
                         .convertDurationsTo(TimeUnit.MILLISECONDS)
                         .build(ganglia);
 
-                reporter.start(1, TimeUnit.MINUTES);
+                reporter.start(delay, TimeUnit.SECONDS);
 
-                log.info("Started Ganglia Metrics reporter for '{}'", hostname);
+                log.info(
+                        "Started Ganglia Metrics reporter for '{}', updating every {}",
+                        hostname, period);
 
             } catch (IOException e) {
                 log.error("Failed to start Ganglia reporter!", e);

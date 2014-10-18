@@ -141,6 +141,7 @@ Add the following settings to your `application.conf`.
     metrics.graphite.address = graphite.example.com
     metrics.graphite.port = 2003
     metrics.graphite.pickled = false
+    metrics.graphite.period = 60s
 
 ### Reporting Metrics to Ganglia
 
@@ -172,6 +173,7 @@ Add the following settings to your `application.conf`.
     metrics.ganglia.enabled = true
     metrics.ganglia.address = ganglia.example.com
     metrics.ganglia.port = 8649
+    metrics.ganglia.period = 60s
 
 ### Reporting Metrics to InfluxDB
 
@@ -206,6 +208,7 @@ Add the following settings to your `application.conf`.
     metrics.influxdb.database = mydb
     metrics.influxdb.username = root
     metrics.influxdb.password = root
+    metrics.influxdb.period = 60s
 
 ### Reporting Metrics to Librato
 
@@ -237,3 +240,4 @@ Add the following settings to your `application.conf`.
     metrics.librato.enabled = true
     metrics.librato.username = person@example.com
     metrics.librato.apikey = 12345cafebabe
+    metrics.librato.period = 60s

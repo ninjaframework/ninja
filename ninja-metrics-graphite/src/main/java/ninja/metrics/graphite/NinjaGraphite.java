@@ -23,6 +23,7 @@ import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 import ninja.metrics.MetricsService;
 import ninja.utils.NinjaProperties;
+import ninja.utils.TimeUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,9 @@ public class NinjaGraphite {
                     "metrics.graphite.port", 2003);
             final boolean isPickled = ninjaProperties.getBooleanWithDefault(
                     "metrics.graphite.pickled", false);
+            final String period = ninjaProperties.getWithDefault(
+                    "metrics.graphite.period", "60s");
+            final int delay = TimeUtil.parseDuration(period);
             final InetSocketAddress graphiteAddress = new InetSocketAddress(
                     address, port);
 
@@ -86,9 +90,12 @@ public class NinjaGraphite {
                     .prefixedWith(hostname).convertRatesTo(TimeUnit.SECONDS)
                     .convertDurationsTo(TimeUnit.MILLISECONDS)
                     .filter(MetricFilter.ALL).build(sender);
-            reporter.start(1, TimeUnit.MINUTES);
 
-            log.info("Started Graphite Metrics reporter for '{}'", hostname);
+            reporter.start(delay, TimeUnit.SECONDS);
+
+            log.info(
+                    "Started Graphite Metrics reporter for '{}', updating every {}",
+                    hostname, period);
 
         }
     }
