@@ -360,11 +360,13 @@ The article from Lunatech mentioned earlier is awesome and explains everything.
 
 You may use the standard Ninja route registration in combination with this route builder or you may replace all your route registrations with annotations.
 
+**NOTE:** Your annotated controllers must be located somewhere within your application's configured controller package or a subpackage thereof.
+
 ### Add the Ninja-JAXRS-routes dependency
 
     <dependency>
         <groupId>org.ninjaframework</groupId>
-        <artifactId>ninja-jax-routes</artifactId>
+        <artifactId>ninja-jaxrs-routes</artifactId>
         <version>${ninja.version}</version>
     </dependency>
 
