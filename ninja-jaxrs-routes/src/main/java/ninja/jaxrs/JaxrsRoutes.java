@@ -86,7 +86,7 @@ public class JaxrsRoutes implements ApplicationRoutes {
 
         ConfigurationBuilder builder = new ConfigurationBuilder();
 
-        Set<URL> packagesToScan = getPackagesToScanForRoutes(ninjaProperties);
+        Set<URL> packagesToScan = getPackagesToScanForRoutes();
         builder.addUrls(packagesToScan);
 
         builder.addScanners(new MethodAnnotationsScanner());
@@ -233,10 +233,9 @@ public class JaxrsRoutes implements ApplicationRoutes {
     /**
      * Returns the set of packages to scan for annotated controller methods.
      *
-     * @param ninjaProperties
      * @return the set of packages to scan
      */
-    private Set<URL> getPackagesToScanForRoutes(NinjaProperties ninjaProperties) {
+    private Set<URL> getPackagesToScanForRoutes() {
 
         Set<URL> packagesToScanForRoutes = Sets.newHashSet();
 
