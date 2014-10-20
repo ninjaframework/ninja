@@ -40,7 +40,7 @@
         <module>ninja-metrics-ganglia</module>
         <module>ninja-metrics-librato</module>
         <module>ninja-metrics-influxdb</module>
-        <module>ninja-jaxrs-routes</module>
+        <module>ninja-jaxy-routes</module>
         <module>ninja-servlet</module>
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
@@ -318,7 +318,7 @@
 
             <dependency>
                 <groupId>org.ninjaframework</groupId>
-                <artifactId>ninja-jaxrs-routes</artifactId>
+                <artifactId>ninja-jaxy-routes</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -402,6 +402,13 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>17.0</version>
+            </dependency>
+
+            <!-- reflections is used for classpath scanning -->
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.9.9</version>
             </dependency>
 
             <!-- Needed for Hex transforms (security, cookies) and more... -->

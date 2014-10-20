@@ -1,7 +1,7 @@
 Version X
 =========
 
-* 2014-10-18 Added a JAX-RS style routes builder (gitblit)
+* 2014-10-20 Added ninja-jaxy-routes module, a JAX-RS style routes builder (gitblit)
 * 2014-10-16 Bump to Freemarker 2.3.21 (ra).
 * 2014-10-18 Added a Metrics module with reporters for Graphite, Ganglia, InfluxDB, and Librato (gitblit & ra)
 * 2014-10-10 Stability improvement for Jpa blog archetype - setup works now in a predictable manner for testcases ra).

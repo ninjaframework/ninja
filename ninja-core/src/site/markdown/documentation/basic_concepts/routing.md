@@ -356,29 +356,29 @@ The article from Lunatech mentioned earlier is awesome and explains everything.
 
 ## JAX-RS-style Annotated Routes in Ninja (optional)
 
-*Ninja-jaxrs-routes* allows you to register your routes using annotations similar to JAX-RS.
+*Ninja-jaxy-routes* allows you to register your routes using annotations similar to JAX-RS.
 
 You may use the standard Ninja route registration in combination with this route builder or you may replace all your route registrations with annotations.
 
 **NOTE:** Your annotated controllers must be located somewhere within your application's configured controller package or a subpackage thereof.
 
-### Add the Ninja-JAXRS-routes dependency
+### Add the ninja-jaxy-routes dependency
 
     <dependency>
         <groupId>org.ninjaframework</groupId>
-        <artifactId>ninja-jaxrs-routes</artifactId>
+        <artifactId>ninja-jaxy-routes</artifactId>
         <version>${ninja.version}</version>
     </dependency>
 
-### Initialize `JaxrsRoutes` in your `conf.Routes` class.
+### Initialize `JaxyRoutes` in your `conf.Routes` class.
 
     @Inject
-    JaxrsRoutes jaxrsRoutes;
+    JaxyRoutes jaxyRoutes;
     
     @Override
     public void init(Router router) {
     
-        jaxrsRoutes.init(router);
+        jaxyRoutes.init(router);
         
     }
 
@@ -388,7 +388,7 @@ Now you are ready to start annotating your controllers.
 
 #### Paths
 
-*Ninja-jaxrs-routes* supports multiple `@Path` specs per controller method and also supports controller class inheritance.
+*Ninja-jaxy-routes* supports multiple `@Path` specs per controller method and also supports controller class inheritance.
 
 The following example will register two **GET** routes `/base/middle/app/get` and `/base/middle/app/retrieve` for the same controller method. 
 
