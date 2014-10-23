@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.statistics.StatisticsGateway;
 import ninja.lifecycle.Dispose;
 
 import org.slf4j.Logger;
@@ -171,11 +170,7 @@ public class CacheEhCacheImpl implements Cache {
         element.setTimeToLive(expiration);
         ehCache.put(element);
     }
-    
-    public StatisticsGateway getStatistics() {
-      return ehCache.getStatistics();  
-    }
-    
+
     @Dispose
     public void stop() {
         if (ehCacheManager != null) {
