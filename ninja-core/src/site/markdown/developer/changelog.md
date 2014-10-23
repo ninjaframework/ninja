@@ -13,6 +13,7 @@ Version X
     * org.apache.commons:commons-email .......................... 1.3.2 -> 1.3.3
     * org.eclipse.jetty:jetty-server ............................ 9.2.1.v20140609 -> 9.2.3.v20140905
     * org.eclipse.jetty:jetty-servlet ........................... 9.2.1.v20140609 -> 9.2.3.v20140905
+* 2014-10-20 Added ninja-jaxy-routes module, a JAX-RS style routes builder (gitblit)
 * 2014-10-16 Bump to Freemarker 2.3.21 (ra).
 * 2014-10-18 Added a Metrics module with reporters for Graphite, Ganglia, InfluxDB, and Librato (gitblit & ra)
 * 2014-10-10 Stability improvement for Jpa blog archetype - setup works now in a predictable manner for testcases ra).

@@ -353,3 +353,134 @@ a @PathParam("id") would then be rootuser/domain as it is decoded by Ninja.
 
 In principle it is really simple. But it is even simpler to mess encoding / decoding up.
 The article from Lunatech mentioned earlier is awesome and explains everything.
+
+## JAX-RS-style Annotated Routes in Ninja (optional)
+
+*Ninja-jaxy-routes* allows you to register your routes using annotations similar to JAX-RS.
+
+You may use the standard Ninja route registration in combination with this route builder or you may replace all your route registrations with annotations.
+
+**NOTE:** Your annotated controllers must be located somewhere within your application's configured controller package or a subpackage thereof.
+
+### Add the ninja-jaxy-routes dependency
+
+    <dependency>
+        <groupId>org.ninjaframework</groupId>
+        <artifactId>ninja-jaxy-routes</artifactId>
+        <version>${ninja.version}</version>
+    </dependency>
+
+### Initialize `JaxyRoutes` in your `conf.Routes` class.
+
+    @Inject
+    JaxyRoutes jaxyRoutes;
+    
+    @Override
+    public void init(Router router) {
+    
+        jaxyRoutes.init(router);
+        
+    }
+
+### Annotate Your Controllers
+
+Now you are ready to start annotating your controllers.
+
+#### Paths
+
+*Ninja-jaxy-routes* supports multiple `@Path` specs per controller method and also supports controller class inheritance.
+
+The following example will register two **GET** routes `/base/middle/app/get` and `/base/middle/app/retrieve` for the same controller method. 
+
+    @Path("/base")
+    class Base {
+    }
+    
+    @Path("/middle")
+    class Middle extends Base {
+    }
+
+    @Path("/app")
+    class App extends Middle {
+    
+        @Path({"/get", "/retrieve"})
+        @GET
+        Result get() {
+            return Results.text().renderRaw("Yahoo!"); 
+        }        
+    }
+
+If the `Base` and `Middle` parent classes had each specified multiple paths, all permutations of the complete routes would be registered too.
+
+
+#### Http Methods
+
+By default, all routes are assumed to be **GET** routes unless they are specifically annotated.
+
+The following common HTTP method annotations are available:
+
+- `@DELETE`
+- `@GET`
+- `@HEAD`
+- `@OPTIONS`
+- `@PATCH`
+- `@POST`
+- `@PUT`
+
+If the built-in methods are insufficient, you may implement your own custom HTTP methods:
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @HttpMethod("CUSTOM")
+    public @interface CUSTOM {
+    }
+
+#### Registration Order
+
+Since your controllers and methods are reflectively loaded we can not expect a predictable route registration order from the JVM.
+
+To compensate for this, you may specify the `@Order` annotation on a controller method to dictate the ordering of routes.
+
+1. It is not necessary to specify an `@Order` for every method.
+2. Lower numbers are registered first, higher numbers later.
+3. If two methods have the same order, the registration order is determined by String comparison of the complete method address (controller+method).
+
+Here is an example of specifying an `@Order`.
+
+    @Path({"/get", "/retrieve"})
+    @GET
+    @Order(10)
+    Result something() {
+    }
+
+#### Runtime Mode Inclusions/Exclusions
+
+You may include/exclude routes based on the Ninja runtime mode.
+
+1. If no mode annotations are specified, then the route is available in all modes.
+2. You may specify multiple mode annotations on a controller method.
+
+- `@Dev`
+- `@Prod`
+- `@Test`
+
+Here is an example of specifying `@Dev` and `@Test`.
+
+    @Path("/diagnostics")
+    @GET
+    @Dev @Test
+    Result diagnostics() {
+    }
+
+
+#### NinjaProperties Inclusions/Exclusions
+
+It is also possible to include/exclude a route based on a NinjaProperties key.
+
+If the key does not exist in your runtime config, the route is not registered.
+
+    @Path("/sneaky")
+    @GET
+    @Requires("sneaky.key")
+    Result somethingSneaky() {
+    }
