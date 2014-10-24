@@ -26,11 +26,10 @@ import ninja.Result;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TemplateEngineXml implements TemplateEngine {

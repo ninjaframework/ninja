@@ -16,6 +16,8 @@
 
 package ninja.lifecycle;
 
+import java.lang.reflect.Method;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -23,8 +25,6 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-
-import java.lang.reflect.Method;
 
 /**
  * Guice support for lifecycle

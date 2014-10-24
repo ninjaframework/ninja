@@ -19,14 +19,13 @@ package ninja.cache;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.inject.Inject;
-
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import ninja.lifecycle.Dispose;
 
 import org.slf4j.Logger;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**

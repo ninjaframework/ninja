@@ -16,16 +16,18 @@
 
 package ninja.postoffice.guice;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.commonsmail.PostofficeCommonsmailImpl;
 import ninja.postoffice.mock.PostofficeMockImpl;
 import ninja.utils.NinjaProperties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 @Singleton
 public class PostofficeProvider implements Provider<Postoffice> {

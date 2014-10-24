@@ -17,6 +17,7 @@
 package ninja;
 
 import ninja.params.ControllerMethodInvoker;
+
 import com.google.inject.Provider;
 
 /**

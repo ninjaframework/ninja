@@ -20,15 +20,15 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.utils.CookieDataCodec;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 

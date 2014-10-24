@@ -16,18 +16,21 @@
 
 package ninja.logging;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import ninja.utils.NinjaProperties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
+
 import com.google.common.io.Resources;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import ninja.utils.NinjaProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
