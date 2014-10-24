@@ -16,6 +16,8 @@
 
 package ninja.i18n;
 
+import java.util.Locale;
+
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
@@ -29,7 +31,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.Locale;
 
 @Singleton
 public class LangImpl implements Lang {

@@ -16,14 +16,13 @@
 
 package ninja.i18n;
 
-import java.util.Map;
+import java.util.Locale;
 
 import ninja.Context;
 import ninja.Result;
 
 import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
-import java.util.Locale;
 
 @ImplementedBy(LangImpl.class)
 public interface Lang {

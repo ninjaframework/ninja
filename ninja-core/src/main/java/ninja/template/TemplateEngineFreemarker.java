@@ -18,14 +18,18 @@ package ninja.template;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.inject.Singleton;
 
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
@@ -44,9 +48,6 @@ import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.Version;
-import java.io.Writer;
-import javax.inject.Singleton;
-import ninja.utils.NinjaConstant;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {

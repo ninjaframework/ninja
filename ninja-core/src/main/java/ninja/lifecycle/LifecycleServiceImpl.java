@@ -16,12 +16,18 @@
 
 package ninja.lifecycle;
 
-import com.google.inject.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Binding;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
+import com.google.inject.Scope;
+import com.google.inject.Scopes;
 import com.google.inject.internal.ProviderMethod;
 import com.google.inject.spi.DefaultBindingScopingVisitor;
 import com.google.inject.spi.ProviderInstanceBinding;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the lifecycle service

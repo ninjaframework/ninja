@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.google.inject.Inject;
-
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.ConnectionFactory;
 import net.spy.memcached.ConnectionFactoryBuilder;
@@ -44,6 +42,7 @@ import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**

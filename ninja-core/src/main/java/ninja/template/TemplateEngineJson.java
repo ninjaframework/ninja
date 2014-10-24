@@ -24,11 +24,11 @@ import ninja.Result;
 import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TemplateEngineJson implements TemplateEngine {

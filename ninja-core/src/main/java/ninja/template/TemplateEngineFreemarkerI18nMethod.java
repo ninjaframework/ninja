@@ -22,6 +22,9 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Messages;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
@@ -30,8 +33,6 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TemplateEngineFreemarkerI18nMethod implements
         TemplateMethodModelEx {

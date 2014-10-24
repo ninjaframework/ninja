@@ -17,6 +17,7 @@
 package ninja.i18n;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.Map;
 
 import ninja.Context;
@@ -36,7 +37,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.Locale;
 
 @Singleton
 public class MessagesImpl implements Messages {

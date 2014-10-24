@@ -16,13 +16,6 @@
 
 package ninja.scheduler;
 
-import com.google.inject.*;
-import com.google.inject.name.Names;
-import ninja.lifecycle.Dispose;
-import ninja.lifecycle.Start;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +23,19 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import ninja.lifecycle.Dispose;
+import ninja.lifecycle.Start;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.ConfigurationException;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 
 /**
  * The actual scheduler

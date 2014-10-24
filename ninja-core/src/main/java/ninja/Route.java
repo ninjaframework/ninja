@@ -16,16 +16,15 @@
 
 package ninja;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 /**
  * A route

@@ -16,15 +16,16 @@
 
 package ninja;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import ninja.exceptions.InternalServerErrorException;
 import ninja.utils.DateUtil;
 import ninja.utils.NoHttpBody;
 import ninja.utils.ResponseStreams;
@@ -33,11 +34,10 @@ import ninja.utils.SwissKnife;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.OutputStream;
-import java.util.Arrays;
-import ninja.exceptions.InternalServerErrorException;
 
 public class Result {
     

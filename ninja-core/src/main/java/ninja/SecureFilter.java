@@ -17,7 +17,6 @@
 package ninja;
 
 import com.google.inject.Inject;
-import ninja.utils.NinjaConstant;
 
 /**
  * A simple default implementation of a SecureFilter.

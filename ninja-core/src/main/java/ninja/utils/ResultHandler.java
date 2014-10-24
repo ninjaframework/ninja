@@ -16,12 +16,6 @@
 
 package ninja.utils;
 
-import com.google.inject.Inject;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-import javassist.NotFoundException;
-
 import javax.inject.Singleton;
 
 import ninja.AsyncResult;
@@ -29,11 +23,13 @@ import ninja.Context;
 import ninja.Renderable;
 import ninja.Result;
 import ninja.exceptions.BadRequestException;
-import ninja.exceptions.InternalServerErrorException;
 import ninja.exceptions.NinjaException;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
+
 import org.slf4j.Logger;
+
+import com.google.inject.Inject;
 
 
 @Singleton

@@ -16,11 +16,10 @@
 
 package ninja.jpa;
 
-import com.google.inject.Inject;
-
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.PersistService;
 

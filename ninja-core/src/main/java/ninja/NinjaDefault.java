@@ -16,24 +16,23 @@
 
 package ninja;
 
-import com.google.common.base.Optional;
 import java.io.InputStream;
 import java.util.Properties;
 
 import javax.management.RuntimeErrorException;
 
-import ninja.lifecycle.LifecycleService;
-
-import com.google.inject.Inject;
 import ninja.exceptions.BadRequestException;
-import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
-
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Optional;
+import com.google.inject.Inject;
 
 
 @SuppressWarnings({ "unchecked", "rawtypes" })

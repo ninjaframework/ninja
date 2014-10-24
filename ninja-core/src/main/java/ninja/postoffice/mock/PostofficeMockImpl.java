@@ -18,6 +18,7 @@ package ninja.postoffice.mock;
 
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
+
 import org.apache.commons.mail.EmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
