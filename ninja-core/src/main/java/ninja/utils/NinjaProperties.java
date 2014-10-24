@@ -16,7 +16,6 @@
 
 package ninja.utils;
 
-import com.google.common.base.Optional;
 import java.util.Properties;
 
 import com.google.inject.ImplementedBy;

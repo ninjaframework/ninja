@@ -16,8 +16,6 @@
 
 package ninja;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
 import ninja.jpa.JpaModule;
@@ -27,13 +25,15 @@ import ninja.postoffice.guice.PostofficeProvider;
 import ninja.utils.LoggerProvider;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
+import ninja.utils.ObjectMapperProvider;
+import ninja.utils.XmlMapperProvider;
 
 import org.slf4j.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import ninja.utils.ObjectMapperProvider;
-import ninja.utils.XmlMapperProvider;
 
 /**
  * The basic configuration of the main ninja framework.

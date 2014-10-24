@@ -16,16 +16,18 @@
 
 package ninja;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.ResponseStreams;
-
 import ninja.validation.Validation;
-import org.apache.commons.fileupload.FileItemIterator;
 
-import java.io.*;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.fileupload.FileItemIterator;
 
 /**
  * A wrapped context. Useful if filters want to modify the context before

@@ -16,14 +16,16 @@
 
 package ninja.jpa;
 
+import static com.google.inject.matcher.Matchers.annotatedWith;
+import static com.google.inject.matcher.Matchers.any;
+
+import java.util.Properties;
+
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
 import com.google.inject.AbstractModule;
-import static com.google.inject.matcher.Matchers.annotatedWith;
-import static com.google.inject.matcher.Matchers.any;
 import com.google.inject.persist.jpa.JpaPersistModule;
-import java.util.Properties;
 
 public class JpaModule extends AbstractModule {
     

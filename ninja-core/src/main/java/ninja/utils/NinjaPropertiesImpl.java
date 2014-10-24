@@ -16,15 +16,12 @@
 
 package ninja.utils;
 
-import com.google.common.base.Optional;
 import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.slf4j.Logger;
@@ -32,9 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
-import com.google.common.io.Files;
 import com.google.inject.Binder;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 

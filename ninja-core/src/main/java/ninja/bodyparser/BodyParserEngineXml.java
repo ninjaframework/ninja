@@ -22,14 +22,13 @@ import ninja.ContentTypes;
 import ninja.Context;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class BodyParserEngineXml implements BodyParserEngine {

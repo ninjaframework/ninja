@@ -28,8 +28,8 @@ import ninja.bodyparser.BodyParserEngineXml;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.ResponseStreams;
-
 import ninja.validation.Validation;
+
 import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {

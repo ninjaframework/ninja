@@ -16,19 +16,20 @@
 
 package ninja.utils;
 
-import com.google.common.base.CaseFormat;
-import com.google.common.primitives.Primitives;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.base.CaseFormat;
+import com.google.common.primitives.Primitives;
 
 /**
  * A helper class that contains a lot of random stuff that helps to get things

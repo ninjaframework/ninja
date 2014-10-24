@@ -16,18 +16,19 @@
 
 package ninja.postoffice.commonsmail;
 
-import com.google.inject.ImplementedBy;
-import ninja.postoffice.Mail;
-import ninja.postoffice.common.Tuple;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.HtmlEmail;
-import org.apache.commons.mail.MultiPartEmail;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
+import ninja.postoffice.Mail;
+import ninja.postoffice.common.Tuple;
+
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
+import org.apache.commons.mail.MultiPartEmail;
 
 public class CommonsmailHelperImpl implements CommonsmailHelper {
 
