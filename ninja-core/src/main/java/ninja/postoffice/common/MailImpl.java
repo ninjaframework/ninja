@@ -16,20 +16,12 @@
 
 package ninja.postoffice.common;
 
-import java.io.StringWriter;
-import java.io.Writer;
+import ninja.postoffice.Mail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import ninja.postoffice.Mail;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 /**
  * Simple implementation of Mail.
@@ -40,7 +32,6 @@ import freemarker.template.Template;
  * 
  */
 public class MailImpl implements Mail {
-    public final static Logger LOG = LoggerFactory.getLogger(MailImpl.class);
 
     private String subject;
 
@@ -169,30 +160,6 @@ public class MailImpl implements Mail {
     public void setBodyHtml(String bodyHtml) {
         this.bodyHtml = bodyHtml;
 
-    }
-    
-    @Override
-    public void setBodyHtmlFromTemplate(String name, Map<String, Object> args) {
-        this.bodyHtml = processTemplate(name, args);
-    }
-    
-    @Override
-    public void setBodyTextFromTemplate(String name, Map<String, Object> args) {
-        this.bodyHtml = processTemplate(name, args);
-    }
-
-    private String processTemplate(String name, Map<String, Object> args) {
-        Writer writer = new StringWriter();
-        Configuration configuration = new Configuration();
-        configuration.setClassForTemplateLoading(this.getClass(), "/views/postoffice/");
-        try {
-            Template template = configuration.getTemplate(name);
-            template.process(args, writer);
-        } catch (Exception e) {
-            LOG.error("Failed to create mail from template: " + name, e);
-        }
-        
-        return writer.toString();
     }
 
     @Override

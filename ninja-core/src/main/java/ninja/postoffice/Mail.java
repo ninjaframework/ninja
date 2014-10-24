@@ -127,8 +127,4 @@ public interface Mail {
 
     String getBodyText();
 
-    void setBodyHtmlFromTemplate(String name, Map<String, Object> args);
-
-    void setBodyTextFromTemplate(String name, Map<String, Object> args);
-
 }
