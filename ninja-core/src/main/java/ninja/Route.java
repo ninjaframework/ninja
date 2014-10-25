@@ -185,7 +185,7 @@ public class Route {
             if (namedVariablePartOfRoute != null) {
                 // we convert that into a regex matcher group itself
                 namedVariablePartOfORouteReplacedWithRegex 
-                    = "(" + namedVariablePartOfRoute + ")";
+                    = "(" + Matcher.quoteReplacement(namedVariablePartOfRoute) + ")";
             } else {
                 // we convert that into the default namedVariablePartOfRoute regex group
                 namedVariablePartOfORouteReplacedWithRegex 
