@@ -16,11 +16,11 @@
 
 package ninja.servlet.async;
 
+import javax.servlet.http.HttpServletRequest;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.utils.ResultHandler;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author James Roper

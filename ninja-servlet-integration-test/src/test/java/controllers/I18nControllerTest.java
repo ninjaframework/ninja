@@ -18,11 +18,9 @@ package controllers;
 
 import static org.junit.Assert.assertTrue;
 
-import java.net.URLEncoder;
 import java.util.Map;
 
 import ninja.NinjaTest;
-import ninja.utils.NinjaTestBrowser;
 
 import org.junit.Test;
 

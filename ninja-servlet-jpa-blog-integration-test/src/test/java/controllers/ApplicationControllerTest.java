@@ -18,13 +18,14 @@ package controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import com.google.inject.Injector;
-import dao.ArticleDao;
 import ninja.NinjaTest;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.inject.Injector;
+
+import dao.ArticleDao;
 
 public class ApplicationControllerTest extends NinjaTest {
     

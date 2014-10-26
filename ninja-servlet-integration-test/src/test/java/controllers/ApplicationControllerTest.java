@@ -29,8 +29,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 

@@ -16,22 +16,18 @@
 
 package yoda;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import ninja.Context;
 import ninja.Context;
 import ninja.Filter;
-import ninja.Filter;
 import ninja.FilterChain;
-import ninja.FilterChain;
-import ninja.Ninja;
 import ninja.Result;
-import ninja.Result;
-import ninja.Route;
-import ninja.utils.NinjaProperties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import yoda.threads.ResponderExecutionHandler;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 
 @Singleton

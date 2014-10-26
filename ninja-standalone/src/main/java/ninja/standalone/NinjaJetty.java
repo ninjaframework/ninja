@@ -16,17 +16,20 @@
 
 package ninja.standalone;
 
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceFilter;
 import java.net.URI;
+
 import ninja.servlet.NinjaServletListener;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+
+import com.google.inject.Injector;
+import com.google.inject.servlet.GuiceFilter;
 
 public class NinjaJetty {
     

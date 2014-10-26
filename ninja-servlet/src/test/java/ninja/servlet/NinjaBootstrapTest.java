@@ -16,12 +16,13 @@
 
 package ninja.servlet;
 
+import static org.junit.Assert.assertTrue;
 import ninja.Route;
 import ninja.Router;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
-import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -71,7 +72,7 @@ public class NinjaBootstrapTest {
         Route route = router.getRouteFor("GET", "/");
 
         assertTrue("conf.Routes initialized properly. We get back the class we defined by the route.",
-                route.getControllerClass() == controllers.DummyControllerForTesting.class);
+                route.getControllerClass() == controller.DummyControllerForTesting.class);
                 
     
     }
@@ -111,7 +112,7 @@ public class NinjaBootstrapTest {
         Route route = router.getRouteFor("GET", "/custom_base_package");
 
         assertTrue("custom_base_package.conf.Routes initialized properly. We get back the class we defined by the route.",
-                route.getControllerClass() == controllers.DummyControllerForTesting.class);
+                route.getControllerClass() == controller.DummyControllerForTesting.class);
                 
     
     }

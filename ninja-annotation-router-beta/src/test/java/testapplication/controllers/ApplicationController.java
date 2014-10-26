@@ -18,8 +18,9 @@ package testapplication.controllers;
 
 import ninja.Result;
 import ninja.Results;
-import com.google.inject.Singleton;
 import router.Route;
+
+import com.google.inject.Singleton;
 
 @Singleton
 public class ApplicationController {

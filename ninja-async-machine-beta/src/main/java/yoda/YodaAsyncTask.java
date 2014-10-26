@@ -17,17 +17,13 @@
 package yoda;
 
 import ninja.Context;
-import ninja.Context;
-import ninja.FilterChain;
 import ninja.FilterChain;
 import ninja.Ninja;
-import ninja.Ninja;
 import ninja.Result;
-import ninja.Result;
-import ninja.Results;
-import org.slf4j.Logger;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import yoda.threads.YodaResults;
 
 
