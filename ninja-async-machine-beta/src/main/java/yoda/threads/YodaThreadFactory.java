@@ -16,8 +16,6 @@
 
 package yoda.threads;
 
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 

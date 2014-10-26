@@ -21,7 +21,6 @@
  */
 package ninja;
 
-import static java.lang.Thread.sleep;
 
 public class DelayedRestartTrigger extends Thread {
 

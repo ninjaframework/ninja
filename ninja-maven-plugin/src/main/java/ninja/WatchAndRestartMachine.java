@@ -16,7 +16,6 @@
 
 package ninja;
 
-import com.sun.nio.file.SensitivityWatchEventModifier;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
@@ -39,6 +38,8 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.nio.file.SensitivityWatchEventModifier;
 
 public class WatchAndRestartMachine {
     

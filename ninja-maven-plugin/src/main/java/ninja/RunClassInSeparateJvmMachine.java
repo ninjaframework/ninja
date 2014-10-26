@@ -22,14 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ninja.standalone.NinjaJetty;
 import ninja.utils.NinjaConstant;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 public class RunClassInSeparateJvmMachine {
 

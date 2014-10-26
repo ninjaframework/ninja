@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers;
+package controller;
 
 import ninja.Result;
 import ninja.Results;

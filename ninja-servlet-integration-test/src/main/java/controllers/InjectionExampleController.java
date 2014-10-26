@@ -16,9 +16,6 @@
 
 package controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;

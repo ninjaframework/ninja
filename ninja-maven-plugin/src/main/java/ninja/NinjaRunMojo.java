@@ -16,22 +16,23 @@
 
 package ninja;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import ninja.standalone.NinjaJetty;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.Lists;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import ninja.standalone.NinjaJetty;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Plugin;
 
 /**
  * Starts Ninja's SuperDevMode.

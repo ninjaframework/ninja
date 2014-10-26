@@ -16,11 +16,12 @@
 
 package ninja.servlet.async;
 
+import javax.servlet.http.HttpServletRequest;
+
 import ninja.utils.ResultHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author James Roper

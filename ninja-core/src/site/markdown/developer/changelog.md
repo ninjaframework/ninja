@@ -1,8 +1,9 @@
 Version X
 =========
 
- * 2014-10-26 Added error log when no suited BodyParserEngine was found(templarthelast)
- * 2014-10-23 Updated libraries:
+ * 2014-10-26 Added error log when no suited BodyParserEngine was found(lukaseichler)
+* 2014-10-25 Organized imports on all projects (svenkubiak)
+* 2014-10-23 Updated libraries:
     * com.fasterxml.jackson.core:jackson-core ................... 2.4.1 -> 2.4.3
     * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.4.1 -> 2.4.3
     * com.fasterxml.jackson.module:jackson-module-afterburner ... 2.4.1 -> 2.4.3

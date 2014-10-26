@@ -16,7 +16,6 @@
 
 package ninja;
 
-import com.google.inject.Injector;
 import ninja.utils.NinjaTestServer;
 
 import org.fluentlenium.adapter.FluentTest;
@@ -25,7 +24,7 @@ import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import javax.naming.NameNotFoundException;
+import com.google.inject.Injector;
 
 public abstract class NinjaFluentLeniumTest extends FluentTest {
 

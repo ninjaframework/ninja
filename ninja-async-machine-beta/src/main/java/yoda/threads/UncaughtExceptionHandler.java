@@ -16,13 +16,8 @@
 
 package yoda.threads;
 
-import com.google.inject.Inject;
-import ninja.Ninja;
-import ninja.exceptions.BadRequestException;
-import ninja.exceptions.InternalServerErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import yoda.YodaAsyncTask;
 
 
 /**

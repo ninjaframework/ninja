@@ -16,21 +16,19 @@
 
 package conf;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.Map;
 
+import ninja.NinjaRouterTest;
+
 import org.junit.Test;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
 import controllers.ApplicationController;
-import ninja.NinjaRouterTest;
-import org.hamcrest.CoreMatchers;
-import static org.hamcrest.CoreMatchers.containsString;
-import org.junit.Assert;
-import static org.junit.Assert.assertThat;
 
 /**
  * 

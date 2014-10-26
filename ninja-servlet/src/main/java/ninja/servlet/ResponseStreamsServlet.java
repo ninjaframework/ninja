@@ -16,13 +16,13 @@
 
 package ninja.servlet;
 
-import ninja.utils.ResponseStreams;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
 import javax.servlet.http.HttpServletResponse;
+
+import ninja.utils.ResponseStreams;
 
 /**
  * Make sure to only write to either the OutputStream OR the Writer...

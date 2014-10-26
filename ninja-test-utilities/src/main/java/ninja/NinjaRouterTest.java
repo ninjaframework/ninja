@@ -22,6 +22,7 @@ import ninja.servlet.NinjaBootstrap;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
+
 import org.junit.After;
 
 /**
