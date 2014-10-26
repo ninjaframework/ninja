@@ -266,6 +266,7 @@ public class ContextImpl implements Context.Impl {
                 .getBodyParserEngineForContentType(contentTypeOnly);
 
         if (bodyParserEngine == null) {
+            logger.error("No BodyParserEngine found for Content-Type: " + CONTENT_TYPE);
             return null;
         }
 
