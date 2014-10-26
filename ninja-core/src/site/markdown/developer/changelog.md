@@ -1,7 +1,7 @@
 Version X
 =========
 
- * 2014-10-26 Added error log when no suited BodyParserEngine was found
+ * 2014-10-26 Added error log when no suited BodyParserEngine was found(templarthelast)
  * 2014-10-23 Updated libraries:
     * com.fasterxml.jackson.core:jackson-core ................... 2.4.1 -> 2.4.3
     * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.4.1 -> 2.4.3
