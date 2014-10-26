@@ -16,12 +16,14 @@
 
 package ninja;
 
-import com.google.inject.Injector;
 import ninja.utils.NinjaTestServer;
+
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Injector;
 
 /**
  * <p>

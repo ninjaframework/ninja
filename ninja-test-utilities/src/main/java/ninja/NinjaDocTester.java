@@ -16,23 +16,14 @@
 
 package ninja;
 
-import com.google.inject.Injector;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaTestServer;
-
-import org.apache.http.client.utils.URIBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 import org.doctester.DocTester;
 import org.doctester.testbrowser.Url;
 import org.junit.After;
 import org.junit.Before;
+
+import com.google.inject.Injector;
 
 /**
  * Superclass for doctests that require a running server. Uses {@link NinjaTest} for the server

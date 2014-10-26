@@ -17,7 +17,6 @@
 package ninja.servlet;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -34,15 +33,21 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ninja.*;
+import ninja.ContentTypes;
+import ninja.Context;
+import ninja.Cookie;
+import ninja.Result;
+import ninja.Results;
+import ninja.Route;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashScope;
 import ninja.session.Session;
-
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
 import ninja.validation.Validation;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +57,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
-import ninja.utils.NinjaProperties;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextImplTest {

@@ -20,7 +20,7 @@ package controllers;
 
 import ninja.NinjaDocTester;
 import ninja.utils.Message;
-import ninja.utils.NinjaConstant;
+
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;

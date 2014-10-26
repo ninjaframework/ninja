@@ -16,7 +16,12 @@
 
 package controllers;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import java.util.Map;
+
 import models.Person;
 import ninja.NinjaTest;
 
@@ -25,11 +30,6 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.collect.Maps;
-import java.util.Map;
-import org.hamcrest.CoreMatchers;
-import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.Assert;
-import static org.junit.Assert.assertThat;
 
 public class PersonControllerTest extends NinjaTest {
     

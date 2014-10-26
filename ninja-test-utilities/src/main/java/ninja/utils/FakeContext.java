@@ -25,9 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.ListMultimap;
+import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
@@ -40,8 +38,10 @@ import ninja.validation.ValidationImpl;
 import org.apache.commons.fileupload.FileItemIterator;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Maps;
-import ninja.ContentTypes;
 
 /**
  * A fake context

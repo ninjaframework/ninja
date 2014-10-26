@@ -18,25 +18,16 @@ package controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
-import ninja.NinjaTest;
-import ninja.utils.NinjaTestServer;
-
-import org.apache.http.HttpResponse;
-import org.junit.Test;
-
-import com.google.common.collect.Maps;
 import ninja.NinjaDocTester;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
-import org.doctester.DocTester;
+
 import org.doctester.testbrowser.HttpConstants;
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class NotFoundTest extends NinjaDocTester {
 

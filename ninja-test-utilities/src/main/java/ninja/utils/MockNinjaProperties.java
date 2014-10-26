@@ -16,14 +16,13 @@
 
 package ninja.utils;
 
-import com.google.common.base.Optional;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Properties;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationConverter;
 import org.apache.commons.configuration.PropertiesConfiguration;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Mock ninja properties, for testing

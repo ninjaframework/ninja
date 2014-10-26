@@ -21,16 +21,13 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaTestServer;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
-import com.devbliss.doctest.DocTest;
 import org.junit.After;
 import org.junit.Before;
+
+import com.devbliss.doctest.DocTest;
 
 /**
  * DEPRECATED. Please consider using NinjaDocTester and the org.doctester library instead.

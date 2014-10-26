@@ -16,14 +16,12 @@
 
 package testapplication.conf;
 
-import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
+import testapplication.controllers.AsyncController;
 
 import com.google.inject.Inject;
-
-import testapplication.controllers.AsyncController;
 
 public class Routes implements ApplicationRoutes {
 
