@@ -266,6 +266,27 @@ public class RouteBuilderImplTest {
     }
 
     @Test
+    public void testRegexInRouteWorksWithEscapes() {
+        // Test escaped constructs in regex
+        // regex with escaped construct in a route
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/customers/\\d+");
+        Route route = buildRoute(routeBuilder);
+        assertTrue(route.matches("GET", "/customers/1234"));
+        assertFalse(route.matches("GET", "/customers/12ab"));
+
+        // regex with escaped construct in a route with variable parts
+        routeBuilder.GET().route("/customers/{id: \\d+}");
+        route = buildRoute(routeBuilder);
+        assertTrue(route.matches("GET", "/customers/1234"));
+        assertFalse(route.matches("GET", "/customers/12x"));
+
+        Map<String, String> map = route.getPathParametersEncoded("/customers/1234");
+        assertEquals(1, map.size());
+        assertEquals("1234", map.get("id"));
+    }
+
+    @Test
     public void testRegexInRouteWorksWithoutSlashAtTheEnd() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}/.*");
