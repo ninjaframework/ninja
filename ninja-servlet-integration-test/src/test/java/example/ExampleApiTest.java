@@ -16,13 +16,15 @@
 
 package example;
 
-import com.google.inject.Injector;
-import etc.GreetingService;
-import ninja.NinjaTest;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import ninja.NinjaTest;
+
+import org.junit.Test;
+
+import com.google.inject.Injector;
+
+import etc.GreetingService;
 
 
 public class ExampleApiTest extends NinjaTest {

@@ -16,20 +16,19 @@
 
 package controllers;
 
+import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
 import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
 import ninja.SecureFilter;
+import ninja.params.PathParam;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import dao.ArticleDao;
 import etc.LoggedInUser;
-import models.Article;
-import ninja.params.PathParam;
 
 public class ApiController {
 

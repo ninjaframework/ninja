@@ -18,13 +18,11 @@ package ninja.servlet;
 
 import javax.servlet.ServletContextEvent;
 
-import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
 
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaModeHelper;
 
 /**
  * define in web.xml:

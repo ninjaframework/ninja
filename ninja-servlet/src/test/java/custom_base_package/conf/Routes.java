@@ -1,9 +1,8 @@
 package custom_base_package.conf;
 
-import controllers.DummyControllerForTesting;
-import ninja.NinjaDefault;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
+import controller.DummyControllerForTesting;
 
 
 // Just a dummy for testing.

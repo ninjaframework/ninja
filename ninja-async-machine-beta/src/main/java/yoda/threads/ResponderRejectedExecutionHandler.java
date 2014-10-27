@@ -16,14 +16,15 @@
 
 package yoda.threads;
 
-import com.google.inject.Inject;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
+
 import ninja.Context;
 import ninja.Ninja;
 import ninja.Result;
-import ninja.Results;
 import yoda.YodaAsyncTask;
+
+import com.google.inject.Inject;
 
 
 /**

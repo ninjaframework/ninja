@@ -16,9 +16,9 @@
 
 package ninja.servlet.async;
 
-import ninja.utils.ResultHandler;
-
 import javax.servlet.http.HttpServletRequest;
+
+import ninja.utils.ResultHandler;
 
 /**
  * Factory for creating an async strategy

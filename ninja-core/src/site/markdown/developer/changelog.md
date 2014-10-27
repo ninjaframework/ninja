@@ -1,19 +1,20 @@
 Version X
 =========
 
-* 2014-10-25 Fixed issue #188. Excessive backslash escaping in path param regex (bazi)
+* 2014-10-27 Fixed issue #188. Excessive backslash escaping in path param regex (bazi)
+* 2014-10-25 Organized imports on all projects (svenkubiak)
 * 2014-10-23 Updated libraries:
-  * com.fasterxml.jackson.core:jackson-core ................... 2.4.1 -> 2.4.3
-  * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.4.1 -> 2.4.3
-  * com.fasterxml.jackson.module:jackson-module-afterburner ... 2.4.1 -> 2.4.3
-  * com.google.guava:guava .................................... 17.0 -> 18.0
-  * com.google.inject.extensions:guice-persist ................ 4.0-beta4 -> 4.0-beta5
-  * com.h2database:h2 ......................................... 1.4.178 -> 1.4.182    
-  * net.sf.ehcache:ehcache .................................... 2.8.3 -> 2.8.5
-  * net.spy:spymemcached ...................................... 2.11.3 -> 2.11.4
-  * org.apache.commons:commons-email .......................... 1.3.2 -> 1.3.3
-  * org.eclipse.jetty:jetty-server ............................ 9.2.1.v20140609 -> 9.2.3.v20140905
-  * org.eclipse.jetty:jetty-servlet ........................... 9.2.1.v20140609 -> 9.2.3.v20140905
+    * com.fasterxml.jackson.core:jackson-core ................... 2.4.1 -> 2.4.3
+    * com.fasterxml.jackson.dataformat:jackson-dataformat-xml ... 2.4.1 -> 2.4.3
+    * com.fasterxml.jackson.module:jackson-module-afterburner ... 2.4.1 -> 2.4.3
+    * com.google.guava:guava .................................... 17.0 -> 18.0
+    * com.google.inject.extensions:guice-persist ................ 4.0-beta4 -> 4.0-beta5
+    * com.h2database:h2 ......................................... 1.4.178 -> 1.4.182    
+    * net.sf.ehcache:ehcache .................................... 2.8.3 -> 2.8.5
+    * net.spy:spymemcached ...................................... 2.11.3 -> 2.11.4
+    * org.apache.commons:commons-email .......................... 1.3.2 -> 1.3.3
+    * org.eclipse.jetty:jetty-server ............................ 9.2.1.v20140609 -> 9.2.3.v20140905
+    * org.eclipse.jetty:jetty-servlet ........................... 9.2.1.v20140609 -> 9.2.3.v20140905
 * 2014-10-20 Added ninja-jaxy-routes module, a JAX-RS style routes builder (gitblit)
 * 2014-10-16 Bump to Freemarker 2.3.21 (ra).
 * 2014-10-18 Added a Metrics module with reporters for Graphite, Ganglia, InfluxDB, and Librato (gitblit & ra)

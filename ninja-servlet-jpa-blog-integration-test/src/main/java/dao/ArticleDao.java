@@ -26,12 +26,11 @@ import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
 import models.User;
+import ninja.jpa.UnitOfWork;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
-import ninja.jpa.UnitOfWork;
 
 public class ArticleDao {
    

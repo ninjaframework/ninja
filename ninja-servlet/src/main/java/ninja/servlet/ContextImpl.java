@@ -19,7 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +35,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
@@ -43,19 +46,21 @@ import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.session.FlashScope;
 import ninja.session.Session;
-import ninja.utils.*;
+import ninja.utils.HttpHeaderUtils;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
+import ninja.utils.ResponseStreams;
+import ninja.utils.ResultHandler;
+import ninja.utils.SwissKnife;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.google.inject.Inject;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import ninja.ContentTypes;
-import org.apache.commons.lang3.StringUtils;
 
 public class ContextImpl implements Context.Impl {
 

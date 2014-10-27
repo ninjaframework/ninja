@@ -16,19 +16,21 @@
 
 package controllers;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.inject.Singleton;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Singleton;
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Counts the number of UDP packets received, demonstrates the lifecycle capabilities of the framework

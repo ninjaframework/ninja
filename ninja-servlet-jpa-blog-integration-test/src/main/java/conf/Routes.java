@@ -16,12 +16,13 @@
 
 package conf;
 
-import com.google.inject.Inject;
-
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
+
+import com.google.inject.Inject;
+
 import controllers.ApiController;
 import controllers.ApplicationController;
 import controllers.ArticleController;

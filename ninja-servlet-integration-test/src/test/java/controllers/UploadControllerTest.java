@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.Map;
 
 import ninja.NinjaTest;
-import ninja.utils.NinjaTestBrowser;
 
 import org.junit.Test;
 

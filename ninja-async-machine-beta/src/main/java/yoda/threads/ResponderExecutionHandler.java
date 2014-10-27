@@ -16,8 +16,6 @@
 
 package yoda.threads;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -26,8 +24,13 @@ import ninja.Context;
 import ninja.FilterChain;
 import ninja.Ninja;
 import ninja.utils.NinjaProperties;
+
 import org.apache.commons.lang.StringUtils;
+
 import yoda.YodaAsyncTask;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Create a thread pool executor to handle Async requests.

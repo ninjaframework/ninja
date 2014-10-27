@@ -1,7 +1,6 @@
 package conf;
 
-import controllers.DummyControllerForTesting;
-import ninja.NinjaDefault;
+import controller.DummyControllerForTesting;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 

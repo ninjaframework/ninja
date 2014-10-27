@@ -17,6 +17,7 @@
 package controllers;
 
 import ninja.NinjaDocTester;
+
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;

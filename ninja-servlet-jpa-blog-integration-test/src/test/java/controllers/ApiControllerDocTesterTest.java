@@ -20,9 +20,14 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Map;
 
+import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
+import ninja.NinjaDocTester;
 
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
@@ -32,12 +37,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-
-import models.Article;
-import ninja.NinjaDocTester;
-import org.doctester.testbrowser.Request;
-import org.doctester.testbrowser.Response;
-import org.hamcrest.CoreMatchers;
 
 public class ApiControllerDocTesterTest extends NinjaDocTester {
     

@@ -21,10 +21,11 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import com.google.inject.Injector;
 import ninja.standalone.NinjaJetty;
 
 import org.apache.http.client.utils.URIBuilder;
+
+import com.google.inject.Injector;
 
 /**
  * Starts a new server using an embedded jetty. Startup is really fast and thus
