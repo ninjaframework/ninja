@@ -42,7 +42,11 @@ public class RouteTest {
         assertThat(
                 Route.convertRawUriToRegex("/me/{username}"), 
                 CoreMatchers.equalTo("/me/([^/]*)")); 
-        
+
+        // check regex with escapes/backslashes (\)
+        assertThat(
+                Route.convertRawUriToRegex("/me/{id: \\d+}"),
+                CoreMatchers.equalTo("/me/(\\d+)"));
     }
     
 }
