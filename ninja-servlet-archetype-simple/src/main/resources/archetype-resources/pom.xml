@@ -141,7 +141,7 @@
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
-            <artifactId>	</artifactId>
+            <artifactId>bootstrap</artifactId>
             <version>3.2.0</version>
         </dependency>
         <dependency>
