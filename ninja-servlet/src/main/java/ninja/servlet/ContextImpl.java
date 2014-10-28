@@ -61,6 +61,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.google.inject.Inject;
+import org.slf4j.LoggerFactory;
 
 public class ContextImpl implements Context.Impl {
 
@@ -89,8 +90,7 @@ public class ContextImpl implements Context.Impl {
     private String requestPath;
     private String contextPath;
 
-    @Inject
-    Logger logger;
+    private Logger logger = LoggerFactory.getLogger(ContextImpl.class);
 
     @Inject
     public ContextImpl(
@@ -259,6 +259,7 @@ public class ContextImpl implements Context.Impl {
         // If the Content-type: xxx header is not set we return null.
         // we cannot parse that request.
         if (rawContentType == null) {
+            logger.debug("Not able to parse body because request did not send content type header at: {}", getRequestPath());
             return null;
         }
 
@@ -271,6 +272,7 @@ public class ContextImpl implements Context.Impl {
                 .getBodyParserEngineForContentType(contentTypeOnly);
 
         if (bodyParserEngine == null) {
+            logger.debug("No BodyParserEngine found for Content-Type {} at route {}", CONTENT_TYPE, getRequestPath());
             return null;
         }
 
@@ -475,7 +477,7 @@ public class ContextImpl implements Context.Impl {
         ResponseStreamsServlet responseStreamsServlet = new ResponseStreamsServlet();
         responseStreamsServlet.init(httpServletResponse);
 
-        return (ResponseStreams) responseStreamsServlet;
+        return responseStreamsServlet;
 
     }
 
