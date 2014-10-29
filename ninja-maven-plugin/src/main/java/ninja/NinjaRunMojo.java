@@ -136,7 +136,7 @@ public class NinjaRunMojo extends AbstractMojo {
         } else {
              getLog().info("Launching Ninja SuperDevMode on root context");
         }
-        getLog().info("Ninja Will launch on the following port: " + port);
+        getLog().info("Ninja will launch on port: " + port);
         getLog().info("------------------------------------------------------------------------");
         
 
