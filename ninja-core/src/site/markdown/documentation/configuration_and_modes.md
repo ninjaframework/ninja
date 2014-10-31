@@ -77,7 +77,7 @@ On the command line:
 > java -Dninja.mode=dev
 
 Or programmatically:
-System.setProperty(NinjaConstant.MODE_KEY, NinjaConstant.MODE_DEV)
+System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_DEV)
 </pre>
 
 Make sure that you set the system property early so that Ninja 
