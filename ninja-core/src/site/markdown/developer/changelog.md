@@ -1,5 +1,5 @@
-Version X
-=========
+Version 4.0.0
+=============
 
 * 2014-10-28 Bumped versions in archetypes (svenkubiak)
 * 2014-10-27 Fixed issue #188. Excessive backslash escaping in path param regex (bazi)
