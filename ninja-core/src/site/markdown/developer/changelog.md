@@ -1,3 +1,9 @@
+Version xxx
+=============
+
+* 2014-11-04 Bumped twitter bootstrap to 3.3.0 in archetypes (svenkubiak)
+* 2014-11-04 Styled system pages for 404/403 in archetypes (svenkubiak)
+
 Version 4.0.0
 =============
 
