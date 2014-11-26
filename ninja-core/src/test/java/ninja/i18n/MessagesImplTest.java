@@ -51,7 +51,7 @@ public class MessagesImplTest {
     Result result;
 
     @Test
-    public void testiSimple18n() {
+    public void testGetWithLanguage() {
 
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
@@ -69,20 +69,30 @@ public class MessagesImplTest {
         assertEquals("deutsch", messages.get("language", Optional.of("de-DE")).get());
 
         // that will refer to messages_fr-FR.properties:
-        assertEquals("francaise", messages.get("language", Optional.of("fr-FR")).get());
+        assertEquals("français", messages.get("language", Optional.of("fr-FR")).get());
 
+        // that will refer to messages_fr-FR.properties:
+        assertEquals("français", messages.get("language", Optional.of("da,fr-FR;q=0.8")).get());
+        assertEquals("français", messages.get("language", Optional.of("da;q=0.9, fr-FR; q=0.8")).get());
+
+        // that will refer to messages_de.properties:
+        assertEquals("deutsch", messages.get("language", Optional.of("de,fr-FR;q=0.8")).get());
+        assertEquals("deutsch", messages.get("language", Optional.of("de;q=0.9, fr-FR; q=0.8")).get());
+
+        assertEquals("defaultlanguage", messages.get("language", Optional.of("fr")).get());
+
+        assertEquals(Optional.absent(), messages.get("a_non_existing_key", Optional.of("fr")));
     }
     
     @Test
-    public void testiSimple18nWithContextResult() {
+    public void testGetWithContextAndResult() {
 
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
 
         Lang lang = new LangImpl(ninjaProperties);
         Messages messages = new MessagesImpl(ninjaProperties, lang);
-        
-        
+
         result = Results.ok();
 
         // test with context Accept Header
@@ -104,7 +114,7 @@ public class MessagesImplTest {
         result = Results.ok();
         when(context.getCookie(Mockito.anyString())).thenReturn(
                 Cookie.builder("name", "fr-FR").build());
-        assertEquals("francaise", messages.get("language", context, Optional.of(result)).get());
+        assertEquals("français", messages.get("language", context, Optional.of(result)).get());
         //and the result overwrites it again...        
         result = Results.ok();
         lang.setLanguage("de-DE", result);
@@ -112,29 +122,9 @@ public class MessagesImplTest {
         
 
     }
-    
-    @Test
-    public void testI18nAcceptLanguageHttpHeaderWithQualityScores() {
-
-        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
-                .thenReturn(new String[] { "en", "de", "fr-FR" });
-        
-        Lang lang = new LangImpl(ninjaProperties);
-        
-        Messages messages = new MessagesImpl(ninjaProperties, lang);
-
-        // that will refer to messages_fr-FR.properties:
-        assertEquals("francaise", messages.get("language", Optional.of("da,fr-FR;q=0.8")).get());
-        assertEquals("francaise", messages.get("language", Optional.of("da;q=0.9, fr-FR; q=0.8")).get());
-        
-        // that will refer to messages_de.properties:
-        assertEquals("deutsch", messages.get("language", Optional.of("de,fr-FR;q=0.8")).get());
-        assertEquals("deutsch", messages.get("language", Optional.of("de;q=0.9, fr-FR; q=0.8")).get());
-
-    }
 
     @Test
-    public void testiParameterized18n() {
+    public void testGetWithLanguageAndParameters() {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
 
@@ -151,16 +141,55 @@ public class MessagesImplTest {
                 messages.get("message_with_placeholder", Optional.of("en-UK"), "test_parameter").get());
 
         // that will refer to messages_de.properties:
-        assertEquals("das ist der platzhalter: test_parameter",
+        assertEquals("Toröööö - das ist der platzhalter: test_parameter",
                 messages.get("message_with_placeholder", Optional.of("de"), "test_parameter").get());
-        assertEquals("das ist der platzhalter: test_parameter",
+        assertEquals("Toröööö - das ist der platzhalter: test_parameter",
                 messages.get("message_with_placeholder", Optional.of("de-DE"), "test_parameter").get());
 
     }
-    
-    
+
     @Test
-    public void testiParameterized18nWithContextAndResult() {
+    public void testGetWithContextAndResultAndParameters() {
+        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
+                .thenReturn(new String[] { "en", "de", "fr-FR" });
+        Lang lang = new LangImpl(ninjaProperties);
+        Messages messages = new MessagesImpl(ninjaProperties, lang);  
+        result = Results.ok();
+
+        when(context.getAcceptLanguage()).thenReturn("en-US");
+        assertEquals("this is the placeholder: test_parameter",
+            messages.getWithDefault("message_with_placeholder", "default value", context, Optional.of(result), "test_parameter"));
+
+        when(context.getAcceptLanguage()).thenReturn("fr-FR");
+        assertEquals("c'est le placeholder: test_parameter",
+            messages.getWithDefault("message_with_placeholder", "default value", context, Optional.of(result), "test_parameter"));
+
+        when(context.getAcceptLanguage()).thenReturn("fr-FR");
+        assertEquals("c'est le message default: test_parameter",
+            messages.getWithDefault("i_do_not_exist", "c''est le message default: {0}", context, Optional.of(result), "test_parameter"));
+
+    }
+
+    @Test
+    public void testGetWithDefaultAndLanguage() {
+        when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
+                .thenReturn(new String[] { "en", "de", "fr-FR" });
+
+        Lang lang = new LangImpl(ninjaProperties);
+        Messages messages = new MessagesImpl(ninjaProperties, lang);
+
+        assertEquals("this is the placeholder: test_parameter",
+            messages.getWithDefault("message_with_placeholder", "default value", Optional.of("en-US"), "test_parameter"));
+
+        assertEquals("c'est le placeholder: test_parameter",
+            messages.getWithDefault("message_with_placeholder", "default value", Optional.of("fr-FR"), "test_parameter"));
+
+        assertEquals("c'est le message default: test_parameter",
+            messages.getWithDefault("i_do_not_exist", "c''est le message default: {0}", Optional.of("fr-FR"), "test_parameter"));
+    }
+
+    @Test
+    public void testGetWithDefaultAndContextAndResult() {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
 
@@ -182,30 +211,28 @@ public class MessagesImplTest {
         assertEquals("this is the placeholder: test_parameter",
                 messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
 
-        
         // that will refer to messages_de.properties:
         lang.setLanguage("de", result);
-        assertEquals("das ist der platzhalter: test_parameter",
-                messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
-        
-        lang.setLanguage("de-DE", result);
-        assertEquals("das ist der platzhalter: test_parameter",
+        assertEquals("Toröööö - das ist der platzhalter: test_parameter",
                 messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
 
-        
+        lang.setLanguage("de-DE", result);
+        assertEquals("Toröööö - das ist der platzhalter: test_parameter",
+                messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
+
         // that forced language from context works with empty result       
         result = Results.ok();
         when(context.getCookie(Mockito.anyString())).thenReturn(
                 Cookie.builder("name", "fr-FR").build());
-        assertEquals("c`est le placeholder: test_parameter", messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
+        assertEquals("c'est le placeholder: test_parameter", messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
         //and the result overwrites it again...        
         result = Results.ok();
         lang.setLanguage("de-DE", result);
-        assertEquals("das ist der platzhalter: test_parameter", messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
+        assertEquals("Toröööö - das ist der platzhalter: test_parameter", messages.get("message_with_placeholder", context, Optional.of(result), "test_parameter").get());
     }
-    
+
     @Test
-    public void testiParameterized18nWithSpeciali18nPlaceholder() {
+    public void testGetWithSpecialI18nPlaceholder() {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
 
@@ -227,28 +254,21 @@ public class MessagesImplTest {
 
         assertEquals("das ist ein datum: 01.01.1970", result.get());
 
-
-
         // fr as language
         language = Optional.of("fr-FR");
         result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
 
-        assertEquals("c`est la date: 1 janv. 1970", result.get());
-
-
+        assertEquals("c'est la date: 1 janv. 1970", result.get());
 
         // en as language
         language = Optional.of("en");
         result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
 
         assertEquals("that's a date: Jan 1, 1970", result.get());
-    
     }
-    
-    
 
     @Test
-    public void testi18nGetAll() {
+    public void testGetAllWithLanguage() {
 
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
@@ -262,7 +282,6 @@ public class MessagesImplTest {
         assertTrue(map.containsKey("message_with_placeholder"));
         assertTrue(map.containsKey("a_property_only_in_the_defaultLanguage"));
         assertTrue(map.containsKey("a_propert_with_commas"));
-
         assertEquals("english", map.get("language"));
 
         // GERMAN locale testing:
@@ -274,14 +293,12 @@ public class MessagesImplTest {
         assertTrue(map.containsKey("a_propert_with_commas"));
 
         assertEquals("deutsch", map.get("language"));
-        assertEquals("das ist der platzhalter: {0}",
+        assertEquals("Toröööö - das ist der platzhalter: {0}",
                 map.get("message_with_placeholder"));
-
     }
-    
-    
+
     @Test
-    public void testi18nGetAllWithContextAndResult() {
+    public void testGetAllWithContextAndResult() {
 
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
@@ -314,7 +331,7 @@ public class MessagesImplTest {
         assertTrue(map.containsKey("a_propert_with_commas"));
 
         assertEquals("deutsch", map.get("language"));
-        assertEquals("das ist der platzhalter: {0}",
+        assertEquals("Toröööö - das ist der platzhalter: {0}",
                 map.get("message_with_placeholder"));
         
         
@@ -333,12 +350,9 @@ public class MessagesImplTest {
         assertEquals("english", map.get("language"));
 
     }
-    
-    
-    
 
     @Test
-    public void testAgainstCorrectParsingOfDelimitersInPropertiesFiles() {
+    public void testCorrectParsingOfDelimitersInPropertiesFiles() {
 
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages))
                 .thenReturn(new String[] { "en", "de", "fr-FR" });
@@ -347,7 +361,6 @@ public class MessagesImplTest {
 
         assertEquals("prop1, prop2, prop3",
                 messages.get("a_propert_with_commas", Optional.of("en-US")).get());
-
     }
 
 }

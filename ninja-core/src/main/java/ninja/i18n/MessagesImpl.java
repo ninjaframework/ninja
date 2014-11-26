@@ -52,15 +52,11 @@ public class MessagesImpl implements Messages {
     private final Lang lang;
 
     @Inject
-    public MessagesImpl(
-                        NinjaProperties ninjaProperties,
+    public MessagesImpl(NinjaProperties ninjaProperties,
                         Lang lang) {
-
         this.ninjaProperties = ninjaProperties;
         this.lang = lang;
         this.langToKeyAndValuesMapping = loadAllMessageFilesForRegisteredLanguages();
-
-
     }
     
     
@@ -69,29 +65,22 @@ public class MessagesImpl implements Messages {
                       Context context,
                       Optional<Result> result,
                       Object... parameter) {
-        
         Optional<String> language = lang.getLanguage(context, result);
         return get(key, language, parameter);
-        
     }
 
     @Override
     public Optional<String> get(String key, Optional<String> language, Object... params) {
 
         Configuration configuration = getLanguageConfigurationForLocale(language);
-
         String value = configuration.getString(key);
 
         if (value != null) {
-
             MessageFormat messageFormat = getMessageFormatForLocale(value, language);
-            
             return Optional.of(messageFormat.format(params));
-            
         } else {
             return Optional.absent();
         }
-
     }
     
     @Override
@@ -129,24 +118,13 @@ public class MessagesImpl implements Messages {
                                  String defaultMessage,
                                  Optional<String> language,
                                  Object... params) {
-
         Optional<String> value = get(key, language, params);
-
         if (value.isPresent()) {
-
-            MessageFormat messageFormat = getMessageFormatForLocale(value.get(), language);
-            
-            return messageFormat.format(params);
-
+            return value.get();
         } else {
-            
-            // return default message
             MessageFormat messageFormat = getMessageFormatForLocale(defaultMessage, language);
-            
             return messageFormat.format(params);
-
         }
-
     }
 
     /**
@@ -323,14 +301,8 @@ public class MessagesImpl implements Messages {
 
 
     MessageFormat getMessageFormatForLocale(String value, Optional<String> language) {
-    
         Locale locale = lang.getLocaleFromStringOrDefault(language);
         MessageFormat messageFormat = new MessageFormat(value, locale);
-        
         return messageFormat;
-    
     }
-
-
-
 }
