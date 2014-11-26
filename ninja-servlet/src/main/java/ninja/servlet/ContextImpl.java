@@ -345,6 +345,11 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
+    public String getScheme() {
+        return httpServletRequest.getScheme();
+    }
+
+    @Override
     public String getRemoteAddr() {
         
         boolean isUsageOfXForwardedHeaderEnabled 
