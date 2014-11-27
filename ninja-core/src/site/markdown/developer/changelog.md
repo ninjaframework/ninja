@@ -1,3 +1,9 @@
+Version 4.0.1
+=============
+
+* 2014-11-27 Fix #261. message.getWithDefault(...) bug. (ra + 0xbaadf00d)
+
+
 Version 4.0.0
 =============
 
