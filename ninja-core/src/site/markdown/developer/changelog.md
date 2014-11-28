@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+* 2014-11-28 Fix #262. Test was not platform independent depending on git checkout.
+
 Version 4.0.1
 =============
 
