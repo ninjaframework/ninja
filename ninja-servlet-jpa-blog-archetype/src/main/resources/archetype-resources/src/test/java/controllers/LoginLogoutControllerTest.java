@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 /**
- * Copyright (C) 2013 the original author or authors.
+ * Copyright (C) 2012-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,13 +31,6 @@ import org.junit.Test;
 import com.google.common.collect.Maps;
 
 public class LoginLogoutControllerTest extends NinjaTest {
-    
-    @Before
-    public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
-        
-    }
 
     @Test
     public void testLogingLogout() {

@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 /**
- * Copyright (C) 2013 the original author or authors.
+ * Copyright (C) 2012-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,27 @@
 
 package controllers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import ninja.NinjaTest;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.inject.Injector;
+
+import dao.ArticleDao;
+
 public class ApplicationControllerTest extends NinjaTest {
-    
-    @Before
-    public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
-        
+
+    @Test
+    public void testThatSetupInitializationCreatesTheTestUsers(){
+        // Get the application injector
+        Injector applicationInjector = getInjector();
+        // Access internal dao
+        ArticleDao articleDao = applicationInjector.getInstance(ArticleDao.class);
+        // check that articles are setup
+        assertEquals(articleDao.getAllArticles().articles.size(), 3);
     }
 
     @Test
@@ -42,7 +50,7 @@ public class ApplicationControllerTest extends NinjaTest {
 
         // If the redirect has worked we must see the following text
         // from the index screen:
-        assertTrue(result.contains("Hello to the blog example!"));
+        assertTrue(result.contains("second"));
 
     }
 

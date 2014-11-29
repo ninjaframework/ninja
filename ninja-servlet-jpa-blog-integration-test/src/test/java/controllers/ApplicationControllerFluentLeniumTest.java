@@ -23,13 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ApplicationControllerFluentLeniumTest extends NinjaFluentLeniumTest {
-    
-    @Before
-    public void setup() {
-        
-        goTo(getServerAddress() + "setup");
-        
-    }
 
     @Test
     public void testThatHomepageWorks() {

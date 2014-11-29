@@ -21,10 +21,12 @@ package controllers;
 
 import models.ArticleDto;
 import models.ArticlesDto;
+import models.Article;
 import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
 import ninja.SecureFilter;
+import ninja.params.PathParam;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -51,6 +53,14 @@ public class ApiController {
 
         return Results.xml().render(articlesDto);
 
+    }
+    
+    public Result getArticleJson(@PathParam("id") Long id) {
+    
+        Article article = articleDao.getArticle(id);
+        
+        return Results.json().render(article);
+    
     }
 
     @FilterWith(SecureFilter.class)

@@ -38,7 +38,8 @@
             <!-- Connection Pooling settings -->
             <property name="hibernate.connection.provider_class"
                 value="org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider" />
-
+            <property name="hibernate.connection.autocommit" value="false"/>
+            
             <property name="hibernate.c3p0.max_size" value="100" />
             <property name="hibernate.c3p0.min_size" value="0" />
             <property name="hibernate.c3p0.acquire_increment" value="1" />

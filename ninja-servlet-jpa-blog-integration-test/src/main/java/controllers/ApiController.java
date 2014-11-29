@@ -42,14 +42,6 @@ public class ApiController {
         return Results.json().render(articlesDto);
 
     }
-    
-    public Result getArticleJson(@PathParam("id") Long id) {
-    
-        Article article = articleDao.getArticle(id);
-        
-        return Results.json().render(article);
-    
-    }
 
     public Result getArticlesXml() {
 
@@ -57,6 +49,14 @@ public class ApiController {
 
         return Results.xml().render(articlesDto);
 
+    }
+    
+    public Result getArticleJson(@PathParam("id") Long id) {
+    
+        Article article = articleDao.getArticle(id);
+        
+        return Results.json().render(article);
+    
     }
 
     @FilterWith(SecureFilter.class)
