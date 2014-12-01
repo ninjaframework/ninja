@@ -1,3 +1,8 @@
+Version 4.0.2
+=============
+
+ * 2014-12-01 Improved jpa archetype (ra)
+
 Version 4.0.1
 =============
 
