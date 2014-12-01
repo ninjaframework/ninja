@@ -28,13 +28,6 @@ import com.google.inject.Injector;
 import dao.ArticleDao;
 
 public class ApplicationControllerTest extends NinjaTest {
-    
-    @Before
-    public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
-        
-    }
 
     @Test
     public void testThatSetupInitializationCreatesTheTestUsers(){

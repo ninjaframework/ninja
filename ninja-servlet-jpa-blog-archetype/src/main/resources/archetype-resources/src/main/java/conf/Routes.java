@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 /**
- * Copyright (C) 2012 the original author or authors.
+ * Copyright (C) 2012-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,13 @@
 
 package conf;
 
-import com.google.inject.Inject;
-
 import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
+
+import com.google.inject.Inject;
+
 import controllers.ApiController;
 import controllers.ApplicationController;
 import controllers.ArticleController;
@@ -74,6 +75,7 @@ public class Routes implements ApplicationRoutes {
         // Api for management of software
         ///////////////////////////////////////////////////////////////////////
         router.GET().route("/api/{username}/articles.json").with(ApiController.class, "getArticlesJson");
+        router.GET().route("/api/{username}/article/{id}.json").with(ApiController.class, "getArticleJson");
         router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
         router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
         router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");

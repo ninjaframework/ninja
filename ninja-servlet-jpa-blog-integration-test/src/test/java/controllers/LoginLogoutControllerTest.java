@@ -28,13 +28,6 @@ import org.junit.Test;
 import com.google.common.collect.Maps;
 
 public class LoginLogoutControllerTest extends NinjaTest {
-    
-    @Before
-    public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
-        
-    }
 
     @Test
     public void testLogingLogout() {
