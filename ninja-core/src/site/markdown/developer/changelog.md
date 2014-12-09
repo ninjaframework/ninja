@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2014-12-09 Removed default secret key from simple archetype (inkookim + ra)
+
 Version 4.0.2
 =============
 
