@@ -819,4 +819,13 @@ public class ContextImplTest {
 
     }
 
+    @Test
+    public void testGetScheme() {
+        final String scheme = "http";
+        when(httpServletRequest.getScheme()).thenReturn(scheme);
+
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        assertEquals(scheme, httpServletRequest.getScheme());
+    }
 }
