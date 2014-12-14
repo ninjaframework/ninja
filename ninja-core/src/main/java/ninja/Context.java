@@ -113,6 +113,8 @@ public interface Context {
      */
     String getHostname();
 
+    String getScheme();
+
     /**
      * Returns the Internet Protocol (IP) address of the client
      * or last proxy that sent the request. For HTTP servlets, same as the 
