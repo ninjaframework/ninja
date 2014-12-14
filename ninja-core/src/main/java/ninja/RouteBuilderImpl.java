@@ -35,7 +35,7 @@ class RouteBuilderImpl implements RouteBuilder {
             .getLogger(RouteBuilder.class);
 
     private String httpMethod;
-    private String uri;
+    private String uri = "";
     private Class controller;
     private Method controllerMethod;
     private Result result;
@@ -88,8 +88,8 @@ class RouteBuilderImpl implements RouteBuilder {
     }
 
     @Override
-    public RouteBuilder route(String uri) {
-        this.uri = uri;
+    public RouteBuilderImpl route(String uri) {
+        this.uri += uri;
         return this;
     }
 

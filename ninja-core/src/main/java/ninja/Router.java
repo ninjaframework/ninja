@@ -114,6 +114,14 @@ public interface Router {
      */
     public List<Route> getRoutes();
 
+    /***
+     * Use this method when you want to build separate Routers so they don't all have to reside
+     * in the same Router file
+     * @param uri The context path of the sub router
+     * @return Build upon this router. Each router starts with the original uri
+     */
+    public Router route(String uri);
+
     // /////////////////////////////////////////////////////////////////////////
     // convenience methods to use the route in a DSL like way
     // router.GET().route("/index").with(.....)

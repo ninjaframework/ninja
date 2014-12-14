@@ -276,6 +276,7 @@ public class RouteBuilderImplTest {
         assertFalse(route.matches("GET", "/customers/12ab"));
 
         // regex with escaped construct in a route with variable parts
+        routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/customers/{id: \\d+}");
         route = buildRoute(routeBuilder);
         assertTrue(route.matches("GET", "/customers/1234"));

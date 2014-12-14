@@ -42,10 +42,12 @@ public class RouterImpl implements Router {
 
     private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
-    private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<>();
+    private final List<RouteBuilderImpl> allRouteBuilders;
     private final Injector injector;
 
     private List<Route> routes;
+
+    private final String prefixUri;
 
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
     private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
@@ -54,8 +56,15 @@ public class RouterImpl implements Router {
     public RouterImpl(
             Injector injector,
             NinjaProperties ninjaProperties) {
+        this(injector, ninjaProperties, new ArrayList<RouteBuilderImpl>(), "");
+    }
+
+    public RouterImpl(Injector injector, NinjaProperties ninjaProperties,
+                      List<RouteBuilderImpl> allRouteBuilders, String prefixUri) {
         this.injector = injector;
         this.ninjaProperties = ninjaProperties;
+        this.allRouteBuilders = allRouteBuilders;
+        this.prefixUri = prefixUri;
     }
 
     @Override
@@ -180,9 +189,14 @@ public class RouterImpl implements Router {
     }
 
     @Override
+    public Router route(String uri) {
+        return new RouterImpl(injector, ninjaProperties, allRouteBuilders, prefixUri + uri);
+    }
+
+    @Override
     public RouteBuilder GET() {
 
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().GET();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().GET().route(prefixUri);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -190,7 +204,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder POST() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().POST();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().POST().route(prefixUri);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -198,7 +212,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder PUT() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().PUT();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().PUT().route(prefixUri);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -206,7 +220,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder DELETE() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().DELETE();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().DELETE().route(prefixUri);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -214,7 +228,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder OPTIONS() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().OPTIONS();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().OPTIONS().route(prefixUri);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -222,7 +236,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder HEAD() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().HEAD();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().HEAD().route(prefixUri);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -230,7 +244,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder METHOD(String method) {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().METHOD(method);
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().METHOD(method).route(prefixUri);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;

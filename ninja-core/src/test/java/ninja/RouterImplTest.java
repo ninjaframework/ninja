@@ -64,6 +64,26 @@ public class RouterImplTest {
     }
 
     @Test
+    public void testSubRoutersWorkBasic() {
+        router = new RouterImpl(injector, ninjaProperties);
+        String contextPath = "";
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+
+        Router usersRouter = router.route("/users");
+        usersRouter.GET().route("/login").with(TestController.class, "user");
+        Router documentRouter = router.route("/documents");
+        documentRouter.GET().route("/index").with(TestController.class, "index");
+
+        router.compileRoutes();
+
+        String route = router.getReverseRoute(TestController.class, "user");
+        assertThat(route, CoreMatchers.equalTo("/users/login"));
+
+        route = router.getReverseRoute(TestController.class, "index");
+        assertThat(route, CoreMatchers.equalTo("/documents/index"));
+    }
+
+    @Test
     public void testGetReverseRouteWithNoContextPathWorks() {
 
         String contextPath = "";
@@ -123,6 +143,11 @@ public class RouterImplTest {
 
         assertThat(route, equalTo("/user/me@me.com/10000?q=froglegs"));
 
+    }
+
+    private Route buildRoute(RouteBuilderImpl builder) {
+        builder.with(TestController.class, "index");
+        return builder.buildRoute(injector);
     }
 
     // Just a dummy TestController for mocking...
