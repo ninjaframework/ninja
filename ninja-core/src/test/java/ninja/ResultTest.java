@@ -189,7 +189,7 @@ public class ResultTest {
         Result result = new Result(Result.SC_200_OK);
         result.json();
 
-        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(Result.APPLICATION_JSON, result.getContentType());
     }
 
     @Test
@@ -372,7 +372,7 @@ public class ResultTest {
         assertEquals(writer.toString(), stringToRender);
         
         // also make sure the content type is set correctly.
-        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(Result.APPLICATION_JSON, result.getContentType());
         
         
         

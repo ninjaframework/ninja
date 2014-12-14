@@ -535,7 +535,7 @@ public class ContextImplTest {
 
         when(httpServletRequest.getHeader("accept")).thenReturn("application/json");
         context.init(servletContext, httpServletRequest, httpServletResponse);
-        assertEquals(Result.APPLICATON_JSON, context.getAcceptContentType());
+        assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("text/html, application/json");
         context.init(servletContext, httpServletRequest, httpServletResponse);
@@ -551,7 +551,7 @@ public class ContextImplTest {
 
         when(httpServletRequest.getHeader("accept")).thenReturn("text/plain, application/json");
         context.init(servletContext, httpServletRequest, httpServletResponse);
-        assertEquals(Result.APPLICATON_JSON, context.getAcceptContentType());
+        assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
     }
 
     @Test

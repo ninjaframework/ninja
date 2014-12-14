@@ -225,7 +225,7 @@ public class NinjaDefaultTest {
      
     @Test
     public void testThatGetInternalServerErrorContentNegotiation() throws Exception {
-       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
        Result result = ninjaDefault.getInternalServerErrorResult(contextImpl, new Exception("not important"));
        assertThat(result.getContentType(), equalTo(null));
        assertThat(result.supportedContentTypes().size(), equalTo(3));
@@ -261,7 +261,7 @@ public class NinjaDefaultTest {
     
     @Test
     public void testThatGetBadRequestContentNegotiation() throws Exception {
-       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
        Result result = ninjaDefault.getBadRequestResult(contextImpl, new Exception("not important"));
        assertThat(result.getContentType(), equalTo(null));
        assertThat(result.supportedContentTypes().size(), equalTo(3));
@@ -297,7 +297,7 @@ public class NinjaDefaultTest {
     
     @Test
     public void testThatGetOnNotFoundDoesContentNegotiation() throws Exception {
-       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
        Result result = ninjaDefault.getNotFoundResult(contextImpl);
        assertThat(result.getContentType(), equalTo(null));
        assertThat(result.supportedContentTypes().size(), equalTo(3));
