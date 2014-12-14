@@ -84,6 +84,38 @@ public class RouterImplTest {
     }
 
     @Test
+    public void testSubRoutersWorkAdvanced() {
+        router = new RouterImpl(injector, ninjaProperties);
+        String contextPath = "";
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+
+        Router usersRouter = router.route("/users/{email}");
+        usersRouter.GET().route("/notify").with(TestController.class, "user");
+
+        Router usersDocumentRouter = usersRouter.route("/document/{id: .*}");
+        usersDocumentRouter.GET().route("/delete").with(TestController.class, "index");
+
+        router.compileRoutes();
+
+        String route = router.getReverseRoute(
+                TestController.class,
+                "user",
+                "email",
+                "me@me.com");
+        assertThat(route, CoreMatchers.equalTo("/users/me@me.com/notify"));
+
+        route = router.getReverseRoute(
+                TestController.class,
+                "index",
+                "email",
+                "me@me.com",
+                "id",
+                10000);
+
+        assertThat(route, CoreMatchers.equalTo("/users/me@me.com/document/10000/delete"));
+    }
+
+    @Test
     public void testGetReverseRouteWithNoContextPathWorks() {
 
         String contextPath = "";
