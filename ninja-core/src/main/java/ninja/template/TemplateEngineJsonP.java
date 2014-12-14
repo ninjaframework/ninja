@@ -84,7 +84,7 @@ public class TemplateEngineJsonP implements TemplateEngine {
 
     @Override
     public String getContentType() {
-        return Result.APPLICATON_JSONP;
+        return Result.APPLICATION_JSONP;
     }
 
     @Override

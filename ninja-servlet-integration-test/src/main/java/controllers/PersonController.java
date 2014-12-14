@@ -70,7 +70,7 @@ public class PersonController {
         
         return Results
                 .ok()
-                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON)
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON)
                 .fallbackContentType(Result.TEXT_HTML)
                 .template("views/PersonController/getPersonViaContentNegotiation.ftl.html")
                 .render(person);

@@ -133,7 +133,7 @@ public class ResultsTest {
 
         Result result = Results.json();
         assertEquals(Result.SC_200_OK, result.getStatusCode());
-        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(Result.APPLICATION_JSON, result.getContentType());
 
     }
 
@@ -144,7 +144,7 @@ public class ResultsTest {
 
         Result result = Results.json().render(testObject);
         assertEquals(Result.SC_200_OK, result.getStatusCode());
-        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(Result.APPLICATION_JSON, result.getContentType());
         assertEquals(testObject, result.getRenderable());
 
     }
@@ -163,7 +163,7 @@ public class ResultsTest {
 
         Result result = Results.TODO();
         assertEquals(Result.SC_501_NOT_IMPLEMENTED, result.getStatusCode());
-        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(Result.APPLICATION_JSON, result.getContentType());
 
     }
 
