@@ -113,6 +113,13 @@ public interface Context {
      */
     String getHostname();
 
+    /**
+     * For instance:
+     * http://example.com/index returns "http".
+     * https://example.com/index returns "https".
+     *
+     * @return the scheme of the request as seen by the server (e.g. "http" or "https").
+     */
     String getScheme();
 
     /**
