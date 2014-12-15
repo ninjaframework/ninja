@@ -27,6 +27,7 @@ import java.util.List;
 import ninja.standalone.NinjaJetty;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -44,22 +45,21 @@ import com.google.common.collect.Lists;
 public class NinjaRunMojo extends AbstractMojo {
     
     /**
+     * The Maven Session.
+     *
+     * @parameter expression="${session}"
+     * @required
+     * @readonly
+     */
+    protected MavenSession session;
+    
+    /**
      * @parameter property="project"
      * @required
      * @readonly
      */
     protected MavenProject mavenProject;
-    
-    /**
-     * Directory containing the build files.
-     * 
-     * For webapps this is usually
-     * something like /User/username/workspace/project/target/classes
-     * 
-     * @parameter property="project.build.outputDirectory"
-     */
-    private String buildOutputDirectory;
-    
+
     /** 
      * @parameter default-value="${plugin.artifacts}" 
      */
@@ -124,10 +124,12 @@ public class NinjaRunMojo extends AbstractMojo {
             port = portProperty;
         }
 
-        
+        // collect output directories
+        List<String> buildOutputDirectories = Lists.newArrayList();
+        addBuildOutputDirectories(buildOutputDirectories, mavenProject);
         getLog().debug(
-                "Directory for classes is (used to start local jetty and watch for changes: " 
-                + buildOutputDirectory);
+                "Directories for classes are (used to start local jetty and watch for changes): " 
+                + buildOutputDirectories);
         
         
         getLog().info("------------------------------------------------------------------------");
@@ -144,13 +146,13 @@ public class NinjaRunMojo extends AbstractMojo {
         
 
         List<String> classpathItems = Lists.newArrayList();
-        
-        
-        alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
-            buildOutputDirectory);
-        
-        classpathItems.add(buildOutputDirectory);
 
+        // check and add all output directories
+        for(String buildOutputDirectory : buildOutputDirectories) {
+            alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+        	    buildOutputDirectory);
+            classpathItems.add(buildOutputDirectory);
+        }
        
         for (org.apache.maven.artifact.Artifact artifact : mavenProject.getArtifacts()) {
             classpathItems.add(artifact.getFile().toString());           
@@ -168,20 +170,22 @@ public class NinjaRunMojo extends AbstractMojo {
         
         }       
                 
-        
-        Path directoryToWatchRecursivelyForChanges 
-                = FileSystems.getDefault().getPath(
-                        buildOutputDirectory);
-        
+        // collects paths to watch
+        Path[] directoriesToWatchRecursivelyForChanges = new Path[buildOutputDirectories.size()];
+        for(int i = 0; i < buildOutputDirectories.size(); i++) {
+            directoriesToWatchRecursivelyForChanges[i]
+                    = FileSystems.getDefault().getPath(
+                	    buildOutputDirectories.get(i));
+        }    
         try {
             
             WatchAndRestartMachine nWatchAndTerminate = new WatchAndRestartMachine(
                     NinjaMavenPluginConstants.NINJA_JETTY_CLASSNAME,
-                    directoryToWatchRecursivelyForChanges,
                     classpathItems,
                     excludesAsList, 
                     contextPath,
-                    port);
+                    port,
+                    directoriesToWatchRecursivelyForChanges);
             
             nWatchAndTerminate.startWatching();
             
@@ -191,6 +195,38 @@ public class NinjaRunMojo extends AbstractMojo {
     }
     
     
+    private void addBuildOutputDirectories(List<String> buildOutputDirectories,
+	    MavenProject project) {
+	
+	// check for modules
+	List<String> modules = project.getModules();
+	if(modules != null && !modules.isEmpty()) {
+	    
+	    // find module project in reactor
+	    moduleLoop: for(String moduleName : modules) {
+    	    	for(MavenProject moduleProject : session.getProjects()) {
+    		
+    	    	    // TODO this may be some kind of hack and does not work if two projects with same artifact id but different group id are contained in reactor
+    	    	    if(moduleName.equals(moduleProject.getArtifactId())){
+    	    		
+    	    		// add project recursively
+    	    		addBuildOutputDirectories(buildOutputDirectories, moduleProject);
+    	    		continue moduleLoop;
+    	    	    }
+    	    	    
+    	    	}
+    	    	
+    	    	// report error
+    	    	getLog().error("unable to find reactor project for module '" +moduleName +"'. superdev mode may not pickup changes in this project!!");
+	    }
+	} else {
+	    
+	    // add project output directroy
+	    buildOutputDirectories.add(project.getBuild().getOutputDirectory());
+	}
+    }
+
+
     private void initMojoFromUserSubmittedParameters() {
     
         if (excludes != null && excludes.length > 0) {
