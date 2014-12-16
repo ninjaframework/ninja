@@ -183,8 +183,8 @@ public class NinjaRunMojo extends AbstractMojo {
                     NinjaMavenPluginConstants.NINJA_JETTY_CLASSNAME,
                     classpathItems,
                     excludesAsList, 
-                    contextPath,
                     port,
+                    contextPath,
                     directoriesToWatchRecursivelyForChanges);
             
             nWatchAndTerminate.startWatching();
