@@ -123,10 +123,11 @@ public class NinjaRunMojo extends AbstractMojo {
                         NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT, "8080");
             port = portProperty;
         }
-
-        // collect output directories
+        
+        // collect output directories and build classpath
+        List<String> classpathItems = Lists.newArrayList();
         List<String> buildOutputDirectories = Lists.newArrayList();
-        addBuildOutputDirectories(buildOutputDirectories, mavenProject);
+        addBuildOutputDirectoriesAndBuildClasspath(buildOutputDirectories, classpathItems, mavenProject);
         getLog().debug(
                 "Directories for classes are (used to start local jetty and watch for changes): " 
                 + buildOutputDirectories);
@@ -141,23 +142,9 @@ public class NinjaRunMojo extends AbstractMojo {
         getLog().info("Ninja will launch on port: " + port);
         getLog().info("------------------------------------------------------------------------");
         
-
+        
         initMojoFromUserSubmittedParameters();
-        
 
-        List<String> classpathItems = Lists.newArrayList();
-
-        // check and add all output directories
-        for(String buildOutputDirectory : buildOutputDirectories) {
-            alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
-        	    buildOutputDirectory);
-            classpathItems.add(buildOutputDirectory);
-        }
-       
-        for (org.apache.maven.artifact.Artifact artifact : mavenProject.getArtifacts()) {
-            classpathItems.add(artifact.getFile().toString());           
-        }       
-        
         List<Artifact> allArtifactsFromNinjaStandaloneInPlugin 
             = getAllArtifactsComingFromNinjaStandalone(pluginArtifacts);
         
@@ -168,7 +155,12 @@ public class NinjaRunMojo extends AbstractMojo {
                 classpathItems.add(artifact.getFile().toString());
             }
         
-        }       
+        }   
+        
+        getLog().debug("classpath:");
+        for(String classpathItem : classpathItems) {
+            getLog().debug(classpathItem);
+        }
                 
         // collects paths to watch
         Path[] directoriesToWatchRecursivelyForChanges = new Path[buildOutputDirectories.size()];
@@ -195,8 +187,8 @@ public class NinjaRunMojo extends AbstractMojo {
     }
     
     
-    private void addBuildOutputDirectories(List<String> buildOutputDirectories,
-	    MavenProject project) {
+    private void addBuildOutputDirectoriesAndBuildClasspath(List<String> buildOutputDirectories,
+	    List<String> classpathItems, MavenProject project) {
 	
 	// check for modules
 	List<String> modules = project.getModules();
@@ -210,10 +202,9 @@ public class NinjaRunMojo extends AbstractMojo {
     	    	    if(moduleName.equals(moduleProject.getArtifactId())){
     	    		
     	    		// add project recursively
-    	    		addBuildOutputDirectories(buildOutputDirectories, moduleProject);
+    	    		addBuildOutputDirectoriesAndBuildClasspath(buildOutputDirectories, classpathItems, moduleProject);
     	    		continue moduleLoop;
     	    	    }
-    	    	    
     	    	}
     	    	
     	    	// report error
@@ -221,8 +212,19 @@ public class NinjaRunMojo extends AbstractMojo {
 	    }
 	} else {
 	    
+	    // check project output directory exists
+	    alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(project.getBuild().getOutputDirectory());
+	    
 	    // add project output directroy
 	    buildOutputDirectories.add(project.getBuild().getOutputDirectory());
+	    classpathItems.add(project.getBuild().getOutputDirectory());
+	}
+	
+	// add dependencies to classpath
+	for (org.apache.maven.artifact.Artifact artifact : project.getArtifacts()) {
+	    if(!classpathItems.contains(artifact.getFile().toString())) {
+		classpathItems.add(artifact.getFile().toString());          
+	    } 
 	}
     }
 
