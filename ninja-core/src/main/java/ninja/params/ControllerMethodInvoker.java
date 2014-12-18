@@ -88,15 +88,17 @@ public class ControllerMethodInvoker {
         }
 
         // Replace a null extractor with a bodyAs extractor, but make sure there's only one
-        boolean bodyAsFound = false;
+        int bodyAsFound = -1;
         for (int i = 0; i < argumentExtractors.length; i++) {
             if (argumentExtractors[i] == null) {
-                if (bodyAsFound) {
-                    throw new RoutingException("Only one parameter may be deserialised as the body " +
-                            method.getDeclaringClass().getName() + "." + method.getName() + "()");
+                if (bodyAsFound > -1) {
+                    throw new RoutingException("Only one parameter may be deserialised as the body "
+                            + method.getDeclaringClass().getName() + "." + method.getName() + "()\n"
+                            + "Extracted parameter is type: " + paramTypes[bodyAsFound].getName() + "\n"
+                            + "Extra parmeter is type: " + paramTypes[i].getName());
                 } else {
                     argumentExtractors[i] = new ArgumentExtractors.BodyAsExtractor(paramTypes[i]);
-                    bodyAsFound = true;
+                    bodyAsFound = i;
                 }
             }
         }
