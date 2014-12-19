@@ -53,7 +53,9 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
-                    <contextPath>/</contextPath>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
                     <stopKey>stop</stopKey>
                     <stopPort>8889</stopPort>
                     <scanIntervalSeconds>1</scanIntervalSeconds>

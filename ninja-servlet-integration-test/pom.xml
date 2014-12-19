@@ -41,7 +41,9 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <configuration>
-                    <contextPath>/</contextPath>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
                     <stopKey>stop</stopKey>
                     <stopPort>8889</stopPort>					
                     <scanIntervalSeconds>1</scanIntervalSeconds>
