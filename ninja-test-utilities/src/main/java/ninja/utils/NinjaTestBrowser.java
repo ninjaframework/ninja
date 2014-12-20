@@ -141,7 +141,7 @@ public class NinjaTestBrowser {
             response = httpClient.execute(getRequest);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (response.getEntity().getContent())));
+                    response.getEntity().getContent(), "UTF-8"));
 
             String output;
             while ((output = br.readLine()) != null) {
@@ -197,7 +197,7 @@ public class NinjaTestBrowser {
             response = httpClient.execute(postRequest);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (response.getEntity().getContent())));
+                    response.getEntity().getContent(), "UTF-8"));
 
             String output;
             while ((output = br.readLine()) != null) {
