@@ -1,6 +1,6 @@
 Version X.X.X
 =============
-
+ * 2014-12-20 #266 Enhanced body parameter exception message (t3hc13h)
  * 2014-12-14 #257 Add protocol to ninja.Context (chrsin)
  * 2014-12-14 #269 Fix name of import (fzakaria)
  * 2014-12-09 Removed default secret key from simple archetype (inkookim + ra)
