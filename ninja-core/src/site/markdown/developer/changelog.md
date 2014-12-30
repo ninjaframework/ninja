@@ -1,4 +1,4 @@
-Version X.X.X
+Version 4.0.3
 =============
 
  * 2014-12-30 Bump to doctester 1.1.5 (ra)
