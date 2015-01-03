@@ -619,7 +619,7 @@
             <dependency>
                 <groupId>org.doctester</groupId>
                 <artifactId>doctester-core</artifactId>
-                <version>1.1.5</version>
+                <version>1.1.6</version>
             </dependency>
 
             <!-- A very nice abstraction for making selenum tests: -->
