@@ -343,6 +343,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         return cfg;
     }
 
+    // test commit
     
     private BeansWrapper createBeansWrapperWithExposedFields() {
         DefaultObjectWrapperBuilder defaultObjectWrapperBuilder 
