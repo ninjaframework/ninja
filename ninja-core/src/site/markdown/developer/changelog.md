@@ -1,3 +1,8 @@
+Version 4.0.4
+=============
+
+ * 2014-01-03 Added access to the freemarker configuration (jlannoy)
+ 
 Version 4.0.3
 =============
 

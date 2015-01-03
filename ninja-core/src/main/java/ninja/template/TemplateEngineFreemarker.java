@@ -336,6 +336,15 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         return FILE_SUFFIX;
     }
     
+    /**
+     * @return the freemarker configuration object
+     */
+    public Configuration getConfiguration() {
+        return cfg;
+    }
+
+    // test commit
+    
     private BeansWrapper createBeansWrapperWithExposedFields() {
         DefaultObjectWrapperBuilder defaultObjectWrapperBuilder 
             = new DefaultObjectWrapperBuilder(INCOMPATIBLE_IMPROVEMENTS_VERSION);
