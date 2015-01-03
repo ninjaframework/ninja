@@ -68,7 +68,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     
     private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 21);
 
-    private final String FILE_SUFFIX = ".ftl.html";
+    private final static String DEFAULT_FILE_SUFFIX = ".ftl.html";
 
     private final Configuration cfg;
 
@@ -87,6 +87,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod;
     
     private final TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
+    
+    private String fileSuffix = DEFAULT_FILE_SUFFIX;
     
     @Inject
     public TemplateEngineFreemarker(Messages messages,
@@ -291,7 +293,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // Specify the data source where the template files come from.
         // Here I set a file directory for it:
         String templateName = templateEngineHelper.getTemplateForResult(
-                context.getRoute(), result, FILE_SUFFIX);
+                context.getRoute(), result, fileSuffix);
 
         
         Template freemarkerTemplate = null;
@@ -333,7 +335,23 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     @Override
     public String getSuffixOfTemplatingEngine() {
-        return FILE_SUFFIX;
+        return fileSuffix;
+    }
+    
+    /**
+     * Will override the default file suffix for freemarker templates.
+     * 
+     * @param fileSuffix file extension
+     */
+    public void setSuffixOfTemplatingEngine(String fileSuffix) {
+        this.fileSuffix = fileSuffix;
+    }
+    
+    /**
+     * @return the freemarker configuration object
+     */
+    public Configuration getConfiguration() {
+    	return cfg;
     }
     
     private BeansWrapper createBeansWrapperWithExposedFields() {
