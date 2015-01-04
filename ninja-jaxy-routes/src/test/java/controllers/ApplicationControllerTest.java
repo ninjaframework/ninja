@@ -52,6 +52,26 @@ public class ApplicationControllerTest extends NinjaDocTester {
         Assert.assertThat(response.payload, CoreMatchers.equalTo("get works."));
 
     }
+    
+    @Test
+    public void testGetFromBase() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/base/get")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("get base works."));
+
+    }
+    
+    @Test
+    public void testGetFromMiddle() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/base/middle/get")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("get middle works."));
+
+    }
 
     @Test
     public void testGet012() {

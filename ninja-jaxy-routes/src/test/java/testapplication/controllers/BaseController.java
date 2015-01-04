@@ -15,9 +15,20 @@
  */
 package testapplication.controllers;
 
+import ninja.Result;
+import ninja.Results;
+import ninja.jaxy.GET;
 import ninja.jaxy.Path;
 
 @Path({ "/base", "/0" })
 abstract class BaseController {
+	
+    @Path("/get")
+    @GET
+    public Result testAnnotatedGetRouteFromBase() {
+
+        return Results.text().render("get base works.");
+
+    }
 
 }
