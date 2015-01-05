@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
+
 Version 4.0.3
 =============
 
