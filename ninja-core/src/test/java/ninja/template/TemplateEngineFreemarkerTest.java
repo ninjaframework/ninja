@@ -109,7 +109,7 @@ public class TemplateEngineFreemarkerTest {
                         templateEngineFreemarkerWebJarsAtMethod,
                         ninjaProperties);
 
-        when(lang.getLanguage(any(Context.class), any(Optional.class))).thenReturn(Optional.absent());
+        when(lang.getLanguage(any(Context.class), any(Optional.class))).thenReturn(Optional.<String>absent());
 
         Session session = Mockito.mock(Session.class);
         when(session.isEmpty()).thenReturn(true);
