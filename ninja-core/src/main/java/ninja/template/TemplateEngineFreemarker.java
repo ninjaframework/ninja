@@ -69,8 +69,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     // end
     
     private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 21);
-    
-    private final String DEFAULT_FILE_SUFFIX = ".ftl.html";
+
+    private final String FILE_SUFFIX = ".ftl.html";
 
     private final Configuration cfg;
 
@@ -111,7 +111,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
-        this.fileSuffix = ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, DEFAULT_FILE_SUFFIX);
+        this.fileSuffix = ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, FILE_SUFFIX);
         
         cfg = new Configuration(INCOMPATIBLE_IMPROVEMENTS_VERSION);
         
