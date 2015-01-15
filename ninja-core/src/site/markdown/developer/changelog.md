@@ -1,8 +1,12 @@
 Version X.X.X
 =============
 
- * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
  * 2015-01-03 Added access to the freemarker configuration and default suffix (jlannoy)
+
+Version 4.0.4
+=============
+
+ * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
  
 Version 4.0.3
 =============

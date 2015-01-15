@@ -296,7 +296,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // Specify the data source where the template files come from.
         // Here I set a file directory for it:
         String templateName = templateEngineHelper.getTemplateForResult(
-                context.getRoute(), result, fileSuffix);
+                context.getRoute(), result, this.fileSuffix);
 
         
         Template freemarkerTemplate = null;
@@ -338,7 +338,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     @Override
     public String getSuffixOfTemplatingEngine() {
-        return fileSuffix;
+        return this.fileSuffix;
     }
     
     /**

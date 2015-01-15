@@ -15,20 +15,150 @@
  */
 package ninja.template;
 
+import com.google.common.base.Optional;
+import freemarker.template.Configuration;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import javax.inject.Singleton;
+import ninja.Context;
+import ninja.Result;
+import ninja.Results;
+import ninja.Route;
+import ninja.i18n.Lang;
+import ninja.i18n.Messages;
+import ninja.session.FlashScope;
+import ninja.session.Session;
+import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX;
+import ninja.utils.NinjaProperties;
+import ninja.utils.ResponseStreams;
 import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineFreemarkerTest {
+
+    @Mock
+    Lang lang;
+
+    @Mock
+    Logger logger;
+
+    @Mock
+    TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
+
+    @Mock
+    TemplateEngineHelper templateEngineHelper;
+
+    @Mock
+    TemplateEngineManager templateEngineManager;
+
+    @Mock
+    TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod;
+
+    @Mock
+    TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod;
+
+    @Mock
+    TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
+
+    @Mock
+    NinjaProperties ninjaProperties;
+
+    @Mock
+    Messages messages;
+
+    @Mock
+    Context context;
+
+    @Mock
+    Result result;
+    
+    @Mock
+    Route route;
+
+    TemplateEngineFreemarker templateEngineFreemarker;
+
+    Writer writer;
+
+    @Before
+    public void before() throws Exception {
+        //Setup that allows to to execute invoke(...) in a very minimal version.
+        when(ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, ".ftl.html")).thenReturn(".ftl.html");
+       
+        templateEngineFreemarker
+                = new TemplateEngineFreemarker(
+                        messages,
+                        lang,
+                        logger,
+                        templateEngineFreemarkerExceptionHandler,
+                        templateEngineHelper,
+                        templateEngineManager,
+                        templateEngineFreemarkerReverseRouteMethod,
+                        templateEngineFreemarkerAssetsAtMethod,
+                        templateEngineFreemarkerWebJarsAtMethod,
+                        ninjaProperties);
+
+        
+        when(lang.getLanguage(any(Context.class), any(Optional.class))).thenReturn(Optional.<String>absent());
+
+        Session session = Mockito.mock(Session.class);
+        when(session.isEmpty()).thenReturn(true);
+        when(context.getSession()).thenReturn(session);
+        when(context.getRoute()).thenReturn(route);
+        when(lang.getLocaleFromStringOrDefault(any(Optional.class))).thenReturn(Locale.ENGLISH);
+
+        FlashScope flashScope = Mockito.mock(FlashScope.class);
+        Map<String, String> flashScopeData = new HashMap<>();
+        when(flashScope.getCurrentFlashCookieData()).thenReturn(flashScopeData);
+        when(context.getFlashScope()).thenReturn(flashScope);
+
+        when(templateEngineHelper.getTemplateForResult(any(Route.class), any(Result.class), Mockito.anyString())).thenReturn("views/template.ftl.html");
+
+        writer = new StringWriter();
+        ResponseStreams responseStreams = mock(ResponseStreams.class);
+        when(context.finalizeHeaders(any(Result.class))).thenReturn(responseStreams);
+        when(responseStreams.getWriter()).thenReturn(writer);
+        
+        
+    }
 
     @Test
     public void testThatTemplateEngineFreemarkerHasSingletonAnnotation() {
-
         Singleton singleton = TemplateEngineFreemarker.class.getAnnotation(Singleton.class);
+        assertThat(singleton, notNullValue());
+    }
 
-        Assert.assertThat(singleton, CoreMatchers.notNullValue());
-
+    @Test
+    public void testBasicInvocation() throws Exception {
+        templateEngineFreemarker.invoke(context, Results.ok());
+        verify(ninjaProperties).getWithDefault(TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX, ".ftl.html");
+        assertThat(templateEngineFreemarker.getSuffixOfTemplatingEngine(), equalTo(".ftl.html"));
+        verify(templateEngineHelper).getTemplateForResult(eq(route), any(Result.class), eq(".ftl.html"));
+        assertThat(writer.toString(), equalTo("Just a plain template for testing..."));
+    }
+    
+    @Test
+    public void testThatConfigurationCanBeRetrieved() throws Exception {
+        templateEngineFreemarker.invoke(context, Results.ok());
+        assertThat(templateEngineFreemarker.getConfiguration(), CoreMatchers.notNullValue(Configuration.class));
     }
 
 }
