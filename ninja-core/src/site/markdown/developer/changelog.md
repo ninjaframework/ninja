@@ -1,3 +1,8 @@
+Version 4.0.5
+=============
+
+ * 2015-01-13 Configure SuperDevMode from web.xml for better servlet bridge support (ekirin)
+
 Version X.X.X
 =============
 
