@@ -36,11 +36,11 @@ public class NinjaJetty {
     
     public final static String COMMAND_LINE_PARAMETER_NINJA_CONTEXT = "ninja.context";
     /**
-	* Use this param to config SuperDevMode from web.xml ({@code mvn ninja:run -Dninja.use.webxml=true}).<br/> 
-	* It's useful if app is created to run under servlet container and use servlet bridge.<br/>
-	* Also supports test mode ({@code mvn test -Dninja.use.webxml=true})
-	*/
-	public final static String COMMAND_LINE_PARAMETER_NINJA_USE_WEBXML = "ninja.use.webxml";
+    * Use this param to config SuperDevMode from web.xml ({@code mvn ninja:run -Dninja.use.webxml=true}).<br/>
+    * It's useful if app is created to run under servlet container and use servlet bridge.<br/>
+    * Also supports test mode ({@code mvn test -Dninja.use.webxml=true})
+    */
+    public final static String COMMAND_LINE_PARAMETER_NINJA_USE_WEBXML = "ninja.use.webxml";
 	
     public final static String COMMAND_LINE_PARAMETER_NINJA_PORT = "ninja.port";
     
@@ -59,8 +59,8 @@ public class NinjaJetty {
     String ninjaContextPath;
 
     NinjaServletListener ninjaServletListener;
-	
-	boolean isUseWebappContext;
+
+    boolean isUseWebappContext;
 
     public static void main(String [] args) {
         
@@ -134,33 +134,33 @@ public class NinjaJetty {
 
         server = new Server(port);
 		
-		if(!isUseWebappContext) {			
-			isUseWebappContext = tryToGetToUseWebappContextFromSystemProperty(); 
-		}
+        if(!isUseWebappContext) {
+            isUseWebappContext = tryToGetToUseWebappContextFromSystemProperty();
+        }
 
         try {
             
-			if(isUseWebappContext) {							
-				System.setProperty(NinjaConstant.MODE_KEY_NAME, ninjaMode.toString()); // set mode for Webapp context
-				String rootPath = Server.class.getClassLoader().getResource(".").toString();
-				context = new WebAppContext(rootPath + "../../src/main/webapp", ninjaContextPath);			
-				server.setHandler(context);
-			} else {
-				context = new ServletContextHandler(server, ninjaContextPath);
+            if(isUseWebappContext) {
+                System.setProperty(NinjaConstant.MODE_KEY_NAME, ninjaMode.toString()); // set mode for Webapp context
+                String rootPath = Server.class.getClassLoader().getResource(".").toString();
+                context = new WebAppContext(rootPath + "../../src/main/webapp", ninjaContextPath);
+                server.setHandler(context);
+            } else {
+                context = new ServletContextHandler(server, ninjaContextPath);
             			
-				NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
-				// We are using an embeded jetty for quick server testing. The
-				// problem is that the port will change.
-				// Therefore we inject the server name here:
-				ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
+                NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
+                // We are using an embeded jetty for quick server testing. The
+                // problem is that the port will change.
+                // Therefore we inject the server name here:
+                ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
 
-				ninjaServletListener.setNinjaProperties(ninjaProperties);
+                ninjaServletListener.setNinjaProperties(ninjaProperties);
 
-				context.addEventListener(ninjaServletListener);
+                context.addEventListener(ninjaServletListener);
 
-				context.addFilter(GuiceFilter.class, "/*", null);
-				context.addServlet(DefaultServlet.class, "/");
-			}
+                context.addFilter(GuiceFilter.class, "/*", null);
+                context.addServlet(DefaultServlet.class, "/");
+            }
 			
             server.start();
 
