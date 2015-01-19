@@ -160,5 +160,4 @@ public class TemplateEngineFreemarkerTest {
         templateEngineFreemarker.invoke(context, Results.ok());
         assertThat(templateEngineFreemarker.getConfiguration(), CoreMatchers.notNullValue(Configuration.class));
     }
-
 }
