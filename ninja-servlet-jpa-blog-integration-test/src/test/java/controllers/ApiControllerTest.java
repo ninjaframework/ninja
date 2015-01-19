@@ -42,13 +42,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 public class ApiControllerTest extends NinjaTest {
-    
-    @Before
-    public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
-        
-    }
 
     @Test
     public void testGetAndPostArticleViaJson() throws Exception {

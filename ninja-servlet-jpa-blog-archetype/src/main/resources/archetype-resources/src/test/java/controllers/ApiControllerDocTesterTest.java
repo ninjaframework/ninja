@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 /**
- * Copyright (C) 2013 the original author or authors.
+ * Copyright (C) 2012-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,14 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Map;
 
+import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
+import ninja.NinjaDocTester;
 
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
@@ -35,12 +40,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-
-import models.Article;
-import ninja.NinjaDocTester;
-import org.doctester.testbrowser.Request;
-import org.doctester.testbrowser.Response;
-import org.hamcrest.CoreMatchers;
 
 public class ApiControllerDocTesterTest extends NinjaDocTester {
     
@@ -120,6 +119,24 @@ public class ApiControllerDocTesterTest extends NinjaDocTester {
                 , CoreMatchers.is(4));
         
         
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Fetch single article
+        // /////////////////////////////////////////////////////////////////////
+        say("We can also fetch an individual article via the Json Api.");
+        say("That's a GET request to: " + GET_ARTICLE_URL);
+        response = sayAndMakeRequest(
+                Request.GET().url(
+                        testServerUrl().path(
+                                GET_ARTICLE_URL
+                                        .replace("{username}", "bob@gmail.com")
+                                        .replace("{id}", "1"))));
+
+        Article article = getGsonWithLongToDateParsing().fromJson(response.payload, Article.class);
+        // one new result:
+        sayAndAssertThat("And we got back the first article"
+                , article.id
+                , CoreMatchers.is(1L));
     }
 
 

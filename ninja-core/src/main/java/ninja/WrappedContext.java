@@ -53,6 +53,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public String getScheme() {
+        return wrapped.getScheme();
+    }
+
+    @Override
     public String getRemoteAddr() {
         return wrapped.getRemoteAddr();
     }

@@ -79,7 +79,7 @@ public class ResultHandlerTest {
         when(context.finalizeHeaders(any(Result.class)))
             .thenReturn(responseStreams);
         when(templateEngineManager
-            .getTemplateEngineForContentType(Result.APPLICATON_JSON))
+            .getTemplateEngineForContentType(Result.APPLICATION_JSON))
             .thenReturn(templateEngine);
         when(templateEngineManager.getTemplateEngineForContentType(Result.TEXT_HTML))
             .thenReturn(templateEngineHtml);

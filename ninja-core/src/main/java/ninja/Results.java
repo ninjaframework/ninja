@@ -167,7 +167,7 @@ public class Results {
 
     public static Result TODO() {
         Result result = status(Result.SC_501_NOT_IMPLEMENTED);
-        result.contentType(Result.APPLICATON_JSON);
+        result.contentType(Result.APPLICATION_JSON);
 
         return result;
     }

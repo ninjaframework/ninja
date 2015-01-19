@@ -345,6 +345,11 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
+    public String getScheme() {
+        return httpServletRequest.getScheme();
+    }
+
+    @Override
     public String getRemoteAddr() {
         
         boolean isUsageOfXForwardedHeaderEnabled 
@@ -517,7 +522,7 @@ public class ContextImpl implements Context.Impl {
 
         if (contentType.indexOf("application/json") != -1
                 || contentType.indexOf("text/javascript") != -1) {
-            return Result.APPLICATON_JSON;
+            return Result.APPLICATION_JSON;
         }
 
         if (contentType.indexOf("text/plain") != -1) {

@@ -114,6 +114,15 @@ public interface Context {
     String getHostname();
 
     /**
+     * For instance:
+     * http://example.com/index returns "http".
+     * https://example.com/index returns "https".
+     *
+     * @return the scheme of the request as seen by the server (e.g. "http" or "https").
+     */
+    String getScheme();
+
+    /**
      * Returns the Internet Protocol (IP) address of the client
      * or last proxy that sent the request. For HTTP servlets, same as the 
      * value of the CGI variable <code>REMOTE_ADDR</code>.
