@@ -1,8 +1,36 @@
-Version xxx
+Version X.X.X
 =============
 
-* 2014-11-04 Bumped twitter bootstrap to 3.3.0 in archetypes (svenkubiak)
-* 2014-11-04 Styled system pages for 404/403 in archetypes (svenkubiak)
+ * 2015-01-20 Set correct versions in changelog.md (svenkubia)
+ * 2015-01-20 Bumped twitter bootstrap to 3.3.2 in archetypes (svenkubiak)
+ * 2015-01-20 Bumped jquery to 2.1.3 in archetypes (svenkubiak)
+ * 2015-01-20 Styled system pages for 404/403 in archetypes (svenkubiak)
+ 
+Version 4.0.4
+=============
+
+ * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
+
+Version 4.0.3
+=============
+
+ * 2014-12-30 Bump to doctester 1.1.5 (ra)
+ * 2014-12-20 #266 Enhanced body parameter exception message (t3hc13h)
+ * 2014-12-20 #263 (part 2) utf8 chars breaking integration tests on US Windows
+ * 2014-12-14 #257 Add protocol to ninja.Context (chrsin)
+ * 2014-12-14 #269 Fix name of import (fzakaria)
+ * 2014-12-09 Removed default secret key from simple archetype (inkookim + ra)
+
+Version 4.0.2
+=============
+
+ * 2014-12-01 Improved jpa archetype (ra)
+
+Version 4.0.1
+=============
+
+* 2014-11-27 Fix #261. message.getWithDefault(...) bug. (ra + 0xbaadf00d)
+
 
 Version 4.0.0
 =============
