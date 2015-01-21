@@ -23,7 +23,7 @@ import ninja.jaxy.Path;
 @Path({ "/base", "/0" })
 abstract class BaseController {
 	
-    @Path("/get")
+    @Path("/getBase")
     @GET
     public Result testAnnotatedGetRouteFromBase() {
 
@@ -31,4 +31,11 @@ abstract class BaseController {
 
     }
 
+    @Path("/getOverridedBase")
+    @GET
+    public Result testAnnotatedGetOverridedRouteFromBase() {
+
+        return Results.notFound();
+
+    }
 }

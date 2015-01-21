@@ -23,7 +23,7 @@ import ninja.jaxy.Path;
 @Path({ "/middle", "/1" })
 abstract class MiddleController extends BaseController {
 	
-    @Path("/get")
+    @Path("/getMiddle")
     @GET
     public Result testAnnotatedGetRouteFromMiddle() {
 
@@ -31,4 +31,18 @@ abstract class MiddleController extends BaseController {
 
     }
 
+    @Path("/getOverridedMiddle")
+    @GET
+    public Result testAnnotatedGetOverridedRouteFromMiddle() {
+
+        return Results.notFound();
+
+    }
+    
+    @Path("/overridedKeyTest")
+    public Result testOverridedKeyedRoute() {
+
+        return Results.notFound();
+
+    }
 }
