@@ -133,6 +133,7 @@
 
             <item name="Deployment" collapse="true" href="./documentation/deployment/getting_started.html">
                 <item name="Ninja standalone" href="./documentation/deployment/ninja_standalone.html"/>
+                <item name="Multi module maven project" href="./documentation/deployment/multi_module_maven_project.html"/>
                 <item name="War based deployment" href="./documentation/deployment/war_based_deployment.html"/>
                 <item name="Cloud hosting options" href="./documentation/deployment/cloud_hosting_options.html"/>
             </item>
