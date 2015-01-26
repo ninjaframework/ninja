@@ -1,6 +1,11 @@
 Version X.X.X
 =============
 
+ * 2015-01-26 Changed generic exception in postoffice to specific ones (svenkubiak)
+
+Version 4.0.4
+=============
+
  * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
 
 Version 4.0.3
