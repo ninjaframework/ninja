@@ -2,7 +2,11 @@ Version X.X.X
 =============
 
  * 2015-01-26 Changed generic exception in postoffice to specific ones (svenkubiak)
-
+ * 2015-01-20 Set correct versions in changelog.md (svenkubia)
+ * 2015-01-20 Bumped twitter bootstrap to 3.3.2 in archetypes (svenkubiak)
+ * 2015-01-20 Bumped jquery to 2.1.3 in archetypes (svenkubiak)
+ * 2015-01-20 Styled system pages for 404/403 in archetypes (svenkubiak)
+ 
 Version 4.0.4
 =============
 
