@@ -18,6 +18,7 @@ package ninja.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +43,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.collect.Maps;
 
 public class NinjaTestBrowser {
-
+    private final Logger LOG = LoggerFactory.getLogger(NinjaTestBrowser.class);
     private DefaultHttpClient httpClient;
 
     public NinjaTestBrowser() {
@@ -125,6 +128,7 @@ public class NinjaTestBrowser {
     public String makeRequest(String url, Map<String, String> headers) {
 
         StringBuffer sb = new StringBuffer();
+        BufferedReader br = null;
         try {
 
             HttpGet getRequest = new HttpGet(url);
@@ -140,8 +144,7 @@ public class NinjaTestBrowser {
 
             response = httpClient.execute(getRequest);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    response.getEntity().getContent(), "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
             String output;
             while ((output = br.readLine()) != null) {
@@ -152,6 +155,14 @@ public class NinjaTestBrowser {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    LOG.error("Failed to close resource", e);
+                }
+            }
         }
 
         return sb.toString();
@@ -163,7 +174,7 @@ public class NinjaTestBrowser {
                                                     Map<String, String> formParameters) {
 
         StringBuffer sb = new StringBuffer();
-
+        BufferedReader br = null;
         try {
 
             HttpPost postRequest = new HttpPost(url);
@@ -196,8 +207,7 @@ public class NinjaTestBrowser {
 
             response = httpClient.execute(postRequest);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    response.getEntity().getContent(), "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
             String output;
             while ((output = br.readLine()) != null) {
@@ -208,6 +218,14 @@ public class NinjaTestBrowser {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    LOG.error("Failed to close resource", e);
+                }
+            }
         }
 
         return sb.toString();

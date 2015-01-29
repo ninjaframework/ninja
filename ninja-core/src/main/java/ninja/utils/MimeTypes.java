@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -151,14 +152,20 @@ public class MimeTypes {
     private void initMimetypes() {
 
         // Load default mimetypes from the framework
+        InputStream is = null;
         try {
-            InputStream is = this.getClass().getClassLoader()
-                    .getResourceAsStream(DEFAULT_MIMET_TYPE_LOCATIONS);
-
+            is = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_MIMET_TYPE_LOCATIONS);
             mimetypes.load(is);
-
-        } catch (Exception ex) {
-            logger.warn(ex.getMessage());
+        } catch (Exception e) {
+            logger.error("Failed to load mimetypes", e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    logger.error("Failed to load mimetypes", e);
+                }
+            }
         }
 
         // Load custom mimetypes from the application configuration

@@ -16,6 +16,7 @@
 
 package ninja;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -35,7 +36,6 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class NinjaDefault implements Ninja {
     
     private static final Logger logger = LoggerFactory.getLogger(NinjaDefault.class);
@@ -291,11 +291,11 @@ public class NinjaDefault implements Ninja {
         String NINJA_VERSION_PROPERTY_KEY = "ninja.version";
         
         String ninjaVersion;
-         
+        InputStream stream = null; 
         try {
 
             Properties prop = new Properties();
-            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES);
+            stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES);
             prop.load(stream);
             
             ninjaVersion = prop.getProperty(NINJA_VERSION_PROPERTY_KEY);
@@ -303,6 +303,14 @@ public class NinjaDefault implements Ninja {
         } catch (Exception e) {
             //this should not happen. Never.
             throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + LOCATION_OF_NINJA_BUILTIN_PROPERTIES));
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    logger.error("Failed to close inpustream for ninja-builtin.properties");
+                }
+            }
         }
         
         return ninjaVersion;
