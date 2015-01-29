@@ -35,9 +35,7 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class NinjaDefault implements Ninja {
-    
     private static final Logger logger = LoggerFactory.getLogger(NinjaDefault.class);
 
     /**
@@ -291,11 +289,9 @@ public class NinjaDefault implements Ninja {
         String NINJA_VERSION_PROPERTY_KEY = "ninja.version";
         
         String ninjaVersion;
-         
-        try {
+        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES)){
 
             Properties prop = new Properties();
-            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES);
             prop.load(stream);
             
             ninjaVersion = prop.getProperty(NINJA_VERSION_PROPERTY_KEY);
