@@ -36,7 +36,6 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class MimeTypes {
-
     private final Logger logger = LoggerFactory.getLogger(MimeTypes.class);
 
     private final String PROPERTY_MIMETYPE_PREFIX = "mimetype.";
@@ -152,20 +151,10 @@ public class MimeTypes {
     private void initMimetypes() {
 
         // Load default mimetypes from the framework
-        InputStream is = null;
-        try {
-            is = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_MIMET_TYPE_LOCATIONS);
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_MIMET_TYPE_LOCATIONS);) {
             mimetypes.load(is);
         } catch (Exception e) {
             logger.error("Failed to load mimetypes", e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    logger.error("Failed to load mimetypes", e);
-                }
-            }
         }
 
         // Load custom mimetypes from the application configuration
