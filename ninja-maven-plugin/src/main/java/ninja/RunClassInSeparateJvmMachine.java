@@ -124,6 +124,12 @@ public class RunClassInSeparateJvmMachine {
                 = "-D" + NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT + "=" + port;
 
         commandLine.add(portSelection);
+
+        String useWebXmlToConfig = System.getProperty(NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_USE_WEBXML);
+        String useWebXmlSelection
+                = "-D" + NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_USE_WEBXML + "=" + useWebXmlToConfig;
+
+        commandLine.add(useWebXmlSelection);
         
         if (contextPath != null) {
             String systemPropertyContextPath = "-Dninja.context=" + contextPath;

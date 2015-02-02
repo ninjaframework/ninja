@@ -107,3 +107,12 @@ If the option is omitted you can provide it by system property:
 <pre class="prettyprint">
 mvn ninja:run -Dninja.port=YourPortNumber
 </pre>
+
+### web.xml
+
+By default SuperDevMode is configured on the fly. This param lets to configure SuperDevMode from web.xml file located at src/main/webapp/WEB-INF.
+If your app uses servlet bridge then use this param to run tests and SuperDevMode.
+
+<pre class="prettyprint">
+mvn ninja:run -Dninja.use.webxml=true
+</pre>
