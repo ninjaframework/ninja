@@ -25,6 +25,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import ninja.Router;
+import ninja.application.ApplicationRoutes;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
@@ -36,11 +41,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import ninja.Router;
-import ninja.application.ApplicationRoutes;
-import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaProperties;
 
 /**
  * Implementation of a JAX-RS style route builder.
