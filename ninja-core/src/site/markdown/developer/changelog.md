@@ -1,4 +1,4 @@
-Version X.X.X
+Version 4.0.5
 =============
 
  * 2015-02-02 Added new module: Ninja Authentication (svenkubiak)
