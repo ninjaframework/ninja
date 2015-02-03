@@ -321,7 +321,6 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public List<Cookie> getCookies() {
-
         javax.servlet.http.Cookie[] servletCookies = httpServletRequest.getCookies();
         List<Cookie> ninjaCookies = new ArrayList<>(servletCookies.length);
 
@@ -331,6 +330,17 @@ public class ContextImpl implements Context.Impl {
         }
 
         return ninjaCookies;
+    }
+    
+    @Override
+    public void addCookie(Cookie cookie) {
+        httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
+    }
+    
+    @Override
+    public void unsetCookie(Cookie cookie) {
+        httpServletResponse.addCookie(CookieHelper
+                .convertNinjaCookieToServletCookie(Cookie.builder(cookie).setMaxAge(0).build()));
     }
 
     @Deprecated

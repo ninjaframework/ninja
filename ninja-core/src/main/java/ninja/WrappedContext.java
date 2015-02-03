@@ -307,4 +307,13 @@ public class WrappedContext implements Context {
         return wrapped.isRequestXml();
     }
 
+    @Override
+    public void addCookie(Cookie cookie) {
+        wrapped.addCookie(cookie);
+    }
+
+    @Override
+    public void unsetCookie(Cookie cookie) {
+        wrapped.unsetCookie(cookie);
+    }
 }

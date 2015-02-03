@@ -123,7 +123,7 @@ public class ContextImplTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
         //make sure this is correct
-        assertEquals("/index", context.getRequestUri());
+        assertEquals("/index", context.getRequestPath());
     }
 
     @Test
@@ -227,6 +227,48 @@ public class ContextImplTest {
         assertThat(resultCookie.getPath(), equalTo("/"));
         assertThat(resultCookie.getSecure(), equalTo(false));
         assertThat(resultCookie.getMaxAge(), equalTo(-1));
+    }
+    
+    @Test
+    public void testAddCookieViaContext() {
+        Cookie cookie = Cookie.builder("cookie", "yummy").setDomain("domain").build();
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        context.addCookie(cookie);
+        
+        //finalize the headers => the cookies must be copied over to the servletcookies
+        context.finalizeHeaders(Results.html());
+        
+        //and verify the stuff:
+        ArgumentCaptor<javax.servlet.http.Cookie> cookieCaptor = ArgumentCaptor.forClass(javax.servlet.http.Cookie.class);
+        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+        javax.servlet.http.Cookie resultCookie = cookieCaptor.getValue();
+        assertThat(resultCookie.getName(), equalTo("cookie"));
+        assertThat(resultCookie.getValue(), equalTo("yummy"));
+        assertThat(resultCookie.getPath(), equalTo("/"));
+        assertThat(resultCookie.getSecure(), equalTo(false));
+        assertThat(resultCookie.getMaxAge(), equalTo(-1));
+    }
+    
+    @Test
+    public void testUnsetCookieViaContext() {
+        Cookie cookie = Cookie.builder("cookie", "yummy").setDomain("domain").build();
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        context.unsetCookie(cookie);
+        
+        //finalize the headers => the cookies must be copied over to the servletcookies
+        context.finalizeHeaders(Results.html());
+
+        //and verify the stuff:
+        ArgumentCaptor<javax.servlet.http.Cookie> cookieCaptor = ArgumentCaptor.forClass(javax.servlet.http.Cookie.class);
+        verify(httpServletResponse).addCookie(cookieCaptor.capture());
+
+        javax.servlet.http.Cookie resultCookie = cookieCaptor.getValue();
+        assertThat(resultCookie.getName(), equalTo("cookie"));
+        assertThat(resultCookie.getValue(), equalTo("yummy"));
+        assertThat(resultCookie.getPath(), equalTo("/"));
+        assertThat(resultCookie.getSecure(), equalTo(false));
+        assertThat(resultCookie.getMaxAge(), equalTo(0));
     }
 
     @Test

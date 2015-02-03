@@ -474,5 +474,13 @@ public class FakeContext implements Context {
         return contentType.startsWith(ContentTypes.APPLICATION_XML);
     }
 
-    
+    @Override
+    public void addCookie(Cookie cookie) {
+        throw new UnsupportedOperationException("Not supported in fake context");        
+    }
+
+    @Override
+    public void unsetCookie(Cookie cookie) {
+        throw new UnsupportedOperationException("Not supported in fake context");        
+    }
 }
