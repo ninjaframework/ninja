@@ -670,14 +670,14 @@ public interface Context {
     boolean isRequestXml();
 
     /**
-     * Adds a cookie to the servlet response
+     * Adds a cookie to the response
      * 
      * @param cookie Ninja cookie
      */
     void addCookie(Cookie cookie);
 
     /**
-     * Removes a cookie from the servlet response
+     * Removes a cookie from the response
      * 
      * @param cookie Ninja Cookie
      */
