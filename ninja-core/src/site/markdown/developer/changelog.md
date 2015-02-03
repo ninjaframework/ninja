@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2015-02-03 Added method to add and unset a cookie from context (svenkubiak)
  * 2015-02-02 Added new module: Ninja Authentication (svenkubiak)
  * 2015-01-29 Closes potential resource leaks (svenkubiak)
  * 2015-01-26 Changed generic exception in postoffice to specific ones (svenkubiak)

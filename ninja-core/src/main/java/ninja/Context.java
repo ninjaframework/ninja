@@ -668,4 +668,18 @@ public interface Context {
      * @return true if the content type is to set {@code application/xml} 
      */
     boolean isRequestXml();
+
+    /**
+     * Adds a cookie to the servlet response
+     * 
+     * @param cookie Ninja cookie
+     */
+    void addCookie(Cookie cookie);
+
+    /**
+     * Removes a cookie from the servlet response
+     * 
+     * @param cookie Ninja Cookie
+     */
+    void unsetCookie(Cookie cookie);
 }
