@@ -22,24 +22,20 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
-
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -108,12 +104,7 @@ public class JaxyRoutes implements ApplicationRoutes {
                 if (!controllers.containsKey(controllerClass)) {
 
                     Set<String> paths = collectPaths(controllerClass);
-
-                    if (paths.isEmpty()) {
-                        controllers.put(controllerClass, new HashSet<String>());
-                    } else {
-                        controllers.put(controllerClass, paths);
-                    }
+                    controllers.put(controllerClass, paths);
 
                 }
 

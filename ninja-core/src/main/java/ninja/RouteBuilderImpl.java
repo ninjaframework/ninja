@@ -21,13 +21,10 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
-
-import ninja.params.ControllerMethodInvoker;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.inject.Injector;
+import ninja.params.ControllerMethodInvoker;
 
 class RouteBuilderImpl implements RouteBuilder {
 
@@ -139,8 +136,7 @@ class RouteBuilderImpl implements RouteBuilder {
 
             // make sure that the return type of that controller method
             // is of type Result.
-            if (methodFromQueryingClass.getReturnType().isAssignableFrom(
-                    Result.class)) {
+            if (Result.class.isAssignableFrom(methodFromQueryingClass.getReturnType())) {
                 return methodFromQueryingClass;
             } else {
                 throw new NoSuchMethodException();
