@@ -40,6 +40,7 @@ contributed to Ninja. In some random order:
  * Pedro Sena Tanaka (pedro-stanaka)
  * Azilet Beishenaliev (bazi)
  * Andrew Berglund (t3hc13h)
+ * Jonathan Lannoy
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

@@ -138,5 +138,29 @@ public class ApplicationController extends MiddleController {
         return Results.text().render("keyed route works.");
 
     }
+    
+    @Override
+    public Result testAnnotatedGetOverridedRouteFromBase() {
 
+        return Results.text().render("get overrided base works.");
+
+    }
+    
+    @Path("/myOverridedMiddle")
+    @GET
+    @Override
+    public Result testAnnotatedGetOverridedRouteFromMiddle() {
+
+        return Results.text().render("get overrided middle works.");
+
+    }
+    
+    @Path("/overridedKeyTest")
+    @Requires("testkey")
+    @Override
+    public Result testOverridedKeyedRoute() {
+
+        return Results.text().render("keyed route works.");
+
+    }    
 }

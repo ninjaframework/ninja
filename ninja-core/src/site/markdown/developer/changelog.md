@@ -17,6 +17,7 @@ Version 4.0.4
 =============
 
  * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
+ * 2015-01-21 Allow inheritance of Jaxy Routes (jlannoy)
 
 Version 4.0.3
 =============

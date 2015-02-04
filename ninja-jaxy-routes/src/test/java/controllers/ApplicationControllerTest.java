@@ -52,6 +52,51 @@ public class ApplicationControllerTest extends NinjaDocTester {
         Assert.assertThat(response.payload, CoreMatchers.equalTo("get works."));
 
     }
+    
+    @Test
+    public void testGetFromBase() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/base/middle/app/getBase")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("get base works."));
+
+    }
+    
+    @Test
+    public void testGetFromMiddle() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/base/middle/app/getMiddle")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("get middle works."));
+
+    }
+    
+    @Test
+    public void testGetOverridedFromBase() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/base/middle/app/getOverridedBase")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("get overrided base works."));
+
+    }
+    
+    @Test
+    public void testGetOverridedFromMiddle() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/base/middle/app/getOverridedMiddle")));
+
+        Assert.assertThat(response.httpStatus, CoreMatchers.equalTo(Result.SC_404_NOT_FOUND));
+
+        response = makeRequest(Request.GET().url(
+            testServerUrl().path("/base/middle/app/myOverridedMiddle")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("get overrided middle works."));
+        
+    }
 
     @Test
     public void testGet012() {
@@ -292,4 +337,37 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     }
 
+    @Test
+    public void testOverridedMissingKeyedRoute() {
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
+                NinjaMode.test);
+        RouterImpl router = new RouterImpl(injector, ninjaProperties);
+        Routes routes = new Routes(ninjaProperties);
+        routes.init(router);
+        router.compileRoutes();
+
+        String route = router.getReverseRoute(ApplicationController.class,
+                "testOverridedKeyedRoute");
+
+        Assert.assertNull(route);
+
+    }
+
+    @Test
+    public void testOverridedHasKeyedRoute() {
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
+                NinjaMode.test);
+        ninjaProperties.setProperty("testkey", "true");
+        RouterImpl router = new RouterImpl(injector, ninjaProperties);
+        Routes routes = new Routes(ninjaProperties);
+        routes.init(router);
+        router.compileRoutes();
+
+        String route = router.getReverseRoute(ApplicationController.class,
+                "testOverridedKeyedRoute");
+
+        Assert.assertThat(route,
+                CoreMatchers.equalTo("/base/middle/app/overridedKeyTest"));
+
+    }
 }

@@ -484,3 +484,28 @@ If the key does not exist in your runtime config, the route is not registered.
     @Requires("sneaky.key")
     Result somethingSneaky() {
     }
+
+#### Routes Inheritance
+
+For an advanced usage of the framework, routes of a controller can be inherited from an other controller.
+
+    @Path("/base")
+    abstract class Base {
+    
+        @Path("/info")
+        @GET
+        Result info() {
+            return Results.text().renderRaw("Hey!"); 
+        }
+    }
+    
+    @Path("/app1")
+    class App extends Base {
+    }
+    
+	@Path("/app2")
+    class App2 extends Base {
+    }
+
+Following this example, the routes <code>/base/app1/info</code> and <code>/base/app2/info</code> will render the same result. 
+A common route can be overrided (including its annotations) to act differently for a given controller.

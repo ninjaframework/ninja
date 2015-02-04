@@ -15,9 +15,34 @@
  */
 package testapplication.controllers;
 
+import ninja.Result;
+import ninja.Results;
+import ninja.jaxy.GET;
 import ninja.jaxy.Path;
 
 @Path({ "/middle", "/1" })
 abstract class MiddleController extends BaseController {
+	
+    @Path("/getMiddle")
+    @GET
+    public Result testAnnotatedGetRouteFromMiddle() {
 
+        return Results.text().render("get middle works.");
+
+    }
+
+    @Path("/getOverridedMiddle")
+    @GET
+    public Result testAnnotatedGetOverridedRouteFromMiddle() {
+
+        return Results.notFound();
+
+    }
+    
+    @Path("/overridedKeyTest")
+    public Result testOverridedKeyedRoute() {
+
+        return Results.notFound();
+
+    }
 }

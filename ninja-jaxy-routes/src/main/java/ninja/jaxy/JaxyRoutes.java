@@ -18,11 +18,11 @@ package ninja.jaxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,41 +93,87 @@ public class JaxyRoutes implements ApplicationRoutes {
         Reflections reflections = new Reflections(builder);
 
         // collect the allowed annotated methods
-        Map<Class<?>, Set<String>> controllers = Maps.newHashMap();
-        List<Method> methods = Lists.newArrayList();
-        for (Method method : reflections.getMethodsAnnotatedWith(Path.class)) {
+        // order them to be sure not abstract ones are managed first
+        List<Method> methods = Lists.newArrayList(reflections.getMethodsAnnotatedWith(Path.class));
+        Collections.sort(methods, new Comparator<Method>() {
 
-            if (allowMethod(method)) {
-
-                // add the method to our todo list
-                methods.add(method);
-
-                // generate the paths for the controller class
-                final Class<?> controllerClass = method.getDeclaringClass();
-
-                if (!controllers.containsKey(controllerClass)) {
-
-                    Set<String> paths = collectPaths(controllerClass);
-
-                    if (paths.isEmpty()) {
-                        controllers.put(controllerClass, new HashSet<String>());
-                    } else {
-                        controllers.put(controllerClass, paths);
+            @Override
+            public int compare(Method m1, Method m2) {
+                boolean m1abstract = Modifier.isAbstract(m1.getDeclaringClass().getModifiers());
+                boolean m2abstract = Modifier.isAbstract(m2.getDeclaringClass().getModifiers());
+                
+                if(m1abstract && !m2abstract) {
+                    return 1;
+                } else if(!m1abstract && m2abstract) {
+                    return -1;
+                } else if(m1abstract && m2abstract) {
+                    if(m1.getDeclaringClass().isAssignableFrom(m2.getDeclaringClass())) {
+                        return 1;
+                    } else if(m2.getDeclaringClass().isAssignableFrom(m1.getDeclaringClass())) {
+                        return -1;
                     }
-
                 }
+                return 0;
+            }
+        });
+        
+        // compute annotated method path and http method
+        Map<Method, Path> methodsPath = Maps.newHashMap();
+        Map<Method, String> methodsHttp = Maps.newHashMap();
+        List<Method> notAllowedMethods = Lists.newArrayList();
+        
+        for (Method method : methods) {
 
+            if(Modifier.isAbstract(method.getDeclaringClass().getModifiers())) {
+                // for an abstract controller, get the same method but for all real implementation
+            	Set<?> subTypes = reflections.getSubTypesOf(method.getDeclaringClass());
+            	
+            	for(Object subtype : subTypes) {
+            	    // skip nested asbtract subtypes
+            	    if(Modifier.isAbstract(((Class<?>) subtype).getModifiers())) {
+            	        continue;
+            	    }
+            	    
+        	        try {
+        	            // add the method from the implemented controller to our todo list
+        	            Method implementedMethod = ((Class<?>) subtype).getMethod(method.getName(), method.getParameterTypes());
+        	            
+        	            if (!methodsPath.containsKey(implementedMethod) && !notAllowedMethods.contains(implementedMethod) && allowMethod(method)) {            	            
+            	            // store Path and HttpMethod annotations for the method (will not be available later by reflections)
+            	            methodsPath.put(implementedMethod, method.getAnnotation(Path.class));
+            	            methodsHttp.put(implementedMethod, getHttpMethod(method, true));
+            	        }
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage(), e);
+                        continue;
+                    }
+            	}
+            } else if (allowMethod(method)) {
+                // add the method to our todo list
+                methodsPath.put(method, method.getAnnotation(Path.class));
+                methodsHttp.put(method, getHttpMethod(method, true));
+            } else {
+                notAllowedMethods.add(method);
             }
 
         }
 
-        if (methods.isEmpty()) {
+        if (methodsPath.isEmpty()) {
             // nothing to do
             return;
         }
+        
+        // collect controller path for all the methods
+        Map<Class<?>, Set<String>> controllers = Maps.newHashMap();
+        for (Method method : methodsPath.keySet()) {
+            if (!controllers.containsKey(method.getDeclaringClass())) {
+                controllers.put(method.getDeclaringClass(), collectPaths(method.getDeclaringClass()));
+            }
+        }
 
+        List<Method> methodsList = Lists.newArrayList(methodsPath.keySet());
         // Sort the methods into registration order
-        Collections.sort(methods, new Comparator<Method>() {
+        Collections.sort(methodsList, new Comparator<Method>() {
 
             @Override
             public int compare(Method m1, Method m2) {
@@ -161,18 +207,18 @@ public class JaxyRoutes implements ApplicationRoutes {
         });
 
         // register routes for all the methods
-        for (Method method : methods) {
+        for (Method method : methodsList) {
 
             final Class<?> controllerClass = method.getDeclaringClass();
-            final Path methodPath = method.getAnnotation(Path.class);
+            final Path methodPath = methodsPath.get(method);
+            final String httpMethod = methodsHttp.get(method);
             final Set<String> controllerPaths = controllers
                     .get(controllerClass);
 
             for (String controllerPath : controllerPaths) {
 
                 for (String methodPathSpec : methodPath.value()) {
-
-                    final String httpMethod = getHttpMethod(method);
+                    
                     final String fullPath = controllerPath + methodPathSpec;
                     final String methodName = method.getName();
 
@@ -290,7 +336,7 @@ public class JaxyRoutes implements ApplicationRoutes {
      * @param method
      * @return the http method for this controller method
      */
-    private String getHttpMethod(Method method) {
+    private String getHttpMethod(Method method, boolean useDefault) {
 
         for (Annotation annotation : method.getAnnotations()) {
 
@@ -305,12 +351,16 @@ public class JaxyRoutes implements ApplicationRoutes {
 
         }
 
-        // default to GET
-        logger.info(String
-                .format("%s.%s does not specify an HTTP method annotation! Defaulting to GET.",
-                        method.getClass().getName(), method.getName()));
-
-        return HttpMethod.GET;
+        if(useDefault) {
+            // default to GET
+            logger.info(String
+                    .format("%s.%s does not specify an HTTP method annotation! Defaulting to GET.",
+                            method.getClass().getName(), method.getName()));
+    
+            return HttpMethod.GET;
+        } else {
+            return null;
+        }
     }
 
 }
