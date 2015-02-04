@@ -25,6 +25,7 @@ And a basic template like - for instance /views/basic.ftl.html simply looks like
 
 Does not look too special. And it is not.
 
+By default, Freemarker template files must end with <code>.ftl.html</code>, but an other extension can be defined by setting a property <code>freemarker.suffix</code> in your configuration file.
 
 Using subviews nested templates
 -------------------------------

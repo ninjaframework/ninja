@@ -16,6 +16,7 @@
 package ninja.template;
 
 import com.google.common.base.Optional;
+import freemarker.template.Configuration;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 import org.hamcrest.CoreMatchers;
@@ -88,6 +90,9 @@ public class TemplateEngineFreemarkerTest {
 
     @Mock
     Result result;
+    
+    @Mock
+    Route route;
 
     TemplateEngineFreemarker templateEngineFreemarker;
 
@@ -96,6 +101,8 @@ public class TemplateEngineFreemarkerTest {
     @Before
     public void before() throws Exception {
         //Setup that allows to to execute invoke(...) in a very minimal version.
+        when(ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, ".ftl.html")).thenReturn(".ftl.html");
+       
         templateEngineFreemarker
                 = new TemplateEngineFreemarker(
                         messages,
@@ -109,11 +116,13 @@ public class TemplateEngineFreemarkerTest {
                         templateEngineFreemarkerWebJarsAtMethod,
                         ninjaProperties);
 
+        
         when(lang.getLanguage(any(Context.class), any(Optional.class))).thenReturn(Optional.<String>absent());
 
         Session session = Mockito.mock(Session.class);
         when(session.isEmpty()).thenReturn(true);
         when(context.getSession()).thenReturn(session);
+        when(context.getRoute()).thenReturn(route);
         when(lang.getLocaleFromStringOrDefault(any(Optional.class))).thenReturn(Locale.ENGLISH);
 
         FlashScope flashScope = Mockito.mock(FlashScope.class);
@@ -127,7 +136,8 @@ public class TemplateEngineFreemarkerTest {
         ResponseStreams responseStreams = mock(ResponseStreams.class);
         when(context.finalizeHeaders(any(Result.class))).thenReturn(responseStreams);
         when(responseStreams.getWriter()).thenReturn(writer);
-
+        
+        
     }
 
     @Test
@@ -137,10 +147,17 @@ public class TemplateEngineFreemarkerTest {
     }
 
     @Test
-    public void testSimpleInvocation() throws Exception {
+    public void testBasicInvocation() throws Exception {
         templateEngineFreemarker.invoke(context, Results.ok());
-        verify(templateEngineHelper).getTemplateForResult(any(Route.class), any(Result.class), eq(".ftl.html"));
+        verify(ninjaProperties).getWithDefault(TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX, ".ftl.html");
+        assertThat(templateEngineFreemarker.getSuffixOfTemplatingEngine(), equalTo(".ftl.html"));
+        verify(templateEngineHelper).getTemplateForResult(eq(route), any(Result.class), eq(".ftl.html"));
         assertThat(writer.toString(), equalTo("Just a plain template for testing..."));
     }
-
+    
+    @Test
+    public void testThatConfigurationCanBeRetrieved() throws Exception {
+        templateEngineFreemarker.invoke(context, Results.ok());
+        assertThat(templateEngineFreemarker.getConfiguration(), CoreMatchers.notNullValue(Configuration.class));
+    }
 }

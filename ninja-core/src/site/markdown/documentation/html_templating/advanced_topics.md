@@ -140,4 +140,6 @@ Freemarker is the templating language we are using for rendering views.
 It can do a lot of cool stuff, and you should refer to http://freemarker.org/
 to learn more.
 
+Note that the Freemarker <code>Configuration</code> object can be accessed via your application <code>TemplateEngineFreemarker</code> singleton. According to the FreeMarker documentation, the configuration will be thread-safe once all settings have been set via a safe publication technique. Therefore, consider modifying it only within the <code>configure()</code> method of your application <code>Module</code> singleton.
+
 

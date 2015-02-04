@@ -2,6 +2,8 @@ Version X.X.X
 =============
 
  * 2015-02-03 Added method to add and unset a cookie from context (svenkubiak)
+ * 2015-01-03 Added access to the freemarker configuration and default suffix (jlannoy)
+
 
 Version 4.0.5
 =============
@@ -17,7 +19,7 @@ Version 4.0.4
 =============
 
  * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
-
+ 
 Version 4.0.3
 =============
 

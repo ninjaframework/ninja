@@ -54,6 +54,8 @@ import freemarker.template.Version;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
+	
+    public final static String FREEMARKER_CONFIGURATION_FILE_SUFFIX = "freemarker.suffix";
     
     // Selection of logging library has to be done manually until Freemarker 2.4
     // more: http://freemarker.org/docs/api/freemarker/log/Logger.html
@@ -88,6 +90,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     
     private final TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
     
+    private final String fileSuffix;
+    
     @Inject
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
@@ -107,6 +111,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
+        this.fileSuffix = ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, FILE_SUFFIX);
         
         cfg = new Configuration(INCOMPATIBLE_IMPROVEMENTS_VERSION);
         
@@ -291,7 +296,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // Specify the data source where the template files come from.
         // Here I set a file directory for it:
         String templateName = templateEngineHelper.getTemplateForResult(
-                context.getRoute(), result, FILE_SUFFIX);
+                context.getRoute(), result, this.fileSuffix);
 
         
         Template freemarkerTemplate = null;
@@ -333,7 +338,18 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     @Override
     public String getSuffixOfTemplatingEngine() {
-        return FILE_SUFFIX;
+        return this.fileSuffix;
+    }
+    
+    /**
+     * Allows to modify the FreeMarker configuration. According to the FreeMarker documentation, the configuration will be thread-safe once
+     * all settings have been set via a safe publication technique. Therefore, consider modifying this configuration only within the configure()
+     * method of your application Module singleton.
+     * 
+     * @return the freemarker configuration object
+     */
+    public Configuration getConfiguration() {
+    	return cfg;
     }
     
     private BeansWrapper createBeansWrapperWithExposedFields() {
