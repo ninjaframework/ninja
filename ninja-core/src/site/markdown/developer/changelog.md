@@ -1,8 +1,20 @@
 Version X.X.X
 =============
 
+ * 2015-02-03 Added method to add and unset a cookie from context (svenkubiak)
  * 2015-01-03 Added access to the freemarker configuration and default suffix (jlannoy)
 
+
+Version 4.0.5
+=============
+
+ * 2015-02-02 Added new module: Ninja Authentication (svenkubiak)
+ * 2015-01-29 Closes potential resource leaks (svenkubiak)
+ * 2015-01-26 Changed generic exception in postoffice to specific ones (svenkubiak)
+ * 2015-01-20 Set correct versions in changelog.md (svenkubiak)
+ * 2015-01-20 Bumped versions in archetypes (svenkubiak)
+ * 2015-01-20 Styled system pages for 404/403 in archetypes (svenkubiak)
+ 
 Version 4.0.4
 =============
 

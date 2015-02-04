@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,14 @@
 
 package ninja.postoffice.commonsmail;
 
+import javax.mail.internet.AddressException;
+
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.guice.PostofficeConstant;
 import ninja.utils.NinjaProperties;
 
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
 import com.google.inject.Inject;
@@ -82,7 +85,7 @@ public class PostofficeCommonsmailImpl implements Postoffice {
     }
 
     @Override
-    public void send(Mail mail) throws Exception {
+    public void send(Mail mail) throws EmailException, AddressException {
 
         // create a correct multipart email based on html / txt content:
         MultiPartEmail multiPartEmail = commonsmailHelper.createMultiPartEmailWithContent(mail);

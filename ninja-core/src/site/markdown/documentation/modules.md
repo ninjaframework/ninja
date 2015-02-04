@@ -46,6 +46,10 @@ Quartz Scheduler support
 Validation module
 
  * https://github.com/svenkubiak/ninja-validation
+ 
+Authentication module
+
+ * https://github.com/svenkubiak/ninja-authentication
 
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 

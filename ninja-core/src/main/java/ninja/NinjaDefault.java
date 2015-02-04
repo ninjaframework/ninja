@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,7 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class NinjaDefault implements Ninja {
-    
     private static final Logger logger = LoggerFactory.getLogger(NinjaDefault.class);
 
     /**
@@ -291,11 +289,9 @@ public class NinjaDefault implements Ninja {
         String NINJA_VERSION_PROPERTY_KEY = "ninja.version";
         
         String ninjaVersion;
-         
-        try {
+        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES)){
 
             Properties prop = new Properties();
-            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES);
             prop.load(stream);
             
             ninjaVersion = prop.getProperty(NINJA_VERSION_PROPERTY_KEY);

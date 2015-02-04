@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -35,7 +36,6 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class MimeTypes {
-
     private final Logger logger = LoggerFactory.getLogger(MimeTypes.class);
 
     private final String PROPERTY_MIMETYPE_PREFIX = "mimetype.";
@@ -151,14 +151,10 @@ public class MimeTypes {
     private void initMimetypes() {
 
         // Load default mimetypes from the framework
-        try {
-            InputStream is = this.getClass().getClassLoader()
-                    .getResourceAsStream(DEFAULT_MIMET_TYPE_LOCATIONS);
-
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_MIMET_TYPE_LOCATIONS);) {
             mimetypes.load(is);
-
-        } catch (Exception ex) {
-            logger.warn(ex.getMessage());
+        } catch (Exception e) {
+            logger.error("Failed to load mimetypes", e);
         }
 
         // Load custom mimetypes from the application configuration
