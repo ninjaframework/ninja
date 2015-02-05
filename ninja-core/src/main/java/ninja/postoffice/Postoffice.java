@@ -16,6 +16,10 @@
 
 package ninja.postoffice;
 
+import javax.mail.internet.AddressException;
+
+import org.apache.commons.mail.EmailException;
+
 /**
  * Simply takes a Mail and sends it.
  * 
@@ -27,6 +31,6 @@ package ninja.postoffice;
  */
 public interface Postoffice {
 
-    void send(Mail mail) throws Exception;
+    void send(Mail mail) throws EmailException, AddressException;
 
 }
