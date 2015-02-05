@@ -34,6 +34,8 @@ import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
@@ -197,18 +199,17 @@ public class JaxyRoutes implements ApplicationRoutes {
     /**
      * Searches for Methods that have either a Path Annotation or a HTTP-Method Annotation
      */
+    @SuppressWarnings("unchecked")
     private Set<Method> findControllerMethods() {
         Set<Method> methods = Sets.newLinkedHashSet();
 
         methods.addAll(reflections.getMethodsAnnotatedWith(Path.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(DELETE.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(GET.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(HEAD.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(OPTIONS.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(PATCH.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(POST.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(PUT.class));
-        methods.addAll(reflections.getMethodsAnnotatedWith(PUT.class));
+        Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
+        for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
+            if (httpMethod.isAnnotation()) {
+                methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+            }
+        }
 
         return methods;
     }
