@@ -30,7 +30,8 @@ import ninja.Result;
  * 
  */
 public class InternalServerErrorException extends NinjaException {  
-    
+    private static final long serialVersionUID = 1816072663835627167L;
+
     final static String DEFAULT_MESSAGE = "That's an internal server error and all we know.";
     
     public InternalServerErrorException() {

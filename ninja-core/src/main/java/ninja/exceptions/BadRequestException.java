@@ -30,7 +30,8 @@ import ninja.Result;
  * 
  */
 public class BadRequestException extends NinjaException {  
-    
+    private static final long serialVersionUID = 2219547739582019495L;
+
     final static String DEFAULT_MESSAGE = "That's a bad request and all we know.";
     
     public BadRequestException() {
