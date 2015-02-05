@@ -16,9 +16,10 @@
 
 package ninja;
 
+import static org.junit.Assert.assertThat;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * NOTE: almost all functionality of the route matching is tested via
