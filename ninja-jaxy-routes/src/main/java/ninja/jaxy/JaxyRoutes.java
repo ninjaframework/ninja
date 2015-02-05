@@ -268,7 +268,7 @@ public class JaxyRoutes implements ApplicationRoutes {
      *
      * @return the set of packages to scan
      */
-    private Set<URL> getPackagesToScanForRoutes() {
+    public Set<URL> getPackagesToScanForRoutes() {
 
         Set<URL> packagesToScanForRoutes = Sets.newHashSet();
 
