@@ -22,6 +22,8 @@ package ninja.lifecycle;
  * @author James Roper
  */
 public class LifecycleException extends RuntimeException {
+    private static final long serialVersionUID = -2330968810614458996L;
+
     public LifecycleException() {
     }
 

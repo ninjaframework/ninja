@@ -22,6 +22,8 @@ package ninja.lifecycle;
  * @author James Roper
  */
 public class FailedStartException extends LifecycleException {
+    private static final long serialVersionUID = 6488081692839466214L;
+
     public FailedStartException() {
     }
 

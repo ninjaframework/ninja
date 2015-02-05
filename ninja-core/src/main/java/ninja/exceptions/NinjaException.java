@@ -28,7 +28,8 @@ package ninja.exceptions;
  * 
  */
 public class NinjaException extends RuntimeException {  
-    
+    private static final long serialVersionUID = 6270636683918595350L;
+
     int httpStatus;
     
     public NinjaException(int httpStatus, String httpMessage) {

@@ -22,6 +22,8 @@ package ninja.lifecycle;
  * @author James Roper
  */
 public class FailedDisposeException extends LifecycleException {
+    private static final long serialVersionUID = 3416822635444297520L;
+
     public FailedDisposeException() {
     }
 

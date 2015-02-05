@@ -15,14 +15,24 @@
  */
 package ninja.template;
 
-import com.google.common.base.Optional;
-import freemarker.template.Configuration;
+import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.inject.Singleton;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -31,26 +41,21 @@ import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.session.FlashScope;
 import ninja.session.Session;
-import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
+
 import org.hamcrest.CoreMatchers;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import org.junit.Assert;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
+
+import com.google.common.base.Optional;
+
+import freemarker.template.Configuration;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineFreemarkerTest {
