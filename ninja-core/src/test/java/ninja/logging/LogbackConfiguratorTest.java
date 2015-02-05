@@ -17,8 +17,8 @@
 package ninja.logging;
 
 import ninja.utils.NinjaProperties;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
