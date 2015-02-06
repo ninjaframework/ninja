@@ -263,6 +263,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("reverseRoute", templateEngineFreemarkerReverseRouteMethod);
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
+        
+        map.put("authenticity", new TemplateEngineFreemarkerAuthenticityMethod(context.getSession().getAuthenticityToken()));
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.
