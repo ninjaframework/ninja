@@ -25,6 +25,7 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.utils.CookieDataCodec;
+import ninja.utils.CookieEncryption;
 import ninja.utils.Crypto;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
@@ -47,6 +48,7 @@ public class SessionImpl implements Session {
     private static final String TIMESTAMP_KEY = "___TS";
 
     private final Crypto crypto;
+    private final CookieEncryption encryption;
 
     private final Integer sessionExpireTimeInMs;
     private final Boolean sessionSendOnlyIfChanged;
@@ -60,9 +62,10 @@ public class SessionImpl implements Session {
     private boolean sessionDataHasBeenChanged = false;
 
     @Inject
-    public SessionImpl(Crypto crypto, NinjaProperties ninjaProperties) {
+    public SessionImpl(Crypto crypto, CookieEncryption encryption, NinjaProperties ninjaProperties) {
 
         this.crypto = crypto;
+        this.encryption = encryption;
 
         // read configuration stuff:
         Integer sessionExpireTimeInSeconds = ninjaProperties
@@ -103,22 +106,19 @@ public class SessionImpl implements Session {
                     + ninja.utils.NinjaConstant.SESSION_SUFFIX);
 
             // check that the cookie is not empty:
-            if (cookie != null && cookie.getValue() != null
-                    && !cookie.getValue().trim().equals("")) {
+            if (cookie != null && cookie.getValue() != null && !cookie.getValue().trim().isEmpty()) {
 
                 String value = cookie.getValue();
 
                 // the first substring until "-" is the sign
                 String sign = value.substring(0, value.indexOf("-"));
 
-                // rest from "-" until the end it the payload of the cookie
+                // rest from "-" until the end is the payload of the cookie
                 String payload = value.substring(value.indexOf("-") + 1);
 
                 // check if payload is valid:
-                // if (sign.equals(crypto.signHmacSha1(payload))) {
-
-                if (CookieDataCodec.safeEquals(sign,
-                        crypto.signHmacSha1(payload))) {
+                if (CookieDataCodec.safeEquals(sign, crypto.signHmacSha1(payload))) {
+                    payload = encryption.decrypt(payload);
                     CookieDataCodec.decode(data, payload);
                 }
 
@@ -219,6 +219,9 @@ public class SessionImpl implements Session {
 
         try {
             String sessionData = CookieDataCodec.encode(data);
+            // first encrypt data and then generate HMAC from encrypted data
+            // http://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac
+            sessionData = encryption.encrypt(sessionData);
 
             String sign = crypto.signHmacSha1(sessionData);
 
