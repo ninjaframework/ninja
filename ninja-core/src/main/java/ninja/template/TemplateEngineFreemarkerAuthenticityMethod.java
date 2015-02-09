@@ -34,7 +34,7 @@ public class TemplateEngineFreemarkerAuthenticityMethod implements TemplateMetho
         } else if (("token").equalsIgnoreCase(arg)) {
             return this.authenticityToken;
         }
-        
-        return "";
+
+        throw new TemplateModelException("Using authenticity without any 'form' or 'token' is not possible.");
     }
 }

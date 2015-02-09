@@ -11,9 +11,13 @@ import com.google.inject.Inject;
  */
 public class AuthenticityFilter implements Filter {
     
-    @Inject
     private NinjaDefault ninjaDefault;
 
+    @Inject
+    public AuthenticityFilter(NinjaDefault ninjaDefault) {
+        this.ninjaDefault = ninjaDefault;
+    }
+    
     @Override
     public Result filter(FilterChain filterChain, Context context) {
         String authenticityToken = context.getParameter(NinjaConstant.AUTHENTICITY_TOKEN);
