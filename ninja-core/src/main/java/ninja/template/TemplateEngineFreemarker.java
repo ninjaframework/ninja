@@ -45,7 +45,6 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
@@ -264,7 +263,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
         
-        map.put("authenticity", new TemplateEngineFreemarkerAuthenticityMethod(context.getSession().getAuthenticityToken()));
+        map.put("authenticity", new TemplateEngineFreemarkerAuthenticityMethod(context));
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.
