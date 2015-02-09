@@ -1,7 +1,8 @@
 Version X.X.X
 =============
 
- * 2012-02-03 minor refactoring in JaxyRoutes init (lukaseichler)
+ * 2015-02-09 #23 Added CSRF protection (svenkubiak)
+ * 2015-02-03 Minor refactoring in JaxyRoutes init (lukaseichler)
  * 2015-02-03 Added method to add and unset a cookie from context (svenkubiak)
  * 2015-01-03 Added access to the freemarker configuration and default suffix (jlannoy)
 
