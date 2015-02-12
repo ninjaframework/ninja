@@ -266,8 +266,9 @@ public class AssetsControllerTest {
         // we mocked this one:
         assertEquals("mimetype", result.getContentType());
 
-        // make sure the content is okay...
-        assertEquals("User-agent: *\nDisallow: /", byteArrayOutputStream.toString());
+        // make sure the content is okay but pay attention to system specific line separator
+        String sysLineSeparator = System.lineSeparator();
+        assertEquals("User-agent: *" + sysLineSeparator + "Disallow: /", byteArrayOutputStream.toString());
 
     }
     
