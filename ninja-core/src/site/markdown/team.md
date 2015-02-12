@@ -41,6 +41,7 @@ contributed to Ninja. In some random order:
  * Azilet Beishenaliev (bazi)
  * Andrew Berglund (t3hc13h)
  * Jonathan Lannoy
+ * Matthias Lemmer (raptaml)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen
