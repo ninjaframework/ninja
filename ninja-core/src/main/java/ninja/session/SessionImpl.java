@@ -202,7 +202,7 @@ public class SessionImpl implements Session {
                 Cookie.Builder expiredSessionCookie = Cookie.builder(
                         applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
                         "");
-                expiredSessionCookie.setPath("/");
+                expiredSessionCookie.setPath(context.getContextPath() + "/");
                 expiredSessionCookie.setMaxAge(0);
 
                 result.addCookie(expiredSessionCookie.build());
@@ -224,7 +224,7 @@ public class SessionImpl implements Session {
 
             Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
                     + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
-            cookie.setPath("/");
+            cookie.setPath(context.getContextPath() + "/");
 
             if(applicationCookieDomain != null){
                 cookie.setDomain(applicationCookieDomain);
