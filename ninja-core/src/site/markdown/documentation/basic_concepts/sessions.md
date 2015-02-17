@@ -95,6 +95,6 @@ application.cookie.secret=07TEt0iRCQh0NmKYBB8
 By default, sessions are encrypted by DES algorithm. Encryption algorithm can be customized by
 implementing <code>CookieEncryptionKeyGenerator</code> interface. This interface should be
 bound to your custom implementation in
-<a href="dependency_injection.html">dependency injection configuration</a>.
+<a href="documentation/basic_concepts/dependency_injection.html">dependency injection configuration</a>.
 
 

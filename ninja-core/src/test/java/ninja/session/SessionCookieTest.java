@@ -86,26 +86,26 @@ public class SessionCookieTest {
         MockitoAnnotations.initMocks(this);
 
         when(
-            ninjaProperties
-            .getInteger(NinjaConstant.sessionExpireTimeInSeconds))
-            .thenReturn(10000);
+                ninjaProperties
+                .getInteger(NinjaConstant.sessionExpireTimeInSeconds))
+                .thenReturn(10000);
         when(
-            ninjaProperties.getBooleanWithDefault(
-                NinjaConstant.sessionSendOnlyIfChanged, true))
-            .thenReturn(true);
+                ninjaProperties.getBooleanWithDefault(
+                        NinjaConstant.sessionSendOnlyIfChanged, true))
+                .thenReturn(true);
         when(
-            ninjaProperties.getBooleanWithDefault(
-                NinjaConstant.sessionTransferredOverHttpsOnly, true))
-            .thenReturn(true);
+                ninjaProperties.getBooleanWithDefault(
+                        NinjaConstant.sessionTransferredOverHttpsOnly, true))
+                .thenReturn(true);
         when(
-            ninjaProperties.getBooleanWithDefault(
-                NinjaConstant.sessionHttpOnly, true)).thenReturn(true);
+                ninjaProperties.getBooleanWithDefault(
+                        NinjaConstant.sessionHttpOnly, true)).thenReturn(true);
 
         when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret))
-            .thenReturn("secret");
+                .thenReturn("secret");
 
         when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
-            .thenReturn("NINJA");
+                .thenReturn("NINJA");
 
         when(ninjaProperties.get(NinjaConstant.applicationCookieSecret)).thenReturn(encryptionSecret);
 
@@ -191,9 +191,9 @@ public class SessionCookieTest {
     public void testNoHttpsOnlyWorks() throws Exception {
         // setup this testmethod
         when(
-            ninjaProperties.getBooleanWithDefault(
-                NinjaConstant.sessionTransferredOverHttpsOnly, true))
-            .thenReturn(false);
+                ninjaProperties.getBooleanWithDefault(
+                        NinjaConstant.sessionTransferredOverHttpsOnly, true))
+                .thenReturn(false);
 
         Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
 
@@ -238,8 +238,8 @@ public class SessionCookieTest {
     public void testNoHttpOnlyWorks() throws Exception {
         // setup this testmethod
         when(
-            ninjaProperties.getBooleanWithDefault(
-                NinjaConstant.sessionHttpOnly, true)).thenReturn(false);
+                ninjaProperties.getBooleanWithDefault(
+                        NinjaConstant.sessionHttpOnly, true)).thenReturn(false);
 
         Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
 
@@ -280,12 +280,12 @@ public class SessionCookieTest {
         // now we simulate a new request => the session storage will generate a
         // new cookie:
         Cookie newSessionCookie = Cookie.builder(
-            cookieCaptor.getValue().getName(),
-            cookieCaptor.getValue().getValue()).build();
+                cookieCaptor.getValue().getName(),
+                cookieCaptor.getValue().getValue()).build();
 
         // that will be returned by the httprequest...
         when(context.getCookie(cookieCaptor.getValue().getName())).thenReturn(
-            newSessionCookie);
+                newSessionCookie);
 
         // init new session from that cookie:
         Session sessionCookie2 = new SessionImpl(crypto, encryption, ninjaProperties);
@@ -303,7 +303,7 @@ public class SessionCookieTest {
 
         // we did not set the cookie prefix
         when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
-            .thenReturn(null);
+                .thenReturn(null);
 
         // stuff must break => ...
         Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
