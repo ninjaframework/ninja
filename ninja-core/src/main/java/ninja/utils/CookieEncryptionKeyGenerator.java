@@ -24,7 +24,7 @@ import com.google.inject.ImplementedBy;
 /**
  * Secret key generator for cookie encryption. {@link CookieEncryptionKeyGeneratorImpl Default implementation} of this
  * interface generates a DES key. To use other key algorithms, implement this interface accordingly and
- * {@link AbstractModule#bind(java.lang.Class) bind} this interface class to your implementation.
+ * {@link AbstractModule#bind(java.lang.Class) bind} this interface to your implementation.
  *
  */
 @ImplementedBy(CookieEncryptionKeyGeneratorImpl.class)

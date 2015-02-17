@@ -15,13 +15,14 @@
  */
 package ninja.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.Base64;
 import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * This class encrypts/decrypts string data. Resultant encrypted strings are encoded in base64, and decryption expects
- * base64 encoded string.
+ * This class encrypts/decrypts session cookie data. Resultant encrypted strings are encoded in base64, and decryption
+ * expects base64 encoded string.
  */
 @Singleton
 public class CookieEncryption {
@@ -65,11 +66,10 @@ public class CookieEncryption {
             // encrypt data
             Cipher cipher = Cipher.getInstance(keyGenerator.getTransformation());
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            byte[] encrypted = cipher.doFinal(data.getBytes());
+            byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
             // convert encrypted bytes to string in base64
-            byte[] encoded = Base64.getUrlEncoder().encode(encrypted);
-            return new String(encoded);
+            return Base64.encodeBase64URLSafeString(encrypted);
 
         } catch (GeneralSecurityException ex) {
             LOGGER.error("Failed to encrypt data", ex);
@@ -93,8 +93,7 @@ public class CookieEncryption {
         }
 
         // convert base64 encoded string to bytes
-        byte[] decoded = Base64.getUrlDecoder().decode(data.getBytes());
-
+        byte[] decoded = Base64.decodeBase64(data);
         try {
             // decrypt bytes
             Cipher cipher = Cipher.getInstance(keyGenerator.getTransformation());
@@ -102,7 +101,7 @@ public class CookieEncryption {
             byte[] decrypted = cipher.doFinal(decoded);
 
             // convert bytes to string
-            return new String(decrypted);
+            return new String(decrypted, StandardCharsets.UTF_8);
 
         } catch (GeneralSecurityException ex) {
             LOGGER.error("Failed to decrypt data", ex);
