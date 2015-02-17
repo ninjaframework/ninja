@@ -70,7 +70,7 @@ public class CookieEncryptionKeyGeneratorImpl implements CookieEncryptionKeyGene
 
     @Override
     public String getTransformation() {
-        return "DES";
+        return "DES/ECB/PKCS5Padding";
     }
 
 }

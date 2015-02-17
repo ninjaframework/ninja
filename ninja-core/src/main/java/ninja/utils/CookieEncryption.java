@@ -74,7 +74,7 @@ public class CookieEncryption {
         } catch (GeneralSecurityException ex) {
             LOGGER.error("Failed to encrypt data", ex);
         }
-        return null;
+        return "";
     }
 
     /**
@@ -106,7 +106,7 @@ public class CookieEncryption {
         } catch (GeneralSecurityException ex) {
             LOGGER.error("Failed to decrypt data", ex);
         }
-        return null;
+        return "";
     }
 
 }
