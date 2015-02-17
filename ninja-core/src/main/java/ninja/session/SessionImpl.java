@@ -43,9 +43,9 @@ public class SessionImpl implements Session {
     
     private static Logger logger = LoggerFactory.getLogger(SessionImpl.class);
 
-    private static final String AUTHENTICITY_KEY = "___AT";
-    private static final String ID_KEY = "___ID";
-    private static final String TIMESTAMP_KEY = "___TS";
+    static final String AUTHENTICITY_KEY = "___AT";
+    static final String ID_KEY = "___ID";
+    static final String TIMESTAMP_KEY = "___TS";
 
     private final Crypto crypto;
     private final CookieEncryption encryption;
@@ -102,8 +102,7 @@ public class SessionImpl implements Session {
         try {
 
             // get the cookie that contains session information:
-            Cookie cookie = context.getCookie(applicationCookiePrefix
-                    + ninja.utils.NinjaConstant.SESSION_SUFFIX);
+            Cookie cookie = context.getCookie(getCookieName());
 
             // check that the cookie is not empty:
             if (cookie != null && cookie.getValue() != null && !cookie.getValue().trim().isEmpty()) {
@@ -196,12 +195,9 @@ public class SessionImpl implements Session {
         if (isEmpty()) {
             // It is empty, but there was a session coming in, therefore clear
             // it
-            if (context.hasCookie(applicationCookiePrefix
-                    + NinjaConstant.SESSION_SUFFIX)) {
+            if (context.hasCookie(getCookieName())) {
 
-                Cookie.Builder expiredSessionCookie = Cookie.builder(
-                        applicationCookiePrefix + NinjaConstant.SESSION_SUFFIX,
-                        "");
+                Cookie.Builder expiredSessionCookie = Cookie.builder(getCookieName(), "");
                 expiredSessionCookie.setPath("/");
                 expiredSessionCookie.setMaxAge(0);
 
@@ -225,8 +221,7 @@ public class SessionImpl implements Session {
 
             String sign = crypto.signHmacSha1(sessionData);
 
-            Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
-                    + NinjaConstant.SESSION_SUFFIX, sign + "-" + sessionData);
+            Cookie.Builder cookie = Cookie.builder(getCookieName(), sign + "-" + sessionData);
             cookie.setPath("/");
 
             if(applicationCookieDomain != null){
@@ -311,6 +306,10 @@ public class SessionImpl implements Session {
     public boolean isEmpty() {
         return (data.isEmpty() || data.size() == 1
                 && data.containsKey(TIMESTAMP_KEY));
+    }
+
+    String getCookieName() {
+        return applicationCookiePrefix + ninja.utils.NinjaConstant.SESSION_SUFFIX;
     }
 
 }

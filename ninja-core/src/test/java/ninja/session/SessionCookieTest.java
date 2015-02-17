@@ -162,7 +162,7 @@ public class SessionCookieTest {
             cookieFromSign = encryption.decrypt(cookieFromSign);
         }
         // Make sure that cookie contains timestamp
-        assertTrue(cookieFromSign.contains("___TS"));
+        assertTrue(cookieFromSign.contains(SessionImpl.TIMESTAMP_KEY));
 
     }
 
@@ -351,9 +351,9 @@ public class SessionCookieTest {
         }
 
         //verify that the authenticity token is set
-        assertTrue(cookieValueWithoutSign.contains("___AT=" + authenticityToken));
+        assertTrue(cookieValueWithoutSign.contains(SessionImpl.AUTHENTICITY_KEY + "=" + authenticityToken));
         // also make sure the timestamp is there:
-        assertTrue(cookieValueWithoutSign.contains("___TS="));
+        assertTrue(cookieValueWithoutSign.contains(SessionImpl.TIMESTAMP_KEY));
 
     }
 
@@ -378,9 +378,9 @@ public class SessionCookieTest {
             valueWithoutSign = encryption.decrypt(valueWithoutSign);
         }
         //verify that the id token is set:
-        assertTrue(valueWithoutSign.contains("___ID=" + idToken));
+        assertTrue(valueWithoutSign.contains(SessionImpl.ID_KEY + "=" + idToken));
         // also make sure the timestamp is there:
-        assertTrue(valueWithoutSign.contains("___TS="));
+        assertTrue(valueWithoutSign.contains(SessionImpl.TIMESTAMP_KEY));
 
     }
 
