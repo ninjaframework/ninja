@@ -44,7 +44,7 @@ import com.sun.nio.file.SensitivityWatchEventModifier;
 public class WatchAndRestartMachine {
     
     List<String> exludePatterns;
-
+ 
     private static Logger logger = LoggerFactory.getLogger(WatchAndRestartMachine.class);
 
     RunClassInSeparateJvmMachine ninjaJettyInsideSeparateJvm;
@@ -61,11 +61,11 @@ public class WatchAndRestartMachine {
      */
     public WatchAndRestartMachine(
             String classNameWithMainToRun,
-            Path directoryToWatchRecursivelyForChanges,
             List<String> classpath,
             List<String> excludeRegexPatterns, 
+            String port,
             String contextPath,
-            String port) throws IOException {
+            Path... directoriesToWatchRecursivelyForChanges) throws IOException {
 
         
         this.exludePatterns = excludeRegexPatterns;
@@ -83,7 +83,7 @@ public class WatchAndRestartMachine {
         this.mapOfWatchKeysToPaths = new HashMap<WatchKey, Path>();
 
         //System.out.format("Scanning: %s ...\n", directoryToWatchRecursivelyForChanges);
-        registerAll(directoryToWatchRecursivelyForChanges);
+        registerAll(directoriesToWatchRecursivelyForChanges);
 
     }
 
@@ -125,17 +125,19 @@ public class WatchAndRestartMachine {
     }
 
 
-    private void registerAll(final Path path) throws IOException {
-        // register directory and sub-directories
-        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult preVisitDirectory(Path path,
-                    BasicFileAttributes attrs)
-                    throws IOException {
-                register(path);
-                return FileVisitResult.CONTINUE;
-            }
-        });
+    private void registerAll(final Path... paths) throws IOException {
+        for(Path path : paths) {
+    		// register directory and sub-directories
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path path,
+                        BasicFileAttributes attrs)
+                        throws IOException {
+                    register(path);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
     }
 
     public void startWatching() {
