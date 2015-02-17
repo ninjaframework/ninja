@@ -47,7 +47,7 @@ public class CookieEncryptionKeyGeneratorImpl implements CookieEncryptionKeyGene
 
     @Override
     public SecretKey generateKey() {
-        if (secret == null) {
+        if (secret == null || secret.isEmpty()) {
             LOGGER.info("No secret specified for session encryption.");
             return null;
         }
