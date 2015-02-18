@@ -29,6 +29,8 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
@@ -263,7 +265,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
         
-        map.put("authenticity", new TemplateEngineFreemarkerAuthenticityMethod(context));
+        map.put("authenticityToken", new TemplateEngineFreemarkerAuthenticityTokenDirective(context));
+        map.put("authenticityForm", new TemplateEngineFreemarkerAuthenticityFormDirective(context));
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.

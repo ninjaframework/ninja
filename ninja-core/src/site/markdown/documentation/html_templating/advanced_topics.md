@@ -138,10 +138,10 @@ preferred Locale of the request.
 authenticity allows you to retrieve a authenticity token for protection against CSRF-requests. You can either get a pre-filled hidden input field to use it with forms or simply the token.
 
 To get the pre-filled hidden input field, use the following code
-<code><#noescape>${authenticity("form")}</#noescape></code>
+<code><@authenticityForm/></code>
 
 To get the token, use the following code
-<code>${authenticity("token")}</code>
+<code><@authenticityToken/></code>
 
 If you use either the form or the token you might want to check the token in your controllers. Ninja offers a filter for checking the authenticityToken. Just add the following filter to your controller class or controller method.
 <code>FilterWith(AuthenticityFilter.class)</code>
