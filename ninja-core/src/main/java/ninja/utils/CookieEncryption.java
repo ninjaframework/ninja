@@ -38,12 +38,12 @@ public class CookieEncryption {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CookieEncryption.class);
 
-    private CookieEncryptionKeyGenerator keyGenerator;
+    private String transformation;
     private SecretKey secretKey;
 
     @Inject
     public CookieEncryption(CookieEncryptionKeyGenerator keyGenerator) {
-        this.keyGenerator = keyGenerator;
+        this.transformation = keyGenerator.getTransformation();
         this.secretKey = keyGenerator.generateKey();
     }
 
@@ -64,7 +64,7 @@ public class CookieEncryption {
 
         try {
             // encrypt data
-            Cipher cipher = Cipher.getInstance(keyGenerator.getTransformation());
+            Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
@@ -96,7 +96,7 @@ public class CookieEncryption {
         byte[] decoded = Base64.decodeBase64(data);
         try {
             // decrypt bytes
-            Cipher cipher = Cipher.getInstance(keyGenerator.getTransformation());
+            Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] decrypted = cipher.doFinal(decoded);
 
