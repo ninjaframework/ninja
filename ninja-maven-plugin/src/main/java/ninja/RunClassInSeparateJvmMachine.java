@@ -44,12 +44,16 @@ public class RunClassInSeparateJvmMachine {
     private String contextPath;
 
     private String port;
+    
+    // basedir of project this plugin run in
+    private File mavenBaseDir;
 
     public RunClassInSeparateJvmMachine(
             String classNameWithMainToRun,
             List<String> classpath, 
             String contextPath,
-            String port) {
+            String port,
+            File mavenBaseDir) {
 
         this.classNameWithMainToRun = classNameWithMainToRun;
 
@@ -58,6 +62,8 @@ public class RunClassInSeparateJvmMachine {
         this.contextPath = contextPath;
 
         this.port = port;
+        
+        this.mavenBaseDir = mavenBaseDir;
 
         // initial startup
         try {
@@ -136,10 +142,11 @@ public class RunClassInSeparateJvmMachine {
         commandLine.add("-cp");
         commandLine.add(classpathAsString);
         commandLine.add(classNameWithMainToRun);
-        
+
         ProcessBuilder builder = new ProcessBuilder(commandLine);
         
-        builder.directory(new File(System.getProperty(NinjaMavenPluginConstants.USER_DIR)));
+        // launch JVM process with dir set to basedir of maven project that launched us
+        builder.directory(mavenBaseDir);
 
         builder.redirectErrorStream(true);
 
