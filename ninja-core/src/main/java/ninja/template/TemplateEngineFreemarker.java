@@ -29,6 +29,8 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
@@ -45,7 +47,6 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
@@ -263,6 +264,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("reverseRoute", templateEngineFreemarkerReverseRouteMethod);
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
+        
+        map.put("authenticityToken", new TemplateEngineFreemarkerAuthenticityTokenDirective(context));
+        map.put("authenticityForm", new TemplateEngineFreemarkerAuthenticityFormDirective(context));
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.

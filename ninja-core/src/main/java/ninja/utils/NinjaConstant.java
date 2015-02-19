@@ -210,9 +210,7 @@ public interface NinjaConstant {
     /** Password for db connection */
     String DB_CONNECTION_PASSWORD = "db.connection.password";
     
-    
     String NINJA_JSONP_CALLBACK_PARAMETER = "ninja.jsonp.callbackParameter";
     
-    
-
+    String AUTHENTICITY_TOKEN = "authenticityToken";
 }
