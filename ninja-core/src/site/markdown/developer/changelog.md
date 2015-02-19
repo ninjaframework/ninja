@@ -1,7 +1,6 @@
 Version X.X.X
 =============
  * 2015-02-12 #301 Fixed system specific line separator for String comparison (raptaml)
- * 2015-02-09 #23 Added authenticity checks for CSRF protection (svenkubiak)
  * 2012-02-03 minor refactoring in JaxyRoutes init (lukaseichler)
  * 2015-02-03 Added method to add and unset a cookie from context (svenkubiak)
  * 2015-01-03 Added access to the freemarker configuration and default suffix (jlannoy)
