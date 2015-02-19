@@ -54,7 +54,12 @@ public class TemplateEngineFreemarkerExceptionHandler implements
                                         Environment env,
                                         Writer out) throws TemplateException {
 
-        if (!ninjaProperties.isProd()) {
+        if (ninjaProperties.isProd()) {
+            // Let the exception bubble up to the central handlers
+            // so the application can return the correct error page
+            // or perform some other application specific action.
+            throw te;
+        } else {
             // print out full stacktrace if we are in test or dev mode
 
             PrintWriter pw = (out instanceof PrintWriter) ? (PrintWriter) out
@@ -78,14 +83,7 @@ public class TemplateEngineFreemarkerExceptionHandler implements
                     + "<pre><xmp>");
             te.printStackTrace(pw);
             pw.println("</xmp></pre></div></html>");
-            pw.flush();
-            pw.close();
             logger.error("Templating error.", te);
         }
-        // Let the exception bubble up to the central handlers
-        // so the application can return the correct error page
-        // or perform some other application specific action.
-        throw te;
-
     }
 }
