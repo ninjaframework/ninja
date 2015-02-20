@@ -27,11 +27,11 @@ public class TemplateEngineFreemarkerAuthenticityFormDirective implements Templa
         if (!params.isEmpty()) {
             throw new TemplateModelException("This directive doesn't allow parameters.");
         }
-        
+
         if (loopVars.length != 0) {
             throw new TemplateModelException("This directive doesn't allow loop variables.");
         }
-       
+
         Writer out = env.getOut();
         out.append("<input type=\"hidden\" value=\"" + context.getSession().getAuthenticityToken() + "\" name=\"" + NinjaConstant.AUTHENTICITY_TOKEN +  "\" />");
     }
