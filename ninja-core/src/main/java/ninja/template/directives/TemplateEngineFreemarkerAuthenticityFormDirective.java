@@ -20,10 +20,10 @@ import freemarker.template.TemplateModelException;
  */
 @SuppressWarnings("rawtypes")
 public class TemplateEngineFreemarkerAuthenticityFormDirective implements TemplateDirectiveModel {
-    private String authenticityToken;
+    private Context context;
 
     public TemplateEngineFreemarkerAuthenticityFormDirective(Context context) {
-        this.authenticityToken = context.getSession().getAuthenticityToken();
+        this.context = context;
     }
     
     @Override
@@ -37,6 +37,6 @@ public class TemplateEngineFreemarkerAuthenticityFormDirective implements Templa
         }
        
         Writer out = env.getOut();
-        out.append("<input type=\"hidden\" value=\"" + this.authenticityToken + "\" name=\"" + NinjaConstant.AUTHENTICITY_TOKEN +  "\" />");
+        out.append("<input type=\"hidden\" value=\"" + this.context.getSession().getAuthenticityToken() + "\" name=\"" + NinjaConstant.AUTHENTICITY_TOKEN +  "\" />");
     }
 }
