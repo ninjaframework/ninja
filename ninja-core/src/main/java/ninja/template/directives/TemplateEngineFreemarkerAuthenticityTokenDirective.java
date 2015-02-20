@@ -18,10 +18,10 @@ import freemarker.template.TemplateModel;
  */
 @SuppressWarnings("rawtypes")
 public class TemplateEngineFreemarkerAuthenticityTokenDirective implements TemplateDirectiveModel {
-    private String authenticityToken;
+    private Context context;
 
     public TemplateEngineFreemarkerAuthenticityTokenDirective(Context context) {
-        this.authenticityToken = context.getSession().getAuthenticityToken();
+        this.context = context;
     }
     
     @Override
@@ -35,6 +35,6 @@ public class TemplateEngineFreemarkerAuthenticityTokenDirective implements Templ
         }
         
         Writer out = env.getOut();
-        out.append(this.authenticityToken);
+        out.append(this.context.getSession().getAuthenticityToken());
     }
 }
