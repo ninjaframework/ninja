@@ -28,7 +28,8 @@ Ninja sessions are not encrypted by default.
 Therefore you should not store any 
 critical information. Storing a user id, or username is fine. Storing
 credit card information is really bad practise. But if you need to include sensitive data for any reasons,
-you can encrypt sessions as described below.
+you can encrypt sessions as described in <a href="documentation/security/getting_started.html">Security</a>
+page.
 </div>
 
 Reading a session value
@@ -82,19 +83,5 @@ public Result clearSession(Session session) {
 
 }
 </pre>
-
-Encrypting sessions
--------------------
-
-Setting up Ninja to encrypt sessions is very simple: a secret key to encrypt sessions should be
-specified in configuration file, namely in <code>application.conf</code>. Here is how to do it:
-<pre class="prettyprint">
-application.cookie.secret=07TEt0iRCQh0NmKYBB8
-</pre>
-
-By default, sessions are encrypted by DES algorithm. Encryption algorithm can be customized by
-implementing <code>CookieEncryptionKeyGenerator</code> interface. This interface should be
-bound to your custom implementation in
-<a href="documentation/basic_concepts/dependency_injection.html">dependency injection configuration</a>.
 
 

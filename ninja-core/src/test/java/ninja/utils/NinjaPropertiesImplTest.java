@@ -17,30 +17,18 @@
 package ninja.utils;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.File;
-
-import com.google.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.After;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import org.hamcrest.CoreMatchers;
-import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.Assert;
-import static org.junit.Assert.assertThat;
+import com.google.inject.Inject;
 
 public class NinjaPropertiesImplTest {
 
@@ -63,16 +51,16 @@ public class NinjaPropertiesImplTest {
         ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.dev);
         assertEquals("dev_testproperty",
                 ninjaPropertiesImpl.get("testproperty"));
-        assertEquals("secret",
-                ninjaPropertiesImpl.get(NinjaConstant.applicationSecret));
+        assertTrue(Base64.isBase64(
+                ninjaPropertiesImpl.get(NinjaConstant.applicationSecret)));
 
         // and in a completely different mode with no "%"-prefixed key the
         // default value use used
         ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.prod);
         assertEquals("testproperty_without_prefix",
                 ninjaPropertiesImpl.get("testproperty"));
-        assertEquals("secret",
-                ninjaPropertiesImpl.get(NinjaConstant.applicationSecret));
+        assertTrue(Base64.isBase64(
+                ninjaPropertiesImpl.get(NinjaConstant.applicationSecret)));
 
         // tear down
         System.clearProperty(NinjaConstant.MODE_KEY_NAME);
@@ -150,7 +138,7 @@ public class NinjaPropertiesImplTest {
         }).getInstance(MockService.class);
         assertNotNull("Application secret not set by Guice",
                 service.applicationSecret);
-        assertEquals("secret", service.applicationSecret);
+        assertTrue(Base64.isBase64(service.applicationSecret));
     }
 
     public static class MockService {
