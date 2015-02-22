@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.nio.file.SensitivityWatchEventModifier;
+import java.io.File;
 
 public class WatchAndRestartMachine {
     
@@ -65,13 +66,14 @@ public class WatchAndRestartMachine {
             List<String> classpath,
             List<String> excludeRegexPatterns, 
             String contextPath,
-            String port) throws IOException {
+            String port,
+            File mavenBaseDir) throws IOException {
 
         
         this.exludePatterns = excludeRegexPatterns;
         
         this.ninjaJettyInsideSeparateJvm = new RunClassInSeparateJvmMachine(
-                classNameWithMainToRun, classpath, contextPath, port);
+                classNameWithMainToRun, classpath, contextPath, port, mavenBaseDir);
 
         this.restartAfterSomeTimeAndChanges 
                 = new DelayedRestartTrigger(
