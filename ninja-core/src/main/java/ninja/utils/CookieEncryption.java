@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -38,13 +39,18 @@ public class CookieEncryption {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CookieEncryption.class);
 
-    private String transformation;
     private SecretKey secretKey;
 
     @Inject
-    public CookieEncryption(CookieEncryptionKeyGenerator keyGenerator) {
-        this.transformation = keyGenerator.getTransformation();
-        this.secretKey = keyGenerator.generateKey();
+    public CookieEncryption(NinjaProperties properties) {
+
+        if (properties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)) {
+
+            String secret = properties.getOrDie(NinjaConstant.applicationSecret);
+            this.secretKey = new SecretKeySpec(Base64.decodeBase64(secret), SecretGenerator.ALGORITHM);
+
+        }
+
     }
 
     /**
@@ -64,7 +70,7 @@ public class CookieEncryption {
 
         try {
             // encrypt data
-            Cipher cipher = Cipher.getInstance(transformation);
+            Cipher cipher = Cipher.getInstance(SecretGenerator.ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
@@ -72,9 +78,9 @@ public class CookieEncryption {
             return Base64.encodeBase64URLSafeString(encrypted);
 
         } catch (GeneralSecurityException ex) {
-            LOGGER.error("Failed to encrypt data", ex);
+            LOGGER.error("Failed to encrypt data. {}", getHelperLogMessage(), ex);
         }
-        return "";
+        return data;
     }
 
     /**
@@ -96,7 +102,7 @@ public class CookieEncryption {
         byte[] decoded = Base64.decodeBase64(data);
         try {
             // decrypt bytes
-            Cipher cipher = Cipher.getInstance(transformation);
+            Cipher cipher = Cipher.getInstance(SecretGenerator.ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] decrypted = cipher.doFinal(decoded);
 
@@ -104,9 +110,17 @@ public class CookieEncryption {
             return new String(decrypted, StandardCharsets.UTF_8);
 
         } catch (GeneralSecurityException ex) {
-            LOGGER.error("Failed to decrypt data", ex);
+            LOGGER.error("Failed to decrypt data. {}", getHelperLogMessage(), ex);
         }
-        return "";
+        return data;
     }
 
+    private String getHelperLogMessage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Check if application secret is a valid base64 encoded ");
+        sb.append(SecretGenerator.ALGORITHM).append(" key.").append(System.lineSeparator());
+        sb.append("You can remove '").append(NinjaConstant.applicationSecret).append("' key in configuration file ");
+        sb.append("and restart application. Ninja will generate new key for you.");
+        return sb.toString();
+    }
 }

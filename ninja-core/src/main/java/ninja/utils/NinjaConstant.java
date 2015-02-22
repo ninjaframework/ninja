@@ -99,10 +99,9 @@ public interface NinjaConstant {
     final String applicationCookieDomain = "application.cookie.domain";
 
     /**
-     * Secret key to encrypt session cookie. Session cookies will be encrypted only if this property is set to a valid
-     * secret key.
+     * Encryption of session cookies. Specify a boolean value. False by default.
      */
-    final String applicationCookieSecret = "application.cookie.secret";
+    final String applicationCookieEncrypted = "application.cookie.encryption";
 
     /** Used to verify client side cookie for instance. */
     final String applicationName = "application.name";

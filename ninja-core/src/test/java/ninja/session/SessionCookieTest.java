@@ -30,10 +30,10 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.utils.CookieEncryption;
-import ninja.utils.CookieEncryptionKeyGeneratorImpl;
 import ninja.utils.Crypto;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
+import ninja.utils.SecretGenerator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -66,18 +66,18 @@ public class SessionCookieTest {
     NinjaProperties ninjaProperties;
 
     @Parameter
-    public String encryptionSecret;
+    public boolean encrypted;
 
     /**
-     * This method provides data for parameter field {@code encryptionSecret}. The first set contains {@code null} so
-     * that {@link CookieEncryption} is not initialized and test class is run without session cookie encryption. Second
-     * set contains some secret key to be used for encrypting sessions cookies.
+     * This method provides parameters for {@code encrypted} field. The first set contains {@code false} so that
+     * {@link CookieEncryption} is not initialized and test class is run without session cookie encryption. Second set
+     * contains {@code true} so that sessions cookies are encrypted.
      *
      * @return
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "cookie-secret" } });
+        return Arrays.asList(new Object[][] { { false }, { true } });
     }
 
     @Before
@@ -102,14 +102,14 @@ public class SessionCookieTest {
                         NinjaConstant.sessionHttpOnly, true)).thenReturn(true);
 
         when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret))
-                .thenReturn("secret");
+                .thenReturn(SecretGenerator.generateSecret());
 
         when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
                 .thenReturn("NINJA");
 
-        when(ninjaProperties.get(NinjaConstant.applicationCookieSecret)).thenReturn(encryptionSecret);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)).thenReturn(encrypted);
 
-        encryption = new CookieEncryption(new CookieEncryptionKeyGeneratorImpl(ninjaProperties));
+        encryption = new CookieEncryption(ninjaProperties);
         crypto = new Crypto(ninjaProperties);
 
     }
@@ -158,7 +158,7 @@ public class SessionCookieTest {
 
         assertEquals(computedSign, cookieString.substring(0, cookieString.indexOf("-")));
 
-        if (encryptionSecret != null) {
+        if (encrypted) {
             cookieFromSign = encryption.decrypt(cookieFromSign);
         }
         // Make sure that cookie contains timestamp
@@ -346,7 +346,7 @@ public class SessionCookieTest {
         String cookieValue = cookieCaptor.getValue().getValue();
         String cookieValueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
 
-        if (encryptionSecret != null) {
+        if (encrypted) {
             cookieValueWithoutSign = encryption.decrypt(cookieValueWithoutSign);
         }
 
@@ -374,7 +374,7 @@ public class SessionCookieTest {
         String cookieValue = cookieCaptor.getValue().getValue();
         String valueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
 
-        if (encryptionSecret != null) {
+        if (encrypted) {
             valueWithoutSign = encryption.decrypt(valueWithoutSign);
         }
         //verify that the id token is set:

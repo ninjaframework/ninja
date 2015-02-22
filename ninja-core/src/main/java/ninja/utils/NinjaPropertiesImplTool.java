@@ -19,6 +19,7 @@ package ninja.utils;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -51,18 +52,18 @@ public class NinjaPropertiesImplTool {
         String applicationSecret = compositeConfiguration.getString(NinjaConstant.applicationSecret);
         
         if (applicationSecret == null
-                || applicationSecret.isEmpty()) {
+                || applicationSecret.isEmpty() || !Base64.isBase64(applicationSecret)) {
             
             // If in production we stop the startup process. It simply does not make
             // sense to run in production if the secret is not set.
             if (isProd) {
-                String errorMessage = "Fatal error. Key application.secret not set. Please fix that.";
+                String errorMessage = "Fatal error. Key application.secret not set or invalid. Please fix that.";
                 logger.error(errorMessage);
                 throw new RuntimeException(errorMessage);
             }
+
             
-            
-            logger.info("Key application.secret not set. Generating new one and setting in conf/application.conf.");
+            logger.info("Key application.secret not set or invalid. Generating new one and setting in conf/application.conf.");
             
             // generate new secret
             String secret = SecretGenerator.generateSecret();
@@ -96,6 +97,6 @@ public class NinjaPropertiesImplTool {
         }
         
     }
-    
+
 
 }
