@@ -36,10 +36,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ninja.utils.MinificationUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.nio.file.SensitivityWatchEventModifier;
+
 import java.io.File;
 
 public class WatchAndRestartMachine {
@@ -177,22 +180,17 @@ public class WatchAndRestartMachine {
                 //System.out.format("%s: %s\n", watchEvent.kind().name(), child);
                 
                 if (watchEventKind == ENTRY_MODIFY) {
-                    
                     // we are not interested in events from parent directories...
-                    if (! child.toFile().isDirectory()) {
-                        
-                        if (!checkIfMatchesPattern(exludePatterns, child.toFile().getAbsolutePath())) {
-                        
-                            System.out.println(
-                                    "Found file modification - triggering reload:  " 
-                                        + child.toFile().getAbsolutePath());
-                            
-                            restartAfterSomeTimeAndChanges.triggerRestart();
-                            
+                    if (!child.toFile().isDirectory()) {
+                        String absolutePath = child.toFile().getAbsolutePath();
+                        if (isAsset(absolutePath)) {
+                            MinificationUtils.minify(absolutePath);
                         }
-                    
+                        if (!checkIfMatchesPattern(exludePatterns, absolutePath)) {
+                            System.out.println("Found file modification - triggering reload:  " + absolutePath);
+                            restartAfterSomeTimeAndChanges.triggerRestart();                                
+                        }
                     }
-
                 }
 
                 // ninjaJettyInsideSeparateJvm.restartNinjaJetty();
@@ -231,8 +229,10 @@ public class WatchAndRestartMachine {
 
     }
     
-    
-    
+    private boolean isAsset(String absolutePath) {
+        return (absolutePath != null && !absolutePath.contains("min") && ( absolutePath.endsWith("css") || absolutePath.endsWith("js") ));
+    }
+
     public static boolean checkIfMatchesPattern(List<String> regexPatterns, String string) {
     
         
