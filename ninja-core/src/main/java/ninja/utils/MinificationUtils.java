@@ -6,7 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.zip.GZIPOutputStream;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 import org.slf4j.Logger;
@@ -25,24 +28,33 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
  */
 public final class MinificationUtils {
     private static Logger LOG = LoggerFactory.getLogger(MinificationUtils.class);
-    private static final String OUTPUTPATH = "/src/main/java/assets/";
+    public static String basePath;
+    private static String outputPath;
+    private static PropertiesConfiguration properties;
     private static final String ENCODING = "UTF-8";
     private static final String JS = "js";
     private static final String CSS = "css";
+    private static final String JAVA_DIR = "/src/main/java/";
     private static final boolean DISABLEOPTIMIZATION = false;
     private static final boolean PRESERVESEMICOLONS = false;
     private static final boolean VERBOSE = false;
     private static final boolean MUNGE = true;
     private static final int LINEBREAK = -1;
-   
+
+    private MinificationUtils() {
+    }
+    
     public static void minify(String absolutePath) {
+        properties = SwissKnife.loadConfigurationInUtf8("file://" + basePath + JAVA_DIR + NinjaProperties.CONF_FILE_LOCATION_BY_CONVENTION);    
+        outputPath = properties.getString("application.minify.assetsdir", JAVA_DIR + "assets/");  
+        
         if (absolutePath == null || absolutePath.contains("min")) {
             return;
         }
         
-        if (absolutePath.endsWith(JS)) {
+        if (properties.getBoolean("application.minify.js", false) && absolutePath.endsWith(JS)) {
             minifyJS(new File(absolutePath));
-        } else if (absolutePath.endsWith(CSS)) {
+        } else if (properties.getBoolean("application.minify.css", false) && absolutePath.endsWith(CSS)) {
             minifyCSS(new File(absolutePath));
         }
     }
@@ -59,8 +71,11 @@ public final class MinificationUtils {
             compressor.compress(outputStreamWriter, LINEBREAK, MUNGE, VERBOSE, PRESERVESEMICOLONS, DISABLEOPTIMIZATION);  
             
             outputStreamWriter.flush();
-            
             log(inputFile, outputFile);
+            
+            if (properties.getBoolean("application.minify.gzipjs", false)) {
+                createGzipFile(outputFile);
+            }
         } catch (IOException e) {
             LOG.error("Failed to minify JS");
         } finally {
@@ -89,8 +104,11 @@ public final class MinificationUtils {
             compressor.compress(outputStreamWriter, LINEBREAK);
             
             outputStreamWriter.flush();
-            
-            log(inputFile, outputFile);
+            log(inputFile, outputFile);            
+
+            if (properties.getBoolean("application.minify.gzipcss", false)) {
+                createGzipFile(outputFile);
+            }
         } catch (IOException e) {
             LOG.error("Failed to minify CSS", e);
         } finally {
@@ -111,14 +129,39 @@ public final class MinificationUtils {
         
         String folder = null;
         if (CSS.equals(suffix)) {
-            folder = "stylesheets";
+            folder = properties.getString("application.minify.cssfolder", "stylesheets");
         } else if (JS.equals(suffix)) {
-            folder = "javascripts";
+            folder = properties.getString("application.minify.jsfolder", "javascripts");
         }
         
-        File outputFile = new File(path + OUTPUTPATH + "/" + folder + "/" + fileName + ".min." + suffix);
+        File outputFile = new File(path + outputPath + "/" + folder + "/" + fileName + ".min." + suffix);
         
         return outputFile;
+    }
+    
+    private static void createGzipFile(File file) {
+        if (file == null || !file.exists()) {
+            return;
+        }
+        
+        File gzipped = new File(file.getAbsolutePath() + ".gz");
+        GZIPOutputStream outpuStream = null;
+        FileInputStream inputStream = null;
+        try {
+            outpuStream = new GZIPOutputStream(new FileOutputStream(gzipped));
+            inputStream = new FileInputStream(file);
+            IOUtils.copy(inputStream, outpuStream);
+            LOG.info("Created gzipped asset " + gzipped.getName());
+        } catch (IOException e) {
+            LOG.error("Failed to create gzipped file", e);
+        } finally {
+            try {
+                outpuStream.close();
+                inputStream.close();
+            } catch (IOException e) {
+                LOG.error("Failed to close streams while creating gzipped file", e);
+            }
+        }
     }
     
     private static long ratioOfSize(File inputFile, File outputFile) {
