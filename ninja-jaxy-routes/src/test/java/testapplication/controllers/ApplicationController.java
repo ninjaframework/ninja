@@ -139,4 +139,9 @@ public class ApplicationController extends MiddleController {
 
     }
 
+    @GET
+    public Result testWithoutMethodPath() {
+        return Results.text().render("route without method path works.");
+    }
+
 }
