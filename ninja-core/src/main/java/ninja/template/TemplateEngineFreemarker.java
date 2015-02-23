@@ -52,6 +52,7 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.Version;
+import java.io.StringWriter;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -320,19 +321,21 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         ResponseStreams responseStreams = context.finalizeHeaders(result);
 
-        try (Writer writer = responseStreams.getWriter()) {
-            
-            freemarkerTemplate.process(map, writer);
-
-        } catch (Exception e) {
-            
+        try {
+            // Fully buffer the response so in the case of a template error we can 
+            // return the applications 500 error message. Without fully buffering 
+            // we can't guarantee we haven't flushed part of the response to the
+            // client.
+            StringWriter buffer = new StringWriter(64 * 1024);
+            freemarkerTemplate.process(map, buffer);
+            Writer writer = responseStreams.getWriter();
+            writer.write(buffer.toString());
+            writer.close();
+        } catch (Exception e) {            
             logger.error(
-                    "Error processing Freemarker Template {} ", templateName, e);
-            
-            throw new RuntimeException(e);
-            
+                    "Error processing Freemarker Template {} ", templateName, e);   
+            throw new RuntimeException(e);   
         }
-
     }
 
     @Override

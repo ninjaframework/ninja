@@ -17,6 +17,7 @@ package ninja.template;
 
 import com.google.common.base.Optional;
 import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -60,8 +61,7 @@ public class TemplateEngineFreemarkerTest {
 
     @Mock
     Logger logger;
-
-    @Mock
+    
     TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
 
     @Mock
@@ -108,7 +108,7 @@ public class TemplateEngineFreemarkerTest {
                         messages,
                         lang,
                         logger,
-                        templateEngineFreemarkerExceptionHandler,
+                        new TemplateEngineFreemarkerExceptionHandler(logger, ninjaProperties),
                         templateEngineHelper,
                         templateEngineManager,
                         templateEngineFreemarkerReverseRouteMethod,
@@ -159,5 +159,20 @@ public class TemplateEngineFreemarkerTest {
     public void testThatConfigurationCanBeRetrieved() throws Exception {
         templateEngineFreemarker.invoke(context, Results.ok());
         assertThat(templateEngineFreemarker.getConfiguration(), CoreMatchers.notNullValue(Configuration.class));
+    }
+
+    @Test
+    public void testThatWhenNotProdModeDoesNotThrowTemplateException() {
+        when(templateEngineHelper.getTemplateForResult(any(Route.class), any(Result.class), Mockito.anyString())).thenReturn("views/broken.ftl.html");
+        when(ninjaProperties.isProd()).thenReturn(false);
+        templateEngineFreemarker.invoke(context, Results.ok());
+        assertThat(writer.toString(), CoreMatchers.containsString("FREEMARKER ERROR MESSAGE"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testThatProdModeThrowsTemplateException() throws RuntimeException {
+        when(templateEngineHelper.getTemplateForResult(any(Route.class), any(Result.class), Mockito.anyString())).thenReturn("views/broken.ftl.html");
+        when(ninjaProperties.isProd()).thenReturn(true);
+        templateEngineFreemarker.invoke(context, Results.ok());
     }
 }
