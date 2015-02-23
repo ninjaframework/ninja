@@ -9,6 +9,7 @@ In essence,
 So we need to create an additional distribution module just for the purpose of creating all-in-one jar.
 
 Create a maven module with an arbitary name say 'distriution'. The only file you need in that module is a pom.xml that has a depenency defined to all modules.
+
 ```xml
 <modelVersion>4.0.0</modelVersion>
 <artifactId>distribution</artifactId>
@@ -52,5 +53,6 @@ Create a maven module with an arbitary name say 'distriution'. The only file you
     </plugins>
 </build>    
 ```
+
 Now `cd` to distribution and fire `mvn assembly:single`. This will generate an MY-APPLICATION-jar-with-dependencies.jar in the target dir.
 Now you can follow the instruction in the "Ninja standalone" page.
