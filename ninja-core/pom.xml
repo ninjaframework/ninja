@@ -252,6 +252,15 @@
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
         </dependency>
+        
+        <!-- Minification -->
+         <dependency>
+	     	<groupId>com.yahoo.platform.yui</groupId>
+		     <artifactId>yuicompressor</artifactId>
+		     <version>2.4.7</version>
+		     <!-- 2.4.8 seems to have issue on windows : https://github.com/yui/yuicompressor/issues/78 -->
+		     <!-- 2.4.8 failed to process empty file (demo01) : https://github.com/yui/yuicompressor/issues/130 -->
+	    </dependency>
 
     </dependencies>
 
