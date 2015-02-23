@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ninja.standalone.NinjaJetty;
+import ninja.utils.MinificationUtils;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
@@ -150,7 +151,7 @@ public class NinjaRunMojo extends AbstractMojo {
             buildOutputDirectory);
         
         classpathItems.add(buildOutputDirectory);
-
+        MinificationUtils.basePath = mavenProject.getBasedir().getAbsolutePath(); 
        
         for (org.apache.maven.artifact.Artifact artifact : mavenProject.getArtifacts()) {
             classpathItems.add(artifact.getFile().toString());           
