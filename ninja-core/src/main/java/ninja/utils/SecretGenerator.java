@@ -37,7 +37,7 @@ public class SecretGenerator {
     public static String generateSecret() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
-            keyGenerator.init(256);
+            keyGenerator.init(128);
             SecretKey key = keyGenerator.generateKey();
 
             return Base64.encodeBase64String(key.getEncoded());
