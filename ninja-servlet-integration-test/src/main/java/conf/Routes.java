@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 
 import controllers.ApplicationController;
 import controllers.AsyncController;
+import controllers.AuthenticityController;
 import controllers.FilterController;
 import controllers.I18nController;
 import controllers.InjectionExampleController;
@@ -151,8 +152,14 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
-
-
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Authenticity
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/token").with(AuthenticityController.class, "token");
+        router.GET().route("/form").with(AuthenticityController.class, "form");
+        router.GET().route("/unauthorized").with(AuthenticityController.class, "unauthorized");
+        
         //this is a route that should only be accessible when NOT in production
         // this is tested in RoutesTest
         if (!ninjaProperties.isProd()) {

@@ -1,7 +1,11 @@
 Version X.X.X
 =============
+
+ * 2015-02-23 Full page template buffering for better error pages (PR #311) (t3hc13h)
+ * 2015-02-19 AuthenticityToken support (SecureFilter, template enhancements) (svenkubiak)
  * 2015-02-12 #301 Fixed system specific line separator for String comparison (raptaml)
- * 2012-02-03 minor refactoring in JaxyRoutes init (lukaseichler)
+ * 2015-02-05 Added Support for JaxRoutes methods without own path (lukaseichler)
+ * 2015-02-03 minor refactoring in JaxyRoutes init (lukaseichler)
  * 2015-02-03 Added method to add and unset a cookie from context (svenkubiak)
  * 2015-01-03 Added access to the freemarker configuration and default suffix (jlannoy)
 

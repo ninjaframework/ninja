@@ -29,6 +29,8 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
@@ -45,12 +47,12 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.Version;
+import java.io.StringWriter;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -263,6 +265,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("reverseRoute", templateEngineFreemarkerReverseRouteMethod);
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
+        
+        map.put("authenticityToken", new TemplateEngineFreemarkerAuthenticityTokenDirective(context));
+        map.put("authenticityForm", new TemplateEngineFreemarkerAuthenticityFormDirective(context));
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.
@@ -316,19 +321,21 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         ResponseStreams responseStreams = context.finalizeHeaders(result);
 
-        try (Writer writer = responseStreams.getWriter()) {
-            
-            freemarkerTemplate.process(map, writer);
-
-        } catch (Exception e) {
-            
+        try {
+            // Fully buffer the response so in the case of a template error we can 
+            // return the applications 500 error message. Without fully buffering 
+            // we can't guarantee we haven't flushed part of the response to the
+            // client.
+            StringWriter buffer = new StringWriter(64 * 1024);
+            freemarkerTemplate.process(map, buffer);
+            Writer writer = responseStreams.getWriter();
+            writer.write(buffer.toString());
+            writer.close();
+        } catch (Exception e) {            
             logger.error(
-                    "Error processing Freemarker Template {} ", templateName, e);
-            
-            throw new RuntimeException(e);
-            
+                    "Error processing Freemarker Template {} ", templateName, e);   
+            throw new RuntimeException(e);   
         }
-
     }
 
     @Override

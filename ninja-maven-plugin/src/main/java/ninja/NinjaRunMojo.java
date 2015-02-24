@@ -105,7 +105,7 @@ public class NinjaRunMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        
+         
         // If not set up in pom.xml then use system property.
         if (contextPath == null) {
             String contextPathProperty 
@@ -181,7 +181,8 @@ public class NinjaRunMojo extends AbstractMojo {
                     classpathItems,
                     excludesAsList, 
                     contextPath,
-                    port);
+                    port,
+                    mavenProject.getBasedir());
             
             nWatchAndTerminate.startWatching();
             
