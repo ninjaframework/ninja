@@ -22,7 +22,6 @@ import ninja.Route;
 import ninja.RouterImpl;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
-
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;
@@ -31,11 +30,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
+import com.google.inject.Injector;
 import testapplication.conf.Routes;
 import testapplication.controllers.ApplicationController;
-
-import com.google.inject.Injector;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApplicationControllerTest extends NinjaDocTester {
@@ -292,4 +289,10 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     }
 
+    @Test
+    public void testWithoutMethodPath() throws Exception {
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/base/middle/app/")));
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("route without method path works."));
+    }
 }
