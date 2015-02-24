@@ -17,33 +17,24 @@
 package ninja;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.AbstractMap;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import ninja.utils.ResponseStreams;
 
-import org.apache.commons.io.ByteOrderMark;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
-
-import ch.qos.logback.core.db.dialect.MySQLDialect;
-import java.io.StringWriter;
-import java.io.Writer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultTest {

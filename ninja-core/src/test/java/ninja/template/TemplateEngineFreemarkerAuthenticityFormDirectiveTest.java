@@ -1,15 +1,15 @@
 package ninja.template;
 
-import com.google.common.collect.Maps;
-import freemarker.core.Environment;
-import freemarker.template.Template;
-import java.util.HashMap;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.io.StringWriter;
 import java.util.Map;
 
 import ninja.Context;
 import ninja.session.Session;
 import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
-import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,12 +20,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.common.collect.Maps;
+
+import freemarker.core.Environment;
+import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
-import java.io.StringWriter;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  * 

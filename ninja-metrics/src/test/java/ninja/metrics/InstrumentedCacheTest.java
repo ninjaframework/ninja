@@ -16,16 +16,8 @@
 
 package ninja.metrics;
 
-import ninja.metrics.*;
-import java.util.Map;
-
 import ninja.cache.Cache;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 

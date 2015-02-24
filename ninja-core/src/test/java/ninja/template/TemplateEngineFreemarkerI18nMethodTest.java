@@ -16,24 +16,20 @@
 
 package ninja.template;
 
-import ch.qos.logback.core.Appender;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Messages;
+
 import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -43,6 +39,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.core.Appender;
+
+import com.google.common.base.Optional;
+
+import freemarker.template.SimpleScalar;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
 
 /**
  *
