@@ -26,6 +26,7 @@ import javax.mail.internet.InternetAddress;
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.common.MailImplTestHelper;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

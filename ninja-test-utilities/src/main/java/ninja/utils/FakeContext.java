@@ -107,6 +107,7 @@ public class FakeContext implements Context {
      * @param requestUri
      * @return
      */
+    @Override
     @Deprecated
     public String getRequestUri() {
         return requestUri;

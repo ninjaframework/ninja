@@ -18,6 +18,7 @@ package ninja.template;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
@@ -52,7 +53,6 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.Version;
-import java.io.StringWriter;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
