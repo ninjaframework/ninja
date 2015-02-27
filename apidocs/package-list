@@ -17,5 +17,6 @@ ninja.postoffice.mock
 ninja.scheduler
 ninja.session
 ninja.template
+ninja.template.directives
 ninja.utils
 ninja.validation
