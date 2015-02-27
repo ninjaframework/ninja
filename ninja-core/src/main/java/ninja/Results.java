@@ -66,7 +66,11 @@ public class Results {
     }
 
     public static Result badRequest() {
-        return status(Result.SC_400_BAD_REQUEST);
+        return new ExceptionResult(Result.SC_400_BAD_REQUEST);
+    }
+    
+    public static Result badRequest(Exception cause) {
+        return new ExceptionResult(Result.SC_400_BAD_REQUEST, cause);
     }
 
     public static Result noContent() {
@@ -75,7 +79,11 @@ public class Results {
     }
 
     public static Result internalServerError() {
-        return status(Result.SC_500_INTERNAL_SERVER_ERROR);
+        return new ExceptionResult(Result.SC_500_INTERNAL_SERVER_ERROR);
+    }
+    
+    public static Result internalServerError(Exception cause) {
+        return new ExceptionResult(Result.SC_500_INTERNAL_SERVER_ERROR, cause);
     }
 
     /**
