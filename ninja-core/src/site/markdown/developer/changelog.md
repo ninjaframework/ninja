@@ -1,6 +1,8 @@
 Version X.X.X
 =============
 
+
+ * 2015-02-27 Important security fix against leak in Jetty [CVE-2015-2080] (ra)
  * 2015-02-23 Full page template buffering for better error pages (PR #311) (t3hc13h)
  * 2015-02-19 AuthenticityToken support (SecureFilter, template enhancements) (svenkubiak)
  * 2015-02-12 #301 Fixed system specific line separator for String comparison (raptaml)
