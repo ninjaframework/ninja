@@ -1,6 +1,7 @@
-Version X.X.X
+Version 4.0.6
 =============
 
+ * 2015-02-27 Important security fix against leak in Jetty [CVE-2015-2080] (ra)
  * 2015-02-23 Full page template buffering for better error pages (PR #311) (t3hc13h)
  * 2015-02-19 AuthenticityToken support (SecureFilter, template enhancements) (svenkubiak)
  * 2015-02-18 Added session cookie encryption (bazi)
