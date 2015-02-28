@@ -16,31 +16,28 @@
 
 package ninja.bodyparser;
 
-import java.io.IOException;
-
-import ninja.ContentTypes;
-import ninja.Context;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import ninja.ContentTypes;
+import ninja.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 @Singleton
 public class BodyParserEngineXml implements BodyParserEngine {
-    
+
     private final static Logger logger = LoggerFactory.getLogger(BodyParserEngineXml.class);
-    
+
     private final XmlMapper xmlMapper;
-    
 
     @Inject
     public BodyParserEngineXml(XmlMapper xmlMapper) {
-        
+
         this.xmlMapper = xmlMapper;
 
     }
@@ -49,22 +46,23 @@ public class BodyParserEngineXml implements BodyParserEngine {
         T t = null;
 
         try {
-            
             t = xmlMapper.readValue(context.getInputStream(), classOfT);
-
-        } catch (JsonParseException e) {
+        } catch (JsonParseException | JsonMappingException e) {
             logger.error("Error parsing incoming Xml", e);
-        } catch (JsonMappingException e) {
-            logger.error("Error parsing incoming Xml", e);
+            try {
+                t = classOfT.newInstance();
+            } catch (InstantiationException | IllegalAccessException ex) {
+                logger.error("Can't create new instance of class {}", classOfT.getName(), e);
+            }
         } catch (IOException e) {
             logger.error("Error parsing incoming Xml", e);
         }
 
         return t;
     }
-    
+
     public String getContentType() {
-        return ContentTypes.APPLICATION_XML; 
+        return ContentTypes.APPLICATION_XML;
     }
 
 }
