@@ -1,3 +1,9 @@
+Version x.x.x
+=============
+
+ * 2015-03-01 Bump to freemaker 2.3.22 (ra)
+
+
 Version 4.0.6
 =============
 
