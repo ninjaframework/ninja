@@ -24,8 +24,6 @@ import com.google.inject.Singleton;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.exceptions.BadRequestException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +37,6 @@ import java.io.InputStream;
  */
 @Singleton
 public class BodyParserEngineJson implements BodyParserEngine {
-
-    private final Logger logger = LoggerFactory.getLogger(BodyParserEngineJson.class);
 
     private final ObjectMapper objectMapper;
 
