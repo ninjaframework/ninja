@@ -43,10 +43,6 @@ Quartz Scheduler support
 
  * https://github.com/svenkubiak/ninja-quartz
 
-Validation module
-
- * https://github.com/svenkubiak/ninja-validation
- 
 Authentication module
 
  * https://github.com/svenkubiak/ninja-authentication
