@@ -170,7 +170,7 @@ public class NinjaDefault implements Ninja {
         Message message = new Message(messageI18n);
 
         Result result = Results
-                .internalServerError()
+                .internalServerError(exception)
                 .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                 .fallbackContentType(Result.TEXT_HTML)
                 .render(message)
@@ -216,7 +216,7 @@ public class NinjaDefault implements Ninja {
         Message message = new Message(messageI18n); 
            
         Result result = Results
-                        .badRequest()
+                        .badRequest(exception)
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)

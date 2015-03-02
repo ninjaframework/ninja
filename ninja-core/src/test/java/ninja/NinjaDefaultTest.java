@@ -24,6 +24,7 @@ import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
+import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -156,7 +157,6 @@ public class NinjaDefaultTest {
         ninjaDefault.onRouteRequest(contextImpl);
         
         verify(ninjaDefault).getInternalServerErrorResult(contextImpl, internalServerErrorException);
-    
     }
     
     @Test
@@ -173,7 +173,6 @@ public class NinjaDefaultTest {
         ninjaDefault.onRouteRequest(contextImpl);
         
         verify(ninjaDefault).getBadRequestResult(contextImpl, badRequest);
-    
     }
     
     @Test
@@ -208,6 +207,8 @@ public class NinjaDefaultTest {
         verify(ninjaDefault).getBadRequestResult(contextImpl, badRequestException);
         assertThat(result.getStatusCode(), equalTo(Result.SC_400_BAD_REQUEST));
     
+        assertThat(result, CoreMatchers.instanceOf(ExceptionResult.class));
+        assertSame(badRequestException, ((ExceptionResult)result).getCause());
     }
     
     @Test
@@ -220,6 +221,8 @@ public class NinjaDefaultTest {
         verify(ninjaDefault).getInternalServerErrorResult(contextImpl, anyException);
         assertThat(result.getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
 
+        assertThat(result, CoreMatchers.instanceOf(ExceptionResult.class));
+        assertSame(anyException, ((ExceptionResult)result).getCause());
     }
     
      
@@ -250,6 +253,8 @@ public class NinjaDefaultTest {
         assertThat(result.getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
         assertThat(result.getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
         assertTrue(result.getRenderable() instanceof Message);
+        assertThat(result, CoreMatchers.instanceOf(ExceptionResult.class));
+        assertEquals("not important", ((ExceptionResult)result).getCause().getMessage());
 
         verify(messages).getWithDefault(
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY), 
@@ -286,7 +291,9 @@ public class NinjaDefaultTest {
         assertThat(result.getStatusCode(), equalTo(Result.SC_400_BAD_REQUEST));
         assertThat(result.getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
         assertTrue(result.getRenderable() instanceof Message);
-
+        assertThat(result, CoreMatchers.instanceOf(ExceptionResult.class));
+        assertEquals("not important", ((ExceptionResult)result).getCause().getMessage());
+        
         verify(messages).getWithDefault(
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY), 
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT), 
