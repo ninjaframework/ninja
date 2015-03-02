@@ -23,11 +23,19 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import ninja.ContentTypes;
 import ninja.Context;
+import ninja.exceptions.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * Built in Xml body parser.
+ *
+ * @author Raphael Bauer
+ * @author Thibault Meyer
+ * @see ninja.bodyparser.BodyParserEngine
+ */
 @Singleton
 public class BodyParserEngineXml implements BodyParserEngine {
 
@@ -43,22 +51,13 @@ public class BodyParserEngineXml implements BodyParserEngine {
     }
 
     public <T> T invoke(Context context, Class<T> classOfT) {
-        T t = null;
-
         try {
-            t = xmlMapper.readValue(context.getInputStream(), classOfT);
+            return xmlMapper.readValue(context.getInputStream(), classOfT);
         } catch (JsonParseException | JsonMappingException e) {
-            logger.error("Error parsing incoming Xml", e);
-            try {
-                t = classOfT.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
-                logger.error("Can't create new instance of class {}", classOfT.getName(), e);
-            }
+            throw new BadRequestException("Error parsing incoming Xml", e);
         } catch (IOException e) {
-            logger.error("Error parsing incoming Xml", e);
+            throw new BadRequestException("Invalid Xml document", e);
         }
-
-        return t;
     }
 
     public String getContentType() {
