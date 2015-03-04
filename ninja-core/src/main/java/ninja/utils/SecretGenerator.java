@@ -16,35 +16,50 @@
 
 package ninja.utils;
 
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
-import org.apache.commons.codec.binary.Base64;
+import java.security.SecureRandom;
+import java.util.Random;
 
 
 public class SecretGenerator {
-
-    public static final String ALGORITHM = "AES";
-
+    
     /**
-     * Generates secret key encoded in base64. This string is suitable as secret for your application (key
-     * "application.secret" in conf/application.conf).
-     *
+     * Generates a random String of length 64. This string is suitable
+     * as secret for your application (key "application.secret" in conf/application.conf).
+     * 
      * @return A string that can be used as "application.secret".
      */
     public static String generateSecret() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
-            keyGenerator.init(128);
-            SecretKey key = keyGenerator.generateKey();
+        
+        return generateSecret(new SecureRandom());
 
-            return Base64.encodeBase64String(key.getEncoded());
-
-        } catch (NoSuchAlgorithmException ex) {
-            throw new RuntimeException("Failed to generate application secret", ex);
+    }
+    
+    /**
+     * !!!! Only for testing purposes !!!!
+     * 
+     * Usually you want to use {@link SecretGenerator#generateSecret()}
+     * 
+     * @param random the random generator to use. Usually new Random(), but for testing you can
+     *          use a predefined seed.
+     * @return A String suitable as random secret for eg signing a session.
+     */
+    protected static String generateSecret(Random random) {
+        
+        String charsetForSecret = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        
+        StringBuilder stringBuilder = new StringBuilder(64);
+        
+        for (int i = 0; i < 64; i++) {
+            
+            int charToPoPickFromCharset = random.nextInt(charsetForSecret.length());            
+            stringBuilder.append(charsetForSecret.charAt(charToPoPickFromCharset));
+            
         }
-    }    
+
+        return stringBuilder.toString(); 
+        
+    }
+    
+
 
 }

@@ -17,6 +17,7 @@ package ninja.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
 import java.util.Objects;
 
 import javax.crypto.Cipher;
@@ -37,6 +38,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class CookieEncryption {
 
+    public static final String ALGORITHM = "AES";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CookieEncryption.class);
 
     private SecretKey secretKey;
@@ -47,7 +50,17 @@ public class CookieEncryption {
         if (properties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)) {
 
             String secret = properties.getOrDie(NinjaConstant.applicationSecret);
-            this.secretKey = new SecretKeySpec(Base64.decodeBase64(secret), SecretGenerator.ALGORITHM);
+            try {
+                int maxKeyLenghtBits = Cipher.getMaxAllowedKeyLength(ALGORITHM);
+                if (maxKeyLenghtBits == Integer.MAX_VALUE) {
+                    maxKeyLenghtBits = 256;
+                }
+
+                this.secretKey = new SecretKeySpec(secret.getBytes(), 0, maxKeyLenghtBits / Byte.SIZE, ALGORITHM);
+
+            } catch (Exception ex) {
+                LOGGER.warn("Encryption secret not created. Sessions cookies will not be encrypted.", ex);
+            }
 
         }
 
@@ -70,17 +83,21 @@ public class CookieEncryption {
 
         try {
             // encrypt data
-            Cipher cipher = Cipher.getInstance(SecretGenerator.ALGORITHM);
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
             // convert encrypted bytes to string in base64
             return Base64.encodeBase64URLSafeString(encrypted);
 
+        } catch (InvalidKeyException ex) {
+            LOGGER.error(getHelperLogMessage());
+            LOGGER.debug("", ex);
         } catch (GeneralSecurityException ex) {
-            LOGGER.error("Failed to encrypt data. {}", getHelperLogMessage(), ex);
+            LOGGER.error("Failed to encrypt data. {}", ex.getMessage());
+            LOGGER.debug("", ex);
         }
-        return data;
+        return "";
     }
 
     /**
@@ -102,23 +119,26 @@ public class CookieEncryption {
         byte[] decoded = Base64.decodeBase64(data);
         try {
             // decrypt bytes
-            Cipher cipher = Cipher.getInstance(SecretGenerator.ALGORITHM);
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] decrypted = cipher.doFinal(decoded);
 
             // convert bytes to string
             return new String(decrypted, StandardCharsets.UTF_8);
 
+        } catch (InvalidKeyException ex) {
+            LOGGER.error(getHelperLogMessage());
+            LOGGER.debug("", ex);
         } catch (GeneralSecurityException ex) {
-            LOGGER.error("Failed to decrypt data. {}", getHelperLogMessage(), ex);
+            LOGGER.error("Failed to decrypt data. {}", ex.getMessage());
+            LOGGER.debug("", ex);
         }
-        return data;
+        return "";
     }
 
     private String getHelperLogMessage() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Check if application secret is a valid base64 encoded ");
-        sb.append(SecretGenerator.ALGORITHM).append(" key.").append(System.lineSeparator());
+        sb.append("Invalid key provided. Check if application secret is properly set.").append(System.lineSeparator());
         sb.append("You can remove '").append(NinjaConstant.applicationSecret).append("' key in configuration file ");
         sb.append("and restart application. Ninja will generate new key for you.");
         return sb.toString();

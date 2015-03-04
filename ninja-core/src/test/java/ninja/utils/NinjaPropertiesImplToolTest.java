@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.UUID;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -73,8 +72,10 @@ public class NinjaPropertiesImplToolTest {
                 baseDirWithoutTrailingSlash, defaultConfiguration,
                 compositeConfiguration);
 
-        assertTrue(Base64.isBase64(compositeConfiguration.getString(NinjaConstant.applicationSecret)));
-        assertTrue(Base64.isBase64(defaultConfiguration.getString(NinjaConstant.applicationSecret)));
+        assertTrue(compositeConfiguration.getString(
+                NinjaConstant.applicationSecret).length() == 64);
+        assertTrue(defaultConfiguration.getString(
+                NinjaConstant.applicationSecret).length() == 64);
 
         assertTrue(Files.toString(new File(devConf), Charsets.UTF_8).contains(
                 NinjaConstant.applicationSecret));
