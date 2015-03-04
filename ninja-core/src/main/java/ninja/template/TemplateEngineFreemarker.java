@@ -70,7 +70,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     }
     // end
     
-    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 21);
+    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 22);
 
     private final String FILE_SUFFIX = ".ftl.html";
 
