@@ -8,7 +8,6 @@ A Ninja session is a hash of key/values, signed but not encrypted by default(see
 That means that as long as your secret is safe, it is not possible for a third-party to forge sessions.
 
 The secret is stored as key <code>application.secret</code> at <code>conf/application.conf.</code>
-It should be a base64 encoded 128-bit AES key.
 
 That way - several servers sharing the same secret can handle any request coming from your users. 
 That's the reason why scaling is simple.
