@@ -41,7 +41,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Maps;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -671,7 +670,7 @@ public class ContextImplTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
         when(bodyParserEngineManager.getBodyParserEngineForContentType("application/json")).thenReturn(bodyParserEngine);
-        when(bodyParserEngine.invoke(Matchers.eq(context), Matchers.isA(TypeReference.class))).thenReturn(new Dummy());
+        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
 
         Object o = context.parseBody(Dummy.class);
 
@@ -693,7 +692,7 @@ public class ContextImplTest {
         Dummy dummy = new Dummy();
         dummy.name = "post";
         dummy.count = 245L;
-	    when(bodyParserEngine.invoke(Matchers.eq(context), Matchers.any(TypeReference.class))).thenReturn(dummy);
+        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(dummy);
 
         Dummy o = context.parseBody(Dummy.class);
 
@@ -744,7 +743,7 @@ public class ContextImplTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
         when(bodyParserEngineManager.getBodyParserEngineForContentType("application/xml")).thenReturn(bodyParserEngine);
-	    when(bodyParserEngine.invoke(Matchers.eq(context), Matchers.any(TypeReference.class))).thenReturn(new Dummy());
+        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
 
         Object o = context.parseBody(Dummy.class);
 

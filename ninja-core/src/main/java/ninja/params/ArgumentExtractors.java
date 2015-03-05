@@ -16,14 +16,12 @@
 
 package ninja.params;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import ninja.Context;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -288,12 +286,6 @@ public class ArgumentExtractors {
     }
 
     public static class BodyAsExtractor<T> implements ArgumentExtractor<T> {
-        private final TypeReference<T> bodyType = new TypeReference<T>() {
-	        @Override
-	        public Type getType() {
-		        return bodyClass;
-	        }
-        };
 	    private final Class<T> bodyClass;
 
         public BodyAsExtractor(Class<T> bodyClass) {
@@ -302,7 +294,7 @@ public class ArgumentExtractors {
 
         @Override
         public T extract(Context context) {
-            return context.parseBody(bodyType);
+            return context.parseBody(bodyClass);
         }
 
         @Override

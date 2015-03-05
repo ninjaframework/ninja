@@ -21,14 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
-
 import org.apache.commons.fileupload.FileItemIterator;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * A wrapped context. Useful if filters want to modify the context before
@@ -157,11 +154,6 @@ public class WrappedContext implements Context {
     public <T> T parseBody(Class<T> classOfT) {
         return wrapped.parseBody(classOfT);
     }
-
-	@Override
-	public <T> T parseBody(final TypeReference<T> typeOfT) {
-		return wrapped.parseBody(typeOfT);
-	}
 
 	@Override
     public boolean isAsync() {

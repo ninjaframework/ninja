@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -58,7 +57,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 
 public class ContextImpl implements Context.Impl {
@@ -251,40 +249,29 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public <T> T parseBody(final Class<T> classOfT) {
-		return parseBody(new TypeReference<T>() {
-			@Override
-			public Type getType() {
-				return classOfT;
-			}
-		});
+	    String rawContentType = getRequestContentType();
+
+	    // If the Content-type: xxx header is not set we return null.
+	    // we cannot parse that request.
+	    if (rawContentType == null) {
+		    logger.debug("Not able to parse body because request did not send content type header at: {}", getRequestPath());
+		    return null;
+	    }
+
+	    // If Content-type is application/json; charset=utf-8 we split away the charset
+	    // application/json
+	    String contentTypeOnly = HttpHeaderUtils.getContentTypeFromContentTypeAndCharacterSetting(
+			    rawContentType);
+
+	    BodyParserEngine bodyParserEngine = bodyParserEngineManager
+			    .getBodyParserEngineForContentType(contentTypeOnly);
+
+	    if (bodyParserEngine == null) {
+		    logger.debug("No BodyParserEngine found for Content-Type {} at route {}", CONTENT_TYPE, getRequestPath());
+		    return null;
+	    }
+	    return bodyParserEngine.invoke(this, classOfT);
     }
-
-	@Override
-	public <T> T parseBody(final TypeReference<T> typeOfT) {
-		String rawContentType = getRequestContentType();
-
-		// If the Content-type: xxx header is not set we return null.
-		// we cannot parse that request.
-		if (rawContentType == null) {
-			logger.debug("Not able to parse body because request did not send content type header at: {}", getRequestPath());
-			return null;
-		}
-
-		// If Content-type is application/json; charset=utf-8 we split away the charset
-		// application/json
-		String contentTypeOnly = HttpHeaderUtils.getContentTypeFromContentTypeAndCharacterSetting(
-				rawContentType);
-
-		BodyParserEngine bodyParserEngine = bodyParserEngineManager
-				.getBodyParserEngineForContentType(contentTypeOnly);
-
-		if (bodyParserEngine == null) {
-			logger.debug("No BodyParserEngine found for Content-Type {} at route {}", CONTENT_TYPE, getRequestPath());
-			return null;
-		}
-
-		return bodyParserEngine.invoke(this, typeOfT);
-	}
 
 	@Override
     public FlashScope getFlashCookie() {

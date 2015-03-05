@@ -295,12 +295,6 @@ public class FakeContext implements Context {
         return classOfT.cast(body);
     }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T parseBody(final TypeReference<T> typeOfT) {
-		return (T) body;
-	}
-
 	@Override
     public boolean isMultipart() {
         return false;

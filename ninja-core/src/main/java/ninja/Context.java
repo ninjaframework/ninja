@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
 import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.bodyparser.BodyParserEngineXml;
@@ -29,9 +28,7 @@ import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
-
 import org.apache.commons.fileupload.FileItemIterator;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 public interface Context {
 
@@ -431,31 +428,11 @@ public interface Context {
      * {@link BodyParserEngineJson} {@link BodyParserEngineXml} 
      * and {@link BodyParserEngineManager}
      *
-     * @deprecated use parseBody(TypeReference<T>) instead
      * @param classOfT
      *            The class of the result.
      * @return The parsed request or null if something went wrong.
      */
     <T> T parseBody(Class<T> classOfT);
-
-	// /////////////////////////////////////////////////////////////////////////
-	// Allows to get the nicely parsed content of the request.
-	// For instance if the content is a json you could simply get the json
-	// as Java object.
-	// /////////////////////////////////////////////////////////////////////////
-	/**
-	 * This will give you the request body nicely parsed. You can register your
-	 * own parsers depending on the request type.
-	 *
-	 * Have a look at {@link ninja.bodyparser.BodyParserEngine}
-	 * {@link BodyParserEngineJson} {@link BodyParserEngineXml}
-	 * and {@link BodyParserEngineManager}
-	 *
-	 * @param classOfT
-	 *            The class of the result.
-	 * @return The parsed request or null if something went wrong.
-	 */
-	<T> T parseBody(TypeReference<T> typeOfT);
 
     boolean isAsync();
         
