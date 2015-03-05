@@ -99,6 +99,34 @@ database.name=database_production   # will be used when no mode is set (or prod)
 
 The convention is to use a "%" and the name of the mode followed by ".".
 
+Disabling diagnostic mode
+-------------------------
+
+As of version 4.0.7, Ninja features a new diagnostic extension to dev mode where
+detailed diagnostic error pages are returned from <code>ninja.NinjaDefault</code>
+rather than the typical Result which pulls a template from <code>system/views</code>.
+
+For example, in versions prior to 4.0.7, if your controller class method threw
+an <code>Exception</code> then the default behavior of <code>ninja.NinjaDefault</code>
+was to catch it in the <code>onException</code> method and return a Result using
+the template <code>views/system/500internalServerError.ftl.html</code>. The
+default system views are basic and more intended for use in production than
+during development.
+
+As of version 4.0.7, the default behavior of all the methods in
+<code>ninja.NinjaDefault</code> are to first check if dev mode is on and if 
+<code>NinjaProperties.areDiagnosticsEnabled()</code> is true.  If both are true
+then a <code>Result</code> is returned with the renderable set to a
+<code>DiagnosticError</code> instance.  Since <code>DiagnosticError</code>
+implements <code>Renderable</code> -- it knows how to render itself to the output
+stream and it will bypass the <code>TemplateEngine</code>.
+
+Diagnostic mode is disabled automatically in PROD/TEST modes, but it can also be
+disabled in DEV mode. Simply add the following to your <code>application.conf</code>:
+
+    application.diagnostics=false
+
+
 Configuring application's base package
 ------------------------------------
 
