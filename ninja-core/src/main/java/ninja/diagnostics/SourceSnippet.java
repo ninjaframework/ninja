@@ -22,6 +22,7 @@ import java.util.List;
  * Represents a snippet of a source file (1 or more lines).
  * 
  * @author Joe Lauer (https://twitter.com/jjlauer)
+ * @author Fizzed, Inc. (http://fizzed.com)
  */
 public class SourceSnippet {
     

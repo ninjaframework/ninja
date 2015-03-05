@@ -308,8 +308,8 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     }
     
     @Override
-    public boolean isDiagnostic() {
-        return this.getBooleanWithDefault(NinjaConstant.DIAGNOSTIC_KEY_NAME , Boolean.FALSE);
+    public boolean areDiagnosticsEnabled() {
+        return this.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME , Boolean.TRUE);
     }
     
     /**

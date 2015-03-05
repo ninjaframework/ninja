@@ -173,13 +173,12 @@ public interface NinjaProperties {
     boolean isProd();
     
     /**
-     * Whether we are in diagnostic mode. When this value is true plus isDev()
+     * Whether we are in diagnostics mode. When this value is true plus isDev()
      * is true then its considered safe to display detailed diagnostic error
-     * messages.  NinjaDefault will use this to return a DiagnosticError as
-     * a result. Other template engines or modules may also use this value to
-     * determine that they too should display diagnostic info.
+     * messages.  NinjaDefault will use this value along with the mode to
+     * render DiagnosticError templates rather than the default system ones.
      */
-    boolean isDiagnostic();
+    boolean areDiagnosticsEnabled();
     
     /**
      * Returns context under which the application is currently running.

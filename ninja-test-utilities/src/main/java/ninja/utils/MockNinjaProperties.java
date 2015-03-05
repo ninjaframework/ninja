@@ -146,7 +146,7 @@ public class MockNinjaProperties implements NinjaProperties {
     }
     
     @Override
-    public boolean isDiagnostic() {
+    public boolean areDiagnosticsEnabled() {
         return false;
     }
 

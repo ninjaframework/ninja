@@ -22,7 +22,6 @@ import ninja.exceptions.BadRequestException;
 import ninja.exceptions.InternalServerErrorException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
-import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
@@ -179,7 +178,7 @@ public class NinjaDefaultTest {
         
         Mockito.when(filterChain.next(contextImpl)).thenThrow(internalServerErrorException);
         when(ninjaProperties.isDev()).thenReturn(true);
-        when(ninjaProperties.isDiagnostic()).thenReturn(true);
+        when(ninjaProperties.areDiagnosticsEnabled()).thenReturn(true);
         
         ninjaDefault.onRouteRequest(contextImpl);
         
@@ -216,7 +215,7 @@ public class NinjaDefaultTest {
         
         Mockito.when(filterChain.next(contextImpl)).thenThrow(badRequest);
         when(ninjaProperties.isDev()).thenReturn(true);
-        when(ninjaProperties.isDiagnostic()).thenReturn(true);
+        when(ninjaProperties.areDiagnosticsEnabled()).thenReturn(true);
         
         ninjaDefault.onRouteRequest(contextImpl);
         
@@ -261,7 +260,7 @@ public class NinjaDefaultTest {
                 .thenReturn(null);
                  
         when(ninjaProperties.isDev()).thenReturn(true);
-        when(ninjaProperties.isDiagnostic()).thenReturn(true);
+        when(ninjaProperties.areDiagnosticsEnabled()).thenReturn(true);
         
         ninjaDefault.onRouteRequest(contextImpl);
         

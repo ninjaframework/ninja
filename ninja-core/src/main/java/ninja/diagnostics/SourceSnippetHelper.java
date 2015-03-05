@@ -30,6 +30,7 @@ import java.util.List;
  * Utility class for reading lines (snippet) from a source file.
  * 
  * @author Joe Lauer (https://twitter.com/jjlauer)
+ * @author Fizzed, Inc. (http://fizzed.com)
  */
 public class SourceSnippetHelper {
     
@@ -41,8 +42,8 @@ public class SourceSnippetHelper {
         // try to find source template as local file
         if (baseDirectory != null) {
             Path templatePath = baseDirectory.toPath()
-                                    .resolve(packageName.replace(".", File.separator))
-                                    .resolve(fileName);
+                .resolve(packageName.replace(".", File.separator))
+                .resolve(fileName);
             File templateFile = templatePath.toFile();
             return readFromFile(templateFile, lineFrom, lineTo);
         }
@@ -55,9 +56,9 @@ public class SourceSnippetHelper {
                                                             int lineFrom,
                                                             int lineTo) throws IOException {
         // try to find source template as local file
-        if (baseDirectory != null) {
+        if (baseDirectory != null && templateRelativePath != null) {
             File templateFile = baseDirectory.toPath()
-                                    .resolve(templateRelativePath).toFile();
+                .resolve(templateRelativePath).toFile();
             return readFromFile(templateFile, lineFrom, lineTo);
         }
         

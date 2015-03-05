@@ -7,6 +7,7 @@ import java.io.IOException;
  * Utility class for building <code>DiagnosticError</code> instances.
  * 
  * @author Joe Lauer (https://twitter.com/jjlauer)
+ * @author Fizzed, Inc. (http://fizzed.com)
  */
 public class DiagnosticErrorBuilder {
     

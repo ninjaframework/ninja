@@ -138,11 +138,9 @@ public interface NinjaConstant {
     final String sessionHttpOnly = "application.session.http_only";
     
     // /////////////////////////////////////////////////
-    // Diagnostic mode - extension to Dev mode where
-    // NinjaDefault returns a DiagnosticError as the payload
-    // in a result rather than attempting to render via
-    // the template engine
-    String DIAGNOSTIC_KEY_NAME = "application.diagnostic";
+    // Diagnostic mode - extension to dev mode where
+    // ninja.Ninja is forced with ninja.diagnostics.NinjaDiagnostic
+    String DIAGNOSTICS_KEY_NAME = "application.diagnostics";
     
     
     ///////////////////////////////////////////////////////////////////////////

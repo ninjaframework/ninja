@@ -53,11 +53,10 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 import freemarker.template.Version;
 import java.io.StringWriter;
-import ninja.diagnostics.DiagnosticError;
-import ninja.diagnostics.DiagnosticErrorBuilder;
-import ninja.diagnostics.DiagnosticErrorRenderer;
+import ninja.exceptions.RenderingException;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -305,7 +304,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         String templateName = templateEngineHelper.getTemplateForResult(
                 context.getRoute(), result, this.fileSuffix);
 
-        
         Template freemarkerTemplate = null;
         
         try {
@@ -314,10 +312,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             
         } catch (Exception cause) {
             
-            logger.error(
-                    "Error reading freemarker template {} ", templateName, cause);
-
-            renderOrThrowException(context, result, cause);
+            // delegate rendering exception handling back to Ninja
+            throwRenderingException(context, result, cause, templateName);
+            
         }
         
         
@@ -333,57 +330,61 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             try (Writer writer = responseStreams.getWriter()) {
                 writer.write(buffer.toString());
             }
-        } catch (Exception cause) {
+        } catch (Exception cause) {   
             
-            logger.error(
-                    "Error rendering freemarker template {} ", templateName, cause);   
-            
-            renderOrThrowException(context, result, cause);
+            // delegate rendering exception handling back to Ninja
+            throwRenderingException(context, result, cause, templateName);
             
         }
     }
     
-    public void renderOrThrowException(Context context,
-                                        Result result,
-                                        Exception cause) {
+    public void throwRenderingException(
+            Context context,
+            Result result,
+            Exception cause,
+            String knownTemplateSourcePath) {
         
-        if (ninjaProperties.isDev() && ninjaProperties.isDiagnostic()) {
-            if (cause instanceof TemplateException || cause instanceof ParseException) {
-                String relativeSourcePath = null;
-                int lineNumber = -1;
-
-                if (cause instanceof TemplateException) {
-                    TemplateException te = (TemplateException)cause;
-                    relativeSourcePath = te.getTemplateSourceName();
-                    lineNumber = te.getLineNumber();
-                }
-                else if (cause instanceof ParseException) {
-                    ParseException pe = (ParseException)cause;
-                    relativeSourcePath = pe.getTemplateName();
-                    lineNumber = pe.getLineNumber();
-                }
-
-                DiagnosticError diagnosticError = DiagnosticErrorBuilder
-                    .buildDiagnosticError(
-                        "FreeMarker rendering exception",
-                        cause,
-                        relativeSourcePath,
-                        lineNumber);
-
-                DiagnosticErrorRenderer
-                    .tryToRenderDiagnosticError(
-                        context,
-                        result,
-                        diagnosticError,
-                        true);
-                
-                return;
-            }
+        // parse method above may throw an IOException whose cause is really
+        // a more useful ParseException
+        if (cause instanceof IOException
+                && cause.getCause() != null
+                && cause.getCause() instanceof ParseException) {
+            cause = (ParseException)cause.getCause();
         }
         
-        // otherwise rethrow exception
-        throw new RuntimeException(cause);   
-
+        if (cause instanceof TemplateNotFoundException) {
+            
+            // inner cause will be better to display
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker template not found", knownTemplateSourcePath, -1);
+            
+        }
+        else if (cause instanceof TemplateException) {
+            
+            TemplateException te = (TemplateException)cause;
+            String templateSourcePath = te.getTemplateSourceName();
+            if (templateSourcePath == null) {
+                templateSourcePath = knownTemplateSourcePath;
+            }
+            
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker render exception", templateSourcePath, te.getLineNumber());
+            
+        }
+        else if (cause instanceof ParseException) {
+            
+            ParseException pe = (ParseException)cause;
+            
+            String templateSourcePath = pe.getTemplateName();
+            if (templateSourcePath == null) {
+                templateSourcePath = knownTemplateSourcePath;
+            }
+            
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker parser exception", templateSourcePath, pe.getLineNumber());
+            
+        }
+        
+        // fallback to throwing generic rendering exception
+        throw new RenderingException(cause.getMessage(), cause, result, knownTemplateSourcePath, -1);
+        
     }
 
     @Override

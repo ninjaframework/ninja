@@ -33,6 +33,21 @@ public interface Ninja {
     Result onException(Context context, Exception exception);
     
     /**
+     * Should handle cases where a <code>RenderingException</code> is thrown
+     * when handling the rendering of a Result.
+     * 
+     * Should lead to an html error 500 -- internal server error. If no special
+     * handling is required, simply:
+     * 
+     * <code>
+     *   return getInternalServerErrorResult(context, exception);
+     * </code>
+     */
+    /** NOT REQUIRED YET IN ORDER TO NOT BREAK COMPATIBILITY...
+    Result getRenderingExceptionResult(Context context, RenderingException exception);
+    */
+    
+    /**
      * Should handle cases where an exception is thrown
      * when handling a route that let to an internal server error.
      * 

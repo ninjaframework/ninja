@@ -12,6 +12,7 @@ import ninja.Result;
  * renderable inside a <code>Result</code>.
  * 
  * @author Joe Lauer (https://twitter.com/jjlauer)
+ * @author Fizzed, Inc. (http://fizzed.com)
  */
 public class DiagnosticError implements Renderable {
  
@@ -69,7 +70,7 @@ public class DiagnosticError implements Renderable {
     @Override
     public void render(Context context, Result result) {
         DiagnosticErrorRenderer
-            .tryToRenderDiagnosticError(context, result, this, true);
+            .tryToRender(context, result, this, true);
     }
     
 }
