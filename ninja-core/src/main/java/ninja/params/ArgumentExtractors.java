@@ -18,12 +18,10 @@ package ninja.params;
 
 import java.util.List;
 import java.util.Map;
-
 import ninja.Context;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -288,20 +286,20 @@ public class ArgumentExtractors {
     }
 
     public static class BodyAsExtractor<T> implements ArgumentExtractor<T> {
-        private final Class<T> bodyType;
+	    private final Class<T> bodyClass;
 
-        public BodyAsExtractor(Class<T> bodyType) {
-            this.bodyType = bodyType;
+        public BodyAsExtractor(Class<T> bodyClass) {
+            this.bodyClass = bodyClass;
         }
 
         @Override
         public T extract(Context context) {
-            return context.parseBody(bodyType);
+            return context.parseBody(bodyClass);
         }
 
         @Override
         public Class<T> getExtractedType() {
-            return bodyType;
+            return bodyClass;
         }
 
         @Override

@@ -1,6 +1,7 @@
 Version x.x.x
 =============
 
+ * 2015-03-05 Changed body processing to create the actual objects (lukaseichler)
  * 2015-03-01 Bump to freemaker 2.3.22 (ra)
 
 

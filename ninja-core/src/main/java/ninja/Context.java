@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
 import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.bodyparser.BodyParserEngineXml;
@@ -29,7 +28,6 @@ import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
-
 import org.apache.commons.fileupload.FileItemIterator;
 
 public interface Context {
@@ -429,14 +427,13 @@ public interface Context {
      * Have a look at {@link ninja.bodyparser.BodyParserEngine}
      * {@link BodyParserEngineJson} {@link BodyParserEngineXml} 
      * and {@link BodyParserEngineManager}
-     * 
+     *
      * @param classOfT
      *            The class of the result.
      * @return The parsed request or null if something went wrong.
      */
     <T> T parseBody(Class<T> classOfT);
 
-    
     boolean isAsync();
         
     /**
