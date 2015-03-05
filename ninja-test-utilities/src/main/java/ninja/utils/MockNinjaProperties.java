@@ -144,6 +144,11 @@ public class MockNinjaProperties implements NinjaProperties {
     public boolean isProd() {
         return mode.equals("prod");
     }
+    
+    @Override
+    public boolean isDiagnostic() {
+        return false;
+    }
 
     @Override
     public String getContextPath() {

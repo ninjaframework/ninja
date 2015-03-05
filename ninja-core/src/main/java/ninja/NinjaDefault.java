@@ -21,11 +21,14 @@ import java.util.Properties;
 
 import javax.management.RuntimeErrorException;
 
+import ninja.diagnostics.DiagnosticError;
+import ninja.diagnostics.DiagnosticErrorBuilder;
 import ninja.exceptions.BadRequestException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
 
 import org.slf4j.Logger;
@@ -33,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import ninja.diagnostics.DiagnosticErrorRenderer;
 
 
 public class NinjaDefault implements Ninja {
@@ -61,7 +65,9 @@ public class NinjaDefault implements Ninja {
     
     @Inject
     Messages messages;
-
+    
+    @Inject
+    NinjaProperties ninjaProperties;
 
     @Override
     public void onRouteRequest(Context.Impl context) {
@@ -152,7 +158,16 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getInternalServerErrorResult(Context context, Exception exception) {
-            
+        
+        //
+        // diagnostic mode
+        //
+        if (ninjaProperties.isDev() && ninjaProperties.isDiagnostic()) {
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build500InternalServerErrorDiagnosticError(exception, true);
+            return Results.internalServerError().render(diagnosticError);
+        }
+        
         logger.error(
                 "Emitting bad request 500. Something really wrong when calling route: {} (class: {} method: {})",
                 context.getRequestPath(), 
@@ -182,7 +197,16 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getNotFoundResult(Context context) {
-            
+        
+        //
+        // diagnostic mode
+        //
+        if (ninjaProperties.isDev() && ninjaProperties.isDiagnostic()) {
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build404NotFoundDiagnosticError(true);
+            return Results.notFound().render(diagnosticError);
+        }
+        
         String messageI18n
                 = messages.getWithDefault(
                         NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY,
@@ -205,6 +229,15 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getBadRequestResult(Context context, Exception exception) {
+        
+        //
+        // diagnostic mode
+        //
+        if (ninjaProperties.isDev() && ninjaProperties.isDiagnostic()) {
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build400BadRequestDiagnosticError(exception, true);
+            return Results.badRequest().render(diagnosticError);
+        }
         
         String messageI18n 
                 = messages.getWithDefault(
@@ -229,6 +262,15 @@ public class NinjaDefault implements Ninja {
     @Override
     public Result getUnauthorizedResult(Context context) {
 
+        //
+        // diagnostic mode
+        //
+        if (ninjaProperties.isDev() && ninjaProperties.isDiagnostic()) {
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build401UnauthorizedDiagnosticError();
+            return Results.unauthorized().render(diagnosticError);
+        }
+        
         String messageI18n
                 = messages.getWithDefault(
                         NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY,
@@ -254,6 +296,15 @@ public class NinjaDefault implements Ninja {
 
     @Override
     public Result getForbiddenResult(Context context) {
+        
+        //
+        // diagnostic mode
+        //
+        if (ninjaProperties.isDev() && ninjaProperties.isDiagnostic()) {
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
+            return Results.unauthorized().render(diagnosticError);
+        }
         
         String messageI18n 
                 = messages.getWithDefault(

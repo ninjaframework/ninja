@@ -307,6 +307,11 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         return (ninjaMode.equals(NinjaMode.test));
     }
     
+    @Override
+    public boolean isDiagnostic() {
+        return this.getBooleanWithDefault(NinjaConstant.DIAGNOSTIC_KEY_NAME , Boolean.FALSE);
+    }
+    
     /**
      * Get the context path on which the application is running
      * 

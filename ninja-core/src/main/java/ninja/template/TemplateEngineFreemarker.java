@@ -46,13 +46,18 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
+import freemarker.core.ParseException;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import java.io.StringWriter;
+import ninja.diagnostics.DiagnosticError;
+import ninja.diagnostics.DiagnosticErrorBuilder;
+import ninja.diagnostics.DiagnosticErrorRenderer;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -76,6 +81,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     private final Configuration cfg;
 
+    private final NinjaProperties ninjaProperties;
+    
     private final Messages messages;
     
     private final Lang lang;
@@ -83,8 +90,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final TemplateEngineHelper templateEngineHelper;
 
     private final Logger logger;
-
-    private final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
 
     private final TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod;
             
@@ -98,7 +103,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
                                     Logger logger,
-                                    TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
                                     TemplateEngineHelper templateEngineHelper,
                                     TemplateEngineManager templateEngineManager,
                                     TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod,
@@ -108,7 +112,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.messages = messages;
         this.lang = lang;
         this.logger = logger;
-        this.templateEngineFreemarkerExceptionHandler = templateEngineFreemarkerExceptionHandler;
+        this.ninjaProperties = ninjaProperties;
         this.templateEngineHelper = templateEngineHelper;
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
@@ -128,8 +132,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         // Ninja does the localization itself - lookup is not needed.
         cfg.setLocalizedLookup(false);
-
-        cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
         ///////////////////////////////////////////////////////////////////////
         // 1) In dev we load templates from src/java/main first, then from the
@@ -310,17 +312,17 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             
             freemarkerTemplate = cfg.getTemplate(templateName);
             
-        } catch (IOException iOException) {
+        } catch (Exception cause) {
             
             logger.error(
-                    "Error reading Freemarker Template {} ", templateName, iOException);
-            
-            throw new RuntimeException(iOException);
+                    "Error reading freemarker template {} ", templateName, cause);
+
+            renderOrThrowException(context, result, cause);
         }
         
         
         ResponseStreams responseStreams = context.finalizeHeaders(result);
-
+        
         try {
             // Fully buffer the response so in the case of a template error we can 
             // return the applications 500 error message. Without fully buffering 
@@ -328,14 +330,60 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             // client.
             StringWriter buffer = new StringWriter(64 * 1024);
             freemarkerTemplate.process(map, buffer);
-            Writer writer = responseStreams.getWriter();
-            writer.write(buffer.toString());
-            writer.close();
-        } catch (Exception e) {            
+            try (Writer writer = responseStreams.getWriter()) {
+                writer.write(buffer.toString());
+            }
+        } catch (Exception cause) {
+            
             logger.error(
-                    "Error processing Freemarker Template {} ", templateName, e);   
-            throw new RuntimeException(e);   
+                    "Error rendering freemarker template {} ", templateName, cause);   
+            
+            renderOrThrowException(context, result, cause);
+            
         }
+    }
+    
+    public void renderOrThrowException(Context context,
+                                        Result result,
+                                        Exception cause) {
+        
+        if (ninjaProperties.isDev() && ninjaProperties.isDiagnostic()) {
+            if (cause instanceof TemplateException || cause instanceof ParseException) {
+                String relativeSourcePath = null;
+                int lineNumber = -1;
+
+                if (cause instanceof TemplateException) {
+                    TemplateException te = (TemplateException)cause;
+                    relativeSourcePath = te.getTemplateSourceName();
+                    lineNumber = te.getLineNumber();
+                }
+                else if (cause instanceof ParseException) {
+                    ParseException pe = (ParseException)cause;
+                    relativeSourcePath = pe.getTemplateName();
+                    lineNumber = pe.getLineNumber();
+                }
+
+                DiagnosticError diagnosticError = DiagnosticErrorBuilder
+                    .buildDiagnosticError(
+                        "FreeMarker rendering exception",
+                        cause,
+                        relativeSourcePath,
+                        lineNumber);
+
+                DiagnosticErrorRenderer
+                    .tryToRenderDiagnosticError(
+                        context,
+                        result,
+                        diagnosticError,
+                        true);
+                
+                return;
+            }
+        }
+        
+        // otherwise rethrow exception
+        throw new RuntimeException(cause);   
+
     }
 
     @Override
