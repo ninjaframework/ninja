@@ -18,6 +18,7 @@ package ninja.bodyparser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 
 import ninja.ContentTypes;
 import ninja.Context;
@@ -25,6 +26,7 @@ import ninja.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -43,12 +45,13 @@ public class BodyParserEngineJson implements BodyParserEngine {
 
     }
 
-    public <T> T invoke(Context context, Class<T> classOfT) {
+    @Override
+    public <T> T invoke(Context context, TypeReference<T> typeOfT) {
         T t = null;
 
         try (InputStream inputStream = context.getInputStream()) {
 
-            t = objectMapper.readValue(inputStream, classOfT);
+            t = objectMapper.readValue(inputStream, typeOfT);
 
         } catch (IOException e) {
             logger.error("Error parsing incoming Json", e);
@@ -56,8 +59,18 @@ public class BodyParserEngineJson implements BodyParserEngine {
 
         return t;
     }
-    
-    public String getContentType() {
+
+	@Override
+	public <T> T invoke(final Context context, final Class<T> classOfT) {
+		return invoke(context, new TypeReference<T>() {
+			@Override
+			public Type getType() {
+				return classOfT;
+			}
+		});
+	}
+
+	public String getContentType() {
         return ContentTypes.APPLICATION_JSON; 
     }
 

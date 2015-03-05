@@ -37,6 +37,7 @@ import ninja.validation.ValidationImpl;
 
 import org.apache.commons.fileupload.FileItemIterator;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
@@ -294,7 +295,13 @@ public class FakeContext implements Context {
         return classOfT.cast(body);
     }
 
-    @Override
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T parseBody(final TypeReference<T> typeOfT) {
+		return (T) body;
+	}
+
+	@Override
     public boolean isMultipart() {
         return false;
     }

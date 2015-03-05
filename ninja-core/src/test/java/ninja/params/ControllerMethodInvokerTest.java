@@ -16,12 +16,6 @@
 
 package ninja.params;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,12 +23,10 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
 import ninja.Context;
 import ninja.Result;
 import ninja.RoutingException;
@@ -45,16 +37,22 @@ import ninja.validation.NumberValue;
 import ninja.validation.Required;
 import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -690,7 +688,7 @@ public class ControllerMethodInvokerTest {
     @Test
     public void bodyShouldBeParsedIntoLeftOverParameter() {
         Object body = new Object();
-        when(context.parseBody(Object.class)).thenReturn(body);
+        when(context.parseBody(any(TypeReference.class))).thenReturn(body);
         create("body").invoke(mockController, context);
         verify(mockController).body(body);
     }
@@ -785,8 +783,9 @@ public class ControllerMethodInvokerTest {
     }
 
     private void validateJSR303(Dto dto) {
-        when(context.parseBody(Dto.class)).thenReturn(dto);
-        create("JSR303Validation").invoke(mockController, context);
+	    when(context.parseBody(any(TypeReference.class))).thenReturn(dto);
+	    when(context.parseBody(Dto.class)).thenReturn(dto);
+	    create("JSR303Validation").invoke(mockController, context);
     }
 
     private void validateJSR303WithRequired(Dto dto) {

@@ -17,17 +17,18 @@
 package ninja.bodyparser;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.utils.SwissKnife;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -35,13 +36,23 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
     private final Logger logger = LoggerFactory.getLogger(BodyParserEnginePost.class);
 
+	@Inject
+	private ObjectMapper mapper;
+
+	public BodyParserEnginePost() {
+		mapper = new ObjectMapper();
+	}
+
+	@SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(Context context, Class<T> classOfT) {
+    public <T> T invoke(Context context, TypeReference<T> typeOfT) {
         
-        T t = null;
+        T t;
+	    Class<T> classOfT = null;
 
         try {
-            t = classOfT.newInstance();
+	        classOfT = (Class<T>) mapper.getTypeFactory().constructType(typeOfT).getRawClass();
+	        t = classOfT.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             logger.error("Can't create new instance of class {}", classOfT.getName(), e);
             return null;
@@ -84,7 +95,17 @@ public class BodyParserEnginePost implements BodyParserEngine {
         return t;
     }
 
-    public String getContentType() {
+	@Override
+	public <T> T invoke(final Context context, final Class<T> classOfT) {
+		return invoke(context, new TypeReference<T>() {
+			@Override
+			public Type getType() {
+				return classOfT;
+			}
+		});
+	}
+
+	public String getContentType() {
         return ContentTypes.APPLICATION_POST_FORM;
     }
 

@@ -16,23 +16,10 @@
 
 package ninja.servlet;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Map;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
@@ -47,7 +34,6 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
 import ninja.validation.Validation;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,8 +41,19 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Maps;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextImplTest {
@@ -674,7 +671,7 @@ public class ContextImplTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
         when(bodyParserEngineManager.getBodyParserEngineForContentType("application/json")).thenReturn(bodyParserEngine);
-        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
+        when(bodyParserEngine.invoke(Matchers.eq(context), Matchers.isA(TypeReference.class))).thenReturn(new Dummy());
 
         Object o = context.parseBody(Dummy.class);
 
@@ -696,7 +693,7 @@ public class ContextImplTest {
         Dummy dummy = new Dummy();
         dummy.name = "post";
         dummy.count = 245L;
-        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(dummy);
+	    when(bodyParserEngine.invoke(Matchers.eq(context), Matchers.any(TypeReference.class))).thenReturn(dummy);
 
         Dummy o = context.parseBody(Dummy.class);
 
@@ -747,7 +744,7 @@ public class ContextImplTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
         when(bodyParserEngineManager.getBodyParserEngineForContentType("application/xml")).thenReturn(bodyParserEngine);
-        when(bodyParserEngine.invoke(context, Dummy.class)).thenReturn(new Dummy());
+	    when(bodyParserEngine.invoke(Matchers.eq(context), Matchers.any(TypeReference.class))).thenReturn(new Dummy());
 
         Object o = context.parseBody(Dummy.class);
 

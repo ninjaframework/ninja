@@ -28,6 +28,7 @@ import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * A wrapped context. Useful if filters want to modify the context before
@@ -157,7 +158,12 @@ public class WrappedContext implements Context {
         return wrapped.parseBody(classOfT);
     }
 
-    @Override
+	@Override
+	public <T> T parseBody(final TypeReference<T> typeOfT) {
+		return wrapped.parseBody(typeOfT);
+	}
+
+	@Override
     public boolean isAsync() {
         return wrapped.isAsync();
     }
