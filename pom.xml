@@ -22,7 +22,7 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.6-SNAPSHOT</version>
+    <version>4.0.7-SNAPSHOT</version>
     <url>http://www.ninjaframework.org</url>
 
     <!-- Deploy to central maven using the oss-parent of sonatype -->
@@ -59,7 +59,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.2.3.v20140905</jetty.version>
+        <jetty.version>9.2.9.v20150224</jetty.version>
         <hibernate.version>4.3.5.Final</hibernate.version>
         <jackson.version>2.4.3</jackson.version>
         <guice.version>4.0-beta5</guice.version>
@@ -394,7 +394,7 @@
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker-gae</artifactId>
-                <version>2.3.21</version>
+                <version>2.3.22</version>
             </dependency>
 
             <!-- guava is just cool -->

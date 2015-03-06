@@ -47,6 +47,10 @@ Authentication module
 
  * https://github.com/svenkubiak/ninja-authentication
 
+Hazelcast Cache Implementation
+
+ * https://github.com/raptaml/ninja-hazelcast-embedded
+
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 
 (ninja/ninja-core/src/site/markdown/documentation/modules.md)

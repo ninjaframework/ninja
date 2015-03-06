@@ -70,7 +70,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     }
     // end
     
-    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 21);
+    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 22);
 
     private final String FILE_SUFFIX = ".ftl.html";
 
@@ -318,9 +318,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             throw new RuntimeException(iOException);
         }
         
-        
-        ResponseStreams responseStreams = context.finalizeHeaders(result);
-
         try {
             // Fully buffer the response so in the case of a template error we can 
             // return the applications 500 error message. Without fully buffering 
@@ -328,6 +325,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             // client.
             StringWriter buffer = new StringWriter(64 * 1024);
             freemarkerTemplate.process(map, buffer);
+            ResponseStreams responseStreams = context.finalizeHeaders(result);
             Writer writer = responseStreams.getWriter();
             writer.write(buffer.toString());
             writer.close();
