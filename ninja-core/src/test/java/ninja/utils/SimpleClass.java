@@ -16,8 +16,6 @@
 
 package ninja.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Simple class. Used to test e.g. the {@link ObjectMapper}.
  */

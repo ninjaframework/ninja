@@ -44,7 +44,7 @@ public class WrappedContext implements Context {
 
     @Override
     public String getRequestUri() {
-        return wrapped.getRequestPath();
+        return wrapped.getRequestUri();
     }
 
     @Override
@@ -64,12 +64,12 @@ public class WrappedContext implements Context {
 
     @Override
     public FlashScope getFlashCookie() {
-        return wrapped.getFlashScope();
+        return wrapped.getFlashCookie();
     }
 
     @Override
     public Session getSessionCookie() {
-        return wrapped.getSession();
+        return wrapped.getSessionCookie();
     }
     
     @Override
