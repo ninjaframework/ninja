@@ -17,9 +17,18 @@ public class AuthenticityController {
     public Result token() {
         return Results.html();
     }
+    
+    public Result authenticate() {
+        return Results.html();
+    }
 
     @FilterWith(AuthenticityFilter.class)
     public Result unauthorized() {
+        return Results.html();
+    }
+    
+    @FilterWith(AuthenticityFilter.class)
+    public Result authorized() {
         return Results.html();
     }
 }
