@@ -50,7 +50,7 @@ public class BodyParserEngineJsonTest {
                 BodyParserEngineJsonTest.DATA_LASTSEEN);
         final InputStream is = new ByteArrayInputStream(jsonDocument.getBytes());
         final ObjectMapper jsonObjMapper = new ObjectMapper();
-        final BodyParserEngineJson bodyParserEnginePost = new BodyParserEngineJson(jsonObjMapper);
+        final BodyParserEngineJson bodyParserEngineJson = new BodyParserEngineJson(jsonObjMapper);
         SimpleTestForm testForm = null;
 
         try {
@@ -58,7 +58,7 @@ public class BodyParserEngineJsonTest {
         } catch (IOException ignore) {
         }
         try {
-            testForm = bodyParserEnginePost.invoke(context, SimpleTestForm.class);
+            testForm = bodyParserEngineJson.invoke(context, SimpleTestForm.class);
         } catch (BadRequestException ignore) {
         } finally {
             try {
@@ -89,7 +89,7 @@ public class BodyParserEngineJsonTest {
         final String jsonDocument = "";
         final InputStream is = new ByteArrayInputStream(jsonDocument.getBytes());
         final ObjectMapper jsonObjMapper = new ObjectMapper();
-        final BodyParserEngineJson bodyParserEnginePost = new BodyParserEngineJson(jsonObjMapper);
+        final BodyParserEngineJson bodyParserEngineJson = new BodyParserEngineJson(jsonObjMapper);
         boolean badRequestThrown = false;
 
         try {
@@ -97,7 +97,7 @@ public class BodyParserEngineJsonTest {
         } catch (IOException ignore) {
         }
         try {
-            bodyParserEnginePost.invoke(context, SimpleTestForm.class);
+            bodyParserEngineJson.invoke(context, SimpleTestForm.class);
         } catch (BadRequestException ignore) {
             badRequestThrown = true;
         } finally {
@@ -119,7 +119,7 @@ public class BodyParserEngineJsonTest {
                 BodyParserEngineJsonTest.DATA_LASTSEEN);
         final InputStream is = new ByteArrayInputStream(jsonDocument.getBytes());
         final ObjectMapper jsonObjMapper = new ObjectMapper();
-        final BodyParserEngineJson bodyParserEnginePost = new BodyParserEngineJson(jsonObjMapper);
+        final BodyParserEngineJson bodyParserEngineJson = new BodyParserEngineJson(jsonObjMapper);
         boolean badRequestThrown = false;
 
         try {
@@ -127,7 +127,7 @@ public class BodyParserEngineJsonTest {
         } catch (IOException ignore) {
         }
         try {
-            bodyParserEnginePost.invoke(context, SimpleTestForm.class);
+            bodyParserEngineJson.invoke(context, SimpleTestForm.class);
         } catch (BadRequestException ignore) {
             badRequestThrown = true;
         } finally {
@@ -142,14 +142,14 @@ public class BodyParserEngineJsonTest {
 
     @Test
     public void testJsonBodyWithFullSpacesAndEndOfLines() {
-        final String jsonDocument = String.format("  \n\n\n    {  \n    \"firstName\"    :   \"%s\", \"lastName\"\n : \"%s\", \"birthYear\":%d,\n \"lastSeen\":\"%s\"}   ",
+        final String jsonDocument = String.format("  \n\n\n    {  \n    \"firstName\"  \n  :   \"%s\", \"lastName\"\n : \"%s\", \"birthYear\":%d,\n \"lastSeen\":\"%s\"}   ",
                 BodyParserEngineJsonTest.DATA_FIRSTNAME,
                 BodyParserEngineJsonTest.DATA_LASTNAME,
                 BodyParserEngineJsonTest.DATA_BIRTHYEAR,
                 BodyParserEngineJsonTest.DATA_LASTSEEN);
         final InputStream is = new ByteArrayInputStream(jsonDocument.getBytes());
         final ObjectMapper jsonObjMapper = new ObjectMapper();
-        final BodyParserEngineJson bodyParserEnginePost = new BodyParserEngineJson(jsonObjMapper);
+        final BodyParserEngineJson bodyParserEngineJson = new BodyParserEngineJson(jsonObjMapper);
         SimpleTestForm testForm = null;
 
         try {
@@ -157,7 +157,7 @@ public class BodyParserEngineJsonTest {
         } catch (IOException ignore) {
         }
         try {
-            testForm = bodyParserEnginePost.invoke(context, SimpleTestForm.class);
+            testForm = bodyParserEngineJson.invoke(context, SimpleTestForm.class);
         } catch (BadRequestException ignore) {
         } finally {
             try {
@@ -190,7 +190,7 @@ public class BodyParserEngineJsonTest {
                 BodyParserEngineJsonTest.DATA_LASTNAME);
         final InputStream is = new ByteArrayInputStream(jsonDocument.getBytes());
         final ObjectMapper jsonObjMapper = new ObjectMapper();
-        final BodyParserEngineJson bodyParserEnginePost = new BodyParserEngineJson(jsonObjMapper);
+        final BodyParserEngineJson bodyParserEngineJson = new BodyParserEngineJson(jsonObjMapper);
         SimpleTestForm testForm = null;
 
         try {
@@ -198,7 +198,7 @@ public class BodyParserEngineJsonTest {
         } catch (IOException ignore) {
         }
         try {
-            testForm = bodyParserEnginePost.invoke(context, SimpleTestForm.class);
+            testForm = bodyParserEngineJson.invoke(context, SimpleTestForm.class);
         } catch (BadRequestException ignore) {
         } finally {
             try {

@@ -41,9 +41,7 @@ public class BodyParserEngineXml implements BodyParserEngine {
 
     @Inject
     public BodyParserEngineXml(XmlMapper xmlMapper) {
-
         this.xmlMapper = xmlMapper;
-
     }
 
     public <T> T invoke(Context context, Class<T> classOfT) {
