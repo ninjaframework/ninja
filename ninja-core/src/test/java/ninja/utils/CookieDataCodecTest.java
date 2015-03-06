@@ -16,7 +16,8 @@
 
 package ninja.utils;
 
-import static ninja.utils.CookieDataCodec.*;
+import static ninja.utils.CookieDataCodec.decode;
+import static ninja.utils.CookieDataCodec.encode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 

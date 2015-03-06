@@ -18,10 +18,10 @@ package ninja.postoffice.mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.common.MailImpl;
+
 import org.junit.Test;
 
 public class PostofficeMockImplTest {

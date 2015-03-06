@@ -28,7 +28,6 @@ import models.ArticleDto;
 import models.ArticlesDto;
 import ninja.NinjaTest;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
@@ -145,6 +144,7 @@ public class ApiControllerTest extends NinjaTest {
         GsonBuilder builder = new GsonBuilder();
         // Register an adapter to manage the date types as long values
         builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            @Override
             public Date deserialize(JsonElement json,
                                     Type typeOfT,
                                     JsonDeserializationContext context)

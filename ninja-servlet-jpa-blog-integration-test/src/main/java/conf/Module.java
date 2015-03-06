@@ -23,6 +23,7 @@ import com.google.inject.Singleton;
 public class Module extends AbstractModule {
     
 
+    @Override
     protected void configure() {
         
         bind(StartupActions.class);    

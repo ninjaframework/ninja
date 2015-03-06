@@ -83,7 +83,7 @@ public class ArgumentExtractors {
     public static class SessionExtractor implements ArgumentExtractor<Session> {
         @Override
         public Session extract(Context context) {
-            return context.getSessionCookie();
+            return context.getSession();
         }
 
         @Override
@@ -100,7 +100,7 @@ public class ArgumentExtractors {
     public static class FlashExtractor implements ArgumentExtractor<FlashScope> {
         @Override
         public FlashScope extract(Context context) {
-            return context.getFlashCookie();
+            return context.getFlashScope();
         }
 
         @Override
@@ -246,7 +246,7 @@ public class ArgumentExtractors {
 
         @Override
         public String extract(Context context) {
-            return context.getSessionCookie().get(key);
+            return context.getSession().get(key);
         }
 
         @Override

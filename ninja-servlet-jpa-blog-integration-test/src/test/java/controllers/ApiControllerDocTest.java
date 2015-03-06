@@ -102,6 +102,7 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
         GsonBuilder builder = new GsonBuilder();
         // Register an adapter to manage the date types as long values
         builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            @Override
             public Date deserialize(JsonElement json,
                                     Type typeOfT,
                                     JsonDeserializationContext context)

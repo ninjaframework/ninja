@@ -16,12 +16,13 @@
 
 package ninja.metrics;
 
-import com.codahale.metrics.MetricRegistry;
 import ninja.utils.NinjaProperties;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
+
+import com.codahale.metrics.MetricRegistry;
 
 public class MetricsServiceImplTest {
     

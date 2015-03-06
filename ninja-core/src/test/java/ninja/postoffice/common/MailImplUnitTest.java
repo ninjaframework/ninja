@@ -17,8 +17,8 @@
 package ninja.postoffice.common;
 
 import static org.junit.Assert.assertTrue;
-
 import ninja.postoffice.Mail;
+
 import org.junit.Test;
 
 public class MailImplUnitTest {
