@@ -1,6 +1,7 @@
 Version x.x.x
 =============
 
+ * 2015-03-06 #327 Fixed bug that lead to failed authenticity check (svenkubiak)
  * 2015-03-01 Bump to freemaker 2.3.22 (ra)
 
 
