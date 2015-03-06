@@ -85,17 +85,25 @@ public class SourceSnippetHelper {
                                                         URI source,
                                                         int lineFrom,
                                                         int lineTo) throws IOException {
-        if (lineTo <= 0) {
-            throw new IllegalArgumentException("lineTo was <= 0");
+        // did the user provide a strange range (e.g. negative values)?
+        // this sometimes may happen when a range is provided like an error
+        // on line 3 and you want 5 before and 5 after
+        if (lineFrom < 1 && lineTo > 0) {
+            // calculate intended range
+            int intendedRange = lineTo - lineFrom;
+            lineFrom = 1;
+            lineTo = lineFrom + intendedRange;
         }
-        
-        // just zero this out
-        if (lineFrom < 0) {
-            lineFrom = 0;
-        }
-        
-        if (lineTo < lineFrom) {
-            throw new IllegalArgumentException("lineTo was < lineFrom");
+        else if (lineFrom < 0 && lineTo < 0) {
+            if (lineFrom < lineTo) {
+                int intendedRange = -1 * (lineFrom - lineTo);
+                lineFrom = 1;
+                lineTo = lineFrom + intendedRange;
+            }
+            else {
+                // giving up
+                return null;
+            }
         }
         
         BufferedReader in = new BufferedReader(
@@ -121,7 +129,8 @@ public class SourceSnippetHelper {
         }
         
         // since file may not contain enough lines for requested lineTo -- 
-        // we caclulate the actual range here by number read "from" line.
-        return new SourceSnippet(source, lines, lineFrom, lineFrom + lines.size());
+        // we caclulate the actual range here by number read "from" line
+        // since we are inclusive and not zero based we adjust the "from" by 1
+        return new SourceSnippet(source, lines, lineFrom, lineFrom + lines.size() - 1);
     }
 }

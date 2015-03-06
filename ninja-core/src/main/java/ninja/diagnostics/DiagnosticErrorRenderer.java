@@ -99,15 +99,17 @@ public class DiagnosticErrorRenderer {
         headerTemplate = headerTemplate.replace("${STYLE}", styleTemplate);
         
         s.append(headerTemplate);
+        
+        if (result != null) {
+            s.append("    <p id=\"detail\">\n");
                    
-        s.append("    <p id=\"detail\">\n");
+            if (result.getStatusCode() != 200) {
+                s.append ("Status code ").append(result.getStatusCode());
+            }
                    
-        if (result.getStatusCode() != 200) {
-            s.append ("Status code ").append(result.getStatusCode());
+            s.append(" for request '").append(context.getMethod()).append(" ").append(context.getRequestPath()).append("'\n");
+            s.append("    </p>\n");
         }
-                   
-        s.append(" for request '").append(context.getMethod()).append(" ").append( context.getRequestPath()).append("'\n");
-        s.append("    </p>\n");
         
         return this;
     }
