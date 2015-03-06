@@ -18,6 +18,7 @@ package ninja.template;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
@@ -52,7 +53,6 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.Version;
-import java.io.StringWriter;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -318,9 +318,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             throw new RuntimeException(iOException);
         }
         
-        
-        ResponseStreams responseStreams = context.finalizeHeaders(result);
-
         try {
             // Fully buffer the response so in the case of a template error we can 
             // return the applications 500 error message. Without fully buffering 
@@ -328,6 +325,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             // client.
             StringWriter buffer = new StringWriter(64 * 1024);
             freemarkerTemplate.process(map, buffer);
+            ResponseStreams responseStreams = context.finalizeHeaders(result);
             Writer writer = responseStreams.getWriter();
             writer.write(buffer.toString());
             writer.close();
