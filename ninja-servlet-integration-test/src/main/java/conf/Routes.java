@@ -159,6 +159,7 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/token").with(AuthenticityController.class, "token");
         router.GET().route("/form").with(AuthenticityController.class, "form");
         router.GET().route("/authenticate").with(AuthenticityController.class, "authenticate");
+        router.GET().route("/notauthenticate").with(AuthenticityController.class, "notauthenticate");
         router.GET().route("/unauthorized").with(AuthenticityController.class, "unauthorized");
         router.POST().route("/authorized").with(AuthenticityController.class, "authorized");
         

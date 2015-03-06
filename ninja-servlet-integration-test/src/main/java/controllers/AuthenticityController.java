@@ -21,6 +21,10 @@ public class AuthenticityController {
     public Result authenticate() {
         return Results.html();
     }
+    
+    public Result notauthenticate() {
+        return Results.html();
+    }
 
     @FilterWith(AuthenticityFilter.class)
     public Result unauthorized() {
