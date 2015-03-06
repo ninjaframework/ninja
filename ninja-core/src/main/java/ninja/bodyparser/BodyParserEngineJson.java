@@ -16,49 +16,47 @@
 
 package ninja.bodyparser;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import ninja.ContentTypes;
-import ninja.Context;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import ninja.ContentTypes;
+import ninja.Context;
+import ninja.exceptions.BadRequestException;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * Built in Json body parser.
+ *
+ * @author Raphael Bauer
+ * @author Thibault Meyer
+ * @see ninja.bodyparser.BodyParserEngine
+ */
 @Singleton
 public class BodyParserEngineJson implements BodyParserEngine {
-    
-    private final Logger logger = LoggerFactory.getLogger(BodyParserEngineJson.class);
-    
+
     private final ObjectMapper objectMapper;
 
     @Inject
     public BodyParserEngineJson(ObjectMapper objectMapper) {
-        
         this.objectMapper = objectMapper;
-
     }
 
     public <T> T invoke(Context context, Class<T> classOfT) {
-        T t = null;
-
         try (InputStream inputStream = context.getInputStream()) {
-
-            t = objectMapper.readValue(inputStream, classOfT);
-
+            return objectMapper.readValue(inputStream, classOfT);
+        } catch (JsonParseException | JsonMappingException ex) {
+            throw new BadRequestException("Error parsing incoming Json", ex);
         } catch (IOException e) {
-            logger.error("Error parsing incoming Json", e);
+            throw new BadRequestException("Invalid Json document", e);
         }
-
-        return t;
     }
-    
+
     public String getContentType() {
-        return ContentTypes.APPLICATION_JSON; 
+        return ContentTypes.APPLICATION_JSON;
     }
 
 }
