@@ -83,7 +83,7 @@ public class FlashScopeImpl implements FlashScope {
 
                 Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
                     + NinjaConstant.FLASH_SUFFIX, "");
-                cookie.setPath("/");
+                cookie.setPath(context.getContextPath() + "/");
                 cookie.setSecure(false);
                 cookie.setMaxAge(0);
 
@@ -102,7 +102,7 @@ public class FlashScopeImpl implements FlashScope {
 
                 Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
                         + ninja.utils.NinjaConstant.FLASH_SUFFIX, flashData);
-                cookie.setPath("/");
+                cookie.setPath(context.getContextPath() + "/");
                 cookie.setSecure(false);
                 // "-1" does not set "Expires" for that cookie
                 // => Cookie will live as long as the browser is open theoretically

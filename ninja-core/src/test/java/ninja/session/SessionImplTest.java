@@ -34,6 +34,8 @@ import ninja.utils.Crypto;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.SecretGenerator;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +47,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 @RunWith(Parameterized.class)
@@ -382,6 +385,20 @@ public class SessionImplTest {
         // also make sure the timestamp is there:
         assertTrue(valueWithoutSign.contains(Session.TIMESTAMP_KEY));
 
+    }
+
+    @Test
+    public void testThatCookieUsesContextPath() {
+        Mockito.when(context.getContextPath()).thenReturn("/my_context");
+        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        sessionCookie.init(context);
+        sessionCookie.put("anykey", "anyvalue");
+
+        sessionCookie.save(context, result);
+
+        verify(result).addCookie(cookieCaptor.capture());
+        Cookie cookie = cookieCaptor.getValue();
+        Assert.assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
     }
 
 }
