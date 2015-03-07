@@ -98,6 +98,10 @@ public interface NinjaConstant {
      */
     final String applicationCookieDomain = "application.cookie.domain";
 
+    /**
+     * Encryption of session cookies. Specify a boolean value. False by default.
+     */
+    final String applicationCookieEncrypted = "application.cookie.encryption";
 
     /** Used to verify client side cookie for instance. */
     final String applicationName = "application.name";

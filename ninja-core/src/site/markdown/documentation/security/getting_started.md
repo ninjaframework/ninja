@@ -4,7 +4,7 @@ Security Guide
 Session security
 ----------------
 
-A Ninja session is a hash of key/values, signed but not encrypted. 
+A Ninja session is a hash of key/values, signed but not encrypted by default (see next section to enable encryption). 
 That means that as long as your secret is safe, it is not possible for a third-party to forge sessions.
 
 The secret is stored as key <code>application.secret</code> at <code>conf/application.conf.</code>
@@ -22,6 +22,16 @@ and a special application.secret that is not used in regular development. You ca
 configuration by using a system variable:
 
 <code> ... -Dninja.external.configuration=/mydir/deployment.conf"</code>.
+
+
+Encrypting sessions
+-------------------
+
+Setting up Ninja to encrypt sessions is very easy: You have to enable encryption in the configuration file,
+(<code>application.conf</code>), by setting <code>application.cookie.encryption=true</code>. 
+
+Ninja is using at least AES/128 which should be fine for even the most demanding scenarios. 
+You can increase the strength of AES by installing the Java Cryptography Extensions into your JDK.
 
 
 Generating a new session secret
