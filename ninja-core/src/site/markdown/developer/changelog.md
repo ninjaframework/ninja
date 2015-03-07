@@ -2,6 +2,7 @@ Version x.x.x
 =============
 
  * 2015-03-06 #327 Fixed bug that lead to failed authenticity check (svenkubiak)
+ * 2015-03-04 Added session cookie encryption (bazi)
  * 2015-03-01 Bump to freemaker 2.3.22 (ra)
  * 2015-02-24 Organized imports on all projects, refactored deprecated calls (svenkubiak)
 

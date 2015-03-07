@@ -24,10 +24,12 @@ More on sessions: (http://en.wikipedia.org/wiki/Session_(computer_science))
 
 
 <div class="alert alert-info">
-Ninja sessions currently are not encrypted. 
+Ninja sessions are not encrypted by default. 
 Therefore you should not store any 
-critical information. Storing a user id, oder username is fine. Storing
-credit card information is really bad practise.
+critical information. Storing a user id, or username is fine. Storing
+credit card information is really bad practise. But if you need to include sensitive data for any reasons,
+you can encrypt sessions as described in <a href="documentation/security/getting_started.html">Security</a>
+page.
 </div>
 
 Reading a session value
@@ -81,3 +83,5 @@ public Result clearSession(Session session) {
 
 }
 </pre>
+
+
