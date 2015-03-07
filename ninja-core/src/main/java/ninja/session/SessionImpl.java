@@ -179,7 +179,7 @@ public class SessionImpl implements Session {
             if (context.hasCookie(sessionCookieName)) {
 
                 Cookie.Builder expiredSessionCookie = Cookie.builder(sessionCookieName, "");
-                expiredSessionCookie.setPath("/");
+                expiredSessionCookie.setPath(context.getContextPath() + "/");
                 expiredSessionCookie.setMaxAge(0);
 
                 result.addCookie(expiredSessionCookie.build());
@@ -203,7 +203,7 @@ public class SessionImpl implements Session {
             String sign = crypto.signHmacSha1(sessionData);
 
             Cookie.Builder cookie = Cookie.builder(sessionCookieName, sign + "-" + sessionData);
-            cookie.setPath("/");
+            cookie.setPath(context.getContextPath() + "/");
 
             if(applicationCookieDomain != null){
                 cookie.setDomain(applicationCookieDomain);
