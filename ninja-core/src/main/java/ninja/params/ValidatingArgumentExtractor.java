@@ -44,7 +44,7 @@ public class ValidatingArgumentExtractor<T> implements ArgumentExtractor<T> {
         }
         // Apply validators
         for (Validator<T> validator : validators) {
-            validator.validate(value, wrapped.getFieldName(), context.getValidation());
+            validator.validate(value, wrapped.getFieldName(), context.getValidation(), context);
             if (context.getValidation().hasFieldViolation(wrapped.getFieldName())) {
                 // Break if validation failed
                 break;
