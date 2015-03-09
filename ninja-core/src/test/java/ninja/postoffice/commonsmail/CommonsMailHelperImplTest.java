@@ -28,6 +28,7 @@ import ninja.postoffice.Mail;
 import ninja.postoffice.common.MailImpl;
 import ninja.postoffice.common.MailImplTestHelper;
 import ninja.postoffice.common.Tuple;
+
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.MultiPartEmail;
 import org.junit.Before;

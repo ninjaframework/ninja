@@ -49,6 +49,7 @@ public class Configuration extends AbstractModule {
         this.ninjaProperties = ninjaProperties;
     }
 
+    @Override
     public void configure() {
 
         System.setProperty("file.encoding", "utf-8");

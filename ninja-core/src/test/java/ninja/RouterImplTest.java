@@ -16,20 +16,20 @@
 
 package ninja;
 
-import com.google.common.base.Optional;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
-import ninja.utils.NinjaProperties;
-import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+import ninja.utils.NinjaProperties;
+
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 /**
  * => Most tests are done via class RoutesTest in project

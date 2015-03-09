@@ -21,13 +21,14 @@ import java.io.Writer;
 
 import ninja.utils.NinjaProperties;
 
+import org.slf4j.Logger;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-import org.slf4j.Logger;
 
 /**
  * A general exception handler for Freemarker.

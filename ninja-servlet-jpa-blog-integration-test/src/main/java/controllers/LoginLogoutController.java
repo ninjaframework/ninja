@@ -50,16 +50,16 @@ public class LoginLogoutController {
         
         
         if (isUserNameAndPasswordValid) {
-            context.getSessionCookie().put("username", username);
-            context.getFlashCookie().success("login.loginSuccessful");
+            context.getSession().put("username", username);
+            context.getFlashScope().success("login.loginSuccessful");
             
             return Results.redirect("/");
             
         } else {
             
             // something is wrong with the input or password not found.
-            context.getFlashCookie().put("username", username);
-            context.getFlashCookie().error("login.errorLogin");
+            context.getFlashScope().put("username", username);
+            context.getFlashScope().error("login.errorLogin");
 
             return Results.redirect("/login");
             
@@ -73,8 +73,8 @@ public class LoginLogoutController {
     public Result logout(Context context) {
 
         // remove any user dependent information
-        context.getSessionCookie().clear();
-        context.getFlashCookie().success("login.logoutSuccessful");
+        context.getSession().clear();
+        context.getFlashScope().success("login.logoutSuccessful");
 
         return Results.redirect("/");
 

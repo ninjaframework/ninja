@@ -1,6 +1,16 @@
-Version X.X.X
+Version x.x.x
 =============
 
+ * 2015-03-07 Using context.getContextPath() as prefix in cookie path (jfendler/ra)
+ * 2015-03-06 #327 Fixed bug that lead to failed authenticity check (svenkubiak)
+ * 2015-03-04 Added session cookie encryption (bazi)
+ * 2015-03-01 Bump to freemaker 2.3.22 (ra)
+ * 2015-02-24 Organized imports on all projects, refactored deprecated calls (svenkubiak)
+
+Version 4.0.6
+=============
+
+ * 2015-02-27 Important security fix against leak in Jetty [CVE-2015-2080] (ra)
  * 2015-02-23 Full page template buffering for better error pages (PR #311) (t3hc13h)
  * 2015-02-19 AuthenticityToken support (SecureFilter, template enhancements) (svenkubiak)
  * 2015-02-12 #301 Fixed system specific line separator for String comparison (raptaml)

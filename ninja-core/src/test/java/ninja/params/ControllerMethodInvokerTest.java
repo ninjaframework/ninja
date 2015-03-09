@@ -74,8 +74,8 @@ public class ControllerMethodInvokerTest {
     @Before
     public void setUp() throws Exception {
         validation = new ValidationImpl();
-        when(context.getSessionCookie()).thenReturn(session);
-        when(context.getFlashCookie()).thenReturn(flash);
+        when(context.getSession()).thenReturn(session);
+        when(context.getFlashScope()).thenReturn(flash);
         when(context.getValidation()).thenReturn(validation);
     }
 

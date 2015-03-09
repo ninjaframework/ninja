@@ -46,6 +46,7 @@ public class ResponseStreamsServlet implements ResponseStreams {
      *
      * @return The output stream
      */
+    @Override
     public OutputStream getOutputStream() throws IOException {
         return httpServletResponse.getOutputStream();
     }
@@ -57,6 +58,7 @@ public class ResponseStreamsServlet implements ResponseStreams {
      *
      * @return The writer
      */
+    @Override
     public Writer getWriter() throws IOException {
         return httpServletResponse.getWriter();
     }
