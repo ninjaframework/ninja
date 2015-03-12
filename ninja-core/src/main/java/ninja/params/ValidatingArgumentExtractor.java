@@ -16,17 +16,19 @@
 
 package ninja.params;
 
-import java.util.List;
-
 import ninja.Context;
 import ninja.validation.Validator;
 
+import java.util.List;
+
 /**
- * Argument extractor that wraps another argument extractor and validates its argument
+ * Argument extractor that wraps another argument extractor and validates
+ * its argument
  *
  * @author James Roper
  */
 public class ValidatingArgumentExtractor<T> implements ArgumentExtractor<T> {
+
     private final ArgumentExtractor<T> wrapped;
     private final List<Validator<T>> validators;
 
@@ -37,15 +39,15 @@ public class ValidatingArgumentExtractor<T> implements ArgumentExtractor<T> {
 
     @Override
     public T extract(Context context) {
-        T value = wrapped.extract(context);
+        final T value = this.wrapped.extract(context);
         // Check if we already have a validation error from a previous stage
-        if (context.getValidation().hasFieldViolation(wrapped.getFieldName())) {
+        if (context.getValidation().hasFieldViolation(this.wrapped.getFieldName())) {
             return value;
         }
         // Apply validators
-        for (Validator<T> validator : validators) {
-            validator.validate(value, wrapped.getFieldName(), context.getValidation(), context);
-            if (context.getValidation().hasFieldViolation(wrapped.getFieldName())) {
+        for (Validator<T> validator : this.validators) {
+            validator.validate(value, this.wrapped.getFieldName(), context);
+            if (context.getValidation().hasFieldViolation(this.wrapped.getFieldName())) {
                 // Break if validation failed
                 break;
             }
@@ -58,12 +60,11 @@ public class ValidatingArgumentExtractor<T> implements ArgumentExtractor<T> {
 
     @Override
     public Class<T> getExtractedType() {
-        return wrapped.getExtractedType();
+        return this.wrapped.getExtractedType();
     }
 
     @Override
     public String getFieldName() {
-        return wrapped.getFieldName();
+        return this.wrapped.getFieldName();
     }
 }
-

@@ -65,30 +65,25 @@ public class Validators {
 
         @Override
         public ConstraintDescriptor<?> getConstraintDescriptor() {
-            return descriptor;
+            return this.descriptor;
         }
 
         @Override
         public Object getValidatedValue() {
-            return value;
+            return this.value;
         }
     }
 
     public static class JSRValidator implements Validator<Object> {
 
         @Override
-        @Deprecated
-        public void validate(Object value, String field, Validation validation) {
-            this.validate(value, field, validation, null);
-        }
-
-        @Override
-        public void validate(Object value, String field, Validation validation, ninja.Context context) {
+        public void validate(Object value, String field, Context context) {
             if (value != null) {
                 final ValidatorFactory validatorFactory = javax.validation.Validation.buildDefaultValidatorFactory();
                 final javax.validation.Validator validator = validatorFactory.getValidator();
                 final Set<javax.validation.ConstraintViolation<Object>> violations = validator.validate(value);
-                final Locale localeToUse = (context == null || context.getAcceptLanguage() == null) ? Locale.getDefault() : Locale.forLanguageTag(context.getAcceptLanguage().split(",", 2)[0]);
+                final Locale localeToUse = (context.getAcceptLanguage() == null) ? Locale.getDefault() : Locale.forLanguageTag(context.getAcceptLanguage().split(",", 2)[0]);
+                final Validation validation = context.getValidation();
 
                 for (javax.validation.ConstraintViolation<Object> violation : violations) {
                     final String violationMessage = validatorFactory.getMessageInterpolator().interpolate(
@@ -117,20 +112,14 @@ public class Validators {
         }
 
         @Override
-        @Deprecated
-        public void validate(Object value, String field, Validation validation) {
-            this.validate(value, field, validation, null);
-        }
-
-        @Override
-        public void validate(Object value, String field, Validation validation, ninja.Context context) {
+        public void validate(Object value, String field, Context context) {
             if (value == null) {
-                validation.addFieldViolation(
+                context.getValidation().addFieldViolation(
                         field,
                         ConstraintViolation.createForFieldWithDefault(
-                                required.key(),
-                                fieldKey(field, required.fieldKey()),
-                                required.message()));
+                                this.required.key(),
+                                fieldKey(field, this.required.fieldKey()),
+                                this.required.message()));
             }
         }
 
@@ -148,33 +137,26 @@ public class Validators {
             this.length = length;
         }
 
-        @Override
-        @Deprecated
-        public void validate(String value, String field, Validation validation) {
-            this.validate(value, field, validation, null);
-        }
-
         /**
          * Validate the given value
          *
-         * @param value      The value, may be null
-         * @param field      The name of the field being validated, if applicable
-         * @param validation The validation context
-         * @param context    The Ninja request context
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
          */
         @Override
-        public void validate(String value, String field, Validation validation, Context context) {
+        public void validate(String value, String field, Context context) {
             if (value != null) {
-                if (length.max() != -1 && value.length() > length.max()) {
-                    validation.addFieldViolation(field, ConstraintViolation
-                            .createForFieldWithDefault(length.maxKey(),
-                                    fieldKey(field, length.fieldKey()),
-                                    length.maxMessage(), length.max(), value));
-                } else if (length.min() != -1 && value.length() < length.min()) {
-                    validation.addFieldViolation(field, ConstraintViolation
-                            .createForFieldWithDefault(length.minKey(),
-                                    fieldKey(field, length.fieldKey()),
-                                    length.minMessage(), length.min(), value));
+                if (this.length.max() != -1 && value.length() > this.length.max()) {
+                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(this.length.maxKey(),
+                                    fieldKey(field, this.length.fieldKey()),
+                                    this.length.maxMessage(), this.length.max(), value));
+                } else if (this.length.min() != -1 && value.length() < this.length.min()) {
+                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(this.length.minKey(),
+                                    fieldKey(field, this.length.fieldKey()),
+                                    this.length.minMessage(), this.length.min(), value));
                 }
             }
         }
@@ -190,33 +172,26 @@ public class Validators {
         private final IsInteger isInteger;
 
         public IntegerValidator(IsInteger integer) {
-            isInteger = integer;
-        }
-
-        @Override
-        @Deprecated
-        public void validate(String value, String field, Validation validation) {
-            this.validate(value, field, validation, null);
+            this.isInteger = integer;
         }
 
         /**
          * Validate the given value
          *
-         * @param value      The value, may be null
-         * @param field      The name of the field being validated, if applicable
-         * @param validation The validation context
-         * @param context    The Ninja request context
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
          */
         @Override
-        public void validate(String value, String field, Validation validation, Context context) {
+        public void validate(String value, String field, Context context) {
             if (value != null) {
                 try {
                     Long.parseLong(value);
                 } catch (NumberFormatException e) {
-                    validation.addFieldViolation(field, ConstraintViolation
-                            .createForFieldWithDefault(isInteger.key(),
-                                    fieldKey(field, isInteger.fieldKey()),
-                                    isInteger.message(), value));
+                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(this.isInteger.key(),
+                                    fieldKey(field, this.isInteger.fieldKey()),
+                                    this.isInteger.message(), value));
                 }
             }
         }
@@ -232,33 +207,26 @@ public class Validators {
         private final IsFloat isFloat;
 
         public FloatValidator(IsFloat aFloat) {
-            isFloat = aFloat;
-        }
-
-        @Override
-        @Deprecated
-        public void validate(String value, String field, Validation validation) {
-            this.validate(value, field, validation, null/**/);
+            this.isFloat = aFloat;
         }
 
         /**
          * Validate the given value
          *
-         * @param value      The value, may be null
-         * @param field      The name of the field being validated, if applicable
-         * @param validation The validation context
-         * @param context    The Ninja request context
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
          */
         @Override
-        public void validate(String value, String field, Validation validation, Context context) {
+        public void validate(String value, String field, Context context) {
             if (value != null) {
                 try {
                     Double.parseDouble(value);
                 } catch (NumberFormatException e) {
-                    validation.addFieldViolation(field, ConstraintViolation
-                            .createForFieldWithDefault(isFloat.key(),
-                                    fieldKey(field, isFloat.fieldKey()),
-                                    isFloat.message(), value));
+                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(this.isFloat.key(),
+                                    fieldKey(field, this.isFloat.fieldKey()),
+                                    this.isFloat.message(), value));
                 }
             }
         }
@@ -276,35 +244,27 @@ public class Validators {
 
         public MatchesValidator(Matches matches) {
             this.matches = matches;
-            pattern = Pattern.compile(matches.regexp());
-        }
-
-        @Override
-        @Deprecated
-        public void validate(String value, String field, Validation validation) {
-            this.validate(value, field, validation, null);
+            this.pattern = Pattern.compile(matches.regexp());
         }
 
         /**
          * Validate the given value
          *
-         * @param value      The value, may be null
-         * @param field      The name of the field being validated, if applicable
-         * @param validation The validation context
-         * @param context    The Ninja request context
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
          */
         @Override
-        public void validate(String value, String field, Validation validation, Context context) {
+        public void validate(String value, String field, Context context) {
             if (value != null) {
-                if (!pattern.matcher(value).matches()) {
-                    validation
-                            .addFieldViolation(
-                                    field,
-                                    ConstraintViolation.createForFieldWithDefault(
-                                            matches.key(),
-                                            fieldKey(field, matches.fieldKey()),
-                                            matches.message(),
-                                            matches.regexp(), value));
+                if (!this.pattern.matcher(value).matches()) {
+                    context.getValidation().addFieldViolation(
+                            field,
+                            ConstraintViolation.createForFieldWithDefault(
+                                    this.matches.key(),
+                                    fieldKey(field, this.matches.fieldKey()),
+                                    this.matches.message(),
+                                    this.matches.regexp(), value));
                 }
             }
         }
@@ -323,35 +283,28 @@ public class Validators {
             this.number = number;
         }
 
-        @Override
-        @Deprecated
-        public void validate(Number value, String field, Validation validation) {
-            this.validate(value, field, validation, null);
-        }
-
         /**
          * Validate the given value
          *
-         * @param value      The value, may be null
-         * @param field      The name of the field being validated, if applicable
-         * @param validation The validation context
-         * @param context    The Ninja request context
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
          */
         @Override
-        public void validate(Number value, String field, Validation validation, Context context) {
+        public void validate(Number value, String field, Context context) {
             if (value != null) {
-                if (number.max() != Double.MAX_VALUE
-                        && value.doubleValue() > number.max()) {
-                    validation.addFieldViolation(field, ConstraintViolation
-                            .createForFieldWithDefault(number.maxKey(),
-                                    fieldKey(field, number.fieldKey()),
-                                    number.maxMessage(), number.max(), value));
-                } else if (number.min() != -1
-                        && value.doubleValue() < number.min()) {
-                    validation.addFieldViolation(field, ConstraintViolation
-                            .createForFieldWithDefault(number.minKey(),
-                                    fieldKey(field, number.fieldKey()),
-                                    number.minMessage(), number.min(), value));
+                if (this.number.max() != Double.MAX_VALUE
+                        && value.doubleValue() > this.number.max()) {
+                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(this.number.maxKey(),
+                                    fieldKey(field, this.number.fieldKey()),
+                                    this.number.maxMessage(), this.number.max(), value));
+                } else if (this.number.min() != -1
+                        && value.doubleValue() < this.number.min()) {
+                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(this.number.minKey(),
+                                    fieldKey(field, this.number.fieldKey()),
+                                    this.number.minMessage(), this.number.min(), value));
                 }
             }
         }
@@ -367,29 +320,22 @@ public class Validators {
         private final IsEnum isEnum;
 
         public EnumValidator(IsEnum anEnum) {
-            isEnum = anEnum;
-        }
-
-        @Override
-        @Deprecated
-        public void validate(String value, String field, Validation validation) {
-            this.validate(value, field, validation, null);
+            this.isEnum = anEnum;
         }
 
         /**
          * Validate the given value
          *
-         * @param value      The value, may be null
-         * @param field      The name of the field being validated, if applicable
-         * @param validation The validation context
-         * @param context    The Ninja request context
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
          */
         @Override
-        public void validate(String value, String field, Validation validation, Context context) {
+        public void validate(String value, String field, Context context) {
             if (value != null) {
-                Enum<?>[] values = isEnum.enumClass().getEnumConstants();
+                Enum<?>[] values = this.isEnum.enumClass().getEnumConstants();
                 for (Enum<?> v : values) {
-                    if (isEnum.caseSensitive()) {
+                    if (this.isEnum.caseSensitive()) {
                         if (v.name().equals(value)) {
                             return;
                         }
@@ -400,8 +346,8 @@ public class Validators {
                     }
                 }
 
-                validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-                        IsEnum.KEY, field, IsEnum.MESSAGE, new Object[]{value, isEnum.enumClass().getName()}));
+                context.getValidation().addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                        IsEnum.KEY, field, IsEnum.MESSAGE, value, this.isEnum.enumClass().getName()));
             }
         }
 

@@ -20,40 +20,24 @@ import ninja.Context;
 
 /**
  * A validator for validating parameters
- * 
+ *
  * @author James Roper
+ * @author Thibault Meyer
  */
 public interface Validator<T> {
-    /**
-     * Validate the given value
-     * 
-     * @param value
-     *            The value, may be null
-     * @param field
-     *            The name of the field being validated, if applicable
-     * @param validation
-     *            The validation context
-     */
-    @Deprecated
-    void validate(T value, String field, Validation validation);
 
     /**
      * Validate the given value
      *
-     * @param value
-     *            The value, may be null
-     * @param field
-     *            The name of the field being validated, if applicable
-     * @param validation
-     *            The validation context
-     * @param context
-     *            The Ninja request context
+     * @param value   The value, may be null
+     * @param field   The name of the field being validated, if applicable
+     * @param context The Ninja request context
      */
-    void validate(T value, String field, Validation validation, Context context);
+    void validate(T value, String field, Context context);
 
     /**
      * Get the type that this validator validates
-     * 
+     *
      * @return The type that the validator validates
      */
     Class<T> getValidatedType();
