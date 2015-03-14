@@ -52,7 +52,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
+/**
+ * ControllerMethodInvokerTest.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerMethodInvokerTest {
 
@@ -77,12 +79,12 @@ public class ControllerMethodInvokerTest {
     @Before
     public void setUp() throws Exception {
         this.ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
-        this.lang = new LangImpl(ninjaProperties);
+        this.lang = new LangImpl(this.ninjaProperties);
         this.validation = new ValidationImpl();
 
-        when(context.getSessionCookie()).thenReturn(session);
-        when(context.getFlashCookie()).thenReturn(flash);
-        when(context.getValidation()).thenReturn(validation);
+        when(this.context.getSession()).thenReturn(this.session);
+        when(this.context.getFlashScope()).thenReturn(this.flash);
+        when(this.context.getValidation()).thenReturn(this.validation);
     }
 
     @Test
@@ -747,18 +749,18 @@ public class ControllerMethodInvokerTest {
     public void validationFailedTranslationFr() {
         when(this.context.getAcceptLanguage()).thenReturn("fr");
         validateJSR303(buildDto("regex", "length - too long", 5));
-        assertTrue(context.getValidation().hasViolations());
-        assertEquals(context.getValidation().getBeanViolations().size(), 1);
-        assertEquals(context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "la taille doit être entre 5 et 10");
+        assertTrue(this.context.getValidation().hasViolations());
+        assertEquals(this.context.getValidation().getBeanViolations().size(), 1);
+        assertEquals(this.context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "la taille doit être entre 5 et 10");
     }
 
     @Test
     public void validationFailedTranslationEn() {
         when(this.context.getAcceptLanguage()).thenReturn("en");
         validateJSR303(buildDto("regex", "length - too long", 5));
-        assertTrue(context.getValidation().hasViolations());
-        assertEquals(context.getValidation().getBeanViolations().size(), 1);
-        assertEquals(context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "size must be between 5 and 10");
+        assertTrue(this.context.getValidation().hasViolations());
+        assertEquals(this.context.getValidation().getBeanViolations().size(), 1);
+        assertEquals(this.context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "size must be between 5 and 10");
     }
 
     @Test

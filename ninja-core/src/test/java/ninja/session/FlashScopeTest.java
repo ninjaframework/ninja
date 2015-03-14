@@ -20,13 +20,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
-import ninja.Results;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,12 +35,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collections;
-
 @RunWith(MockitoJUnitRunner.class)
-public class FlashCookieTest {
+public class FlashScopeTest {
 
     @Mock
     private Context context;
@@ -231,6 +231,19 @@ public class FlashCookieTest {
         // Make sure that getOrDie has been called. This makes sure we have set
         // a cookie prefix:
         verify(ninjaProperties).getOrDie(NinjaConstant.applicationCookiePrefix);
+    }
+    
+    @Test
+    public void testThatCookieUsesContextPath() {
+        Mockito.when(context.getContextPath()).thenReturn("/my_context");
+        FlashScope flashScope = new FlashScopeImpl(ninjaProperties);
+        flashScope.put("anykey", "anyvalue");
+        flashScope.init(context);
+        flashScope.save(context, result);
+
+        verify(result).addCookie(cookieCaptor.capture());
+        Cookie cookie = cookieCaptor.getValue();
+        Assert.assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
     }
 
 }

@@ -22,7 +22,6 @@ import java.util.Map;
 
 import ninja.NinjaTest;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;

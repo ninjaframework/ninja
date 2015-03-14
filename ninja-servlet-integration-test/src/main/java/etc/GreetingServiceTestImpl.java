@@ -22,9 +22,10 @@ public class GreetingServiceTestImpl implements GreetingService {
 
     private final long initTime = new Date().getTime();
 
-	public String hello() {
-		return "hi!!!!";
-	}
+    @Override
+    public String hello() {
+        return "hi!!!!";
+    }
 
     @Override
     public long getServiceInitializationTime() {

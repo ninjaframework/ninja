@@ -16,7 +16,11 @@
 
 package ninja;
 
-import com.google.common.base.Optional;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.InternalServerErrorException;
 import ninja.i18n.Messages;
@@ -24,19 +28,18 @@ import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
 import ninja.utils.ResultHandler;
-import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
-import static org.mockito.Matchers.any;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.verify;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.common.base.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NinjaDefaultTest {

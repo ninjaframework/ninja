@@ -20,6 +20,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
@@ -27,6 +30,7 @@ import ninja.Results;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -35,8 +39,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.base.Optional;
-import java.util.Locale;
-import org.junit.Before;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LangImplTest {

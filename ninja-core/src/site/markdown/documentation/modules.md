@@ -43,13 +43,13 @@ Quartz Scheduler support
 
  * https://github.com/svenkubiak/ninja-quartz
 
-Validation module
-
- * https://github.com/svenkubiak/ninja-validation
- 
 Authentication module
 
  * https://github.com/svenkubiak/ninja-authentication
+
+Hazelcast Cache Implementation
+
+ * https://github.com/raptaml/ninja-hazelcast-embedded
 
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 

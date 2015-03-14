@@ -18,7 +18,6 @@ package ninja.jpa;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;

@@ -135,16 +135,18 @@ preferred Locale of the request.
 
 ### authenticity(...)
 
-authenticity allows you to retrieve a authenticity token for protection against CSRF-requests. You can either get a pre-filled hidden input field to use it with forms or simply the token.
+authenticity allows you to retrieve an authenticity token for protection against CSRF-requests. You can either get a prefilled hidden input field or simply the token itself.
 
-To get the pre-filled hidden input field, use the following code
+To get the prefilled hidden input field, use the following code
 <code><@authenticityForm/></code>
 
 To get the token, use the following code
 <code><@authenticityToken/></code>
 
-If you use either the form or the token you might want to check the token in your controllers. Ninja offers a filter for checking the authenticityToken. Just add the following filter to your controller class or controller method.
+If you use either the form or the token you might want to check the token in your controller. Ninja offers a filter for checking the correctness of the token. Just add the following filter to your controller class or method.
 <code>FilterWith(AuthenticityFilter.class)</code>
+
+If the token is invalid the use will see a 403 Forbidden error page.
 
 Advanced usage of Freemarker
 ----------------------------

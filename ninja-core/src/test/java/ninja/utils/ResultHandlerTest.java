@@ -16,14 +16,16 @@
 
 package ninja.utils;
 
-import java.io.OutputStream;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.OutputStream;
 import java.io.Writer;
 
 import ninja.Context;
@@ -31,8 +33,6 @@ import ninja.Result;
 import ninja.Results;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;

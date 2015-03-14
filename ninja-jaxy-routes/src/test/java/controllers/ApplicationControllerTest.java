@@ -22,6 +22,7 @@ import ninja.Route;
 import ninja.RouterImpl;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
+
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;
@@ -30,9 +31,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import com.google.inject.Injector;
+
 import testapplication.conf.Routes;
 import testapplication.controllers.ApplicationController;
+
+import com.google.inject.Injector;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApplicationControllerTest extends NinjaDocTester {
