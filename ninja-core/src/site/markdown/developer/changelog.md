@@ -1,6 +1,7 @@
 Version x.x.x
 =============
 
+ * 2015-03-14 #320 Fixed bug in JSR 303 validation messages (Thibault Meyer)
  * 2015-03-07 Using context.getContextPath() as prefix in cookie path (jfendler/ra)
  * 2015-03-06 #327 Fixed bug that lead to failed authenticity check (svenkubiak)
  * 2015-03-04 Added session cookie encryption (bazi)
