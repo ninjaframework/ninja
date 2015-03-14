@@ -16,12 +16,30 @@
 
 package ninja.params;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import ninja.Context;
+import ninja.Result;
+import ninja.RoutingException;
+import ninja.i18n.Lang;
+import ninja.i18n.LangImpl;
+import ninja.session.FlashScope;
+import ninja.session.Session;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
+import ninja.validation.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -30,63 +48,51 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import ninja.Context;
-import ninja.Result;
-import ninja.RoutingException;
-import ninja.session.FlashScope;
-import ninja.session.Session;
-import ninja.validation.JSR303Validation;
-import ninja.validation.NumberValue;
-import ninja.validation.Required;
-import ninja.validation.Validation;
-import ninja.validation.ValidationImpl;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerMethodInvokerTest {
 
     @Mock
-	private MockController mockController;
+    private MockController mockController;
+
     @Mock
     private Context context;
+
     @Mock
     private Session session;
+
     @Mock
     private FlashScope flash;
+
+    private NinjaProperties ninjaProperties;
+
+    private Lang lang;
 
     private Validation validation;
 
     @Before
     public void setUp() throws Exception {
-        validation = new ValidationImpl();
+        this.ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        this.lang = new LangImpl(ninjaProperties);
+        this.validation = new ValidationImpl();
+
         when(context.getSessionCookie()).thenReturn(session);
         when(context.getFlashCookie()).thenReturn(flash);
         when(context.getValidation()).thenReturn(validation);
     }
 
     @Test
-	public void noParameterMethodShouldBeInvoked() throws Exception {
-		create("noParameter").invoke(mockController, context);
+    public void noParameterMethodShouldBeInvoked() throws Exception {
+        create("noParameter").invoke(mockController, context);
         verify(mockController).noParameter();
-	}
+    }
 
-	@Test
-	public void contextShouldBePassed() throws Exception {
+    @Test
+    public void contextShouldBePassed() throws Exception {
         create("context").invoke(mockController, context);
         verify(mockController).context(context);
     }
@@ -105,11 +111,11 @@ public class ControllerMethodInvokerTest {
 
 
     @Test
-	public void paramAnnotatedArgumentShouldBePassed() throws Exception {
+    public void paramAnnotatedArgumentShouldBePassed() throws Exception {
         when(context.getParameter("param1")).thenReturn("value");
         create("param").invoke(mockController, context);
         verify(mockController).param("value");
-	}
+    }
 
     @Test
     public void pathParamAnnotatedArgumentShouldBePassed() throws Exception {
@@ -158,7 +164,7 @@ public class ControllerMethodInvokerTest {
     public void headersAnnotatedArgumentShouldBePassed() throws Exception {
         when(context.getHeaders("param1")).thenReturn(Arrays.asList("a", "b", "c"));
         create("headers").invoke(mockController, context);
-        verify(mockController).headers(new String [] {"a", "b", "c"});
+        verify(mockController).headers(new String[]{"a", "b", "c"});
     }
 
     @Test
@@ -216,7 +222,7 @@ public class ControllerMethodInvokerTest {
     public void shortParamShouldBeParsedToShort() throws Exception {
         when(context.getParameter("param1")).thenReturn("20");
         create("shortParam").invoke(mockController, context);
-        verify(mockController).shortParam((short)20);
+        verify(mockController).shortParam((short) 20);
     }
 
     @Test
@@ -244,7 +250,7 @@ public class ControllerMethodInvokerTest {
     @Test
     public void primShortParamShouldHandleNull() throws Exception {
         create("primShortParam").invoke(mockController, context);
-        verify(mockController).primShortParam((short)0);
+        verify(mockController).primShortParam((short) 0);
         assertFalse(validation.hasViolations());
     }
 
@@ -252,7 +258,7 @@ public class ControllerMethodInvokerTest {
     public void primShortValidationShouldWork() throws Exception {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primShortParam").invoke(mockController, context);
-        verify(mockController).primShortParam((short)0);
+        verify(mockController).primShortParam((short) 0);
         assertTrue(validation.hasFieldViolation("param1"));
     }
 
@@ -288,7 +294,7 @@ public class ControllerMethodInvokerTest {
     public void byteParamShouldBeParsedToByte() throws Exception {
         when(context.getParameter("param1")).thenReturn("20");
         create("byteParam").invoke(mockController, context);
-        verify(mockController).byteParam((byte)20);
+        verify(mockController).byteParam((byte) 20);
     }
 
     @Test
@@ -542,7 +548,7 @@ public class ControllerMethodInvokerTest {
         ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameter("param1")).thenReturn("Red");
         create("enumCsvParam").invoke(mockController, context);
-        verify(mockController).enumCsvParam(new Rainbow[] { Rainbow.Red });
+        verify(mockController).enumCsvParam(new Rainbow[]{Rainbow.Red});
         ParamParsers.unregisterEnum(Rainbow.class);
     }
 
@@ -551,7 +557,7 @@ public class ControllerMethodInvokerTest {
         ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameter("param1")).thenReturn("Red,Orange,Yellow");
         create("enumCsvParam").invoke(mockController, context);
-        verify(mockController).enumCsvParam(new Rainbow[] { Rainbow.Red, Rainbow.Orange, Rainbow.Yellow});
+        verify(mockController).enumCsvParam(new Rainbow[]{Rainbow.Red, Rainbow.Orange, Rainbow.Yellow});
         ParamParsers.unregisterEnum(Rainbow.class);
     }
 
@@ -580,7 +586,7 @@ public class ControllerMethodInvokerTest {
         ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("Blue"));
         create("enumArrayParam").invoke(mockController, context);
-        verify(mockController).enumArrayParam(new Rainbow[] { Rainbow.Blue });
+        verify(mockController).enumArrayParam(new Rainbow[]{Rainbow.Blue});
         ParamParsers.unregisterEnum(Rainbow.class);
     }
 
@@ -589,7 +595,7 @@ public class ControllerMethodInvokerTest {
         ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("Blue", "Indigo", "Violet"));
         create("enumArrayParam").invoke(mockController, context);
-        verify(mockController).enumArrayParam(new Rainbow[] { Rainbow.Blue, Rainbow.Indigo, Rainbow.Violet});
+        verify(mockController).enumArrayParam(new Rainbow[]{Rainbow.Blue, Rainbow.Indigo, Rainbow.Violet});
         ParamParsers.unregisterEnum(Rainbow.class);
     }
 
@@ -701,8 +707,7 @@ public class ControllerMethodInvokerTest {
     public void validationPassed() {
         validateJSR303(buildDto("regex", "length", 5));
         assertFalse(context.getValidation().hasViolations());
-        assertFalse("Expected not to have regex violation.",
-                context.getValidation().hasBeanViolation("regex"));
+        assertFalse("Expected not to have regex violation.", context.getValidation().hasBeanViolation("regex"));
     }
 
     @Test
@@ -736,6 +741,24 @@ public class ControllerMethodInvokerTest {
                 context.getValidation().hasBeanViolation("range"));
         assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("range"));
+    }
+
+    @Test
+    public void validationFailedTranslationFr() {
+        when(this.context.getAcceptLanguage()).thenReturn("fr");
+        validateJSR303(buildDto("regex", "length - too long", 5));
+        assertTrue(context.getValidation().hasViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertEquals(context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "la taille doit être entre 5 et 10");
+    }
+
+    @Test
+    public void validationFailedTranslationEn() {
+        when(this.context.getAcceptLanguage()).thenReturn("en");
+        validateJSR303(buildDto("regex", "length - too long", 5));
+        assertTrue(context.getValidation().hasViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertEquals(context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "size must be between 5 and 10");
     }
 
     @Test
@@ -786,12 +809,12 @@ public class ControllerMethodInvokerTest {
 
     private void validateJSR303(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
-        create("JSR303Validation").invoke(mockController, context);
+        create("JSR303Validation", this.ninjaProperties, this.lang).invoke(mockController, context);
     }
 
     private void validateJSR303WithRequired(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
-        create("JSR303ValidationWithRequired").invoke(mockController, context);
+        create("JSR303ValidationWithRequired", this.ninjaProperties, this.lang).invoke(mockController, context);
     }
 
     private Dto buildDto(String regex, String length, int range) {
@@ -820,54 +843,113 @@ public class ControllerMethodInvokerTest {
         }));
     }
 
+    public enum Rainbow {
+        Red, Orange, Yellow, Green, Blue, Indigo, Violet
+    }
+
+    // Custom argument extractors for testing different instantiation paths
+
     public interface MockController {
         public Result noParameter();
+
         public Result context(Context context);
+
         public Result session(Session session);
+
         public Result flash(FlashScope flash);
+
         public Result param(@Param("param1") String param1);
+
         public Result pathParam(@PathParam("param1") String param1);
+
         public Result sessionParam(@SessionParam("param1") String param1);
+
         public Result attribute(@Attribute("param1") Dep param1);
+
         public Result header(@Header("param1") String param1);
-        public Result headers(@Headers("param1") String [] param1);
+
+        public Result headers(@Headers("param1") String[] param1);
+
         public Result integerParam(@Param("param1") Integer param1);
+
         public Result intParam(@Param("param1") int param1);
+
         public Result shortParam(@Param("param1") Short param1);
+
         public Result primShortParam(@Param("param1") short param1);
+
         public Result characterParam(@Param("param1") Character param1);
+
         public Result charParam(@Param("param1") char param1);
+
         public Result byteParam(@Param("param1") Byte param1);
+
         public Result primByteParam(@Param("param1") byte param1);
+
         public Result booleanParam(@Param("param1") Boolean param1);
+
         public Result primBooleanParam(@Param("param1") boolean param1);
+
         public Result longParam(@Param("param1") Long param1);
+
         public Result primLongParam(@Param("param1") long param1);
+
         public Result floatParam(@Param("param1") Float param1);
+
         public Result primFloatParam(@Param("param1") float param1);
+
         public Result doubleParam(@Param("param1") Double param1);
+
         public Result primDoubleParam(@Param("param1") double param1);
+
         public Result enumParam(@Param("param1") Rainbow param1);
-        public Result enumCsvParam(@Param("param1") Rainbow [] param1);
-        public Result enumArrayParam(@Params("param1") Rainbow [] param1);
+
+        public Result enumCsvParam(@Param("param1") Rainbow[] param1);
+
+        public Result enumArrayParam(@Params("param1") Rainbow[] param1);
+
         public Result noArgArgumentExtractor(@NoArg String param1);
+
         public Result classArgArgumentExtractor(@ClassArg String param1);
+
         public Result guiceArgumentExtractor(@GuiceAnnotation(foo = "bar") String param1);
+
         public Result multiple(@Param("param1") String param1, @PathParam("param2") int param2,
-                Context context, Session session);
+                               Context context, Session session);
+
         public Result required(@Param("param1") @Required String param1);
+
         public Result requiredInt(@Param("param1") @Required @NumberValue(min = 10) int param1);
+
         public Result badValidator(@Param("param1") @NumberValue(min = 10) String param1);
+
         public Result body(Object body);
+
         public Result tooManyBodies(Object body1, Object body2);
 
         public Result JSR303Validation(@JSR303Validation Dto dto, Validation validation);
 
-        public Result JSR303ValidationWithRequired(@Required @JSR303Validation Dto dto,
-                Validation validation);
+        public Result JSR303ValidationWithRequired(@Required @JSR303Validation Dto dto, Validation validation);
     }
 
-    // Custom argument extractors for testing different instantiation paths
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @WithArgumentExtractor(NoArgArgumentExtractor.class)
+    public @interface NoArg {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @WithArgumentExtractor(ClassArgArgumentExtractor.class)
+    public @interface ClassArg {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @WithArgumentExtractor(GuiceArgumentExtractor.class)
+    public @interface GuiceAnnotation {
+        String foo();
+    }
 
     public static class NoArgArgumentExtractor implements ArgumentExtractor<String> {
         @Override
@@ -885,11 +967,6 @@ public class ControllerMethodInvokerTest {
             return null;
         }
     }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.PARAMETER)
-    @WithArgumentExtractor(NoArgArgumentExtractor.class)
-    public @interface NoArg {}
 
     public static class ClassArgArgumentExtractor implements ArgumentExtractor<String> {
         private final Class<?> clazz;
@@ -911,23 +988,6 @@ public class ControllerMethodInvokerTest {
         @Override
         public String getFieldName() {
             return null;
-        }
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.PARAMETER)
-    @WithArgumentExtractor(ClassArgArgumentExtractor.class)
-    public @interface ClassArg {}
-
-    public class Dep {
-        private final String value;
-
-        public Dep(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return value;
         }
     }
 
@@ -964,26 +1024,30 @@ public class ControllerMethodInvokerTest {
         }
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.PARAMETER)
-    @WithArgumentExtractor(GuiceArgumentExtractor.class)
-    public @interface GuiceAnnotation {
-        String foo();
+    public class Dep {
+
+        private final String value;
+
+        public Dep(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
     }
 
     public class Dto {
+
         @Size(min = 1, max = 10)
         @Pattern(regexp = "[a-z]*")
         public String regex;
+
         @Size(min = 5, max = 10)
         public String length;
+
         @Min(value = 3)
         @Max(value = 10)
         public int range;
-    }
-
-
-    public enum Rainbow {
-        Red, Orange, Yellow, Green, Blue, Indigo, Violet
     }
 }

@@ -16,7 +16,11 @@
 
 package ninja.validation;
 
+import com.google.common.base.Optional;
+import com.google.inject.Inject;
 import ninja.Context;
+import ninja.Result;
+import ninja.i18n.Lang;
 
 import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
@@ -63,11 +67,22 @@ public class Validators {
             this.descriptor = descriptor;
         }
 
+        /**
+         * Get the constraint descriptor.
+         *
+         * @return The constraint descriptor
+         * @see javax.validation.metadata.ConstraintDescriptor
+         */
         @Override
         public ConstraintDescriptor<?> getConstraintDescriptor() {
             return this.descriptor;
         }
 
+        /**
+         * Get the validated value.
+         *
+         * @return The value
+         */
         @Override
         public Object getValidatedValue() {
             return this.value;
@@ -76,16 +91,30 @@ public class Validators {
 
     public static class JSRValidator implements Validator<Object> {
 
+        private final Lang requestLanguage;
+
+        @Inject
+        public JSRValidator(Lang requestLanguage) {
+            this.requestLanguage = requestLanguage;
+        }
+
+        /**
+         * Validate the given value.
+         *
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
+         */
         @Override
         public void validate(Object value, String field, Context context) {
             if (value != null) {
                 final ValidatorFactory validatorFactory = javax.validation.Validation.buildDefaultValidatorFactory();
                 final javax.validation.Validator validator = validatorFactory.getValidator();
                 final Set<javax.validation.ConstraintViolation<Object>> violations = validator.validate(value);
-                final Locale localeToUse = (context.getAcceptLanguage() == null) ? Locale.getDefault() : Locale.forLanguageTag(context.getAcceptLanguage().split(",", 2)[0]);
+                final Locale localeToUse = this.requestLanguage.getLocaleFromStringOrDefault(this.requestLanguage.getLanguage(context, Optional.<Result>absent()));
                 final Validation validation = context.getValidation();
 
-                for (javax.validation.ConstraintViolation<Object> violation : violations) {
+                for (final javax.validation.ConstraintViolation<Object> violation : violations) {
                     final String violationMessage = validatorFactory.getMessageInterpolator().interpolate(
                             violation.getMessageTemplate(),
                             new NinjaContextMsgInterpolator(value, violation.getConstraintDescriptor()),
