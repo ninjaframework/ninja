@@ -57,18 +57,33 @@ public class NinjaBootstrap {
     private final NinjaPropertiesImpl ninjaProperties;
 
     private Injector injector = null;
+    private boolean logInjectorException;
+    private Exception injectorException = null;
 
     public NinjaBootstrap(NinjaPropertiesImpl ninjaProperties) {
 
         Preconditions.checkNotNull(ninjaProperties);
 
         this.ninjaProperties = ninjaProperties;
+        this.logInjectorException = true;
     }
 
     public Injector getInjector() {
         return injector;
     }
 
+    public Exception getInjectorException() {
+        return injectorException;
+    }
+
+    public void setLogInjectorException(boolean logInjectorException) {
+        this.logInjectorException = logInjectorException;
+    }
+
+    public boolean isLogInjectorException() {
+        return logInjectorException;
+    }
+    
     public synchronized void boot() {
 
         initLogbackIfLogbackIsOnTheClassPathOtherwiseDoNotInitLogging();
@@ -191,7 +206,15 @@ public class NinjaBootstrap {
             return injector;
 
         } catch (Exception exception) {
-            logger.error("Fatal error booting Ninja", exception);
+            
+            // save exception in case other consumers of this class would like
+            // to handle an injector exception a little differently
+            injectorException = exception;
+            
+            if (logInjectorException) {
+                logger.error("Fatal error booting Ninja", exception);
+            }
+            
         }
         return null;
     }

@@ -51,7 +51,11 @@ public class NinjaTestServer {
         ninjaJetty.setServerUri(serverUri);
         ninjaJetty.setNinjaMode(NinjaMode.test);
         
-        ninjaJetty.start();
+        try {
+            ninjaJetty.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         
     }
 

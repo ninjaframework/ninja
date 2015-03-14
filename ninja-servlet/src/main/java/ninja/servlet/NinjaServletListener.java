@@ -41,6 +41,8 @@ public class NinjaServletListener extends GuiceServletContextListener {
     NinjaPropertiesImpl ninjaProperties = null;
     
     String contextPath;
+    
+    boolean logInjectorException = true;
 
     public synchronized void setNinjaProperties(NinjaPropertiesImpl ninjaPropertiesImpl) {
         
@@ -56,6 +58,14 @@ public class NinjaServletListener extends GuiceServletContextListener {
         
     }
 
+    public boolean isLogInjectorException() {
+        return logInjectorException;
+    }
+
+    public void setLogInjectorException(boolean logInjectorException) {
+        this.logInjectorException = logInjectorException;
+    }
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) { 
         contextPath = servletContextEvent.getServletContext().getContextPath();
@@ -66,6 +76,13 @@ public class NinjaServletListener extends GuiceServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         ninjaBootstrap.shutdown();
         super.contextDestroyed(servletContextEvent);
+    }
+    
+    /**
+     * Only available after context initialization attempted.
+     */
+    public NinjaBootstrap getNinjaBootstrap() {
+        return this.ninjaBootstrap;
     }
    
     /**
@@ -123,6 +140,8 @@ public class NinjaServletListener extends GuiceServletContextListener {
         ninjaProperties.setContextPath(contextPath);
         
         ninjaBootstrap = new NinjaBootstrap(ninjaProperties);
+        
+        ninjaBootstrap.setLogInjectorException(logInjectorException);
         
         ninjaBootstrap.boot();
         
