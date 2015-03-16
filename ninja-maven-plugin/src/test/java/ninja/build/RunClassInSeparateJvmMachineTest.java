@@ -86,7 +86,7 @@ public class RunClassInSeparateJvmMachineTest {
         
         StartedProcess startedProcess = rcsjm.startProcess();
         
-        assertTrue(startedProcess.getProcess().isAlive());
+        assertTrue(isAlive(startedProcess.getProcess()));
         
         waitOrTimeout(fakeDaemonCondition(baos), Timeout.timeout(Duration.millis(10000)));
         
@@ -116,7 +116,7 @@ public class RunClassInSeparateJvmMachineTest {
         
         StartedProcess startedProcess1 = rcsjm.getActiveProcess();
         
-        assertTrue(startedProcess1.getProcess().isAlive());
+        assertTrue(isAlive(startedProcess1.getProcess()));
 
         waitOrTimeout(fakeDaemonCondition(baos1), Timeout.timeout(Duration.millis(10000)));
         
