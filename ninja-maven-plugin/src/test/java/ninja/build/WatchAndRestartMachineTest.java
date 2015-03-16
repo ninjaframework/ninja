@@ -16,23 +16,18 @@
 
 package ninja.build;
 
-import ninja.build.WatchAndRestartMachine;
-import ninja.build.DelayedRestartTrigger;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import ninja.maven.NinjaMavenPluginConstants;
 import static ninja.maven.NinjaMavenPluginConstants.DEFAULT_EXCLUDE_PATTERNS;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

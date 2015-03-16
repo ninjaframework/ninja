@@ -17,19 +17,15 @@
 package ninja.build;
 
 
-import ninja.build.RunClassInSeparateJvmMachine;
-import ninja.build.DelayedRestartTrigger;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Conditions;
-import com.google.code.tempusfugit.temporal.Duration;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import com.google.code.tempusfugit.temporal.Timeout;
-import com.google.code.tempusfugit.temporal.WaitFor;
-import java.util.concurrent.TimeoutException;
-import org.junit.Assert;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -51,21 +47,21 @@ public class DelayedRestartTriggerTest {
         try {
             restartTrigger.start();
             
-            Assert.assertEquals(0, restartTrigger.getRestartCount());
-            Assert.assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
+            assertEquals(0, restartTrigger.getRestartCount());
+            assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
             
             // thread needs to be waiting after start
-            WaitFor.waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
+            waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
             
             restartTrigger.trigger();
             
             verify(machine, timeout(10000)).restart();
             
             // thread needs to be waiting after restart
-            WaitFor.waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
+            waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
             
-            Assert.assertEquals(1, restartTrigger.getRestartCount());
-            Assert.assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
+            assertEquals(1, restartTrigger.getRestartCount());
+            assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
         }
         finally {
             restartTrigger.shutdown();
@@ -86,11 +82,11 @@ public class DelayedRestartTriggerTest {
         try {
             restartTrigger.start();
             
-            Assert.assertEquals(0, restartTrigger.getRestartCount());
-            Assert.assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
+            assertEquals(0, restartTrigger.getRestartCount());
+            assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
             
             // thread needs to be waiting after start
-            WaitFor.waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
+            waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
             
             // call restart quickly in a row
             restartTrigger.trigger();
@@ -102,7 +98,7 @@ public class DelayedRestartTriggerTest {
             restartTrigger.trigger();
             
             // wait until restart count is 1
-            WaitFor.waitOrTimeout(
+            waitOrTimeout(
                 new Condition() {
                     @Override
                     public boolean isSatisfied() {
@@ -111,7 +107,7 @@ public class DelayedRestartTriggerTest {
                 }, Timeout.timeout(millis(10000)));
             
             // wait until accumulated trigger is set back to zero
-            WaitFor.waitOrTimeout(
+            waitOrTimeout(
                 new Condition() {
                     @Override
                     public boolean isSatisfied() {
@@ -124,10 +120,10 @@ public class DelayedRestartTriggerTest {
             verify(machine, timeout(10000).atLeast(1)).restart();
             
             // thread needs to be waiting after restart
-            WaitFor.waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
+            waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
             
-            Assert.assertEquals(1, restartTrigger.getRestartCount());
-            Assert.assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
+            assertEquals(1, restartTrigger.getRestartCount());
+            assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
         }
         finally {
             restartTrigger.shutdown();

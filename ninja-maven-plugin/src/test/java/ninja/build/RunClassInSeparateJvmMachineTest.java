@@ -16,11 +16,10 @@
 
 package ninja.build;
 
-import ninja.build.RunClassInSeparateJvmMachine;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Duration;
 import com.google.code.tempusfugit.temporal.Timeout;
-import com.google.code.tempusfugit.temporal.WaitFor;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +27,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.StartedProcess;
@@ -59,6 +58,16 @@ public class RunClassInSeparateJvmMachineTest {
         };
     }
     
+    public boolean isAlive(Process p) {
+        try {
+            p.exitValue();
+            return false;
+        } catch (Exception e) {
+            // exception only thrown if process has not yet terminated
+            return true;
+        }
+    }
+    
     @Test
     public void startProcess() throws Exception {
         
@@ -77,9 +86,9 @@ public class RunClassInSeparateJvmMachineTest {
         
         StartedProcess startedProcess = rcsjm.startProcess();
         
-        Assert.assertTrue(startedProcess.getProcess().isAlive());
+        assertTrue(startedProcess.getProcess().isAlive());
         
-        WaitFor.waitOrTimeout(fakeDaemonCondition(baos), Timeout.timeout(Duration.millis(10000)));
+        waitOrTimeout(fakeDaemonCondition(baos), Timeout.timeout(Duration.millis(10000)));
         
         startedProcess.getProcess().destroy();
         
@@ -107,9 +116,9 @@ public class RunClassInSeparateJvmMachineTest {
         
         StartedProcess startedProcess1 = rcsjm.getActiveProcess();
         
-        Assert.assertTrue(startedProcess1.getProcess().isAlive());
+        assertTrue(startedProcess1.getProcess().isAlive());
 
-        WaitFor.waitOrTimeout(fakeDaemonCondition(baos1), Timeout.timeout(Duration.millis(10000)));
+        waitOrTimeout(fakeDaemonCondition(baos1), Timeout.timeout(Duration.millis(10000)));
         
         
         // override output so we can capture it
@@ -121,13 +130,13 @@ public class RunClassInSeparateJvmMachineTest {
         
         StartedProcess startedProcess2 = rcsjm.getActiveProcess();
         
-        Assert.assertTrue(startedProcess2.getProcess().isAlive());
+        assertTrue(isAlive(startedProcess2.getProcess()));
         
-        Assert.assertFalse(startedProcess1.getProcess().isAlive());
+        assertFalse(isAlive(startedProcess1.getProcess()));
         
-        Assert.assertFalse(startedProcess1.equals(startedProcess2));
+        assertFalse(startedProcess1.equals(startedProcess2));
 
-        WaitFor.waitOrTimeout(fakeDaemonCondition(baos2), Timeout.timeout(Duration.millis(10000)));
+        waitOrTimeout(fakeDaemonCondition(baos2), Timeout.timeout(Duration.millis(10000)));
         
     }
     
@@ -163,15 +172,15 @@ public class RunClassInSeparateJvmMachineTest {
         
         StartedProcess startedProcess4 = rcsjm.getActiveProcess();
         
-        Assert.assertTrue(startedProcess4.getProcess().isAlive());
+        assertTrue(isAlive(startedProcess4.getProcess()));
         
-        Assert.assertFalse(startedProcess1.getProcess().isAlive());
+        assertFalse(isAlive(startedProcess1.getProcess()));
         
-        Assert.assertFalse(startedProcess2.getProcess().isAlive());
+        assertFalse(isAlive(startedProcess2.getProcess()));
         
-        Assert.assertFalse(startedProcess3.getProcess().isAlive());
+        assertFalse(isAlive(startedProcess3.getProcess()));
         
-        Assert.assertFalse(startedProcess1.equals(startedProcess2));
+        assertFalse(startedProcess1.equals(startedProcess2));
         
     }
     
