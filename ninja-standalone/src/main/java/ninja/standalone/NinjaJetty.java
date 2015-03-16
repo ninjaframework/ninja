@@ -64,6 +64,13 @@ public class NinjaJetty {
         
     }
     
+    public NinjaJetty() {
+        this.port = DEFAULT_PORT;
+        this.host = DEFAULT_HOST;
+        ninjaMode = NinjaMode.prod;
+        ninjaServletListener = new NinjaServletListener();
+    }
+    
     public void run(String[] args) {
         
         // configure self from system properties
@@ -80,11 +87,13 @@ public class NinjaJetty {
         try {
             
             this.start();
-        }
-        catch (Exception cause) {
+        
+        } catch (Exception cause) {
+            
             System.err.println("Unable to start server. ");
             cause.printStackTrace(System.err);
             System.exit(1);
+            
         }
         
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -100,18 +109,14 @@ public class NinjaJetty {
             
             // do not simply exit main() -- join server
             server.join();
+        
+        } catch (InterruptedException e) {
+            
+            System.err.println("Server interrupted. Will be shutting down");
+            e.printStackTrace(System.err);
+            
         }
-        catch (InterruptedException e) {
-            // server probably shutting down
-        }
-    }
-    
-    public NinjaJetty() {
-        this.port = DEFAULT_PORT;
-        this.host = DEFAULT_HOST;
-        ninjaMode = NinjaMode.prod;
-        ninjaServletListener = new NinjaServletListener();
-    }
+    }    
 
     public Injector getInjector() {
         return ninjaServletListener.getInjector();
@@ -180,8 +185,7 @@ public class NinjaJetty {
             
             return (Server)configuration.configure();
             
-        }
-        else {
+        } else {
             
             return (Server)configuration.configure(server);
             
@@ -191,6 +195,10 @@ public class NinjaJetty {
     }
     
     public void start() throws Exception {
+        
+        // NOTE: logging is only initialized in NinjaBootstrap which is called
+        // via the NinjaServletListener when its context is initialized
+        // therefore logging may not yet be available (why System.out/err is used)
 
         if (this.jettyConfiguration != null && this.jettyConfiguration.length() > 0) {
             
@@ -202,8 +210,7 @@ public class NinjaJetty {
                 
             }
             
-        }
-        else {
+        } else {
             
             // create very simple jetty configuration
              server = new Server();
@@ -254,8 +261,7 @@ public class NinjaJetty {
                 // the injector exception is actually what we want thrown
                 throw ninjaServletListener.getNinjaBootstrap().getInjectorException();
                 
-            }
-            else {
+            } else {
                 
                 throw cause;
                 
@@ -272,13 +278,16 @@ public class NinjaJetty {
                 context.stop();
                 context.destroy();
             }
+            
             if (server != null) {
                 server.stop();
                 server.destroy();
             }
             
         } catch (Exception e) {
+            
             throw new RuntimeException(e);
+        
         }
     }
     
@@ -287,8 +296,10 @@ public class NinjaJetty {
         Integer port;
 
         try {
+            
             String portAsString = System.getProperty(COMMAND_LINE_PARAMETER_NINJA_PORT);
             port = Integer.parseInt(portAsString);
+        
         } catch (Exception e) {
 
             return DEFAULT_PORT;
@@ -302,9 +313,7 @@ public class NinjaJetty {
 
         try {
 
-            String contextPath = System.getProperty(COMMAND_LINE_PARAMETER_NINJA_CONTEXT);
-
-            return contextPath;
+            return System.getProperty(COMMAND_LINE_PARAMETER_NINJA_CONTEXT);
 
         } catch (Exception e) {
 
