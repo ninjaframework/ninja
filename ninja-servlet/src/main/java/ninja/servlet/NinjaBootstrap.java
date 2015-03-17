@@ -57,31 +57,17 @@ public class NinjaBootstrap {
     private final NinjaPropertiesImpl ninjaProperties;
 
     private Injector injector = null;
-    private boolean logInjectorException;
-    private Exception injectorException = null;
 
     public NinjaBootstrap(NinjaPropertiesImpl ninjaProperties) {
 
         Preconditions.checkNotNull(ninjaProperties);
 
         this.ninjaProperties = ninjaProperties;
-        this.logInjectorException = true;
+        
     }
 
     public Injector getInjector() {
         return injector;
-    }
-
-    public Exception getInjectorException() {
-        return injectorException;
-    }
-
-    public void setLogInjectorException(boolean logInjectorException) {
-        this.logInjectorException = logInjectorException;
-    }
-
-    public boolean isLogInjectorException() {
-        return logInjectorException;
     }
     
     public synchronized void boot() {
@@ -94,12 +80,14 @@ public class NinjaBootstrap {
 
         long startTime = System.currentTimeMillis();
 
-        injector = initInjector();
-
-        long injectorStartupTime = System.currentTimeMillis() - startTime;
-        logger.info("Ninja injector started in " + injectorStartupTime + " ms.");
-
-        Preconditions.checkNotNull(injector, "Ninja injector cannot be generated. Please check log for further errors.");
+        try {
+            injector = initInjector();
+        } catch (Exception e) {
+            throw new RuntimeException("Ninja injector cannot be generated. Please check log for further errors.", e);
+        } finally {
+            long injectorStartupTime = System.currentTimeMillis() - startTime;
+            logger.info("Ninja injector started in " + injectorStartupTime + " ms.");
+        }
 
         Ninja ninja = injector.getInstance(Ninja.class);
         ninja.onFrameworkStart();
@@ -116,107 +104,92 @@ public class NinjaBootstrap {
         }
     }
 
-    private Injector initInjector() {
+    private Injector initInjector() throws Exception {
 
-        try {
+        List<Module> modulesToLoad = new ArrayList<>();
 
-            List<Module> modulesToLoad = new ArrayList<>();
+        // Bind lifecycle support
+        modulesToLoad.add(LifecycleSupport.getModule());
+        // Scheduling support
+        modulesToLoad.add(SchedulerSupport.getModule());
 
-            // Bind lifecycle support
-            modulesToLoad.add(LifecycleSupport.getModule());
-            // Scheduling support
-            modulesToLoad.add(SchedulerSupport.getModule());
-
-            // Get base configuration of Ninja:
-            modulesToLoad.add(new Configuration(ninjaProperties));
-            modulesToLoad.add(new AbstractModule() {
-                @Override
-                protected void configure() {
-                    bind(Context.class).to(ContextImpl.class);
-                }
-            });
-
-            // get custom base package for application modules and routes
-            Optional<String> applicationModulesBasePackage
-                    = Optional.fromNullable(ninjaProperties.get(
-                            NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
-
-            // Load main application module:
-            String applicationConfigurationClassName = getClassNameWithOptionalUserDefinedPrefix(
-                    applicationModulesBasePackage,
-                    APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
-
-            if (doesClassExist(applicationConfigurationClassName)) {
-
-                Class<?> applicationConfigurationClass = Class
-                        .forName(applicationConfigurationClassName);
-
-                AbstractModule applicationConfiguration = (AbstractModule) applicationConfigurationClass
-                        .getConstructor().newInstance();
-
-                modulesToLoad.add(applicationConfiguration);
-
+        // Get base configuration of Ninja:
+        modulesToLoad.add(new Configuration(ninjaProperties));
+        modulesToLoad.add(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(Context.class).to(ContextImpl.class);
             }
+        });
 
-            // Load servlet module. By convention this is a ServletModule where
-            // the user can register other servlets and servlet filters
-            // If the file does not exist we simply load the default servlet
-            String servletModuleClassName =
-                getClassNameWithOptionalUserDefinedPrefix(
-                    applicationModulesBasePackage,
-                    APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
+        // get custom base package for application modules and routes
+        Optional<String> applicationModulesBasePackage
+                = Optional.fromNullable(ninjaProperties.get(
+                        NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
 
-            if (doesClassExist(servletModuleClassName)) {
+        // Load main application module:
+        String applicationConfigurationClassName = getClassNameWithOptionalUserDefinedPrefix(
+                applicationModulesBasePackage,
+                APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
 
-                Class<?> servletModuleClass = Class
-                        .forName(servletModuleClassName);
+        if (doesClassExist(applicationConfigurationClassName)) {
 
-                ServletModule servletModule = (ServletModule) servletModuleClass
-                        .getConstructor().newInstance();
+            Class<?> applicationConfigurationClass = Class
+                    .forName(applicationConfigurationClassName);
 
-                modulesToLoad.add(servletModule);
+            AbstractModule applicationConfiguration = (AbstractModule) applicationConfigurationClass
+                    .getConstructor().newInstance();
 
-            } else {
-                // The servlet Module does not exist => we load the default one.
-                ServletModule servletModule = new ServletModule() {
+            modulesToLoad.add(applicationConfiguration);
 
-                    @Override
-                    protected void configureServlets() {
-                        bind(NinjaServletDispatcher.class).asEagerSingleton();
-                        serve("/*").with(NinjaServletDispatcher.class);
-                    }
-
-                };
-
-                modulesToLoad.add(servletModule);
-
-            }
-
-
-            initializeUserSuppliedConfNinjaOrNinjaDefault(
-                    applicationModulesBasePackage,
-                    modulesToLoad);
-
-
-            // And let the injector generate all instances and stuff:
-            injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
-
-            initializeRouterWithRoutesOfUserApplication(applicationModulesBasePackage);
-
-            return injector;
-
-        } catch (Exception exception) {
-            
-            // save exception in case other consumers of this class would like
-            // to handle an injector exception a little differently
-            injectorException = exception;
-            
-            if (logInjectorException) {
-                logger.error("Fatal error booting Ninja", exception);
-            }
-            
         }
-        return null;
+
+        // Load servlet module. By convention this is a ServletModule where
+        // the user can register other servlets and servlet filters
+        // If the file does not exist we simply load the default servlet
+        String servletModuleClassName =
+            getClassNameWithOptionalUserDefinedPrefix(
+                applicationModulesBasePackage,
+                APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
+
+        if (doesClassExist(servletModuleClassName)) {
+
+            Class<?> servletModuleClass = Class
+                    .forName(servletModuleClassName);
+
+            ServletModule servletModule = (ServletModule) servletModuleClass
+                    .getConstructor().newInstance();
+
+            modulesToLoad.add(servletModule);
+
+        } else {
+            // The servlet Module does not exist => we load the default one.
+            ServletModule servletModule = new ServletModule() {
+
+                @Override
+                protected void configureServlets() {
+                    bind(NinjaServletDispatcher.class).asEagerSingleton();
+                    serve("/*").with(NinjaServletDispatcher.class);
+                }
+
+            };
+
+            modulesToLoad.add(servletModule);
+
+        }
+
+
+        initializeUserSuppliedConfNinjaOrNinjaDefault(
+                applicationModulesBasePackage,
+                modulesToLoad);
+
+
+        // And let the injector generate all instances and stuff:
+        injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
+
+        initializeRouterWithRoutesOfUserApplication(applicationModulesBasePackage);
+
+        return injector;
     }
 
     private boolean doesClassExist(String nameWithPackage) {

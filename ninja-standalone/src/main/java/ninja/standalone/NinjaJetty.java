@@ -16,6 +16,9 @@
 
 package ninja.standalone;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+import com.google.inject.CreationException;
 import ninja.servlet.NinjaServletListener;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
@@ -33,8 +36,11 @@ import java.net.URI;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.xml.XmlConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NinjaJetty {
+    static private final Logger logger = LoggerFactory.getLogger(NinjaJetty.class);
     
     public final static String COMMAND_LINE_PARAMETER_NINJA_CONTEXT = "ninja.context";
     public final static String COMMAND_LINE_PARAMETER_NINJA_PORT = "ninja.port";
@@ -88,10 +94,9 @@ public class NinjaJetty {
             
             this.start();
         
-        } catch (Exception cause) {
+        } catch (Exception e) {
             
-            System.err.println("Unable to start server. ");
-            cause.printStackTrace(System.err);
+            logger.error("Unable to start server.", e);
             System.exit(1);
             
         }
@@ -112,8 +117,7 @@ public class NinjaJetty {
         
         } catch (InterruptedException e) {
             
-            System.err.println("Server interrupted. Will be shutting down");
-            e.printStackTrace(System.err);
+            logger.error("Server interrupted (likely server is just shutting down)", e);
             
         }
     }    
@@ -176,7 +180,7 @@ public class NinjaJetty {
             }
         }
         
-        System.out.println("Using jetty configuration file to configure server: " + jettyConfigurationFile);
+        logger.info("Using jetty configuration file to configure server: " + jettyConfigurationFile);
         
         XmlConfiguration configuration = new XmlConfiguration(jettyConfigurationFile.getInputStream());
         
@@ -195,10 +199,6 @@ public class NinjaJetty {
     }
     
     public void start() throws Exception {
-        
-        // NOTE: logging is only initialized in NinjaBootstrap which is called
-        // via the NinjaServletListener when its context is initialized
-        // therefore logging may not yet be available (why System.out/err is used)
 
         if (this.jettyConfiguration != null && this.jettyConfiguration.length() > 0) {
             
@@ -242,7 +242,6 @@ public class NinjaJetty {
         ninjaProperties.setProperty(NinjaConstant.serverName, serverName);
 
         ninjaServletListener.setNinjaProperties(ninjaProperties);
-        ninjaServletListener.setLogInjectorException(false);
 
         context.addEventListener(ninjaServletListener);
         context.addFilter(GuiceFilter.class, "/*", null);
@@ -252,18 +251,17 @@ public class NinjaJetty {
 
             server.start();
 
-        } catch (Exception cause) {
+        } catch (Exception e) {
             
-            // check if there was an underlying injector exception (most likely cause)
-            if (ninjaServletListener.getNinjaBootstrap() != null &&
-                    ninjaServletListener.getNinjaBootstrap().getInjectorException() != null) {
-                
+            // inner exception on guice exception during start?
+            if (e.getCause() != null && e.getCause() instanceof CreationException) {
+            
                 // the injector exception is actually what we want thrown
-                throw ninjaServletListener.getNinjaBootstrap().getInjectorException();
+                throw (CreationException)e.getCause();
                 
             } else {
                 
-                throw cause;
+                throw e;
                 
             }
         }
