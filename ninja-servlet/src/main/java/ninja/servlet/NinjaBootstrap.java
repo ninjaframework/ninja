@@ -84,11 +84,11 @@ public class NinjaBootstrap {
             injector = initInjector();
         } catch (Exception e) {
             throw new RuntimeException("Ninja injector cannot be generated. Please check log for further errors.", e);
-        } finally {
-            long injectorStartupTime = System.currentTimeMillis() - startTime;
-            logger.info("Ninja injector started in " + injectorStartupTime + " ms.");
         }
-
+        
+        long injectorStartupTime = System.currentTimeMillis() - startTime;
+        logger.info("Ninja injector started in " + injectorStartupTime + " ms.");
+        
         Ninja ninja = injector.getInstance(Ninja.class);
         ninja.onFrameworkStart();
     }
