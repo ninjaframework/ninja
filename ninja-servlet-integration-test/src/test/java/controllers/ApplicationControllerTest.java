@@ -24,6 +24,8 @@ import java.util.Map;
 
 import models.FormObject;
 import ninja.NinjaTest;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
@@ -83,9 +85,14 @@ public class ApplicationControllerTest extends NinjaTest {
 
         assertTrue(cookie != null);
 
-        assertTrue(cookie.getValue().contains("___TS"));
-        assertTrue(cookie.getValue().contains("username"));
-        assertTrue(cookie.getValue().contains("kevin"));
+        NinjaProperties properties = getInjector().getInstance(NinjaProperties.class);
+
+        // check session cookie value if not encrypted
+        if (!properties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)) {
+            assertTrue(cookie.getValue().contains("___TS"));
+            assertTrue(cookie.getValue().contains("username"));
+            assertTrue(cookie.getValue().contains("kevin"));
+        }
 
     }
 
