@@ -34,6 +34,10 @@ Mustache templates
 Jade4Ninja (Jade) templates
 
  * https://github.com/mysu/jade4ninja
+
+Rocker templates
+
+ * https://github.com/fizzed/ninja-rocker
  
 MongoDB support
 
