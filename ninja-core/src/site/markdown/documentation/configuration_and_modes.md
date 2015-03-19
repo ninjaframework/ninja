@@ -126,6 +126,26 @@ disabled in DEV mode. Simply add the following to your <code>application.conf</c
 
     application.diagnostics=false
 
+Retaining diagnostic mode if you provide conf.Ninja
+---------------------------------------------------
+
+If you provide your own conf.Ninja and extend ninja.NinjaDefault, then you will
+likely lose diagnostic mode for the particular methods you override.  You can
+retain the feature, by calling the super method and conditionally returning
+its result, rather than your own.
+
+    public class Ninja extends NinjaDefault {
+
+        @Override
+        public Result getInternalServerErrorResult(Context context, Exception exception) {
+            if (isDiagnosticsEnabled()) {
+                return super.getInternalServerErrorResult(context, exception);
+            }
+
+            // your impl only active in test/prod or dev (with diagnostic disabled)
+        }
+
+    }
 
 Configuring application's base package
 ------------------------------------
