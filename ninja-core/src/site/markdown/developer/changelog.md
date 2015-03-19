@@ -1,6 +1,10 @@
 Version x.x.x
 =============
 
+ * 2015-03-16 (PR #333) ninja-standalone will System.exit on any startup exception (previously it only exited in some cases, kept running in failed state for others) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone support for binding to specific host/address (e.g. -Dninja.host=localhost) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone support for advanced/power-user jetty configuration(s) (e.g. -Dninja.jetty.configuration=jetty.xml,jetty-ssl.xml) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone optimized to specifically handle Guice injector exception (most common startup error) - slightly cuts down on verbosity of failure logging (jjlauer)
  * 2015-03-15 Added support for collections and arrays for body parser engine (gabrielhora)
  * 2015-03-14 #320 Fixed bug in JSR 303 validation messages (Thibault Meyer)
  * 2015-03-07 Using context.getContextPath() as prefix in cookie path (jfendler/ra)

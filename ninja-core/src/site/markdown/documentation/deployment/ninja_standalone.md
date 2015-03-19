@@ -4,12 +4,15 @@ Ninja standalone
 Introduction
 ------------
 
-Ninja features a standalone mode where you do not need a separate servlet container. 
-The standalone mode enables you to run a single maven command and get a self 
-executing jar file that contains your application, Ninja and a fast server 
-(Jetty in that case).
+Ninja features a standalone mode where you do not need a separate servlet container.
+The standalone mode enables you to package your application along with 
+a fast, embedded HTTP server (Jetty in that case).  There are several options for
+packaging your application using standalone mode.
 
-This allows to drop that self-executing file to your server run your application 
+Option 1 - Uber/Fat Jar using Assembly Maven Plugin
+---------------------------------------------------
+
+This allows you to drop that self-executing file to your server run your application 
 with zero external dependencies. 
 Due to Ninja's client-side sessions it becomes really simple to have one 
 reverse proxy in front of many Ninja instances.
@@ -60,24 +63,59 @@ Running the fat jar (and your app) is as simple as calling:
 java -Dninja.port=9000 -jar MY-APPLICATION-jar-with-dependencies.jar
 </pre>
 
-You can customize your application startup via the following command line parameters:
+Option 2 - Packaged using Stork Maven Plugin
+--------------------------------------------
+
+If you'd like to run your application as a proper daemon on Unix/Mac or as a service
+on Windows, another option is using the [Stork Maven Plugin](https://github.com/fizzed/java-stork).
+
+Stork is a collection of utilities for optimizing your "after-build" workflow by
+filling in the gap between Maven and eventual app execution. In just a couple
+quick steps, stork will package your Ninja app into a professional .tar.gz
+file ready for deployment.
+
+Here is an [article describing how Ninja apps can be packaged with Stork](http://fizzed.com/blog/2015/01/using-stork-deploy-production-ninja-framework-app).
+
+Here is a [demo application that integrates with Stork](https://github.com/fizzed/java-ninja-stork-demo).
+
+Command-line / system property configuration
+--------------------------------------------
+
+Regardless of which option you choose, you can customize your application startup
+via the following command line parameters:
 
  * <code>ninja.port</code> allows you to select the port on which your 
-   application is starting (8080 by default). 
+   application is starting (8080 by default).
+ * <code>ninja.host</code> allows you to select the host on which your 
+   application will bind (any/0.0.0.0 by default).
  * <code>ninja.mode</code> allows you to select the mode (test, dev, prod) 
    of your application (prod by default).
  * <code>ninja.external.configuration</code> allows you to add an external application
    configuration (eg -Dninja.external.configuration=conf/production.conf).
+   Please note that even with an external configuration, if you included a
+   <code>conf/application.conf</code> on your classpath (e.g. in your app jar)
+   then it will be loaded first, followed by the external configuration file.
+   By using both files, you'll only need to worry about overriding values --
+   which comes in handy when running in test/production environments.
  * <code>ninja.context</code> allows you to add a context prefix to your application
    (eg -Dninja.context=/your_context_path).
+ * <code>ninja.jetty.configuration</code> allows you to supply a comma-delimited
+   list of <code>jetty.xml</code> configuration files to configure the server.
+   Anything Jetty can do is now available. Please note that if this property is
+   supplied then the host/port property is skipped and you'll need to configure
+   that in the <code>jetty.xml</code> configuration file.
+   (eg -Dninja.jetty.configuration=jetty.xml,jetty-ssl.xml) Please refer to 
+   Jetty distribution for example config files.  For each jetty configuration file
+   the local filesystem is searched first, followed by the classpath, and if
+   multiple files are included then each one is applied in order.
 
 
 Init.d script to run Ninja as standalone service on Linux
 ---------------------------------------------------------
 
-If you want to register your Ninja standalone application on your Linux box (Debian, Ubuntu) you can use
-and adapt the following script. The script should be copied at /etc/init.d/ninja and can be run
-via <code>service ninja start</code>.
+If you use option #1 and want to register your Ninja standalone application on
+your Linux box (Debian, Ubuntu) you can use and adapt the following script. The
+script should be copied at /etc/init.d/ninja and can be run via <code>service ninja start</code>.
 
 <pre class="prettyprint">
 #!/bin/bash
