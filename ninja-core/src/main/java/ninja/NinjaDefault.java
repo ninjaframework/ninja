@@ -21,11 +21,15 @@ import java.util.Properties;
 
 import javax.management.RuntimeErrorException;
 
+import ninja.diagnostics.DiagnosticError;
+import ninja.diagnostics.DiagnosticErrorBuilder;
 import ninja.exceptions.BadRequestException;
+import ninja.exceptions.RenderingException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
 
 import org.slf4j.Logger;
@@ -33,7 +37,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
-
 
 public class NinjaDefault implements Ninja {
     private static final Logger logger = LoggerFactory.getLogger(NinjaDefault.class);
@@ -61,8 +64,26 @@ public class NinjaDefault implements Ninja {
     
     @Inject
     Messages messages;
+    
+    @Inject
+    NinjaProperties ninjaProperties;
+    
+    
+    /**
+     * Whether diagnostics are enabled. If enabled then the default system/views
+     * will be skipped and a detailed diagnostic error result will be returned
+     * by the various methods in this class. You get precise feedback where
+     * an error occurred including original source code.
+     * 
+     * @return True if diagnostics are enabled otherwise false.
+     */
+    public boolean isDiagnosticsEnabled() {
+        // extra safety: only disable detailed diagnostic error pages
+        // if both in DEV mode and diagnostics are enabled
+        return ninjaProperties.isDev() && ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, false);
+    }
 
-
+    
     @Override
     public void onRouteRequest(Context.Impl context) {
         
@@ -88,13 +109,12 @@ public class NinjaDefault implements Ninja {
             }
 
         } else {
+            
             // throw a 404 "not found" because we did not find the route
             Result result = getNotFoundResult(context);
             renderErrorResultAndCatchAndLogExceptions(result, context);
 
         }
-    
-
         
     }
     
@@ -109,8 +129,7 @@ public class NinjaDefault implements Ninja {
                 resultHandler.handleResult(result, context);
             }
         } catch (Exception exceptionCausingRenderError) {
-            logger.error("Unable to handle result. "
-                    + "That's really realy fishy. ",
+            logger.error("Unable to handle result. That's really really fishy.",
                     exceptionCausingRenderError);
         }
     }
@@ -131,6 +150,7 @@ public class NinjaDefault implements Ninja {
     ////////////////////////////////////////////////////////////////////////////
     // Results for exceptions (404, 500 etc)
     ////////////////////////////////////////////////////////////////////////////
+    
     @Override
     public Result onException(Context context, Exception exception) {
         
@@ -140,6 +160,12 @@ public class NinjaDefault implements Ninja {
             
             result = getBadRequestResult(context, exception);
         
+        } else if (exception instanceof RenderingException) {
+            
+            RenderingException renderingException = (RenderingException)exception;
+            
+            result = getRenderingExceptionResult(context, renderingException);
+            
         } else {
             
             result = getInternalServerErrorResult(context, exception);
@@ -150,9 +176,39 @@ public class NinjaDefault implements Ninja {
         
     }
     
+    // TO-BE-EVENTUALLY-ADDED-TO-NINJA-DEFAULT-IF-FOLKS-LIKE-THIS
+    public Result getRenderingExceptionResult(Context context, RenderingException exception) {
+        
+        if (isDiagnosticsEnabled()) {
+            
+            // prefer provided title and underlying cause
+            DiagnosticError diagnosticError = DiagnosticErrorBuilder
+                .buildDiagnosticError(
+                    (exception.getTitle() == null ? "Rendering exception" : exception.getTitle()),
+                    (exception.getCause() == null ? exception : exception.getCause()),
+                    exception.getSourcePath(),
+                    exception.getLineNumber());
+
+            return Results.internalServerError().render(diagnosticError);
+            
+        }
+        
+        return getInternalServerErrorResult(context, exception);
+
+    }
+    
     @Override
     public Result getInternalServerErrorResult(Context context, Exception exception) {
+        
+        if (isDiagnosticsEnabled()) {
             
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build500InternalServerErrorDiagnosticError(exception, true);
+            
+            return Results.internalServerError().render(diagnosticError);
+            
+        }
+        
         logger.error(
                 "Emitting bad request 500. Something really wrong when calling route: {} (class: {} method: {})",
                 context.getRequestPath(), 
@@ -182,7 +238,16 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getNotFoundResult(Context context) {
+        
+        if (isDiagnosticsEnabled()) {
             
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build404NotFoundDiagnosticError(true);
+            
+            return Results.notFound().render(diagnosticError);
+            
+        }
+        
         String messageI18n
                 = messages.getWithDefault(
                         NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY,
@@ -205,6 +270,15 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getBadRequestResult(Context context, Exception exception) {
+        
+        if (isDiagnosticsEnabled()) {
+            
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build400BadRequestDiagnosticError(exception, true);
+            
+            return Results.badRequest().render(diagnosticError);
+            
+        }
         
         String messageI18n 
                 = messages.getWithDefault(
@@ -229,6 +303,15 @@ public class NinjaDefault implements Ninja {
     @Override
     public Result getUnauthorizedResult(Context context) {
 
+        if (isDiagnosticsEnabled()) {
+            
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build401UnauthorizedDiagnosticError();
+            
+            return Results.unauthorized().render(diagnosticError);
+            
+        }
+        
         String messageI18n
                 = messages.getWithDefault(
                         NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY,
@@ -254,6 +337,16 @@ public class NinjaDefault implements Ninja {
 
     @Override
     public Result getForbiddenResult(Context context) {
+        
+        // diagnostic mode
+        if (isDiagnosticsEnabled()) {
+            
+            DiagnosticError diagnosticError =
+                DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
+            
+            return Results.unauthorized().render(diagnosticError);
+            
+        }
         
         String messageI18n 
                 = messages.getWithDefault(

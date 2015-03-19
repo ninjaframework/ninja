@@ -45,6 +45,7 @@ contributed to Ninja. In some random order:
  * Lukas Eichler (lukaseichler)
  * Sven Kubiak (svenkubiak)
  * Gabriel Hora (gabrielhora)
+ * Joe Lauer (jjlauer)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen
