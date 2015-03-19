@@ -183,7 +183,7 @@ public class NinjaDefaultTest {
         
         Mockito.when(filterChain.next(contextImpl)).thenThrow(internalServerErrorException);
         when(ninjaProperties.isDev()).thenReturn(true);
-        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, false)).thenReturn(true);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, true)).thenReturn(true);
         
         ninjaDefault.onRouteRequest(contextImpl);
         
@@ -220,7 +220,7 @@ public class NinjaDefaultTest {
         
         Mockito.when(filterChain.next(contextImpl)).thenThrow(badRequest);
         when(ninjaProperties.isDev()).thenReturn(true);
-        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, false)).thenReturn(true);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, true)).thenReturn(true);
         
         ninjaDefault.onRouteRequest(contextImpl);
         
@@ -265,7 +265,7 @@ public class NinjaDefaultTest {
                 .thenReturn(null);
                  
         when(ninjaProperties.isDev()).thenReturn(true);
-        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, false)).thenReturn(true);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, true)).thenReturn(true);
         
         ninjaDefault.onRouteRequest(contextImpl);
         
@@ -442,6 +442,36 @@ public class NinjaDefaultTest {
     
         verify(resultHandler).handleResult(result, contextImpl);
 
+    }
+    
+    @Test
+    public void testIsDiagnosticsEnabled_TrueInDevAndWithProperNinjaPropertiesConfig() {
+        Mockito.when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE)).thenReturn(true);
+        Mockito.when(ninjaProperties.isDev()).thenReturn(true);
+        
+        assertThat(ninjaDefault.isDiagnosticsEnabled(), equalTo(true));
+        verify(ninjaProperties).isDev();
+        verify(ninjaProperties).getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
+    }
+    
+    @Test
+    public void testIsDiagnosticsEnabled_FalseDisabledWhenNotInDev() {
+        Mockito.when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE)).thenReturn(true);
+        Mockito.when(ninjaProperties.isDev()).thenReturn(false);
+        
+        assertThat(ninjaDefault.isDiagnosticsEnabled(), equalTo(false));
+        verify(ninjaProperties).isDev();
+        verify(ninjaProperties, Mockito.never()).getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
+    }
+    
+    @Test
+    public void testIsDiagnosticsEnabled_FalseWheInDevButDisabledInNinjaPropertiesConfig() {
+        Mockito.when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE)).thenReturn(false);
+        Mockito.when(ninjaProperties.isDev()).thenReturn(true);
+        
+        assertThat(ninjaDefault.isDiagnosticsEnabled(), equalTo(false));
+        verify(ninjaProperties).isDev();
+        verify(ninjaProperties).getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
     }
     
 }

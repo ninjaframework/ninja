@@ -79,8 +79,8 @@ public class NinjaDefault implements Ninja {
      */
     public boolean isDiagnosticsEnabled() {
         // extra safety: only disable detailed diagnostic error pages
-        // if both in DEV mode and diagnostics are enabled
-        return ninjaProperties.isDev() && ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, false);
+        // if both in DEV mode and diagnostics are enabled 0
+        return ninjaProperties.isDev() && ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
     }
 
     
