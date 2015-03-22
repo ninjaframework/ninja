@@ -4,6 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>${artifactId}</artifactId>
+    <!-- If you want to deploy to a war please -->
+    <!-- replace "jar" with "war" and -->
+    <!-- comment ninja-standalone dependency and  -->
+    <!-- uncomment the dependency for ninja-servlet -->
     <packaging>jar</packaging>
     <groupId>${groupId}</groupId>
     <version>${version}</version>
