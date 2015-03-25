@@ -2,6 +2,7 @@ ninja
 ninja.bodyparser
 ninja.cache
 ninja.classesfortest
+ninja.diagnostics
 ninja.i18n
 ninja.jpa
 ninja.lifecycle

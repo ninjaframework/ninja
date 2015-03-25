@@ -2,6 +2,7 @@ ninja
 ninja.application
 ninja.bodyparser
 ninja.cache
+ninja.diagnostics
 ninja.exceptions
 ninja.i18n
 ninja.jpa
