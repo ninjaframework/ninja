@@ -95,7 +95,7 @@ router.GET().route("/webjars/{fileName: .*}").with(AssetsController.class, "serv
 You can reference bootstrap from your html pages via the following url:
 
 <pre class="prettyprint">
-&lt;link href=&quot;/webjars/bootstrap/2.1.1/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;link href=&quot;/webjars/bootstrap/3.3.4/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
 </pre>
 
 And Bootstrap is only an example. There are a lot more WebJars available at your

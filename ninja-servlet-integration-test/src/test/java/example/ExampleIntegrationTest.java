@@ -26,7 +26,7 @@ public class ExampleIntegrationTest extends NinjaFluentLeniumTest {
     @Test
     public void testThatStaticAssetsWork() {
 
-        goTo(getServerAddress() + "/assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css");
+        goTo(getServerAddress() + "/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css");
 
         assertTrue(pageSource().contains("Bootstrap"));
 

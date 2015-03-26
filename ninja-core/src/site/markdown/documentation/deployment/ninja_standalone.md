@@ -24,37 +24,62 @@ In order to do so you have to first of all add ninja-standalone as dependency to
     &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
     &lt;artifactId&gt;ninja-standalone&lt;/artifactId&gt;
     &lt;version&gt;X.X.X&lt;/version&gt;
-&lt;/dependency&gt;   
-</pre>        
+&lt;/dependency&gt;
+</pre>
 
-Packaging the application is done via the maven assembly plugin. Add the following snipplet
+Don't forget to change packaging value from _war_ to _jar_.
+
+<pre class="prettyprint">
+&lt;packaging&gt;jar&lt;/packaging&gt;
+</pre>
+
+Packaging the application is done via the maven shade plugin. Add the following snipplet
 to your pom.xml.
 
 <pre class="prettyprint">
 &lt;plugin&gt;
-    &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
-    &lt;version&gt;2.4&lt;/version&gt;
-    &lt;configuration&gt;
-        &lt;descriptorRefs&gt;
-            &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
-        &lt;/descriptorRefs&gt;
-        &lt;archive&gt;
-            &lt;manifest&gt;
-                &lt;mainClass&gt;ninja.standalone.NinjaJetty&lt;/mainClass&gt;
-            &lt;/manifest&gt;
-        &lt;/archive&gt;
-    &lt;/configuration&gt;
+  &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-shade-plugin&lt;/artifactId&gt;
+  &lt;version&gt;2.2&lt;/version&gt;
+  &lt;configuration&gt;
+    &lt;createDependencyReducedPom&gt;true&lt;/createDependencyReducedPom&gt;
+    &lt;filters&gt;
+      &lt;filter&gt;
+        &lt;artifact&gt;*:*&lt;/artifact&gt;
+        &lt;excludes&gt;
+          &lt;exclude&gt;META-INF/*.SF&lt;/exclude&gt;
+          &lt;exclude&gt;META-INF/*.DSA&lt;/exclude&gt;
+          &lt;exclude&gt;META-INF/*.RSA&lt;/exclude&gt;
+        &lt;/excludes&gt;
+      &lt;/filter&gt;
+    &lt;/filters&gt;
+  &lt;/configuration&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;phase&gt;package&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;shade&lt;/goal&gt;
+      &lt;/goals&gt;
+      &lt;configuration&gt;
+        &lt;transformers&gt;
+          &lt;transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/&gt;
+          &lt;transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"&gt;
+            &lt;mainClass&gt;ninja.standalone.NinjaJetty&lt;/mainClass&gt;
+          &lt;/transformer&gt;
+        &lt;/transformers&gt;
+      &lt;/configuration&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
 &lt;/plugin&gt;
 </pre>
 
 Whenever you build your application on the command line this will generate a fat jar
 inside your target directory. Usually that file is named roughly MY-APPLICATION-jar-with-dependencies.jar
 
-If you skip the section called "executions" in the maven-assembly-plugin you can generate
-the fat jar by calling
+You can generate the fat jar by calling
 
 <pre class="prettyprint">
-mvn clean compile assembly:single
+mvn clean compile package
 </pre>
 
 Running the fat jar (and your app) is as simple as calling:
