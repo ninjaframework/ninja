@@ -21,8 +21,8 @@
                     Rock solid, fast and super productive."/>
             <link rel="icon" type="image/png" href="favicon.png" />
 
-            <link href='http://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'/>
-            <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+            <link href='//fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'/>
+            <link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
             <link href='//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'/>
 
             <script type="text/javascript">
