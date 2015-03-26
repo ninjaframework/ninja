@@ -2,6 +2,7 @@ Version X.X.X
 =============
 
  * 2015-03-26 Tiny documentation fixes (ra)
+ * 2015-03-26 Upgrade archetypes / replace assembly with shade #341 (0xbaadf00d)
 
 Version 5.1.0
 =============
