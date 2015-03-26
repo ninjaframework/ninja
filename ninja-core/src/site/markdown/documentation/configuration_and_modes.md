@@ -196,7 +196,8 @@ It tries to load in the following order:
 Ninja uses the excellent Apache Configurations library to do the loading. Please refer to
 [their manual](http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
 
-=== Hot-reloading external configuration ===
+Hot-reloading external configuration
+------------------------------------
 
 By default Ninja does not reload your external configuration. However for some installations it may be very
 useful to hot-reload this config instead of restarting your application.
