@@ -50,7 +50,7 @@ public class TemplateEngineFreemarkerPrettyTimeMethodTest {
             put(Locale.FRENCH, "il y a 1 jour");
             put(Locale.ITALIAN, "1 giorno fa");
             put(Locale.CHINESE, "1 天 前");
-            put(Locale.JAPANESE, "1 日 前");
+            put(Locale.JAPANESE, "1日前");
             put(Locale.KOREAN, "1일 전");
         }
     };

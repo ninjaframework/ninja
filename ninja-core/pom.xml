@@ -85,7 +85,6 @@
         <dependency>
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime</artifactId>
-            <version>3.2.1.Final</version>
         </dependency>
     
         <!-- Thread-safe alternative for Java JDK time stuff -->
