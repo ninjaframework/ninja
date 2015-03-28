@@ -67,6 +67,13 @@ public class NinjaServletListener extends GuiceServletContextListener {
         ninjaBootstrap.shutdown();
         super.contextDestroyed(servletContextEvent);
     }
+    
+    /**
+     * Only available after context initialization attempted.
+     */
+    public NinjaBootstrap getNinjaBootstrap() {
+        return this.ninjaBootstrap;
+    }
    
     /**
      * Getting the injector is done via double locking in conjuction

@@ -112,11 +112,11 @@ This would then result in the following output: <code>/assets/css/custom.css</co
 ### webJarsAt(...)
 
 webJarsAt allows you to render webjar contents. For instance
-<code>${webJarsAt("bootstrap/3.0.0/css/bootstrap.min.css")}</code> would render
+<code>${webJarsAt("bootstrap/3.3.4/css/bootstrap.min.css")}</code> would render
 a css file from a webJars jar. The corresponding route could be 
 <code>router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");</code>.
 
-This would then result in the following output: <code>/assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css</code>.
+This would then result in the following output: <code>/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css</code>.
 
 ### i18n(...)
 

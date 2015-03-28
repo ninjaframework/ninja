@@ -47,12 +47,17 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
+import freemarker.core.ParseException;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 import freemarker.template.Version;
+import java.io.StringWriter;
+import ninja.exceptions.RenderingException;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -76,6 +81,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     private final Configuration cfg;
 
+    private final NinjaProperties ninjaProperties;
+    
     private final Messages messages;
     
     private final Lang lang;
@@ -83,8 +90,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final TemplateEngineHelper templateEngineHelper;
 
     private final Logger logger;
-
-    private final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
 
     private final TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod;
             
@@ -98,7 +103,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
                                     Logger logger,
-                                    TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
                                     TemplateEngineHelper templateEngineHelper,
                                     TemplateEngineManager templateEngineManager,
                                     TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod,
@@ -108,7 +112,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.messages = messages;
         this.lang = lang;
         this.logger = logger;
-        this.templateEngineFreemarkerExceptionHandler = templateEngineFreemarkerExceptionHandler;
+        this.ninjaProperties = ninjaProperties;
         this.templateEngineHelper = templateEngineHelper;
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
@@ -128,8 +132,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         // Ninja does the localization itself - lookup is not needed.
         cfg.setLocalizedLookup(false);
-
-        cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
         ///////////////////////////////////////////////////////////////////////
         // 1) In dev we load templates from src/java/main first, then from the
@@ -303,37 +305,78 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         String templateName = templateEngineHelper.getTemplateForResult(
                 context.getRoute(), result, this.fileSuffix);
 
-        
         Template freemarkerTemplate = null;
         
         try {
             
             freemarkerTemplate = cfg.getTemplate(templateName);
             
-        } catch (IOException iOException) {
-            
-            logger.error(
-                    "Error reading Freemarker Template {} ", templateName, iOException);
-            
-            throw new RuntimeException(iOException);
-        }
-        
-        try {
             // Fully buffer the response so in the case of a template error we can 
             // return the applications 500 error message. Without fully buffering 
             // we can't guarantee we haven't flushed part of the response to the
             // client.
             StringWriter buffer = new StringWriter(64 * 1024);
             freemarkerTemplate.process(map, buffer);
+
             ResponseStreams responseStreams = context.finalizeHeaders(result);
-            Writer writer = responseStreams.getWriter();
-            writer.write(buffer.toString());
-            writer.close();
-        } catch (Exception e) {            
-            logger.error(
-                    "Error processing Freemarker Template {} ", templateName, e);   
-            throw new RuntimeException(e);   
+            try (Writer writer = responseStreams.getWriter()) {
+                writer.write(buffer.toString());
+            }
+        } catch (Exception cause) {   
+            
+            // delegate rendering exception handling back to Ninja
+            throwRenderingException(context, result, cause, templateName);
+            
         }
+    }
+    
+    public void throwRenderingException(
+            Context context,
+            Result result,
+            Exception cause,
+            String knownTemplateSourcePath) {
+        
+        // parse method above may throw an IOException whose cause is really
+        // a more useful ParseException
+        if (cause instanceof IOException
+                && cause.getCause() != null
+                && cause.getCause() instanceof ParseException) {
+            cause = (ParseException)cause.getCause();
+        }
+        
+        if (cause instanceof TemplateNotFoundException) {
+            
+            // inner cause will be better to display
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker template not found", knownTemplateSourcePath, -1);
+            
+        }
+        else if (cause instanceof TemplateException) {
+            
+            TemplateException te = (TemplateException)cause;
+            String templateSourcePath = te.getTemplateSourceName();
+            if (templateSourcePath == null) {
+                templateSourcePath = knownTemplateSourcePath;
+            }
+            
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker render exception", templateSourcePath, te.getLineNumber());
+            
+        }
+        else if (cause instanceof ParseException) {
+            
+            ParseException pe = (ParseException)cause;
+            
+            String templateSourcePath = pe.getTemplateName();
+            if (templateSourcePath == null) {
+                templateSourcePath = knownTemplateSourcePath;
+            }
+            
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker parser exception", templateSourcePath, pe.getLineNumber());
+            
+        }
+        
+        // fallback to throwing generic rendering exception
+        throw new RenderingException(cause.getMessage(), cause, result, knownTemplateSourcePath, -1);
+        
     }
 
     @Override

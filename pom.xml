@@ -22,7 +22,7 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.7-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
     <url>http://www.ninjaframework.org</url>
 
     <!-- Deploy to central maven using the oss-parent of sonatype -->
@@ -59,11 +59,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.2.9.v20150224</jetty.version>
-        <hibernate.version>4.3.5.Final</hibernate.version>
-        <jackson.version>2.4.3</jackson.version>
+        <jetty.version>9.2.10.v20150310</jetty.version>
+        <hibernate.version>4.3.8.Final</hibernate.version>
+        <jackson.version>2.5.1</jackson.version>
         <guice.version>4.0-beta5</guice.version>
-        <metrics.version>3.1.0</metrics.version>
+        <metrics.version>3.1.1</metrics.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
@@ -174,9 +174,10 @@
                 </plugin>
 
                 <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.4</version>
-                </plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
             
                 <plugin>
                     <groupId>org.eclipse.jetty</groupId>
@@ -345,7 +346,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.3</version>
+                <version>2.7</version>
             </dependency>
 
             <!-- Our favorite dependency injection framework: -->
@@ -415,7 +416,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.9</version>
+                <version>1.10</version>
             </dependency>
 
             <!-- Enrcyption library providing support for blowfish -->
@@ -429,21 +430,21 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.2</version>
+                <version>1.1.3</version>
             </dependency>
 		
             <!-- Replace commons-logging with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.7</version>
+                <version>1.7.12</version>
             </dependency>
         
             <!-- Replace log4j with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.7</version>
+                <version>1.7.12</version>
             </dependency>
 
             <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
@@ -505,14 +506,14 @@
             <dependency>
                 <groupId>net.sf.ehcache.internal</groupId>
                 <artifactId>ehcache-core</artifactId>
-                <version>2.8.5</version>
+                <version>2.9.1</version>
             </dependency>
         
             <!-- memcached client -->
             <dependency>
                 <groupId>net.spy</groupId>
                 <artifactId>spymemcached</artifactId>
-                <version>2.11.4</version>
+                <version>2.11.6</version>
             </dependency>
 	
             <!-- Migration framework -->
@@ -570,9 +571,15 @@
             </dependency>
             
             <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-xml</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            
+            <dependency>
                 <groupId>org.webjars</groupId>
                 <artifactId>bootstrap</artifactId>
-                <version>3.0.0</version>
+                <version>3.3.4</version>
             </dependency>
             
             <dependency>
@@ -585,7 +592,7 @@
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>1.4.182</version>
+                <version>1.4.186</version>
             </dependency>
             
             
@@ -593,7 +600,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.3.4</version>
+                <version>4.4</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
@@ -605,7 +612,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
-                <version>4.3.4</version>
+                <version>4.4</version>
             </dependency>
         
             <!-- Testing -->
@@ -614,7 +621,7 @@
             <dependency>
                 <groupId>com.devbliss.doctest</groupId>
                 <artifactId>doctest</artifactId>
-                <version>0.7.0</version>
+                <version>0.9.1</version>
             </dependency>
 
             <dependency>
@@ -627,7 +634,7 @@
             <dependency>
                 <groupId>org.fluentlenium</groupId>
                 <artifactId>fluentlenium-core</artifactId>
-                <version>0.10.2</version>
+                <version>0.10.3</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
@@ -646,15 +653,21 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.icegreen</groupId>
                 <artifactId>greenmail</artifactId>
-                <version>1.3.1b</version>
+                <version>1.4.0</version>
                 <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.ocpsoft.prettytime</groupId>
+                <artifactId>prettytime</artifactId>
+                <version>3.2.7.Final</version>
             </dependency>
 
         </dependencies>

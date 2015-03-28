@@ -28,7 +28,7 @@ Ninja sessions are not encrypted by default.
 Therefore you should not store any 
 critical information. Storing a user id, or username is fine. Storing
 credit card information is really bad practise. But if you need to include sensitive data for any reasons,
-you can encrypt sessions as described in <a href="documentation/security/getting_started.html">Security</a>
+you can encrypt sessions as described in <a href="/documentation/security/getting_started.html">Security</a>
 page.
 </div>
 

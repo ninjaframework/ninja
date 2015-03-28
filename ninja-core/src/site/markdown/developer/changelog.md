@@ -1,6 +1,19 @@
-Version x.x.x
+Version X.X.X
 =============
 
+ * 2015-03-27 Upgrade of external libraries to latest versions (ra)
+ * 2015-03-26 Tiny documentation fixes (ra)
+ * 2015-03-26 Upgrade archetypes / replace assembly with shade #341 (0xbaadf00d)
+
+Version 5.1.0
+=============
+
+ * 2015-03-25 Bump to Jetty 9.2.10.v20150310 (ra) 
+ * 2015-03-19 (PR #329) ninja-core supports new "Diagnostics" extension for DEV mode. See http://www.ninjaframework.org/documentation/configuration_and_modes.html for more info (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone will System.exit on any startup exception (previously it only exited in some cases, kept running in failed state for others) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone support for binding to specific host/address (e.g. -Dninja.host=localhost) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone support for advanced/power-user jetty configuration(s) (e.g. -Dninja.jetty.configuration=jetty.xml,jetty-ssl.xml) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone optimized to specifically handle Guice injector exception (most common startup error) - slightly cuts down on verbosity of failure logging (jjlauer)
  * 2015-03-15 Added support for collections and arrays for body parser engine (gabrielhora)
  * 2015-03-14 #320 Fixed bug in JSR 303 validation messages (Thibault Meyer)
  * 2015-03-07 Using context.getContextPath() as prefix in cookie path (jfendler/ra)

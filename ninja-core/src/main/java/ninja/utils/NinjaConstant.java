@@ -27,7 +27,7 @@ public interface NinjaConstant {
     String MODE_TEST = "test";
     String MODE_DEV = "dev";
     String MODE_PROD = "prod";
-
+    
     // /////////////////////////////////////////////////
     // The basic directories used in all convention
     // over configuration operations:
@@ -140,6 +140,12 @@ public interface NinjaConstant {
      * (XSS).
      */
     final String sessionHttpOnly = "application.session.http_only";
+    
+    // /////////////////////////////////////////////////
+    // Diagnostic mode - extension to dev mode where
+    // ninja.Ninja is forced with ninja.diagnostics.NinjaDiagnostic
+    String DIAGNOSTICS_KEY_NAME = "application.diagnostics";
+    
     
     ///////////////////////////////////////////////////////////////////////////
     // Cache configuration

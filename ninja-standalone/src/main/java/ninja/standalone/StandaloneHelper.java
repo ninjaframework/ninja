@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 
 public class StandaloneHelper {
     
-    private static int findAvailablePort(int min, int max) {
+    static int findAvailablePort(int min, int max) {
         for (int port = min; port < max; port++) {
             try {
                 new ServerSocket(port).close();
