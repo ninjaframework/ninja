@@ -33,6 +33,8 @@ import org.junit.Test;
 import freemarker.template.SimpleDate;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 /**
  *
@@ -58,32 +60,31 @@ public class TemplateEngineFreemarkerPrettyTimeMethodTest {
     @Test
     public void testThatJavaUtilDateWorks() throws Exception {
 
-        test(new SimpleDate(new java.util.Date(getTime()), SimpleDate.DATE));
+        test(new SimpleDate(new java.util.Date(getYesterdaysMillis()), SimpleDate.DATE));
     }
 
     @Test
     public void testThatJavaSqlDateWorks() throws Exception {
 
-        test(new SimpleDate(new Date(getTime())));
+        test(new SimpleDate(new Date(getYesterdaysMillis())));
     }
 
     @Test
     public void testThatJavaSqlTimeWorks() throws Exception {
 
-        test(new SimpleDate(new Time(getTime())));
+        test(new SimpleDate(new Time(getYesterdaysMillis())));
     }
 
     @Test
     public void testThatJavaSqlTimestampWorks() throws Exception {
 
-        test(new SimpleDate(new Timestamp(getTime())));
+        test(new SimpleDate(new Timestamp(getYesterdaysMillis())));
     }
 
-    private long getTime() {
-        // return yesterday
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, -1);
-        return c.getTimeInMillis();
+    private long getYesterdaysMillis() {
+        // return yesterday => "25" works even for summertime
+        LocalDateTime localDateTime = LocalDateTime.now().minusHours(25);
+        return localDateTime.toDateTime().getMillis();
     }
 
     public void test(SimpleDate simpleDate) throws Exception {
