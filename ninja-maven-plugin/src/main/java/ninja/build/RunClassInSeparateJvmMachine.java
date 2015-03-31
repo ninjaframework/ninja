@@ -112,12 +112,10 @@ public class RunClassInSeparateJvmMachine {
             log.debug("Starting new {}", name);
             this.activeProcess = startProcess();
             
-        }
-        catch (ExecutionException | InterruptedException | IOException e) {
+        } catch (ExecutionException | InterruptedException | IOException e) {
             log.error("Something fishy happenend. Unable to cleanly restart {}!", name, e);
             log.error("You'll probably need to restart maven?");
-        }
-        finally {
+        } finally {
             restarting.set(false);
         }
     }

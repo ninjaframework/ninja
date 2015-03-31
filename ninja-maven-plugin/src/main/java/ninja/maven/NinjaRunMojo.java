@@ -170,14 +170,14 @@ public class NinjaRunMojo extends AbstractMojo {
         
         classpathItems.add(buildOutputDirectory);
 
-        for (org.apache.maven.artifact.Artifact artifact : project.getArtifacts()) {
+        for (org.apache.maven.artifact.Artifact artifact: project.getArtifacts()) {
             classpathItems.add(artifact.getFile().toString());           
         }
         
         List<Artifact> allArtifactsFromNinjaStandaloneInPlugin 
             = getAllArtifactsComingFromNinjaStandalone(pluginArtifacts);
         
-        for (Artifact artifact : allArtifactsFromNinjaStandaloneInPlugin) {
+        for (Artifact artifact: allArtifactsFromNinjaStandaloneInPlugin) {
             
             //only add once...
             if (!classpathItems.contains(artifact.getFile().toString())) {
@@ -201,7 +201,7 @@ public class NinjaRunMojo extends AbstractMojo {
         
         // add any watch directories
         if (this.watchDirs != null) {
-            for (File watchDir : this.watchDirs) {
+            for (File watchDir: this.watchDirs) {
                 directoriesToRecursivelyWatch.add(watchDir.toPath().toAbsolutePath());
             }
         }
@@ -346,9 +346,9 @@ public class NinjaRunMojo extends AbstractMojo {
     
         List<Artifact> resultingArtifacts = new ArrayList<>();
         
-        for (Artifact artifact : artifacts) {
+        for (Artifact artifact: artifacts) {
         
-            for (String dependencyTrail : artifact.getDependencyTrail()) {
+            for (String dependencyTrail: artifact.getDependencyTrail()) {
             
                 // something like:  org.ninjaframework:ninja-standalone:jar:2.5.2
                 if (dependencyTrail.contains(NinjaMavenPluginConstants.NINJA_STANDALONE_ARTIFACT_ID)) {

@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ninja.build;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -120,13 +115,21 @@ public class DelayedRestartTrigger extends Thread {
 
             } catch (InterruptedException e) {
                 if (!shutdown) {
-                    log.error("Unexpected thread interrupt (maybe you are shutting down maven?)", e);
+                    log.error("Unexpected thread interrupt (maybe you are shutting down Maven?)", e);
                 }
                 break;
             }
         }
     }
     
+    /**
+     * Usually this method is called by an external component that watches
+     * a directory to restart Ninja's dev mode.
+     * 
+     * The restart will be executed with a delay. If a bunch of files are
+     * changed at the same time only one restart is performed.
+     * 
+     */
     public void trigger() {
         // signal for a restart
         this.restartLock.lock();

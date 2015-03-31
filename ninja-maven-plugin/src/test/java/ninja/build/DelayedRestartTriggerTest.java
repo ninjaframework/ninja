@@ -62,8 +62,7 @@ public class DelayedRestartTriggerTest {
             
             assertEquals(1, restartTrigger.getRestartCount());
             assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
-        }
-        finally {
+        } finally {
             restartTrigger.shutdown();
         }
         
@@ -124,8 +123,7 @@ public class DelayedRestartTriggerTest {
             
             assertEquals(1, restartTrigger.getRestartCount());
             assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
-        }
-        finally {
+        } finally {
             restartTrigger.shutdown();
         }
         

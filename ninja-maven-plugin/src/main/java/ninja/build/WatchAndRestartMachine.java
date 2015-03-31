@@ -78,7 +78,7 @@ public class WatchAndRestartMachine implements Runnable {
         this.excludes = excludes;
         this.restartTrigger = restartTrigger;
         this.takeCount = new AtomicInteger(0);
-        for (Path path : directoriesToRecursivelyWatch) {
+        for (Path path: directoriesToRecursivelyWatch) {
             registerAll(path);
         }
         
@@ -167,30 +167,20 @@ public class WatchAndRestartMachine implements Runnable {
                 WatchEvent<Path> ev = (WatchEvent<Path>) watchEvent;
                 Path name = ev.context();
                 Path child = path.resolve(name);
-
-                // print out watchEvent
-                //System.out.format("%s: %s\n", watchEvent.kind().name(), child);
                 
                 if (watchEventKind == ENTRY_MODIFY) {
-                    
                     // we are not interested in events from parent directories...
-                    if (! child.toFile().isDirectory()) {
-                        
+                    if (!child.toFile().isDirectory()) {
                         handleNewOrModifiedFile("Modified", child);
-                    
                     }
-
                 }
 
                 // if directory is created, then register it and its sub-directories recursively
                 if (watchEventKind == ENTRY_CREATE) {
                     
-                    if (! child.toFile().isDirectory()) {
-                        
+                    if (!child.toFile().isDirectory()) {
                         handleNewOrModifiedFile("New", child);
-
                     }
-                    
                     try {
                         if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
                             registerAll(child);
@@ -260,7 +250,7 @@ public class WatchAndRestartMachine implements Runnable {
     public static RuleMatch matchRule(Set<String> includes, Set<String> excludes, String string) {
         
         if (includes != null) {
-            for (String regex : includes) {
+            for (String regex: includes) {
                 if (string.matches(regex)) {
                     return new RuleMatch(RuleType.include, regex, true);
                 }
@@ -268,7 +258,7 @@ public class WatchAndRestartMachine implements Runnable {
         }
         
         if (excludes != null) {
-            for (String regex : excludes) {
+            for (String regex: excludes) {
                 if (string.matches(regex)) {
                     return new RuleMatch(RuleType.exclude, regex, false);
                 }

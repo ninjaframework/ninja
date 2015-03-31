@@ -656,6 +656,13 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
+            
+            <dependency>
+                <groupId>com.google.code.tempus-fugit</groupId>
+                <artifactId>tempus-fugit</artifactId>
+                <version>1.1</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>com.icegreen</groupId>
@@ -669,6 +676,19 @@
                 <artifactId>prettytime</artifactId>
                 <version>3.2.7.Final</version>
             </dependency>
+            
+            <dependency>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>zt-exec</artifactId>
+                <version>1.7</version>
+            </dependency>
+            
+                    <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.4</version>
+            <scope>provided</scope>
+        </dependency>
 
         </dependencies>
         
