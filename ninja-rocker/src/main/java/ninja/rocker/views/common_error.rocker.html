@@ -1,0 +1,64 @@
+@*
+ * Copyright (C) 2015 Fizzed, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+@import ninja.utils.Message;
+
+@option extendsClass=ninja.rocker.NinjaRockerTemplate
+@option implementsInterface=ninja.rocker.CommonErrorTemplate
+
+@args (Message message)
+<html>
+    <head>
+        <title>@message.text</title>
+        <style type="text/css">
+            .error-code {
+                font-family: "Times New Roman", Times, serif;
+                margin-top: 5%;
+                width: 50%;
+                border: 15px solid black;
+                padding: 50px;
+            }
+            .centered {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .error-code__smiley {
+                font-family: "Times New Roman", Times, serif;
+                text-align:center; 
+                font-size: 120pt;
+                margin-bottom: 60px;
+            }
+            .error-code__text {
+                font-family: "Times New Roman", Times, serif;
+                text-align:center; 
+                font-size: 18pt;
+                padding-bottom: 10px;
+            }
+            .error-code__link {
+                font-family: "Times New Roman", Times, serif;
+                color: black;
+                text-decoration: none;
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="error-code centered">
+            <div class="error-code__smiley">:(</div>
+            <div class="error-code__text">@message.text</div>
+            <div class="error-code__text"><a class="error-code__link" href="@N.contextPath/">Back to homepage</a></div>
+        </div>
+    </body>
+</html>
