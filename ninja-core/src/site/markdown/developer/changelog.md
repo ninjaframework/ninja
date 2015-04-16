@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2015-04-16 Fixed Bug with HTTP-Method Resolving in JaxyRoutes (lukaseichler)
  * 2015-03-31 Improved SuperDevMode (jjlauer)
  * 2015-03-29 Tiny fix for a test that did not work with summertime (ra)
  * 2015-03-27 Upgrade of external libraries to latest versions (ra)

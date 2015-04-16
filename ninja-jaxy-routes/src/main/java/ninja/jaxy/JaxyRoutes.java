@@ -16,6 +16,20 @@
 
 package ninja.jaxy;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -33,20 +47,6 @@ import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 /**
  * Implementation of a JAX-RS style route builder.
@@ -207,7 +207,10 @@ public class JaxyRoutes implements ApplicationRoutes {
         Set<Method> methods = Sets.newLinkedHashSet();
 
         methods.addAll(reflections.getMethodsAnnotatedWith(Path.class));
-        Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
+	    Reflections annotationReflections = new Reflections(new ConfigurationBuilder()
+			    .addUrls(ClasspathHelper.forClassLoader())
+			    .setScanners(new TypeAnnotationsScanner(),
+					    new SubTypesScanner()));
         for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
             if (httpMethod.isAnnotation()) {
                 methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
