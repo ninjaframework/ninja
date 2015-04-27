@@ -87,7 +87,7 @@ public class ArticleController {
             
             articleDao.postArticle(username, articleDto);
             
-            context.getFlashCookie().success("New article created.");
+            context.getFlashScope().success("New article created.");
             
             return Results.redirect("/");
 
