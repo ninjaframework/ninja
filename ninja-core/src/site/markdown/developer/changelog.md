@@ -1,4 +1,4 @@
-Version X.X.X
+Version 5.1.1
 =============
 
  * 2015-03-31 Improved SuperDevMode (jjlauer)
