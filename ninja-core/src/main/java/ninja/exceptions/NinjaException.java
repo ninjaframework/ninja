@@ -40,5 +40,9 @@ public class NinjaException extends RuntimeException {
         super(httpMessage, cause);
         this.httpStatus = httpStatus;
     }
+    
+    public int getHttpStatus() {
+        return this.httpStatus;
+    }
 
 }
