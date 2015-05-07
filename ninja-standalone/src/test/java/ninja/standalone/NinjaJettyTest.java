@@ -168,6 +168,7 @@ public class NinjaJettyTest {
         System.setProperty("ninja.port", randomPort+"");
         System.setProperty("ninja.context", "mycontext");
         System.setProperty("ninja.host", "localhost");
+        System.setProperty("ninja.idle.timeout", "60000");
         
         final NinjaJetty nj = new NinjaJetty();
         try {
@@ -193,9 +194,10 @@ public class NinjaJettyTest {
                 assertNotNull(nj.server);
                 assertNotNull(nj.ninjaProperties);
                 assertNotNull("http://localhost:" + randomPort, nj.ninjaProperties.get(NinjaConstant.serverName));
+                assertEquals(60000, nj.idleTimeout);
                 assertTrue(nj.ninjaProperties.isTest());
                 assertEquals("mycontext", nj.context.getContextPath());
-
+                
                 assertNotNull(nj.context);
                 assertNotNull(nj.ninjaServletListener);
                 assertTrue(nj.context.isAvailable());

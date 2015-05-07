@@ -113,6 +113,8 @@ via the following command line parameters:
    application is starting (8080 by default).
  * <code>ninja.host</code> allows you to select the host on which your 
    application will bind (any/0.0.0.0 by default).
+ * <code>ninja.idle.timeout</code> allows you to specify the timeout period after which 
+   idle http connections will be closed. (in msec, 30000 by default)
  * <code>ninja.mode</code> allows you to select the mode (test, dev, prod) 
    of your application (prod by default).
  * <code>ninja.external.configuration</code> allows you to add an external application

@@ -45,15 +45,18 @@ public class NinjaJetty {
     public final static String COMMAND_LINE_PARAMETER_NINJA_CONTEXT = "ninja.context";
     public final static String COMMAND_LINE_PARAMETER_NINJA_PORT = "ninja.port";
     public final static String COMMAND_LINE_PARAMETER_NINJA_HOST = "ninja.host";
+    public final static String COMMAND_LINE_PARAMETER_NINJA_IDLE_TIMEOUT = "ninja.idle.timeout";
     public final static String COMMAND_LINE_PARAMETER_NINJA_JETTY_CONFIGURATION = "ninja.jetty.configuration";
     
     static final int DEFAULT_PORT = 8080;
     static final String DEFAULT_HOST = null;                // bind to any
+    static final long DEFAULT_IDLE_TIMEOUT = 30000;  // set to Jetty 9 default
     
     // configuration
     Integer port;
     String host;
     URI serverUri;
+    long idleTimeout;
     NinjaMode ninjaMode;
     String ninjaContextPath;
     String jettyConfiguration;
@@ -73,6 +76,7 @@ public class NinjaJetty {
     public NinjaJetty() {
         this.port = DEFAULT_PORT;
         this.host = DEFAULT_HOST;
+        this.idleTimeout = DEFAULT_IDLE_TIMEOUT;
         ninjaMode = NinjaMode.prod;
         ninjaServletListener = new NinjaServletListener();
     }
@@ -85,6 +89,8 @@ public class NinjaJetty {
         setPort(tryToGetPortFromSystemPropertyOrReturnDefault());
         
         setHost(System.getProperty(COMMAND_LINE_PARAMETER_NINJA_HOST, DEFAULT_HOST));
+        
+        setIdleTimeout(tryToGetIdleTimeoutFromSystemPropertyOrReturnDefault());
         
         setNinjaContextPath(tryToGetContextPathFromSystemPropertyOrReturnDefault());
         
@@ -128,6 +134,11 @@ public class NinjaJetty {
     
     public NinjaJetty setPort(int port) {
         this.port = port;
+        return this;
+    }
+    
+    public NinjaJetty setIdleTimeout(long idleTimeout) {
+        this.idleTimeout = idleTimeout;
         return this;
     }
     
@@ -219,6 +230,8 @@ public class NinjaJetty {
             ServerConnector http = new ServerConnector(server);
 
             http.setPort(port);
+            
+            http.setIdleTimeout(idleTimeout);
 
             if (host != null) {
                 http.setHost(host);
@@ -305,6 +318,22 @@ public class NinjaJetty {
 
         return port;
 
+    }
+    
+    public static long tryToGetIdleTimeoutFromSystemPropertyOrReturnDefault() {
+        long idleTimeout;
+        
+        try {
+            
+            String idleTimeoutAsString = System.getProperty(COMMAND_LINE_PARAMETER_NINJA_IDLE_TIMEOUT);
+            idleTimeout = Long.parseLong(idleTimeoutAsString);
+            
+        } catch(Exception e) {
+            
+            return DEFAULT_IDLE_TIMEOUT;
+        }
+        
+        return idleTimeout;
     }
 
     public static String tryToGetContextPathFromSystemPropertyOrReturnDefault() {
