@@ -16,3 +16,5 @@ bin
 ninja-demo-application/src/main/java/ninja
 ninja-demo-application/src/main/java/ninjaModuleDemo
 
+#maven-shade-plugin auto-generated files
+dependency-reduced-pom.xml

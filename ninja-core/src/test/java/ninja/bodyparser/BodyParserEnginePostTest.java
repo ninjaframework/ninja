@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ninja.Context;
@@ -77,6 +78,7 @@ public class BodyParserEnginePostTest {
         Map<String, String[]> map = new HashMap<>();
         map.put("string", new String [] {"aString"});
         map.put("iAmNotSupportedField", new String [] {"iAmNotSupportedField"});
+        map.put("longs", new String[] {"1", "2"});
         
         Mockito.when(context.getParameters()).thenReturn(map);
 
@@ -87,7 +89,31 @@ public class BodyParserEnginePostTest {
         // and test:
         assertThat(testObject.string, equalTo("aString"));
         assertThat(testObject.iAmNotSupportedField, CoreMatchers.equalTo(null));
+        assertThat(testObject.longs, CoreMatchers.equalTo(null));
         
+    }
+
+    @Test
+    public void testBodyParserWithCollectionAndArray() {
+
+        Map<String, String[]> map = new HashMap<>();
+        map.put("integers", new String[] {"1", "2"});
+        map.put("strings", new String[] {"hello", "world"});
+
+        Mockito.when(context.getParameters()).thenReturn(map);
+
+        // do
+        BodyParserEnginePost bodyParserEnginePost = new BodyParserEnginePost();
+        TestObjectWithArraysAndCollections testObject = bodyParserEnginePost.invoke(context, TestObjectWithArraysAndCollections.class);
+
+        // and test:
+        assertThat(testObject.integers.length, equalTo(2));
+        assertThat(testObject.integers[0], equalTo(1));
+        assertThat(testObject.integers[1], equalTo(2));
+
+        assertThat(testObject.strings.size(), equalTo(2));
+        assertThat(testObject.strings.get(0), equalTo("hello"));
+        assertThat(testObject.strings.get(1), equalTo("world"));
     }
 
     
@@ -106,6 +132,14 @@ public class BodyParserEnginePostTest {
 
         public StringBuffer iAmNotSupportedField;
         public String string;
+        public long[] longs;
+
+    }
+
+    public static class TestObjectWithArraysAndCollections {
+
+        public Integer[] integers;
+        public List<String> strings;
 
     }
     

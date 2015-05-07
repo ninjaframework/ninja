@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>4.0.7-SNAPSHOT</version>
+        <version>5.1.2-SNAPSHOT</version>
     </parent>
     
     <url>http://www.ninjaframework.org</url>
@@ -97,20 +97,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>ninja.standalone.NinjaJetty</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
         </plugins>
 
 
@@ -136,11 +122,6 @@
     </build>
 
     <dependencies>
-    
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.ninjaframework</groupId>

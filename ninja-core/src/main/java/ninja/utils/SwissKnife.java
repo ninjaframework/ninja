@@ -16,20 +16,18 @@
 
 package ninja.utils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.base.CaseFormat;
+import com.google.common.primitives.Primitives;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.CaseFormat;
-import com.google.common.primitives.Primitives;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * A helper class that contains a lot of random stuff that helps to get things
@@ -116,6 +114,42 @@ public class SwissKnife {
 
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
 
+    }
+
+    /**
+     * Convert value to a collection type
+     *
+     * @param from string values
+     * @param to collection type of the class
+     * @return collection class type value or null if something goes wrong
+     */
+    public static <T> Collection<T> convertCollection(String[] from, Class<T> to) {
+        Collection<T> result = new ArrayList<>();
+        for (String value : from) {
+            result.add(convert(value, to));
+        }
+        return result;
+    }
+
+    /**
+     * Convert value to an array of type
+     *
+     * @param from string values
+     * @param to type of array
+     * @return array of values or null if something goes wrong
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] convertArray(String[] from, Class<T> to) {
+        T[] result;
+        try {
+            result = (T[]) Array.newInstance(to, from.length);
+        } catch (ClassCastException e) {
+            return null;
+        }
+        for (int i = 0; i < from.length; i++) {
+            result[i] = convert(from[i], to);
+        }
+        return result;
     }
 
     /**

@@ -18,7 +18,6 @@ package ninja.metrics.influxdb;
 
 import java.util.concurrent.TimeUnit;
 
-import metrics_influxdb.Influxdb;
 import metrics_influxdb.InfluxdbReporter;
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
@@ -32,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.codahale.metrics.MetricFilter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import metrics_influxdb.InfluxdbHttp;
 
 /**
  * Integration of Ninja Metrics with InfluxDB.
@@ -79,14 +79,14 @@ public class NinjaInfluxDB {
 
             try {
 
-                Influxdb influxdb = new Influxdb(address, port, database,
+                final InfluxdbHttp influxdbHttp = new InfluxdbHttp(address, port, database,
                         username, password);
                 final InfluxdbReporter reporter = InfluxdbReporter
                         .forRegistry(metricsService.getMetricRegistry())
                         .prefixedWith(hostname)
                         .convertRatesTo(TimeUnit.SECONDS)
                         .convertDurationsTo(TimeUnit.MILLISECONDS)
-                        .filter(MetricFilter.ALL).build(influxdb);
+                        .filter(MetricFilter.ALL).build(influxdbHttp);
 
                 reporter.start(delay, TimeUnit.SECONDS);
 

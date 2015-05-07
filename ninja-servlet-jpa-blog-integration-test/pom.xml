@@ -33,9 +33,9 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>4.0.7-SNAPSHOT</version>
+        <version>5.1.2-SNAPSHOT</version>
     </parent>
-    
+
     <url>http://www.ninjaframework.org</url>
 
     <build>
@@ -88,7 +88,7 @@
                 <artifactId>ninja-maven-plugin</artifactId>
                 <version>${project.version}</version>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -96,19 +96,40 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            
+
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>ninja.standalone.NinjaJetty</mainClass>
-                        </manifest>
-                    </archive>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>ninja.standalone.NinjaJetty</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
@@ -133,10 +154,8 @@
 
     </build>
 
-
-
     <dependencies>
-    
+
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>tinymce-jquery</artifactId>
@@ -151,12 +170,12 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-test-utilities</artifactId>
@@ -164,7 +183,5 @@
         </dependency>
 
     </dependencies>
-
-
 
 </project>

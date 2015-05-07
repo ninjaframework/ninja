@@ -22,7 +22,8 @@ import java.util.List;
 /**
  * Validation object
  *
- * @author James Roper, Philip Sommer
+ * @author James Roper
+ * @author Philip Sommer
  */
 public class ValidationImpl implements Validation {
 
@@ -32,16 +33,16 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasViolations() {
-        return !fieldViolations.isEmpty() || !generalViolations.isEmpty()
-                || !beanViolations.isEmpty();
+        return !this.fieldViolations.isEmpty() || !this.generalViolations.isEmpty()
+                || !this.beanViolations.isEmpty();
     }
 
     @Override
     public void addFieldViolation(FieldViolation fieldViolation) {
         if (fieldViolation.field == null) {
-            generalViolations.add(fieldViolation.constraintViolation);
+            this.generalViolations.add(fieldViolation.constraintViolation);
         } else {
-            fieldViolations.add(fieldViolation);
+            this.fieldViolations.add(fieldViolation);
         }
     }
 
@@ -52,7 +53,7 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasFieldViolation(String field) {
-        for (FieldViolation fieldViolation : fieldViolations) {
+        for (FieldViolation fieldViolation : this.fieldViolations) {
             if (fieldViolation.field.contentEquals(field)) {
                 return true;
             }
@@ -62,13 +63,13 @@ public class ValidationImpl implements Validation {
 
     @Override
     public List<FieldViolation> getFieldViolations() {
-        return fieldViolations;
+        return this.fieldViolations;
     }
 
     @Override
     public List<FieldViolation> getFieldViolations(String field) {
         List<FieldViolation> violationsForThisField = new ArrayList<FieldViolation>();
-        for (FieldViolation fieldViolation : fieldViolations) {
+        for (FieldViolation fieldViolation : this.fieldViolations) {
             if (fieldViolation.field.contentEquals(field)) {
                 violationsForThisField.add(fieldViolation);
             }
@@ -78,12 +79,12 @@ public class ValidationImpl implements Validation {
 
     @Override
     public void addBeanViolation(FieldViolation fieldViolation) {
-        beanViolations.add(fieldViolation);
+        this.beanViolations.add(fieldViolation);
     }
 
     @Override
     public boolean hasBeanViolation(String field) {
-        for (FieldViolation beanViolation : beanViolations) {
+        for (FieldViolation beanViolation : this.beanViolations) {
             if (beanViolation.field.contentEquals(field)) {
                 return true;
             }
@@ -93,22 +94,21 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasBeanViolations() {
-        return !beanViolations.isEmpty();
+        return !this.beanViolations.isEmpty();
     }
 
     @Override
     public List<FieldViolation> getBeanViolations() {
-        return beanViolations;
+        return this.beanViolations;
     }
 
     @Override
     public void addViolation(ConstraintViolation constraintViolation) {
-        generalViolations.add(constraintViolation);
+        this.generalViolations.add(constraintViolation);
     }
 
     @Override
     public List<ConstraintViolation> getGeneralViolations() {
-        return generalViolations;
+        return this.generalViolations;
     }
-
 }

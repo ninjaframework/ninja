@@ -22,15 +22,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Validates that the annoted element is conform to its JSR303-Annotations
+ * Validates that the annotated element is conform to its JSR303-Annotations
  *
  * @author psommer
- *
  */
 @WithValidator(Validators.JSRValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface JSR303Validation {
+
+    public static final String KEY = "validation.is.JSR303.violation";
+    public static final String MESSAGE = "{0} cannot be validated with JSR303 annotations";
+
     /**
      * The key for the violation message
      *
@@ -44,7 +47,4 @@ public @interface JSR303Validation {
      * @return The default message
      */
     String message() default MESSAGE;
-
-    public static final String KEY = "validation.is.JSR303.violation";
-    public static final String MESSAGE = "{0} cannot be validated with JSR303 annotations";
 }

@@ -33,7 +33,7 @@ public class PrettyTimeControllerTest extends NinjaTest {
     String TEXT_FR = "il y a 1 jour";
     String TEXT_IT = "1 giorno fa";
     String TEXT_ZH = "1 天 前";
-    String TEXT_JA = "1 日 前";
+    String TEXT_JA = "1日前";
     String TEXT_KO = "1일 전";
 
     @Test

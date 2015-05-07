@@ -1,0 +1,102 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, 'Nimbus Sans L', 'Liberation Sans', Arial, sans-serif;
+    background: #ECECEC;
+}
+h1#devmode {
+    margin: 0;
+    background: #68006c;
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 4px;
+}
+h1 {
+    margin: 0;
+    background: #68006c;
+    color: #fff;
+    font-size: 28px;
+    padding: 12px 12px;
+}
+h1 img#logo {
+    height: 49px;
+    vertical-align: middle;
+    padding-right: 15px;
+}
+p#detail {
+    margin: 0;
+    padding: 15px 45px;
+    background: #F7C2F9;
+    color: #333;
+    font-size: 14px;
+}
+h2 {
+    margin: 0;
+    padding: 5px 45px;
+    font-size: 12px;
+    background: #333;
+    color: #fff;
+}
+pre {
+    margin: 0;
+    padding: 0;
+    font-family: Monaco, 'Lucida Console', monospace;
+    background: #ECECEC;
+    margin: 0;
+    border-bottom: 1px solid #DDD;
+    position: relative;
+    font-size: 12px;
+}
+pre span.line {
+    text-align: right;
+    display: inline-block;
+    padding: 5px 5px;
+    width: 30px;
+    background: #D6D6D6;
+    color: #8B8B8B;
+    font-weight: bold;
+}
+pre span.line.error {
+    background: #C21600;
+    color: #fff;
+}
+pre span.stacktrace {
+    padding: 10px 10px;
+}
+pre span.route {
+    padding: 5px 5px;
+    position: absolute;
+    right: 0;
+    left: 40px;
+}
+pre span.route span.verb {
+    display: inline-block;
+    width: 5%;
+    min-width: 50px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+pre span.route span.path {
+    display: inline-block;
+    width: 30%;
+    min-width: 200px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+pre span.route span.call {
+    display: inline-block;
+    width: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+}
+pre:first-child span.route {
+    border-top: 4px solid #CDCDCD;
+}
+pre:first-child span.line {
+    border-top: 4px solid #B6B6B6;
+}
+pre.error span.line {
+    background: #A31012;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0,0,0,.3);
+}

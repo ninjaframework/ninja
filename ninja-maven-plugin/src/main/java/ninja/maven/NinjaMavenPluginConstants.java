@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package ninja;
+package ninja.maven;
 
 import java.io.File;
 import java.util.regex.Pattern;
+import ninja.AssetsController;
 
 import ninja.standalone.NinjaJetty;
 import ninja.utils.NinjaConstant;
