@@ -1,6 +1,7 @@
 Version 5.1.2
 =============
 
+ * 2015-05-07 (PR #350) Added ninja.idle.timeout command line parameter for standalone mode (raptaml)
  * 2015-05-08 Added NinjaException.getHttpStatus() (icoloma)
  
 Version 5.1.1
