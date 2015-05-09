@@ -1,3 +1,8 @@
+Version 5.1.2
+=============
+
+ * 2015-05-08 Added NinjaException.getHttpStatus() (icoloma)
+ 
 Version 5.1.1
 =============
 
