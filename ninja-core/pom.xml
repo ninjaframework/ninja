@@ -204,7 +204,7 @@
         <!-- ehcache implementation -->
         <!-- IMPORTANT: only pull in core (~1MB) vs. entire distro which includes a server (~7MB) -->
         <dependency>
-            <groupId>net.sf.ehcache.internal</groupId>
+            <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
         </dependency>
         
