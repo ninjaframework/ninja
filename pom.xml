@@ -62,7 +62,7 @@
         <jetty.version>9.2.10.v20150310</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.5.1</jackson.version>
-        <guice.version>4.0-beta5</guice.version>
+        <guice.version>4.0</guice.version>
         <metrics.version>3.1.1</metrics.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
