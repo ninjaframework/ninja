@@ -48,7 +48,7 @@ public class RouterImpl implements Router {
     private List<Route> routes;
 
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
-    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
+    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
 
     @Inject
     public RouterImpl(
