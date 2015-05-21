@@ -5,7 +5,8 @@ Version 5.1.2
  * 2015-05-10 Replaced net.sf.ehcache.internal with net.sf.ehcache to fix #352 (ra)
  * 2015-05-08 Added NinjaException.getHttpStatus() (icoloma)
  * 2015-05-07 (PR #350) Added ninja.idle.timeout command line parameter for standalone mode (raptaml)
- 
+ * 2015-05-20 #354 Fixed bug with reverse routing with multiple regex parameters (arystan)
+
 Version 5.1.1
 =============
 

@@ -59,6 +59,7 @@ public class RouterImplTest {
         // add route:
         router.GET().route("/testroute").with(TestController.class, "index");
         router.GET().route("/user/{email}/{id: .*}").with(TestController.class, "user");
+        router.GET().route("/u{userId: .*}/entries/{entryId: .*}").with(TestController.class, "entry");
 
         router.compileRoutes();
     }
@@ -125,6 +126,18 @@ public class RouterImplTest {
 
     }
 
+    @Test
+    public void testGetReverseRouteWithMultipleRegexWorks() {
+
+        String contextPath = "";
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+
+        String route = router.getReverseRoute(TestController.class, "entry", "userId", 1, "entryId", 100);
+
+        assertThat(route, equalTo("/u1/entries/100"));
+
+    }
+
     // Just a dummy TestController for mocking...
     public static class TestController {
 
@@ -135,6 +148,12 @@ public class RouterImplTest {
         }
 
         public Result user() {
+
+            return Results.ok();
+
+        }
+
+        public Result entry() {
 
             return Results.ok();
 
