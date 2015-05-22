@@ -1,6 +1,7 @@
 Version 5.1.2
 =============
 
+ * 2015-05-22 Removed outdated modules from documentation (svenkubiak)
  * 2015-05-20 #354 Fixed bug with reverse routing with multiple regex parameters (arystan)
  * 2015-05-16 Update to Guice 4.0 final (ra)
  * 2015-05-10 Replaced net.sf.ehcache.internal with net.sf.ehcache to fix #352 (ra)
