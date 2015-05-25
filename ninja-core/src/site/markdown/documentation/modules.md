@@ -39,18 +39,6 @@ Rocker templates
 
  * https://github.com/fizzed/ninja-rocker
  
-MongoDB support
-
- * https://github.com/svenkubiak/ninja-mongodb
-
-Quartz Scheduler support
-
- * https://github.com/svenkubiak/ninja-quartz
-
-Authentication module
-
- * https://github.com/svenkubiak/ninja-authentication
-
 Hazelcast Cache Implementation
 
  * https://github.com/raptaml/ninja-hazelcast-embedded
