@@ -1,4 +1,4 @@
-Version 5.1.2
+Version X.X.X
 =============
 
  * 2015-05-22 Removed outdated modules from documentation (svenkubiak)
