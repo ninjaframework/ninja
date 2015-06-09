@@ -19,6 +19,7 @@ package ninja.maven;
 import ninja.build.WatchAndRestartMachine;
 import ninja.build.DelayedRestartTrigger;
 import ninja.build.RunClassInSeparateJvmMachine;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -31,12 +32,12 @@ import java.util.Set;
 
 import ninja.standalone.NinjaJetty;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -151,6 +152,21 @@ public class NinjaRunMojo extends AbstractMojo {
      */
     @Parameter(property = "ninja.settleDownMillis", defaultValue="500", required = false)
     private Long settleDownMillis;
+    
+    /**
+     * Define the file to use in addition to your default config at
+     * conf/application.conf.
+     * 
+     */
+    @Parameter(property = "ninja.external.configuration", required = false)
+    private String externalConfiguration;
+
+    /**
+     * Enable hot-reloading of the external configuration file at runtime.
+     *
+     */
+    @Parameter(property = "ninja.external.reload", required = false)
+    private boolean externalReload;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -236,6 +252,15 @@ public class NinjaRunMojo extends AbstractMojo {
             }       
         }
         
+        // add external configuration if provided, supposing all internal includes are located in the same folder.
+        if (externalConfiguration != null ) {
+        	File file = new File(externalConfiguration);
+        	if (file.exists()) {
+        		Path parentPath = file.getAbsoluteFile().getParentFile().toPath();
+        		directoriesToRecursivelyWatch.add(parentPath);
+        	}
+        }
+        
         
         getLog().info("------------------------------------------------------------------------");
         
@@ -252,6 +277,10 @@ public class NinjaRunMojo extends AbstractMojo {
         }
         getLog().info(" mode: " + mode);
         getLog().info(" port: " + port);
+        if (externalConfiguration != null) {
+        	getLog().info(" external configuration: " + externalConfiguration);
+        	getLog().info(" external reload: " + externalReload);
+        }
         getLog().info("------------------------------------------------------------------------");
         
 
@@ -305,6 +334,16 @@ public class NinjaRunMojo extends AbstractMojo {
         if (contextPath != null) {
             String systemPropertyContextPath = "-Dninja.context=" + contextPath;
             jvmArguments.add(systemPropertyContextPath);
+        }
+        
+        if (externalConfiguration != null) {
+        	String systemPropertyExternalConfiguration = "-D" + NinjaProperties.NINJA_EXTERNAL_CONF + "=" + externalConfiguration;
+        	jvmArguments.add(systemPropertyExternalConfiguration);
+        }
+        
+        if (externalReload) {
+        	String systemPropertyExternalReload = "-D" + NinjaProperties.NINJA_EXTERNAL_RELOAD + "=" + externalReload;
+        	jvmArguments.add(systemPropertyExternalReload);
         }
         
         return jvmArguments;
