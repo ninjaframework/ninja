@@ -16,10 +16,6 @@
 
 package ninja.maven;
 
-import ninja.build.WatchAndRestartMachine;
-import ninja.build.DelayedRestartTrigger;
-import ninja.build.RunClassInSeparateJvmMachine;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -30,18 +26,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import ninja.build.DelayedRestartTrigger;
+import ninja.build.RunClassInSeparateJvmMachine;
+import ninja.build.WatchAndRestartMachine;
 import ninja.standalone.NinjaJetty;
 import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaProperties;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Starts Ninja's SuperDevMode.
@@ -154,19 +152,12 @@ public class NinjaRunMojo extends AbstractMojo {
     private Long settleDownMillis;
     
     /**
-     * Define the file to use in addition to your default config at
-     * conf/application.conf.
-     * 
+     * Define the jvm arguments to use when starting jetty.
+     * Use a space " " to separate arguments, unless preceded by a backslash "\".
      */
-    @Parameter(property = "ninja.external.configuration", required = false)
-    private String externalConfiguration;
-
-    /**
-     * Enable hot-reloading of the external configuration file at runtime.
-     *
-     */
-    @Parameter(property = "ninja.external.reload", required = false)
-    private boolean externalReload;
+    @Parameter(property = "ninja.jvmArgs", required = false)
+    private String jettyArguments;
+    private String[] jettyArgumentsArray = null;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -252,16 +243,6 @@ public class NinjaRunMojo extends AbstractMojo {
             }       
         }
         
-        // add external configuration if provided, supposing all internal includes are located in the same folder.
-        if (externalConfiguration != null ) {
-        	File file = new File(externalConfiguration);
-        	if (file.exists()) {
-        		Path parentPath = file.getAbsoluteFile().getParentFile().toPath();
-        		directoriesToRecursivelyWatch.add(parentPath);
-        	}
-        }
-        
-        
         getLog().info("------------------------------------------------------------------------");
         
         getLog().info("Ninja will watch dirs:");
@@ -277,9 +258,11 @@ public class NinjaRunMojo extends AbstractMojo {
         }
         getLog().info(" mode: " + mode);
         getLog().info(" port: " + port);
-        if (externalConfiguration != null) {
-        	getLog().info(" external configuration: " + externalConfiguration);
-        	getLog().info(" external reload: " + externalReload);
+        if (jettyArguments != null) {
+        	getLog().info(" jvm arguments: ");
+        	for (String arg : jettyArgumentsArray) {
+        	    getLog().info("  " + arg);
+        	}
         }
         getLog().info("------------------------------------------------------------------------");
         
@@ -336,17 +319,20 @@ public class NinjaRunMojo extends AbstractMojo {
             jvmArguments.add(systemPropertyContextPath);
         }
         
-        if (externalConfiguration != null) {
-        	String systemPropertyExternalConfiguration = "-D" + NinjaProperties.NINJA_EXTERNAL_CONF + "=" + externalConfiguration;
-        	jvmArguments.add(systemPropertyExternalConfiguration);
-        }
-        
-        if (externalReload) {
-        	String systemPropertyExternalReload = "-D" + NinjaProperties.NINJA_EXTERNAL_RELOAD + "=" + externalReload;
-        	jvmArguments.add(systemPropertyExternalReload);
+        if (jettyArguments != null) {
+            jvmArguments.addAll(Arrays.asList(jettyArgumentsArray));
         }
         
         return jvmArguments;
+    }
+    
+    private String[] splitUnescapedSpaces(String s) {
+        String[] parts = s.split("(?<!\\\\)\\s+");
+        for (int i=0; i<parts.length; i++)
+        {
+            parts[i] = parts[i].replaceAll("\\\\ ", " ");
+        }
+        return parts;
     }
     
     private void initMojoFromUserSubmittedParameters() {
@@ -357,6 +343,10 @@ public class NinjaRunMojo extends AbstractMojo {
                 Arrays.asList(
                     NinjaMavenPluginConstants.DEFAULT_EXCLUDE_PATTERNS));
             
+        }
+        
+        if (jettyArguments != null) {
+            jettyArgumentsArray = splitUnescapedSpaces(jettyArguments);
         }
     
     }
