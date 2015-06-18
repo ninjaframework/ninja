@@ -17,6 +17,7 @@
 package ninja;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -41,6 +42,8 @@ public interface Context {
     interface Impl extends Context {
         
         void setRoute(Route route);
+
+        void parseMultipart();
     }
 
     /**
@@ -521,6 +524,23 @@ public interface Context {
      *         error.
      */
     FileItemIterator getFileItemIterator();
+
+    /**
+     * Gets the uploaded file for the given key from the multipart request. When
+     * multiple files uploaded for the same key, the first file is returned.
+     *
+     * @param name the key of the file
+     * @return uploaded file
+     */
+    File getUploadedFile(String name);
+
+    /**
+     * Gets uploaded files for the given key from the multipart request.
+     *
+     * @param name the key of files
+     * @return uploaded files
+     */
+    List<File> getUploadedFiles(String name);
 
     /**
      * Get the validation context

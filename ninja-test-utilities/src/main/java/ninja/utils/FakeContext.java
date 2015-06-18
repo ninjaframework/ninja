@@ -17,10 +17,13 @@
 package ninja.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +68,7 @@ public class FakeContext implements Context {
     private Map<String, String> cookieValues = new HashMap<String, String>();
     private ListMultimap<String, String> params = ArrayListMultimap.create();
     private Map<String, String> pathParams = new HashMap<String, String>();
+    private Map<String, File> files = new HashMap<>();
     private ListMultimap<String, String> headers = ArrayListMultimap.create();
     private Map<String, Object> attributes = new HashMap<String, Object>();
     private Object body;
@@ -303,6 +307,26 @@ public class FakeContext implements Context {
     @Override
     public FileItemIterator getFileItemIterator() {
         throw new UnsupportedOperationException("Not supported in fake context");
+    }
+
+    public FakeContext addFile(String name, File file) {
+        files.put(name, file);
+        return this;
+    }
+
+    @Override
+    public File getUploadedFile(String name) {
+        return files.get(name);
+    }
+
+    @Override
+    public List<File> getUploadedFiles(String name) {
+        File file = files.get(name);
+        if (file != null) {
+            return Arrays.asList(file);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

@@ -47,6 +47,12 @@ public class ControllerMethodInvoker {
     }
 
     public Object invoke(Object controller, Context context) {
+
+        // if we have a multipart request, parse parts first
+        if (context.isMultipart() && context instanceof Context.Impl) {
+            ((Context.Impl) context).parseMultipart();
+        }
+
         // Extract arguments
         Object[] arguments = new Object[argumentExtractors.length];
         for (int i = 0; i < argumentExtractors.length; i++) {

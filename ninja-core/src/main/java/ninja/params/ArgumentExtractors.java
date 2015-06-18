@@ -16,6 +16,7 @@
 
 package ninja.params;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -185,6 +186,56 @@ public class ArgumentExtractors {
         public String getFieldName() {
             return key;
         }
+    }
+
+    public static class FileExtractor implements ArgumentExtractor<File> {
+
+        private final String name;
+
+        public FileExtractor(FileParam file) {
+            this.name = file.value();
+        }
+
+        @Override
+        public File extract(Context context) {
+            return context.getUploadedFile(name);
+        }
+
+        @Override
+        public Class<File> getExtractedType() {
+            return File.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return name;
+        }
+    }
+
+    public static class FilesExtractor implements ArgumentExtractor<File[]> {
+
+        private final String name;
+
+        public FilesExtractor(FileParams fileParams) {
+            this.name = fileParams.value();
+        }
+
+        @Override
+        public File[] extract(Context context) {
+            List<File> files = context.getUploadedFiles(name);
+            return files != null ? files.toArray(new File[files.size()]) : null;
+        }
+
+        @Override
+        public Class<File[]> getExtractedType() {
+            return File[].class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return name;
+        }
+
     }
 
     public static class HeaderExtractor implements ArgumentExtractor<String> {

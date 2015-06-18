@@ -17,6 +17,7 @@
 package ninja;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -220,6 +221,16 @@ public class WrappedContext implements Context {
     @Override
     public FileItemIterator getFileItemIterator() {
         return wrapped.getFileItemIterator();
+    }
+
+    @Override
+    public File getUploadedFile(String name) {
+        return wrapped.getUploadedFile(name);
+    }
+
+    @Override
+    public List<File> getUploadedFiles(String name) {
+        return wrapped.getUploadedFiles(name);
     }
 
     @Override

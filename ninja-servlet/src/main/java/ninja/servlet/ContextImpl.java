@@ -16,12 +16,17 @@
 package ninja.servlet;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +60,7 @@ import ninja.utils.SwissKnife;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
@@ -79,12 +85,15 @@ public class ContextImpl implements Context.Impl {
     private final BodyParserEngineManager bodyParserEngineManager;
 
     private final FlashScope flashScope;
-    
+
     private final NinjaProperties ninjaProperties;
 
     private final Session session;
     private final ResultHandler resultHandler;
     private final Validation validation;
+
+    private final HashMap<String, List<File>> files = new HashMap<>();
+    private final HashMap<String, List<String>> multipartParams = new HashMap<>();
 
     // In Async mode, these values will be set to null, so save them
     private String requestPath;
@@ -134,6 +143,57 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
+    public void parseMultipart() {
+
+        FileItemIterator it = getFileItemIterator();
+        if (it == null) {
+            return;
+        }
+        try {
+            while (it.hasNext()) {
+                FileItemStream item = it.next();
+                String name = item.getFieldName();
+
+                if (item.isFormField()) {
+
+                    // simple key/value item
+                    StringBuilder sb = new StringBuilder();
+                    try (InputStreamReader isr = new InputStreamReader(item.openStream())) {
+                        int n;
+                        char[] buf = new char[128];
+                        while ((n = isr.read(buf)) > 0) {
+                            sb.append(buf, 0, n);
+                        }
+                    }
+                    List<String> fresh = new ArrayList<>();
+                    List<String> existing = multipartParams.putIfAbsent(name, fresh);
+                    if (existing != null) {
+                        existing.add(sb.toString());
+                    } else {
+                        fresh.add(sb.toString());
+                    }
+
+                } else {
+                    // an attached file
+                    Path target = Files.createTempFile("ninja-upload", null);
+                    try (InputStream is = item.openStream()) {
+                        Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    List<File> fresh = new ArrayList<>();
+                    List<File> existing = files.putIfAbsent(name, fresh);
+                    if (existing != null) {
+                        existing.add(target.toFile());
+                    } else {
+                        fresh.add(target.toFile());
+                    }
+                }
+            }
+        } catch (FileUploadException | IOException ex) {
+            logger.error("Failed to parse multipart request data", ex);
+        }
+    }
+
+    @Override
     public String getPathParameter(String key) {
         String encodedParameter = route.getPathParametersEncoded(
                 getRequestPath()).get(key);
@@ -164,16 +224,28 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public String getParameter(String key) {
+        if (isMultipart()) {
+            List<String> ls = multipartParams.get(key);
+            if (ls != null && !ls.isEmpty()) {
+                return ls.get(0);
+            }
+        }
         return httpServletRequest.getParameter(key);
     }
 
     @Override
     public List<String> getParameterValues(String name) {
         String[] params = httpServletRequest.getParameterValues(name);
-        if (params == null) {
-            return Collections.emptyList();
+        List<String> ls = multipartParams.get(name);
+
+        List<String> result = new ArrayList<>();
+        if (ls != null) {
+            result.addAll(ls);
         }
-        return Arrays.asList(params);
+        if (params != null) {
+            result.addAll(Arrays.asList(params));
+        }
+        return result;
     }
 
     @Override
@@ -221,7 +293,23 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public Map<String, String[]> getParameters() {
-        return httpServletRequest.getParameterMap();
+
+        // create map with query params
+        Map<String, String[]> map = new HashMap<>(httpServletRequest.getParameterMap());
+
+        // add params of multipart request
+        for (Entry<String, List<String>> e : multipartParams.entrySet()) {
+
+            List<String> ls = new ArrayList<>(e.getValue());
+
+            String[] values = map.get(e.getKey());
+            if (values != null) {
+                ls.addAll(Arrays.asList(values));
+            }
+
+            map.put(e.getKey(), ls.toArray(new String[ls.size()]));
+        }
+        return map;
     }
 
     @Override
@@ -331,12 +419,12 @@ public class ContextImpl implements Context.Impl {
 
         return ninjaCookies;
     }
-    
+
     @Override
     public void addCookie(Cookie cookie) {
         httpServletResponse.addCookie(CookieHelper.convertNinjaCookieToServletCookie(cookie));
     }
-    
+
     @Override
     public void unsetCookie(Cookie cookie) {
         httpServletResponse.addCookie(CookieHelper
@@ -361,24 +449,24 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public String getRemoteAddr() {
-        
-        boolean isUsageOfXForwardedHeaderEnabled 
+
+        boolean isUsageOfXForwardedHeaderEnabled
                 = ninjaProperties.getBooleanWithDefault(
                         Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false);
-        
+
         String remoteAddr;
-        
+
         if (!isUsageOfXForwardedHeaderEnabled) {
             remoteAddr = httpServletRequest.getRemoteAddr();
         } else {
             remoteAddr = calculateRemoteAddrAndTakeIntoAccountXForwardHeader();
         }
-        
+
         return remoteAddr;
     }
-    
+
     private String calculateRemoteAddrAndTakeIntoAccountXForwardHeader() {
-        
+
         String remoteAddr = getHeader(X_FORWARD_HEADER);
 
         if (remoteAddr != null) {
@@ -396,7 +484,7 @@ public class ContextImpl implements Context.Impl {
         } else {
             remoteAddr = httpServletRequest.getRemoteAddr();
         }
-        
+
         return remoteAddr;
     }
 
@@ -590,6 +678,23 @@ public class ContextImpl implements Context.Impl {
 
         return fileItemIterator;
     }
+
+    @Override
+    public File getUploadedFile(String name) {
+        List<File> ls = files.get(name);
+        return ls != null ? ls.get(0) : null;
+    }
+
+    @Override
+    public List<File> getUploadedFiles(String name) {
+        List<File> ls = files.get(name);
+        if (ls != null) {
+            return ls;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
 
     @Override
     public String getRequestPath() {
