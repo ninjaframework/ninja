@@ -165,13 +165,12 @@ public class ContextImpl implements Context.Impl {
                             sb.append(buf, 0, n);
                         }
                     }
-                    List<String> fresh = new ArrayList<>();
-                    List<String> existing = multipartParams.putIfAbsent(name, fresh);
-                    if (existing != null) {
-                        existing.add(sb.toString());
-                    } else {
-                        fresh.add(sb.toString());
+                    List<String> ls = multipartParams.get(name);
+                    if (ls == null) {
+                        ls = new ArrayList<>();
+                        multipartParams.put(name, ls);
                     }
+                    ls.add(sb.toString());
 
                 } else {
                     // an attached file
@@ -179,13 +178,13 @@ public class ContextImpl implements Context.Impl {
                     try (InputStream is = item.openStream()) {
                         Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
                     }
-                    List<File> fresh = new ArrayList<>();
-                    List<File> existing = files.putIfAbsent(name, fresh);
-                    if (existing != null) {
-                        existing.add(target.toFile());
-                    } else {
-                        fresh.add(target.toFile());
+
+                    List<File> ls = files.get(name);
+                    if (ls == null) {
+                        ls = new ArrayList<>();
+                        files.put(name, ls);
                     }
+                    ls.add(target.toFile());
                 }
             }
         } catch (FileUploadException | IOException ex) {
@@ -694,7 +693,6 @@ public class ContextImpl implements Context.Impl {
             return Collections.emptyList();
         }
     }
-
 
     @Override
     public String getRequestPath() {
