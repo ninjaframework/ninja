@@ -1,3 +1,9 @@
+Version 5.1.3
+=============
+
+ * 2015-06-19 Fix for potential security issue. Under certain circumstances assets
+              controller did stream content from arbitrary directories (Christian B. / ra).
+
 Version 5.1.2
 =============
 
