@@ -156,8 +156,8 @@ public class NinjaRunMojo extends AbstractMojo {
      * Use a space " " to separate arguments, unless preceded by a backslash "\".
      */
     @Parameter(property = "ninja.jvmArgs", required = false)
-    private String jettyArguments;
-    private String[] jettyArgumentsArray = null;
+    private String jvmArgs;
+    private String[] jvmArgsArray = null;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -258,9 +258,9 @@ public class NinjaRunMojo extends AbstractMojo {
         }
         getLog().info(" mode: " + mode);
         getLog().info(" port: " + port);
-        if (jettyArguments != null) {
+        if (jvmArgs != null) {
         	getLog().info(" jvm arguments: ");
-        	for (String arg : jettyArgumentsArray) {
+        	for (String arg : jvmArgsArray) {
         	    getLog().info("  " + arg);
         	}
         }
@@ -319,8 +319,8 @@ public class NinjaRunMojo extends AbstractMojo {
             jvmArguments.add(systemPropertyContextPath);
         }
         
-        if (jettyArguments != null) {
-            jvmArguments.addAll(Arrays.asList(jettyArgumentsArray));
+        if (jvmArgs != null) {
+            jvmArguments.addAll(Arrays.asList(jvmArgsArray));
         }
         
         return jvmArguments;
@@ -345,8 +345,8 @@ public class NinjaRunMojo extends AbstractMojo {
             
         }
         
-        if (jettyArguments != null) {
-            jettyArgumentsArray = splitUnescapedSpaces(jettyArguments);
+        if (jvmArgs != null) {
+            jvmArgsArray = splitUnescapedSpaces(jvmArgs);
         }
     
     }
