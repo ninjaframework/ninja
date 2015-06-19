@@ -249,48 +249,6 @@ public class AssetsControllerTest {
     }
 
     @Test
-    public void testServingFromUserSpecifiedStaticAssetDir() throws Exception{
-        when(ninjaProperties.get( "application.static.asset.basedir"))
-                .thenReturn(System.getProperty("user.dir") + "/ninja-core/src/test/resources/assets" );
-
-
-        Result result = Results.ok();
-
-        when(contextRenderable.getRequestPath()).thenReturn(
-                "/assets/testasset.txt");
-
-        when(mimeTypes.getContentType(Mockito.eq(contextRenderable),
-                Mockito.anyString())).thenReturn("mimetype");
-
-        when(contextRenderable.finalizeHeadersWithoutFlashAndSessionCookie(
-                Mockito.eq(result))).thenReturn(responseStreams);
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        when(responseStreams.getOutputStream()).thenReturn(
-                byteArrayOutputStream);
-        Result result2 = assetsController.serveStatic(null);
-
-        Renderable renderable = (Renderable) result2.getRenderable();
-
-        renderable.render(contextRenderable, result);
-        // test streaming of resource:
-        // => not modified:
-        // check etag has been called
-        verify(httpCacheToolkit).addEtag(Mockito.eq(contextRenderable),
-                Mockito.eq(result), Mockito.anyLong());
-
-        verify(contextRenderable).finalizeHeadersWithoutFlashAndSessionCookie( resultCaptor.capture() );
-
-        // make sure we get the correct result...
-        assertEquals(Result.SC_200_OK, resultCaptor.getValue().getStatusCode());
-        // we mocked this one:
-        assertEquals("mimetype", result.getContentType());
-
-        // make sure the content is okay...
-        assertEquals("testasset", byteArrayOutputStream.toString());
-    }
-
-    @Test
     public void testNormalizePathWithoutTrailingSlash() {
         assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test"));
         assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("dir1/test.test"));

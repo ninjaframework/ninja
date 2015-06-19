@@ -57,8 +57,6 @@ public class AssetsController {
     
     public final static String FILENAME_PATH_PARAM = "fileName";
 
-    private final Optional<String> assetBaseDir;
-
     private final MimeTypes mimeTypes;
 
     private final HttpCacheToolkit httpCacheToolkit;
@@ -72,7 +70,6 @@ public class AssetsController {
         this.httpCacheToolkit = httpCacheToolkit;
         this.mimeTypes = mimeTypes;
         this.ninjaProperties = ninjaProperties;
-        this.assetBaseDir = getNormalizedAssetPath(ninjaProperties);
     }
 
     /**
@@ -178,47 +175,37 @@ public class AssetsController {
         
         String finalNameWithoutLeadingSlash = normalizePathWithoutLeadingSlash(fileName);
 
-        Optional<URL> url = Optional.absent();
+        URL url = null;
 
-        //Serve from the static asset base directory specified by user in application conf.
-        if (assetBaseDir.isPresent()) {
-            File possibleFile = new File(assetBaseDir.get() + File.separator + finalNameWithoutLeadingSlash);
-            url = getUrlForFile(possibleFile);
-        }
-
-        // If asset base dir not specified by user, this allows to directly stream assets from src directory.
-        // Therefore jetty does not have to reload. Especially cool when developing js apps inside assets folder.
-        if (ninjaProperties.isDev() && !url.isPresent()) {
+         if (ninjaProperties.isDev()) {
             File possibleFile = new File(
                     assetsDirInDevModeWithoutTrailingSlash() 
                             + File.separator 
                             + finalNameWithoutLeadingSlash);
             url = getUrlForFile(possibleFile);
-        }
-
-        if (!url.isPresent()) {
+        } else {
             // In mode test and prod, if static.asset.base.dir not specified then we stream via the classloader.
             //
             // In dev mode: If we cannot find the file in src we are also looking for the file
             // on the classpath (can be the case for plugins that ship their own assets.
-            url = Optional.fromNullable(this.getClass().getClassLoader()
+            url = this.getClass().getClassLoader()
                     .getResource(ASSETS_DIR
                                  + "/"
-                                 + finalNameWithoutLeadingSlash));
+                                 + finalNameWithoutLeadingSlash);
         }
 
-        return url.orNull();
+        return url;
     }
 
-    private Optional<URL> getUrlForFile(File possibleFileInSrc) {
+    private URL getUrlForFile(File possibleFileInSrc) {
         if (possibleFileInSrc.exists() && !possibleFileInSrc.isDirectory()) {
           try {
-            return Optional.fromNullable(possibleFileInSrc.toURI().toURL());
+            return possibleFileInSrc.toURI().toURL();
           } catch(MalformedURLException malformedURLException) {
             logger.error("Error in dev mode while streaming files from src dir. ", malformedURLException);
           }
         }
-        return Optional.absent();
+        return null;
     }
 
     /**
@@ -267,11 +254,6 @@ public class AssetsController {
         }
         return fileName;
 
-    }
-
-    private Optional<String> getNormalizedAssetPath(NinjaProperties ninjaProperties){
-        String baseDir = ninjaProperties.get(NinjaConstant.APPLICATION_STATIC_ASSET_BASEDIR);
-        return Optional.fromNullable(FilenameUtils.normalizeNoEndSeparator(baseDir));
     }
 
     /**
