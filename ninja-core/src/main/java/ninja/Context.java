@@ -43,7 +43,11 @@ public interface Context {
         
         void setRoute(Route route);
 
-        void parseMultipart();
+        /**
+         * Purges all uploaded files. This is a cleanup method that should be
+         * called when Context is no longer used.
+         */
+        void purgeFiles();
     }
 
     /**

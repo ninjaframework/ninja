@@ -29,8 +29,11 @@ import javax.servlet.http.HttpServletResponse;
 import ninja.Context;
 import ninja.Ninja;
 
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 
 /**
  * A simple servlet that allows us to run Ninja inside any servlet
@@ -75,8 +78,13 @@ public class NinjaServletDispatcher extends HttpServlet {
         ServletContext servletContext = getServletContext();
 
         // We generate a Ninja compatible context element
-        ContextImpl context = (ContextImpl) injector.getProvider(Context.class)
-                .get();
+        Key<Context> key;
+        if (ServletFileUpload.isMultipartContent(request)) {
+            key = Key.get(Context.class, MultipartRequest.class);
+        } else {
+            key = Key.get(Context.class);
+        }
+        ContextImpl context = (ContextImpl) injector.getProvider(key).get();
 
         // And populate it
         context.init(servletContext, request, response);

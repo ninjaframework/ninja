@@ -19,14 +19,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,7 +56,6 @@ import ninja.utils.SwissKnife;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
@@ -91,9 +86,6 @@ public class ContextImpl implements Context.Impl {
     private final Session session;
     private final ResultHandler resultHandler;
     private final Validation validation;
-
-    private final Map<String, List<File>> files = new HashMap<>();
-    private final Map<String, List<String>> multipartParams = new HashMap<>();
 
     // In Async mode, these values will be set to null, so save them
     private String requestPath;
@@ -143,54 +135,8 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
-    public void parseMultipart() {
-
-        FileItemIterator fileItemIterator = getFileItemIterator();
-        if (fileItemIterator == null) {
-            return;
-        }
-        try {
-            while (fileItemIterator.hasNext()) {
-                FileItemStream fileItemStream = fileItemIterator.next();
-                String name = fileItemStream.getFieldName();
-
-                if (fileItemStream.isFormField()) {
-
-                    // simple key/value item
-                    StringBuilder sb = new StringBuilder();
-                    try (InputStreamReader isr = new InputStreamReader(fileItemStream.openStream())) {
-                        int n;
-                        char[] buf = new char[128];
-                        while ((n = isr.read(buf)) > 0) {
-                            sb.append(buf, 0, n);
-                        }
-                    }
-                    List<String> ls = multipartParams.get(name);
-                    if (ls == null) {
-                        ls = new ArrayList<>();
-                        multipartParams.put(name, ls);
-                    }
-                    ls.add(sb.toString());
-
-                } else {
-                    // an attached file
-                    Path target = Files.createTempFile("ninja-upload", null);
-                    try (InputStream is = fileItemStream.openStream()) {
-                        Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
-                    }
-
-                    List<File> ls = files.get(name);
-                    if (ls == null) {
-                        ls = new ArrayList<>();
-                        files.put(name, ls);
-                    }
-                    ls.add(target.toFile());
-                }
-            }
-        } catch (FileUploadException | IOException ex) {
-            logger.debug("Failed to parse multipart request data", ex);
-            throw new RuntimeException(ex);
-        }
+    public void purgeFiles() {
+        // uploaded files are handled by multipart implementation of Context
     }
 
     @Override
@@ -224,28 +170,16 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public String getParameter(String key) {
-        if (isMultipart()) {
-            List<String> params = multipartParams.get(key);
-            if (params != null && !params.isEmpty()) {
-                return params.get(0);
-            }
-        }
         return httpServletRequest.getParameter(key);
     }
 
     @Override
     public List<String> getParameterValues(String name) {
         String[] params = httpServletRequest.getParameterValues(name);
-        List<String> paramsFromMultipart = multipartParams.get(name);
-
-        List<String> result = new ArrayList<>();
-        if (paramsFromMultipart != null) {
-            result.addAll(paramsFromMultipart);
+        if (params == null) {
+            return Collections.emptyList();
         }
-        if (params != null) {
-            result.addAll(Arrays.asList(params));
-        }
-        return result;
+        return Arrays.asList(params);
     }
 
     @Override
@@ -293,23 +227,7 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public Map<String, String[]> getParameters() {
-
-        // create map with query params
-        Map<String, String[]> result = new HashMap<>(httpServletRequest.getParameterMap());
-
-        // add params of multipart request
-        for (Entry<String, List<String>> e : multipartParams.entrySet()) {
-
-            List<String> params = new ArrayList<>(e.getValue());
-
-            String[] values = result.get(e.getKey());
-            if (values != null) {
-                params.addAll(Arrays.asList(values));
-            }
-
-            result.put(e.getKey(), params.toArray(new String[params.size()]));
-        }
-        return result;
+        return httpServletRequest.getParameterMap();
     }
 
     @Override
@@ -660,7 +578,7 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public boolean isMultipart() {
-        return ServletFileUpload.isMultipartContent(httpServletRequest);
+        return false;
     }
 
     @Override
@@ -681,18 +599,12 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public File getUploadedFile(String name) {
-        List<File> filesForKey = files.get(name);
-        return filesForKey != null ? filesForKey.get(0) : null;
+        return null;
     }
 
     @Override
     public List<File> getUploadedFiles(String name) {
-        List<File> uploadedFiles = files.get(name);
-        if (uploadedFiles != null) {
-            return uploadedFiles;
-        } else {
-            return Collections.emptyList();
-        }
+        return Collections.emptyList();
     }
 
     @Override
