@@ -312,22 +312,16 @@ public class AssetsController {
         //Serve from the static asset base directory specified by user in application conf.
         if(assetBaseDir.isPresent()){
 
-            File possibleFile = new File(assetBaseDir.get() + File.separator + finalNameWithoutLeadingSlash);
-
-            if(possibleFile.exists()){
-                url = getUrlForFile(possibleFile);
-            }
+            url = getUrlForFile(assetBaseDir.get(), finalNameWithoutLeadingSlash);
+            
         }
 
         // If asset base dir not specified by user, this allows to directly stream assets from src directory.
         // Therefore jetty does not have to reload. Especially cool when developing js apps inside assets folder.
         if (ninjaProperties.isDev() && !url.isPresent()) {
 
-            File possibleFile = new File(defaultAssetBaseDir + finalNameWithoutLeadingSlash);
-
-            if (possibleFile.exists()) {
-                url = getUrlForFile(possibleFile);
-            }
+            url = getUrlForFile(defaultAssetBaseDir, finalNameWithoutLeadingSlash);
+            
         }
 
         if (!url.isPresent()) {
@@ -346,15 +340,40 @@ public class AssetsController {
         return url.orNull();
     }
 
-    private Optional<URL> getUrlForFile( File possibleFileInSrc) {
+    private Optional<URL> getUrlForFile( String baseDir, String file) {
+        String canonicalPath = getCanonicalPath(baseDir, file);
+        if(canonicalPath == null){
+            return Optional.absent();
+        }
+        
+        File possibleFile = new File(canonicalPath);
+        if(!possibleFile.exists()){
+            return Optional.absent();
+        }
+        
         try {
-            return  Optional.fromNullable( possibleFileInSrc.toURI().toURL() );
+            return  Optional.fromNullable( possibleFile.toURI().toURL() );
 
         } catch(MalformedURLException malformedURLException) {
 
             logger.error("Error in dev mode while streaming files from src dir. ", malformedURLException);
         }
         return Optional.absent();
+    }
+    
+    protected String getCanonicalPath(String baseDir, String file){
+        String canonicalPath;
+        try {
+            canonicalPath = new File(baseDir + File.separator + file).getCanonicalPath();
+        } catch(Exception ex){
+            return null;
+        }
+        
+        if(!canonicalPath.startsWith(baseDir)){
+            return null;
+        }
+        
+        return canonicalPath;
     }
 
     /**

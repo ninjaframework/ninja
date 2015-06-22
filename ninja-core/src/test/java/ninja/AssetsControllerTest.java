@@ -16,12 +16,14 @@
 
 package ninja;
 
+import com.google.common.base.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URL;
 
 import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
@@ -421,5 +423,17 @@ public class AssetsControllerTest {
 
         // make sure the content is okay...
         assertEquals("testasset", byteArrayOutputStream.toString());
+    }
+    
+    @Test
+    public void testGetCanonicalPath(){
+        AssetsController assetsController = new AssetsController(
+                httpCacheToolkit, mimeTypes, ninjaProperties);
+        
+        assertEquals("/restricted/assets/path/file", assetsController.getCanonicalPath("/restricted/assets/path/", "file"));
+        assertEquals("/restricted/assets/path/file", assetsController.getCanonicalPath("/restricted/assets/path/", "dir/../file"));
+        assertEquals(null, assetsController.getCanonicalPath("/restricted/assets/path/", "../../file"));
+        assertEquals(null, assetsController.getCanonicalPath("/restricted/assets/path/", "one/two/../../three/../../file"));
+        
     }
 }
