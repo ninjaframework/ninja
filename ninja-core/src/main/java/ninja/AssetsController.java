@@ -369,6 +369,10 @@ public class AssetsController {
             return null;
         }
         
+        if(!baseDir.endsWith(File.separator)){
+            baseDir += File.separator;
+        }
+        
         if(!canonicalPath.startsWith(baseDir)){
             return null;
         }

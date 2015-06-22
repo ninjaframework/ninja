@@ -435,5 +435,7 @@ public class AssetsControllerTest {
         assertEquals(null, assetsController.getCanonicalPath("/restricted/assets/path/", "../../file"));
         assertEquals(null, assetsController.getCanonicalPath("/restricted/assets/path/", "one/two/../../three/../../file"));
         
+        assertEquals(null, assetsController.getCanonicalPath("/restricted/assets/path", "../path-in-another-dir"));
+        
     }
 }
