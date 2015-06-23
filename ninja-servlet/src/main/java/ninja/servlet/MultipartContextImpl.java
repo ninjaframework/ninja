@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.servlet.file.FormFieldItemStream;
 import ninja.servlet.file.NinjaFileItemStream;
 import ninja.servlet.file.NinjaFileItemStreamFactory;
 import ninja.session.FlashScope;
@@ -147,6 +148,45 @@ public class MultipartContextImpl extends ContextImpl {
     }
 
     @Override
+    public FileItemIterator getFileItemIterator() {
+
+        // streaming API of commons-upload allows us to iterate items of a
+        // multipart request only once. Item iterator is used in init() method,
+        // so we simulate iterator here by custom iterator implementation
+        return new FileItemIteratorImpl(getFileItems(), multipartParams);
+    }
+
+    private static class FileItemIteratorImpl implements FileItemIterator {
+
+        private final List<FileItemStream> items;
+        private int current = -1;
+
+        public FileItemIteratorImpl(List<FileItemStream> fileItems, Map<String, List<String>> params) {
+
+            // create list with uploaded file item streams
+            this.items = new ArrayList<>(fileItems);
+
+            // add form field params to the list
+            for (Map.Entry<String, List<String>> e : params.entrySet()) {
+                for (String value : e.getValue()) {
+                    items.add(new FormFieldItemStream(e.getKey(), value));
+                }
+            }
+        }
+
+        @Override
+        public boolean hasNext() throws FileUploadException, IOException {
+            return current < items.size() - 1;
+        }
+
+        @Override
+        public FileItemStream next() throws FileUploadException, IOException {
+            return items.get(++current);
+        }
+
+    }
+
+    @Override
     public InputStream getUploadedFileStream(String name) {
         List<NinjaFileItemStream> ls = fileItems.get(name);
         if (ls != null && ls.size() > 0) {
@@ -186,7 +226,9 @@ public class MultipartContextImpl extends ContextImpl {
     }
 
     private void parseParts() {
-        FileItemIterator fileItemIterator = getFileItemIterator();
+        // note that we call getFileItemIterator() of super class, i.e. the real
+        // file item iterator from common-upload
+        FileItemIterator fileItemIterator = super.getFileItemIterator();
         if (fileItemIterator == null) {
             return;
         }
