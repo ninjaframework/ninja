@@ -37,7 +37,7 @@ import com.google.inject.Singleton;
 public class NinjaFileItemStreamFactory {
 
     @Inject
-    private InMemoryFileItemFactory inMemoryFileItemFactory;
+    InMemoryFileItemFactory inMemoryFileItemFactory;
 
     private final boolean inMemory;
     private final File uploadDirectory;

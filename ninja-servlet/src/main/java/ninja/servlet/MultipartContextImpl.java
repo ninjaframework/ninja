@@ -60,7 +60,7 @@ public class MultipartContextImpl extends ContextImpl {
     private static final Logger LOGGER = LoggerFactory.getLogger(MultipartContextImpl.class);
 
     @Inject
-    private NinjaFileItemStreamFactory fileItemStreamFactory;
+    NinjaFileItemStreamFactory fileItemStreamFactory;
 
     private final Map<String, List<NinjaFileItemStream>> fileItems = new HashMap<>();
     private final Map<String, List<String>> multipartParams = new HashMap<>();
@@ -156,7 +156,7 @@ public class MultipartContextImpl extends ContextImpl {
         return new FileItemIteratorImpl(getFileItems(), multipartParams);
     }
 
-    private static class FileItemIteratorImpl implements FileItemIterator {
+    static class FileItemIteratorImpl implements FileItemIterator {
 
         private final List<FileItemStream> items;
         private int current = -1;
@@ -169,7 +169,7 @@ public class MultipartContextImpl extends ContextImpl {
             // add form field params to the list
             for (Map.Entry<String, List<String>> e : params.entrySet()) {
                 for (String value : e.getValue()) {
-                    items.add(new FormFieldItemStream(e.getKey(), value));
+                    this.items.add(new FormFieldItemStream(e.getKey(), value));
                 }
             }
         }
@@ -225,17 +225,34 @@ public class MultipartContextImpl extends ContextImpl {
         return all;
     }
 
+    /**
+     * Parses multipart contents of the request associated with this context.
+     * Note that file item iterator of this context is passed to
+     * {@link MultipartContextImpl#parseParts(org.apache.commons.fileupload.FileItemIterator)}
+     * method.
+     */
     private void parseParts() {
         // note that we call getFileItemIterator() of super class, i.e. the real
         // file item iterator from common-upload
         FileItemIterator fileItemIterator = super.getFileItemIterator();
         if (fileItemIterator == null) {
-            return;
+            parseParts(fileItemIterator);
         }
+    }
+
+    /**
+     * Multipart request payload parser. This method accepts file item iterator
+     * and is not private to make testing easier by passing custom mock
+     * iterator.
+     *
+     * @param fileItemIterator
+     * @see MultipartContextImpl#parseParts()
+     */
+    void parseParts(FileItemIterator fileItemIterator) {
         try {
             while (fileItemIterator.hasNext()) {
                 FileItemStream fileItemStream = fileItemIterator.next();
-                String name = fileItemStream.getFieldName();
+                String fieldName = fileItemStream.getFieldName();
 
                 if (fileItemStream.isFormField()) {
 
@@ -248,26 +265,25 @@ public class MultipartContextImpl extends ContextImpl {
                             sb.append(buf, 0, n);
                         }
                     }
-                    List<String> ls = multipartParams.get(name);
+                    List<String> ls = multipartParams.get(fieldName);
                     if (ls == null) {
                         ls = new ArrayList<>();
-                        multipartParams.put(name, ls);
+                        multipartParams.put(fieldName, ls);
                     }
                     ls.add(sb.toString());
 
                 } else {
                     // an attached file
-                    List<NinjaFileItemStream> items = fileItems.get(name);
+                    List<NinjaFileItemStream> items = fileItems.get(fieldName);
                     if (items == null) {
                         items = new ArrayList<>();
-                        fileItems.put(name, items);
+                        fileItems.put(fieldName, items);
                     }
                     items.add(fileItemStreamFactory.convert(fileItemStream));
                 }
             }
         } catch (FileUploadException | IOException ex) {
-            LOGGER.debug("Failed to parse multipart request data", ex);
-            throw new RuntimeException(ex);
+            throw new RuntimeException("Failed to parse multipart request data", ex);
         }
     }
 
