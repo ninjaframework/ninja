@@ -17,7 +17,6 @@
 package ninja;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -32,6 +31,7 @@ import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 
 public interface Context {
 
@@ -43,11 +43,7 @@ public interface Context {
         
         void setRoute(Route route);
 
-        /**
-         * Purges all uploaded files. This is a cleanup method that should be
-         * called when Context is no longer used.
-         */
-        void purgeFiles();
+        void cleanup();
     }
 
     /**
@@ -530,21 +526,34 @@ public interface Context {
     FileItemIterator getFileItemIterator();
 
     /**
-     * Gets the uploaded file for the given key from the multipart request. When
-     * multiple files uploaded for the same key, the first file is returned.
+     * Gets the uploaded file stream for the given key from the multipart
+     * request. When multiple files uploaded for the same key, the first file is
+     * returned.
      *
      * @param name the key of the file
-     * @return uploaded file
+     * @return the input stream to read file contents from; {@code null} if no
+     * file uploaded for the given key
      */
-    File getUploadedFile(String name);
+    InputStream getUploadedFileStream(String name);
 
     /**
-     * Gets uploaded files for the given key from the multipart request.
+     * Gets uploaded file streams for the given key from the multipart request.
      *
      * @param name the key of files
-     * @return uploaded files
+     * @return list of streams to read file contents from; empty list is
+     * returned if no files were uploaded for the given key
      */
-    List<File> getUploadedFiles(String name);
+    List<InputStream> getUploadedFileStreams(String name);
+
+    /**
+     * Gets {@link FileItemStream} instances corresponding to uploaded files
+     * from multipart request. Using this collection one can get every property
+     * of uploaded files like field names, content types, and even a stream to
+     * read file contents from.
+     *
+     * @return list of file items uploaded by a multipart request
+     */
+    List<FileItemStream> getFileItems();
 
     /**
      * Get the validation context

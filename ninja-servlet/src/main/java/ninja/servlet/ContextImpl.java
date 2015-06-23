@@ -16,7 +16,6 @@
 package ninja.servlet;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -45,6 +44,7 @@ import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
+import ninja.servlet.file.InMemoryFileItemFactory;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.HttpHeaderUtils;
@@ -56,6 +56,7 @@ import ninja.utils.SwissKnife;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
@@ -86,6 +87,9 @@ public class ContextImpl implements Context.Impl {
     private final Session session;
     private final ResultHandler resultHandler;
     private final Validation validation;
+
+    @Inject
+    private InMemoryFileItemFactory inMemoryFileItemFactory;
 
     // In Async mode, these values will be set to null, so save them
     private String requestPath;
@@ -135,8 +139,8 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
-    public void purgeFiles() {
-        // uploaded files are handled by multipart implementation of Context
+    public void cleanup() {
+        // no op for non-multipart request context
     }
 
     @Override
@@ -585,6 +589,26 @@ public class ContextImpl implements Context.Impl {
     public FileItemIterator getFileItemIterator() {
 
         ServletFileUpload upload = new ServletFileUpload();
+
+        Boolean inMemory = ninjaProperties.getBooleanWithDefault(
+                NinjaConstant.FILE_UPLOADS_IN_MEMORY, false);
+        Integer maxSize = ninjaProperties.getInteger(
+                NinjaConstant.FILE_UPLOADS_MAX_REQUEST_SIZE);
+        Integer maxFileSize = ninjaProperties.getInteger(
+                NinjaConstant.FILE_UPLOADS_MAX_FILE_SIZE);
+
+        if (inMemory) {
+            upload.setFileItemFactory(inMemoryFileItemFactory);
+            // when uploaded files are handled in-memory, do not leave max file size without limit
+            upload.setFileSizeMax(inMemoryFileItemFactory.getMaxFileSize());
+        }
+        if (maxSize != null) {
+            upload.setSizeMax(maxSize);
+        }
+        if (maxFileSize != null) {
+            upload.setFileSizeMax(maxFileSize);
+        }
+
         FileItemIterator fileItemIterator = null;
 
         try {
@@ -598,12 +622,20 @@ public class ContextImpl implements Context.Impl {
     }
 
     @Override
-    public File getUploadedFile(String name) {
+    public InputStream getUploadedFileStream(String name) {
+        // no uploaded files for non-multipart request
         return null;
     }
 
     @Override
-    public List<File> getUploadedFiles(String name) {
+    public List<InputStream> getUploadedFileStreams(String name) {
+        // no uploaded files for non-multipart request
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<FileItemStream> getFileItems() {
+        // no uploaded files for non-multipart request
         return Collections.emptyList();
     }
 

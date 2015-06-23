@@ -16,8 +16,6 @@
 
 package controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -80,20 +78,16 @@ public class UploadController {
             @Override
             public void render(Context context, Result result) {
 
-                File file = context.getUploadedFile("file");
-                if (file != null) {
-
-                    ResponseStreams responseStreams = context.finalizeHeaders(result);
-
-                    try (InputStream is = new FileInputStream(file)) {
-                        ByteStreams.copy(is, responseStreams.getOutputStream());
-                    } catch (IOException ex) {
-                        logger.error("Failed to read/write uploaded file", ex);
+                try (InputStream fileStream = context.getUploadedFileStream("file")) {
+                    if (fileStream != null) {
+                        ResponseStreams responseStreams = context.finalizeHeaders(result);
+                        ByteStreams.copy(fileStream, responseStreams.getOutputStream());
+                    } else {
+                        logger.info("No uploaded file found");
                     }
-                } else {
-                    logger.info("No uploaded file found");
+                } catch (IOException ex) {
+                    logger.error("Failed to read/write uploaded file", ex);
                 }
-
             }
         };
 

@@ -140,7 +140,35 @@ public interface NinjaConstant {
      * (XSS).
      */
     final String sessionHttpOnly = "application.session.http_only";
-    
+
+    /**
+     * Indicates if uploaded files should be handled fully in-memory without
+     * saving to file system. Can be {@code true} or {@code false}, defaults to
+     * {@code false}.
+     */
+    final String FILE_UPLOADS_IN_MEMORY = "file.uploads.in_memory";
+
+    /**
+     * The maximum allowed size of a single uploaded file.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#fileSizeMax
+     */
+    final String FILE_UPLOADS_MAX_FILE_SIZE = "file.uploads.file.size.max";
+
+    /**
+     * The maximum allowed size of a complete request, i.e. size of all uploaded
+     * files.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#sizeMax
+     */
+    final String FILE_UPLOADS_MAX_REQUEST_SIZE = "file.uploads.total.size.max";
+
+    /**
+     * Directory where uploaded files are saved. Defaults to system's temporary
+     * directory, i.e. "java.io.tmpdir" system property is consulted
+     */
+    final String FILE_UPLOADS_DIRECTORY = "file.uploads.directory";
+
     // /////////////////////////////////////////////////
     // Diagnostic mode - extension to dev mode where
     // ninja.Ninja is forced with ninja.diagnostics.NinjaDiagnostic

@@ -17,13 +17,10 @@
 package ninja.utils;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +36,7 @@ import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
@@ -68,7 +66,6 @@ public class FakeContext implements Context {
     private Map<String, String> cookieValues = new HashMap<String, String>();
     private ListMultimap<String, String> params = ArrayListMultimap.create();
     private Map<String, String> pathParams = new HashMap<String, String>();
-    private Map<String, File> files = new HashMap<>();
     private ListMultimap<String, String> headers = ArrayListMultimap.create();
     private Map<String, Object> attributes = new HashMap<String, Object>();
     private Object body;
@@ -309,24 +306,19 @@ public class FakeContext implements Context {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
 
-    public FakeContext addFile(String name, File file) {
-        files.put(name, file);
-        return this;
+    @Override
+    public InputStream getUploadedFileStream(String name) {
+        throw new UnsupportedOperationException("Not supported in fake context");
     }
 
     @Override
-    public File getUploadedFile(String name) {
-        return files.get(name);
+    public List<InputStream> getUploadedFileStreams(String name) {
+        throw new UnsupportedOperationException("Not supported in fake context");
     }
 
     @Override
-    public List<File> getUploadedFiles(String name) {
-        File file = files.get(name);
-        if (file != null) {
-            return Arrays.asList(file);
-        } else {
-            return Collections.emptyList();
-        }
+    public List<FileItemStream> getFileItems() {
+        throw new UnsupportedOperationException("Not supported in fake context");
     }
 
     @Override

@@ -16,7 +16,7 @@
 
 package ninja.params;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -188,7 +188,7 @@ public class ArgumentExtractors {
         }
     }
 
-    public static class FileExtractor implements ArgumentExtractor<File> {
+    public static class FileExtractor implements ArgumentExtractor<InputStream> {
 
         private final String name;
 
@@ -197,13 +197,13 @@ public class ArgumentExtractors {
         }
 
         @Override
-        public File extract(Context context) {
-            return context.getUploadedFile(name);
+        public InputStream extract(Context context) {
+            return context.getUploadedFileStream(name);
         }
 
         @Override
-        public Class<File> getExtractedType() {
-            return File.class;
+        public Class<InputStream> getExtractedType() {
+            return InputStream.class;
         }
 
         @Override
@@ -212,7 +212,7 @@ public class ArgumentExtractors {
         }
     }
 
-    public static class FilesExtractor implements ArgumentExtractor<File[]> {
+    public static class FilesExtractor implements ArgumentExtractor<InputStream[]> {
 
         private final String name;
 
@@ -221,14 +221,17 @@ public class ArgumentExtractors {
         }
 
         @Override
-        public File[] extract(Context context) {
-            List<File> files = context.getUploadedFiles(name);
-            return files != null ? files.toArray(new File[files.size()]) : null;
+        public InputStream[] extract(Context context) {
+            List<InputStream> files = context.getUploadedFileStreams(name);
+            if (files == null || files.isEmpty()) {
+                return null;
+            }
+            return files.toArray(new InputStream[files.size()]);
         }
 
         @Override
-        public Class<File[]> getExtractedType() {
-            return File[].class;
+        public Class<InputStream[]> getExtractedType() {
+            return InputStream[].class;
         }
 
         @Override

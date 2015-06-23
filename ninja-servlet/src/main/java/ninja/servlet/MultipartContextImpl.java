@@ -15,18 +15,14 @@
  */
 package ninja.servlet;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +32,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.servlet.file.NinjaFileItemStream;
+import ninja.servlet.file.NinjaFileItemStreamFactory;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.NinjaProperties;
@@ -60,7 +58,10 @@ public class MultipartContextImpl extends ContextImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultipartContextImpl.class);
 
-    private final Map<String, List<File>> files = new HashMap<>();
+    @Inject
+    private NinjaFileItemStreamFactory fileItemStreamFactory;
+
+    private final Map<String, List<NinjaFileItemStream>> fileItems = new HashMap<>();
     private final Map<String, List<String>> multipartParams = new HashMap<>();
 
     @Inject
@@ -75,16 +76,6 @@ public class MultipartContextImpl extends ContextImpl {
     }
 
     @Override
-    public void purgeFiles() {
-        Collection<List<File>> filesCollection = files.values();
-        for (List<File> ls : filesCollection) {
-            for (File f : ls) {
-                f.delete();
-            }
-        }
-    }
-
-    @Override
     public void init(ServletContext servletContext,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
@@ -93,6 +84,16 @@ public class MultipartContextImpl extends ContextImpl {
 
         // parse multipart request payload
         parseParts();
+    }
+
+    @Override
+    public void cleanup() {
+        for (List<NinjaFileItemStream> items : fileItems.values()) {
+            for (NinjaFileItemStream item : items) {
+                item.purge();
+            }
+        }
+        super.cleanup();
     }
 
     @Override
@@ -146,18 +147,42 @@ public class MultipartContextImpl extends ContextImpl {
     }
 
     @Override
-    public File getUploadedFile(String name) {
-        List<File> ls = files.get(name);
-        return ls != null ? ls.get(0) : null;
+    public InputStream getUploadedFileStream(String name) {
+        List<NinjaFileItemStream> ls = fileItems.get(name);
+        if (ls != null && ls.size() > 0) {
+            try {
+                return ls.get(0).openStream();
+            } catch (IOException ex) {
+                LOGGER.debug("Failed to open file stream", ex);
+            }
+        }
+        return null;
     }
 
     @Override
-    public List<File> getUploadedFiles(String name) {
-        List<File> ls = files.get(name);
-        if (ls == null) {
-            return Collections.emptyList();
+    public List<InputStream> getUploadedFileStreams(String name) {
+        List<NinjaFileItemStream> ls = fileItems.get(name);
+        if (ls != null) {
+            try {
+                List<InputStream> result = new ArrayList<>();
+                for (FileItemStream fis : ls) {
+                    result.add(fis.openStream());
+                }
+                return result;
+            } catch (IOException ex) {
+                LOGGER.debug("Failed to open file stream", ex);
+            }
         }
-        return ls;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<FileItemStream> getFileItems() {
+        List<FileItemStream> all = new LinkedList<>();
+        for (List<NinjaFileItemStream> items : fileItems.values()) {
+            all.addAll(items);
+        }
+        return all;
     }
 
     private void parseParts() {
@@ -190,17 +215,12 @@ public class MultipartContextImpl extends ContextImpl {
 
                 } else {
                     // an attached file
-                    Path target = Files.createTempFile("ninja-upload", null);
-                    try (InputStream is = fileItemStream.openStream()) {
-                        Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+                    List<NinjaFileItemStream> items = fileItems.get(name);
+                    if (items == null) {
+                        items = new ArrayList<>();
+                        fileItems.put(name, items);
                     }
-
-                    List<File> ls = files.get(name);
-                    if (ls == null) {
-                        ls = new ArrayList<>();
-                        files.put(name, ls);
-                    }
-                    ls.add(target.toFile());
+                    items.add(fileItemStreamFactory.convert(fileItemStream));
                 }
             }
         } catch (FileUploadException | IOException ex) {

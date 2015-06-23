@@ -17,7 +17,6 @@
 package ninja;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -29,6 +28,7 @@ import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 
 /**
  * A wrapped context. Useful if filters want to modify the context before
@@ -224,13 +224,18 @@ public class WrappedContext implements Context {
     }
 
     @Override
-    public File getUploadedFile(String name) {
-        return wrapped.getUploadedFile(name);
+    public InputStream getUploadedFileStream(String name) {
+        return wrapped.getUploadedFileStream(name);
     }
 
     @Override
-    public List<File> getUploadedFiles(String name) {
-        return wrapped.getUploadedFiles(name);
+    public List<InputStream> getUploadedFileStreams(String name) {
+        return wrapped.getUploadedFileStreams(name);
+    }
+
+    @Override
+    public List<FileItemStream> getFileItems() {
+        return wrapped.getFileItems();
     }
 
     @Override
