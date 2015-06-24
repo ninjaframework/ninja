@@ -62,6 +62,58 @@ public Result uploadFinish(Context context) throws Exception {
 }
 </pre>
 
+New way of handling file uploads
+--------------------------------
+Would it be nice if uploaded files of a multipart request could be injected
+directly into controller method just like path or query parameters?
+Ninja allows you to do so -- to inject uploaded file `@FileParam` annotation
+is used. Extracted type of this annotation is `java.io.InputStream` so that
+you can read contents of an uploaded file in any way you like.
+
+In the case given above, the controller would look like this:
+```java
+public Result uploadFinish(Context context, @FileParam("upfile") InputStream stream) {
+    if(stream != null) {
+	// use stream to read file contents
+    }
+    return Results.ok();
+}
+```
+
+Besides injecting uploaded files into your controller methods, you can also
+inject simple key/value form fields of a multipart request via annotations
+`@Param` and `@Params`.
+
+
+File upload settings
+--------------------
+By default files of a multipart request are stored both in memory and on file system.
+Commons-upload has a nice implementation that stores small amounts of data first
+in memory and only after some threshold value the data is dumped to file system
+(More about this read [here](https://commons.apache.org/proper/commons-fileupload/using.html)).
+
+There may be environments where access to file system is restricted or there
+is no access at all.
+In a former case you can setup a target directory with write access rights
+where uploaded files will be temporarily stored.
+This is done via `file.uploads.directory` property.
+
+Please note that specifying target directory does not mean that uploaded files
+will remain there. All uploaded files are stored in target directory temporarily
+and cleaned up as long as the request context is not used anymore. Make sure you
+dump uploaded file streams somewhere you need.
+
+In a latter case when there is no access to file system at all, Ninja can be setup
+to handle file uploads totally in memory. To do this you have to set property
+`file.uploads.in_memory` to true. This property has a default value of false.
+When handling file uploads in memory consider setting the following properties:
+
+* `file.uploads.file.size.max`: the maximum allowed size of a single uploaded file
+in bytes (defaults to 10 MB)
+* `file.uploads.total.size.max`: the maximum allowed size of a complete request, i.e. size of
+all uploaded files
+
+
 Advanced usage
 --------------
 
