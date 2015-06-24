@@ -231,11 +231,11 @@ public class MultipartContextImpl extends ContextImpl {
      * {@link MultipartContextImpl#parseParts(org.apache.commons.fileupload.FileItemIterator)}
      * method.
      */
-    private void parseParts() {
+    void parseParts() {
         // note that we call getFileItemIterator() of super class, i.e. the real
         // file item iterator from common-upload
         FileItemIterator fileItemIterator = super.getFileItemIterator();
-        if (fileItemIterator == null) {
+        if (fileItemIterator != null) {
             parseParts(fileItemIterator);
         }
     }

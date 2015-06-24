@@ -47,6 +47,7 @@ import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,6 +120,13 @@ public class MultipartContextImplTest {
         ctx.fileItemIterator = makeFileItemsIterator();
         this.context = ctx;
         this.context.fileItemStreamFactory = new NinjaFileItemStreamFactory(ninjaProperties);
+    }
+
+    @After
+    public void cleanUp() {
+        if (context instanceof ContextImpl) {
+            ((ContextImpl) context).cleanup();
+        }
     }
 
     private FileItemIterator makeFileItemsIterator() {
@@ -266,7 +274,8 @@ public class MultipartContextImplTest {
         }
 
         @Override
-        void parseParts(FileItemIterator fileItemIterator) {
+        void parseParts() {
+            // pass our mocking file item iterator
             super.parseParts(this.fileItemIterator);
         }
 
