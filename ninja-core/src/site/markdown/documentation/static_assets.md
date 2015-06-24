@@ -27,29 +27,6 @@ If a website references an image at <code>&lt;img src=&quot;/assets/images/logo.
 Ninja will serve the file at <code>src/main/java/assets/images/logo.png</code>. (Usually this
 happens inside a jar file - but for clarity we used <code>src/main/java</code>).
 
-Serving static assets from a custom directory
----------------------------------------------
-If you want to serve static files from a custom directory, you can set
-application.static.asset.basedir property in application.conf file to the absolute path.
-
-For eg: if you set the property as below,
-<pre class="prettyprint">
-application.static.asset.basedir=/mnt/store/app/static
-</pre>
-
-<pre class="prettyprint">
-router.GET().route("/robots.txt").with(AssetsController.class, "serveStatic");
-</pre>
-
-Above route will serve your static robots.txt from <code>/mnt/store/app/static/robots.txt</code>.
-
-<pre class="prettyprint">
-router.GET().route("/public/{fileName: .*}").with(AssetsController.class, "serveStatic");
-</pre>
-
-This route will serve your static /public/robots.txt from <code>/mnt/store/app/static/public/robots.txt</code>.
-
-
 Serving static files from root
 ------------------------------
 

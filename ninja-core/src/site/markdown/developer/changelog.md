@@ -2,6 +2,11 @@ Version x.x.x
 =============
 
  * 2015-06-24 Injection of params and uploaded files from multipart requests (bazi)
+Version 5.1.3
+=============
+
+ * 2015-06-19 Fix for potential security issue. Under certain circumstances assets
+              controller did stream content from arbitrary directories (Christian B. / ra).
 
 Version 5.1.2
 =============
