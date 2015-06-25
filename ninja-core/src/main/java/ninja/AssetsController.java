@@ -224,7 +224,21 @@ public class AssetsController {
 
         return url;
     }
-    
+
+    /**
+     * This function mirrors legacy behavior of the AssetsController
+     *
+     * @param fileName A potential "fileName"
+     * @see #normalizePathWithoutLeadingSlash(java.lang.String, boolean)
+     * @deprecated This method was replaced and should not be used.
+     * @return A normalized fileName.
+     */
+    @VisibleForTesting
+    @Deprecated
+    protected String normalizePathWithoutLeadingSlash(String fileName) {
+        return normalizePathWithoutLeadingSlash(fileName, false);
+    }
+
     /**
      * If we get - for whatever reason - a relative URL like 
      * assets/../conf/application.conf we expand that to the "real" path.
@@ -237,14 +251,11 @@ public class AssetsController {
      * possible.
      * 
      * @param fileName A potential "fileName"
+     * @param enforceUnixSeparator Forces to normalise unix style
      * @return A normalized fileName.
      */
     @VisibleForTesting
-    protected String normalizePathWithoutLeadingSlash(String fileName) {
-        return normalizePathWithoutLeadingSlash(fileName, false);
-    }
-
-    private String normalizePathWithoutLeadingSlash(String fileName, boolean enforceUnixSeparator) {
+    protected String normalizePathWithoutLeadingSlash(String fileName, boolean enforceUnixSeparator) {
         String fileNameNormalized = enforceUnixSeparator
                 ? FilenameUtils.normalize(fileName, true)
                 : FilenameUtils.normalize(fileName);

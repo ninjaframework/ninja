@@ -249,13 +249,13 @@ public class AssetsControllerTest {
     }
 
     @Test
-    public void testNormalizePathWithoutTrailingSlash() {
-        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test"));
-        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("dir1/test.test"));
-        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("/../test.test"));
-        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("../test.test"));
-        assertEquals("dir2/file.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/../dir2/file.test"));
-        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash(null));
-        assertEquals("", assetsController.normalizePathWithoutLeadingSlash(""));
+    public void testNormalizePathWithoutLeadingSlash() {
+        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", true));
+        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("dir1/test.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("/../test.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("../test.test", true));
+        assertEquals("dir2/file.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/../dir2/file.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash(null, true));
+        assertEquals("", assetsController.normalizePathWithoutLeadingSlash("", true));
     }
 }
