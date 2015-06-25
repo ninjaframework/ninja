@@ -216,7 +216,7 @@ public class AssetsController {
      */
     private URL getStaticFileFromMetaInfResourcesDir(String fileName) {
         String finalNameWithoutLeadingSlash 
-                = normalizePathWithoutLeadingSlash(fileName);
+                = normalizePathWithoutLeadingSlash(fileName, true);
 
         URL url = null;
         
@@ -241,7 +241,13 @@ public class AssetsController {
      */
     @VisibleForTesting
     protected String normalizePathWithoutLeadingSlash(String fileName) {
-        String fileNameNormalized = FilenameUtils.normalize(fileName);
+        return normalizePathWithoutLeadingSlash(fileName, false);
+    }
+
+    private String normalizePathWithoutLeadingSlash(String fileName, boolean enforceUnixSeparator) {
+        String fileNameNormalized = enforceUnixSeparator
+                ? FilenameUtils.normalize(fileName, true)
+                : FilenameUtils.normalize(fileName);
         return StringUtils.removeStart(fileNameNormalized, "/");
     }
 
