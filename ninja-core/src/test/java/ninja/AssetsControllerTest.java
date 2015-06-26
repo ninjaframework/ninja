@@ -31,7 +31,6 @@ import ninja.utils.MimeTypes;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.junit.Before;
 
 import org.junit.Test;
@@ -267,7 +266,7 @@ public class AssetsControllerTest {
         assertEquals(null, assetsController.normalizePathWithoutLeadingSlash(null, true));
         assertEquals("", assetsController.normalizePathWithoutLeadingSlash("", true));
         
-        // enforcing test for unix separator
+        // enforcing test for unix separator | Windows specific
         mockStatic(FilenameUtils.class, Mockito.CALLS_REAL_METHODS);
         
         when(FilenameUtils.normalize(anyString())).then(new Answer<String>() {
@@ -275,12 +274,12 @@ public class AssetsControllerTest {
             public String answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments(); 
                 String file = (String) args[0];
-                return FilenameUtils.normalize(file, false);
+                return FilenameUtils.normalize(file, false); // Choose Windows here, despite we may test on unix
             }
         });
         
-        assertEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", !SystemUtils.IS_OS_WINDOWS));
-        assertNotEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", SystemUtils.IS_OS_WINDOWS));
+        assertEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", false));
+        assertNotEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", true));
         verifyStatic();
     }
 }
