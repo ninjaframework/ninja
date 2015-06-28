@@ -47,7 +47,7 @@ public class Scheduler {
     private static final Logger log = LoggerFactory.getLogger(Scheduler.class);
 
     @Inject
-    private NinjaProperties ninjaProperties;
+    NinjaProperties ninjaProperties;
     
     @Inject
     private Injector injector;
