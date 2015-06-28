@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,13 +47,16 @@ public class Scheduler {
     private static final Logger log = LoggerFactory.getLogger(Scheduler.class);
 
     @Inject
+    private NinjaProperties ninjaProperties;
+    
+    @Inject
     private Injector injector;
     private volatile ScheduledExecutorService executor;
     private final List<Object> objectsToSchedule = Collections.synchronizedList(new ArrayList<Object>());
 
     @Start(order = 90)
     public void start() {
-        executor = Executors.newSingleThreadScheduledExecutor();
+        executor = Executors.newScheduledThreadPool(ninjaProperties.getIntegerWithDefault(NinjaConstant.SCHEDULER_POOL_SIZE, 1));
         scheduleCachedObjects();
     }
 

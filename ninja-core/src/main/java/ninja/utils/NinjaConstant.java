@@ -220,4 +220,10 @@ public interface NinjaConstant {
     String NINJA_JSONP_CALLBACK_PARAMETER = "ninja.jsonp.callbackParameter";
     
     String AUTHENTICITY_TOKEN = "authenticityToken";
+    
+    /**
+     * Scheduler configuration
+     */    
+    /** the number of threads to keep in the pool, even if they are idle */
+    final String SCHEDULER_POOL_SIZE = "scheduler.pool.size";
 }
