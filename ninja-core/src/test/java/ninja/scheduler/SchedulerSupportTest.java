@@ -28,6 +28,9 @@ import java.util.concurrent.TimeUnit;
 import ninja.lifecycle.FailedStartException;
 import ninja.lifecycle.LifecycleService;
 import ninja.lifecycle.LifecycleSupport;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,7 +47,7 @@ import com.google.inject.name.Names;
 public class SchedulerSupportTest {
 
     private Injector injector;
-
+    
     @Before
     public void setUp() {
         MockScheduled.countDownLatch = new CountDownLatch(1);
@@ -60,7 +63,12 @@ public class SchedulerSupportTest {
 
     @Test
     public void schedulableShouldNotBeScheduledBeforeStart() throws Exception {
-        injector = createInjector();
+        injector = createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
+            }
+        });
         injector.getInstance(MockScheduled.class);
         Thread.sleep(100);
         assertThat(MockScheduled.countDownLatch.getCount(), equalTo(1L));
@@ -72,6 +80,7 @@ public class SchedulerSupportTest {
             @Override
             protected void configure() {
                 bind(MockScheduled.class);
+                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
             }
         });
         start(injector);
@@ -80,7 +89,12 @@ public class SchedulerSupportTest {
 
     @Test(timeout = 5000)
     public void schedulableAddedAfterStartShouldBeScheduledImmediately() throws Exception {
-        injector = createInjector();
+        injector = createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
+            }
+        });
         start(injector);
         injector.getInstance(MockScheduled.class);
         MockScheduled.countDownLatch.await(5000, TimeUnit.MILLISECONDS);
@@ -91,6 +105,7 @@ public class SchedulerSupportTest {
         injector = createInjector(new AbstractModule() {
             @Override
             protected void configure() {
+            	bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
                 bind(Key.get(String.class, Names.named("delay.property"))).toInstance("10");
             }
         });
@@ -101,7 +116,12 @@ public class SchedulerSupportTest {
 
     @Test(expected = FailedStartException.class)
     public void schedulableShouldThrowExceptionWhenNoPropertyFound() throws Exception {
-        injector = createInjector();
+        injector = createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
+            }
+        });
         injector.getInstance(MockPropertyScheduled.class);
         start(injector);
     }
@@ -112,7 +132,7 @@ public class SchedulerSupportTest {
         ms.add(SchedulerSupport.getModule());
         return Guice.createInjector(ms);
     }
-
+    
     private void start(Injector injector) {
         injector.getInstance(LifecycleService.class).start();
     }
