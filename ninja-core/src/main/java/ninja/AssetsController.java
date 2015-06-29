@@ -60,11 +60,15 @@ public class AssetsController {
     private final HttpCacheToolkit httpCacheToolkit;
 
     private final NinjaProperties ninjaProperties;
+    
+    private final AssetsControllerHelper assetsControllerHelper;
 
     @Inject
-    public AssetsController(HttpCacheToolkit httpCacheToolkit,
+    public AssetsController(AssetsControllerHelper assetsControllerHelper,
+                            HttpCacheToolkit httpCacheToolkit,
                             MimeTypes mimeTypes,
                             NinjaProperties ninjaProperties) {
+        this.assetsControllerHelper = assetsControllerHelper;
         this.httpCacheToolkit = httpCacheToolkit;
         this.mimeTypes = mimeTypes;
         this.ninjaProperties = ninjaProperties;
@@ -86,7 +90,7 @@ public class AssetsController {
      * /assets/app/app.css (from your jar).
      * 
      */
-    public Result serveStatic(Context context) {
+    public Result serveStatic() {
         Object renderable = new Renderable() {
             @Override
             public void render(Context context, Result result) {
@@ -107,7 +111,7 @@ public class AssetsController {
      * Request to /public/css/app.css will be served from /assets/css/app.css.
      * 
      */
-    public Result serveWebJars(Context context) {
+    public Result serveWebJars() {
         Object renderable = new Renderable() {
             @Override
             public void render(Context context, Result result) {
@@ -147,14 +151,12 @@ public class AssetsController {
                             .finalizeHeadersWithoutFlashAndSessionCookie(result);
 
                     try (InputStream inputStream = urlConnection.getInputStream();
-                         OutputStream outputStream = responseStreams.getOutputStream()) {
+                        OutputStream outputStream = responseStreams.getOutputStream()) {
                         ByteStreams.copy(inputStream, outputStream);
                     }
 
                 }
 
-            } catch (FileNotFoundException e) {
-                logger.error("error streaming file", e);
             } catch (IOException e) {
                 logger.error("error streaming file", e);
             }
@@ -170,22 +172,18 @@ public class AssetsController {
      * be overridden by static.asset.base.dir in application conf file.
      */
     private URL getStaticFileFromAssetsDir(String fileName) {
-        
-        String finalNameWithoutLeadingSlash = normalizePathWithoutLeadingSlash(fileName);
 
         URL url = null;
 
-         if (ninjaProperties.isDev()) {
+        if (ninjaProperties.isDev()) {
+            String finalNameWithoutLeadingSlash = assetsControllerHelper.normalizePathWithoutLeadingSlash(fileName, false);
             File possibleFile = new File(
                     assetsDirInDevModeWithoutTrailingSlash() 
                             + File.separator 
                             + finalNameWithoutLeadingSlash);
             url = getUrlForFile(possibleFile);
         } else {
-            // In mode test and prod, if static.asset.base.dir not specified then we stream via the classloader.
-            //
-            // In dev mode: If we cannot find the file in src we are also looking for the file
-            // on the classpath (can be the case for plugins that ship their own assets.
+            String finalNameWithoutLeadingSlash = assetsControllerHelper.normalizePathWithoutLeadingSlash(fileName, true);
             url = this.getClass().getClassLoader()
                     .getResource(ASSETS_DIR
                                  + "/"
@@ -214,50 +212,10 @@ public class AssetsController {
      */
     private URL getStaticFileFromMetaInfResourcesDir(String fileName) {
         String finalNameWithoutLeadingSlash 
-                = normalizePathWithoutLeadingSlash(fileName, true);
-
-        URL url = null;
-        
+                = assetsControllerHelper.normalizePathWithoutLeadingSlash(fileName, true);
+        URL url = null; 
         url = this.getClass().getClassLoader().getResource("META-INF/resources/webjars/" + finalNameWithoutLeadingSlash);
-
         return url;
-    }
-
-    /**
-     * This function mirrors legacy behavior of the AssetsController
-     *
-     * @param fileName A potential "fileName"
-     * @see #normalizePathWithoutLeadingSlash(java.lang.String, boolean)
-     * @deprecated This method was replaced and should not be used.
-     * @return A normalized fileName.
-     */
-    @VisibleForTesting
-    @Deprecated
-    protected String normalizePathWithoutLeadingSlash(String fileName) {
-        return normalizePathWithoutLeadingSlash(fileName, false);
-    }
-
-    /**
-     * If we get - for whatever reason - a relative URL like 
-     * assets/../conf/application.conf we expand that to the "real" path.
-     * In the above case conf/application.conf.
-     * 
-     * You should then add the assets prefix.
-     * 
-     * Otherwise someone can create an attack and read all resources of our
-     * app. If we expand and normalize the incoming path this is no longer
-     * possible.
-     * 
-     * @param fileName A potential "fileName"
-     * @param enforceUnixSeparator Forces to normalise unix style
-     * @return A normalized fileName.
-     */
-    @VisibleForTesting
-    protected String normalizePathWithoutLeadingSlash(String fileName, boolean enforceUnixSeparator) {
-        String fileNameNormalized = enforceUnixSeparator
-                ? FilenameUtils.normalize(fileName, true)
-                : FilenameUtils.normalize(fileName);
-        return StringUtils.removeStart(fileNameNormalized, "/");
     }
 
     private static String getFileNameFromPathOrReturnRequestPath(Context context) {

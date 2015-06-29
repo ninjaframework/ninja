@@ -17,8 +17,12 @@
 package ninja;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyString;
 
 import java.io.ByteArrayOutputStream;
 
@@ -26,6 +30,7 @@ import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 
 import org.junit.Test;
@@ -34,9 +39,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(FilenameUtils.class)
 public class AssetsControllerTest {
 
     @Mock
@@ -62,10 +71,7 @@ public class AssetsControllerTest {
     @Before
     public void before() {
         assetsController = new AssetsController(
-                new AssetsControllerHelper(),
-                httpCacheToolkit, 
-                mimeTypes, 
-                ninjaProperties);
+                httpCacheToolkit, mimeTypes, ninjaProperties);
     }
     
     
@@ -73,7 +79,7 @@ public class AssetsControllerTest {
     @Test
     public void testServeStatic404() throws Exception {
         when(contextRenderable.getRequestPath()).thenReturn("notAvailable");
-        Result result2 = assetsController.serveStatic();
+        Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();
 
@@ -89,7 +95,7 @@ public class AssetsControllerTest {
     @Test
     public void testServeStaticSecurityClassesWithoutSlash() throws Exception {
         when(contextRenderable.getRequestPath()).thenReturn("ninja/Ninja.class");
-        Result result2 = assetsController.serveStatic();
+        Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();
 
@@ -106,7 +112,7 @@ public class AssetsControllerTest {
     public void testServeStaticSecurityClassesAbsolute() throws Exception {
 
         when(contextRenderable.getRequestPath()).thenReturn("/ninja/Ninja.class");
-        Result result2 = assetsController.serveStatic();
+        Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();
 
@@ -125,7 +131,7 @@ public class AssetsControllerTest {
         // But it should
         when(contextRenderable.getRequestPath()).thenReturn("/assets/../../conf/heroku.conf");
         
-        Result result2 = assetsController.serveStatic();
+        Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();
 
@@ -143,7 +149,7 @@ public class AssetsControllerTest {
         when(contextRenderable.getRequestPath()).thenReturn(
                 "/assets/testasset.txt");
 
-        Result result2 = assetsController.serveStatic();
+        Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();
 
@@ -168,57 +174,6 @@ public class AssetsControllerTest {
     }
     
     @Test
-    public void testStaticDirectoryIsFileSystemInDevMode() throws Exception {
-        
-        // some more setup needed:
-        Mockito.when(ninjaProperties.isDev()).thenReturn(true);
-        AssetsControllerHelper assetsControllerHelper = Mockito.mock(AssetsControllerHelper.class, Mockito.CALLS_REAL_METHODS);
-
-        assetsController = new AssetsController(
-                assetsControllerHelper,
-                httpCacheToolkit, 
-                mimeTypes, 
-                ninjaProperties);         
-
-        when(contextRenderable.getRequestPath()).thenReturn(
-                "/assets/testasset.txt");
-
-        Result result2 = assetsController.serveStatic();
-
-        Renderable renderable = (Renderable) result2.getRenderable();
-        renderable.render(contextRenderable, Results.ok());
-        verify(assetsControllerHelper).normalizePathWithoutLeadingSlash("/assets/testasset.txt", false);
-
-    }
-    
-    @Test
-    public void testStaticDirectoryIsClassPathInProdMode() throws Exception {
-        
-        // some more setup needed:
-        Mockito.when(ninjaProperties.isDev()).thenReturn(false);
-        AssetsControllerHelper assetsControllerHelper = Mockito.mock(AssetsControllerHelper.class, Mockito.CALLS_REAL_METHODS);
-        assetsController = new AssetsController(
-                assetsControllerHelper,
-                httpCacheToolkit, 
-                mimeTypes, 
-                ninjaProperties);         
-        when(contextRenderable.getRequestPath()).thenReturn(
-                "/assets/testasset.txt");
-        when(contextRenderable.finalizeHeadersWithoutFlashAndSessionCookie(Mockito.any(Result.class))).thenReturn(
-                responseStreams);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        when(responseStreams.getOutputStream()).thenReturn(
-                byteArrayOutputStream);
-
-        Result result2 = assetsController.serveStatic();
-
-        Renderable renderable = (Renderable) result2.getRenderable();
-        renderable.render(contextRenderable, Results.ok());
-        verify(assetsControllerHelper).normalizePathWithoutLeadingSlash("/assets/testasset.txt", true);
-
-    }
-    
-    @Test
     public void testServeStaticNormalOperationModifiedNoCaching()
             throws Exception {
 
@@ -236,7 +191,7 @@ public class AssetsControllerTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         when(responseStreams.getOutputStream()).thenReturn(
                 byteArrayOutputStream);
-        Result result2 = assetsController.serveStatic();
+        Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();
 
@@ -277,7 +232,7 @@ public class AssetsControllerTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         when(responseStreams.getOutputStream()).thenReturn(
                 byteArrayOutputStream);
-        Result result2 = assetsController.serveStatic();
+        Result result2 = assetsController.serveStatic(null);
 
         Renderable renderable = (Renderable) result2.getRenderable();
 
@@ -300,40 +255,31 @@ public class AssetsControllerTest {
         assertEquals("User-agent: *" + sysLineSeparator + "Disallow: /", byteArrayOutputStream.toString());
 
     }
-    
+
     @Test
-    public void testServeWebJars() throws Exception {
-        AssetsControllerHelper assetsControllerHelper 
-                = Mockito.mock(AssetsControllerHelper.class, Mockito.CALLS_REAL_METHODS);
-        assetsController = new AssetsController(
-                assetsControllerHelper,
-                httpCacheToolkit, 
-                mimeTypes, 
-                ninjaProperties);  
-        Result result = Results.ok();
-
-        when(contextRenderable.getRequestPath()).thenReturn(
-                "/webjar_asset.txt");
-
-        when(contextRenderable.finalizeHeadersWithoutFlashAndSessionCookie(Mockito.eq(result))).thenReturn(
-                responseStreams);
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        when(responseStreams.getOutputStream()).thenReturn(
-                byteArrayOutputStream);
-        Result result2 = assetsController.serveWebJars();
-
-        Renderable renderable = (Renderable) result2.getRenderable();
-
-        renderable.render(contextRenderable, result);
-
-        verify(contextRenderable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
-
-        // make sure we get the correct result...
-        assertEquals(Result.SC_200_OK, resultCaptor.getValue().getStatusCode());
-
-        assertEquals("webjar_asset", byteArrayOutputStream.toString());
-        verify(assetsControllerHelper).normalizePathWithoutLeadingSlash("/webjar_asset.txt", true);
-
+    public void testNormalizePathWithoutLeadingSlash() {
+        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", true));
+        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("dir1/test.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("/../test.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("../test.test", true));
+        assertEquals("dir2/file.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/../dir2/file.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash(null, true));
+        assertEquals("", assetsController.normalizePathWithoutLeadingSlash("", true));
+        
+        // enforcing test for unix separator | Windows specific
+        mockStatic(FilenameUtils.class, Mockito.CALLS_REAL_METHODS);
+        
+        when(FilenameUtils.normalize(anyString())).then(new Answer<String>() {
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments(); 
+                String file = (String) args[0];
+                return FilenameUtils.normalize(file, false); // Choose Windows here, despite we may test on unix
+            }
+        });
+        
+        assertEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", false));
+        assertNotEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", true));
+        verifyStatic();
     }
 }

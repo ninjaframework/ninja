@@ -1,3 +1,10 @@
+Version X.X.X
+=============
+ 
+ * 2015-06-30 Fix for asset controller incompatibility with windows file system (BjoernAkAManf).
+ * 2015-06-30 Improved tests in asset controller for serving webjars (ra).
+
+
 Version 5.1.3
 =============
 
