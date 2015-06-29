@@ -30,7 +30,7 @@ db.connection.password=
 Setting up Flyway
 =================
 
-Flyway itself manages database migration scripts in a directory called db/migrations. You should use
+Flyway itself manages database migration scripts in a directory called db/migration. You should use
 the following naming convention: <code>V1\_\_.sql</code> is your first script, <code>V2\_\_.sql</code>
 is your second script and so on.
 
