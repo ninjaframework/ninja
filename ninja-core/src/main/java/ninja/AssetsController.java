@@ -28,7 +28,6 @@ import java.net.URLConnection;
 
 import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
-import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
@@ -36,7 +35,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -216,7 +214,7 @@ public class AssetsController {
      */
     private URL getStaticFileFromMetaInfResourcesDir(String fileName) {
         String finalNameWithoutLeadingSlash 
-                = normalizePathWithoutLeadingSlash(fileName);
+                = normalizePathWithoutLeadingSlash(fileName, true);
 
         URL url = null;
         
@@ -224,7 +222,21 @@ public class AssetsController {
 
         return url;
     }
-    
+
+    /**
+     * This function mirrors legacy behavior of the AssetsController
+     *
+     * @param fileName A potential "fileName"
+     * @see #normalizePathWithoutLeadingSlash(java.lang.String, boolean)
+     * @deprecated This method was replaced and should not be used.
+     * @return A normalized fileName.
+     */
+    @VisibleForTesting
+    @Deprecated
+    protected String normalizePathWithoutLeadingSlash(String fileName) {
+        return normalizePathWithoutLeadingSlash(fileName, false);
+    }
+
     /**
      * If we get - for whatever reason - a relative URL like 
      * assets/../conf/application.conf we expand that to the "real" path.
@@ -237,11 +249,14 @@ public class AssetsController {
      * possible.
      * 
      * @param fileName A potential "fileName"
+     * @param enforceUnixSeparator Forces to normalise unix style
      * @return A normalized fileName.
      */
     @VisibleForTesting
-    protected String normalizePathWithoutLeadingSlash(String fileName) {
-        String fileNameNormalized = FilenameUtils.normalize(fileName);
+    protected String normalizePathWithoutLeadingSlash(String fileName, boolean enforceUnixSeparator) {
+        String fileNameNormalized = enforceUnixSeparator
+                ? FilenameUtils.normalize(fileName, true)
+                : FilenameUtils.normalize(fileName);
         return StringUtils.removeStart(fileNameNormalized, "/");
     }
 

@@ -64,6 +64,7 @@
         <jackson.version>2.5.1</jackson.version>
         <guice.version>4.0</guice.version>
         <metrics.version>3.1.1</metrics.version>
+        <powermock.version>1.5.6</powermock.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
@@ -89,7 +90,7 @@
                         <!-- bump submodule versions automatically -->
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <!-- install next final version in local repo, so that
-                             tests on archetypes work -->
+                        tests on archetypes work -->
                         <preparationGoals>clean install</preparationGoals>
                     </configuration>
                 </plugin>
@@ -174,10 +175,10 @@
                 </plugin>
 
                 <plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-shade-plugin</artifactId>
-					<version>2.2</version>
-				</plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
             
                 <plugin>
                     <groupId>org.eclipse.jetty</groupId>
@@ -222,8 +223,8 @@
         <url>https://github.com/ninjaframework/ninja</url>
         <connection>scm:git://github.com/ninjaframework/ninja.git</connection>
         <developerConnection>scm:git:git@github.com:ninjaframework/ninja.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <issueManagement>
         <system>GitHub</system>
@@ -383,7 +384,7 @@
             </dependency>
             
             <!-- Afterburner lib optimizes Jackson and improves
-                 performance -->
+            performance -->
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-afterburner</artifactId>
@@ -617,7 +618,7 @@
         
             <!-- Testing -->
             <!-- devbliss doctester should be removed at some point 
-             - superseeded by docterster.org -->
+            - superseeded by docterster.org -->
             <dependency>
                 <groupId>com.devbliss.doctest</groupId>
                 <artifactId>doctest</artifactId>
@@ -653,7 +654,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>4.11</version>
                 <scope>test</scope>
             </dependency>
             
@@ -683,13 +684,27 @@
                 <version>1.7</version>
             </dependency>
             
-                    <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.4</version>
-            <scope>provided</scope>
-        </dependency>
-
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>3.4</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+   
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>  
+   
         </dependencies>
         
         

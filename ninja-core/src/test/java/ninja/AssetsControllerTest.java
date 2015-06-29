@@ -17,9 +17,12 @@
 package ninja;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyString;
 
 import java.io.ByteArrayOutputStream;
 
@@ -27,6 +30,7 @@ import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 
 import org.junit.Test;
@@ -35,9 +39,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(FilenameUtils.class)
 public class AssetsControllerTest {
 
     @Mock
@@ -249,13 +257,29 @@ public class AssetsControllerTest {
     }
 
     @Test
-    public void testNormalizePathWithoutTrailingSlash() {
-        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test"));
-        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("dir1/test.test"));
-        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("/../test.test"));
-        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("../test.test"));
-        assertEquals("dir2/file.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/../dir2/file.test"));
-        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash(null));
-        assertEquals("", assetsController.normalizePathWithoutLeadingSlash(""));
+    public void testNormalizePathWithoutLeadingSlash() {
+        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", true));
+        assertEquals("dir1/test.test", assetsController.normalizePathWithoutLeadingSlash("dir1/test.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("/../test.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash("../test.test", true));
+        assertEquals("dir2/file.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/../dir2/file.test", true));
+        assertEquals(null, assetsController.normalizePathWithoutLeadingSlash(null, true));
+        assertEquals("", assetsController.normalizePathWithoutLeadingSlash("", true));
+        
+        // enforcing test for unix separator | Windows specific
+        mockStatic(FilenameUtils.class, Mockito.CALLS_REAL_METHODS);
+        
+        when(FilenameUtils.normalize(anyString())).then(new Answer<String>() {
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments(); 
+                String file = (String) args[0];
+                return FilenameUtils.normalize(file, false); // Choose Windows here, despite we may test on unix
+            }
+        });
+        
+        assertEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", false));
+        assertNotEquals("\\dir1\\test.test", assetsController.normalizePathWithoutLeadingSlash("/dir1/test.test", true));
+        verifyStatic();
     }
 }
