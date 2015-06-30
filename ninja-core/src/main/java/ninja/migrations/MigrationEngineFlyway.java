@@ -19,9 +19,10 @@ package ninja.migrations;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
+import org.flywaydb.core.Flyway;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.googlecode.flyway.core.Flyway;
 
 @Singleton
 public class MigrationEngineFlyway implements MigrationEngine {

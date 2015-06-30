@@ -518,9 +518,9 @@
 	
             <!-- Migration framework -->
             <dependency>
-                <groupId>com.googlecode.flyway</groupId>
+                <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
-                <version>2.3.1</version>
+                <version>3.2.1</version>
             </dependency>
 
             <!-- JPA dependencies -->

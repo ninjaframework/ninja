@@ -1,7 +1,13 @@
 Version x.x.x
 =============
 
- * 2015-06-24 Injection of params and uploaded files from multipart requests (bazi)
+ * 2015-06-30 Injection of params and uploaded files from multipart requests (bazi)
+
+Version 5.1.4
+=============
+
+ * 2015-06-24 Flyway upgrade from 2.3.1 to 3.2.1 & fix documentation (danielsawan)             
+
 Version 5.1.3
 =============
 
