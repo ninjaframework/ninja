@@ -1,4 +1,4 @@
-Version X.X.X
+Version 5.1.4
 =============
 
  * 2015-06-24 Flyway upgrade from 2.3.1 to 3.2.1 & fix documentation (danielsawan)              
