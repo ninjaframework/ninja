@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
-		<version>5.1.4-SNAPSHOT</version>
+		<version>5.1.4</version>
 	</parent>
 
 	<url>http://www.ninjaframework.org</url>
