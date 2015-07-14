@@ -30,9 +30,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class NinjaFileItemStreamFactoryTest {
+public class NinjaFileItemStreamConverterTest {
 
-    private NinjaFileItemStreamFactory factory;
+    private NinjaFileItemStreamConverter factory;
 
     @Parameterized.Parameter
     public boolean inMemory;
@@ -46,7 +46,7 @@ public class NinjaFileItemStreamFactoryTest {
     public void setUp() {
         NinjaPropertiesImpl properties = new NinjaPropertiesImpl(NinjaMode.test);
         properties.setProperty(NinjaConstant.FILE_UPLOADS_IN_MEMORY, Boolean.toString(inMemory));
-        factory = new NinjaFileItemStreamFactory(properties);
+        factory = new NinjaFileItemStreamConverter(properties);
         factory.inMemoryFileItemFactory = new InMemoryFileItemFactory(properties);
     }
 

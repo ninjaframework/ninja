@@ -119,8 +119,6 @@ public class NinjaBootstrap {
             @Override
             protected void configure() {
                 bind(Context.class).to(ContextImpl.class);
-                bind(Context.class).annotatedWith(MultipartRequest.class)
-                        .to(MultipartContextImpl.class);
             }
         });
 

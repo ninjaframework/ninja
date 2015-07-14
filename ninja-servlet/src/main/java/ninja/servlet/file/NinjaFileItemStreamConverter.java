@@ -34,7 +34,7 @@ import com.google.inject.Singleton;
  *
  */
 @Singleton
-public class NinjaFileItemStreamFactory {
+public class NinjaFileItemStreamConverter {
 
     @Inject
     InMemoryFileItemFactory inMemoryFileItemFactory;
@@ -43,7 +43,7 @@ public class NinjaFileItemStreamFactory {
     private final File uploadDirectory;
 
     @Inject
-    public NinjaFileItemStreamFactory(NinjaProperties properties) {
+    public NinjaFileItemStreamConverter(NinjaProperties properties) {
 
         inMemory = properties.getBooleanWithDefault(
                 NinjaConstant.FILE_UPLOADS_IN_MEMORY, false);

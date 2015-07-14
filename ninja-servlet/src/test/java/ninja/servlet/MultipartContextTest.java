@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ninja.bodyparser.BodyParserEngineManager;
-import ninja.servlet.file.NinjaFileItemStreamFactory;
+import ninja.servlet.file.NinjaFileItemStreamConverter;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.NinjaConstant;
@@ -55,8 +55,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.inject.Injector;
+
 @RunWith(MockitoJUnitRunner.class)
-public class MultipartContextImplTest {
+public class MultipartContextTest {
 
     @Mock
     private Session sessionCookie;
@@ -82,9 +84,12 @@ public class MultipartContextImplTest {
     @Mock
     private Validation validation;
 
+    @Mock
+    private Injector injector;
+
     private NinjaProperties ninjaProperties;
 
-    private MultipartContextImpl context;
+    private ContextImpl context;
 
     private String paramA = "paramA";
     private String paramB = "paramB";
@@ -110,6 +115,9 @@ public class MultipartContextImplTest {
         properties.setProperty(NinjaConstant.FILE_UPLOADS_IN_MEMORY, "false");
         this.ninjaProperties = properties;
 
+        when(injector.getInstance(NinjaFileItemStreamConverter.class))
+                .thenReturn(new NinjaFileItemStreamConverter(ninjaProperties));
+
         MultipartContextImplWithFileItems ctx = new MultipartContextImplWithFileItems(
                 bodyParserEngineManager,
                 flashCookie,
@@ -118,8 +126,8 @@ public class MultipartContextImplTest {
                 sessionCookie,
                 validation);
         ctx.fileItemIterator = makeFileItemsIterator();
+        ctx.injector = injector;
         this.context = ctx;
-        this.context.fileItemStreamFactory = new NinjaFileItemStreamFactory(ninjaProperties);
     }
 
     @After
@@ -148,7 +156,7 @@ public class MultipartContextImplTest {
         params.put(paramA, Arrays.asList(valueA));
         params.put(paramB, Arrays.asList(valueB1, valueB2));
 
-        return new MultipartContextImpl.FileItemIteratorImpl(fileItems, params);
+        return new ContextImpl.FileItemIteratorImpl(fileItems, params);
     }
 
     @Test
@@ -196,11 +204,6 @@ public class MultipartContextImplTest {
         Assert.assertEquals(valueB1, arr[0]);
         Assert.assertEquals(valueB2, arr[1]);
 
-    }
-
-    @Test
-    public void testIsMultipart() {
-        Assert.assertTrue(context.isMultipart());
     }
 
     @Test
@@ -253,7 +256,7 @@ public class MultipartContextImplTest {
      * Extended multipart context implementation with mocking file item iterator
      * provided.
      */
-    private static class MultipartContextImplWithFileItems extends MultipartContextImpl {
+    private class MultipartContextImplWithFileItems extends ContextImpl {
 
         FileItemIterator fileItemIterator;
 
@@ -274,7 +277,12 @@ public class MultipartContextImplTest {
         }
 
         @Override
-        void parseParts() {
+        public boolean isMultipart() {
+            return true;
+        }
+
+        @Override
+        void parseParts(FileItemIterator fileItemIterator) {
             // pass our mocking file item iterator
             super.parseParts(this.fileItemIterator);
         }
