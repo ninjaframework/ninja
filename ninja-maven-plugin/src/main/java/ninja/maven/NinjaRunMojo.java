@@ -16,9 +16,6 @@
 
 package ninja.maven;
 
-import ninja.build.WatchAndRestartMachine;
-import ninja.build.DelayedRestartTrigger;
-import ninja.build.RunClassInSeparateJvmMachine;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -29,18 +26,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import ninja.build.DelayedRestartTrigger;
+import ninja.build.RunClassInSeparateJvmMachine;
+import ninja.build.WatchAndRestartMachine;
 import ninja.standalone.NinjaJetty;
 import ninja.utils.NinjaConstant;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Starts Ninja's SuperDevMode.
@@ -151,6 +150,14 @@ public class NinjaRunMojo extends AbstractMojo {
      */
     @Parameter(property = "ninja.settleDownMillis", defaultValue="500", required = false)
     private Long settleDownMillis;
+    
+    /**
+     * Define the jvm arguments to use when starting jetty.
+     * Use a space " " to separate arguments, unless preceded by a backslash "\".
+     */
+    @Parameter(property = "ninja.jvmArgs", required = false)
+    private String jvmArgs;
+    private String[] jvmArgsArray = null;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -236,7 +243,6 @@ public class NinjaRunMojo extends AbstractMojo {
             }       
         }
         
-        
         getLog().info("------------------------------------------------------------------------");
         
         getLog().info("Ninja will watch dirs:");
@@ -252,6 +258,12 @@ public class NinjaRunMojo extends AbstractMojo {
         }
         getLog().info(" mode: " + mode);
         getLog().info(" port: " + port);
+        if (jvmArgs != null) {
+        	getLog().info(" jvm arguments: ");
+        	for (String arg : jvmArgsArray) {
+        	    getLog().info("  " + arg);
+        	}
+        }
         getLog().info("------------------------------------------------------------------------");
         
 
@@ -307,7 +319,20 @@ public class NinjaRunMojo extends AbstractMojo {
             jvmArguments.add(systemPropertyContextPath);
         }
         
+        if (jvmArgs != null) {
+            jvmArguments.addAll(Arrays.asList(jvmArgsArray));
+        }
+        
         return jvmArguments;
+    }
+    
+    private String[] splitUnescapedSpaces(String s) {
+        String[] parts = s.split("(?<!\\\\)\\s+");
+        for (int i=0; i<parts.length; i++)
+        {
+            parts[i] = parts[i].replaceAll("\\\\ ", " ");
+        }
+        return parts;
     }
     
     private void initMojoFromUserSubmittedParameters() {
@@ -318,6 +343,10 @@ public class NinjaRunMojo extends AbstractMojo {
                 Arrays.asList(
                     NinjaMavenPluginConstants.DEFAULT_EXCLUDE_PATTERNS));
             
+        }
+        
+        if (jvmArgs != null) {
+            jvmArgsArray = splitUnescapedSpaces(jvmArgs);
         }
     
     }
