@@ -26,6 +26,7 @@ import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+import org.junit.Assert;
 
 public class AssetsControllerTest extends NinjaTest {
 
@@ -79,7 +80,6 @@ public class AssetsControllerTest extends NinjaTest {
     
     @Test
     public void testThatStaticAssetsDoNotSetNinjaCookies() {
-
         // Some empty headers for now...
         Map<String, String> headers = Maps.newHashMap();
         headers.put("Cookie", "NINJA_FLASH=\"success=This+is+a+flashed+success+-+with+placeholder%3A+PLACEHOLDER\";Path=/");
@@ -92,7 +92,28 @@ public class AssetsControllerTest extends NinjaTest {
         // static assets should not set any session information        
         // ... and static assets should not set any flash information
         assertEquals(null, httpResponse.getFirstHeader("Set-Cookie"));
+    }
 
+    @Test
+    public void testSecurityRelativePathIntoOtherDirectoryDoesNotWork() throws Exception {
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+        // /redirect will send a location: redirect in the headers
+        String response = ninjaTestBrowser.makeRequest(
+                getServerAddress() + "assets/js/prettify.js/../../../conf/application.conf",
+                headers);
+        Assert.assertFalse(response.contains("application.secret"));
+    }
+
+    @Test
+    public void testSecurityRelativePathIntoOtherDirectoryDoesNotWorkWithEncodedSlashes() throws Exception {
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+        // /redirect will send a location: redirect in the headers
+        String response = ninjaTestBrowser.makeRequest(
+                getServerAddress() + "assets/js/prettify.js%2F..%2F..%2F..%2Fconf%2Fapplication.conf",
+                headers);
+        Assert.assertFalse(response.contains("application.secret"));
     }
 
 }

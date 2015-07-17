@@ -1,3 +1,16 @@
+Version 5.1.4
+=============
+
+ * 2015-06-24 Flyway upgrade from 2.3.1 to 3.2.1 & fix documentation (danielsawan)              
+ * 2015-06-30 Fix for asset controller incompatibility with windows file system (BjoernAkAManf).
+ * 2015-06-30 Improved tests in asset controller for serving webjars (ra).
+
+Version 5.1.3
+=============
+
+ * 2015-06-19 Fix for potential security issue. Under certain circumstances assets
+              controller did stream content from arbitrary directories (Christian B. / ra).
+
 Version 5.1.2
 =============
 
