@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -46,6 +47,10 @@ import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
+import ninja.uploads.FileItemProvider;
+import ninja.uploads.FileProvider;
+import ninja.uploads.NoFileItemProvider;
 import ninja.utils.HttpHeaderUtils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
@@ -55,13 +60,17 @@ import ninja.utils.SwissKnife;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class ContextImpl implements Context.Impl {
 
@@ -85,6 +94,11 @@ public class ContextImpl implements Context.Impl {
     private final Session session;
     private final ResultHandler resultHandler;
     private final Validation validation;
+    private final Injector injector;
+    
+    private boolean formFieldsProcessed = false;
+    private Map<String, String[]> formFieldsMap;
+    private Map<String, FileItem[]> fileFieldsMap;
 
     // In Async mode, these values will be set to null, so save them
     private String requestPath;
@@ -93,13 +107,14 @@ public class ContextImpl implements Context.Impl {
     private Logger logger = LoggerFactory.getLogger(ContextImpl.class);
 
     @Inject
-    public ContextImpl(
+    public ContextImpl (
             BodyParserEngineManager bodyParserEngineManager,
             FlashScope flashCookie,
             NinjaProperties ninjaProperties,
             ResultHandler resultHandler,
             Session sessionCookie,
-            Validation validation) {
+            Validation validation,
+            Injector injector) {
 
         this.bodyParserEngineManager = bodyParserEngineManager;
         this.flashScope = flashCookie;
@@ -107,6 +122,7 @@ public class ContextImpl implements Context.Impl {
         this.session = sessionCookie;
         this.resultHandler = resultHandler;
         this.validation = validation;
+        this.injector = injector;
     }
 
     public void init(ServletContext servletContext,
@@ -123,7 +139,7 @@ public class ContextImpl implements Context.Impl {
 
         // init session scope:
         session.init(this);
-
+        
         contextPath = httpServletRequest.getContextPath();
         requestPath = performGetRequestPath();
     }
@@ -164,16 +180,32 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public String getParameter(String key) {
-        return httpServletRequest.getParameter(key);
+        if (!formFieldsProcessed) processFormFields();
+        if (formFieldsMap == null) {
+            return httpServletRequest.getParameter(key);
+        } else {
+            String[] values = formFieldsMap.get(key);
+            if (values == null || values.length == 0)
+                return null;
+            return values[0];
+        }
     }
 
     @Override
     public List<String> getParameterValues(String name) {
-        String[] params = httpServletRequest.getParameterValues(name);
-        if (params == null) {
-            return Collections.emptyList();
+        if (!formFieldsProcessed) processFormFields();
+        if (formFieldsMap == null) {
+            String[] params = httpServletRequest.getParameterValues(name);
+            if (params == null) {
+                return Collections.emptyList();
+            }
+            return Arrays.asList(params);
+        } else {
+            String[] values = formFieldsMap.get(name);
+            if (values == null || values.length == 0)
+                return Collections.emptyList();
+            return Arrays.asList(values);
         }
-        return Arrays.asList(params);
     }
 
     @Override
@@ -202,7 +234,31 @@ public class ContextImpl implements Context.Impl {
             return defaultValue;
         }
     }
+    
+    @Override
+    public FileItem getParameterAsFileItem(String key) {
+        if (!formFieldsProcessed) processFormFields();
+        if (fileFieldsMap == null) return null;
+        FileItem[] fileItems = fileFieldsMap.get(key);
+        if (fileItems == null || fileItems.length == 0) return null;
+        return fileItems[0];
+    }
+    
+    @Override
+    public List<FileItem> getParameterAsFileItems(String key) {
+        if (!formFieldsProcessed) processFormFields();
+        if (fileFieldsMap == null) return Collections.emptyList();
+        FileItem[] fileItems = fileFieldsMap.get(key);
+        if (fileItems == null) return Collections.emptyList();
+        return Arrays.asList(fileItems);
+    }
 
+    @Override
+    public Map<String, FileItem[]> getParameterFileItems() {
+        return fileFieldsMap;
+    }
+
+    
     @Override
     public <T> T getParameterAs(String key, Class<T> clazz) {
         return getParameterAs(key, clazz, null);
@@ -221,7 +277,12 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public Map<String, String[]> getParameters() {
-        return httpServletRequest.getParameterMap();
+        if (!formFieldsProcessed) processFormFields();
+        if (formFieldsMap == null) {
+            return httpServletRequest.getParameterMap();
+        } else {
+            return formFieldsMap;
+        }
     }
 
     @Override
@@ -578,7 +639,13 @@ public class ContextImpl implements Context.Impl {
     @Override
     public FileItemIterator getFileItemIterator() {
 
+        long maxFileSize = ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_FILE_SIZE, -1);
+        long maxTotalSize = ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_TOTAL_SIZE, -1);
+        
         ServletFileUpload upload = new ServletFileUpload();
+        upload.setFileSizeMax(maxFileSize);
+        upload.setSizeMax(maxTotalSize);
+        
         FileItemIterator fileItemIterator = null;
 
         try {
@@ -714,5 +781,93 @@ public class ContextImpl implements Context.Impl {
         }
 
         return contentType.startsWith(ContentTypes.APPLICATION_XML);
+    }
+    
+    private void processFormFields() {
+        if (formFieldsProcessed) return;
+        formFieldsProcessed = true;
+
+        // return if not multipart
+        if (!ServletFileUpload.isMultipartContent(httpServletRequest))
+            return;
+
+        // get fileProvider from route method/class, or defaults to an injected one
+        // if none injected, then we do not process form fields this way and let the user
+        // call classic getFileItemIterator() by himself
+        FileProvider fileProvider = null;
+        if (route != null) {
+            if (fileProvider == null) {
+                fileProvider = route.getControllerMethod().getAnnotation(FileProvider.class);
+            }
+            if (fileProvider == null) {
+                fileProvider = route.getControllerClass().getAnnotation(FileProvider.class);
+            }
+        }
+        
+        // get file item provider from file provider or default one
+        FileItemProvider fileItemProvider = null;
+        if (fileProvider == null) {
+            fileItemProvider = injector.getInstance(FileItemProvider.class);
+        } else {
+            fileItemProvider = injector.getInstance(fileProvider.value());
+        }
+        
+        if (fileItemProvider instanceof NoFileItemProvider) return;
+        
+        // Initialize maps and other constants
+        ArrayListMultimap<String, String> formMap = ArrayListMultimap.create();
+        ArrayListMultimap<String, FileItem> fileMap = ArrayListMultimap.create();
+        
+        
+        // This is the iterator we can use to iterate over the contents of the request.
+        try {
+            
+            FileItemIterator fileItemIterator = getFileItemIterator();
+            
+            while (fileItemIterator.hasNext()) {
+
+                FileItemStream item = fileItemIterator.next();
+
+                if (item.isFormField()) {
+                    
+                    // save the form field for later use from getParameter
+                    String value = Streams.asString(item.openStream());
+                    formMap.put(item.getFieldName(), value);
+
+                } else {
+                    
+                    // process file as input stream and save for later use in getParameterAsFile or getParameterAsInputStream
+                    FileItem fileItem = fileItemProvider.create(item);
+                    fileMap.put(item.getFieldName(), fileItem);
+                }
+            }
+        } catch (FileUploadException | IOException e) {
+            throw new RuntimeException("Failed to parse multipart request data", e);
+        }
+
+        // convert both multimap<K,V> to map<K,V[]>
+        formFieldsMap = new HashMap<String, String[]>();
+        for (Entry<String, Collection<String>> entry: formMap.asMap().entrySet()) {
+            formFieldsMap.put(entry.getKey(), entry.getValue().toArray(new String[0]));
+        }
+        formFieldsMap = Collections.unmodifiableMap(formFieldsMap);
+        
+        fileFieldsMap = new HashMap<String, FileItem[]>();
+        for (Entry<String, Collection<FileItem>> entry: fileMap.asMap().entrySet()) {
+            fileFieldsMap.put(entry.getKey(), entry.getValue().toArray(new FileItem[0]));
+        }
+        fileFieldsMap = Collections.unmodifiableMap(fileFieldsMap);
+    }
+    
+    @Override
+    public void cleanup() {
+        // call cleanup on all file items
+        if (fileFieldsMap != null) {
+            for (FileItem[] files : fileFieldsMap.values()) {
+                for (FileItem file : files) {
+                    file.cleanup();
+                }
+            }
+        }
     }
 }

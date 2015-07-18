@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,7 +128,22 @@ public class ControllerMethodInvoker {
                 if (withArgumentExtractor != null) {
                     extractor = instantiateComponent(withArgumentExtractor.value(), annotation,
                             paramType, injector);
-                    break;
+                    return extractor;
+                }
+            }
+            // See if we have a WithArgumentExtractors annotated annotation
+            for (Annotation annotation : annotations) {
+                WithArgumentExtractors withArgumentExtractors = annotation.annotationType()
+                        .getAnnotation(WithArgumentExtractors.class);
+                if (withArgumentExtractors != null) {
+                    for (Class<? extends ArgumentExtractor<?>> argumentExtractor : withArgumentExtractors.value()) {
+                        Class<?> extractedType = (Class<?>) ((ParameterizedType)(argumentExtractor.getGenericInterfaces()[0])).getActualTypeArguments()[0];
+                        if (paramType.isAssignableFrom(extractedType)) {
+                            extractor = instantiateComponent(argumentExtractor, annotation,
+                                    paramType, injector);
+                            return extractor;
+                        }
+                    }
                 }
             }
         }

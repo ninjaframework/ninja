@@ -22,21 +22,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Just an idea to inject parameters right into the methods...
- * 
- * This equals context.getParameter(...)
- *  
- * @author ra
+ * Indicates that this annotation should use the given argument extractors
+ * Allows to specify more than one argument extractor, see {@link WithArgumentExtractor}
  *
+ * @author Christian Bourgeois
  */
-@WithArgumentExtractors({
-    ArgumentExtractors.ParamExtractor.class,
-    ArgumentExtractors.FileItemParamExtractor.class,
-    ArgumentExtractors.FileParamExtractor.class,
-    ArgumentExtractors.InputStreamParamExtractor.class
-})
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface Param {
-    String value();
+public @interface WithArgumentExtractors {
+    /**
+     * The argument extractors that should be used with this annotation
+     */
+    Class<? extends ArgumentExtractor<?>>[] value();
 }

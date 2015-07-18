@@ -106,6 +106,10 @@ public class NinjaDefault implements Ninja {
                 Result result = onException(context, exception);
                 renderErrorResultAndCatchAndLogExceptions(result, context);
                             
+            } finally {
+                
+                context.cleanup();
+                
             }
 
         } else {

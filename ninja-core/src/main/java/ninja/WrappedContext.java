@@ -24,6 +24,7 @@ import java.util.Map;
 
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
@@ -105,6 +106,21 @@ public class WrappedContext implements Context {
     @Override
     public Integer getParameterAsInteger(String key, Integer defaultValue) {
         return wrapped.getParameterAsInteger(key, defaultValue);
+    }
+
+    @Override
+    public FileItem getParameterAsFileItem(String key) {
+        return wrapped.getParameterAsFileItem(key);
+    }
+
+    @Override
+    public List<FileItem> getParameterAsFileItems(String name) {
+        return wrapped.getParameterAsFileItems(name);
+    }
+
+    @Override
+    public Map<String, FileItem[]> getParameterFileItems() {
+        return wrapped.getParameterFileItems();
     }
 
     @Override
@@ -315,5 +331,10 @@ public class WrappedContext implements Context {
     @Override
     public void unsetCookie(Cookie cookie) {
         wrapped.unsetCookie(cookie);
+    }
+
+    @Override
+    public void cleanup() {
+        wrapped.cleanup();
     }
 }

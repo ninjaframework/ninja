@@ -27,6 +27,9 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.bodyparser.BodyParserEngineXml;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
+import ninja.uploads.FileItemProvider;
+import ninja.uploads.FileProvider;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
@@ -310,6 +313,38 @@ public interface Context {
 
 
     /**
+     * Same like {@link #getParameter(String, String)}, but converts the
+     * parameter to File if found.
+     * 
+     * The parameter is read from the multipart stream, using the FileProvider declared
+     * on the route method, class.
+     * 
+     * @param name
+     *            The name of the post or query parameter
+     * @return The value of the parameter or null if not found.
+     */
+    FileItem getParameterAsFileItem(String name);
+
+
+    /**
+     * Get the files parameter with the given key from the request.
+     *
+     * @param name
+     *            The key of the parameter
+     * @return The values, possibly an empty list.
+     */
+    List<FileItem> getParameterAsFileItems(String name);
+
+
+    /**
+     * Get all the file parameters from the request
+     * 
+     * @return The parameters, possibly a null map.
+     */
+    Map<String, FileItem[]> getParameterFileItems();
+
+    
+    /**
      * Same like {@link #getParameter(String)}, but converts the parameter to
      * Class type if found.
      *
@@ -519,7 +554,12 @@ public interface Context {
      * 
      * @return the FileItemIterator of the request or null if there was an
      *         error.
+     *         
+     * @deprecated This method is kept for backward compatibility, use {@link FileProvider}
+     * to specify which {@link FileItemProvider} should be used to handle uploaded files, and
+     * access them using {@link #getParameterAsFileItem(String)}.
      */
+    @Deprecated
     FileItemIterator getFileItemIterator();
 
     /**
@@ -682,4 +722,9 @@ public interface Context {
      * @param cookie Ninja Cookie
      */
     void unsetCookie(Cookie cookie);
+    
+    /**
+     * Cleanup context
+     */
+    void cleanup();
 }

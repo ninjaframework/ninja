@@ -220,4 +220,30 @@ public interface NinjaConstant {
     String NINJA_JSONP_CALLBACK_PARAMETER = "ninja.jsonp.callbackParameter";
     
     String AUTHENTICITY_TOKEN = "authenticityToken";
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // File uploads constants used by FileProvider implementations.
+    ///////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * The maximum allowed size of a single uploaded file.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#fileSizeMax
+     */
+    final String UPLOADS_MAX_FILE_SIZE = "uploads.max_file_size";
+
+    /**
+     * The maximum allowed size of a complete request, i.e. size of all uploaded
+     * files.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#sizeMax
+     */
+    final String UPLOADS_MAX_TOTAL_SIZE = "uploads.max_total_size";
+
+    /**
+     * Directory where uploaded files are saved. Defaults to system's temporary
+     * directory, i.e. "java.io.tmpdir" system property is consulted
+     */
+    final String UPLOADS_TEMP_FOLDER = "uploads.temp_folder";
+
 }

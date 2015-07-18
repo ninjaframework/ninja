@@ -21,6 +21,9 @@ upload. In the following case we are using a route to <code>/uploadFinish</code>
 &lt;/form&gt;
 </pre>
 
+The manual default way
+--------------
+
 The controller at <code>/uploadFinish</code> will then handle the upload:
 
 <pre class="prettyprint">
@@ -59,6 +62,51 @@ public Result uploadFinish(Context context) throws Exception {
     // We always return ok. You don't want to do that in production ;)
     return Results.ok();
 
+}
+</pre>
+
+The integrated new way
+--------------
+
+The controller at <code>/uploadFinish</code> can automatically handle the upload, and return either a FileItem, InputStream or File.
+Using FileItem allows provides access to additional properties, like <code>getFileName()</code> to get the original file name sent by the browser.
+
+<pre class="prettyprint">
+public Result uploadFinish(Context context, @Param("upfile") FileItem upfile) throws Exception {
+}
+public Result uploadFinish(Context context, @Param("upfile") InputStream upfile) throws Exception {
+}
+public Result uploadFinish(Context context, @Param("upfile") File upfile) throws Exception {
+}
+public Result uploadFinish(Context context) throws Exception {
+    FileItem upfile = context.getParameterAsFileItem("upfile");
+}
+</pre>
+
+You can choose how the files are automatically handled by specifying a FileItemProvider.
+Ninja comes with three defaults providers:
+- <code>MemoryFileItemProvider</code>, which stores the file bytes into memory
+- <code>DiskFileItemProvider</code>, which stores the file content to disk, in a temporary folder that can be set using the <code>uploads.temp_folder</code> ninja property
+- <code>NoFileItemProvider</code>, if you want to use the manual way (this is the default)
+
+In all cases, you can limit the size of each file using <code>uploads.max_file_size</code> property and of the total size of all files using <code>uploads.max_total_size</code>.
+
+To select a FileItemProvider, you can:
+- use bind(FileItemProvider.class).to(MemoryFileItemProvider.class) in a module, to define the default provider
+- use @FileProvider(MemoryFileItemProvider.class) on a controller's class, overrides module definition
+- use @FileProvider(MemoryFileItemProvider.class) on a controller's method, overrides class and module definition
+
+<pre class="prettyprint">
+@FileProvider(DiskFileItemProvider.class)
+@Singleton
+public class MyController {
+    @FileProvider(MemoryFileItemProvider.class)
+    public Result myRouteMethod() {
+    	// This will use the MemoryFileItemProvider defined at class level
+    }
+    public Result myOtherRouteMethod() {
+    	// This will use the DiskFileItemProvider defined at class level
+    }
 }
 </pre>
 
