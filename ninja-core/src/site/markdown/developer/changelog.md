@@ -1,3 +1,8 @@
+Version x.x.x
+=============
+
+ * 2015-07-18 Added jvmArgs to maven plugin (momiji)
+
 Version 5.1.4
 =============
 
