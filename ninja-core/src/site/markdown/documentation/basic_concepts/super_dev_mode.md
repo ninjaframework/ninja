@@ -107,3 +107,22 @@ If the option is omitted you can provide it by system property:
 <pre class="prettyprint">
 mvn ninja:run -Dninja.port=YourPortNumber
 </pre>
+
+### jvmArgs
+
+Allows you to add any other command line parameter to the embedded jetty server.
+Arguments are separated by a space " ", unless preceeded by a "\".
+
+For example, to provide an external local/dev.conf configuration file containing
+development values you don't want to see in application.conf:
+
+<pre class="prettyprint">
+mvn ninja:run -Dninja.jvmArgs="-Dninja.external.configuration=local/dev.conf" -Dninja.watchDirs=local
+</pre>
+
+Also, to enable remote debugging:
+
+<pre class="prettyprint">
+mvn ninja:run -Dninja.jvmArgs="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000"
+</pre>
+
