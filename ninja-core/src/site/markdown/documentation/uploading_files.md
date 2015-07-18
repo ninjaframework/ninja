@@ -74,27 +74,51 @@ Using FileItem allows provides access to additional properties, like <code>getFi
 <pre class="prettyprint">
 public Result uploadFinish(Context context, @Param("upfile") FileItem upfile) throws Exception {
 }
+</pre>
+or
+<pre class="prettyprint">
 public Result uploadFinish(Context context, @Param("upfile") InputStream upfile) throws Exception {
 }
+</pre>
+or
+<pre class="prettyprint">
 public Result uploadFinish(Context context, @Param("upfile") File upfile) throws Exception {
 }
+</pre>
+or
+<pre class="prettyprint">
 public Result uploadFinish(Context context) throws Exception {
     FileItem upfile = context.getParameterAsFileItem("upfile");
 }
 </pre>
 
-You can choose how the files are automatically handled by specifying a FileItemProvider.
-Ninja comes with three defaults providers:
-- <code>MemoryFileItemProvider</code>, which stores the file bytes into memory
-- <code>DiskFileItemProvider</code>, which stores the file content to disk, in a temporary folder that can be set using the <code>uploads.temp_folder</code> ninja property
-- <code>NoFileItemProvider</code>, if you want to use the manual way (this is the default)
+### In-memory or disk based file ?
 
-In all cases, you can limit the size of each file using <code>uploads.max_file_size</code> property and of the total size of all files using <code>uploads.max_total_size</code>.
+Ninja comes with two providers to choose between in-memory and disk file for storing uploaded content:
+- <code>MemoryFileItemProvider</code>, to stores the file bytes into memory
+- <code>DiskFileItemProvider</code>, to stores the file content to disk in a temporary folder, that can be set using the <code>uploads.temp_folder</code> ninja property
 
-To select a FileItemProvider, you can:
-- use bind(FileItemProvider.class).to(MemoryFileItemProvider.class) in a module, to define the default provider
-- use @FileProvider(MemoryFileItemProvider.class) on a controller's class, overrides module definition
-- use @FileProvider(MemoryFileItemProvider.class) on a controller's method, overrides class and module definition
+In all case, you can limit the size of each file using <code>uploads.max_file_size</code> and the total size of all files using <code>uploads.max_total_size</code> ninja properties.
+
+<div class="alert alert-info">
+When using disk base storage, uploaded files are automatically deleted at the end of the request, to prevent file system exhaustion. Because of this, you must copy (or move) the file somewhere else before the end of the request if you want to keep it fo a later usage.
+</div>
+
+### Configure the file provider to use
+
+Ninja let's you configure the file provider to use at different places:
+- in a module, using a bind to configure a default provider
+- in a controller class, to override the default's provider configured in the module
+- in a controller method, to override the class or module provider
+
+By default, the provider is set to <code>NoFileItemProvider</code>, who simply reverts to the manual way of handling file.
+
+To define a provider in a module, simply use a bind:
+<pre class="prettyprint">
+bind(FileItemProvider.class).to(MemoryFileItemProvider.class)
+</pre>
+
+To define a provider in a controller class and/or method, use an annotation:
 
 <pre class="prettyprint">
 @FileProvider(DiskFileItemProvider.class)
@@ -102,10 +126,10 @@ To select a FileItemProvider, you can:
 public class MyController {
     @FileProvider(MemoryFileItemProvider.class)
     public Result myRouteMethod() {
-    	// This will use the MemoryFileItemProvider defined at class level
+        // This will use the MemoryFileItemProvider defined at method level
     }
     public Result myOtherRouteMethod() {
-    	// This will use the DiskFileItemProvider defined at class level
+        // This will use the DiskFileItemProvider defined at class level
     }
 }
 </pre>
