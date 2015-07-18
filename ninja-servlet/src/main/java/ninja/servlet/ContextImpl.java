@@ -255,6 +255,7 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public Map<String, FileItem[]> getParameterFileItems() {
+        if (!formFieldsProcessed) processFormFields();
         return fileFieldsMap;
     }
 
