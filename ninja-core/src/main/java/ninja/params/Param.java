@@ -29,8 +29,8 @@ import java.lang.annotation.Target;
  * @author ra
  *
  */
+@WithArgumentExtractor(ArgumentExtractors.ParamExtractor.class)
 @WithArgumentExtractors({
-    ArgumentExtractors.ParamExtractor.class,
     ArgumentExtractors.FileItemParamExtractor.class,
     ArgumentExtractors.FileParamExtractor.class,
     ArgumentExtractors.InputStreamParamExtractor.class

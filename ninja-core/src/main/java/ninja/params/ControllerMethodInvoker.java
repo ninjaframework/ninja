@@ -121,17 +121,7 @@ public class ControllerMethodInvoker {
         ArgumentExtractor<?> extractor = ArgumentExtractors.getExtractorForType(paramType);
 
         if (extractor == null) {
-            // See if we have a WithArgumentExtractor annotated annotation
-            for (Annotation annotation : annotations) {
-                WithArgumentExtractor withArgumentExtractor = annotation.annotationType()
-                        .getAnnotation(WithArgumentExtractor.class);
-                if (withArgumentExtractor != null) {
-                    extractor = instantiateComponent(withArgumentExtractor.value(), annotation,
-                            paramType, injector);
-                    return extractor;
-                }
-            }
-            // See if we have a WithArgumentExtractors annotated annotation
+            // See if we have a WithArgumentExtractors annotated annotation for specialized extractors
             for (Annotation annotation : annotations) {
                 WithArgumentExtractors withArgumentExtractors = annotation.annotationType()
                         .getAnnotation(WithArgumentExtractors.class);
@@ -141,9 +131,22 @@ public class ControllerMethodInvoker {
                         if (paramType.isAssignableFrom(extractedType)) {
                             extractor = instantiateComponent(argumentExtractor, annotation,
                                     paramType, injector);
-                            return extractor;
+                            break;
                         }
                     }
+                }
+            }
+        }
+        
+        if (extractor == null) {
+            // See if we have a WithArgumentExtractor annotated annotation
+            for (Annotation annotation : annotations) {
+                WithArgumentExtractor withArgumentExtractor = annotation.annotationType()
+                        .getAnnotation(WithArgumentExtractor.class);
+                if (withArgumentExtractor != null) {
+                    extractor = instantiateComponent(withArgumentExtractor.value(), annotation,
+                            paramType, injector);
+                    break;
                 }
             }
         }
