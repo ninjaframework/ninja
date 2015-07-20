@@ -25,6 +25,7 @@ import java.util.Date;
 
 import ninja.Context;
 import ninja.Result;
+import ninja.VersionCacheFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +88,22 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
             if (maxAge.equals("0")) {
                 result.addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
             } else {
-                result.addHeader(HttpHeaderConstants.CACHE_CONTROL, "max-age=" + maxAge);
+                // set max-age unless versionning is enabled and resource is not versionned
+                boolean allowMaxAge = true;
+                
+                boolean versionEnabled = context.getAttribute(VersionCacheFilter.VERSION_FILTER_ENABLED) != null;
+                if (versionEnabled) {
+                    boolean versionCacheable = context.getAttribute(VersionCacheFilter.VERSION_RESOURCE_CACHEABLE) != null;
+                    if (!versionCacheable) {
+                        allowMaxAge = false;
+                    }
+                }
+                
+                if (allowMaxAge) {
+                    result.addHeader(HttpHeaderConstants.CACHE_CONTROL, "max-age=" + maxAge);
+                } else {
+                    result.addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+                }
             }
         }
         

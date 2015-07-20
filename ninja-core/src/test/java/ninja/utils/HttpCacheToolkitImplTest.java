@@ -26,9 +26,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import ninja.Context;
 import ninja.Result;
+import ninja.VersionCacheFilter;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -201,5 +203,138 @@ public class HttpCacheToolkitImplTest {
                     DateUtil.formatForHttpHeader(1234L));
     
     }
+    
+    @Test
+    public void testVersionSupport() {
+        HttpCacheToolkit httpCacheToolkit = new HttpCacheToolkitImpl(
+                ninjaProperties);
+        ////////////////////////////////////////////////
+        // test Cache-Control header - version cache disabled
+        ////////////////////////////////////////////////
+        
+        // check Cache header:
+        // if not in production => no cache:
+        reset(result);
+        
+        when(ninjaProperties.isProd()).thenReturn(false);
 
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+
+        // in production => make sure cache header is set accordingly:
+        when(ninjaProperties.isProd()).thenReturn(true);
+
+        // set regular header with request to http cache control constant:
+        reset(result);
+
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "1234");
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL,
+                "max-age=1234");
+
+        // if cache time = 0 => set to no-cache:
+        reset(result);
+
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "0");
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+
+        ////////////////////////////////////////////////
+        // test Cache-Control header - version cache disabled but resource not versionned
+        ////////////////////////////////////////////////
+        
+        // enable version
+        when(context.getAttribute(Matchers.eq(VersionCacheFilter.VERSION_FILTER_ENABLED))).thenReturn("");
+
+        // check Cache header:
+        // if not in production => no cache:
+        reset(result);
+        
+        when(ninjaProperties.isProd()).thenReturn(false);
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+
+        // in production => make sure cache header is set accordingly:
+        when(ninjaProperties.isProd()).thenReturn(true);
+
+        // set regular header with request to http cache control constant:
+        reset(result);
+
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "1234");
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+
+        // if cache time = 0 => set to no-cache:
+        reset(result);
+
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "0");
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+        
+        ////////////////////////////////////////////////
+        // test Cache-Control header - version cache disabled and resource is versionned
+        ////////////////////////////////////////////////
+        
+        // enable version
+        when(context.getAttribute(Matchers.eq(VersionCacheFilter.VERSION_FILTER_ENABLED))).thenReturn("");
+        when(context.getAttribute(Matchers.eq(VersionCacheFilter.VERSION_RESOURCE_CACHEABLE))).thenReturn("");
+
+        // check Cache header:
+        // if not in production => no cache:
+        reset(result);
+        
+        when(ninjaProperties.isProd()).thenReturn(false);
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+
+        // in production => make sure cache header is set accordingly:
+        when(ninjaProperties.isProd()).thenReturn(true);
+
+        // set regular header with request to http cache control constant:
+        reset(result);
+
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "1234");
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "max-age=1234");
+
+        // if cache time = 0 => set to no-cache:
+        reset(result);
+
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "0");
+
+        httpCacheToolkit.addEtag(context, result, 0L);
+        verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+        
+    }
 }

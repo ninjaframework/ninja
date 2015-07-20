@@ -682,4 +682,12 @@ public interface Context {
      * @param cookie Ninja Cookie
      */
     void unsetCookie(Cookie cookie);
+
+    /**
+     * Allows to change the requestPath.
+     * Do not change requestPath after context has been used heavily, there might some side effects.
+
+     * @param requestPath The new requestPath
+     */
+    void changeRequestPath(String requestPath);
 }

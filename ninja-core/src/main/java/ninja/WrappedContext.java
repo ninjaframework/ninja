@@ -226,6 +226,11 @@ public class WrappedContext implements Context {
     public String getRequestPath() {
         return wrapped.getRequestPath();
     }
+    
+    @Override
+    public void changeRequestPath(String requestPath) {
+        wrapped.changeRequestPath(requestPath);
+    }
 
     @Override
     public Validation getValidation() {

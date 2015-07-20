@@ -595,6 +595,11 @@ public class ContextImpl implements Context.Impl {
     public String getRequestPath() {
         return requestPath;
     }
+    
+    @Override
+    public void changeRequestPath(String requestPath) {
+        this.requestPath = requestPath;
+    }
 
     private String performGetRequestPath() {
         // http://stackoverflow.com/questions/966077/java-reading-undecoded-url-from-servlet

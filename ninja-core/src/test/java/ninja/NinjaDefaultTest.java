@@ -19,7 +19,6 @@ package ninja;
 
 import static org.mockito.Matchers.any;
 import ninja.diagnostics.DiagnosticError;
-
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.InternalServerErrorException;
 import ninja.i18n.Messages;
@@ -30,6 +29,7 @@ import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
 
 import org.hamcrest.CoreMatchers;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
@@ -41,9 +41,12 @@ import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import com.google.common.base.Optional;
 
@@ -59,6 +62,9 @@ public class NinjaDefaultTest {
     @Mock
     Router router;
     
+    @Mock
+    FilterChain globalFilter;
+
     @Mock
     Context.Impl contextImpl;
     
@@ -100,6 +106,13 @@ public class NinjaDefaultTest {
         Mockito.when(contextImpl.getMethod()).thenReturn("httpMethod");
         Mockito.when(contextImpl.getRequestPath()).thenReturn("requestPath");
         Mockito.when(router.getRouteFor(Matchers.eq("httpMethod"), Matchers.eq("requestPath"))).thenReturn(route);
+        
+        Mockito.when(router.getGlobalFilterChain()).thenReturn(globalFilter);
+        Mockito.when(globalFilter.next(Matchers.eq(contextImpl))).thenAnswer(new Answer<Result>() {
+            public Result answer(org.mockito.invocation.InvocationOnMock invocation) throws Throwable {
+                return ninjaDefault.findRouteAndChain(contextImpl);
+            };
+        });
 
         // just a default answer so we don't get a nullpointer badRequestException.
         // can be verified later...
