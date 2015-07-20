@@ -109,6 +109,12 @@ public class HttpCacheToolkitImplTest {
         ////////////////////////////////////////////////
         // check Cache header:
         // if not in production => no cache:
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "1234");
+
         when(ninjaProperties.isProd()).thenReturn(false);
 
         httpCacheToolkit.addEtag(context, result, 0L);
@@ -212,6 +218,12 @@ public class HttpCacheToolkitImplTest {
         // test Cache-Control header - version cache disabled
         ////////////////////////////////////////////////
         
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "1234");
+
         // check Cache header:
         // if not in production => no cache:
         reset(result);
@@ -231,7 +243,7 @@ public class HttpCacheToolkitImplTest {
                 ninjaProperties.getWithDefault(
                         NinjaConstant.HTTP_CACHE_CONTROL,
                         NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
-                "1234");
+                                "1234");
 
         httpCacheToolkit.addEtag(context, result, 0L);
         verify(result).addHeader(HttpHeaderConstants.CACHE_CONTROL,
@@ -253,6 +265,12 @@ public class HttpCacheToolkitImplTest {
         // test Cache-Control header - version cache disabled but resource not versionned
         ////////////////////////////////////////////////
         
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "1234");
+
         // enable version
         when(context.getAttribute(Matchers.eq(VersionCacheFilter.VERSION_FILTER_ENABLED))).thenReturn("");
 
@@ -296,6 +314,12 @@ public class HttpCacheToolkitImplTest {
         // test Cache-Control header - version cache disabled and resource is versionned
         ////////////////////////////////////////////////
         
+        when(
+                ninjaProperties.getWithDefault(
+                        NinjaConstant.HTTP_CACHE_CONTROL,
+                        NinjaConstant.HTTP_CACHE_CONTROL_DEFAULT)).thenReturn(
+                "1234");
+
         // enable version
         when(context.getAttribute(Matchers.eq(VersionCacheFilter.VERSION_FILTER_ENABLED))).thenReturn("");
         when(context.getAttribute(Matchers.eq(VersionCacheFilter.VERSION_RESOURCE_CACHEABLE))).thenReturn("");

@@ -85,9 +85,10 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
         if (!ninjaProperties.isProd()) {
             
             result.addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+            
+            // log resource not cacheable if versionning is enabled and resource is not cacheable
             if (!maxAge.equals("0")) {
-                
-                // log resource not cacheable if versionning is enabled and resource is not cacheable
+
                 boolean versionEnabled = context.getAttribute(VersionCacheFilter.VERSION_FILTER_ENABLED) != null;
                 if (versionEnabled) {
                     boolean versionCacheable = context.getAttribute(VersionCacheFilter.VERSION_RESOURCE_CACHEABLE) != null;
