@@ -606,7 +606,7 @@ public class ContextImpl implements Context.Impl {
         // this one is simplified
         String simplifiedUri = SwissKnife.simplifyUrl(fullUnencodedUri);
 
-        String result = fullUnencodedUri.substring(simplifiedUri.length());
+        String result = simplifiedUri.substring(unencodedContextPath.length());
 
         return result;
     }
