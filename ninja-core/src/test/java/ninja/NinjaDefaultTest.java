@@ -318,6 +318,11 @@ public class NinjaDefaultTest {
     @Test
     public void getInternalServerErrorResult() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+        
         // real test:
         Result result = ninjaDefault.getInternalServerErrorResult(
                 contextImpl,
@@ -354,6 +359,11 @@ public class NinjaDefaultTest {
     @Test
     public void testGetBadRequest() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
+
         // real test:
         Result result = ninjaDefault.getBadRequestResult(
                 contextImpl,
@@ -391,6 +401,11 @@ public class NinjaDefaultTest {
     @Test
     public void testGetOnNotFoundResultWorks() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
+
         Result result = ninjaDefault.getNotFoundResult(contextImpl);
         
         assertThat(result.getStatusCode(), equalTo(Result.SC_404_NOT_FOUND));
