@@ -17,7 +17,10 @@
 package ninja.utils;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.primitives.Primitives;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.joda.time.LocalDateTime;
@@ -255,6 +258,68 @@ public class SwissKnife {
             }
 
         }
+    }
+    
+    /**
+     * Simplify a url to compact and remove all path traversal like ../ and deals with encoded . / and \.
+     * <br><br>
+     * For example, /path/folder/../file will be simplified to /path/file
+     * 
+     * @param url the url to simplify
+     * @return the simplified url, with all path traversal removed, or null if input was null or "." if url was ""
+     */
+    public static String simplifyUrl(String url) {
+        if (url == null) return null;
+        if (url.length() == 0) return ".";
+
+        // replace all %2F with /
+        url = url.replace("%2F", "/");
+        url = url.replace("\\", "/");
+        url = url.replace("%5C", "/");
+
+        // split the path apart
+        Iterable<String> components = Splitter.on('/').omitEmptyStrings().split(url);
+        List<String> path = new ArrayList<String>();
+
+        // resolve ., .., and // (. can also be a %2E)
+        boolean lastIsFolder = false;
+        for (String component : components) {
+            lastIsFolder = true;
+            String converted = component.replace("%2E", ".");
+            if (converted.equals(".")) {
+                continue;
+            } else if (converted.equals("..")) {
+                if (path.size() > 0) {
+                    path.remove(path.size() - 1);
+                }
+            } else {
+                lastIsFolder = false;
+                path.add(component);
+            }
+        }
+        if (url.endsWith("/")) {
+            lastIsFolder = true;
+        }
+
+        // put it back together
+        String result = Joiner.on('/').join(path);
+        if (url.charAt(0) == '/') {
+            result = "/" + result;
+        }
+        if (lastIsFolder && !path.isEmpty()) {
+            result += "/";
+        }
+
+        while (result.startsWith("/../")) {
+            result = result.substring(3);
+        }
+        if (result.equals("/..")) {
+            result = "/";
+        } else if ("".equals(result)) {
+            result = ".";
+        }
+
+        return result;
     }
 
 }
