@@ -364,6 +364,11 @@ public class FakeContext implements Context {
 	public String getRequestPath() {
 		return this.requestPath;
 	}
+	
+	@Override
+	public void changeRequestPath(String requestPath) {
+	    this.requestPath = requestPath;
+	}
 
     @Override
     public Validation getValidation() {
