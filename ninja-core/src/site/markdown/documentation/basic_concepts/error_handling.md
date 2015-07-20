@@ -41,11 +41,19 @@ The default html views for errors can be found here:
  * <code>views/system/404notFound.ftl.html</code> (If a route cannot be found).
  * <code>views/system/403forbidden.ftl.html</code> (If a route cannot be found).
  * <code>views/system/500internalServerError.ftl.html</code>
+ * <code>views/system/401unauthorized.ftl.html</code> (if an authorization is required)
 
 You can overwrite the views by creating the appropriate files in your application
 at the very same locations (<code>views/system/...</code>).
 
 This allows you to use your own styling and messages for the error views.
+
+You can also change their locations using the following ninja properties:
+ * <code>application.views.400badRequest</code>
+ * <code>application.views.404notFound</code>
+ * <code>application.views.403forbidden</code>
+ * <code>application.views.500internalServerError</code>
+ * <code>application.views.401unauthorized</code>
 
 
 Json and Xml error representations
@@ -90,3 +98,4 @@ More
 
 If you want to tweak Ninja's error handling even more have a look at "custom routing".
 That's an advanced topic and explains <code>conf.Ninja</code> and its possibilities.
+
