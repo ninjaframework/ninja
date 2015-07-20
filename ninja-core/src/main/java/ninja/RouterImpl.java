@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2015 the original author or authors.
+s * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@
 package ninja;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,18 +37,21 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 public class RouterImpl implements Router {
 
+    private final Injector injector;
     private final NinjaProperties ninjaProperties;
-
+    
     private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
     private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<>();
-    private final Injector injector;
-
     private List<Route> routes;
-
+    
+    private LinkedList<Class<? extends Filter>> globalFilters;
+    private FilterChain globalFilterChain;
+    
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
     private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
 
@@ -159,6 +164,7 @@ public class RouterImpl implements Router {
 
     @Override
     public void compileRoutes() {
+        // compile routes
         if (routes != null) {
             throw new IllegalStateException("Routes already compiled");
         }
@@ -167,7 +173,24 @@ public class RouterImpl implements Router {
             routes.add(routeBuilder.buildRoute(injector));
         }
         this.routes = ImmutableList.copyOf(routes);
+        
+        // compile global filters
+        final Provider<Ninja> ninjaProvider = injector.getProvider(Ninja.class);
+        globalFilterChain = new FilterChain() {
+            @Override
+            public Result next(Context context) {
+                return ninjaProvider.get().findRouteAndChain((Context.Impl) context);
+            }
+        };
+        if (globalFilters != null) {
+            // enclose with all chains starting from the last one
+            while (!globalFilters.isEmpty()) {
+                Class<? extends Filter> filter = globalFilters.removeLast();
+                globalFilterChain = new FilterChainImpl(injector.getProvider(filter), globalFilterChain);
+            }
+        }
 
+        // log routes
         logRoutes();
     }
 
@@ -177,6 +200,19 @@ public class RouterImpl implements Router {
             throw new IllegalStateException("Routes have not been compiled");
         }
         return routes;
+    }
+    
+    @Override
+    public void addGlobalFilters(Class<? extends Filter>[] filters) {
+        if (globalFilters == null) {
+            globalFilters = new LinkedList<Class<? extends Filter>>();
+        }
+        globalFilters.addAll(Arrays.asList(filters));
+    }
+    
+    @Override
+    public FilterChain getGlobalFilterChain() {
+        return globalFilterChain;
     }
 
     @Override

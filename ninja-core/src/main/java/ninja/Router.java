@@ -114,6 +114,22 @@ public interface Router {
      */
     public List<Route> getRoutes();
 
+    /**
+     * Add a global filter that will be executed before computing the route to execute.
+     * <br><br>
+     * This allows to define a global filter that always execute, but also hack into the context before computing the route.
+     * <br>
+     * Example of usage may be to alter the request uri.
+     * 
+     * @param filter The filter to execute in insertion order
+     */
+    public void addGlobalFilters(Class<? extends Filter>[] filters);
+    
+    /**
+     * Returns the global filter chain to execute.
+     */
+    public FilterChain getGlobalFilterChain();
+
     // /////////////////////////////////////////////////////////////////////////
     // convenience methods to use the route in a DSL like way
     // router.GET().route("/index").with(.....)

@@ -39,6 +39,7 @@ class RouteBuilderImpl implements RouteBuilder {
     private Class controller;
     private Method controllerMethod;
     private Result result;
+    private LinkedList<Class<? extends Filter>> routeFilters;
 
     public RouteBuilderImpl GET() {
         httpMethod = "GET";
@@ -76,20 +77,31 @@ class RouteBuilderImpl implements RouteBuilder {
     }
 
     @Override
-    public void with(Class controller, String controllerMethod) {
+    public RouteBuilder with(Class controller, String controllerMethod) {
         this.controller = controller;
         this.controllerMethod = verifyThatControllerAndMethodExists(controller,
                 controllerMethod);
+        return this;
     }
 
     @Override
-    public void with(Result result) {
+    public RouteBuilder with(Result result) {
         this.result = result;
+        return this;
     }
 
     @Override
     public RouteBuilder route(String uri) {
         this.uri = uri;
+        return this;
+    }
+    
+    @Override
+    public RouteBuilder filteredWith(java.lang.Class<? extends Filter>[] filters) {
+        if (routeFilters == null) {
+            routeFilters = new LinkedList<Class<? extends Filter>>();
+        }
+        routeFilters.addAll(Arrays.asList(filters));
         return this;
     }
 
@@ -178,6 +190,9 @@ class RouteBuilderImpl implements RouteBuilder {
             if (controllerMethod == null) {
                 throw new IllegalStateException(
                         String.format("Route '%s' does not have a controller method", uri));
+            }
+            if (routeFilters != null) {
+                filters.addAll(routeFilters);
             }
             filters.addAll(calculateFiltersForClass(controller));
             FilterWith filterWith = controllerMethod

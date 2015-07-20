@@ -24,6 +24,7 @@ import javax.management.RuntimeErrorException;
 import ninja.diagnostics.DiagnosticError;
 import ninja.diagnostics.DiagnosticErrorBuilder;
 import ninja.exceptions.BadRequestException;
+import ninja.exceptions.NoRouteFoundException;
 import ninja.exceptions.RenderingException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
@@ -87,35 +88,39 @@ public class NinjaDefault implements Ninja {
     @Override
     public void onRouteRequest(Context.Impl context) {
         
+        try {
+            
+            Result result = router.getGlobalFilterChain().next(context);
+            resultHandler.handleResult(result, context);
+            
+        } catch (Exception exception) {
+            
+            Result result = onException(context, exception);
+            renderErrorResultAndCatchAndLogExceptions(result, context);
+
+        }
+
+    }
+    
+    @Override
+    public Result findRouteAndChain(Context.Impl context) {
+        
         String httpMethod = context.getMethod();
 
         Route route = router.getRouteFor(httpMethod, context.getRequestPath());
 
         context.setRoute(route);
-
+        
         if (route != null) {
 
-            try {
-                
-                Result result = route.getFilterChain().next(context);
-
-                resultHandler.handleResult(result, context);
-                
-            } catch (Exception exception) {
-                
-                Result result = onException(context, exception);
-                renderErrorResultAndCatchAndLogExceptions(result, context);
-                            
-            }
+            return route.getFilterChain().next(context);
 
         } else {
             
-            // throw a 404 "not found" because we did not find the route
-            Result result = getNotFoundResult(context);
-            renderErrorResultAndCatchAndLogExceptions(result, context);
-
+            throw new NoRouteFoundException();
+            
         }
-        
+            
     }
     
     @Override
@@ -159,6 +164,10 @@ public class NinjaDefault implements Ninja {
         if (exception instanceof BadRequestException) {
             
             result = getBadRequestResult(context, exception);
+        
+        } else if (exception instanceof NoRouteFoundException) {
+            
+            result = getNotFoundResult(context);
         
         } else if (exception instanceof RenderingException) {
             

@@ -16,6 +16,8 @@
 
 package ninja;
 
+import ninja.Context.Impl;
+
 public interface Ninja {
 
 	/**
@@ -23,6 +25,11 @@ public interface Ninja {
 	 */
 	void onRouteRequest(Context.Impl context);
     
+    /**
+     * When all global filters have finished and a route must be found to continue chaining.
+     */
+    Result findRouteAndChain(Context.Impl context);
+
     /**
      * This result should be used when an error occurs.
      * 

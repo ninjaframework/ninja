@@ -20,7 +20,12 @@ public interface RouteBuilder {
 
     RouteBuilder route(String uri);
 
-    void with(Class controller, String controllerMethod);
+    RouteBuilder with(Class controller, String controllerMethod);
 
-    void with(Result result);
+    RouteBuilder with(Result result);
+    
+    /**
+     * Add filters to the route. They will have precedence over filters configured on controller's class or method.
+     */
+    RouteBuilder filteredWith(Class<? extends Filter>[] filters);
 }
