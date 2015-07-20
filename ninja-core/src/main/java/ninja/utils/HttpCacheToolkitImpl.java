@@ -79,11 +79,26 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
 
     public void addEtag(Context context, Result result, Long lastModified) {
 
+        String maxAge = ninjaProperties.getWithDefault(HTTP_CACHE_CONTROL,
+                HTTP_CACHE_CONTROL_DEFAULT);
+        
         if (!ninjaProperties.isProd()) {
+            
             result.addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
+            if (!maxAge.equals("0")) {
+                
+                // log resource not cacheable if versionning is enabled and resource is not cacheable
+                boolean versionEnabled = context.getAttribute(VersionCacheFilter.VERSION_FILTER_ENABLED) != null;
+                if (versionEnabled) {
+                    boolean versionCacheable = context.getAttribute(VersionCacheFilter.VERSION_RESOURCE_CACHEABLE) != null;
+                    if (!versionCacheable) {
+                        logger.info("Unable to cache url {} as it is not versionned, this message will not display in prod mode", context.getRequestPath());
+                    }
+                }
+                
+            }
+            
         } else {
-            String maxAge = ninjaProperties.getWithDefault(HTTP_CACHE_CONTROL,
-                    HTTP_CACHE_CONTROL_DEFAULT);
 
             if (maxAge.equals("0")) {
                 result.addHeader(HttpHeaderConstants.CACHE_CONTROL, "no-cache");
