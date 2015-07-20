@@ -1,12 +1,13 @@
 package ninja;
 
 import java.nio.ByteBuffer;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import ninja.utils.HttpCacheToolkitImpl;
 
 import org.apache.commons.codec.binary.Base32;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +64,9 @@ public class VersionCacheFilter implements Filter {
     }
     
     private String computeVersion() {
-        long utc = LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC).getEpochSecond();
-        long start = LocalDateTime.of(2015, 1, 1, 0, 0, 0, 0).toInstant(ZoneOffset.UTC).getEpochSecond();
-        int diff = (int) (utc - start);
+        DateTime now = new DateTime().withZone(DateTimeZone.UTC);
+        DateTime start = new DateTime(2015, 1, 1, 0, 0, DateTimeZone.UTC);
+        int diff = (int) new Interval(start, now).toDuration().getStandardSeconds();
         byte[] bytes = ByteBuffer.allocate(4).putInt(diff).array();
         String value = new Base32().encodeToString(bytes).replace("=", "");
         return value;
