@@ -28,7 +28,6 @@ import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
 
 /**
  * A wrapped context. Useful if filters want to modify the context before
@@ -224,17 +223,17 @@ public class WrappedContext implements Context {
     }
 
     @Override
-    public InputStream getUploadedFileStream(String name) {
+    public NinjaFileItemStream getUploadedFileStream(String name) {
         return wrapped.getUploadedFileStream(name);
     }
 
     @Override
-    public List<InputStream> getUploadedFileStreams(String name) {
+    public List<NinjaFileItemStream> getUploadedFileStreams(String name) {
         return wrapped.getUploadedFileStreams(name);
     }
 
     @Override
-    public List<FileItemStream> getFileItems() {
+    public List<NinjaFileItemStream> getFileItems() {
         return wrapped.getFileItems();
     }
 

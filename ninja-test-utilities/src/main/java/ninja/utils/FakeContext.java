@@ -28,6 +28,7 @@ import java.util.Map;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
+import ninja.NinjaFileItemStream;
 import ninja.Result;
 import ninja.Route;
 import ninja.session.FlashScope;
@@ -36,7 +37,6 @@ import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
 
 import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
@@ -307,17 +307,17 @@ public class FakeContext implements Context {
     }
 
     @Override
-    public InputStream getUploadedFileStream(String name) {
+    public NinjaFileItemStream getUploadedFileStream(String name) {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
 
     @Override
-    public List<InputStream> getUploadedFileStreams(String name) {
+    public List<NinjaFileItemStream> getUploadedFileStreams(String name) {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
 
     @Override
-    public List<FileItemStream> getFileItems() {
+    public List<NinjaFileItemStream> getFileItems() {
         throw new UnsupportedOperationException("Not supported in fake context");
     }
 

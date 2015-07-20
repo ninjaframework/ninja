@@ -15,22 +15,47 @@
  */
 package ninja.servlet.file;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
+import ninja.NinjaFileItemStream;
 import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaPropertiesImpl;
+import ninja.utils.NinjaProperties;
 
+import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileItemStream;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import com.google.inject.Provider;
 
 @RunWith(Parameterized.class)
 public class NinjaFileItemStreamConverterTest {
+
+    @Rule
+    public TemporaryFolder temp = new TemporaryFolder();
+
+    @Mock
+    private NinjaProperties properties;
+
+    @Mock
+    private Provider<NinjaInMemoryFileItemStream> inMemoryFileItemStreamProvider;
+
+    @Mock
+    private Provider<NinjaDiskFileItemStream> diskFileItemStreamProvider;
 
     private NinjaFileItemStreamConverter factory;
 
@@ -43,11 +68,39 @@ public class NinjaFileItemStreamConverterTest {
     }
 
     @Before
-    public void setUp() {
-        NinjaPropertiesImpl properties = new NinjaPropertiesImpl(NinjaMode.test);
-        properties.setProperty(NinjaConstant.FILE_UPLOADS_IN_MEMORY, Boolean.toString(inMemory));
+    public void setUp() throws IOException {
+
+        MockitoAnnotations.initMocks(this);
+
+        Mockito.when(properties.isTest()).thenReturn(true);
+        Mockito.when(properties.getBoolean(NinjaConstant.FILE_UPLOADS_IN_MEMORY))
+                .thenReturn(inMemory);
+        Mockito.when(properties.getInteger(NinjaConstant.FILE_UPLOADS_MAX_FILE_SIZE))
+                .thenReturn(null);
+        Mockito.when(properties.get(NinjaConstant.FILE_UPLOADS_DIRECTORY))
+                .thenReturn(temp.newFolder().getPath());
+
+        Mockito.when(inMemoryFileItemStreamProvider.get()).thenAnswer(
+                new Answer<NinjaInMemoryFileItemStream>() {
+
+                    @Override
+                    public NinjaInMemoryFileItemStream answer(InvocationOnMock invocation) throws Throwable {
+                        return new NinjaInMemoryFileItemStream(properties);
+                    }
+                });
+
+        Mockito.when(diskFileItemStreamProvider.get()).thenAnswer(
+                new Answer<NinjaDiskFileItemStream>() {
+
+                    @Override
+                    public NinjaDiskFileItemStream answer(InvocationOnMock invocation) throws Throwable {
+                        return new NinjaDiskFileItemStream(properties);
+                    }
+                });
+
         factory = new NinjaFileItemStreamConverter(properties);
-        factory.inMemoryFileItemFactory = new InMemoryFileItemFactory(properties);
+        factory.diskFileItemStreamProvider = diskFileItemStreamProvider;
+        factory.inMemoryFileItemStreamProvider = inMemoryFileItemStreamProvider;
     }
 
     @Test
@@ -57,7 +110,47 @@ public class NinjaFileItemStreamConverterTest {
 
     @Test
     public void testConvert() {
-        FileItemStream item = new FormFieldItemStream("name", "value");
+
+        FileItemStream item = new FileItemStream() {
+
+            String data = "abcdefghijklmnopqrstuvwxyz";
+
+            @Override
+            public InputStream openStream() throws IOException {
+                return new ByteArrayInputStream(data.getBytes());
+            }
+
+            @Override
+            public String getContentType() {
+                return "text/plain";
+            }
+
+            @Override
+            public String getName() {
+                return "file.txt";
+            }
+
+            @Override
+            public String getFieldName() {
+                return "name";
+            }
+
+            @Override
+            public boolean isFormField() {
+                return false;
+            }
+
+            @Override
+            public FileItemHeaders getHeaders() {
+                throw new UnsupportedOperationException("Not supported in tests");
+            }
+
+            @Override
+            public void setHeaders(FileItemHeaders headers) {
+                throw new UnsupportedOperationException("Not supported in tests");
+            }
+        };
+
         NinjaFileItemStream converted = factory.convert(item);
 
         if (inMemory) {

@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +31,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.NinjaFileItemStream;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.servlet.file.NinjaFileItemStreamConverter;
+import ninja.servlet.file.NinjaFileItemStreamConverterMock;
+import ninja.servlet.file.NinjaFileItemStreamWrapper;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.NinjaConstant;
@@ -47,6 +48,7 @@ import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,7 +89,7 @@ public class MultipartContextTest {
     @Mock
     private Injector injector;
 
-    private NinjaProperties ninjaProperties;
+    private NinjaFileItemStreamConverter fileItemStreamConverter;
 
     private ContextImpl context;
 
@@ -113,15 +115,16 @@ public class MultipartContextTest {
 
         NinjaPropertiesImpl properties = new NinjaPropertiesImpl(NinjaMode.test);
         properties.setProperty(NinjaConstant.FILE_UPLOADS_IN_MEMORY, "false");
-        this.ninjaProperties = properties;
+
+        this.fileItemStreamConverter = new NinjaFileItemStreamConverterMock(properties);
 
         when(injector.getInstance(NinjaFileItemStreamConverter.class))
-                .thenReturn(new NinjaFileItemStreamConverter(ninjaProperties));
+                .thenReturn(fileItemStreamConverter);
 
         MultipartContextImplWithFileItems ctx = new MultipartContextImplWithFileItems(
                 bodyParserEngineManager,
                 flashCookie,
-                ninjaProperties,
+                properties,
                 resultHandler,
                 sessionCookie,
                 validation);
@@ -132,14 +135,12 @@ public class MultipartContextTest {
 
     @After
     public void cleanUp() {
-        if (context instanceof ContextImpl) {
-            ((ContextImpl) context).cleanup();
-        }
+        context.cleanup();
     }
 
     private FileItemIterator makeFileItemsIterator() {
 
-        List<FileItemStream> fileItems = new ArrayList<>();
+        final List<FileItemStream> fileItems = new ArrayList<>();
         FileItemStreamImpl item;
 
         // ===== uploaded file items =====
@@ -152,11 +153,33 @@ public class MultipartContextTest {
         fileItems.add(item);
 
         // ===== simple key-value form fields =====
-        Map<String, List<String>> params = new HashMap<>();
-        params.put(paramA, Arrays.asList(valueA));
-        params.put(paramB, Arrays.asList(valueB1, valueB2));
+        NinjaFileItemStreamWrapper w;
+        w = new NinjaFileItemStreamWrapper(paramA);
+        w.setValue(valueA);
+        fileItems.add(w);
 
-        return new ContextImpl.FileItemIteratorImpl(fileItems, params);
+        w = new NinjaFileItemStreamWrapper(paramB);
+        w.setValue(valueB1);
+        fileItems.add(w);
+
+        w = new NinjaFileItemStreamWrapper(paramB);
+        w.setValue(valueB2);
+        fileItems.add(w);
+
+        return new FileItemIterator() {
+
+            int current = -1;
+
+            @Override
+            public boolean hasNext() throws FileUploadException, IOException {
+                return current < fileItems.size() - 1;
+            }
+
+            @Override
+            public FileItemStream next() throws FileUploadException, IOException {
+                return fileItems.get(++current);
+            }
+        };
     }
 
     @Test
@@ -211,9 +234,10 @@ public class MultipartContextTest {
 
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
-        try (InputStream is = context.getUploadedFileStream(file1)) {
+        NinjaFileItemStream item = context.getUploadedFileStream(file1);
+        Assert.assertNotNull(item);
 
-            Assert.assertNotNull(is);
+        try (InputStream is = item.openStream()) {
 
             StringBuilder sb = new StringBuilder();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
@@ -234,7 +258,7 @@ public class MultipartContextTest {
 
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
-        List<InputStream> files = context.getUploadedFileStreams(file1);
+        List<NinjaFileItemStream> files = context.getUploadedFileStreams(file1);
         Assert.assertEquals(1, files.size());
 
         // empty collection for nonexisting file
@@ -248,8 +272,7 @@ public class MultipartContextTest {
 
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
-        List<FileItemStream> items = context.getFileItems();
-        Assert.assertEquals(2, items.size());
+        Assert.assertEquals(2, context.getFileItems().size());
     }
 
     /**

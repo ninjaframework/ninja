@@ -20,33 +20,52 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import ninja.Context;
+import ninja.NinjaFileItemStream;
+
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileItemStream;
 
 /**
- * {@link FileItemStream} implementation for form field parameters of a
- * multipart request. Used to simulate file item iterator - form fields are
- * represented by instances of this class.
+ * {@link FileItemStream} implementation for file items already saved in context
+ * instance. Used to simulate file item iterator.
+ *
+ * <p>
+ * This class should be removed when deprecated
+ * {@link Context#getFileItemIterator()} method is removed.
+ * </p>
  *
  */
-public class FormFieldItemStream implements FileItemStream {
+@Deprecated
+public class NinjaFileItemStreamWrapper implements FileItemStream {
 
     private final String fieldName;
-    private final String value;
+    private String value;
+    private NinjaFileItemStream itemStream;
 
-    public FormFieldItemStream(String fieldName, String value) {
+    public NinjaFileItemStreamWrapper(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    public void setValue(String value) {
         this.value = value;
+    }
+
+    public void setItemStream(NinjaFileItemStream itemStream) {
+        this.itemStream = itemStream;
     }
 
     @Override
     public InputStream openStream() throws IOException {
-        return new ByteArrayInputStream(value.getBytes());
+        if (itemStream != null)
+            return itemStream.openStream();
+        else
+            return new ByteArrayInputStream(value.getBytes());
     }
 
     @Override
     public String getContentType() {
-        return null;
+        return itemStream != null ? itemStream.getContentType() : null;
     }
 
     @Override
@@ -61,17 +80,17 @@ public class FormFieldItemStream implements FileItemStream {
 
     @Override
     public boolean isFormField() {
-        return true;
+        return itemStream == null;
     }
 
     @Override
     public FileItemHeaders getHeaders() {
-        throw new UnsupportedOperationException("Not supported for custom form field items");
+        throw new UnsupportedOperationException("Not supported for Ninja file item wrapper");
     }
 
     @Override
     public void setHeaders(FileItemHeaders headers) {
-        throw new UnsupportedOperationException("Not supported for custom form field items");
+        throw new UnsupportedOperationException("Not supported for Ninja file item wrapper");
     }
 
 }

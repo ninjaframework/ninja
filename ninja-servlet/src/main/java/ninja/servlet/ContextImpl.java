@@ -38,16 +38,16 @@ import javax.servlet.http.HttpServletResponse;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
+import ninja.NinjaFileItemStream;
 import ninja.Result;
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
-import ninja.servlet.file.FormFieldItemStream;
 import ninja.servlet.file.InMemoryFileItemFactory;
-import ninja.servlet.file.NinjaFileItemStream;
 import ninja.servlet.file.NinjaFileItemStreamConverter;
+import ninja.servlet.file.NinjaFileItemStreamWrapper;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.HttpHeaderUtils;
@@ -634,42 +634,63 @@ public class ContextImpl implements Context.Impl {
         // streaming API of commons-upload allows us to iterate items of a
         // multipart request only once. Item iterator is used in init() method,
         // so we simulate iterator here by custom iterator implementation
-        return new FileItemIteratorImpl(getFileItems(), multipartParams);
+
+        final ArrayList<FileItemStream> items = new ArrayList<>();
+
+        // add file item wrappers to the list
+        for (Entry<String, List<NinjaFileItemStream>> e : fileItems.entrySet()) {
+            for (NinjaFileItemStream item : e.getValue()) {
+                NinjaFileItemStreamWrapper wrapper = new NinjaFileItemStreamWrapper(e.getKey());
+                wrapper.setItemStream(item);
+                items.add(wrapper);
+            }
+        }
+        // add form field params to the list
+        for (Map.Entry<String, List<String>> e : multipartParams.entrySet()) {
+            for (String value : e.getValue()) {
+                NinjaFileItemStreamWrapper wrapper = new NinjaFileItemStreamWrapper(e.getKey());
+                wrapper.setValue(value);
+                items.add(wrapper);
+            }
+        }
+
+        return new FileItemIterator() {
+
+            private int current = -1;
+
+            @Override
+            public boolean hasNext() throws FileUploadException, IOException {
+                return current < items.size() - 1;
+            }
+
+            @Override
+            public FileItemStream next() throws FileUploadException, IOException {
+                return items.get(++current);
+            }
+        };
     }
 
     @Override
-    public InputStream getUploadedFileStream(String name) {
+    public NinjaFileItemStream getUploadedFileStream(String name) {
         List<NinjaFileItemStream> ls = fileItems.get(name);
         if (ls != null && ls.size() > 0) {
-            try {
-                return ls.get(0).openStream();
-            } catch (IOException ex) {
-                logger.debug("Failed to open file stream", ex);
-            }
+            return ls.get(0);
         }
         return null;
     }
 
     @Override
-    public List<InputStream> getUploadedFileStreams(String name) {
+    public List<NinjaFileItemStream> getUploadedFileStreams(String name) {
         List<NinjaFileItemStream> ls = fileItems.get(name);
         if (ls != null) {
-            try {
-                List<InputStream> result = new ArrayList<>();
-                for (FileItemStream fis : ls) {
-                    result.add(fis.openStream());
-                }
-                return result;
-            } catch (IOException ex) {
-                logger.debug("Failed to open file stream", ex);
-            }
+            return new ArrayList<>(ls);
         }
         return Collections.emptyList();
     }
 
     @Override
-    public List<FileItemStream> getFileItems() {
-        List<FileItemStream> all = new ArrayList<>();
+    public List<NinjaFileItemStream> getFileItems() {
+        List<NinjaFileItemStream> all = new ArrayList<>();
         for (List<NinjaFileItemStream> items : fileItems.values()) {
             all.addAll(items);
         }
@@ -880,36 +901,6 @@ public class ContextImpl implements Context.Impl {
         }
 
         return fileItemIterator;
-    }
-
-    static class FileItemIteratorImpl implements FileItemIterator {
-
-        private final List<FileItemStream> items;
-        private int current = -1;
-
-        public FileItemIteratorImpl(List<FileItemStream> fileItems, Map<String, List<String>> params) {
-
-            // create list with uploaded file item streams
-            this.items = new ArrayList<>(fileItems);
-
-            // add form field params to the list
-            for (Map.Entry<String, List<String>> e : params.entrySet()) {
-                for (String value : e.getValue()) {
-                    this.items.add(new FormFieldItemStream(e.getKey(), value));
-                }
-            }
-        }
-
-        @Override
-        public boolean hasNext() throws FileUploadException, IOException {
-            return current < items.size() - 1;
-        }
-
-        @Override
-        public FileItemStream next() throws FileUploadException, IOException {
-            return items.get(++current);
-        }
-
     }
 
 }

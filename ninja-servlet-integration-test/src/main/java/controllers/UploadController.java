@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import ninja.Context;
+import ninja.NinjaFileItemStream;
 import ninja.Renderable;
 import ninja.Result;
 import ninja.Results;
@@ -78,15 +79,16 @@ public class UploadController {
             @Override
             public void render(Context context, Result result) {
 
-                try (InputStream fileStream = context.getUploadedFileStream("file")) {
-                    if (fileStream != null) {
-                        ResponseStreams responseStreams = context.finalizeHeaders(result);
-                        ByteStreams.copy(fileStream, responseStreams.getOutputStream());
-                    } else {
-                        logger.info("No uploaded file found");
+                NinjaFileItemStream item = context.getUploadedFileStream("file");
+                if (item != null) {
+                    ResponseStreams responseStreams = context.finalizeHeaders(result);
+                    try (InputStream stream = item.openStream()) {
+                        ByteStreams.copy(stream, responseStreams.getOutputStream());
+                    } catch (IOException ex) {
+                        logger.error("Failed to read/write uploaded file", ex);
                     }
-                } catch (IOException ex) {
-                    logger.error("Failed to read/write uploaded file", ex);
+                } else {
+                    logger.info("No uploaded file found");
                 }
             }
         };

@@ -20,24 +20,61 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import org.apache.commons.fileupload.FileItemHeaders;
+import ninja.NinjaFileItemStream;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
+
 import org.apache.commons.fileupload.FileItemStream;
+
+import com.google.inject.Inject;
+import com.google.inject.ProvisionException;
 
 class NinjaDiskFileItemStream implements NinjaFileItemStream {
 
-    private final FileItemStream fileItemStream;
     private File file;
+    private String fieldName;
+    private String contentType;
 
+    @Inject
+    public NinjaDiskFileItemStream(NinjaProperties properties) {
 
-     public NinjaDiskFileItemStream(FileItemStream fileItemStream, File directory) {
+        String uploadDir = properties.get(NinjaConstant.FILE_UPLOADS_DIRECTORY);
+        if (uploadDir == null) {
+            uploadDir = System.getProperty("java.io.tmpdir");
+        }
 
-        this.fileItemStream = fileItemStream;
+        File directory = new File(uploadDir);
+
+        // check if specified target exists. create if does not exist,
+        // otherwise check if it is a directory
+        if (directory.exists()) {
+            if (!directory.isDirectory()) {
+                throw new ProvisionException("Specified target for upload files in not a directory");
+            }
+        } else {
+            directory.mkdirs();
+        }
+
+        // create temp file where uploaded file contents will be stored
+        try {
+            this.file = File.createTempFile("ninja-upload-", null, directory);
+        } catch (IOException ex) {
+            throw new ProvisionException("Failed to create a temp file", ex);
+        }
+
+    }
+
+    @Override
+    public void init(FileItemStream fileItemStream) {
+
+        this.fieldName = fileItemStream.getFieldName();
+        this.contentType = fileItemStream.getContentType();
 
         try (InputStream is = fileItemStream.openStream()) {
 
-            this.file = File.createTempFile("ninja-upload-", null, directory);
             Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         } catch (IOException ex) {
@@ -51,34 +88,18 @@ class NinjaDiskFileItemStream implements NinjaFileItemStream {
     }
 
     @Override
-    public String getContentType() {
-        return fileItemStream.getContentType();
-    }
-
-    @Override
-    public String getName() {
-        return fileItemStream.getName();
+    public void copyTo(Path target) throws IOException {
+        Files.copy(file.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override
     public String getFieldName() {
-        return fileItemStream.getFieldName();
+        return fieldName;
     }
 
     @Override
-    public boolean isFormField() {
-        return fileItemStream.isFormField();
-    }
-
-    @Override
-    public FileItemHeaders getHeaders() {
-        return fileItemStream.getHeaders();
-    }
-
-    @Override
-    public void setHeaders(FileItemHeaders headers) {
-        throw new UnsupportedOperationException(
-                "You can not set headers for internally used file item stream");
+    public String getContentType() {
+        return contentType;
     }
 
     @Override

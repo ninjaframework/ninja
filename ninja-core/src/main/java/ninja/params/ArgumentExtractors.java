@@ -16,11 +16,11 @@
 
 package ninja.params;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.NinjaFileItemStream;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
@@ -188,7 +188,7 @@ public class ArgumentExtractors {
         }
     }
 
-    public static class FileExtractor implements ArgumentExtractor<InputStream> {
+    public static class FileExtractor implements ArgumentExtractor<NinjaFileItemStream> {
 
         private final String name;
 
@@ -197,13 +197,13 @@ public class ArgumentExtractors {
         }
 
         @Override
-        public InputStream extract(Context context) {
+        public NinjaFileItemStream extract(Context context) {
             return context.getUploadedFileStream(name);
         }
 
         @Override
-        public Class<InputStream> getExtractedType() {
-            return InputStream.class;
+        public Class<NinjaFileItemStream> getExtractedType() {
+            return NinjaFileItemStream.class;
         }
 
         @Override
@@ -212,7 +212,7 @@ public class ArgumentExtractors {
         }
     }
 
-    public static class FilesExtractor implements ArgumentExtractor<InputStream[]> {
+    public static class FilesExtractor implements ArgumentExtractor<NinjaFileItemStream[]> {
 
         private final String name;
 
@@ -221,17 +221,17 @@ public class ArgumentExtractors {
         }
 
         @Override
-        public InputStream[] extract(Context context) {
-            List<InputStream> files = context.getUploadedFileStreams(name);
+        public NinjaFileItemStream[] extract(Context context) {
+            List<NinjaFileItemStream> files = context.getUploadedFileStreams(name);
             if (files == null || files.isEmpty()) {
                 return null;
             }
-            return files.toArray(new InputStream[files.size()]);
+            return files.toArray(new NinjaFileItemStream[files.size()]);
         }
 
         @Override
-        public Class<InputStream[]> getExtractedType() {
-            return InputStream[].class;
+        public Class<NinjaFileItemStream[]> getExtractedType() {
+            return NinjaFileItemStream[].class;
         }
 
         @Override

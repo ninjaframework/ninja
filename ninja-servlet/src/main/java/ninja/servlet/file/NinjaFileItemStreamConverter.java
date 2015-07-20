@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package ninja.servlet.file;
 
-import java.io.File;
-
+import ninja.NinjaFileItemStream;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
 import org.apache.commons.fileupload.FileItemStream;
 
 import com.google.inject.Inject;
-import com.google.inject.ProvisionException;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 /**
@@ -36,33 +34,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class NinjaFileItemStreamConverter {
 
-    @Inject
-    InMemoryFileItemFactory inMemoryFileItemFactory;
-
     private final boolean inMemory;
-    private final File uploadDirectory;
 
     @Inject
-    public NinjaFileItemStreamConverter(NinjaProperties properties) {
+    Provider<NinjaInMemoryFileItemStream> inMemoryFileItemStreamProvider;
 
-        inMemory = properties.getBooleanWithDefault(
-                NinjaConstant.FILE_UPLOADS_IN_MEMORY, false);
+    @Inject
+    Provider<NinjaDiskFileItemStream> diskFileItemStreamProvider;
 
-        // get directory to save uploaded files, use system temp directory by default
-        String dir = properties.getWithDefault(
-                NinjaConstant.FILE_UPLOADS_DIRECTORY,
-                System.getProperty("java.io.tmpdir"));
+    @Inject
+    NinjaFileItemStreamConverter(NinjaProperties properties) {
 
-        uploadDirectory = new File(dir);
+        Boolean b = properties.getBoolean(NinjaConstant.FILE_UPLOADS_IN_MEMORY);
+        inMemory = b != null ? b.booleanValue() : false;
 
-        // check if specified target exists. create if does not exist, otherwise check if it is a directory
-        if (uploadDirectory.exists()) {
-            if (!uploadDirectory.isDirectory()) {
-                throw new ProvisionException("Specified target for upload files in not a directory");
-            }
-        } else {
-            uploadDirectory.mkdirs();
-        }
     }
 
     public boolean isInMemory() {
@@ -81,11 +66,13 @@ public class NinjaFileItemStreamConverter {
      * repeated use
      */
     public NinjaFileItemStream convert(FileItemStream fileItemStream) {
+        NinjaFileItemStream item;
         if (inMemory) {
-            return new NinjaInMemoryFileItemStream(fileItemStream,
-                    inMemoryFileItemFactory);
+            item = inMemoryFileItemStreamProvider.get();
         } else {
-            return new NinjaDiskFileItemStream(fileItemStream, uploadDirectory);
+            item = diskFileItemStreamProvider.get();
         }
+        item.init(fileItemStream);
+        return item;
     }
 }

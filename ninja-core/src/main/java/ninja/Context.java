@@ -31,7 +31,6 @@ import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
 
 public interface Context {
 
@@ -523,37 +522,36 @@ public interface Context {
      * @return the FileItemIterator of the request or null if there was an
      *         error.
      */
+    @Deprecated
     FileItemIterator getFileItemIterator();
 
     /**
-     * Gets the uploaded file stream for the given key from the multipart
-     * request. When multiple files uploaded for the same key, the first file is
+     * Gets the uploaded file item for the given key from the multipart request.
+     * When multiple files uploaded for the same key, the first file is
      * returned.
      *
      * @param name the key of the file
-     * @return the input stream to read file contents from; {@code null} if no
-     * file uploaded for the given key
+     * @return file item instance corresponding to the uploaded file;
+     * {@code null} if no file uploaded for the given key
      */
-    InputStream getUploadedFileStream(String name);
+    NinjaFileItemStream getUploadedFileStream(String name);
 
     /**
-     * Gets uploaded file streams for the given key from the multipart request.
+     * Gets uploaded file items for the given key from the multipart request.
      *
      * @param name the key of files
-     * @return list of streams to read file contents from; empty list is
-     * returned if no files were uploaded for the given key
+     * @return list of file item instances corresponding to uploaded files;
+     * empty list is returned if no files were uploaded for the given key
      */
-    List<InputStream> getUploadedFileStreams(String name);
+    List<NinjaFileItemStream> getUploadedFileStreams(String name);
 
     /**
-     * Gets {@link FileItemStream} instances corresponding to uploaded files
-     * from multipart request. Using this collection one can get every property
-     * of uploaded files like field names, content types, and even a stream to
-     * read file contents from.
+     * Gets file item instances corresponding to uploaded files from multipart
+     * request.
      *
      * @return list of file items uploaded by a multipart request
      */
-    List<FileItemStream> getFileItems();
+    List<NinjaFileItemStream> getFileItems();
 
     /**
      * Get the validation context
