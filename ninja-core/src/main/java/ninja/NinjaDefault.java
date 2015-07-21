@@ -230,7 +230,10 @@ public class NinjaDefault implements Ninja {
                 .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                 .fallbackContentType(Result.TEXT_HTML)
                 .render(message)
-                .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
         
 
         return result;
@@ -262,7 +265,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
           
         return result;
 
@@ -294,7 +300,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
         
         return result;
 
@@ -329,7 +338,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_UNAUTHORIZED_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED));
 
         return result;
 
@@ -362,7 +374,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_FORBIDDEN_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN));
         
         return result;
 

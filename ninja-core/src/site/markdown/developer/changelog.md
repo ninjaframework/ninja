@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2015-07-21 Added properties to override system views location (momiji).
+
 Version 5.1.4
 =============
 

@@ -47,6 +47,7 @@ contributed to Ninja. In some random order:
  * Gabriel Hora (gabrielhora)
  * Joe Lauer (jjlauer)
  * Arystan Dyussenov (arystan)
+ * Christian Bourgeois (momiji/xtian)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen
