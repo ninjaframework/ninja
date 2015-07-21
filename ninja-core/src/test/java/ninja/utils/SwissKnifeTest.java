@@ -68,5 +68,84 @@ public class SwissKnifeTest {
     // just for testing that camel case conversion stuff works
     public class MySuperTestObject {
     }
+    
+    @Test
+    public void testSimplifyUrl() {
+        testForwardAndBackwardSlashes(".", "");
+        
+        testForwardAndBackwardSlashes("/", "/");
+        testForwardAndBackwardSlashes("/", "/.");
+        testForwardAndBackwardSlashes("/", "/./");
+        testForwardAndBackwardSlashes("/", "/./.");
+        testForwardAndBackwardSlashes("/", "/..");
+        testForwardAndBackwardSlashes("/", "/../.");
+        testForwardAndBackwardSlashes("/", "/.././");
+        testForwardAndBackwardSlashes("/", "/../..");
+        testForwardAndBackwardSlashes("/", "/../../");
+        testForwardAndBackwardSlashes("/b", "/./b");
+        testForwardAndBackwardSlashes("/b", "/../b");
+        testForwardAndBackwardSlashes("/b", "/.././b");
+        testForwardAndBackwardSlashes("/b", "/../../b");
+        testForwardAndBackwardSlashes("/b/", "/./b/");
+        testForwardAndBackwardSlashes("/b/", "/../b/");
+        testForwardAndBackwardSlashes("/b/", "/.././b/");
+        testForwardAndBackwardSlashes("/b/", "/../../b/");
+        testForwardAndBackwardSlashes("/b/", "/./b/.");
+        testForwardAndBackwardSlashes("/b/", "/../b/.");
+        testForwardAndBackwardSlashes("/b/", "/.././b/.");
+        testForwardAndBackwardSlashes("/b/", "/../../b/.");
+        testForwardAndBackwardSlashes("/", "/./b/..");
+        testForwardAndBackwardSlashes("/", "/../b/..");
+        testForwardAndBackwardSlashes("/", "/.././b/..");
+        testForwardAndBackwardSlashes("/", "/../../b/..");
+        
+        testForwardAndBackwardSlashes(".", "");
+        testForwardAndBackwardSlashes(".", ".");
+        testForwardAndBackwardSlashes(".", "./");
+        testForwardAndBackwardSlashes(".", "./.");
+        testForwardAndBackwardSlashes(".", "./../");
+        testForwardAndBackwardSlashes(".", "./../.");
+        
+        testForwardAndBackwardSlashes(".", "..");
+        testForwardAndBackwardSlashes(".", "../");
+        testForwardAndBackwardSlashes(".", "../.");
+        testForwardAndBackwardSlashes(".", "../..");
+        testForwardAndBackwardSlashes(".", "../../");
+        testForwardAndBackwardSlashes(".", "../../.");
+        
+        testForwardAndBackwardSlashes("b", "././b");
+        testForwardAndBackwardSlashes("b", "./../b");
+        testForwardAndBackwardSlashes("b", "./.././b");
+        testForwardAndBackwardSlashes("b", "./../../b");
+        testForwardAndBackwardSlashes("b/", "././b/");
+        testForwardAndBackwardSlashes("b/", "./../b/");
+        testForwardAndBackwardSlashes("b/", "./.././b/");
+        testForwardAndBackwardSlashes("b/", "./../../b/");
+        testForwardAndBackwardSlashes("b/", "././b/.");
+        testForwardAndBackwardSlashes("b/", "./../b/.");
+        testForwardAndBackwardSlashes("b/", "./.././b/.");
+        testForwardAndBackwardSlashes("b/", "./../../b/.");
+        testForwardAndBackwardSlashes(".", "././b/..");
+        testForwardAndBackwardSlashes(".", "./../b/..");
+        testForwardAndBackwardSlashes(".", "./.././b/..");
+        testForwardAndBackwardSlashes(".", "./../../b/..");
+
+        testForwardAndBackwardSlashes("/b", "/a/../b");
+        testForwardAndBackwardSlashes("/b/", "/a/../b/");
+        testForwardAndBackwardSlashes("/b/", "/a/../b/.");
+        testForwardAndBackwardSlashes("/b/", "/a/../b/./");
+        //
+        testForwardAndBackwardSlashes("/b/", "/a%2F..%2Fb/");
+        testForwardAndBackwardSlashes("/b/", "/a%2F%2E%2E%2Fb/");
+        testForwardAndBackwardSlashes("/b/", "/a%2F%2E.%2Fb/");
+        testForwardAndBackwardSlashes("/b/", "/a%2F%2E.%2Fb/.");
+        testForwardAndBackwardSlashes("/b/", "/a%2F%2E.%2Fb/%2E");
+    }
+    
+    private void testForwardAndBackwardSlashes(String expected, String actual) {
+        assertEquals(expected, SwissKnife.simplifyUrl(actual));
+        assertEquals(expected, SwissKnife.simplifyUrl(actual.replace("/","\\")));
+    }
+
 
 }

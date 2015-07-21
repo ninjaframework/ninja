@@ -603,9 +603,10 @@ public class ContextImpl implements Context.Impl {
         String unencodedContextPath = httpServletRequest.getContextPath();
         // this one is unencoded, too, but may containt the context:
         String fullUnencodedUri = httpServletRequest.getRequestURI();
+        // this one is simplified
+        String simplifiedUri = SwissKnife.simplifyUrl(fullUnencodedUri);
 
-        String result = fullUnencodedUri.substring(unencodedContextPath
-                .length());
+        String result = simplifiedUri.substring(unencodedContextPath.length());
 
         return result;
     }

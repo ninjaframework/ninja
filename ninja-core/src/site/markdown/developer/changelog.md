@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2015-07-20 Added simplification of request path (momiji).
+
 Version 5.1.4
 =============
 
