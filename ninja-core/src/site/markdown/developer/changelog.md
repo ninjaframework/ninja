@@ -2,6 +2,8 @@ Version X.X.X
 =============
 
  * 2015-07-20 Added global filters that execute before computing route (momiji).
+ * 2015-07-20 Added new VersionCacheFilter to allow assets versionning and allow caching
+              of versionned assets only (momiji).
 
 Version 5.1.4
 =============
@@ -14,7 +16,7 @@ Version 5.1.3
 =============
 
  * 2015-06-19 Fix for potential security issue. Under certain circumstances assets
-              controller did stream content from arbitrary directories (Christian B. / ra).
+              controller did stream content from arbitrary directories (momiji / ra).
 
 Version 5.1.2
 =============
