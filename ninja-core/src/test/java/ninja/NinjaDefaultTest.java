@@ -337,6 +337,10 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
                 
     }
     
@@ -378,6 +382,10 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
                 
     }
     
@@ -417,6 +425,10 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
                 
     }
     
