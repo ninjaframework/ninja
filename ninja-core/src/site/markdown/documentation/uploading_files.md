@@ -67,14 +67,16 @@ New way of handling file uploads
 Would it be nice if uploaded files of a multipart request could be injected
 directly into controller method just like path or query parameters?
 Ninja allows you to do so -- to inject uploaded file `@FileParam` annotation
-is used. Extracted type of this annotation is `java.io.InputStream` so that
-you can read contents of an uploaded file in any way you like.
+is used. Extracted type of this annotation is `NinjaFileItemStream` from which
+you can get `java.io.InputStream` to read file contents from. There is also a
+helper `copyTo(...)` method to copy uploaded file to specified location.
 
 In the case given above, the controller would look like this:
 ```java
-public Result uploadFinish(Context context, @FileParam("upfile") InputStream stream) {
+public Result uploadFinish(Context context, @FileParam("upfile") NinjaFileItemStream stream) {
     if(stream != null) {
-	// use stream to read file contents
+	InputStream is = stream.openStream();
+	// use input stream to read file contents
     }
     return Results.ok();
 }
