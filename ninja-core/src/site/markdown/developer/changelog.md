@@ -1,6 +1,7 @@
-Version x.x.x
+Version X.X.X
 =============
 
+ * 2015-07-21 Added properties to override system views location (momiji).
  * 2015-07-20 Injection of params and uploaded files from multipart requests (bazi)
 
 Version 5.1.4

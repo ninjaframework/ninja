@@ -42,6 +42,12 @@ public interface NinjaConstant {
     String LOCATION_VIEW_FTL_HTML_UNAUTHORIZED = "views/system/401unauthorized.ftl.html";
     String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbidden.ftl.html";
     
+    String LOCATION_VIEW_HTML_NOT_FOUND_KEY = "application.views.404notFound";
+    String LOCATION_VIEW_HTML_BAD_REQUEST_KEY = "application.views.400badRequest";
+    String LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY = "application.views.500internalServerError";
+    String LOCATION_VIEW_HTML_UNAUTHORIZED_KEY = "application.views.401unauthorized";
+    String LOCATION_VIEW_HTML_FORBIDDEN_KEY = "application.views.403forbidden";
+    
     // i18n keys and default messages of Ninja
     // create the keys in your own messages.properties file to customize the message
     String I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY = "ninja.system.bad_request.text";
