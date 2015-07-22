@@ -103,6 +103,8 @@ public class Result {
 
     private int statusCode;
 
+    private Class<?> jsonView;
+
     /* The object that will be rendered. Could be a Java Pojo. Or a map. Or xyz. Will be
      * handled by the TemplateReneringEngine. */
     private Object renderable;
@@ -621,6 +623,22 @@ public class Result {
      */
     public Result template(String template) {
         this.template = template;
+        return this;
+    }
+
+    public Class<?> getJsonView() {
+        return jsonView;
+    }
+
+    /**
+     * Set the Jackson JSON View.
+     * See <a href="http://wiki.fasterxml.com/JacksonJsonViews">http://wiki.fasterxml.com/JacksonJsonViews</a>
+     *
+     * @param jsonView JSON serialization view class to use when rendering
+     * @return The result that you executed the method on for chaining, with JSON view set
+     */
+    public Result jsonView(Class<?> jsonView) {
+        this.jsonView = jsonView;
         return this;
     }
 
