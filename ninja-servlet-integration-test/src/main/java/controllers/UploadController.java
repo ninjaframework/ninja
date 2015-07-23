@@ -20,18 +20,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import ninja.Context;
+import ninja.NinjaFileItemStream;
 import ninja.Renderable;
 import ninja.Result;
 import ninja.Results;
-import ninja.exceptions.InternalServerErrorException;
 import ninja.i18n.Lang;
 import ninja.utils.MimeTypes;
 import ninja.utils.ResponseStreams;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.util.Streams;
 import org.slf4j.Logger;
 
 import com.google.common.io.ByteStreams;
@@ -83,58 +79,17 @@ public class UploadController {
             @Override
             public void render(Context context, Result result) {
 
-                try {
-                // make sure the context really is a multipart context...
-                if (context.isMultipart()) {
-
-                    // This is the iterator we can use to iterate over the
-                    // contents
-                    // of the request.
-                    FileItemIterator fileItemIterator = context
-                            .getFileItemIterator();
-
-                    while (fileItemIterator.hasNext()) {
-
-                        FileItemStream item = fileItemIterator.next();
-
-                        String name = item.getFieldName();
-                        InputStream stream = item.openStream();
-
-                        String contentType = item.getContentType();
-
-                        if (contentType != null) {
-                            result.contentType(contentType);
-                        } else {
-                            contentType = mimeTypes.getMimeType(name);
-                        }
-
-                        ResponseStreams responseStreams = context
-                                .finalizeHeaders(result);
-
-                        if (item.isFormField()) {
-                            System.out.println("Form field " + name
-                                    + " with value " + Streams.asString(stream)
-                                    + " detected.");
-                        } else {
-                            System.out.println("File field " + name
-                                    + " with file name " + item.getName()
-                                    + " detected.");
-                            // Process the input stream
-
-                            ByteStreams.copy(stream,
-                                    responseStreams.getOutputStream());
-
-                        }
+                NinjaFileItemStream item = context.getUploadedFileStream("file");
+                if (item != null) {
+                    ResponseStreams responseStreams = context.finalizeHeaders(result);
+                    try (InputStream stream = item.openStream()) {
+                        ByteStreams.copy(stream, responseStreams.getOutputStream());
+                    } catch (IOException ex) {
+                        logger.error("Failed to read/write uploaded file", ex);
                     }
-
+                } else {
+                    logger.info("No uploaded file found");
                 }
-                
-                } catch (IOException | FileUploadException exception) {
-                    
-                    throw new InternalServerErrorException(exception);
-                
-                }
-
             }
         };
 

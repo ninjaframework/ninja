@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import ninja.Context;
+import ninja.NinjaFileItemStream;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
@@ -185,6 +186,59 @@ public class ArgumentExtractors {
         public String getFieldName() {
             return key;
         }
+    }
+
+    public static class FileExtractor implements ArgumentExtractor<NinjaFileItemStream> {
+
+        private final String name;
+
+        public FileExtractor(FileParam file) {
+            this.name = file.value();
+        }
+
+        @Override
+        public NinjaFileItemStream extract(Context context) {
+            return context.getUploadedFileStream(name);
+        }
+
+        @Override
+        public Class<NinjaFileItemStream> getExtractedType() {
+            return NinjaFileItemStream.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return name;
+        }
+    }
+
+    public static class FilesExtractor implements ArgumentExtractor<NinjaFileItemStream[]> {
+
+        private final String name;
+
+        public FilesExtractor(FileParams fileParams) {
+            this.name = fileParams.value();
+        }
+
+        @Override
+        public NinjaFileItemStream[] extract(Context context) {
+            List<NinjaFileItemStream> files = context.getUploadedFileStreams(name);
+            if (files == null || files.isEmpty()) {
+                return null;
+            }
+            return files.toArray(new NinjaFileItemStream[files.size()]);
+        }
+
+        @Override
+        public Class<NinjaFileItemStream[]> getExtractedType() {
+            return NinjaFileItemStream[].class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return name;
+        }
+
     }
 
     public static class HeaderExtractor implements ArgumentExtractor<String> {

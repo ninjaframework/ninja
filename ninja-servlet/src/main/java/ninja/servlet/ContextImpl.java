@@ -38,12 +38,16 @@ import javax.servlet.http.HttpServletResponse;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
+import ninja.NinjaFileItemStream;
 import ninja.Result;
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
+import ninja.servlet.file.InMemoryFileItemFactory;
+import ninja.servlet.file.NinjaFileItemStreamConverter;
+import ninja.servlet.file.NinjaFileItemStreamWrapper;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.HttpHeaderUtils;
@@ -55,13 +59,16 @@ import ninja.utils.SwissKnife;
 import ninja.validation.Validation;
 
 import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class ContextImpl implements Context.Impl {
 
@@ -86,9 +93,15 @@ public class ContextImpl implements Context.Impl {
     private final ResultHandler resultHandler;
     private final Validation validation;
 
+    private final Map<String, List<NinjaFileItemStream>> fileItems = new HashMap<>();
+    private final Map<String, List<String>> multipartParams = new HashMap<>();
+
     // In Async mode, these values will be set to null, so save them
     private String requestPath;
     private String contextPath;
+
+    @Inject
+    Injector injector;
 
     private Logger logger = LoggerFactory.getLogger(ContextImpl.class);
 
@@ -126,11 +139,25 @@ public class ContextImpl implements Context.Impl {
 
         contextPath = httpServletRequest.getContextPath();
         requestPath = performGetRequestPath();
+
+        if (isMultipart()) {
+            parseParts(getRequestItemsIterator());
+        }
     }
 
     @Override
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    @Override
+    public void cleanup() {
+        // no op for non-multipart request context
+        for (List<NinjaFileItemStream> items : fileItems.values()) {
+            for (NinjaFileItemStream item : items) {
+                item.purge();
+            }
+        }
     }
 
     @Override
@@ -164,16 +191,28 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public String getParameter(String key) {
+        List<String> params = multipartParams.get(key);
+        if (params != null && !params.isEmpty()) {
+            return params.get(0);
+        }
         return httpServletRequest.getParameter(key);
     }
 
     @Override
     public List<String> getParameterValues(String name) {
+        List<String> result = new ArrayList<>();
+
         String[] params = httpServletRequest.getParameterValues(name);
-        if (params == null) {
-            return Collections.emptyList();
+        if (params != null) {
+            result.addAll(Arrays.asList(params));
         }
-        return Arrays.asList(params);
+
+        List<String> multipartParamsList = multipartParams.get(name);
+        if (multipartParamsList != null) {
+            result.addAll(multipartParamsList);
+        }
+
+        return result;
     }
 
     @Override
@@ -221,7 +260,22 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public Map<String, String[]> getParameters() {
-        return httpServletRequest.getParameterMap();
+        // create new map with query params
+        Map<String, String[]> map = new HashMap<>(httpServletRequest.getParameterMap());
+
+        // add params of multipart request
+        for (Entry<String, List<String>> e : multipartParams.entrySet()) {
+
+            List<String> ls = new ArrayList<>(e.getValue());
+
+            String[] values = map.get(e.getKey());
+            if (values != null) {
+                ls.addAll(Arrays.asList(values));
+            }
+
+            map.put(e.getKey(), ls.toArray(new String[ls.size()]));
+        }
+        return map;
     }
 
     @Override
@@ -577,18 +631,70 @@ public class ContextImpl implements Context.Impl {
 
     @Override
     public FileItemIterator getFileItemIterator() {
+        // streaming API of commons-upload allows us to iterate items of a
+        // multipart request only once. Item iterator is used in init() method,
+        // so we simulate iterator here by custom iterator implementation
 
-        ServletFileUpload upload = new ServletFileUpload();
-        FileItemIterator fileItemIterator = null;
+        final ArrayList<FileItemStream> items = new ArrayList<>();
 
-        try {
-            fileItemIterator = upload.getItemIterator(httpServletRequest);
-        } catch (FileUploadException | IOException e) {
-            logger.error("Error while trying to process mulitpart file upload",
-                    e);
+        // add file item wrappers to the list
+        for (Entry<String, List<NinjaFileItemStream>> e : fileItems.entrySet()) {
+            for (NinjaFileItemStream item : e.getValue()) {
+                NinjaFileItemStreamWrapper wrapper = new NinjaFileItemStreamWrapper(e.getKey());
+                wrapper.setItemStream(item);
+                items.add(wrapper);
+            }
+        }
+        // add form field params to the list
+        for (Map.Entry<String, List<String>> e : multipartParams.entrySet()) {
+            for (String value : e.getValue()) {
+                NinjaFileItemStreamWrapper wrapper = new NinjaFileItemStreamWrapper(e.getKey());
+                wrapper.setValue(value);
+                items.add(wrapper);
+            }
         }
 
-        return fileItemIterator;
+        return new FileItemIterator() {
+
+            private int current = -1;
+
+            @Override
+            public boolean hasNext() throws FileUploadException, IOException {
+                return current < items.size() - 1;
+            }
+
+            @Override
+            public FileItemStream next() throws FileUploadException, IOException {
+                return items.get(++current);
+            }
+        };
+    }
+
+    @Override
+    public NinjaFileItemStream getUploadedFileStream(String name) {
+        List<NinjaFileItemStream> ls = fileItems.get(name);
+        if (ls != null && ls.size() > 0) {
+            return ls.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public List<NinjaFileItemStream> getUploadedFileStreams(String name) {
+        List<NinjaFileItemStream> ls = fileItems.get(name);
+        if (ls != null) {
+            return new ArrayList<>(ls);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<NinjaFileItemStream> getFileItems() {
+        List<NinjaFileItemStream> all = new ArrayList<>();
+        for (List<NinjaFileItemStream> items : fileItems.values()) {
+            all.addAll(items);
+        }
+        return all;
     }
 
     @Override
@@ -715,4 +821,86 @@ public class ContextImpl implements Context.Impl {
 
         return contentType.startsWith(ContentTypes.APPLICATION_XML);
     }
+
+    /**
+     * Multipart request payload parser. This method accepts file item iterator
+     * and is not private to make testing easier by passing custom mock
+     * iterator.
+     *
+     * @param fileItemIterator
+     */
+    void parseParts(FileItemIterator fileItemIterator) {
+
+        NinjaFileItemStreamConverter fileItemStreamConverter
+                = injector.getInstance(NinjaFileItemStreamConverter.class);
+        try {
+            while (fileItemIterator.hasNext()) {
+                FileItemStream fileItemStream = fileItemIterator.next();
+                String fieldName = fileItemStream.getFieldName();
+
+                if (fileItemStream.isFormField()) {
+
+                    // simple key/value item
+                    String value = Streams.asString(fileItemStream.openStream());
+                    List<String> ls = multipartParams.get(fieldName);
+                    if (ls == null) {
+                        ls = new ArrayList<>();
+                        multipartParams.put(fieldName, ls);
+                    }
+                    ls.add(value);
+
+                } else {
+                    // an attached file
+                    List<NinjaFileItemStream> items = fileItems.get(fieldName);
+                    if (items == null) {
+                        items = new ArrayList<>();
+                        fileItems.put(fieldName, items);
+                    }
+                    items.add(fileItemStreamConverter.convert(fileItemStream));
+                }
+            }
+        } catch (FileUploadException | IOException ex) {
+            throw new RuntimeException("Failed to parse multipart request data", ex);
+        }
+    }
+
+    private FileItemIterator getRequestItemsIterator() {
+
+        ServletFileUpload upload = new ServletFileUpload();
+
+        Boolean inMemory = ninjaProperties.getBooleanWithDefault(
+                NinjaConstant.FILE_UPLOADS_IN_MEMORY, false);
+        Integer maxSize = ninjaProperties.getInteger(
+                NinjaConstant.FILE_UPLOADS_MAX_REQUEST_SIZE);
+        Integer maxFileSize = ninjaProperties.getInteger(
+                NinjaConstant.FILE_UPLOADS_MAX_FILE_SIZE);
+
+        if (inMemory) {
+            // inject in-memory file item factory to upload instance
+            InMemoryFileItemFactory inMemoryFileItemFactory
+                    = injector.getInstance(InMemoryFileItemFactory.class);
+            upload.setFileItemFactory(inMemoryFileItemFactory);
+
+            // when uploaded files are handled in-memory, do not leave max file size without limit
+            upload.setFileSizeMax(inMemoryFileItemFactory.getMaxFileSize());
+        }
+        if (maxSize != null) {
+            upload.setSizeMax(maxSize);
+        }
+        if (maxFileSize != null) {
+            upload.setFileSizeMax(maxFileSize);
+        }
+
+        FileItemIterator fileItemIterator = null;
+
+        try {
+            fileItemIterator = upload.getItemIterator(httpServletRequest);
+        } catch (FileUploadException | IOException e) {
+            logger.error("Error while trying to process mulitpart file upload",
+                    e);
+        }
+
+        return fileItemIterator;
+    }
+
 }

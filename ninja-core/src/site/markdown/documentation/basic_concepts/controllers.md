@@ -130,6 +130,9 @@ accepted by Joda Time library.
 Therefore you don't have to worry if
 input is for instance Xml or Json. You simply get a parsed object.
 
+Additioanlly, uploaded file streams of a multipart request can be injected into your controller.
+For more details on multipart requests please refer to
+<a href="/documentation/uploading_files.html">this page</a>.
 
 ## Ninja and content negotiation
 

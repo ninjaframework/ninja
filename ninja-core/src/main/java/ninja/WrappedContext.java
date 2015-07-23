@@ -223,6 +223,21 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public NinjaFileItemStream getUploadedFileStream(String name) {
+        return wrapped.getUploadedFileStream(name);
+    }
+
+    @Override
+    public List<NinjaFileItemStream> getUploadedFileStreams(String name) {
+        return wrapped.getUploadedFileStreams(name);
+    }
+
+    @Override
+    public List<NinjaFileItemStream> getFileItems() {
+        return wrapped.getFileItems();
+    }
+
+    @Override
     public String getRequestPath() {
         return wrapped.getRequestPath();
     }

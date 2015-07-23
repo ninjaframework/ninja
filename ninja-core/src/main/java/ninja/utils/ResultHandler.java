@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+
 import javax.inject.Singleton;
 
 import ninja.AsyncResult;
@@ -45,6 +46,17 @@ public class ResultHandler {
     }
 
     public void handleResult(Result result, Context context) {
+        try {
+            handleResultInternal(result, context);
+        } finally {
+            // cleanup context resources
+            if (context instanceof Context.Impl) {
+                ((Context.Impl) context).cleanup();
+            }
+        }
+    }
+
+    private void handleResultInternal(Result result, Context context) {
 
         if (result == null || result instanceof AsyncResult) {
             // Do nothing, assuming the controller manually handled it

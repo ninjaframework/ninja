@@ -41,6 +41,8 @@ public interface Context {
     interface Impl extends Context {
         
         void setRoute(Route route);
+
+        void cleanup();
     }
 
     /**
@@ -520,7 +522,36 @@ public interface Context {
      * @return the FileItemIterator of the request or null if there was an
      *         error.
      */
+    @Deprecated
     FileItemIterator getFileItemIterator();
+
+    /**
+     * Gets the uploaded file item for the given key from the multipart request.
+     * When multiple files uploaded for the same key, the first file is
+     * returned.
+     *
+     * @param name the key of the file
+     * @return file item instance corresponding to the uploaded file;
+     * {@code null} if no file uploaded for the given key
+     */
+    NinjaFileItemStream getUploadedFileStream(String name);
+
+    /**
+     * Gets uploaded file items for the given key from the multipart request.
+     *
+     * @param name the key of files
+     * @return list of file item instances corresponding to uploaded files;
+     * empty list is returned if no files were uploaded for the given key
+     */
+    List<NinjaFileItemStream> getUploadedFileStreams(String name);
+
+    /**
+     * Gets file item instances corresponding to uploaded files from multipart
+     * request.
+     *
+     * @return list of file items uploaded by a multipart request
+     */
+    List<NinjaFileItemStream> getFileItems();
 
     /**
      * Get the validation context
