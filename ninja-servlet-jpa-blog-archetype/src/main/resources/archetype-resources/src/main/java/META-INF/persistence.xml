@@ -28,9 +28,9 @@
 
     <!-- h2 is a simple database - in reality you may want to switch to postgres or so... -->
     <persistence-unit name="h2" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
-            <property name="javax.persistence.provider" value="org.hibernate.ejb.HibernatePersistence" />
+            <property name="javax.persistence.provider" value="org.hibernate.jpa.HibernatePersistenceProvider" />
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
             <!-- you may want to enable the ddl if you do not use migrations. -->

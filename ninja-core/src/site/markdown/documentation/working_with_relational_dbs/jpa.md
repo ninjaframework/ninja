@@ -17,7 +17,7 @@ mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifact
 and hit
 
 <pre class="prettyprint">
-ninja:run
+mvn ninja:run
 </pre>
 
 
