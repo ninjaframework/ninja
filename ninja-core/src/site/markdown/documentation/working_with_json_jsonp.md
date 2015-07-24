@@ -152,3 +152,39 @@ it is actually used, but it is not threadsafe to modify ObjectMapper
 after is has been used to parse or generate Json.
 
 More on Jackson modules: http://wiki.fasterxml.com/JacksonFeatureModules
+
+
+### Jackson JSON Views
+
+Ninja also supports Jackson's JSON View: with `@JsonView` annotations 
+you can easily define which properties of an object you want to include 
+in the JSON output. A simple example where only the "name" field will be
+included:
+
+<pre class="prettyprint">
+public class AppController {
+
+    public Result jsonPerson() {
+        Person person = new Person();
+        person.name = "John Doe";
+        person.age = 56;
+        
+        return Results.json().jsonView(View.Public.class).render(person);
+    }
+    
+    static class Person {
+        @JsonView(View.Public.class)
+        public String name;
+        
+        @JsonView(View.Private.class)
+        public Integer age;
+    }
+    
+    static class View {
+        static class Public {}
+        static class Private {}
+    }
+}
+</pre>
+
+More on Jackson's JSON Views: http://wiki.fasterxml.com/JacksonJsonViews
