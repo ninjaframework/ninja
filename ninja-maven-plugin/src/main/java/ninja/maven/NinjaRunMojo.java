@@ -326,11 +326,11 @@ public class NinjaRunMojo extends AbstractMojo {
         return jvmArguments;
     }
     
-    private String[] splitUnescapedSpaces(String s) {
-        String[] parts = s.split("(?<!\\\\)\\s+");
+    public static String[] splitUnescapedSpaces(String s) {
+        String[] parts = s.replaceAll("^\\s+","").replaceAll("\\s+$","").split("(?<=(^|[^\\\\])(?>\\\\\\\\){0,1000}) +");
         for (int i=0; i<parts.length; i++)
         {
-            parts[i] = parts[i].replaceAll("\\\\ ", " ");
+            parts[i] = parts[i].replace("\\\\", "\\").replaceAll("\\\\ +"," ");
         }
         return parts;
     }
