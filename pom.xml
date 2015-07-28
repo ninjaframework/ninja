@@ -383,6 +383,13 @@
                 <version>${jackson.version}</version>
             </dependency>
             
+            <!-- Woodstox as a proper Stax API implementation -->
+            <dependency>
+                <groupId>com.fasterxml.woodstox</groupId>
+                <artifactId>woodstox-core</artifactId>
+                <version>5.0.1</version>
+            </dependency>  
+            
             <!-- Afterburner lib optimizes Jackson and improves
             performance -->
             <dependency>
