@@ -1,5 +1,6 @@
 Version X.X.X
 =============
+ * 2015-07-28 Jackson will now use Woodstox as the StAX implementation (metacity)
  * 2015-07-22 Added support for Jackson's JSON Views (metacity)
  * 2015-07-21 Added properties to override system views location (momiji).
 
