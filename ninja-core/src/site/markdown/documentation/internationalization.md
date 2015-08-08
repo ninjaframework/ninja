@@ -62,7 +62,7 @@ you have to enter them two times like ''.
 </div>
 
 
-Getting a message inside a controller
+Getting a message in your code
 ----------------------------------
 
 Ninja provides the message through the class Messages.
@@ -99,7 +99,7 @@ public class ApplicationController {
 }
 </pre>
 
-Getting a message in your code
+Getting a message inside a template
 -----------------------------------
 
 Inside a Freemarker template (ftl.html) you can get internationalized messages by using
