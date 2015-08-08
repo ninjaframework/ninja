@@ -8,7 +8,7 @@ Ninja does a lot of things via convention over configuration. If things are in
 the right place it will automatically work. 
 
 For instance the routes for your
-application should always at conf/Routes.java. And html views always map to a 
+application should always at conf/Routes.java. And HTML views always map to a 
 certain controller method via their directory structure.
 
 The conventions are explained in detail in the later sections of the documentation.

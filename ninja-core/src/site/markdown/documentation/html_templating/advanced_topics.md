@@ -4,8 +4,8 @@ Advanced topics - Security, i18n and more
 Security and templating
 -----------------------
 
-Ninja is html escaping all variables that you render by default. If you don't want to do that you
-can use the noescape directive around that particular variable.
+Ninja is HTML escaping all variables that you render by default. If you don't want to do that you
+can use the "noescape" directive around that particular variable.
 <pre class="prettyprint">
 &lt;#noescape&gt;${yourVariableThatShouldNotBeEscaped}&lt;/#noescape&gt;
 </pre>
@@ -32,12 +32,12 @@ You can then access the variable inside your view like that.
 &lt;html&gt;
 </pre>
 
-flash content in the view
+Flash content in the view
 -------------------------
 
 The flash scope of the application is important. It helps to maintain
 a little bit of state between requests even on
-a restful architecture.
+a RESTful architecture.
 
 Rendering the flash error and success messages is straight forward.
 
@@ -122,7 +122,7 @@ This would then result in the following output: <code>/assets/webjars/bootstrap/
 
 i18n allows you to render translated strings. For instance <code>${i18n(&quot;myi18nKey&quot;)}</code> allows
 you to render the value for myi18nKey in the correct language for your user.
-Please refer to chapter "internationalization" for more informations.
+Please refer to chapter "internationalization" for more information.
 
 
 ### prettyTime(...)

@@ -33,7 +33,7 @@ Advanced deployment scenario
 ----------------------------
 
 With [Tomcat's hot deployment](http://www.mulesoft.com/tomcat-deploy) function 
-you can simply take the war file produced by Ninja and drop it into the tomcat webapp folder.
+you can simply take the war file produced by Ninja and drop it into the Tomcat's webapp folder.
 Tomcat automatically detects the new file, stops the old application and starts the new one.
 
 

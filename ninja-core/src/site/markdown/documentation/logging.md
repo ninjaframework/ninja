@@ -102,5 +102,5 @@ But just in case you were wondering how such a logback.xml file can look like:
 &lt;/configuration&gt;
 </pre>
 
-By the way - you can also write logback configuration files in groovy. 
+By the way - you can also write logback configuration files in Groovy. 
 

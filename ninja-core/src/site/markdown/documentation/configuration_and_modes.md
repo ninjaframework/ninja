@@ -31,7 +31,7 @@ fullServerName references the previously set values of the keys and will return 
 Inside your application there are two basic ways to access the properties. 
 
 First way is to use <code>NinjaProperties.get(...)</code>. You have to inject NinjaProperties first, then you
-can use all sorts of functions to retrieve properties.
+can use all sorts of methods to retrieve properties.
 
 <pre class="prettyprint">
 @Inject 
@@ -134,23 +134,25 @@ likely lose diagnostic mode for the particular methods you override.  You can
 retain the feature, by calling the super method and conditionally returning
 its result, rather than your own.
 
-    public class Ninja extends NinjaDefault {
+<pre class="prettyprint">
+public class Ninja extends NinjaDefault {
 
-        @Override
-        public Result getInternalServerErrorResult(Context context, Exception exception) {
-            if (isDiagnosticsEnabled()) {
-                return super.getInternalServerErrorResult(context, exception);
-            }
-
-            // your impl only active in test/prod or dev (with diagnostic disabled)
+    @Override
+    public Result getInternalServerErrorResult(Context context, Exception exception) {
+        if (isDiagnosticsEnabled()) {
+            return super.getInternalServerErrorResult(context, exception);
         }
 
+        // your impl only active in test/prod or dev (with diagnostic disabled)
     }
+
+}
+</pre>
 
 Configuring application's base package
 ------------------------------------
 
-If you'd like to keep all java code in specific package you can define
+If you'd like to keep all Java code in specific package you can define
 <pre class="prettyprint">
 application.modules.package=com.someorganinization.somepackage
 </pre>
@@ -180,7 +182,7 @@ but values in conf/production.conf will overwrite values in conf/application.con
 That way you can manage a production configuration separately from
 your project. You may want to do this for instance when your server secret should only
 be available to a certain set of people and not the world. Or if your cloud hoster uses
-a completely different configuration from prod,test or dev.
+a completely different configuration from prod, test or dev.
 
 Ninja tries to load the file specified in <code>ninja.external.configuration</code> 
 from several locations:
@@ -188,7 +190,7 @@ from several locations:
 It tries to load in the following order:
 
 * From a URL.
-* From a absolute file path.
+* From an absolute file path.
 * From a relative file path.
 * From the user's home dir.
 * From the classpath.

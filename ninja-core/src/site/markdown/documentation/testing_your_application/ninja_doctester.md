@@ -4,8 +4,8 @@ NinjaDocTester
 Introduction
 ------------
 
-Doctests allow to test and write html documentation at the same time. 
-It is ideally suited to test and document Json Apis.
+Doctests allow to test and write HTML documentation at the same time. 
+It is ideally suited to test and document JSON APIs.
 
 <pre class="prettyprint">
 public class ApiControllerDocTest extends NinjaDocTester {
@@ -37,13 +37,13 @@ public class ApiControllerDocTest extends NinjaDocTester {
 }
 </pre>
 
-Doctests will generate html documentation into your 
+Doctests will generate HTML documentation into your 
 <code>target/site/doctester</code> directory. In fact doctests
-are quite simple. <code>sayNextSection</code> is a headline in a html document. 
-<code>say</code> is a paragraph in a html element.
+are quite simple. <code>sayNextSection</code> is a headline in an HTML document. 
+<code>say</code> is a paragraph in an HTML element.
 And whenever you are calling the doctest browser (eg via makeRequest(...)) 
 the whole request, payload and response is nicely documented in the 
-generated html file.
+generated HTML file.
 
 This is awesome and allows you to test and document at the same time with minimal effort.
 Simply extend NinjaDocTester and you are ready to test-drive your application...

@@ -1,11 +1,11 @@
-Working with Json
+Working with JSON
 =================
 
-Ninja provides out of the box support to render arbitrary Java objects as Json as
-well as parsing of Json into Java objects.
+Ninja provides out of the box support to render arbitrary Java objects as JSON as
+well as parsing of JSON into Java objects.
 
 
-Rendering Json
+Rendering JSON
 --------------
 
 Consider this simple model class:
@@ -36,26 +36,26 @@ public class ApplicationController {
 }
 </pre>
 
-This controller will produce a nicely formatted Json output:
+This controller will produce a nicely formatted JSON output:
 
 <pre class="prettyprint">
-{'name':'John Johnson'}
+{"name":"John Johnson"}
 </pre>
 
 
-Parsing Json
+Parsing JSON
 ------------
 
-If you want to parse incoming json requests you simply have to add the mapping pojo
+If you want to parse incoming JSON requests you simply have to add the mapping POJO
 to the controller method signature.
 
-Consider the following Json:
+Consider the following JSON:
 
 <pre class="prettyprint">
-{'name':'John Johnson'}
+{"name":"John Johnson"}
 </pre>
 
-This Json maps to the following Java pojo:
+This JSON maps to the following Java POJO:
 
 <pre class="prettyprint">
 package models;
@@ -66,9 +66,9 @@ public class Person {
 </pre>
 
 
-If you send that Json to your application via a post request you only need to 
-add class Pojo to the controller method and Ninja will pase the incoming
-Json for you:
+If you send that JSON to your application via the HTTP body you only need to 
+add the POJO class to the controller method and Ninja will parse the incoming
+JSON for you:
 
 <pre class="prettyprint">
 package controllers;
@@ -85,11 +85,11 @@ public class ApplicationController {
 </pre>
 
 
-Rendering JsonP
+Rendering JSONP
 ---------------
 
-Rendering JsonP (Json wrapped by Javascript function call) is quite
-similar to rendering plain Json:
+Rendering JSONP (JSON wrapped by Javascript function call) is quite
+similar to rendering plain JSON:
 
 <pre class="prettyprint">
 Results.jsonp().render(person);
@@ -101,7 +101,7 @@ defined via parameter <code>callback</code>. For instance
 the following output:
 
 <pre class="prettyprint">
-MyApp.Path.myCallback123({'response': 'data'})
+MyApp.Path.myCallback123({"response":"data"})
 </pre>
 
 You can change the name of the callback parameter (<code>callback</code> by
@@ -112,18 +112,18 @@ ninja.jsonp.callbackParameter=... // specify your custom callback parameter name
 </pre>
 
 <div class="alert alert-info">
-The name of the callback parameter is sanitized for security reasons. Only
+The value of the callback parameter is sanitized for security reasons. Only
 plain callback parameter names are possible. Something like 
 <code>?callback=MyApp.Path.myCallback123</code> 
 works, but <code>?callback=alert(document.cookie)</code> does not work.
 </div>
 
 
-Advanced Json usage
+Advanced JSON usage
 -------------------
 
-Under the hood Ninja uses Jackson (http://jackson.codehaus.org/). Jackson
-is one of the most widely used Json serializers of the Java ecosystem.
+Under the hood Ninja uses Jackson (http://wiki.fasterxml.com/JacksonHome). Jackson
+is one of the most widely used JSON serializers of the Java ecosystem.
 
 If you want to customize the way Jackson works you can do so by injecting
 ObjectMapper into a startup action and modifying it. 
@@ -149,14 +149,14 @@ by your application.
 
 It is safe to modify ObjectMapper before
 it is actually used, but it is not threadsafe to modify ObjectMapper 
-after is has been used to parse or generate Json.
+after is has been used to parse or generate JSON.
 
 More on Jackson modules: http://wiki.fasterxml.com/JacksonFeatureModules
 
 
 ### Jackson JSON Views
 
-Ninja also supports Jackson's JSON View: with `@JsonView` annotations 
+Ninja also supports Jackson's JSON Views: with `@JsonView` annotations 
 you can easily define which properties of an object you want to include 
 in the JSON output. A simple example where only the "name" field will be
 included:

@@ -17,11 +17,11 @@ Expect an exciting real world application we develop together.
 Topics include:
 
  * Routes, Controllers and sessions
- * Html programming / Form handling and validation
- * Json / xml support
+ * HTML programming / Form handling and validation
+ * JSON / XML support
  * Database support 
  * Deployment to live
- * Ninja and single page webapps (Angular and Gwt).
+ * Ninja and single page webapps (AngularJS and GWT).
 
 
 ## Training 2: Advanced

@@ -1,9 +1,9 @@
-Rendering objects in html views
+Rendering objects in HTML views
 ===============================
 
 Of course you want to make your pages dynamic.
 
-It is simple to do so. The Freemarker engine takes any Map and you can access its member inside the view.
+It is simple to do so. The Freemarker engine takes any Map and you can access its members inside the view.
 
 <pre class="prettyprint">
 public Result userDashboard(
