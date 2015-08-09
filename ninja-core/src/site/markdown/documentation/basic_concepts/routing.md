@@ -342,8 +342,7 @@ Simple example that outlines some of the difficulties:
 Think of a route "/user/{id}/userDashboard".
 
 Let's say your **id** is "rootuser/domain". If you do not encode the slash in 
-the middle you end up with an
-URL like /user/rootuser/domain/userDashboard. 
+the middle you end up with a URL like /user/rootuser/domain/userDashboard. 
 And the this URL does not match the route
 because of the "/".
 

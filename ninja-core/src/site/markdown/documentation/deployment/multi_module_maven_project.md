@@ -1,6 +1,6 @@
 Multi module Maven project deployment
 -------------------------------------
-Deployment of multi module Maven project requires an additional step due the limitation of Maven Assembly Plugin as described in http://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
+Deployment of multi module Maven project requires an additional step due to the limitation of Maven Assembly Plugin as described in http://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
 
 In essence,
 
