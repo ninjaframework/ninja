@@ -57,7 +57,7 @@ Default locale: en_US, platform encoding: UTF-8
 OS name: "mac os x", version: "10.7.5", arch: "x86_64", family: "mac"
 </pre>
 
-Make sure that you are using Maven 3 or greater
+Make sure that you are using Maven 3 or greater. 
 If Maven is not available on your computer please 
 follow the following guide to setup Maven: http://maven.apache.org/guides/getting-started
 

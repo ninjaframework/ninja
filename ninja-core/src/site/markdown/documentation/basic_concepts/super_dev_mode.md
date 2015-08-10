@@ -19,7 +19,7 @@ any PermGen exceptions and picks up any changes in your code really fast.
 ## How does it work
 
 In any case you need an IDE that compiles your classes when you change them.
-Netbeans' "compile on save" works, Eclipse' "build automatically" feature works, but
+NetBeans' "compile on save" works, Eclipse's "build automatically" feature works, but
 potentially any IDE out there will compile your Java files when you save them.
 
 The flow is as follows: You start Ninja's SuperDevMode in a console. Then you

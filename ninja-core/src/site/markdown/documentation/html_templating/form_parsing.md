@@ -91,7 +91,7 @@ Really simple. Ninja maps the post request form parameters directly to the objec
 
 But wait - there is a bit more: You can even render the object directly via "Results.html().render(contact)".
 
-The corresponding html site would then look like:
+The corresponding Freemarker template would then look like:
 
 <pre class="prettyprint">
 &lt;li&gt;${contact.name}&lt;/li&gt;
@@ -100,5 +100,6 @@ The corresponding html site would then look like:
 &lt;li&gt;${contact.id}&lt;/li&gt;
 </pre>
 
-"contact" is the lower camel case version of the object's class name. And you can then access the fields (or getters / setters in case
+"contact" is the lower camel case version of the object's class name. 
+And you can then access the fields (or getters / setters in case the
 fields are private) via "contact.name".

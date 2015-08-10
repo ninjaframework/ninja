@@ -18,9 +18,9 @@ Build and development support
 
 Frontend
 --------
-- Html rendering (Freemarker)
-- Json rendering / parsing (Jackson)
-- Xml rendering / parsing (Jackson)
+- HTML rendering (Freemarker)
+- JSON rendering / parsing (Jackson)
+- XML rendering / parsing (Jackson)
 
 Stateful restful
 ----------------
@@ -42,7 +42,7 @@ Core libraries
 Relational data persistence
 ---------------------------
 - JPA (Hibernate)
-- Database migrations (FlyWayDB)
+- Database migrations (Flyway)
 
 Cache layer
 -----------

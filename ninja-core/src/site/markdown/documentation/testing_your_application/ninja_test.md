@@ -4,7 +4,7 @@ NinjaTest
 Introduction
 ------------
 
-NinjaTests start your application with a real http server and are full integration
+NinjaTests start your application with a real HTTP server and are full integration
 tests. They allow you to test all aspects of your application.
 
 You can use NinjaTestBrowser to access and retrieve content from your started
@@ -40,19 +40,19 @@ The testcase illustrates that the NinjaTestBrowser can make request, and that yo
 if the request contained certain content.
 
 The NinjaTestBrowser can do much more than simply getting content. It can for instance be used
-to verify that uploading of files works, it works for post and put requests, and you can 
+to verify that uploading of files works, it works for POST and PUT requests, and you can 
 of course set different headers and send form requests.
 
 We also recommend that each test method contains a method that makes sure that 
 a database in the background
 gets reset to a certain well defined state. 
-This is done by a @Before method that calls a certain url.
+This is done by a @Before method that calls a certain URL.
 
-NinjaTest provides access to the application internal guice injector
+NinjaTest provides access to the application internal Guice injector
  (use method <code>public Injector getInjector();</code> ).
 This allow the verification of applications responses using internal 
-application state information. In the following example, the json information 
-must match application initialization time provided by a internal service.
+application state information. In the following example, the JSON information 
+must match application initialization time provided by an internal service.
 
 <pre class="prettyprint">
 public class ApplicationInjectorTest extends NinjaTest {

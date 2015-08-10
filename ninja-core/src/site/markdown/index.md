@@ -27,7 +27,7 @@
         <h2>Makes devs happy</h2>
         <p>
         Doesn't matter if you build <b>huge enterprise apps</b> or 
-        small <b>RESTful Json microservices</b>. Ninja provides everything you need to 
+        small <b>RESTful JSON microservices</b>. Ninja provides everything you need to 
         get productive at once. Development, testing, deployment, refactoring and maintenance.
         </p>
     </div>
@@ -82,7 +82,7 @@
         <h2><i class="fa fa-code"></i> Development</h2>
         <p>Generate a new project via our Maven archetype, import it into your favorite IDE with one click and start
         coding. Ninja's <b>SuperDevMode</b> will pick up all your code changes
-        immediately. Features? All there: <b>Html, Xml, Json, JPA, caching and much more</b>.</p>
+        immediately. Features? All there: <b>HTML, XML, JSON, JPA, caching and much more</b>.</p>
     </div>
     
     <div class="span4">

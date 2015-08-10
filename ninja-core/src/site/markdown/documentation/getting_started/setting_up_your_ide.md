@@ -6,7 +6,7 @@ Just import it
 
 The Ninja application you created via the archetype is just a simple 
 plain old Maven project. This means you can import the project into any modern IDE. 
-Eclipse, Netbeans, IntelliJ and many more. 
+Eclipse, NetBeans, IntelliJ and many more. 
 
 One catch...
 ------------
@@ -24,7 +24,7 @@ Nice. But the catch is that your IDE has to recompile the files. If your IDE
 does not recompile the file Ninja's SuperDevMode will not work.
 
 Fortunately IDE based compilation works out of the box for Eclipse 
-("Automatically build project"), Netbeans ("Compile on Save") and IntelliJ 12+.
+("Automatically build project"), NetBeans ("Compile on Save") and IntelliJ 12+.
 (http://stackoverflow.com/questions/12744303/intellij-idea-java-classes-not-auto-compiling-on-save).
 
 <div class="alert alert-info">

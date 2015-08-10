@@ -4,8 +4,8 @@ Sending mail
 Introduction
 ------------
 
-Ninja allows you to send mails in a really simple and straight forward manner.
-All you have to do is to configure your smtp server in 
+Ninja allows you to send mails in a really simple and straightforward manner.
+All you have to do is to configure your SMTP server in 
 <code>application.conf</code>. Then
 you can inject <code>Postoffice</code> and <code>Mail</code> in your application. 
 This allows you to create a new <code>Mail</code> instance and send 
@@ -105,8 +105,8 @@ in <code>application.conf</code>:
 postoffice.implementation=... // Implementation to use for interface Postoffice
 </pre>
 
-If you want to use the real smtp Postoffice in dev mode (and not the mocked
-postoffice by default) you can override that behavior with the parameter:
+If you want to use the real SMTP Postoffice in dev mode (and not the mocked
+Postoffice by default) you can override that behavior with the parameter:
 
 <pre class="prettyprint">
 %dev.postoffice.implementation=ninja.postoffice.commonsmail.PostofficeCommonsmailImpl

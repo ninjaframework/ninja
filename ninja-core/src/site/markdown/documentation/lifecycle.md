@@ -5,7 +5,7 @@ Introduction
 -------------
 
 If we are talking about services we also have to talk about priority startup and shutdown.
-You want your services being started and stopped in a orderly manner.
+You want your services being started and stopped in an orderly manner.
 
 You can use Ninja's <code>@Start</code> and <code>@Dispose</code> annotations to do so.
 
@@ -33,7 +33,7 @@ public class MyService {
     public Result getCount(Context ctx) {
         return Results.json(count.get());
     }
-    }    
+}    
 </pre>
 
 Don't forget to bind the class explicitly inside conf/Module.java
