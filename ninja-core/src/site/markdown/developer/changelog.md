@@ -1,5 +1,6 @@
-Version X.X.X
+Version 5.1.5
 =============
+
  * 2015-08-09 Website documentation improvements (metacity)
  * 2015-07-28 Jackson will now use Woodstox as the StAX implementation (metacity)
  * 2015-07-22 Added support for Jackson's JSON Views (metacity)
