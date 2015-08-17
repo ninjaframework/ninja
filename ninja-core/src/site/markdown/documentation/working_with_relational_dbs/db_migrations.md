@@ -53,7 +53,7 @@ create sequence hibernate_sequence;
 A migration script is just plain old SQL. It is really important to stress that Flyway's migration
 scripts are NOT database vendor independent. 
 
-Therefore it strongly discouraged to use different databases in test, dev and prod.
+Therefore it is strongly discouraged to use different databases in test, dev and prod.
 
 
 Collaboratively working on migrations
