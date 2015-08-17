@@ -3,7 +3,7 @@
 #set( $symbol_escape = '\' )
 <configuration>
 
-  <!-- Uncomment to enabled file-based logging with 
+  <!-- Uncomment to enable file-based logging with 
        daily (or size exceeding) gzip archival.
        Also uncomment the "ROLLING" reference in <root>.
   <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
