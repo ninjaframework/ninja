@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2015-08-23 Added charset to error html files (mallowlabs)
+
 Version 5.1.5
 =============
 
