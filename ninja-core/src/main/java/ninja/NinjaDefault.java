@@ -176,7 +176,6 @@ public class NinjaDefault implements Ninja {
         
     }
     
-    // TO-BE-EVENTUALLY-ADDED-TO-NINJA-DEFAULT-IF-FOLKS-LIKE-THIS
     public Result getRenderingExceptionResult(Context context, RenderingException exception) {
         
         if (isDiagnosticsEnabled()) {
@@ -356,7 +355,7 @@ public class NinjaDefault implements Ninja {
             DiagnosticError diagnosticError =
                 DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
             
-            return Results.unauthorized().render(diagnosticError);
+            return Results.forbidden().render(diagnosticError);
             
         }
         
