@@ -84,4 +84,70 @@ public Result clearSession(Session session) {
 }
 </pre>
 
+Disabling secure (HTTPS) flag for sessions during development
+-------------------------------------------------------------
 
+By default, Ninja restricts session cookies to secure (HTTPS) connections.  This is
+*highly recommended* in production mode, but prevents using and testing sessions
+with HTTP during development.  This restriction can be removed only in dev mode
+by adding the following to your configuration file at <code>conf/application.conf</code>.
+Please note that secure (HTTPS) will still be required in testing or production mode.
+
+<pre class="prettyprint">
+# allow session cookies over http in dev mode
+%dev.application.session.transferred_over_https_only = false
+</pre>
+
+Session configuration
+---------------------
+
+There are several properties in the configuration file at <code>conf/application.conf</code>
+that will change the default behavior of sessions.
+
+The prefix used for all Ninja cookies. By default, this is "NINJA". For example,
+to use a cookie prefix of "MYAPP":
+
+<pre class="prettyprint">
+application.cookie.prefix = MYAPP
+</pre>
+
+The domain for all cookies (including session cookies). For example, to make
+cookies valid for all domains ending with '.example.com', e.g. foo.example.com
+and bar.example.com:
+
+<pre class="prettyprint">
+application.cookie.domain = .example.com
+</pre>
+
+The time until a session expires (in seconds). By default, a session does not
+have an expiry time. For example, to set a session to expire after one minute
+of inactivity:
+
+<pre class="prettyprint">
+application.session.expire_time_in_seconds = 60
+</pre>
+
+To send a session cookie to the user, but only if the data changed.  By default,
+this is set to true.  To send the session cookie data on every response, set
+this value to false:
+
+<pre class="prettyprint">
+application.session.send_only_if_changed = false
+</pre>
+
+To only send session cookies over HTTPS by including the secure flag.  To disable
+this flag:
+
+<pre class="prettyprint">
+application.session.transferred_over_https_only = false
+</pre>
+
+To set the HttpOnly flag on the session cookie. On a supported browser, an
+HttpOnly session cookie will be used only when transmitting HTTP (or HTTPS) requests,
+thus restricting access from other, non-HTTP APIs (such as JavaScript). This
+restriction mitigates but does not eliminate the threat of session cookie theft
+via cross-site scripting (XSS).  To disable this flag:
+
+<pre class="prettyprint">
+application.session.http_only = false
+</pre>
