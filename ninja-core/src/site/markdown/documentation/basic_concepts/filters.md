@@ -98,6 +98,50 @@ Sometimes it is also useful to have a <code>BaseController</code> that is annota
 <code>@FilterWith</code>. Other controllers extending <code>BaseContoller</code> will automatically
 inherit <code>@FilterWith</code>.
 
+Passing values from a filter to other filters/controller
+--------------------------------------------------------
+
+The most common filter examples for Ninja demonstrate how to use filters to
+set session values.  However, non-session values can also be created in filters
+and passed onto other filters or your controller.
+
+The <code>context</code> parameter included with the <code>filter</code> method
+supports setting arbitrary attributes (values) for the current request.
+
+<pre class="prettyprint">
+public class ExampleFilter implements Filter {
+
+    @Override
+    public Result filter(FilterChain chain, Context context) {
+
+        context.setAttribute("foo", "bar");
+
+        return chain.next(context);
+
+    }
+}
+</pre>
+
+In another filter or your controller, you can fetch the value of "foo" by
+getting the attribute.
+
+public MyController {
+
+    @FilterWith(ExampleFilter.class)
+    public Result exampleMethod(Context context) {
+        
+        String foo = context.getAttribute("foo");
+
+        // foo will equal "bar"
+
+    }
+}
+
+Alternatively, an even more powerful design pattern is to write your own
+<code>ArgumentExtractor</code> that extracts the attribute value and have it
+automatically injected into your controller.  Visit the <a href="/documentation/basic_concepts/argument_extractors.html">argument extractors</a>
+page for more info.
+
 BasicAuthFilter
 ---------------
 

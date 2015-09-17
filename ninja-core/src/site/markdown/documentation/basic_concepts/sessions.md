@@ -50,8 +50,19 @@ public Result getUserNameFromSession(Session session) {
     return Results.html().render(username);
 
 }
-</pre> 
+</pre>
 
+Individual session values can also be injected in your controller by decorating
+method parameters with the <code>@SessionParam("name")</code> annotation.
+For example, to get a session value named "user_id":
+
+<pre class="prettyprint">
+public Result index(@SessionParam("user_id") Long userId) {
+
+    // rest of method
+
+}
+</pre>
 
 Saving data inside a session
 ----------------------------
@@ -84,4 +95,82 @@ public Result clearSession(Session session) {
 }
 </pre>
 
+Disabling secure (HTTPS) flag for sessions during development
+-------------------------------------------------------------
 
+By default, Ninja restricts session cookies to secure (HTTPS) connections.  This is
+*highly recommended* in production mode, but prevents using and testing sessions
+with HTTP during development.  This restriction can be removed only in dev mode
+by adding the following to your configuration file at <code>conf/application.conf</code>.
+Please note that secure (HTTPS) will still be required in testing or production mode.
+
+<pre class="prettyprint">
+# allow session cookies over http in dev mode
+%dev.application.session.transferred_over_https_only = false
+</pre>
+
+Session configuration
+---------------------
+
+There are several properties in the configuration file at <code>conf/application.conf</code>
+that will change the default behavior of sessions.
+
+The prefix used for all Ninja cookies. By default, this is "NINJA". For example,
+to use a cookie prefix of "MYAPP":
+
+<pre class="prettyprint">
+application.cookie.prefix = MYAPP
+</pre>
+
+The domain for all cookies (including session cookies). For example, to make
+cookies valid for all domains ending with '.example.com', e.g. foo.example.com
+and bar.example.com:
+
+<pre class="prettyprint">
+application.cookie.domain = .example.com
+</pre>
+
+The time until a session expires (in seconds). By default, a session does not
+have an expiry time. For example, to set a session to expire after one minute
+of inactivity:
+
+<pre class="prettyprint">
+application.session.expire_time_in_seconds = 60
+</pre>
+
+To send a session cookie to the user, but only if the data changed.  By default,
+this is set to true.  To send the session cookie data on every response, set
+this value to false:
+
+<pre class="prettyprint">
+application.session.send_only_if_changed = false
+</pre>
+
+<div class="alert alert-info">
+When setting the <code>application.session.expire_time_in_seconds</code> property
+in conjunction with <code>application.session.send_only_if_changed = true</code>,
+the expiration seconds are no longer the "time of inactivity", but a hard
+expiration time after the last Set-Cookie is sent to the client. For example,
+with expire_time_in_seconds set to 60 and send_only_if_changed set to true, a
+user's logged-in session cookie will simply expire (unless new session values are
+added/modified within the expiry time frame) in 60 seconds no matter how many page loads
+he does. When send_only_if_changed is false, the session cookie and its expiration
+time is refreshed on every HTTP response.
+</div>
+
+To only send session cookies over HTTPS by including the secure flag.  To disable
+this flag:
+
+<pre class="prettyprint">
+application.session.transferred_over_https_only = false
+</pre>
+
+To set the HttpOnly flag on the session cookie. On a supported browser, an
+HttpOnly session cookie will be used only when transmitting HTTP (or HTTPS) requests,
+thus restricting access from other, non-HTTP APIs (such as JavaScript). This
+restriction mitigates but does not eliminate the threat of session cookie theft
+via cross-site scripting (XSS).  To disable this flag:
+
+<pre class="prettyprint">
+application.session.http_only = false
+</pre>
