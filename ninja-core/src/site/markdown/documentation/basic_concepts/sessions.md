@@ -50,8 +50,19 @@ public Result getUserNameFromSession(Session session) {
     return Results.html().render(username);
 
 }
-</pre> 
+</pre>
 
+Individual session values can also be injected in your controller by decorating
+method parameters with the <code>@SessionParam("name")</code> annotation.
+For example, to get a session value named "user_id":
+
+<pre class="prettyprint">
+public Result index(@SessionParam("user_id") Long userId) {
+
+    // rest of method
+
+}
+</pre>
 
 Saving data inside a session
 ----------------------------
@@ -134,6 +145,18 @@ this value to false:
 <pre class="prettyprint">
 application.session.send_only_if_changed = false
 </pre>
+
+<div class="alert alert-info">
+When setting the <code>application.session.expire_time_in_seconds</code> property
+in conjunction with <code>application.session.send_only_if_changed = true</code>,
+the expiration seconds are no longer the "time of inactivity", but a hard
+expiration time after the last Set-Cookie is sent to the client. For example,
+with expire_time_in_seconds set to 60 and send_only_if_changed set to true, a
+user's logged-in session cookie will simply expire (unless new session values are
+added/modified within the expiry time frame) in 60 seconds no matter how many page loads
+he does. When send_only_if_changed is false, the session cookie and its expiration
+time is refreshed on every HTTP response.
+</div>
 
 To only send session cookies over HTTPS by including the secure flag.  To disable
 this flag:
