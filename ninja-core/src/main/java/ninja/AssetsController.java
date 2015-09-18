@@ -175,7 +175,12 @@ public class AssetsController {
 
         URL url = null;
 
-        if (ninjaProperties.isDev()) {
+        if (ninjaProperties.isDev() 
+                // Testing that the file exists is important because
+                // on some dev environments we do not get the correct asset dir
+                // via System.getPropery("user.dir").
+                // In that case we fall back to trying to load from classpath
+                && new File(assetsDirInDevModeWithoutTrailingSlash()).exists()) {
             String finalNameWithoutLeadingSlash = assetsControllerHelper.normalizePathWithoutLeadingSlash(fileName, false);
             File possibleFile = new File(
                     assetsDirInDevModeWithoutTrailingSlash() 

@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2015-09-17 Fixed bug in AssetsController that occurred in dev mode on some environments (ra).
  * 2015-08-23 Added charset to error html files (mallowlabs)
  * 2015-09-15 Fixed status code for forbidden results in diagnostic mode (jjlauer)
  * 2015-09-15 Added documentation for session configuration properties (jjlauer)
