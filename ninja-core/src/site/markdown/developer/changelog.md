@@ -1,4 +1,4 @@
-Version X.X.X
+Version 5.1.6
 =============
 
  * 2015-09-17 Fixed bug in AssetsController that occurred in dev mode on some environments (ra).
