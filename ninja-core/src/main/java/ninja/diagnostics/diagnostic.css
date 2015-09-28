@@ -33,9 +33,10 @@ p#detail {
 h2 {
     margin: 0;
     padding: 5px 45px;
+    padding-top: 20px;
     font-size: 12px;
-    background: #333;
-    color: #fff;
+    background: #ECECEC;
+    color: #333;
 }
 pre {
     margin: 0;
@@ -90,13 +91,79 @@ pre span.route span.call {
     margin-right: 10px;
 }
 pre:first-child span.route {
-    border-top: 4px solid #CDCDCD;
+    border-top: 1px solid #CDCDCD;
 }
 pre:first-child span.line {
-    border-top: 4px solid #B6B6B6;
+    border-top: 1px solid #B6B6B6;
 }
 pre.error span.line {
     background: #A31012;
     color: #fff;
     text-shadow: 1px 1px 1px rgba(0,0,0,.3);
+}
+
+div.context {
+    padding: 0px;
+}
+
+/*----- Tabs -----*/
+.tabs {
+    width: 100%;
+    display: inline-block;
+    background: #68006c;
+}
+
+/*----- Tab Links -----*/
+
+/* Clearfix */
+.tab-links:after {
+    display: block;
+    clear: both;
+    content: '';
+}
+
+ul.tab-links {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+.tab-links li {
+    margin: 0px 5px;
+    float: left;
+    list-style: none;
+}
+
+.tab-links a {
+    padding: 9px 15px;
+    display: inline-block;
+    border-radius: 3px 3px 0px 0px;
+    background: #D2D2D2;
+    font-size: 14px;
+    color: #333;
+    transition: all linear 0.15s;
+    text-decoration: none;
+}
+
+.tab-links a:hover {
+    background: #ECECEC;
+    text-decoration: none;
+}
+
+li.active a, li.active a:hover {
+    background: #ECECEC;
+    color: #4c4c4c;
+}
+
+/*----- Content of Tabs -----*/
+.tab-content {
+    padding: 0px;
+    background: #ECECEC;
+}
+
+.tab {
+    display: none;
+}
+
+.tab.active {
+    display: block;
 }

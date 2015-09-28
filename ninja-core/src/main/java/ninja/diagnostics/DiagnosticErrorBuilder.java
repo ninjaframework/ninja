@@ -18,6 +18,7 @@ package ninja.diagnostics;
 
 import java.io.File;
 import java.io.IOException;
+import ninja.Result;
 
 /**
  * Utility class for building <code>DiagnosticError</code> instances.
@@ -52,29 +53,31 @@ public class DiagnosticErrorBuilder {
             "Route not found",
             null,
             snippet,
-            -1);
+            -1,
+            null);
     }
     
     static public DiagnosticError build403ForbiddenDiagnosticError() {
         return buildDiagnosticError(
             "Forbidden",
-            null, false);
+            null, false, null);
     }
     
     static public DiagnosticError build401UnauthorizedDiagnosticError() {
         return buildDiagnosticError(
             "Not authorized",
-            null, false);
+            null, false, null);
     }
     
     static public DiagnosticError build500InternalServerErrorDiagnosticError(
             Throwable cause,
-            boolean tryToReadLinesFromSourceCode) {
+            boolean tryToReadLinesFromSourceCode,
+            Result underlyingResult) {
         
         return buildDiagnosticError(
             "Application exception",
             cause,
-            tryToReadLinesFromSourceCode);
+            tryToReadLinesFromSourceCode, underlyingResult);
     }
     
     static public DiagnosticError build400BadRequestDiagnosticError(
@@ -84,13 +87,14 @@ public class DiagnosticErrorBuilder {
         return buildDiagnosticError(
             "Bad request to application",
             cause,
-            tryToReadLinesFromSourceCode);
+            tryToReadLinesFromSourceCode, null);
     }
     
     
     static public DiagnosticError buildDiagnosticError(String title,
                                                         Throwable throwable,
-                                                        boolean tryToReadLinesFromSourceCode) {
+                                                        boolean tryToReadLinesFromSourceCode,
+                                                        Result underlyingResult) {
         if (tryToReadLinesFromSourceCode) {       
             // see if we can find the source code for this error
             StackTraceElement ste = findFirstStackTraceElementWithSourceCodeInProject(throwable);
@@ -98,14 +102,15 @@ public class DiagnosticErrorBuilder {
                 String relativeSourcePath = getSourceCodeRelativePathForStackTraceElement(ste);
                 int lineNumberOfError = ste.getLineNumber();
                 
-                return buildDiagnosticError(title, throwable, relativeSourcePath, lineNumberOfError);
+                return buildDiagnosticError(title, throwable, relativeSourcePath, lineNumberOfError, underlyingResult);
             }
         }
         
         // fallback to just displaying the error w/o any source
         return new DiagnosticError(
             title,
-            throwable);
+            throwable,
+            underlyingResult);
     }
     
     
@@ -114,33 +119,36 @@ public class DiagnosticErrorBuilder {
                                                         Throwable throwable,
                                                         String packageName,
                                                         String fileName,
-                                                        int lineNumberOfError) {
+                                                        int lineNumberOfError,
+                                                        Result underlyingResult) {
         
         String relativeSourcePath = 
             packageName.replace(".", File.separator)
             + fileName;
         
-        return buildDiagnosticError(title, throwable, relativeSourcePath, lineNumberOfError);
+        return buildDiagnosticError(title, throwable, relativeSourcePath, lineNumberOfError, underlyingResult);
     }
     
     
     static public DiagnosticError buildDiagnosticError(String title,
                                                         Throwable throwable,
                                                         String relativeSourcePath,
-                                                        int lineNumberOfError) {
+                                                        int lineNumberOfError,
+                                                        Result underlyingResult) {
         int lineNumberFrom = lineNumberOfError - 4;
         int lineNumberTo = lineNumberOfError + 5;
 
         SourceSnippet snippet = tryToReadSourceSnippet(relativeSourcePath, lineNumberFrom, lineNumberTo);
 
-        return buildDiagnosticError(title, throwable, snippet, lineNumberOfError);
+        return buildDiagnosticError(title, throwable, snippet, lineNumberOfError, underlyingResult);
     }
     
     
     static public DiagnosticError buildDiagnosticError(String title,
                                                         Throwable throwable,
                                                         SourceSnippet snippet,
-                                                        int lineNumberOfError) {
+                                                        int lineNumberOfError,
+                                                        Result underlyingResult) {
         
         // if source snippet exists then include it with diagnostic error
         if (snippet != null && snippet.getLines() != null && snippet.getLines().size() > 0) {
@@ -150,13 +158,15 @@ public class DiagnosticErrorBuilder {
                 snippet.getSourceLocation(),
                 snippet.getLines(),
                 snippet.getLineNumberFrom(),
-                lineNumberOfError);
+                lineNumberOfError,
+                underlyingResult);
         }
         
         // fallback to just displaying the error w/o any source
         return new DiagnosticError(
             title,
-            throwable);
+            throwable,
+            underlyingResult);
     }
     
     static public StackTraceElement findFirstStackTraceElementWithSourceCodeInProject(Throwable throwable) {

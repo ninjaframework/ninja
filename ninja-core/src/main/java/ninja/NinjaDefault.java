@@ -95,15 +95,18 @@ public class NinjaDefault implements Ninja {
 
         if (route != null) {
 
+            Result underlyingResult = null;
+            
             try {
                 
-                Result result = route.getFilterChain().next(context);
-
-                resultHandler.handleResult(result, context);
+                underlyingResult = route.getFilterChain().next(context);
+                
+                resultHandler.handleResult(underlyingResult, context);
                 
             } catch (Exception exception) {
                 
-                Result result = onException(context, exception);
+                // call special handler to capture the underlying result if there is one
+                Result result = onException(context, exception, underlyingResult);
                 renderErrorResultAndCatchAndLogExceptions(result, context);
                             
             }
@@ -154,7 +157,16 @@ public class NinjaDefault implements Ninja {
     @Override
     public Result onException(Context context, Exception exception) {
         
+        return onException(context, exception, null);
+        
+    }
+    
+    public Result onException(Context context, Exception exception, Result underlyingResult) {
+        
         Result result;
+        
+        // log the exception as debug
+        logger.debug("Unable to process request", exception);
         
         if (exception instanceof BadRequestException) {
             
@@ -164,11 +176,11 @@ public class NinjaDefault implements Ninja {
             
             RenderingException renderingException = (RenderingException)exception;
             
-            result = getRenderingExceptionResult(context, renderingException);
+            result = getRenderingExceptionResult(context, renderingException, underlyingResult);
             
         } else {
             
-            result = getInternalServerErrorResult(context, exception);
+            result = getInternalServerErrorResult(context, exception, underlyingResult);
 
         }
         
@@ -176,7 +188,7 @@ public class NinjaDefault implements Ninja {
         
     }
     
-    public Result getRenderingExceptionResult(Context context, RenderingException exception) {
+    public Result getRenderingExceptionResult(Context context, RenderingException exception, Result underlyingResult) {
         
         if (isDiagnosticsEnabled()) {
             
@@ -186,7 +198,8 @@ public class NinjaDefault implements Ninja {
                     (exception.getTitle() == null ? "Rendering exception" : exception.getTitle()),
                     (exception.getCause() == null ? exception : exception.getCause()),
                     exception.getSourcePath(),
-                    exception.getLineNumber());
+                    exception.getLineNumber(),
+                    underlyingResult);
 
             return Results.internalServerError().render(diagnosticError);
             
@@ -198,11 +211,15 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getInternalServerErrorResult(Context context, Exception exception) {
+        return getInternalServerErrorResult(context, exception, null);
+    }
+    
+    public Result getInternalServerErrorResult(Context context, Exception exception, Result underlyingResult) {
         
         if (isDiagnosticsEnabled()) {
             
             DiagnosticError diagnosticError =
-                DiagnosticErrorBuilder.build500InternalServerErrorDiagnosticError(exception, true);
+                DiagnosticErrorBuilder.build500InternalServerErrorDiagnosticError(exception, true, underlyingResult);
             
             return Results.internalServerError().render(diagnosticError);
             

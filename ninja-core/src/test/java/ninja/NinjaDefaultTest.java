@@ -151,7 +151,7 @@ public class NinjaDefaultTest {
         
         ninjaDefault.onRouteRequest(contextImpl);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, exception);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, exception, null);
     
     }
     
@@ -168,7 +168,7 @@ public class NinjaDefaultTest {
         
         ninjaDefault.onRouteRequest(contextImpl);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, internalServerErrorException);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, internalServerErrorException, null);
     
     }
     
@@ -293,7 +293,7 @@ public class NinjaDefaultTest {
     
         Result result = ninjaDefault.onException(contextImpl, anyException);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, anyException);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, anyException, null);
         assertThat(result.getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
 
     }
