@@ -322,6 +322,11 @@ public class ContextImpl implements Context.Impl {
     @Override
     public List<Cookie> getCookies() {
         javax.servlet.http.Cookie[] servletCookies = httpServletRequest.getCookies();
+        
+        if (servletCookies == null) {
+            return Collections.EMPTY_LIST;
+        }
+        
         List<Cookie> ninjaCookies = new ArrayList<>(servletCookies.length);
 
         for (javax.servlet.http.Cookie cookie : servletCookies) {
