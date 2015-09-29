@@ -227,7 +227,12 @@ public class DiagnosticErrorRenderer {
             Route route = context.getRoute();
             appendNameValue(s, "Http method", route.getHttpMethod());
             appendNameValue(s, "Controller method", route.getControllerClass().getCanonicalName() + "." + route.getControllerMethod().getName() + "()");
-            appendNameValue(s, "Controller parameters", Arrays.toString(route.getControllerMethod().getParameters()));
+            StringBuilder params = new StringBuilder();
+            for (Class type : route.getControllerMethod().getParameterTypes()) {
+                if (params.length() > 0) { params.append(", "); }
+                params.append(type.getCanonicalName());
+            }
+            appendNameValue(s, "Controller parameters", params.toString());
         } else {
             appendNoValues(s);
         }
