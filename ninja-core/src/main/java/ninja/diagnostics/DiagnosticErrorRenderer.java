@@ -80,6 +80,10 @@ public class DiagnosticErrorRenderer {
     public void renderResult(Context context, Result result) throws IOException {
         String out = render();
 
+        // set context response content type
+        result.contentType("text/html");
+        result.charset("utf-8");
+        
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         try (Writer w = responseStreams.getWriter()) {
             w.write(out);
