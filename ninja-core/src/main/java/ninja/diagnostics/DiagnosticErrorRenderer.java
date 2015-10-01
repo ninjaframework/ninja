@@ -137,7 +137,7 @@ public class DiagnosticErrorRenderer {
         
         // simple token replacement
         headerTemplate = headerTemplate.replace("${TITLE}", escape(title));
-        headerTemplate = headerTemplate.replace("${STYLE}", styleTemplate);
+        headerTemplate = headerTemplate.replace("${STYLE}", escape(styleTemplate));
         
         s.append(headerTemplate);
         
@@ -418,7 +418,7 @@ public class DiagnosticErrorRenderer {
                                                         int lineNumberOfSourceLines,
                                                         int lineNumberOfError) {
         if (sourceLocation != null) {
-            s.append("    <h2>").append(sourceLocation).append("</h2>\n");
+            s.append("    <h2>").append(escape(sourceLocation.toString())).append("</h2>\n");
         }
 
         if (sourceLines != null) {
@@ -448,7 +448,7 @@ public class DiagnosticErrorRenderer {
     private DiagnosticErrorRenderer appendThrowable(Throwable throwable) throws IOException {
         s.append("<h2>Stack Trace</h2>");
         if (throwable != null) {
-            s.append("<pre><span class=\"stacktrace\">").append(throwableStackTraceToString(throwable)).append("</span></pre>\n");
+            s.append("<pre><span class=\"stacktrace\">").append(escape(throwableStackTraceToString(throwable))).append("</span></pre>\n");
         } else {
             appendNoValues(s, "Result was not triggered by an exception");
         }
