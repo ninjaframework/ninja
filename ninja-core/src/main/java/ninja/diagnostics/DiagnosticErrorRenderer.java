@@ -22,16 +22,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import ninja.Context;
 import ninja.Cookie;
-import ninja.FilterChain;
 import ninja.Result;
 import ninja.Route;
 import ninja.exceptions.InternalServerErrorException;
-import ninja.utils.Message;
 import ninja.utils.ResponseStreams;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -139,7 +136,7 @@ public class DiagnosticErrorRenderer {
         String styleTemplate = getResource("diagnostic.css");
         
         // simple token replacement
-        headerTemplate = headerTemplate.replace("${TITLE}", title);
+        headerTemplate = headerTemplate.replace("${TITLE}", escape(title));
         headerTemplate = headerTemplate.replace("${STYLE}", styleTemplate);
         
         s.append(headerTemplate);
@@ -176,7 +173,7 @@ public class DiagnosticErrorRenderer {
                 s.append(" class=\"active\"");
             }
             
-            s.append("><a href=\"#tab").append(i).append("\">").append(names[i]).append("</a></li>\n");
+            s.append("><a href=\"#tab").append(i).append("\">").append(escape(names[i])).append("</a></li>\n");
         }
         
         s.append("    </ul>\n");
@@ -391,9 +388,9 @@ public class DiagnosticErrorRenderer {
         
     private void appendNameValue(StringBuilder sb, String name, String value) throws IOException {
         sb.append("<pre><span class=\"line\" style=\"width: 200px;\">");
-        sb.append(name);
+        sb.append(escape(name));
         sb.append("</span><span class=\"route\" style=\"left: 210px\">");
-        sb.append(value);
+        sb.append(escape(value));
         sb.append("</span></pre>");
     }
     
@@ -402,7 +399,7 @@ public class DiagnosticErrorRenderer {
     }
     
     private void appendNoValues(StringBuilder sb, String title) throws IOException {
-        sb.append("<pre style=\"border-bottom: 0px;\"><span style=\"position: absolute; left: 45px;\">").append(title).append("</span></pre><br/>");
+        sb.append("<pre style=\"border-bottom: 0px;\"><span style=\"position: absolute; left: 45px;\">").append(escape(title)).append("</span></pre><br/>");
     }
     
     private DiagnosticErrorRenderer appendSourceSnippet(URI sourceLocation,
@@ -427,7 +424,7 @@ public class DiagnosticErrorRenderer {
                 s.append("<span class=\"")
                         .append("route")
                         .append("\">")
-                        .append(StringEscapeUtils.escapeHtml4(sourceLines.get(i)))
+                        .append(escape(sourceLines.get(i)))
                         .append("</span>");
                 s.append("</pre>");
             }
@@ -453,6 +450,10 @@ public class DiagnosticErrorRenderer {
             throwable.printStackTrace(pw);
         }
         return sw.toString();
+    }
+    
+    private String escape(String value) {
+        return StringEscapeUtils.escapeHtml4(value);
     }
     
     private String getResource(String resourceName) throws IOException {
