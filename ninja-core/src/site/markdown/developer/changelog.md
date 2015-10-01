@@ -1,6 +1,7 @@
 Version 5.1.7
 =============
 
+ * 2015-10-01 Fixed garbled snippets in diagnostics (mallowlabs)
  * 2015-09-25 Upgrade FreeMarker from 2.3.22 to 2.3.23 (khmarbaise)
 
 Version 5.1.6
