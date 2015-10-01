@@ -640,6 +640,22 @@ public class ContextImpl implements Context.Impl {
         httpServletRequest.setAttribute(name, value);
     }
 
+    @Override
+    public Map<String, Object> getAttributes() {
+        // build map of attributes
+        Map<String,Object> attributes = new HashMap<String,Object>();
+        
+        Enumeration<String> en = httpServletRequest.getAttributeNames();
+        
+        while (en.hasMoreElements()) {
+            String name = en.nextElement();
+            Object value = httpServletRequest.getAttribute(name);
+            attributes.put(name, value);
+        }
+        
+        return attributes;
+    }
+
     /**
      * When a servlet engine gets a content type like: "application/json" it
      * assumes a default encoding of iso-xxxxx.

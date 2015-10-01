@@ -291,6 +291,11 @@ public class WrappedContext implements Context {
     public void setAttribute(String name, Object value) {
         wrapped.setAttribute(name, value);
     }
+    
+    @Override
+    public Map<String,Object> getAttributes() {
+        return wrapped.getAttributes();
+    }
 
     @Override
     public String getContextPath() {

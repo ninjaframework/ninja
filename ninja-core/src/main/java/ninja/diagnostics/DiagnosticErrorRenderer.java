@@ -254,6 +254,17 @@ public class DiagnosticErrorRenderer {
             appendNoValues(s);
         }
         
+        s.append("<h2>Attributes</h2>\n");
+
+        Map<String,Object> attributes = context.getAttributes();
+        if (attributes != null && !attributes.isEmpty()) {
+            for (Map.Entry<String,Object> entry : attributes.entrySet()) {
+                appendNameValue(s, entry.getKey(), (entry.getValue() != null ? entry.getValue().toString() : "null"));
+            }
+        } else {
+            appendNoValues(s);
+        }
+        
         List<Cookie> cookies = context.getCookies();
         
         if (cookies == null || cookies.isEmpty()) {
