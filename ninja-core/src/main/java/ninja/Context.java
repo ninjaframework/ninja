@@ -652,6 +652,13 @@ public interface Context {
     void setAttribute(String name, Object value);
     
     /**
+     * Get all the attributes from the request
+     * 
+     * @return The attributes
+     */
+    Map<String, Object> getAttributes();
+    
+    /**
      * Check to see if the request content type is JSON.
      * <p>
      * Checks to see if the request content type has been set application/json 

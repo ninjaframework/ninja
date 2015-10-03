@@ -28,6 +28,9 @@ public interface Ninja {
      * 
      * @param context The context for this request
      * @param exception The exception to handle. Can be used to customize error message.
+     * @param underlyingResult The underlying Result if the handling of the 
+     *      request was processed enough to generate one prior to an exception
+     *      being thrown.
      * @return a result you can use to render the error.
      */
     Result onException(Context context, Exception exception);
