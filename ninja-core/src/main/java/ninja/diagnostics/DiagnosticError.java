@@ -39,11 +39,14 @@ public class DiagnosticError implements Renderable {
     private final List<String> sourceLines;
     private final int lineNumberOfSourceLines;
     private final int lineNumberOfError;
+    // underlying result
+    private final Result underlyingResult;
 
     public DiagnosticError(String title,
-                            Throwable throwable) {
+                            Throwable throwable,
+                            Result underlyingResult) {
         // error with no source found
-        this (title, throwable, null, null, -1, -1);
+        this (title, throwable, null, null, -1, -1, underlyingResult);
     }
     
     public DiagnosticError(String title,
@@ -51,13 +54,15 @@ public class DiagnosticError implements Renderable {
                             URI sourceLocation,
                             List<String> sourceLines,
                             int lineNumberOfSourceLines,
-                            int lineNumberOfError) {
+                            int lineNumberOfError,
+                            Result underlyingResult) {
         this.throwable = throwable;
         this.title = title;
         this.sourceLocation = sourceLocation;
         this.sourceLines = sourceLines;
         this.lineNumberOfSourceLines = lineNumberOfSourceLines;
         this.lineNumberOfError =  lineNumberOfError;
+        this.underlyingResult = underlyingResult;
     }
 
     public String getTitle() {
@@ -84,6 +89,10 @@ public class DiagnosticError implements Renderable {
         return lineNumberOfError;
     }
 
+    public Result getUnderlyingResult() {
+        return underlyingResult;
+    }
+    
     @Override
     public void render(Context context, Result result) {
         DiagnosticErrorRenderer

@@ -16,13 +16,21 @@
 
 package ninja.diagnostics;
 
+import com.google.common.collect.ImmutableMap;
 import ninja.Context;
+import ninja.NinjaDefault;
 import ninja.Result;
 import ninja.Results;
+import ninja.utils.NinjaProperties;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -57,6 +65,37 @@ public class DiagnosticErrorRendererTest {
         Assert.assertTrue(out.contains("Diagnostic Error"));
         Assert.assertTrue(out.contains("401"));
         
+    }
+    
+    @Test
+    public void buildAndRenderDiagnosticErrorWithHTMLEntities() throws Exception {
+
+        NinjaDefault ninja = Mockito.spy(new NinjaDefault());
+        
+        doReturn(Boolean.TRUE).when(ninja).isDiagnosticsEnabled();
+        
+        // build context that will have HTML entites in key spots
+        
+        when(context.getMethod()).thenReturn("GET");
+        when(context.getContextPath()).thenReturn("/");
+        when(context.getAttributes()).thenReturn(ImmutableMap.of("TEST-ATTR", (Object)"Attribute with < > & entities"));
+        
+        Result testResult = ninja.getInternalServerErrorResult(context, new Exception("Exception message with < > & entities"));
+        
+        // renderable in testResult is the DiagnosticError
+        
+        Assert.assertNotNull(testResult);
+        Assert.assertNotNull(testResult.getRenderable());
+        Assert.assertThat(testResult.getRenderable(), instanceOf(DiagnosticError.class));
+        
+        DiagnosticError de = (DiagnosticError)testResult.getRenderable();
+        
+        DiagnosticErrorRenderer renderer = DiagnosticErrorRenderer.build(context, testResult, de);
+        
+        String out = renderer.render();
+
+        Assert.assertThat(out, containsString("Attribute with &lt; &gt; &amp; entities"));
+        Assert.assertThat(out, containsString("Exception message with &lt; &gt; &amp; entities"));
     }
     
 }

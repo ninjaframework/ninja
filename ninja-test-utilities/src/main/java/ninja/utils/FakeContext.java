@@ -446,6 +446,11 @@ public class FakeContext implements Context {
         attributes.put(name, value);
     }
 
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+    
 	@Override
 	public String getContextPath() {
 		return contextPath;
