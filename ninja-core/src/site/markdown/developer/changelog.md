@@ -1,6 +1,8 @@
 Version 5.1.7
 =============
 
+ * 2015-10-06 AuthenticityFilter uses Ninja interface not NinjaDefault class (jjlauer)
+ * 2015-10-06 AuthenticityFilter logs filtered requests as warnings (jjlauer)
  * 2015-10-01 Fixed garbled snippets in diagnostics (mallowlabs)
  * 2015-09-25 Upgrade FreeMarker from 2.3.22 to 2.3.23 (khmarbaise)
  * 2015-09-28 Improved diagnostic mode w/ info about the context, request, and response (jjlauer)
