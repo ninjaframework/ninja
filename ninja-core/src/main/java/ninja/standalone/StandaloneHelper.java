@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 
 public class StandaloneHelper {
     
-    static int findAvailablePort(int min, int max) {
+    static public int findAvailablePort(int min, int max) {
         for (int port = min; port < max; port++) {
             try {
                 new ServerSocket(port).close();
@@ -33,5 +33,15 @@ public class StandaloneHelper {
         throw new IllegalStateException(
                 "Could not find available port in range " + min + " to " + max);
     }
-
+    
+    static public Class<? extends Standalone> findDefaultStandaloneClass() {
+        // either system property OR the default implementation
+        String defaultClassName = System.getProperty(Standalone.KEY_NINJA_STANDALONE, Standalone.DEFAULT_STANDALONE_CLASS);
+        try {
+            return (Class<Standalone>)Class.forName(defaultClassName);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to find standalone class '" + defaultClassName + "' (class does not exist)");
+        }
+    }
+    
 }

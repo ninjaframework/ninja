@@ -16,19 +16,14 @@
 
 package ninja.utils;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import ninja.standalone.NinjaJetty;
-
-import org.apache.http.client.utils.URIBuilder;
-
 import com.google.inject.Injector;
+import ninja.standalone.Standalone;
+import ninja.standalone.StandaloneHelper;
 
 /**
- * Starts a new server using an embedded jetty. Startup is really fast and thus
+ * Starts a new server using an embedded standalone. Startup is really fast and thus
  * usable in integration tests.
  * 
  * @author rbauer
@@ -36,45 +31,54 @@ import com.google.inject.Injector;
 public class NinjaTestServer {
 
     private final int port;
-    private final URI serverUri;
-    
-    private final NinjaJetty ninjaJetty;
+    private final Standalone standalone;
 
     public NinjaTestServer() {
-
-        this.port = findAvailablePort(1000, 10000);
-        serverUri = createServerUri();
-        
-        
-        ninjaJetty = new NinjaJetty();
-        ninjaJetty.setPort(this.port);
-        ninjaJetty.setServerUri(serverUri);
-        ninjaJetty.setNinjaMode(NinjaMode.test);
+        this(StandaloneHelper.findDefaultStandaloneClass());
+    }
+    
+    public NinjaTestServer(Class<? extends Standalone> standaloneClass) {
+        this.port = StandaloneHelper.findAvailablePort(1000, 10000);
         
         try {
-            ninjaJetty.start();
+            this.standalone = standaloneClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException("Unable to create " + standaloneClass.getCanonicalName() + " (either not on classpath or invalid class name)");
+        }
+        
+        try {
+            // configure then start
+            this.standalone
+                .port(this.port)
+                .ninjaMode(NinjaMode.test);
+            
+            standalone.start();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+    }
+    
+    public NinjaTestServer ninjaMode(NinjaMode ninjaMode) {
+        standalone.ninjaMode(ninjaMode);
+        return this;
+    }
+    
+    public NinjaMode getNinjaMode() {
+        return standalone.getNinjaMode();
     }
 
     public Injector getInjector() {
-        return ninjaJetty.getInjector();
+        return standalone.getInjector();
     }
 
     public String getServerAddress() {
-        return serverUri.toString() + "/";
+        // standalone already builds this based on the host & port it binds to
+        return standalone.getNinjaProperties().get(NinjaConstant.serverName) + "/";
     }
 
     public URI getServerAddressAsUri() {
-        return serverUri;
-    }
-
-    private URI createServerUri() {
         try {
-            return new URIBuilder().setScheme("http").setHost("localhost")
-                    .setPort(port).build();
+            return new URI(getServerAddress());
         } catch (URISyntaxException e) {
             // should not be able to happen...
             return null;
@@ -82,20 +86,7 @@ public class NinjaTestServer {
     }
 
     public void shutdown() {
-        ninjaJetty.shutdown();
-    }
-
-    private static int findAvailablePort(int min, int max) {
-        for (int port = min; port < max; port++) {
-            try {
-                new ServerSocket(port).close();
-                return port;
-            } catch (IOException e) {
-                // Must already be taken
-            }
-        }
-        throw new IllegalStateException(
-                "Could not find available port in range " + min + " to " + max);
+        standalone.shutdown();
     }
 
 }
