@@ -59,7 +59,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.common.collect.Maps;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ContextImplTest {
+public class NinjaServletContextTest {
 
     @Mock
     private Session sessionCookie;
@@ -94,7 +94,7 @@ public class ContextImplTest {
     @Mock
     private NinjaProperties ninjaProperties;
 
-    private ContextImpl context;
+    private NinjaServletContext context;
 
     @Before
     public void setUp() {
@@ -103,12 +103,11 @@ public class ContextImplTest {
         when(httpServletRequest.getContextPath()).thenReturn("");
         when(httpServletRequest.getRequestURI()).thenReturn("/");
 
-
-        context = new ContextImpl(
+        context = new NinjaServletContext(
                 bodyParserEngineManager, 
                 flashCookie, 
                 ninjaProperties,
-                resultHandler, 
+                resultHandler,
                 sessionCookie,
                 validation,
                 null);

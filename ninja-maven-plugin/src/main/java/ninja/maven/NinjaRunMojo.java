@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import ninja.standalone.NinjaJetty;
+import ninja.standalone.Standalone;
 import ninja.utils.NinjaConstant;
 
 import org.apache.maven.artifact.Artifact;
@@ -140,10 +141,16 @@ public class NinjaRunMojo extends AbstractMojo {
     private String mode;
 
     /**
-    * Port for SuperDevMode
-    */
-    @Parameter(property = "ninja.port", defaultValue="8080", required = false)
+     * Port for SuperDevMode (can also now be set in conf/application.conf)
+     */
+    @Parameter(property = "ninja.port", required = false)
     private Integer port;
+    
+    /**
+     * Standalone class to use for SuperDevMode
+     */
+    @Parameter(property = "ninja.standalone", required = false)
+    private String standalone;
     
     /**
      * Amount of time to wait for file changes to settle down before triggering a
@@ -236,6 +243,9 @@ public class NinjaRunMojo extends AbstractMojo {
             }       
         }
         
+        // which standalone (works with -Dninja.standalone to maven OR in pom.xml)
+        String defaultStandaloneClass = (standalone != null ? standalone : Standalone.DEFAULT_STANDALONE_CLASS);
+        
         
         getLog().info("------------------------------------------------------------------------");
         
@@ -250,19 +260,19 @@ public class NinjaRunMojo extends AbstractMojo {
         } else {
              getLog().info(" root context");
         }
-        getLog().info(" mode: " + mode);
-        getLog().info(" port: " + port);
+        getLog().info("       mode: " + mode);
+        getLog().info("       port: " + (port != null ? port : "<ninja/application default>"));
+        getLog().info(" standalone: " + defaultStandaloneClass);
         getLog().info("------------------------------------------------------------------------");
-        
-
         
         try {
             //
             // build dependencies, start them, and then watch
             //
+            
             RunClassInSeparateJvmMachine machine = new RunClassInSeparateJvmMachine(
-                "NinjaJetty",
-                NinjaMavenPluginConstants.NINJA_JETTY_CLASSNAME,
+                "Standalone",
+                defaultStandaloneClass,
                 classpathItems,
                 buildJvmArguments(),
                 project.getBasedir()
@@ -297,10 +307,11 @@ public class NinjaRunMojo extends AbstractMojo {
         
         jvmArguments.add(systemPropertyDevMode);
 
-        String portSelection
-                = "-D" + NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT + "=" + port;
-
-        jvmArguments.add(portSelection);
+        if (port != null) {
+            String portSelection
+                    = "-D" + NinjaJetty.KEY_NINJA_PORT + "=" + port;
+            jvmArguments.add(portSelection);
+        }
         
         if (contextPath != null) {
             String systemPropertyContextPath = "-Dninja.context=" + contextPath;

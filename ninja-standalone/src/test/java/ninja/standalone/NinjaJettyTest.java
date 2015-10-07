@@ -25,6 +25,7 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
 import org.apache.commons.io.IOUtils;
+import static org.hamcrest.CoreMatchers.containsString;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -35,7 +36,7 @@ import static org.junit.Assert.*;
  */
 public class NinjaJettyTest {
 
-    static int randomPort = StandaloneHelper.findAvailablePort(8081, 9000);
+    static int RANDOM_PORT = StandaloneHelper.findAvailablePort(8081, 9000);
     
     @After
     public void tearDown() {
@@ -49,29 +50,29 @@ public class NinjaJettyTest {
         // absolute minimal working version of application.conf
         System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/minimal.conf");
         
-        NinjaJetty nj = new NinjaJetty();
         // only way to make this test not rely on a port is to at least set the port
-        nj.setPort(randomPort);
+        NinjaJetty nj = new NinjaJetty()
+            .port(RANDOM_PORT);
         
         try {
-            assertEquals(new Integer(randomPort), nj.port);
-            assertNull(nj.host);
-            assertNull(nj.ninjaContextPath);
-            assertEquals(NinjaMode.prod, nj.ninjaMode);
+            assertEquals(new Integer(RANDOM_PORT), nj.getPort());
+            assertNull(nj.getHost());
+            assertNull(nj.getContext());
+            assertEquals(NinjaMode.prod, nj.getNinjaMode());
             
             nj.start();
             
-            assertNotNull("http://localhost:" + randomPort, nj.ninjaProperties.get(NinjaConstant.serverName));
-            assertNotNull(nj.context);
+            assertNotNull("http://localhost:" + RANDOM_PORT, nj.getNinjaProperties().get(NinjaConstant.serverName));
+            assertNotNull(nj.contextHandler);
             assertNotNull(nj.ninjaServletListener);
-            assertTrue(nj.context.isAvailable());
-            assertTrue(nj.context.isStarted());
-            assertTrue(nj.server.isStarted());
+            assertTrue(nj.contextHandler.isAvailable());
+            assertTrue(nj.contextHandler.isStarted());
+            assertTrue(nj.jettyServer.isStarted());
             
             nj.shutdown();
             
-            assertTrue(nj.context.isStopped());
-            assertTrue(nj.server.isStopped());
+            assertTrue(nj.contextHandler.isStopped());
+            assertTrue(nj.jettyServer.isStopped());
             
         } finally {
             nj.shutdown();
@@ -82,35 +83,35 @@ public class NinjaJettyTest {
     public void startAndShutdownWithEverythingConfigured() throws Exception {
         // absolute minimal working version of application.conf
         System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/minimal.conf");
+        System.setProperty(NinjaConstant.MODE_KEY_NAME, "test");
         
-        NinjaJetty nj = new NinjaJetty();
-        nj.setPort(randomPort);
-        nj.setHost("localhost");
-        nj.setNinjaContextPath("mycontext");
-        nj.setNinjaMode(NinjaMode.test);
+        NinjaJetty nj = new NinjaJetty()
+            .port(RANDOM_PORT)
+            .host("localhost")
+            .context("mycontext");
         
         try {
-            assertEquals(new Integer(randomPort), nj.port);
+            assertEquals(new Integer(RANDOM_PORT), nj.port);
             assertEquals("localhost", nj.host);
-            assertEquals("mycontext", nj.ninjaContextPath);
+            assertEquals("mycontext", nj.context);
             assertEquals(NinjaMode.test, nj.ninjaMode);
             
             nj.start();
             
-            assertNotNull("http://localhost:" + randomPort, nj.ninjaProperties.get(NinjaConstant.serverName));
+            assertNotNull("http://localhost:" + RANDOM_PORT, nj.ninjaProperties.get(NinjaConstant.serverName));
             assertTrue(nj.ninjaProperties.isTest());
-            assertEquals("mycontext", nj.context.getContextPath());
+            assertEquals("mycontext", nj.contextHandler.getContextPath());
             
             assertNotNull(nj.context);
             assertNotNull(nj.ninjaServletListener);
-            assertTrue(nj.context.isAvailable());
-            assertTrue(nj.context.isStarted());
-            assertTrue(nj.server.isStarted());
+            assertTrue(nj.contextHandler.isAvailable());
+            assertTrue(nj.contextHandler.isStarted());
+            assertTrue(nj.jettyServer.isStarted());
             
             nj.shutdown();
             
-            assertTrue(nj.context.isStopped());
-            assertTrue(nj.server.isStopped());
+            assertTrue(nj.contextHandler.isStopped());
+            assertTrue(nj.jettyServer.isStopped());
             
         } finally {
             nj.shutdown();
@@ -119,12 +120,11 @@ public class NinjaJettyTest {
     
     @Test
     public void missingConfigurationThrowsException() throws Exception {
-        // bad configuration file will throw exception when creating
-        // NinjaPropertiesImpl
+        // bad configuration file will throw exception when creating NinjaPropertiesImpl
         System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/empty.conf");
         
-        NinjaJetty nj = new NinjaJetty();
-        nj.setPort(randomPort);
+        NinjaJetty nj = new NinjaJetty()
+            .port(RANDOM_PORT);
         
         try {
             nj.start();
@@ -143,8 +143,8 @@ public class NinjaJettyTest {
         // that exception occurs in NinjaBootstrap during injector creation
         System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/missinglang.conf");
         
-        NinjaJetty nj = new NinjaJetty();
-        nj.setPort(randomPort);
+        NinjaJetty nj = new NinjaJetty()
+            .port(RANDOM_PORT);
         
         try {
             nj.start();
@@ -165,12 +165,13 @@ public class NinjaJettyTest {
         
         // as though we called on command-line with following system properties
         System.setProperty("ninja.mode", "test");
-        System.setProperty("ninja.port", randomPort+"");
+        System.setProperty("ninja.port", Integer.toString(RANDOM_PORT));
         System.setProperty("ninja.context", "mycontext");
         System.setProperty("ninja.host", "localhost");
         System.setProperty("ninja.idle.timeout", "60000");
         
         final NinjaJetty nj = new NinjaJetty();
+        
         try {
             
             // since run() method joins() the server -- it's now a blocking
@@ -178,36 +179,36 @@ public class NinjaJettyTest {
             Thread runThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    nj.run(new String[0]); 
+                    nj.run(); 
                 }
             });
             
             try {
-                
                 runThread.start();
                 
-                long waitTill = System.currentTimeMillis() + 2000;
-                while ((nj.server == null || nj.server.isStarting()) && System.currentTimeMillis() <= waitTill) {
-                    Thread.sleep(200);
+                // hackish way to wait for jetty server to start for up to 4 seconds
+                long waitTill = System.currentTimeMillis() + 4000;
+                while ((nj.jettyServer == null || nj.jettyServer.isStarting()) && System.currentTimeMillis() <= waitTill) {
+                    Thread.sleep(50);
                 }
                 
-                assertNotNull(nj.server);
+                assertNotNull(nj.jettyServer);
                 assertNotNull(nj.ninjaProperties);
-                assertNotNull("http://localhost:" + randomPort, nj.ninjaProperties.get(NinjaConstant.serverName));
-                assertEquals(60000, nj.idleTimeout);
+                assertNotNull("http://localhost:" + RANDOM_PORT, nj.ninjaProperties.get(NinjaConstant.serverName));
+                assertEquals(new Long(60000L), nj.idleTimeout);
                 assertTrue(nj.ninjaProperties.isTest());
-                assertEquals("mycontext", nj.context.getContextPath());
+                assertEquals("mycontext", nj.contextHandler.getContextPath());
                 
                 assertNotNull(nj.context);
                 assertNotNull(nj.ninjaServletListener);
-                assertTrue(nj.context.isAvailable());
-                assertTrue(nj.context.isStarted());
-                assertTrue(nj.server.isStarted());
+                assertTrue(nj.contextHandler.isAvailable());
+                assertTrue(nj.contextHandler.isStarted());
+                assertTrue(nj.jettyServer.isStarted());
                 
                 nj.shutdown();
             
-                assertTrue(nj.context.isStopped());
-                assertTrue(nj.server.isStopped());
+                assertTrue(nj.contextHandler.isStopped());
+                assertTrue(nj.jettyServer.isStopped());
             
             } finally {
                 
@@ -232,7 +233,7 @@ public class NinjaJettyTest {
         
         // replace port w/ random
         String jettyConfigStringReplaced
-                = jettyConfigString.replace("\"8080\"", "\"" + randomPort + "\"");
+                = jettyConfigString.replace("\"8080\"", "\"" + RANDOM_PORT + "\"");
         
         File jettyConfigFile = new File(jettyConfig.toURI());
         
@@ -245,14 +246,14 @@ public class NinjaJettyTest {
         // absolute minimal working version of application.conf
         System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/minimal.conf");
         
-        NinjaJetty nj = new NinjaJetty();
-        nj.setJettyConfiguration("conf/jetty-new.xml");
+        NinjaJetty nj = new NinjaJetty()
+            .jettyConfiguration("conf/jetty-new.xml");
         
         try {
             nj.start();
             
             // confirm we started?
-            URL testUrl = new URL("http://localhost:" + randomPort + "/");
+            URL testUrl = new URL("http://localhost:" + RANDOM_PORT + "/");
             
             URLConnection conn = testUrl.openConnection();
             conn.setAllowUserInteraction(false);
@@ -263,19 +264,19 @@ public class NinjaJettyTest {
                 String testContents = IOUtils.toString(conn.getInputStream());
             } catch (IOException e) {
                 // we expect a 500 error since no app really exists
-                assertTrue(e.getMessage().contains("500"));
+                assertThat(e.getMessage(), containsString("500"));
             }
             
             assertNotNull(nj.context);
             assertNotNull(nj.ninjaServletListener);
-            assertTrue(nj.context.isAvailable());
-            assertTrue(nj.context.isStarted());
-            assertTrue(nj.server.isStarted());
+            assertTrue(nj.contextHandler.isAvailable());
+            assertTrue(nj.contextHandler.isStarted());
+            assertTrue(nj.jettyServer.isStarted());
             
             nj.shutdown();
             
-            assertTrue(nj.context.isStopped());
-            assertTrue(nj.server.isStopped());
+            assertTrue(nj.contextHandler.isStopped());
+            assertTrue(nj.jettyServer.isStopped());
             
         } finally {
             nj.shutdown();

@@ -16,6 +16,7 @@
 
 package ninja.servlet;
 
+import ninja.Bootstrap;
 import static org.junit.Assert.assertTrue;
 import ninja.Route;
 import ninja.Router;
@@ -33,12 +34,10 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author ra
  */
 @RunWith(MockitoJUnitRunner.class)
-public class NinjaBootstrapTest {
+public class NinjaServletBootstrapTest {
     
-
     NinjaPropertiesImpl ninjaPropertiesImpl;
     
-
     @Test
     public void testInitializeWithAllUserSpecifiedThingsInConfDirectory() {
         
@@ -46,7 +45,7 @@ public class NinjaBootstrapTest {
         // lot of stuff from application.conf.
         ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.test);
         
-        NinjaBootstrap ninjaBootstrap = new NinjaBootstrap(ninjaPropertiesImpl);
+        Bootstrap ninjaBootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
         
         ninjaBootstrap.boot();
         
@@ -55,13 +54,11 @@ public class NinjaBootstrapTest {
                 ninjaBootstrap.getInjector().getInstance(ninja.Ninja.class) 
                 instanceof conf.Ninja);
         
-       
         assertTrue(
                 "Ninja Boostrap process picks up user supplied Guice module in conf.Module",
                 ninjaBootstrap.getInjector().getInstance(conf.Module.DummyInterfaceForTesting.class) 
                 instanceof conf.Module.DummyClassForTesting);
         
-
         assertTrue(
                 "Ninja Boostrap process picks up user supplied Guice servlet module in conf.ServletModule",
                 ninjaBootstrap.getInjector().getInstance(conf.ServletModule.DummyInterfaceForTesting.class) 
@@ -73,8 +70,6 @@ public class NinjaBootstrapTest {
 
         assertTrue("conf.Routes initialized properly. We get back the class we defined by the route.",
                 route.getControllerClass() == controller.DummyControllerForTesting.class);
-                
-    
     }
     
     @Test
@@ -86,7 +81,7 @@ public class NinjaBootstrapTest {
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("custom_base_package");
         
-        NinjaBootstrap ninjaBootstrap = new NinjaBootstrap(ninjaPropertiesImpl);
+        Bootstrap ninjaBootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
         
         ninjaBootstrap.boot();
         
@@ -113,7 +108,5 @@ public class NinjaBootstrapTest {
 
         assertTrue("custom_base_package.conf.Routes initialized properly. We get back the class we defined by the route.",
                 route.getControllerClass() == controller.DummyControllerForTesting.class);
-                
-    
     }
 }
