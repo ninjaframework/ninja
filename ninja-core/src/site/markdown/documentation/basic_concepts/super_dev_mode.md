@@ -68,7 +68,7 @@ An example configuration looks like:
         &lt;excludes&gt;
             &lt;exclude&gt;(.*)png$&lt;/exclude&gt;
         &lt;/excludes&gt;
-        &lt;contextPath&gt;/your_context_path&lt;/contextPath&gt;
+        &lt;context&gt;/your_context_path&lt;/context&gt;
     &lt;/configuration&gt;
 &lt;/plugin&gt;
 </pre>
@@ -90,10 +90,12 @@ of certain files or patterns you can define that by the parameter excludes.
 In the example above no file ending in "png" will cause a reload. You can
 use Java regular expressions to specify the files.
 
-### contextPath
+### context
 
-Allows you to add a context prefix to your application ("/" by default).
-If the option is omitted you can provide it by system property:
+Allows you to add a context prefix to your application ("" by default).  The
+old name of this property `contextPath` is still supported, while `context`
+will supercede it if set. If the option is omitted you can provide it by
+system property:
 
 <pre class="prettyprint">
 mvn ninja:run -Dninja.context=/your_context_path
@@ -106,4 +108,22 @@ If the option is omitted you can provide it by system property:
 
 <pre class="prettyprint">
 mvn ninja:run -Dninja.port=YourPortNumber
+</pre>
+
+### jvmArgs
+
+Allows you to set any sort of argument you would like to passthru to the forked
+Ninja JVM in SuperDevMode.
+
+<pre class="prettyprint">
+mvn ninja:run -Dninja.jvmArgs="-Dninja.host=localhost -Djavax.net.debug=all"
+</pre>
+
+### mainClass
+
+Allows you to set the main class that SuperDevMode will run. Defaults to Ninja
+default standalone class which is `ninja.standalone.NinjaJetty`.
+
+<pre class="prettyprint">
+mvn ninja:run -Dninja.mainClass="com.example.MyClass"
 </pre>
