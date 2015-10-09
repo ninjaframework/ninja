@@ -27,30 +27,30 @@ import ninja.standalone.StandaloneHelper;
  * usable in integration tests.
  * 
  * @author rbauer
+ * @author joelauer
  */
 public class NinjaTestServer {
 
     private final int port;
-    private final Standalone standalone;
+    private final Standalone<Standalone> standalone;
 
     public NinjaTestServer() {
-        this(StandaloneHelper.findDefaultStandaloneClass());
+        this(NinjaMode.test);
     }
     
-    public NinjaTestServer(Class<? extends Standalone> standaloneClass) {
+    public NinjaTestServer(NinjaMode ninjaMode) {
+        this(ninjaMode, StandaloneHelper.resolveStandaloneClass());
+    }
+    
+    public NinjaTestServer(NinjaMode ninjaMode, Class<? extends Standalone> standaloneClass) {
         this.port = StandaloneHelper.findAvailablePort(1000, 10000);
-        
-        try {
-            this.standalone = standaloneClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Unable to create " + standaloneClass.getCanonicalName() + " (either not on classpath or invalid class name)");
-        }
+        this.standalone = StandaloneHelper.create(standaloneClass);
         
         try {
             // configure then start
             this.standalone
                 .port(this.port)
-                .ninjaMode(NinjaMode.test);
+                .ninjaMode(ninjaMode);
             
             standalone.start();
         } catch (Exception e) {
@@ -58,24 +58,83 @@ public class NinjaTestServer {
         }
     }
     
+    /**
+     * @deprecated This does not affect a running server -- which happens in
+     * the constructor.  You'll want to remove this from your code and include
+     * the mode in the constructor.
+     */
+    @Deprecated
     public NinjaTestServer ninjaMode(NinjaMode ninjaMode) {
         standalone.ninjaMode(ninjaMode);
         return this;
     }
     
+    /**
+     * @deprecated This does not affect a running server -- which happens in
+     * the constructor.  You'll want to remove this from your code and include
+     * the mode in the constructor.
+     */
+    @Deprecated
     public NinjaMode getNinjaMode() {
         return standalone.getNinjaMode();
     }
 
+    /**
+     * Gets the guice injector for this test server.
+     * @return The guice injector
+     */
     public Injector getInjector() {
         return standalone.getInjector();
     }
 
+    /**
+     * Gets the url of the running server. It represents the scheme, host, and
+     * port, but does not include the context path of the application. It will
+     * return something like "http://localhost:8080". You probably want to use
+     * getBaseUrl() which does include the context path (if one is configured).
+     * @return The url of the server such as "http://localhost:8080" - note it
+     *      does NOT include a trailing '/'.
+     * @see #getBaseUrl() 
+     */
+    public String getServerUrl() {
+        return standalone.getServerUrls().get(0);
+    }
+    
+    /**
+     * Gets the url of the running application. It represents the scheme, host,
+     * port, and context path (if one is configured). It will return something
+     * like "http://localhost:8080" or "http://localhost:8080/mycontext" if
+     * a context of "/mycontext" is configured.
+     * @return The url of the application such as "http://localhost:8080" - note
+     *      it does NOT include a trailing '/'
+     * @see #getServerUrl() 
+     */
+    public String getBaseUrl() {
+        return standalone.getBaseUrls().get(0);
+    }
+    
+    /**
+     * @deprecated Does not include a configured context path as part of this
+     * uri. Also returns a uri with a trailing '/', while its more common to
+     * build a uri as (baseUri + "/path") since "/path" is what an href looks
+     * like in html.
+     * @see #getServerUrl()
+     * @see #getBaseUrl()
+     */
+    @Deprecated
     public String getServerAddress() {
-        // standalone already builds this based on the host & port it binds to
-        return standalone.getNinjaProperties().get(NinjaConstant.serverName) + "/";
+        return standalone.getServerUrls().get(0) + "/";
     }
 
+    /**
+     * @deprecated Does not include a configured context path as part of this
+     * uri. Also returns a uri with a trailing '/', while its more common to
+     * build a uri as (baseUri + "/path") since "/path" is what an href looks
+     * like in html.
+     * @see #getServerUrl()
+     * @see #getBaseUrl()
+     */
+    @Deprecated
     public URI getServerAddressAsUri() {
         try {
             return new URI(getServerAddress());

@@ -17,12 +17,16 @@
 package ninja.servlet;
 
 import ninja.Bootstrap;
+import ninja.Context;
 import static org.junit.Assert.assertTrue;
 import ninja.Route;
 import ninja.Router;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,41 +43,32 @@ public class NinjaServletBootstrapTest {
     NinjaPropertiesImpl ninjaPropertiesImpl;
     
     @Test
-    public void testInitializeWithAllUserSpecifiedThingsInConfDirectory() {
-        
-        // Using the real class is simpler because it loads a 
-        // lot of stuff from application.conf.
+    public void userSuppliedServletModuleInConfDirectory() {
+
         ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.test);
         
-        Bootstrap ninjaBootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
         
-        ninjaBootstrap.boot();
+        bootstrap.boot();
         
-        assertTrue(
-                "Ninja Boostrap process picks up user supplied conf.Ninja definition",
-                ninjaBootstrap.getInjector().getInstance(ninja.Ninja.class) 
-                instanceof conf.Ninja);
+        assertThat(bootstrap.getInjector().getInstance(Context.class),
+                is(instanceOf(NinjaServletContext.class)));
         
-        assertTrue(
-                "Ninja Boostrap process picks up user supplied Guice module in conf.Module",
-                ninjaBootstrap.getInjector().getInstance(conf.Module.DummyInterfaceForTesting.class) 
-                instanceof conf.Module.DummyClassForTesting);
-        
-        assertTrue(
+        assertThat(
                 "Ninja Boostrap process picks up user supplied Guice servlet module in conf.ServletModule",
-                ninjaBootstrap.getInjector().getInstance(conf.ServletModule.DummyInterfaceForTesting.class) 
-                instanceof conf.ServletModule.DummyClassForTesting);
+                bootstrap.getInjector().getInstance(conf.ServletModule.DummyInterfaceForTesting.class),
+                is(instanceOf(conf.ServletModule.DummyClassForTesting.class)));
         
         
-        Router router = ninjaBootstrap.getInjector().getInstance(Router.class);
+        Router router = bootstrap.getInjector().getInstance(Router.class);
         Route route = router.getRouteFor("GET", "/");
 
-        assertTrue("conf.Routes initialized properly. We get back the class we defined by the route.",
-                route.getControllerClass() == controller.DummyControllerForTesting.class);
+        assertThat("conf.Routes initialized properly. We get back the class we defined by the route.",
+                route.getControllerClass(), is(instanceOf(controller.DummyControllerForTesting.class.getClass())));
     }
     
     @Test
-    public void testInitializeWithAllUserSpecifiedThingsInShiftedConfDirectory() {
+    public void userSuppliedServletModuleInShiftedConfDirectory() {
         
         ninjaPropertiesImpl = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
         
@@ -81,32 +76,20 @@ public class NinjaServletBootstrapTest {
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("custom_base_package");
         
-        Bootstrap ninjaBootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
         
-        ninjaBootstrap.boot();
+        bootstrap.boot();
         
-        assertTrue(
-                "Ninja Boostrap process picks up user supplied custom_base_package.conf.Ninja definition",
-                ninjaBootstrap.getInjector().getInstance(ninja.Ninja.class) 
-                instanceof custom_base_package.conf.Ninja);
-        
-       
-        assertTrue(
-                "Ninja Boostrap process picks up user supplied Guice module in custom_base_package.conf.Module",
-                ninjaBootstrap.getInjector().getInstance(custom_base_package.conf.Module.DummyInterfaceForTesting.class) 
-                instanceof custom_base_package.conf.Module.DummyClassForTesting);
-        
-
-        assertTrue(
+        assertThat(
                 "Ninja Boostrap process picks up user supplied Guice servlet module in custom_base_package.conf.ServletModule",
-                ninjaBootstrap.getInjector().getInstance(custom_base_package.conf.ServletModule.DummyInterfaceForTesting.class) 
-                instanceof custom_base_package.conf.ServletModule.DummyClassForTesting);
+                bootstrap.getInjector().getInstance(custom_base_package.conf.ServletModule.DummyInterfaceForTesting.class),
+                is(instanceOf(custom_base_package.conf.ServletModule.DummyClassForTesting.class)));
         
         
-        Router router = ninjaBootstrap.getInjector().getInstance(Router.class);
+        Router router = bootstrap.getInjector().getInstance(Router.class);
         Route route = router.getRouteFor("GET", "/custom_base_package");
 
-        assertTrue("custom_base_package.conf.Routes initialized properly. We get back the class we defined by the route.",
-                route.getControllerClass() == controller.DummyControllerForTesting.class);
+        assertThat("custom_base_package.conf.Routes initialized properly. We get back the class we defined by the route.",
+                route.getControllerClass(), is(instanceOf(controller.DummyControllerForTesting.class.getClass())));
     }
 }

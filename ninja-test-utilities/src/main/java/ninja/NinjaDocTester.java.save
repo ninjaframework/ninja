@@ -50,7 +50,8 @@ public abstract class NinjaDocTester extends DocTester {
 
     @Override
     public Url testServerUrl() {
-        return Url.host(ninjaTestServer.getServerUrl());
+        // v5.1.5+ includes configured context path
+        return Url.host(ninjaTestServer.getBaseUrl());
     }
     
     public Injector getInjector() {

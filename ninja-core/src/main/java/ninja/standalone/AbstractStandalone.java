@@ -16,32 +16,48 @@
 
 package ninja.standalone;
 
-import com.google.inject.Injector;
+import com.google.common.base.Optional;
+import com.google.inject.CreationException;
+import java.util.ArrayList;
+import java.util.List;
+import static ninja.standalone.StandaloneHelper.checkContextPath;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
+import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract public class AbstractStandalone<T extends AbstractStandalone> implements Standalone<T> {
+/**
+ * Abstract Standalone that implements most functionality required to write
+ * a concrete Standalone.  Introduces new doStart(), doStop(), and doJoin()
+ * methods which are actually where you'll place most of your logic.  You'll
+ * also want to subclass the configure() method to add any configuration
+ * specific to your Standalone.  See NinjaJetty for example concrete impl.
+ * 
+ * @author joelauer
+ * @param <T> 
+ */
+abstract public class AbstractStandalone<T extends AbstractStandalone> implements Standalone<T>, Runnable {
     // allow logger to take on persona of concrete class
     final protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // configuration (can be changed before configure())
+    // can all be changed prior to configure()
     protected NinjaMode ninjaMode;
+    protected String externalConfigurationPath;
     protected String name;
     protected String host;
     protected Integer port;
-    protected String context;
+    protected String contextPath;
     protected Long idleTimeout;
     
+    // internal state
     protected boolean configured;
     protected boolean started;
-    // only available after configure()
-    protected NinjaPropertiesImpl ninjaProperties;
-    protected ConfigurationHelper configurationHelper;
+    protected NinjaPropertiesImpl ninjaProperties;              // after configure()
+    protected ConfigurationHelper configurationHelper;          // after configure()
     
     public AbstractStandalone(String name) {
         // set mode as quickly as possible (can still be changed before configure())
@@ -93,7 +109,7 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         checkNotConfigured();
         
         // create ninja properties & configuration helper
-        this.ninjaProperties = new NinjaPropertiesImpl(this.ninjaMode);
+        this.ninjaProperties = new NinjaPropertiesImpl(this.ninjaMode, this.externalConfigurationPath);
         this.configurationHelper = new ConfigurationHelper(this.ninjaProperties);
         
         // current value or system property or conf/application.conf or default value
@@ -103,8 +119,8 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         port(configurationHelper.get(
                 KEY_NINJA_PORT, this.port, DEFAULT_PORT));
         
-        context(configurationHelper.get(
-                KEY_NINJA_CONTEXT, this.context, DEFAULT_CONTEXT));
+        contextPath(configurationHelper.get(
+                KEY_NINJA_CONTEXT_PATH, this.contextPath, DEFAULT_CONTEXT_PATH));
         
         idleTimeout(configurationHelper.get(
                 KEY_NINJA_IDLE_TIMEOUT, this.idleTimeout, DEFAULT_IDLE_TIMEOUT));
@@ -113,30 +129,46 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         
         this.configured = true;
         
-        // save generated server name as ninja property
-        this.ninjaProperties.setProperty(NinjaConstant.serverName, buildServerName());
+        
+        // save generated server name as ninja property if its not yet set
+        String serverName = this.ninjaProperties.get(NinjaConstant.serverName);
+        
+        if (StringUtils.isEmpty(serverName)) {
+            // grab the first one
+            this.ninjaProperties.setProperty(NinjaConstant.serverName, getServerUrls().get(0));
+        }
         
         return (T)this;
     }
     
     @Override
-    final public void start() throws Exception {
+    final public T start() throws Exception {
         if (!this.configured) {
             configure();
         }
+        
         doStart();
+        
         this.started = true;
+        
+        logBaseUrls();
+        
+        return (T)this;
     }
     
     @Override
-    final public void join() throws Exception{
+    final public T join() throws Exception{
         checkStarted();
+        
         doJoin();
+        
+        return (T)this;
     }
     
     @Override
-    final public void shutdown() {
+    final public T shutdown() {
         doShutdown();
+        return (T)this;
     }
     
     abstract protected void doConfigure() throws Exception;
@@ -146,19 +178,6 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     abstract protected void doJoin() throws Exception;
     
     abstract protected void doShutdown();
-    
-    private String buildServerName() {
-        checkConfigured();
-        // can eventually be smart to account for https down the road
-        // should be only place in standalone process for building server name
-        // its value will be saved in NinjaProperties after successful start()
-        return new StringBuilder()
-            .append("http://")
-            .append((this.host == null ? "localhost" : this.host))
-            .append(":")
-            .append(this.port)
-            .toString();
-    }
     
     protected void checkNotConfigured() {
         if (this.configured) {
@@ -188,6 +207,17 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     @Override
     public T ninjaMode(NinjaMode ninjaMode) {
         this.ninjaMode = ninjaMode;
+        return (T)this;
+    }
+    
+    @Override
+    public String getExternalConfigurationPath() {
+        return this.externalConfigurationPath;
+    }
+    
+    @Override
+    public T externalConfigurationPath(String externalConfigurationPath) {
+        this.externalConfigurationPath = externalConfigurationPath;
         return (T)this;
     }
     
@@ -236,13 +266,14 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     }
 
     @Override
-    public String getContext() {
-        return context;
+    public String getContextPath() {
+        return contextPath;
     }
     
     @Override
-    public T context(String context) {
-        this.context = context;
+    public T contextPath(String contextPath) {
+        checkContextPath(contextPath);
+        this.contextPath = contextPath;
         return (T)this;
     }
     
@@ -251,5 +282,90 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         // only available after configure()
         checkConfigured();
         return ninjaProperties;
+    }
+    
+    @Override
+    public List<String> getServerUrls() {
+        // only available after configure()
+        checkConfigured();
+        
+        List<String> serverUris = new ArrayList<>();
+        
+        serverUris.add(createServerUri("http", getHost(), getPort()));
+        
+        return serverUris;
+    }
+    
+    @Override
+    public List<String> getBaseUrls() {
+        // only available after configure()
+        checkConfigured();
+        
+        List<String> applicationUris = new ArrayList<>();
+        
+        applicationUris.add(createBaseUri("http", getHost(), getPort(), getContextPath()));
+        
+        return applicationUris;
+    }
+    
+    // helpful utilities for subclasses
+    
+    protected String createServerUri(String scheme, String host, Integer port) {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(scheme);
+        sb.append("://");
+        sb.append((host != null ? host : "localhost"));
+        
+        if (("http".equals(scheme) && port != 80) || ("https".equals(scheme) && port != 443)) {
+            sb.append(":");
+            sb.append(port);
+        }
+        
+        return sb.toString();
+    }
+    
+    protected String createBaseUri(String scheme, String host, Integer port, String context) {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(createServerUri(scheme, host, port));
+        
+        if (StringUtils.isNotEmpty(context)) {
+            sb.append(context);
+        }
+        
+        return sb.toString();
+    }
+    
+    protected Exception tryToUnwrapInjectorException(Exception exception) {
+        Throwable cause = exception.getCause();
+        if (cause != null && cause instanceof CreationException) {
+            return (CreationException)cause;
+        } else {
+            return exception;
+        }
+    }
+    
+    protected String getLoggableIdentifier() {
+        StringBuilder s = new StringBuilder();
+        
+        s.append("on ");
+        s.append(Optional.fromNullable(getHost()).or("<all>"));
+        s.append(":");
+        s.append(getPort());
+        
+        return s.toString();
+    }
+    
+    protected void logBaseUrls() {
+        logger.info("-------------------------------------------------------");
+        logger.info("Ninja application running at");
+        
+        List<String> uris = getBaseUrls();
+        for (String uri : uris) {
+            logger.info(" => {}", uri);
+        }
+        
+        logger.info("-------------------------------------------------------");
     }
 }

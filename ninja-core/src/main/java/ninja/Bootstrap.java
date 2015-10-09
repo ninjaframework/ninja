@@ -38,7 +38,18 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
 
-
+/**
+ * Bootstrap for a Ninja application.  Assists with initializing logging,
+ * configuring Guice injector, applying user-defined Guice modules/bindings,
+ * creates the injector, and compiles the routes.
+ * 
+ * Subclasses will likely want to provide an inherited configure() method that
+ * adds modules specific to the subclassed Bootstrap.  See ninja-servlet
+ * and NinjaServletContext for an example of a subclass.
+ * 
+ * @author rbauer
+ * @author joelauer
+ */
 public class Bootstrap {
     static private final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
@@ -69,7 +80,7 @@ public class Bootstrap {
         initLogback();
 
         if (this.injector != null) {
-            throw new RuntimeException("NinjaBootstap already booted");
+            throw new RuntimeException("Bootstrap already booted");
         }
 
         // 2. configure all modules for injector
