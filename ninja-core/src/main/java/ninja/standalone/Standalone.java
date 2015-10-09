@@ -25,11 +25,12 @@ import ninja.utils.NinjaPropertiesImpl;
  * as a standalone application.
  * 
  * @author joelauer
+ * @param <T>
  */
 public interface Standalone<T extends Standalone> {
     
     String KEY_NINJA_STANDALONE_CLASS   = "ninja.standalone.class";
-    String KEY_NINJA_CONTEXT_PATH       = "ninja.context";      // TODO: sorta a bad name, ninja.context.path would be better
+    String KEY_NINJA_CONTEXT_PATH       = "ninja.context";
     String KEY_NINJA_HOST               = "ninja.host";
     String KEY_NINJA_IDLE_TIMEOUT       = "ninja.idle.timeout";
     String KEY_NINJA_PORT               = "ninja.port";
