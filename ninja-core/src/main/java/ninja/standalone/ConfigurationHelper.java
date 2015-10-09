@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
  * Helper utility for configuring standalone applications using 4 different
  * values that take precedence over each other.
  * 
- * current value OR system property OR ninja property OR default value
+ * currentValue > systemProperty > configProperty > default value
  * 
  * @author joelauer
  */
@@ -52,6 +52,11 @@ public class ConfigurationHelper {
     public Integer get(String propertyName, Integer currentValue, Integer defaultValue) {
         try {
             String value = get(propertyName, safeToString(currentValue), safeToString(defaultValue));
+            
+            if (StringUtils.isEmpty(value)) {
+                return null;
+            }
+            
             return Integer.valueOf(value);
         } catch (Exception e) {
             throw new RuntimeException("Unable to convert property '" + propertyName + "' to int", e);
@@ -61,6 +66,11 @@ public class ConfigurationHelper {
     public Long get(String propertyName, Long currentValue, Long defaultValue) {
         try {
             String value = get(propertyName, safeToString(currentValue), safeToString(defaultValue));
+            
+            if (StringUtils.isEmpty(value)) {
+                return null;
+            }
+            
             return Long.valueOf(value);
         } catch (Exception e) {
             throw new RuntimeException("Unable to convert property '" + propertyName + "' to long", e);

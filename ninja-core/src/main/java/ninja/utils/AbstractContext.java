@@ -23,10 +23,6 @@ import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashScope;
 import ninja.session.Session;
-import ninja.utils.HttpHeaderUtils;
-import ninja.utils.NinjaProperties;
-import ninja.utils.ResponseStreams;
-import ninja.utils.SwissKnife;
 import ninja.validation.Validation;
 
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +37,7 @@ import ninja.Result;
 import ninja.Route;
 
 /**
- * Abstract Context.Impl that implements many features that are not reliant
+ * Abstract Context.Impl that implements features that are not reliant
  * on the concrete Context implementation. Subclasses can simply use these as-is
  * or optimize any implementations as they see fit.
  * 
@@ -105,7 +101,6 @@ abstract public class AbstractContext implements Context.Impl {
     @Deprecated
     @Override
     public FlashScope getFlashCookie() {
-        logger.warn("context.getFlashCookie() is deprecated and will be removed in an upcoming release. Use context.getFlashScope()");
         return flashScope;
     }
     
@@ -117,7 +112,6 @@ abstract public class AbstractContext implements Context.Impl {
     @Deprecated
     @Override
     public Session getSessionCookie() {
-        logger.warn("context.getSessionCookie() is deprecated and will be removed in an upcoming release. Use context.getSession()");
         return session;
     }
     
@@ -306,7 +300,7 @@ abstract public class AbstractContext implements Context.Impl {
             session.save(this, result);
         }
 
-        // copy cookies
+        // copy cookies from result
         for (ninja.Cookie cookie : result.getCookies()) {
             addCookie(cookie);
         }

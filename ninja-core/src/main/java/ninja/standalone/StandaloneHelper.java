@@ -18,7 +18,13 @@ package ninja.standalone;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Helper utility for working with standalone applications.
+ * 
+ * @author joelauer
+ */
 public class StandaloneHelper {
     
     static public int findAvailablePort(int min, int max) {
@@ -34,13 +40,44 @@ public class StandaloneHelper {
                 "Could not find available port in range " + min + " to " + max);
     }
     
-    static public Class<? extends Standalone> findDefaultStandaloneClass() {
-        // either system property OR the default implementation
-        String defaultClassName = System.getProperty(Standalone.KEY_NINJA_STANDALONE, Standalone.DEFAULT_STANDALONE_CLASS);
+    /**
+     * Resolves which standalone class to use. Either defined as a system
+     * property or falling back to the default.
+     * @return The resolved standalone class to use
+     */
+    static public Class<? extends Standalone> resolveStandaloneClass() {
+        String standaloneClassName = System.getProperty(Standalone.KEY_NINJA_STANDALONE_CLASS, Standalone.DEFAULT_STANDALONE_CLASS);
         try {
-            return (Class<Standalone>)Class.forName(defaultClassName);
+            return (Class<Standalone>)Class.forName(standaloneClassName);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to find standalone class '" + defaultClassName + "' (class does not exist)");
+            throw new RuntimeException("Unable to find standalone class '" + standaloneClassName + "' (class does not exist)");
+        }
+    }
+    
+    static public Standalone create(Class<? extends Standalone> standaloneClass) {
+        try {
+            return standaloneClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException("Unable to create " + standaloneClass.getCanonicalName() + " (either not on classpath or invalid class name)");
+        }
+    }
+    
+    static void checkContextPath(String contextPath) {
+        // per servlet docs
+        // The path starts with a / character but does not end with a / character.
+        // For servlets in the default (root) context, this method returns ""
+        if (StringUtils.isEmpty(contextPath)) {
+            return;
+        }
+        
+        if (!contextPath.startsWith("/")) {
+            throw new IllegalArgumentException("A context path must start with a '/' character. " +
+                    " See https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html#getContextPath() for more info");
+        }
+        
+        if (contextPath.endsWith("/")) {
+            throw new IllegalArgumentException("A context path must not end with a '/' character. " +
+                    " See https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html#getContextPath() for more info");
         }
     }
     

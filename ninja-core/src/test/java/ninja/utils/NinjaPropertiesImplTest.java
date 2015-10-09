@@ -185,6 +185,32 @@ public class NinjaPropertiesImplTest {
                 ninjaProperties.get("fullServerName"));
 
     }
+    
+    @Test
+    public void testLoadingOfExternalConfFileOverridesSystemProperty() {
+
+        // we can set an external conf file by setting the following system property
+        System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF,
+                "conf/filedoesnotexist.conf");
+
+        // instantiate the properties, but provide a different one
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev, "conf/heroku.conf");
+
+        // we expect that the original application secret gets overwritten:
+        assertEquals("secretForHeroku",
+                ninjaProperties.get(NinjaConstant.applicationSecret));
+
+        // and make sure other properties of heroku.conf get loaded as well:
+        assertEquals("some special parameter",
+                ninjaProperties.get("heroku.special.property"));
+
+        // this is testing if referencing of properties works with external
+        // configurations
+        // and application.conf (fullServerName=${serverName}:${serverPort})
+        assertEquals("http://myapp.herokuapp.com:80",
+                ninjaProperties.get("fullServerName"));
+
+    }
 
     @Test
     public void testLoadingOfExternalConfigurationFileWorksAndPrefixedConfigurationsSetRead() {

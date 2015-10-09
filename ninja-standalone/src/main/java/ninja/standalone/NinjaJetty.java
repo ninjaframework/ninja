@@ -38,7 +38,7 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
     static final public String DEFAULT_JETTY_CONFIGURATION = null;
     
     final protected NinjaServletListener ninjaServletListener;
-    protected Server jettyServer;
+    protected Server jetty;
     protected ServletContextHandler contextHandler;
     protected String jettyConfiguration;
     
@@ -63,16 +63,16 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
             
             String[] configs = this.jettyConfiguration.split(",");
             for (String config : configs) {
-                jettyServer = buildServerOrApplyConfiguration(config, jettyServer);
+                jetty = buildServerOrApplyConfiguration(config, jetty);
             }
             
         } else {
             
             // create very simple jetty configuration
-            jettyServer = new Server();
+            jetty = new Server();
         
             // build connector
-            ServerConnector http = new ServerConnector(jettyServer);
+            ServerConnector http = new ServerConnector(jetty);
 
             http.setPort(port);
             http.setIdleTimeout(idleTimeout);
@@ -81,12 +81,12 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
             }
 
             // set the connector
-            jettyServer.addConnector(http);
+            jetty.addConnector(http);
         }
         
         this.ninjaServletListener.setNinjaProperties(ninjaProperties);
         
-        this.contextHandler = new ServletContextHandler(jettyServer, getContext());
+        this.contextHandler = new ServletContextHandler(jetty, getContextPath());
         this.contextHandler.addEventListener(ninjaServletListener);
         this.contextHandler.addFilter(GuiceFilter.class, "/*", null);
         this.contextHandler.addServlet(DefaultServlet.class, "/");
@@ -94,23 +94,23 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
 
     @Override
     public void doStart() throws Exception {
-        String version = this.jettyServer.getClass().getPackage().getImplementationVersion();
+        String version = this.jetty.getClass().getPackage().getImplementationVersion();
         
         try {
-            logger.info("Trying to start jetty v{} on port {}", version, getPort());
-            this.jettyServer.start();
+            logger.info("Trying to start jetty v{} {}", version, getLoggableIdentifier());
+            this.jetty.start();
         } catch (Exception e) {
             // since ninja bootstrap actually boots inside a servlet listener
             // the underlying injector exception is wrapped - unwrap here!
             throw tryToUnwrapInjectorException(e);
         }
         
-        logger.info("Started jetty v{} on port {}", version, getPort());
+        logger.info("Started jetty v{} {}", version, getLoggableIdentifier());
     }
     
     @Override
     public void doJoin() throws Exception {
-        this.jettyServer.join();
+        this.jetty.join();
     }
     
     @Override
@@ -125,11 +125,11 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
         }
            
         try {
-            if (this.jettyServer != null) {
-                logger.info("Trying to stop jetty on port {}", getPort());
-                this.jettyServer.stop();
-                this.jettyServer.destroy();
-                logger.info("Stopped undertow on port {}", getPort());
+            if (this.jetty != null) {
+                logger.info("Trying to stop jetty {}", getLoggableIdentifier());
+                this.jetty.stop();
+                this.jetty.destroy();
+                logger.info("Stopped jetty {}", getLoggableIdentifier());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -152,14 +152,6 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
         return ninjaServletListener.getInjector();
     }
     
-    private Exception tryToUnwrapInjectorException(Exception exception) {
-        if (exception.getCause() != null && exception.getCause() instanceof CreationException) {
-            return (CreationException)exception.getCause();
-        } else {
-            return exception;
-        }
-    }
-    
     private Server buildServerOrApplyConfiguration(String jettyConfiguration, Server server) throws Exception {
         // try local file first
         Resource jettyConfigurationFile = Resource.newResource(jettyConfiguration);
@@ -173,7 +165,7 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
             }
         }
         
-        logger.info("Configuring jetty server with '{}'", jettyConfigurationFile);
+        logger.info("Applying jetty configuration '{}'", jettyConfigurationFile);
         
         try (InputStream is = jettyConfigurationFile.getInputStream()) {
             XmlConfiguration configuration = new XmlConfiguration(is);
