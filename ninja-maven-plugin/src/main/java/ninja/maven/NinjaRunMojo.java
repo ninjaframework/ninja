@@ -131,7 +131,7 @@ public class NinjaRunMojo extends AbstractMojo {
     /**
      * Context path for SuperDevMode.
      */
-    @Parameter(property = "ninja.contextPath", required = false)
+    @Parameter(property = "ninja.context", required = false, alias = "ninja.contextPath")
     private String contextPath;
     
     /**
@@ -255,11 +255,7 @@ public class NinjaRunMojo extends AbstractMojo {
         }
         
         getLog().info("Ninja will launch with:");
-        if (contextPath != null) {
-            getLog().info(" context path: '" + contextPath + "'");
-        } else {
-             getLog().info(" root context");
-        }
+        getLog().info("    context: " + (contextPath != null ? contextPath : "<root>"));
         getLog().info("       mode: " + mode);
         getLog().info("       port: " + (port != null ? port : "<ninja/application default>"));
         getLog().info(" standalone: " + defaultStandaloneClass);
