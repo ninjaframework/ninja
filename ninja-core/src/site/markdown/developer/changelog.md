@@ -23,8 +23,7 @@ Version X.X.X
               properties to be seamlessly pass thru to spawned Ninja JVM. (jjlauer)
  * 2015-10-09 ninja-maven-plugin now supports 'mainClass' property to override which
               main class is run. (jjlauer)
- * 2015-10-09 ninja-maven-plugin now has a full unit test to allow for new properties
-              to be added safely with propert unit testing. (jjlauer)
+ * 2015-10-09 ninja-maven-plugin now has a solid unit test to verify various configurations. (jjlauer)
  * 2015-10-09 ninja-maven-plugin now uses property 'context' rather than 'contextPath'
               to match the system property key NinjaJetty has always used. (jjlauer)
  * 2015-10-09 NinjaJetty has more polished logging messages on startup (jjlauer)
