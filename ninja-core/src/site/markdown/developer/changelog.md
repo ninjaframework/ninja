@@ -13,6 +13,25 @@ Version 5.2.0
 Version 5.1.7
 =============
 
+ * 2015-10-09 Standalone configuration properties can now be set in conf/application.conf
+              Supports ninja.host, ninja.port, ninja.context, and ninja.idle.timeout
+              On conflict the order of precedence is systemProperty > configProperty
+              > defaultValue
+ * 2015-10-09 NOTE: NinjaJetty made a lot of under-the-hood changes to its handling
+              of the 'contextPath'
+ * 2015-10-09 Refactored ninja-servlet 'Context.Impl' into a ninja-core AbstractContext
+              and a ninja-servlet NinjaServletContext (future non-servlet contexts can
+              now inherit much of their functionality)
+ * 2015-10-09 Refactored ninja-standalone 'NinjaJetty' to extract much of its functionality
+              into a new ninja-core AbstractStandalone class (future non-Jetty standalones can
+              now inherit much of their functionality)
+ * 2015-10-09 Moved most of the code from ninja-standalone 'Bootstrap' to a new
+              ninja-core Bootstrap class (future standalones can now ninja-servlet
+              as a dependency)
+ * 2015-10-09 Cleaned up a lot of unit tests for NinjaJetty, Bootstrap, and Context.Impl
+ * 2015-10-09 NinjaJetty has more polished logged info messages on startup 
+ * 2015-10-09 ninja-test-utilities takes advantage of NinjaJetty enhancements 
+              for ease of use. A handful of properties are now deprecated.
  * 2015-10-06 AuthenticityFilter uses Ninja interface not NinjaDefault class (jjlauer)
  * 2015-10-06 AuthenticityFilter logs filtered requests as warnings (jjlauer)
  * 2015-10-01 Fixed garbled snippets in diagnostics (mallowlabs)

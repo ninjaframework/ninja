@@ -146,6 +146,7 @@ public class NinjaRunMojo extends AbstractMojo {
     @Parameter(property = "ninja.port", required = false)
     private Integer port;
     
+    
     /**
      * Standalone class to use for SuperDevMode
      */
