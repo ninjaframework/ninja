@@ -16,10 +16,7 @@
 
 package ninja.maven;
 
-import java.io.File;
-import java.util.regex.Pattern;
 import ninja.AssetsController;
-
 import ninja.standalone.NinjaJetty;
 import ninja.utils.NinjaConstant;
 
@@ -29,9 +26,11 @@ import ninja.utils.NinjaConstant;
  */
 public interface NinjaMavenPluginConstants {
     
+    public String SEPARATOR = "/"; 
+    
     String [] DEFAULT_EXCLUDE_PATTERNS = {
-            "(.*)" + Pattern.quote(File.separator) + NinjaConstant.VIEWS_DIR + Pattern.quote(File.separator) + "(.*)ftl\\.html$",
-            "(.*)" + Pattern.quote(File.separator) + AssetsController.ASSETS_DIR + Pattern.quote(File.separator) + "(.*)"
+            "(.*)" + SEPARATOR + NinjaConstant.VIEWS_DIR + SEPARATOR + "(.*)\\.html$",
+            "(.*)" + SEPARATOR + AssetsController.ASSETS_DIR + SEPARATOR + "(.*)"
         };
     
     /** 

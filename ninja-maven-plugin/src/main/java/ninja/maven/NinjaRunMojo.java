@@ -104,6 +104,7 @@ public class NinjaRunMojo extends AbstractMojo {
      * Includes in Java regex format. Negative regex patterns are difficult to
      * write, so include rules are processed before exclude rules.  Positive
      * matches shortcut the matching process and that file will be included.
+     * Use "/" as path separator where needed.
      */
     @Parameter(property = "ninja.includes", required = false)
     protected List<String> includes;
@@ -111,6 +112,7 @@ public class NinjaRunMojo extends AbstractMojo {
     /**
      * Exludes in Java regex format. If you want to exclude all
      * freemarker templates use something like (.*)ftl.html$ for instance.
+     * Use "/" as path separator where needed.
      */
     @Parameter(property = "ninja.excludes", required = false)
     private List<String> excludes;
@@ -120,8 +122,8 @@ public class NinjaRunMojo extends AbstractMojo {
      * These are loaded from the src directory in dev mode.
      * 
      * Default excludes are: 
-     * - "(.*)ftl\\.html$"
-     * - "File.pathSeparator + "assets" + File.separator"
+     * - "(.*)\.html$"
+     * - "/assets/"
      */
     @Parameter(property = "ninja.useDefaultExcludes", defaultValue = "true", required = true)
     protected boolean useDefaultExcludes;
@@ -153,11 +155,26 @@ public class NinjaRunMojo extends AbstractMojo {
     
     /**
      * Define the jvm arguments to use when starting jetty.
-     * Use a space " " to separate arguments, unless preceded by a backslash "\".
      */
     @Parameter(property = "ninja.jvmArgs", required = false)
-    private String jvmArgs;
-    private String[] jvmArgsArray = null;
+    private List<String> jvmArgs;
+    
+    /**
+     * Define the jvm arguments to use when starting jetty.
+     * Use a space " " to separate arguments, unless preceded by a backslash "\".
+     * Use this to specify jvm args from command line, as default maven parser
+     * does not allow to escape default "," separator
+     */
+    @Parameter(property = "ninja.jvmArgsStr", required = false)
+    private String jvmArgsStr;
+
+    /**
+     * Additionnal classpath to inject just after project classes.
+     * Use "/" as path separator where needed.
+     */
+    @Parameter(property = "ninja.classpaths", required = false)
+    private List<String> classpaths;
+    
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -176,8 +193,14 @@ public class NinjaRunMojo extends AbstractMojo {
             buildOutputDirectory);
         
         classpathItems.add(buildOutputDirectory);
-
+        
+        for (String classpath : classpaths) {
+            getLog().debug("classpath: "+classpath);
+            classpathItems.add(classpath);
+        }
+        
         for (org.apache.maven.artifact.Artifact artifact: project.getArtifacts()) {
+            getLog().debug("project-artifact: "+artifact.getFile().toString());
             classpathItems.add(artifact.getFile().toString());           
         }
         
@@ -188,6 +211,7 @@ public class NinjaRunMojo extends AbstractMojo {
             
             //only add once...
             if (!classpathItems.contains(artifact.getFile().toString())) {
+                getLog().debug("ninja-artifact: "+artifact.getFile().toString());
                 classpathItems.add(artifact.getFile().toString());
             }
         
@@ -206,8 +230,9 @@ public class NinjaRunMojo extends AbstractMojo {
             FileSystems.getDefault().getPath(
                 buildOutputDirectory).toAbsolutePath());
         
-        // add any watch directories
+        // add any watch directories - overrides existing
         if (this.watchDirs != null) {
+            directoriesToRecursivelyWatch.clear();
             for (File watchDir: this.watchDirs) {
                 directoriesToRecursivelyWatch.add(watchDir.toPath().toAbsolutePath());
             }
@@ -260,7 +285,7 @@ public class NinjaRunMojo extends AbstractMojo {
         getLog().info(" port: " + port);
         if (jvmArgs != null) {
         	getLog().info(" jvm arguments: ");
-        	for (String arg : jvmArgsArray) {
+        	for (String arg : jvmArgs) {
         	    getLog().info("  " + arg);
         	}
         }
@@ -319,9 +344,7 @@ public class NinjaRunMojo extends AbstractMojo {
             jvmArguments.add(systemPropertyContextPath);
         }
         
-        if (jvmArgs != null) {
-            jvmArguments.addAll(Arrays.asList(jvmArgsArray));
-        }
+        jvmArguments.addAll(jvmArgs);
         
         return jvmArguments;
     }
@@ -345,8 +368,10 @@ public class NinjaRunMojo extends AbstractMojo {
             
         }
         
-        if (jvmArgs != null) {
-            jvmArgsArray = splitUnescapedSpaces(jvmArgs);
+        // add supplied jvm args - overrides existing
+        if (jvmArgsStr != null) {
+            jvmArgs.clear();
+            jvmArgs.addAll(Arrays.asList(splitUnescapedSpaces(jvmArgsStr)));
         }
     
     }

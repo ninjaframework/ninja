@@ -21,6 +21,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -35,14 +36,18 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 
+import ninja.maven.NinjaMavenPluginConstants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.nio.file.SensitivityWatchEventModifier;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 public class WatchAndRestartMachine implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(WatchAndRestartMachine.class);
@@ -74,14 +79,13 @@ public class WatchAndRestartMachine implements Runnable {
 
         this.watchService = FileSystems.getDefault().newWatchService();
         this.mapOfWatchKeysToPaths = new HashMap<>();
-        this.includes = includes;
-        this.excludes = excludes;
+        this.includes = convertPathSeparators(includes); // convert all paths to / paths
+        this.excludes = convertPathSeparators(excludes); // convert all paths to / paths
         this.restartTrigger = restartTrigger;
         this.takeCount = new AtomicInteger(0);
         for (Path path: directoriesToRecursivelyWatch) {
             registerAll(path);
         }
-        
     }
 
     public void shutdown() {
@@ -212,6 +216,9 @@ public class WatchAndRestartMachine implements Runnable {
     public void handleNewOrModifiedFile(String newOrMod, Path path) {
         String f = path.toFile().getAbsolutePath();
         
+        // convert path to / path
+        f = f.replace(File.separator, NinjaMavenPluginConstants.SEPARATOR);
+        
         log.debug("{} file detected: {}", newOrMod, f);
         
         RuleMatch match = matchRule(includes, excludes, f);
@@ -219,7 +226,7 @@ public class WatchAndRestartMachine implements Runnable {
         log.debug(" matched rule: type={}, pattern={}, proceed={}", match.type, match.pattern, match.proceed);
         
         if (match.proceed) {
-            log.debug(" will trigger restart", newOrMod, f);
+            log.info("{} file will trigger restart: {}", newOrMod, f);
             restartTrigger.trigger();
         }
         else {
@@ -271,6 +278,15 @@ public class WatchAndRestartMachine implements Runnable {
     public static boolean checkIfWouldBeExcluded(Set<String> patterns, String string) {
         // use "excludes" above to use this for testing
         return !matchRule(null, patterns, string).proceed;
+    }
+    
+    public static Set<String> convertPathSeparators(Set<String> paths) {
+        Set<String> set = new HashSet<>();
+        for (String path: paths) {
+            path = path.replace("\\\\", NinjaMavenPluginConstants.SEPARATOR);
+            set.add(path);
+        }
+        return set;
     }
 
 }
