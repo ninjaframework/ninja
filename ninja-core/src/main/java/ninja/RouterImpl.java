@@ -48,10 +48,12 @@ public class RouterImpl implements Router {
     private List<Route> routes;
 
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
-    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}";
+    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
 
     @Inject
-    public RouterImpl(Injector injector, NinjaProperties ninjaProperties) {
+    public RouterImpl(
+            Injector injector,
+            NinjaProperties ninjaProperties) {
         this.injector = injector;
         this.ninjaProperties = ninjaProperties;
     }
@@ -74,24 +76,23 @@ public class RouterImpl implements Router {
     }
 
     @Override
-    public String getReverseRoute(Class<?> controllerClass,
-                                  String controllerMethodName) {
+    public String getReverseRoute(
+            Class<?> controllerClass,
+            String controllerMethodName) {
 
         Optional<Map<String, Object>> parameterMap = Optional.absent();
 
-        return getReverseRoute(controllerClass, controllerMethodName,
-                parameterMap);
+        return getReverseRoute(controllerClass, controllerMethodName, parameterMap);
 
     }
 
     @Override
     public String getReverseRoute(Class<?> controllerClass,
-                                  String controllerMethodName,
-                                  Object... parameterMap) {
+            String controllerMethodName,
+            Object... parameterMap) {
 
         if (parameterMap.length % 2 != 0) {
-            logger.error(
-                    "Always provide key (as String) value (as Object) pairs in parameterMap. That means providing e.g. 2, 4, 6... objects.");
+            logger.error("Always provide key (as String) value (as Object) pairs in parameterMap. That means providing e.g. 2, 4, 6... objects.");
             return null;
 
         }
@@ -101,52 +102,60 @@ public class RouterImpl implements Router {
             map.put((String) parameterMap[i], parameterMap[i + 1]);
         }
 
-        return getReverseRoute(controllerClass, controllerMethodName,
-                Optional.of(map));
+        return getReverseRoute(controllerClass, controllerMethodName, Optional.of(map));
 
     }
 
     @Override
-    public String getReverseRoute(Class<?> controllerClass,
-                                  String controllerMethodName,
-                                  Optional<Map<String, Object>> parameterMap) {
+    public String getReverseRoute(
+            Class<?> controllerClass,
+            String controllerMethodName,
+            Optional<Map<String, Object>> parameterMap) {
 
         if (routes == null) {
             throw new IllegalStateException(
                     "Attempt to get route when routes not compiled");
         }
 
-        Optional<Route> route = getRouteForControllerClassAndMethod(
-                controllerClass, controllerMethodName);
+        Optional<Route> route
+                = getRouteForControllerClassAndMethod(
+                        controllerClass,
+                        controllerMethodName);
 
         if (route.isPresent()) {
 
-            // The original url. Something like
-            // route/user/{id}/{email}/userDashboard/{name: .*}
-            String urlWithReplacedPlaceholders = replaceVariablePartsOfUrlWithValuesProvidedByUser(
-                    route.get().getUrl(), parameterMap);
+            // The original url. Something like route/user/{id}/{email}/userDashboard/{name: .*}
+            String urlWithReplacedPlaceholders
+                    = replaceVariablePartsOfUrlWithValuesProvidedByUser(
+                            route.get().getUrl(),
+                            parameterMap);
 
             String finalUrl = addContextPathToUrlIfAvailable(
-                    urlWithReplacedPlaceholders, ninjaProperties);
+                    urlWithReplacedPlaceholders,
+                    ninjaProperties);
 
             return finalUrl;
 
-        } else {
-            logger.info("Could not find any reverse route for the method {} of the Controller class {}", controllerMethodName , controllerClass.getSimpleName());
+        }
+        else {
+            logger.info(
+                    "Could not find any reverse route for the method {} of the Controller class {}",
+                    controllerMethodName, controllerClass.getSimpleName());
             return null;
         }
-
     }
 
     @Override
     public String getReverseRoute(Class<?> controllerClass,
-                                  String controllerMethodName,
-                                  Map<String, Object> parameterMap) {
+            String controllerMethodName,
+            Map<String, Object> parameterMap) {
 
-        Optional<Map<String, Object>> parameterMapOptional = Optional
-                .fromNullable(parameterMap);
+        Optional<Map<String, Object>> parameterMapOptional
+                = Optional.fromNullable(parameterMap);
 
-        return getReverseRoute(controllerClass, controllerMethodName,
+        return getReverseRoute(
+                controllerClass,
+                controllerMethodName,
                 parameterMapOptional);
 
     }
@@ -230,15 +239,15 @@ public class RouterImpl implements Router {
         return routeBuilder;
     }
 
-    private Optional<Route> getRouteForControllerClassAndMethod(Class<?> controllerClass,
-                                                                String controllerMethodName) {
+    private Optional<Route> getRouteForControllerClassAndMethod(
+            Class<?> controllerClass,
+            String controllerMethodName) {
 
         for (Route route : routes) {
 
             if (route.getControllerClass() != null
                     && route.getControllerClass().equals(controllerClass)
-                    && route.getControllerMethod().getName()
-                            .equals(controllerMethodName)) {
+                    && route.getControllerMethod().getName().equals(controllerMethodName)) {
 
                 return Optional.of(route);
 
@@ -250,18 +259,17 @@ public class RouterImpl implements Router {
 
     }
 
-    private String replaceVariablePartsOfUrlWithValuesProvidedByUser(String routeUrlWithVariableParts,
-                                                                     Optional<Map<String, Object>> parameterMap) {
+    private String replaceVariablePartsOfUrlWithValuesProvidedByUser(
+            String routeUrlWithVariableParts,
+            Optional<Map<String, Object>> parameterMap) {
 
         String urlWithReplacedPlaceholders = routeUrlWithVariableParts;
 
         if (parameterMap.isPresent()) {
 
-            Map<String, Object> queryParameterMap = new HashMap<>(
-                    parameterMap.get().size());
+            Map<String, Object> queryParameterMap = new HashMap<>(parameterMap.get().size());
 
-            for (Entry<String, Object> parameterPair : parameterMap.get()
-                    .entrySet()) {
+            for (Entry<String, Object> parameterPair : parameterMap.get().entrySet()) {
 
                 boolean foundAsPathParameter = false;
 
@@ -276,11 +284,9 @@ public class RouterImpl implements Router {
 
                 while (matcher.find()) {
 
-                    String resultingRegexReplacement = parameterPair.getValue()
-                            .toString();
+                    String resultingRegexReplacement = parameterPair.getValue().toString();
 
-                    matcher.appendReplacement(stringBuffer,
-                            resultingRegexReplacement);
+                    matcher.appendReplacement(stringBuffer, resultingRegexReplacement);
 
                     foundAsPathParameter = true;
                 }
@@ -290,30 +296,25 @@ public class RouterImpl implements Router {
 
                 if (!foundAsPathParameter) {
 
-                    queryParameterMap.put(parameterPair.getKey(),
-                            parameterPair.getValue());
+                    queryParameterMap.put(parameterPair.getKey(), parameterPair.getValue());
 
                 }
 
             }
 
-            // now prepare the query string for this url if we got some query
-            // params
+            // now prepare the query string for this url if we got some query params
             if (queryParameterMap.size() > 0) {
 
                 StringBuffer queryParameterStringBuffer = new StringBuffer();
 
-                // The uri is now replaced => we now have to add potential query
-                // parameters
-                for (Iterator<Entry<String, Object>> iterator = queryParameterMap
-                        .entrySet().iterator(); iterator.hasNext();) {
+                // The uri is now replaced => we now have to add potential query parameters
+                for (Iterator<Entry<String, Object>> iterator = queryParameterMap.entrySet().iterator();
+                        iterator.hasNext();) {
 
                     Entry<String, Object> queryParameterEntry = iterator.next();
-                    queryParameterStringBuffer
-                            .append(queryParameterEntry.getKey());
+                    queryParameterStringBuffer.append(queryParameterEntry.getKey());
                     queryParameterStringBuffer.append("=");
-                    queryParameterStringBuffer
-                            .append(queryParameterEntry.getValue());
+                    queryParameterStringBuffer.append(queryParameterEntry.getValue());
 
                     if (iterator.hasNext()) {
                         queryParameterStringBuffer.append("&");
@@ -321,7 +322,8 @@ public class RouterImpl implements Router {
 
                 }
 
-                urlWithReplacedPlaceholders = urlWithReplacedPlaceholders + "?"
+                urlWithReplacedPlaceholders = urlWithReplacedPlaceholders
+                        + "?"
                         + queryParameterStringBuffer.toString();
 
             }
@@ -331,11 +333,16 @@ public class RouterImpl implements Router {
         return urlWithReplacedPlaceholders;
     }
 
-    private String addContextPathToUrlIfAvailable(String routeWithoutContextPath,
-                                                  NinjaProperties ninjaProperties) {
+    private String addContextPathToUrlIfAvailable(
+            String routeWithoutContextPath,
+            NinjaProperties ninjaProperties) {
+
+
 
         // contextPath can only be empty. never null.
-        return ninjaProperties.getContextPath() + routeWithoutContextPath;
+        return ninjaProperties.getContextPath()
+                    + routeWithoutContextPath;
+
 
     }
 
@@ -347,15 +354,13 @@ public class RouterImpl implements Router {
 
         for (Route route : getRoutes()) {
 
-            maxMethodLen = Math.max(maxMethodLen,
-                    route.getHttpMethod().length());
+            maxMethodLen = Math.max(maxMethodLen, route.getHttpMethod().length());
             maxPathLen = Math.max(maxPathLen, route.getUri().length());
 
             if (route.getControllerClass() != null) {
 
-                int controllerLen = route.getControllerClass().getName()
-                        .length()
-                        + route.getControllerMethod().getName().length();
+                int controllerLen = route.getControllerClass().getName().length()
+                    + route.getControllerMethod().getName().length();
                 maxControllerLen = Math.max(maxControllerLen, controllerLen);
 
             }
@@ -375,15 +380,14 @@ public class RouterImpl implements Router {
             if (route.getControllerClass() != null) {
 
                 logger.info("{} {}  =>  {}.{}()",
-                        Strings.padEnd(route.getHttpMethod(), maxMethodLen,
-                                ' '),
-                        Strings.padEnd(route.getUri(), maxPathLen, ' '),
-                        route.getControllerClass().getName(),
-                        route.getControllerMethod().getName());
+                    Strings.padEnd(route.getHttpMethod(), maxMethodLen, ' '),
+                    Strings.padEnd(route.getUri(), maxPathLen, ' '),
+                    route.getControllerClass().getName(),
+                    route.getControllerMethod().getName());
 
             } else {
 
-                logger.info("{} {}", route.getHttpMethod(), route.getUri());
+              logger.info("{} {}", route.getHttpMethod(), route.getUri());
 
             }
 
