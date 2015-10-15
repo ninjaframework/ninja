@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package ninja.params;
+package ninja.uploads;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Injects a multi-valued parameter right into the methods...
+ * Indicates that this annotation should use the given file provider to handle uploaded files.
+ * The default implementation is {@link NoFileItemProvider}, which indicates to not handle uploaded files, and
+ * let the users deal with the request by themselves.
  *
- * This equals context.getParameterValues(...)
- *
- * @author James Moger
- *
+ * @author Christian Bourgeois
  */
-@WithArgumentExtractor(ArgumentExtractors.ParamsExtractor.class)
-@WithArgumentExtractors({
-    ArgumentExtractors.FileItemParamsExtractor.class,
-    ArgumentExtractors.FileParamsExtractor.class,
-    ArgumentExtractors.InputStreamParamsExtractor.class
-})
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface Params {
-    String value();
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Inherited
+public @interface FileProvider {
+    Class<? extends FileItemProvider> value();
 }

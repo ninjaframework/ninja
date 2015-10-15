@@ -1,7 +1,9 @@
 Version X.X.X
 =============
 
- * 2015-08-17 Added gzip-enabled rollover appender examples to archetypes' logb$
+ * 2015-08-17 Added gzip-enabled rollover appender examples to archetypes' logback.xml 
+              files & minor doc typo fixes (metacity)
+ * 2015-06-24 Injection of params and uploaded files from multipart requests (bazi, momiji)
 
 Version 5.1.7
 =============
