@@ -2,7 +2,7 @@ JPA
 ===
 
 JPA is the de-facto standard for persistence in Java and Ninja provides out-of-the box support for JPA 2.0. 
-JPA support is implemented by Hibernate and transaction handling is facilitated by guice-persist.
+JPA support is implemented by Hibernate and transaction handling is facilitated by Guice Persist.
 
 
 Quickstart
