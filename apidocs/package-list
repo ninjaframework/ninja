@@ -19,5 +19,6 @@ ninja.scheduler
 ninja.session
 ninja.template
 ninja.template.directives
+ninja.uploads
 ninja.utils
 ninja.validation
