@@ -110,7 +110,8 @@ public class ContextImplTest {
                 ninjaProperties,
                 resultHandler, 
                 sessionCookie,
-                validation);
+                validation,
+                null);
     }
 
     @Test

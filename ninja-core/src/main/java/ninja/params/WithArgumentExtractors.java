@@ -22,21 +22,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Injects a multi-valued parameter right into the methods...
+ * Indicates that this annotation should use the given argument extractors
+ * Allows to specify more than one argument extractor, see {@link WithArgumentExtractor}
  *
- * This equals context.getParameterValues(...)
- *
- * @author James Moger
- *
+ * @author Christian Bourgeois
  */
-@WithArgumentExtractor(ArgumentExtractors.ParamsExtractor.class)
-@WithArgumentExtractors({
-    ArgumentExtractors.FileItemParamsExtractor.class,
-    ArgumentExtractors.FileParamsExtractor.class,
-    ArgumentExtractors.InputStreamParamsExtractor.class
-})
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface Params {
-    String value();
+public @interface WithArgumentExtractors {
+    /**
+     * The argument extractors that should be used with this annotation
+     */
+    Class<? extends ArgumentExtractor<?>>[] value();
 }
