@@ -1,4 +1,4 @@
-Version X.X.X
+Version 5.2.0
 =============
 
  * 2015-08-17 Added gzip-enabled rollover appender examples to archetypes' logback.xml 
