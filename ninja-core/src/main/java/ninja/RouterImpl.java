@@ -137,9 +137,12 @@ public class RouterImpl implements Router {
             return finalUrl;
 
         }
-
-        return null;
-
+        else {
+            logger.info(
+                    "Could not find any reverse route for the method {} of the Controller class {}",
+                    controllerMethodName, controllerClass.getSimpleName());
+            return null;
+        }
     }
 
     @Override
