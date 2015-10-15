@@ -32,7 +32,7 @@ public class ApiController {
 </pre>
 
 Mocked tests are done via Mockito. A corresponding test would test if the controller really returns
-a "ok" or "not found".
+an "ok" or "not found".
 
 <pre class="prettyprint">
 @RunWith(MockitoJUnitRunner.class)
