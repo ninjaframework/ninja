@@ -268,8 +268,8 @@ public class MultipartContextImplMemoryTest {
 
         Assert.assertEquals(2, context.getParameterFileItems().size());
         int count = 0;
-        for (FileItem[] values : context.getParameterFileItems().values()) {
-            count += values.length;
+        for (List<FileItem> values : context.getParameterFileItems().values()) {
+            count += values.size();
         }
         Assert.assertEquals(3, count);
     }

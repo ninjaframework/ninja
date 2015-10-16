@@ -119,7 +119,7 @@ public class WrappedContext implements Context {
     }
 
     @Override
-    public Map<String, FileItem[]> getParameterFileItems() {
+    public Map<String, List<FileItem>> getParameterFileItems() {
         return wrapped.getParameterFileItems();
     }
 

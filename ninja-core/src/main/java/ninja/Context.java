@@ -341,7 +341,7 @@ public interface Context {
      * 
      * @return The parameters, possibly a null map.
      */
-    Map<String, FileItem[]> getParameterFileItems();
+    Map<String, List<FileItem>> getParameterFileItems();
 
     
     /**
