@@ -186,7 +186,7 @@ public class AbstractContextImpl extends AbstractContext {
     }
 
     @Override
-    public Map<String, FileItem[]> getParameterFileItems() {
+    public Map<String, List<FileItem>> getParameterFileItems() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
