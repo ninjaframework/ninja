@@ -502,7 +502,7 @@ public class FakeContext implements Context {
     }
 
     @Override
-    public Map<String, FileItem[]> getParameterFileItems() {
+    public Map<String, List<FileItem>> getParameterFileItems() {
         throw new UnsupportedOperationException("Not supported in fake context");        
     }
 

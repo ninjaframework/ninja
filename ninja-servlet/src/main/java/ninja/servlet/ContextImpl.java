@@ -69,6 +69,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -97,8 +98,8 @@ public class ContextImpl implements Context.Impl {
     private final Injector injector;
     
     private boolean formFieldsProcessed = false;
-    private Map<String, String[]> formFieldsMap;
-    private Map<String, FileItem[]> fileFieldsMap;
+    private Map<String, List<String>> formFieldsMap;
+    private Map<String, List<FileItem>> fileFieldsMap;
 
     // In Async mode, these values will be set to null, so save them
     private String requestPath;
@@ -184,10 +185,10 @@ public class ContextImpl implements Context.Impl {
         if (formFieldsMap == null) {
             return httpServletRequest.getParameter(key);
         } else {
-            String[] values = formFieldsMap.get(key);
-            if (values == null || values.length == 0)
+            List<String> values = formFieldsMap.get(key);
+            if (values == null || values.isEmpty())
                 return null;
-            return values[0];
+            return values.get(0);
         }
     }
 
@@ -201,10 +202,7 @@ public class ContextImpl implements Context.Impl {
             }
             return Arrays.asList(params);
         } else {
-            String[] values = formFieldsMap.get(name);
-            if (values == null || values.length == 0)
-                return Collections.emptyList();
-            return Arrays.asList(values);
+            return formFieldsMap.get(name);
         }
     }
 
@@ -239,22 +237,22 @@ public class ContextImpl implements Context.Impl {
     public FileItem getParameterAsFileItem(String key) {
         if (!formFieldsProcessed) processFormFields();
         if (fileFieldsMap == null) return null;
-        FileItem[] fileItems = fileFieldsMap.get(key);
-        if (fileItems == null || fileItems.length == 0) return null;
-        return fileItems[0];
+        List<FileItem> fileItems = fileFieldsMap.get(key);
+        if (fileItems == null || fileItems.isEmpty()) return null;
+        return fileItems.get(0);
     }
     
     @Override
     public List<FileItem> getParameterAsFileItems(String key) {
         if (!formFieldsProcessed) processFormFields();
         if (fileFieldsMap == null) return Collections.emptyList();
-        FileItem[] fileItems = fileFieldsMap.get(key);
+        List<FileItem> fileItems = fileFieldsMap.get(key);
         if (fileItems == null) return Collections.emptyList();
-        return Arrays.asList(fileItems);
+        return fileItems;
     }
 
     @Override
-    public Map<String, FileItem[]> getParameterFileItems() {
+    public Map<String, List<FileItem>> getParameterFileItems() {
         if (!formFieldsProcessed) processFormFields();
         return fileFieldsMap;
     }
@@ -282,7 +280,13 @@ public class ContextImpl implements Context.Impl {
         if (formFieldsMap == null) {
             return httpServletRequest.getParameterMap();
         } else {
-            return formFieldsMap;
+            // convert List<String> value to String[] value
+            String[] type = new String[0];
+            Map<String, String[]> map = new HashMap<>(formFieldsMap.size());
+            for (Entry<String, List<String>> entry: formFieldsMap.entrySet()) {
+                map.put(entry.getKey(), entry.getValue().toArray(type));
+            }
+            return map;
         }
     }
 
@@ -867,26 +871,42 @@ public class ContextImpl implements Context.Impl {
             throw new RuntimeException("Failed to parse multipart request data", e);
         }
 
-        // convert both multimap<K,V> to map<K,V[]>
-        formFieldsMap = new HashMap<String, String[]>();
-        for (Entry<String, Collection<String>> entry: formMap.asMap().entrySet()) {
-            formFieldsMap.put(entry.getKey(), entry.getValue().toArray(new String[0]));
-        }
-        formFieldsMap = Collections.unmodifiableMap(formFieldsMap);
+        // convert both multimap<K,V> to map<K,List<V>>
+        formFieldsMap = toUnmodifiableMap(formMap);
+        fileFieldsMap = toUnmodifiableMap(fileMap);
+    }
+    
+    /**
+     * Utility method to convert a Guava Multimap to an unmodifiable Map that
+     * uses a List<T> as a value. Optimized for the case where values are already
+     * internally stored as a List<T> (e.g. ArrayListMultimap).
+     * @param <T> The value type
+     * @param multimap The multimap to convert from
+     * @return The unmodifiable converted map
+     */
+    private <T> Map<String, List<T>> toUnmodifiableMap(Multimap<String, T> multimap) {
+        Map<String, List<T>> map = new HashMap<>(multimap.size());
         
-        fileFieldsMap = new HashMap<String, FileItem[]>();
-        for (Entry<String, Collection<FileItem>> entry: fileMap.asMap().entrySet()) {
-            fileFieldsMap.put(entry.getKey(), entry.getValue().toArray(new FileItem[0]));
+        for (Entry<String, Collection<T>> entry: multimap.asMap().entrySet()) {
+            Collection<T> value = entry.getValue();
+            if (value == null) {
+                Collections.emptyList();
+            } else if (value instanceof List) {
+                map.put(entry.getKey(), (List<T>)value);
+            } else {
+                map.put(entry.getKey(), new ArrayList<>(value));
+            }
         }
-        fileFieldsMap = Collections.unmodifiableMap(fileFieldsMap);
+        
+        return Collections.unmodifiableMap(map);
     }
     
     @Override
     public void cleanup() {
         // call cleanup on all file items
         if (fileFieldsMap != null) {
-            for (FileItem[] files : fileFieldsMap.values()) {
-                for (FileItem file : files) {
+            for (List<FileItem> files: fileFieldsMap.values()) {
+                for (FileItem file: files) {
                     file.cleanup();
                 }
             }
