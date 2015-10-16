@@ -240,5 +240,26 @@ public class AbstractStandaloneTest {
         
         standalone.contextPath("/goodcontext").configure();
     }
+    
+    @Test
+    public void noPortsEnabled() throws Exception {
+        try {
+            FakeStandalone standalone = new FakeStandalone()
+                    .port(-1)
+                    .configure();
+            fail("exception expected");
+        } catch (IllegalStateException e) {
+            assertThat(e.getMessage(), containsString("ports were disabled"));
+        }
+    }
+    
+    @Test
+    public void randomPortAssigned() throws Exception {
+        FakeStandalone standalone = new FakeStandalone()
+                .port(0)
+                .configure();
+        
+        assertThat(standalone.getPort(), is(not(0)));
+    }
 
 }

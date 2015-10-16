@@ -15,6 +15,7 @@
  */
 package ninja.utils;
 
+import com.google.inject.Injector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ import ninja.Result;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
 import ninja.validation.Validation;
 import org.apache.commons.fileupload.FileItemIterator;
 
@@ -34,8 +36,8 @@ import org.apache.commons.fileupload.FileItemIterator;
  */
 public class AbstractContextImpl extends AbstractContext {
 
-    public AbstractContextImpl(BodyParserEngineManager bodyParserEngineManager, FlashScope flashScope, NinjaProperties ninjaProperties, Session session, Validation validation) {
-        super(bodyParserEngineManager, flashScope, ninjaProperties, session, validation);
+    public AbstractContextImpl(BodyParserEngineManager bodyParserEngineManager, FlashScope flashScope, NinjaProperties ninjaProperties, Session session, Validation validation, Injector injector) {
+        super(bodyParserEngineManager, flashScope, ninjaProperties, session, validation, injector);
     }
 
     @Override
@@ -170,6 +172,26 @@ public class AbstractContextImpl extends AbstractContext {
 
     @Override
     public void addCookie(Cookie cookie) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public FileItem getParameterAsFileItem(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<FileItem> getParameterAsFileItems(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<String, FileItem[]> getParameterFileItems() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void cleanup() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

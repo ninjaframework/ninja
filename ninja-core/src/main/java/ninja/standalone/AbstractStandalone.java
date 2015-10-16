@@ -16,6 +16,7 @@
 
 package ninja.standalone;
 
+import ninja.utils.OverlayedNinjaProperties;
 import com.google.common.base.Optional;
 import com.google.inject.CreationException;
 import java.util.ArrayList;
@@ -35,10 +36,7 @@ import org.slf4j.LoggerFactory;
  * a concrete Standalone.  Introduces new doStart(), doStop(), and doJoin()
  * methods which are actually where you'll place most of your logic.  You'll
  * also want to subclass the configure() method to add any configuration
- * specific to your Standalone.  See NinjaJetty for example concrete impl.
- * 
- * @author joelauer
- * @param <T> 
+ * specific to your Standalone.  See NinjaJetty for example concrete implementation.
  */
 abstract public class AbstractStandalone<T extends AbstractStandalone> implements Standalone<T>, Runnable {
     // allow logger to take on persona of concrete class
@@ -56,8 +54,10 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     // internal state
     protected boolean configured;
     protected boolean started;
-    protected NinjaPropertiesImpl ninjaProperties;              // after configure()
-    protected ConfigurationHelper configurationHelper;          // after configure()
+    protected NinjaPropertiesImpl ninjaProperties;                      // after configure()
+    protected OverlayedNinjaProperties overlayedNinjaProperties;        // after configure()
+    protected List<String> serverUrls;
+    protected List<String> baseUrls;
     
     public AbstractStandalone(String name) {
         // set mode as quickly as possible (can still be changed before configure())
@@ -108,27 +108,42 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     final public T configure() throws Exception {
         checkNotConfigured();
         
-        // create ninja properties & configuration helper
+        // create ninja properties & overlayed view
         this.ninjaProperties = new NinjaPropertiesImpl(this.ninjaMode, this.externalConfigurationPath);
-        this.configurationHelper = new ConfigurationHelper(this.ninjaProperties);
+        
+        this.overlayedNinjaProperties = new OverlayedNinjaProperties(this.ninjaProperties);
         
         // current value or system property or conf/application.conf or default value
-        host(configurationHelper.get(
+        host(overlayedNinjaProperties.get(
                 KEY_NINJA_HOST, this.host, DEFAULT_HOST));
         
-        port(configurationHelper.get(
+        port(overlayedNinjaProperties.getInteger(
                 KEY_NINJA_PORT, this.port, DEFAULT_PORT));
         
-        contextPath(configurationHelper.get(
+        contextPath(overlayedNinjaProperties.get(
                 KEY_NINJA_CONTEXT_PATH, this.contextPath, DEFAULT_CONTEXT_PATH));
         
-        idleTimeout(configurationHelper.get(
+        idleTimeout(overlayedNinjaProperties.getLong(
                 KEY_NINJA_IDLE_TIMEOUT, this.idleTimeout, DEFAULT_IDLE_TIMEOUT));
+        
+        // assign a random port if needed
+        if (getPort() == null || getPort() == 0) {
+            port(StandaloneHelper.findAvailablePort(8000, 9000));
+        }
         
         doConfigure();
         
         this.configured = true;
         
+        // build configured urls
+        this.serverUrls = createServerUrls();
+        this.baseUrls = createBaseUrls();
+        
+        // is there at least one url?
+        if (this.serverUrls == null || this.serverUrls.isEmpty()) {
+            throw new IllegalStateException("All server ports were disabled." + 
+                    " Check the 'ninja.port' property and possibly others depending your standalone.");
+        }
         
         // save generated server name as ninja property if its not yet set
         String serverName = this.ninjaProperties.get(NinjaConstant.serverName);
@@ -288,29 +303,45 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     public List<String> getServerUrls() {
         // only available after configure()
         checkConfigured();
-        
-        List<String> serverUris = new ArrayList<>();
-        
-        serverUris.add(createServerUri("http", getHost(), getPort()));
-        
-        return serverUris;
+        return serverUrls;
     }
     
     @Override
     public List<String> getBaseUrls() {
         // only available after configure()
         checkConfigured();
+        return baseUrls;
+    }
+    
+    protected List<String> createServerUrls() {
+        // only available after configure()
+        checkConfigured();
         
-        List<String> applicationUris = new ArrayList<>();
+        List<String> urls = new ArrayList<>();
         
-        applicationUris.add(createBaseUri("http", getHost(), getPort(), getContextPath()));
+        if (getPort() > 0) {
+            urls.add(createServerUrl("http", getHost(), getPort()));
+        }
         
-        return applicationUris;
+        return urls;
+    }
+    
+    protected List<String> createBaseUrls() {
+        // only available after configure()
+        checkConfigured();
+        
+        List<String> urls = new ArrayList<>();
+        
+        if (getPort() > 0) {
+            urls.add(createBaseUrl("http", getHost(), getPort(), getContextPath()));
+        }
+        
+        return urls;
     }
     
     // helpful utilities for subclasses
     
-    protected String createServerUri(String scheme, String host, Integer port) {
+    protected String createServerUrl(String scheme, String host, Integer port) {
         StringBuilder sb = new StringBuilder();
         
         sb.append(scheme);
@@ -325,10 +356,10 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         return sb.toString();
     }
     
-    protected String createBaseUri(String scheme, String host, Integer port, String context) {
+    protected String createBaseUrl(String scheme, String host, Integer port, String context) {
         StringBuilder sb = new StringBuilder();
         
-        sb.append(createServerUri(scheme, host, port));
+        sb.append(createServerUrl(scheme, host, port));
         
         if (StringUtils.isNotEmpty(context)) {
             sb.append(context);

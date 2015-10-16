@@ -1,13 +1,13 @@
 Version 5.3.0
 =============
 
- * 2015-10-09 Major refactoring of ninja-servlet to extract non-servlet functionality
+ * 2015-10-09 Refactoring of ninja-servlet to extract non-servlet functionality
               into ninja-core to enable reuse in future non-servlet environments. (jjlauer)
     * ninja-servlet `ninja/servlet/NinjaBootstrap.java` split into ninja-core `ninja/Bootstrap.java` and
       ninja-servlet `ninja/servlet/NinjaServletBootstrap.java`
     * ninja-servlet `ninja/servlet/ContextImpl.java` split into ninja-core `ninja/utils/AbstractContext.java`
       and ninja-servlet `ninja/servlet/NinjaServletContext.java`
- * 2015-10-09 Major refactoring of ninja-standalone to extract non-Jetty functionality
+ * 2015-10-09 Refactoring of ninja-standalone to extract non-Jetty functionality
               into ninja-core to enable reuse in future non-Jetty standalone implementations. (jjlauer)
     * Much of the functionality in ninja-standalone `ninja/standalone/NinjaJetty.java` extracted to
       `ninja/standalone/AbstractStandalone.java`
@@ -16,13 +16,11 @@ Version 5.3.0
               The order of precedence is systemProperty > configProperty > defaultValue (jjlauer)
  * 2015-10-09 New 'ninja.standalone.class' system property to control which concrete
               standalone implementation is used by NinjaTestServer (jjlauer)
- * 2015-10-09 ninja-maven-plugin now supports 'jvmArgs' property to allow for any
-              properties to be seamlessly pass thru to spawned Ninja JVM. (jjlauer)
- * 2015-10-09 ninja-maven-plugin now supports 'mainClass' property to override which
-              main class is run. (jjlauer)
- * 2015-10-09 ninja-maven-plugin now has a solid unit test to verify various configurations. (jjlauer)
- * 2015-10-09 ninja-maven-plugin now uses property 'context' rather than 'contextPath'
-              to match the system property key NinjaJetty has always used. (jjlauer)
+ * 2015-10-09 ninja-maven-plugin support for 'jvmArgs' property to allow for any
+              properties to be seamlessly passed thru to spawned Ninja JVM. (jjlauer)
+ * 2015-10-09 ninja-maven-plugin support for 'mainClass' property to override which
+ * 2015-10-09 ninja-maven-plugin deprecated 'contextPath' property in favor of new
+              'context' key to match what NinjaJetty has always used. (jjlauer)
  * 2015-10-09 NinjaJetty has more polished logging messages on startup (jjlauer)
 
 Version 5.2.1
