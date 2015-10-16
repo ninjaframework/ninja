@@ -267,6 +267,12 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
         </dependency>  
+        
+         <dependency>
+           <groupId>com.google.inject.extensions</groupId>
+           <artifactId>guice-multibindings</artifactId>
+           <version>${guice.version}</version>
+         </dependency>
 
     </dependencies>
 
