@@ -1,7 +1,7 @@
 Version 5.2.1
 =============
 
- * 2015-10-16 Context.getParameterFileItems() new returns Map<String, List<FileItem>> (jjlauer)
+ * 2015-10-16 Context.getParameterFileItems() now returns Map<String, List<FileItem>> (jjlauer)
 
 Version 5.2.0
 =============
