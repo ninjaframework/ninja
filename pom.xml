@@ -165,6 +165,11 @@
                             <artifactId>doxia-module-markdown</artifactId>
                             <version>1.0.0</version>
                         </dependency>
+                        <dependency>
+                           <groupId>com.google.inject.extensions</groupId>
+                           <artifactId>guice-multibindings</artifactId>
+                           <version>${guice.version}</version>
+                        </dependency>
                     </dependencies>
                 </plugin>
             
