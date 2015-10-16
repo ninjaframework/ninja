@@ -46,9 +46,6 @@ import com.google.inject.Stage;
  * Subclasses will likely want to provide an inherited configure() method that
  * adds modules specific to the subclassed Bootstrap.  See ninja-servlet
  * and NinjaServletContext for an example of a subclass.
- * 
- * @author rbauer
- * @author joelauer
  */
 public class Bootstrap {
     static private final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
@@ -141,7 +138,6 @@ public class Bootstrap {
         // Scheduling support
         addModule(SchedulerSupport.getModule());
 
-        // TODO: this is where problems start to occur...
         // Base configuration of Ninja
         addModule(new Configuration(ninjaProperties));
         

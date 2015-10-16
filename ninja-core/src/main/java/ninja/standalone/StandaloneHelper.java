@@ -21,9 +21,7 @@ import java.net.ServerSocket;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Helper utility for working with standalone applications.
- * 
- * @author joelauer
+ * Helper utilities for working with standalone applications.
  */
 public class StandaloneHelper {
     

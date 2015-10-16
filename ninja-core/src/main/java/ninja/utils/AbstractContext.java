@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
@@ -38,19 +39,24 @@ import ninja.Route;
 
 /**
  * Abstract Context.Impl that implements features that are not reliant
- * on the concrete Context implementation. Subclasses can simply use these as-is
- * or optimize any implementations as they see fit.
+ * on the concrete Context implementation.  For example, a concrete implementation
+ * may have to provide a <code>getHeader()</code> method, but this class could
+ * supply a default implementation of <code>getAcceptContentType()</code> since
+ * it only needs to fetch a value from <code>getHeader()</code>.
  * 
- * @author joelauer
+ * When adding features to a <code>Context</code> please think about whether
+ * it should be fully or partially implemented here or in the concrete implementation.
  */
 abstract public class AbstractContext implements Context.Impl {
     static final private Logger logger = LoggerFactory.getLogger(AbstractContext.class);
     
+    // subclasses need to access these
     final protected BodyParserEngineManager bodyParserEngineManager;
     final protected FlashScope flashScope;
     final protected NinjaProperties ninjaProperties;
     final protected Session session;
     final protected Validation validation;
+    final protected Injector injector;
 
     protected Route route;
     // in async mode these values will be set to null so its critical they
@@ -64,12 +70,14 @@ abstract public class AbstractContext implements Context.Impl {
             FlashScope flashScope,
             NinjaProperties ninjaProperties,
             Session session,
-            Validation validation) {
+            Validation validation,
+            Injector injector) {
         this.bodyParserEngineManager = bodyParserEngineManager;
         this.flashScope = flashScope;
         this.ninjaProperties = ninjaProperties;
         this.session = session;
         this.validation = validation;
+        this.injector = injector;
     }
 
     protected void init(String contextPath, String requestPath) {

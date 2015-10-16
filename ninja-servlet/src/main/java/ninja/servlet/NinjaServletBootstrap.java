@@ -23,6 +23,10 @@ import ninja.utils.NinjaPropertiesImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
 
+/**
+ * Ninja bootstrap for servlet environments.  Binds the context implementation
+ * as well as attempting to load conf.ServletModule.
+ */
 public class NinjaServletBootstrap extends Bootstrap {
     
     public NinjaServletBootstrap(NinjaPropertiesImpl ninjaProperties) {

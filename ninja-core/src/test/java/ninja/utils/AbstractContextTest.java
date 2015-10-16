@@ -82,7 +82,8 @@ public class AbstractContextTest {
                 flashCookie, 
                 ninjaProperties,
                 sessionCookie,
-                validation);
+                validation,
+                null);
         
         abstractContext.init("", "/");
     }

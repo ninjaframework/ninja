@@ -16,7 +16,6 @@
 
 package ninja.standalone;
 
-import com.google.inject.CreationException;
 import com.google.inject.Injector;
 import ninja.servlet.NinjaServletListener;
 
@@ -27,10 +26,14 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import com.google.inject.servlet.GuiceFilter;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
+/**
+ * Ninja standalone implemented with Jetty.
+ */
 public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
     
     static final public String KEY_NINJA_JETTY_CONFIGURATION = "ninja.jetty.configuration";
@@ -55,7 +58,7 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
     @Override
     protected void doConfigure() throws Exception {
         // current value or system property or conf/application.conf or default value
-        jettyConfiguration(configurationHelper.get(
+        jettyConfiguration(overlayedNinjaProperties.get(
                 KEY_NINJA_JETTY_CONFIGURATION, this.jettyConfiguration, DEFAULT_JETTY_CONFIGURATION));
         
         // build jetty server, context, and servlet
@@ -65,6 +68,9 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
             for (String config : configs) {
                 jetty = buildServerOrApplyConfiguration(config, jetty);
             }
+            
+            // since we don't know host and port, try to get it from jetty
+            tryToSetHostAndPortFromJetty();
             
         } else {
             
@@ -150,6 +156,16 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
         // only available after configure()
         checkConfigured();
         return ninjaServletListener.getInjector();
+    }
+    
+    private void tryToSetHostAndPortFromJetty() {
+        // do best attempt at fetching port jetty will start with
+        Connector[] connectors = jetty.getConnectors();
+        if (connectors != null && connectors.length > 0 && connectors[0] instanceof ServerConnector) {
+            ServerConnector connector = (ServerConnector)connectors[0];
+            host(connector.getHost());
+            port(connector.getPort());
+        }
     }
     
     private Server buildServerOrApplyConfiguration(String jettyConfiguration, Server server) throws Exception {

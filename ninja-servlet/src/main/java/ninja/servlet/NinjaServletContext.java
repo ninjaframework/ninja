@@ -64,8 +64,16 @@ import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import ninja.utils.ResultHandler;
-import org.apache.commons.fileupload.FileItem;
 
+/**
+ * Ninja context for servlet environments.
+ * 
+ * When modifying functionality for this class please carefully consider adding
+ * it to <code>AbstractContext</code> first.  For example, instead of relying on
+ * <code>httpServletRequest.getHeader()</code> you could reuse the existing
+ * <code>this.getHeader()</code> and be able to implement your feature entirely
+ * in <code>AbstractContext</code>.
+ */
 public class NinjaServletContext extends AbstractContext {
     static final private Logger logger = LoggerFactory.getLogger(NinjaServletContext.class);
     
@@ -95,7 +103,8 @@ public class NinjaServletContext extends AbstractContext {
               flashScope,
               ninjaProperties,
               session,
-              validation);
+              validation,
+              injector);
         
         this.resultHandler = resultHandler;
     }
@@ -110,7 +119,10 @@ public class NinjaServletContext extends AbstractContext {
 
         enforceCorrectEncodingOfRequest();
         
-        //super.init(CONTENT_TYPE, CONTENT_TYPE);
+        String contextPath = httpServletRequest.getContextPath();
+        String requestPath = performGetRequestPath();
+        
+        super.init(contextPath, requestPath);
     }
 
     @Override

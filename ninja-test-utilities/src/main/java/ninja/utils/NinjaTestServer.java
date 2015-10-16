@@ -19,17 +19,16 @@ package ninja.utils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import com.google.inject.Injector;
+import java.io.Closeable;
+import java.io.IOException;
 import ninja.standalone.Standalone;
 import ninja.standalone.StandaloneHelper;
 
 /**
  * Starts a new server using an embedded standalone. Startup is really fast and thus
  * usable in integration tests.
- * 
- * @author rbauer
- * @author joelauer
  */
-public class NinjaTestServer {
+public class NinjaTestServer implements Closeable {
 
     private final int port;
     private final Standalone<Standalone> standalone;
@@ -146,6 +145,12 @@ public class NinjaTestServer {
 
     public void shutdown() {
         standalone.shutdown();
+    }
+
+    @Override
+    public void close() throws IOException {
+        // so a test server can be used in a try-with-resources statement
+        shutdown();
     }
 
 }
