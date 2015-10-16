@@ -31,10 +31,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Joe Lauer (http://twitter.com/jjlauer)
- */
 public class NinjaJettyTest {
 
     static int RANDOM_PORT = StandaloneHelper.findAvailablePort(8081, 9000);

@@ -20,10 +20,6 @@ import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 
-/**
- *
- * @author joelauer
- */
 public class Application {
     
     public Result home() {
