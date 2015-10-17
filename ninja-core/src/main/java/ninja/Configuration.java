@@ -56,10 +56,11 @@ public class Configuration extends AbstractModule {
         System.setProperty("file.encoding", "utf-8");
         
         OptionalBinder.newOptionalBinder(binder(), ObjectMapper.class)
-        .setDefault().toProvider(ObjectMapperProvider.class).in(Singleton.class);
-        
-        OptionalBinder.newOptionalBinder(binder(), XmlMapper.class)
-        .setDefault().toProvider(XmlMapperProvider.class).in(Singleton.class);
+                .setDefault().toProvider(ObjectMapperProvider.class)
+                .in(Singleton.class);
+
+        OptionalBinder.newOptionalBinder(binder(), XmlMapper.class).setDefault()
+                .toProvider(XmlMapperProvider.class).in(Singleton.class);
 
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
 
