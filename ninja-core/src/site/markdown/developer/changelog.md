@@ -1,3 +1,9 @@
+Version 5.2.1
+=============
+
+* 2015-10-18 OptionalBinder for ObjectMapper and XmlMapper, so that users can easily override 
+              both of them (amit2103)
+
 Version 5.2.0
 =============
 
