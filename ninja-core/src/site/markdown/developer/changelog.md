@@ -3,7 +3,8 @@ Version 5.2.1
 
  * 2015-10-16 Context.getParameterFileItems() now returns Map<String, List<FileItem>> (jjlauer)
  * 2015-10-18 OptionalBinder for ObjectMapper and XmlMapper, so that users can easily override 
-              both of them (amit2103)
+              the default types for both of them.
+
 
 Version 5.2.0
 =============
