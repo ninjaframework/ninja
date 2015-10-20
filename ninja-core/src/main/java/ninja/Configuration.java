@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.OptionalBinder;
 
 /**
  * The basic configuration of the main ninja framework.
@@ -54,8 +55,12 @@ public class Configuration extends AbstractModule {
 
         System.setProperty("file.encoding", "utf-8");
         
-        bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
-        bind(XmlMapper.class).toProvider(XmlMapperProvider.class).in(Singleton.class);
+        OptionalBinder.newOptionalBinder(binder(), ObjectMapper.class)
+                .setDefault().toProvider(ObjectMapperProvider.class)
+                .in(Singleton.class);
+
+        OptionalBinder.newOptionalBinder(binder(), XmlMapper.class).setDefault()
+                .toProvider(XmlMapperProvider.class).in(Singleton.class);
 
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
 
