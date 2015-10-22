@@ -44,7 +44,7 @@ public class UserDao {
             
             EntityManager entityManager = entityManagerProvider.get();
             
-            TypedQuer<User> q = entityManager.createQuery("SELECT x FROM User x WHERE username = :usernameParam");
+            TypedQuery<User> q = entityManager.createQuery("SELECT x FROM User x WHERE username = :usernameParam", User.class);
             User user = getSingleResult(q.setParameter("usernameParam", username));
 
             if (user != null) {
