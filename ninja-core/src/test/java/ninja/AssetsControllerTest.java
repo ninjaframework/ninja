@@ -181,13 +181,46 @@ public class AssetsControllerTest {
                 ninjaProperties);         
 
         when(contextRenderable.getRequestPath()).thenReturn(
-                "/assets/testasset.txt");
+                "/assets/testasset-not-existent.txt");
 
         Result result2 = assetsController.serveStatic();
 
         Renderable renderable = (Renderable) result2.getRenderable();
         renderable.render(contextRenderable, Results.ok());
-        verify(assetsControllerHelper).normalizePathWithoutLeadingSlash("/assets/testasset.txt", false);
+        verify(assetsControllerHelper).normalizePathWithoutLeadingSlash("/assets/testasset-not-existent.txt", true);
+        verify(contextRenderable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
+        assertEquals(404, resultCaptor.getValue().getStatusCode());
+        
+    }
+    
+    @Test
+    public void testStaticDirectoryClassPathWhenFileNotInFileSystemInDevMode() throws Exception {
+        
+        // some more setup needed:
+        Mockito.when(ninjaProperties.isDev()).thenReturn(true);
+        AssetsControllerHelper assetsControllerHelper = Mockito.mock(AssetsControllerHelper.class, Mockito.CALLS_REAL_METHODS);
+
+        assetsController = new AssetsController(
+                assetsControllerHelper,
+                httpCacheToolkit, 
+                mimeTypes, 
+                ninjaProperties);         
+
+        when(contextRenderable.getRequestPath()).thenReturn(
+                "/assets/testasset.txt");
+        when(contextRenderable.finalizeHeadersWithoutFlashAndSessionCookie(Mockito.any(Result.class))).thenReturn(
+                responseStreams);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        when(responseStreams.getOutputStream()).thenReturn(
+                byteArrayOutputStream);
+
+        Result result2 = assetsController.serveStatic();
+
+        Renderable renderable = (Renderable) result2.getRenderable();
+        renderable.render(contextRenderable, Results.ok());
+        verify(assetsControllerHelper).normalizePathWithoutLeadingSlash("/assets/testasset.txt", true);
+        verify(contextRenderable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
+        assertEquals(200, resultCaptor.getValue().getStatusCode());
 
     }
     

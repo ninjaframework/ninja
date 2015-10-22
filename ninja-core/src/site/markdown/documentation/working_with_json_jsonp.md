@@ -151,6 +151,14 @@ It is safe to modify ObjectMapper before
 it is actually used, but it is not threadsafe to modify ObjectMapper 
 after is has been used to parse or generate JSON.
 
+In order to replace the provided Jackson ObjectMapper with your own do this
+in your own guice module:
+
+<pre class="prettyprint">
+OptionalBinder.newOptionalBinder(binder(), ObjectMapper.class)
+    .setBinding().toProvider(YourObjectMapperProvider.class).in(Singleton.class);
+</pre>
+
 More on Jackson modules: http://wiki.fasterxml.com/JacksonFeatureModules
 
 

@@ -264,6 +264,41 @@ public class NinjaTestBrowser {
 
     }
 
+    public String uploadFiles(String url, String[] paramNames, File[] fileToUploads) {
+
+        String response = null;
+
+        try {
+
+            httpClient.getParams().setParameter(
+                    CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+            HttpPost post = new HttpPost(url);
+
+            MultipartEntity entity = new MultipartEntity(
+                    HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            // For File parameters
+            for (int i=0; i<paramNames.length; i++) {
+                
+                entity.addPart(paramNames[i], new FileBody(fileToUploads[i]));
+            }
+
+            post.setEntity(entity);
+
+            // Here we go!
+            response = EntityUtils.toString(httpClient.execute(post)
+                    .getEntity(), "UTF-8");
+            post.releaseConnection();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return response;
+
+    }
+
     public String makeJsonRequest(String url) {
 
         Map<String, String> headers = Maps.newHashMap();
@@ -330,4 +365,5 @@ public class NinjaTestBrowser {
     public void shutdown() {
         httpClient.getConnectionManager().shutdown();
     }
+    
 }
