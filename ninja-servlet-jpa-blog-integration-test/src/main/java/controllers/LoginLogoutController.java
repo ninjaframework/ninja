@@ -19,12 +19,13 @@ package controllers;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
-import ninja.params.Param;
+import ninja.session.Session;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import dao.UserDao;
+import models.LoginDto;
 
 @Singleton
 public class LoginLogoutController {
@@ -42,15 +43,19 @@ public class LoginLogoutController {
 
     }
 
-    public Result loginPost(@Param("username") String username,
-                            @Param("password") String password,
+    public Result loginPost(LoginDto loginForm,
                             Context context) {
 
-        boolean isUserNameAndPasswordValid = userDao.isUserAndPasswordValid(username, password);
-        
+        boolean isUserNameAndPasswordValid = userDao.isUserAndPasswordValid(loginForm.username, loginForm.password);
         
         if (isUserNameAndPasswordValid) {
-            context.getSession().put("username", username);
+            Session session = context.getSession();
+            session.put("username",loginForm.username);
+
+            if (loginForm.rememberMe != null && loginForm.rememberMe) {
+                session.setExpiryTime(24 * 60 * 60 * 1000L);
+            }
+
             context.getFlashScope().success("login.loginSuccessful");
             
             return Results.redirect("/");
@@ -58,7 +63,8 @@ public class LoginLogoutController {
         } else {
             
             // something is wrong with the input or password not found.
-            context.getFlashScope().put("username", username);
+            context.getFlashScope().put("username", loginForm.username);
+            context.getFlashScope().put("rememberMe", loginForm.rememberMe);
             context.getFlashScope().error("login.errorLogin");
 
             return Results.redirect("/login");

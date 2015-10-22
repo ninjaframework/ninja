@@ -341,17 +341,7 @@ public class SessionImplTest {
 
         String authenticityToken = sessionCookie.getAuthenticityToken();
 
-        sessionCookie.save(context, result);
-
-        // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
-
-        String cookieValue = cookieCaptor.getValue().getValue();
-        String cookieValueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
-
-        if (encrypted) {
-            cookieValueWithoutSign = encryption.decrypt(cookieValueWithoutSign);
-        }
+        String cookieValueWithoutSign = captureFinalCookie(sessionCookie);
 
         //verify that the authenticity token is set
         assertTrue(cookieValueWithoutSign.contains(Session.AUTHENTICITY_KEY + "=" + authenticityToken));
@@ -369,17 +359,7 @@ public class SessionImplTest {
 
         String idToken = sessionCookie.getId();
 
-        sessionCookie.save(context, result);
-
-        // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
-
-        String cookieValue = cookieCaptor.getValue().getValue();
-        String valueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
-
-        if (encrypted) {
-            valueWithoutSign = encryption.decrypt(valueWithoutSign);
-        }
+        String valueWithoutSign = captureFinalCookie(sessionCookie);
         //verify that the id token is set:
         assertTrue(valueWithoutSign.contains(Session.ID_KEY + "=" + idToken));
         // also make sure the timestamp is there:
@@ -399,6 +379,73 @@ public class SessionImplTest {
         verify(result).addCookie(cookieCaptor.capture());
         Cookie cookie = cookieCaptor.getValue();
         Assert.assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
+    }
+
+    @Test
+    public void testExpiryTimeOverride() {
+        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        sessionCookie.init(context);
+
+        sessionCookie.put("1", "1");
+
+        sessionCookie.setExpiryTime(60 * 60 * 1000L);
+
+        sessionCookie.put("2", "2");
+
+        Assert.assertThat(sessionCookie.get("1"), CoreMatchers.equalTo("1"));
+        Assert.assertThat(sessionCookie.get("2"), CoreMatchers.equalTo("2"));
+
+        String cookieValueWithoutSign = captureFinalCookie(sessionCookie);
+
+        assertTrue(cookieValueWithoutSign.contains(Session.TIMESTAMP_KEY));
+        assertTrue(cookieValueWithoutSign.contains(Session.EXPIRY_TIME_KEY));
+    }
+
+    @Test
+    public void testExpiryTimeNullOverride() {
+        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        sessionCookie.init(context);
+
+        sessionCookie.put("1", "1");
+
+        sessionCookie.setExpiryTime(60 * 60 * 1000L);
+
+        sessionCookie.put("2", "2");
+
+        sessionCookie.setExpiryTime(null);
+
+        Assert.assertThat(sessionCookie.get("1"), CoreMatchers.equalTo("1"));
+        Assert.assertThat(sessionCookie.get("2"), CoreMatchers.equalTo("2"));
+
+        String cookieValueWithoutSign = captureFinalCookie(sessionCookie);
+
+        assertTrue(!cookieValueWithoutSign.contains(Session.EXPIRY_TIME_KEY));
+    }
+
+
+    @Test
+    public void testExpiryTimeOverrideWithNoDefault() {
+        when(
+            ninjaProperties.getBooleanWithDefault(
+                NinjaConstant.sessionExpireTimeInSeconds, null))
+            .thenReturn(false);
+
+        testExpiryTimeOverride();
+    }
+
+    private String captureFinalCookie(Session sessionCookie) {
+        sessionCookie.save(context, result);
+
+        // a cookie will be set
+        verify(result).addCookie(cookieCaptor.capture());
+
+        String cookieValue = cookieCaptor.getValue().getValue();
+        String cookieValueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
+
+        if (encrypted) {
+            cookieValueWithoutSign = encryption.decrypt(cookieValueWithoutSign);
+        }
+        return cookieValueWithoutSign;
     }
 
 }
