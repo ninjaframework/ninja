@@ -98,11 +98,12 @@ public Result clearSession(Session session) {
 Session Expiry
 --------------
 
-The session cookie can have an expiry time set.  The expiry time is checked every time
-a request is made.  By default no expiry time is set, but one can be configured in
+You can set an expiry time on sessions.  The expiry time is checked every time
+a request is made.  If the current time is past the expiry time, the session is
+cleared.  By default no expiry time is set, but one can be configured in
 <code>conf/application.conf</code> with the
-<code>application.session.expire_time_in_seconds</code> property (see below).  This can
-also be set in code <code>setExpiryTime()</code>.
+<code>application.session.expire_time_in_seconds</code> property (see below).  It can
+also be set in code using <code>setExpiryTime()</code>:
 
 <pre class="prettyprint">
 public Result login(@Param("rememberMe") Boolean rememberMe,
@@ -119,6 +120,7 @@ public Result login(@Param("rememberMe") Boolean rememberMe,
     return Results.html();
 }
 </pre>
+
 
 Disabling secure (HTTPS) flag for sessions during development
 -------------------------------------------------------------

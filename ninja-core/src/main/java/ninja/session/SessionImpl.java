@@ -43,6 +43,7 @@ public class SessionImpl implements Session {
 
     private final Crypto crypto;
     private final CookieEncryption encryption;
+    private final SessionTime time;
 
     private Long sessionExpireTimeInMs;
     private final Long defaultSessionExpireTimeInMs;
@@ -58,10 +59,12 @@ public class SessionImpl implements Session {
     private final String sessionCookieName;
 
     @Inject
-    public SessionImpl(Crypto crypto, CookieEncryption encryption, NinjaProperties ninjaProperties) {
+    public SessionImpl(Crypto crypto, CookieEncryption encryption, NinjaProperties ninjaProperties,
+                       SessionTime sessionTime) {
 
         this.crypto = crypto;
         this.encryption = encryption;
+        this.time = sessionTime;
 
         // read configuration stuff:
         Integer sessionExpireTimeInSeconds = ninjaProperties
@@ -144,7 +147,7 @@ public class SessionImpl implements Session {
 
             Long timestamp = Long.parseLong(data.get(TIMESTAMP_KEY));
 
-            return (timestamp + sessionExpireTimeInMs < System.currentTimeMillis());
+            return (timestamp + sessionExpireTimeInMs < time.currentTimeMillis());
 
         }
 
@@ -160,6 +163,8 @@ public class SessionImpl implements Session {
 
             sessionExpireTimeInMs = defaultSessionExpireTimeInMs;
 
+            sessionDataHasBeenChanged = true;
+
         } else {
 
 
@@ -171,7 +176,7 @@ public class SessionImpl implements Session {
 
         if (sessionExpireTimeInMs != null) {
             if (!data.containsKey(TIMESTAMP_KEY)) {
-                data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis());
+                data.put(TIMESTAMP_KEY, "" + time.currentTimeMillis());
             }
 
             checkExpire();
@@ -187,7 +192,7 @@ public class SessionImpl implements Session {
                 data.clear();
             } else {
                 // Everything's alright => prolong session
-                data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis());
+                data.put(TIMESTAMP_KEY, "" + time.currentTimeMillis());
             }
         }
     }
