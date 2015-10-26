@@ -25,9 +25,13 @@ import java.util.Collection;
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
-import ninja.utils.*;
+import ninja.utils.Clock;
+import ninja.utils.CookieEncryption;
+import ninja.utils.Crypto;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
+import ninja.utils.SecretGenerator;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
