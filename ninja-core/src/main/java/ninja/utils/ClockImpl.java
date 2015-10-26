@@ -1,6 +1,6 @@
-package ninja.session;
+package ninja.utils;
 
-public class SessionTimeImpl implements SessionTime {
+public class ClockImpl implements Clock {
 
     @Override
     public long currentTimeMillis() {

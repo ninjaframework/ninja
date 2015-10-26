@@ -25,11 +25,7 @@ import java.util.UUID;
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
-import ninja.utils.CookieDataCodec;
-import ninja.utils.CookieEncryption;
-import ninja.utils.Crypto;
-import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaProperties;
+import ninja.utils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +39,7 @@ public class SessionImpl implements Session {
 
     private final Crypto crypto;
     private final CookieEncryption encryption;
-    private final SessionTime time;
+    private final Clock time;
 
     private Long sessionExpireTimeInMs;
     private final Long defaultSessionExpireTimeInMs;
@@ -59,12 +55,11 @@ public class SessionImpl implements Session {
     private final String sessionCookieName;
 
     @Inject
-    public SessionImpl(Crypto crypto, CookieEncryption encryption, NinjaProperties ninjaProperties,
-                       SessionTime sessionTime) {
+    public SessionImpl(Crypto crypto, CookieEncryption encryption, NinjaProperties ninjaProperties, Clock clock) {
 
         this.crypto = crypto;
         this.encryption = encryption;
-        this.time = sessionTime;
+        this.time = clock;
 
         // read configuration stuff:
         Integer sessionExpireTimeInSeconds = ninjaProperties

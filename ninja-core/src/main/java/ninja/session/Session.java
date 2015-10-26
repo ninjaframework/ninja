@@ -30,7 +30,7 @@ public interface Session {
     String AUTHENTICITY_KEY = "___AT";
     String ID_KEY = "___ID";
     String TIMESTAMP_KEY = "___TS";
-	String EXPIRY_TIME_KEY = "___EP";
+    String EXPIRY_TIME_KEY = "___EP";
 
 	/**
      * Has to be called initially. => maybe in the future as assisted inject.
