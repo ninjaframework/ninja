@@ -49,6 +49,7 @@ contributed to Ninja. In some random order:
  * Arystan Dyussenov (arystan)
  * Christian Bourgeois (momiji/xtian)
  * Amit Pandey (amit2103)
+ * Mark Watson (watsonmw)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

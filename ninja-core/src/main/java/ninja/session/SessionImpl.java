@@ -137,18 +137,14 @@ public class SessionImpl implements Session {
 
     protected boolean shouldExpire() {
         if (sessionExpireTimeInMs != null) {
-
             // Make sure session contains valid timestamp
             if (!data.containsKey(TIMESTAMP_KEY)) {
-
                 return true;
-
             }
 
             Long timestamp = Long.parseLong(data.get(TIMESTAMP_KEY));
 
             return (timestamp + sessionExpireTimeInMs < time.currentTimeMillis());
-
         }
 
         return false;
@@ -156,22 +152,15 @@ public class SessionImpl implements Session {
 
     @Override
     public void setExpiryTime(Long expiryTimeMs) {
-
         if (expiryTimeMs == null) {
-
             data.remove(EXPIRY_TIME_KEY);
 
             sessionExpireTimeInMs = defaultSessionExpireTimeInMs;
-
             sessionDataHasBeenChanged = true;
-
         } else {
-
-
             data.put(EXPIRY_TIME_KEY, "" + expiryTimeMs);
 
             sessionExpireTimeInMs = expiryTimeMs;
-
         }
 
         if (sessionExpireTimeInMs != null) {

@@ -61,18 +61,18 @@ public class LoginLogoutController {
             context.getFlashScope().success("login.loginSuccessful");
             
             return Results.redirect("/");
-            
+
         } else {
-            
+
             // something is wrong with the input or password not found.
             context.getFlashScope().put("username", username);
             context.getFlashScope().put("rememberMe", rememberMe);
             context.getFlashScope().error("login.errorLogin");
 
             return Results.redirect("/login");
-            
+
         }
-        
+
     }
 
     ///////////////////////////////////////////////////////////////////////////

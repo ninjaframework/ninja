@@ -123,7 +123,7 @@ public class SessionImplTest {
     public void testSessionDoesNotGetWrittenToResponseWhenEmptyAndOnlySentWhenChanged() {
 
         Session sessionCookie =
-            getNewSession();
+            createNewSession();
 
         sessionCookie.init(context);
 
@@ -138,7 +138,7 @@ public class SessionImplTest {
     @Test
     public void testSessionCookieSettingWorks() throws Exception {
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -175,7 +175,7 @@ public class SessionImplTest {
     @Test
     public void testHttpsOnlyWorks() throws Exception {
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -201,7 +201,7 @@ public class SessionImplTest {
                         NinjaConstant.sessionTransferredOverHttpsOnly, true))
                 .thenReturn(false);
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -222,7 +222,7 @@ public class SessionImplTest {
     @Test
     public void testHttpOnlyWorks() throws Exception {
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -247,7 +247,7 @@ public class SessionImplTest {
                 ninjaProperties.getBooleanWithDefault(
                         NinjaConstant.sessionHttpOnly, true)).thenReturn(false);
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -268,7 +268,7 @@ public class SessionImplTest {
     @Test
     public void testThatCookieSavingAndInitingWorks() {
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -294,7 +294,7 @@ public class SessionImplTest {
                 newSessionCookie);
 
         // init new session from that cookie:
-        Session sessionCookie2 = getNewSession();
+        Session sessionCookie2 = createNewSession();
 
         sessionCookie2.init(context);
 
@@ -312,14 +312,14 @@ public class SessionImplTest {
                 .thenReturn(null);
 
         // stuff must break => ...
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         verify(ninjaProperties).getOrDie(NinjaConstant.applicationCookiePrefix);
     }
 
     @Test
     public void testSessionCookieDelete() {
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
         sessionCookie.init(context);
         final String key = "mykey";
         final String value = "myvalue";
@@ -338,7 +338,7 @@ public class SessionImplTest {
     @Test
     public void testGetAuthenticityTokenWorks() {
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -356,7 +356,7 @@ public class SessionImplTest {
     @Test
     public void testGetIdTokenWorks() {
 
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -373,7 +373,7 @@ public class SessionImplTest {
     @Test
     public void testThatCookieUsesContextPath() {
         Mockito.when(context.getContextPath()).thenReturn("/my_context");
-        Session sessionCookie = getNewSession();
+        Session sessionCookie = createNewSession();
         sessionCookie.init(context);
         sessionCookie.put("anykey", "anyvalue");
 
@@ -386,10 +386,9 @@ public class SessionImplTest {
 
     @Test
     public void testExpiryTime() {
-
         // 1. Check that session is still saved when expiry time is set
 
-        Session sessionCookie1 = getNewSession();
+        Session sessionCookie1 = createNewSession();
         sessionCookie1.init(context);
 
         sessionCookie1.put("a", "2");
@@ -422,7 +421,7 @@ public class SessionImplTest {
             ninjaProperties.getInteger(NinjaConstant.sessionExpireTimeInSeconds))
             .thenReturn(null);
 
-        Session sessionCookie1 = getNewSession();
+        Session sessionCookie1 = createNewSession();
         sessionCookie1.init(context);
 
         sessionCookie1.put("a", "2");
@@ -453,12 +452,12 @@ public class SessionImplTest {
         when(context.getCookie("NINJA_SESSION")).thenReturn(cookieCaptor.getValue());
 
         // ... and roundtrip it into an new session
-        Session sessionCookie2 = getNewSession();
+        Session sessionCookie2 = createNewSession();
         sessionCookie2.init(context);
         return sessionCookie2;
     }
 
-    private Session getNewSession() {
+    private Session createNewSession() {
         return new SessionImpl(crypto, encryption, ninjaProperties, clock);
     }
 
@@ -477,5 +476,4 @@ public class SessionImplTest {
 
         return cookieValueWithoutSign;
     }
-
 }
