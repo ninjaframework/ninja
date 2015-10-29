@@ -16,12 +16,8 @@
 
 package ninja.session;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,13 +25,13 @@ import java.util.Collection;
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
+import ninja.utils.Clock;
 import ninja.utils.CookieEncryption;
 import ninja.utils.Crypto;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.SecretGenerator;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,6 +63,9 @@ public class SessionImplTest {
 
     @Mock
     NinjaProperties ninjaProperties;
+
+    @Mock
+    Clock clock;
 
     @Parameter
     public boolean encrypted;
@@ -110,6 +109,9 @@ public class SessionImplTest {
         when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
                 .thenReturn("NINJA");
 
+        when(clock.currentTimeMillis())
+            .thenReturn(System.currentTimeMillis());
+
         when(ninjaProperties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)).thenReturn(encrypted);
 
         encryption = new CookieEncryption(ninjaProperties);
@@ -120,7 +122,8 @@ public class SessionImplTest {
     @Test
     public void testSessionDoesNotGetWrittenToResponseWhenEmptyAndOnlySentWhenChanged() {
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie =
+            createNewSession();
 
         sessionCookie.init(context);
 
@@ -135,7 +138,7 @@ public class SessionImplTest {
     @Test
     public void testSessionCookieSettingWorks() throws Exception {
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -172,7 +175,7 @@ public class SessionImplTest {
     @Test
     public void testHttpsOnlyWorks() throws Exception {
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -198,7 +201,7 @@ public class SessionImplTest {
                         NinjaConstant.sessionTransferredOverHttpsOnly, true))
                 .thenReturn(false);
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -219,7 +222,7 @@ public class SessionImplTest {
     @Test
     public void testHttpOnlyWorks() throws Exception {
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -244,7 +247,7 @@ public class SessionImplTest {
                 ninjaProperties.getBooleanWithDefault(
                         NinjaConstant.sessionHttpOnly, true)).thenReturn(false);
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -265,7 +268,7 @@ public class SessionImplTest {
     @Test
     public void testThatCookieSavingAndInitingWorks() {
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
@@ -291,7 +294,7 @@ public class SessionImplTest {
                 newSessionCookie);
 
         // init new session from that cookie:
-        Session sessionCookie2 = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie2 = createNewSession();
 
         sessionCookie2.init(context);
 
@@ -309,14 +312,14 @@ public class SessionImplTest {
                 .thenReturn(null);
 
         // stuff must break => ...
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         verify(ninjaProperties).getOrDie(NinjaConstant.applicationCookiePrefix);
     }
 
     @Test
     public void testSessionCookieDelete() {
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
         sessionCookie.init(context);
         final String key = "mykey";
         final String value = "myvalue";
@@ -335,23 +338,13 @@ public class SessionImplTest {
     @Test
     public void testGetAuthenticityTokenWorks() {
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
         String authenticityToken = sessionCookie.getAuthenticityToken();
 
-        sessionCookie.save(context, result);
-
-        // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
-
-        String cookieValue = cookieCaptor.getValue().getValue();
-        String cookieValueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
-
-        if (encrypted) {
-            cookieValueWithoutSign = encryption.decrypt(cookieValueWithoutSign);
-        }
+        String cookieValueWithoutSign = captureFinalCookie(sessionCookie);
 
         //verify that the authenticity token is set
         assertTrue(cookieValueWithoutSign.contains(Session.AUTHENTICITY_KEY + "=" + authenticityToken));
@@ -363,23 +356,13 @@ public class SessionImplTest {
     @Test
     public void testGetIdTokenWorks() {
 
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
 
         sessionCookie.init(context);
 
         String idToken = sessionCookie.getId();
 
-        sessionCookie.save(context, result);
-
-        // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
-
-        String cookieValue = cookieCaptor.getValue().getValue();
-        String valueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
-
-        if (encrypted) {
-            valueWithoutSign = encryption.decrypt(valueWithoutSign);
-        }
+        String valueWithoutSign = captureFinalCookie(sessionCookie);
         //verify that the id token is set:
         assertTrue(valueWithoutSign.contains(Session.ID_KEY + "=" + idToken));
         // also make sure the timestamp is there:
@@ -390,7 +373,7 @@ public class SessionImplTest {
     @Test
     public void testThatCookieUsesContextPath() {
         Mockito.when(context.getContextPath()).thenReturn("/my_context");
-        Session sessionCookie = new SessionImpl(crypto, encryption, ninjaProperties);
+        Session sessionCookie = createNewSession();
         sessionCookie.init(context);
         sessionCookie.put("anykey", "anyvalue");
 
@@ -398,7 +381,99 @@ public class SessionImplTest {
 
         verify(result).addCookie(cookieCaptor.capture());
         Cookie cookie = cookieCaptor.getValue();
-        Assert.assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
+        assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
     }
 
+    @Test
+    public void testExpiryTime() {
+        // 1. Check that session is still saved when expiry time is set
+
+        Session sessionCookie1 = createNewSession();
+        sessionCookie1.init(context);
+
+        sessionCookie1.put("a", "2");
+
+        sessionCookie1.setExpiryTime(10 * 1000L);
+
+        assertThat(sessionCookie1.get("a"), CoreMatchers.equalTo("2"));
+
+        sessionCookie1.save(context, result);
+
+        Session sessionCookie2 = roundTrip(sessionCookie1);
+
+        assertThat(sessionCookie2.get("a"), CoreMatchers.equalTo("2"));
+
+        // 2. Check that session is invalidated when past the expiry time
+
+        // Set the current time past when it is called.
+        when(clock.currentTimeMillis()).thenReturn(System.currentTimeMillis() + 11 * 1000L);
+
+        Session sessionCookie3 = roundTrip(sessionCookie2);
+
+        assertNull(sessionCookie3.get("a"));
+    }
+
+    @Test
+    public void testExpiryTimeRoundTrip() {
+        // Round trip the session cookie with an expiry time in the future
+        // Then remove the expiration time to make sure it is still valid
+        when(
+            ninjaProperties.getInteger(NinjaConstant.sessionExpireTimeInSeconds))
+            .thenReturn(null);
+
+        Session sessionCookie1 = createNewSession();
+        sessionCookie1.init(context);
+
+        sessionCookie1.put("a", "2");
+
+        sessionCookie1.setExpiryTime(10 * 1000L);
+
+        assertThat(sessionCookie1.get("a"), CoreMatchers.equalTo("2"));
+
+        Session sessionCookie2 = roundTrip(sessionCookie1);
+
+        assertThat(sessionCookie2.get("a"), CoreMatchers.equalTo("2"));
+
+        assertThat(sessionCookie2.get(Session.EXPIRY_TIME_KEY), CoreMatchers.equalTo("10000"));
+
+        sessionCookie2.setExpiryTime(null);
+
+        Session sessionCookie3 = roundTrip(sessionCookie2);
+
+        assertNull(sessionCookie3.get(Session.EXPIRY_TIME_KEY));
+    }
+
+    private Session roundTrip(Session sessionCookie1) {
+        sessionCookie1.save(context, result);
+
+        // Get the cookie ...
+        verify(result, atLeastOnce()).addCookie(cookieCaptor.capture());
+
+        when(context.getCookie("NINJA_SESSION")).thenReturn(cookieCaptor.getValue());
+
+        // ... and roundtrip it into an new session
+        Session sessionCookie2 = createNewSession();
+        sessionCookie2.init(context);
+        return sessionCookie2;
+    }
+
+    private Session createNewSession() {
+        return new SessionImpl(crypto, encryption, ninjaProperties, clock);
+    }
+
+    private String captureFinalCookie(Session sessionCookie) {
+        sessionCookie.save(context, result);
+
+        // SessionImpl should set the cookie
+        verify(result).addCookie(cookieCaptor.capture());
+
+        String cookieValue = cookieCaptor.getValue().getValue();
+        String cookieValueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
+
+        if (encrypted) {
+            cookieValueWithoutSign = encryption.decrypt(cookieValueWithoutSign);
+        }
+
+        return cookieValueWithoutSign;
+    }
 }

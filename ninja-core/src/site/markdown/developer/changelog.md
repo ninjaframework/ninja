@@ -1,6 +1,8 @@
 Versoin X.X.X
 =============
 
+ * 2015-10-18 Added Session.setExpiryTime() to control session expiry (watsonmw)
+
  * 2015-10-18 OptionalBinder for ObjectMapper and XmlMapper, so that users can easily override
               the default types for both of them. (amit2103/jjlauer)
 

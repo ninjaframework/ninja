@@ -30,7 +30,8 @@ public interface Session {
     String AUTHENTICITY_KEY = "___AT";
     String ID_KEY = "___ID";
     String TIMESTAMP_KEY = "___TS";
-    
+    String EXPIRY_TIME_KEY = "___EP";
+
 	/**
      * Has to be called initially. => maybe in the future as assisted inject.
      * 
@@ -102,4 +103,15 @@ public interface Session {
 	 */
 	public boolean isEmpty();
 
+	/**
+	 * Use an alternative expiry time, this can be used to implement a longer
+	 * expiry time for 'remember me' style functionality.
+	 *
+	 * The expiry time is persisted in the session.
+	 *
+	 * @param expiryTimeMs the expiry time in milliseconds, set to null to remove
+	 *                     the expiry time from the session and use the application
+	 *                     default.
+	 */
+	public void setExpiryTime(Long expiryTimeMs);
 }

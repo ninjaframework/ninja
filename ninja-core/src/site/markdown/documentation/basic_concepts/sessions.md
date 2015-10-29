@@ -95,6 +95,33 @@ public Result clearSession(Session session) {
 }
 </pre>
 
+Session Expiry
+--------------
+
+You can set an expiry time on sessions.  The expiry time is checked every time
+a request is made.  If the current time is past the expiry time, the session is
+cleared.  By default no expiry time is set, but one can be configured in
+<code>conf/application.conf</code> with the
+<code>application.session.expire_time_in_seconds</code> property (see below).  It can
+also be set in code using <code>setExpiryTime()</code>:
+
+<pre class="prettyprint">
+public Result login(@Param("rememberMe") Boolean rememberMe,
+                    Session session) {
+
+    if (rememberMe != null && rememberMe) {
+        // Set the expiry time 30 days (in milliseconds) in the future
+        session.setExpiryTime(30 * 24 * 60 * 60 * 1000L);
+    } else {
+        // Set the expiry time 1 hour in the future
+        session.setExpiryTime(60 * 60 * 1000L);
+    }
+
+    return Results.html();
+}
+</pre>
+
+
 Disabling secure (HTTPS) flag for sessions during development
 -------------------------------------------------------------
 
@@ -130,9 +157,10 @@ and bar.example.com:
 application.cookie.domain = .example.com
 </pre>
 
-The time until a session expires (in seconds). By default, a session does not
-have an expiry time. For example, to set a session to expire after one minute
-of inactivity:
+The time until a session expires (in seconds).  By default, a session does not
+have an expiry time set.  However, the browser may expire the session cookie,
+typically after the browser is closed (this can vary based on browser settings).
+To set a session to expire after one minute of inactivity:
 
 <pre class="prettyprint">
 application.session.expire_time_in_seconds = 60
@@ -158,16 +186,9 @@ he does. When send_only_if_changed is false, the session cookie and its expirati
 time is refreshed on every HTTP response.
 </div>
 
-To only send session cookies over HTTPS by including the secure flag.  To disable
-this flag:
-
-<pre class="prettyprint">
-application.session.transferred_over_https_only = false
-</pre>
-
-To set the HttpOnly flag on the session cookie. On a supported browser, an
-HttpOnly session cookie will be used only when transmitting HTTP (or HTTPS) requests,
-thus restricting access from other, non-HTTP APIs (such as JavaScript). This
+The <code>application.session.http_only</code> property can be used to mark the
+session cookie as HTTP Only when sent over HTTP/HTTPS.  On supported browsers, the
+HTTP Only flag will prevent JavaScript from accessing the session cookie.  This
 restriction mitigates but does not eliminate the threat of session cookie theft
 via cross-site scripting (XSS).  To disable this flag:
 
