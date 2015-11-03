@@ -151,7 +151,7 @@ public class NinjaDefaultTest {
         
         ninjaDefault.onRouteRequest(contextImpl);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, exception);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, exception, null);
     
     }
     
@@ -168,7 +168,7 @@ public class NinjaDefaultTest {
         
         ninjaDefault.onRouteRequest(contextImpl);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, internalServerErrorException);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, internalServerErrorException, null);
     
     }
     
@@ -293,7 +293,7 @@ public class NinjaDefaultTest {
     
         Result result = ninjaDefault.onException(contextImpl, anyException);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, anyException);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, anyException, null);
         assertThat(result.getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
 
     }
@@ -318,6 +318,11 @@ public class NinjaDefaultTest {
     @Test
     public void getInternalServerErrorResult() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+        
         // real test:
         Result result = ninjaDefault.getInternalServerErrorResult(
                 contextImpl,
@@ -332,6 +337,10 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
                 
     }
     
@@ -354,6 +363,11 @@ public class NinjaDefaultTest {
     @Test
     public void testGetBadRequest() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
+
         // real test:
         Result result = ninjaDefault.getBadRequestResult(
                 contextImpl,
@@ -368,6 +382,10 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
                 
     }
     
@@ -391,6 +409,11 @@ public class NinjaDefaultTest {
     @Test
     public void testGetOnNotFoundResultWorks() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
+
         Result result = ninjaDefault.getNotFoundResult(contextImpl);
         
         assertThat(result.getStatusCode(), equalTo(Result.SC_404_NOT_FOUND));
@@ -402,6 +425,10 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
                 
     }
     

@@ -6,13 +6,13 @@ Intro
 
 Ninja provides a special controller that helps to serve static assets: 
 <code>AssetsController</code>. <code>AssetsController</code> 
-serves static assets (like css, javascript and images) 
-from the <code>src/main/java/assets</code> folder
+serves static assets (like CSS, JavaScript and images) 
+from the <code>src/main/java/assets</code> folder. 
 It provides support for ETags and caching out of the box.
 
 <div class="alert alert-info"><code>AssetsController</code> will serve all assets
 below your src/main/java/assets folder. Therefore you have to make sure
-that no sensible information is available in that folder and subfolders.</div>
+that no sensible information is available in that folder and its subfolders.</div>
 
 Serving static assets from a subdirectory
 -----------------------------------------
@@ -26,29 +26,6 @@ router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serve
 If a website references an image at <code>&lt;img src=&quot;/assets/images/logo.png&quot; /&gt;</code>
 Ninja will serve the file at <code>src/main/java/assets/images/logo.png</code>. (Usually this
 happens inside a jar file - but for clarity we used <code>src/main/java</code>).
-
-Serving static assets from a custom directory
----------------------------------------------
-If you want to serve static files from a custom directory, you can set
-application.static.asset.basedir property in application.conf file to the absolute path.
-
-For eg: if you set the property as below,
-<pre class="prettyprint">
-application.static.asset.basedir=/mnt/store/app/static
-</pre>
-
-<pre class="prettyprint">
-router.GET().route("/robots.txt").with(AssetsController.class, "serveStatic");
-</pre>
-
-Above route will serve your static robots.txt from <code>/mnt/store/app/static/robots.txt</code>.
-
-<pre class="prettyprint">
-router.GET().route("/public/{fileName: .*}").with(AssetsController.class, "serveStatic");
-</pre>
-
-This route will serve your static /public/robots.txt from <code>/mnt/store/app/static/public/robots.txt</code>.
-
 
 Serving static files from root
 ------------------------------
@@ -65,14 +42,14 @@ router.GET().route("/robots.txt").with(AssetsController.class, "serveStatic");
 This route will serve your static robots.txt from <code>src/main/java/assets/robots.txt</code>.
 
 
-Webjars
+WebJars
 -------
 
-The webjars project (http://www.webjars.org/) started by James Ward is 
+The WebJars project (http://www.webjars.org/) started by James Ward is 
 an excellent initiative that unites good old Java dependency management 
-with static web libraries like bootstrap.
+with static web libraries like Bootstrap.
 
-That means that you can for instance include bootstrap into your project via:
+That means that you can for instance include Bootstrap into your project via:
 
 <pre class="prettyprint">
 &lt;dependency&gt;
@@ -82,7 +59,7 @@ That means that you can for instance include bootstrap into your project via:
 &lt;/dependency&gt;
 </pre>
 
-The dependency is of course transitive, and will also pull in jQuery (needed by bootstrap). 
+The dependency is of course transitive, and will also pull in jQuery (needed by Bootstrap). 
 That way copying of dependencies into your assets folder is no longer needed.
 
 In order to activate support for WebJars you need to add the following route to
@@ -92,14 +69,14 @@ your project:
 router.GET().route("/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
 </pre>
 
-You can reference bootstrap from your html pages via the following url:
+You can reference Bootstrap from your HTML pages via the following URL:
 
 <pre class="prettyprint">
 &lt;link href=&quot;/webjars/bootstrap/3.3.4/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
 </pre>
 
 And Bootstrap is only an example. There are a lot more WebJars available at your
-disposal: jQuery, ember.js, angular and much more. 
+disposal: jQuery, Ember.js, AngularJS and much more. 
 And everything without the need for downloading and updating stuff inside 
 your assets directory.
 
@@ -133,5 +110,5 @@ You can control caching via two parameters in your application.conf file:
  * <code>http.useETag</code> (true by default)
  * <code>http.cache_control</code> (3600 by default)
  
-<code>http.useEtag</code> will let you turn on and off etag based caching of assets. 
+<code>http.useEtag</code> will let you turn on and off ETag based caching of assets. 
 <code>http.cache_control</code> will set the maxAge=XXX cache-control header.

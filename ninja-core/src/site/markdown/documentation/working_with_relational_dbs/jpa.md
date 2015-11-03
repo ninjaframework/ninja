@@ -2,7 +2,7 @@ JPA
 ===
 
 JPA is the de-facto standard for persistence in Java and Ninja provides out-of-the box support for JPA 2.0. 
-JPA support is implemented by Hibernate and transaction handling is facilitated by guice-persist.
+JPA support is implemented by Hibernate and transaction handling is facilitated by Guice Persist.
 
 
 Quickstart
@@ -17,7 +17,7 @@ mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifact
 and hit
 
 <pre class="prettyprint">
-ninja:run
+mvn ninja:run
 </pre>
 
 
@@ -77,8 +77,8 @@ ninja.jpa.persistence_unit_name=dev_unit
 
 This causes Ninja to use dev_unit in dev, test_unit in dev and prod_unit in prod. 
 You can then use for instance
-a db for testing, another regular postgresql database for development and a highly tuned 
-connectionpooled postgresql in production. All of them with different connection strings of course.
+a db for testing, another regular PostgreSQL database for development and a highly tuned 
+connectionpooled PostgreSQL in production. All of them with different connection strings of course.
 
 To make that finally come to live you have to configure the second JPA component 
 - a file called <code>META-INF/persistence.xml</code> which can look like:
@@ -185,10 +185,10 @@ public class GuestbookEntry {
 
 </pre>
 
-In essence the model is a Pojo with some annotations. This is already enough to tell JPA where and
+In essence the model is a POJO with some annotations. This is already enough to tell JPA where and
 what to save.
 
-Please refer to http://docs.oracle.com/javaee/7/tutorial/doc/persistence-intro.htm 
+Please refer to https://docs.oracle.com/javaee/7/tutorial/persistence-intro.htm 
 for an exhaustive coverage of the topic.
 
 Well. We configured the stuff - we know how to write models. But what can we do with the models?
@@ -198,7 +198,7 @@ Saving and querying
 ===================
 
 To be honest. Ninja is just reusing excellent libraries to provide you with JPA. In that case it is
-guice and especially guice-persist (https://code.google.com/p/google-guice/wiki/GuicePersist).
+Guice and especially Guice Persist (https://github.com/google/guice/wiki/GuicePersist).
 
 Ninja just offers a convenient out of the box configuration and maps the modes to the persistence units.
 
@@ -235,7 +235,7 @@ Two things here are important:
 The entity manager is the key component that allows you to update / save and query data based on your models.
 But JPA has to open connections, save data, maintain caches - and you'd possibly go crazy if you'd have to
 manage that for each controller method yourself. This is what <code>@UnitOfWork</code> is for. Simply annotate
-your method with that annotation and guice-persist will handle all boilerplate for you.
+your method with that annotation and Guice Persists will handle all the boilerplate for you.
 
 But <code>@UnitOfWork</code> only handles connections and does not help you with transactions.
 This is what <code>@Transactional</code> is for. <code>@Transactional</code> automatically opens and closes
@@ -291,5 +291,5 @@ works best in that mode because the framework is responsible for setting up/shut
 transactions and <code>EntityManagers</code> are injected/managed by JEE containers.
 
 If you want to know more about JPA please refer to the official docs at: 
-http://docs.oracle.com/javaee/7/tutorial/doc/persistence-intro.htm .
+https://docs.oracle.com/javaee/7/tutorial/persistence-intro.htm .
 

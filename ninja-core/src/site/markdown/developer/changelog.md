@@ -1,9 +1,73 @@
+Versoin X.X.X
+=============
+
+ * 2015-10-18 Added Session.setExpiryTime() to control session expiry (watsonmw)
+
+ * 2015-10-18 OptionalBinder for ObjectMapper and XmlMapper, so that users can easily override
+              the default types for both of them. (amit2103/jjlauer)
+
+Version 5.2.1
+=============
+
+ * 2015-10-16 Context.getParameterFileItems() now returns Map<String, List<FileItem>> (jjlauer)
+
+Version 5.2.0
+=============
+
+ * 2015-08-17 Added gzip-enabled rollover appender examples to archetypes' logback.xml 
+              files & minor doc typo fixes (metacity)
+ * 2015-06-24 Injection of params and uploaded files from multipart requests (bazi, momiji)
+
+Version 5.1.7
+=============
+
+ * 2015-10-06 AuthenticityFilter uses Ninja interface not NinjaDefault class (jjlauer)
+ * 2015-10-06 AuthenticityFilter logs filtered requests as warnings (jjlauer)
+ * 2015-10-01 Fixed garbled snippets in diagnostics (mallowlabs)
+ * 2015-09-25 Upgrade FreeMarker from 2.3.22 to 2.3.23 (khmarbaise)
+ * 2015-09-28 Improved diagnostic mode w/ info about the context, request, and response (jjlauer)
+ * 2015-09-28 Fixed NPE issue with cookies not being set in underlying servlet request (jjlauer)
+ * 2015-09-28 NinjaDefault now logs exceptions in the debug level (jjlauer)
+
+Version 5.1.6
+=============
+
+ * 2015-09-17 Fixed bug in AssetsController that occurred in dev mode on some environments (ra).
+ * 2015-08-23 Added charset to error html files (mallowlabs)
+ * 2015-09-15 Fixed status code for forbidden results in diagnostic mode (jjlauer)
+ * 2015-09-15 Added documentation for session configuration properties (jjlauer)
+
+Version 5.1.5
+=============
+
+ * 2015-08-09 Website documentation improvements (metacity)
+ * 2015-07-28 Jackson will now use Woodstox as the StAX implementation (metacity)
+ * 2015-07-22 Added support for Jackson's JSON Views (metacity)
+ * 2015-07-21 Added properties to override system views location (momiji).
+
+Version 5.1.4
+=============
+
+ * 2015-06-24 Flyway upgrade from 2.3.1 to 3.2.1 & fix documentation (danielsawan)              
+ * 2015-06-30 Fix for asset controller incompatibility with windows file system (BjoernAkAManf).
+ * 2015-06-30 Improved tests in asset controller for serving webjars (ra).
+
+Version 5.1.3
+=============
+
+ * 2015-06-19 Fix for potential security issue. Under certain circumstances assets
+              controller did stream content from arbitrary directories (Christian B. / ra).
+
 Version 5.1.2
 =============
 
- * 2015-05-07 (PR #350) Added ninja.idle.timeout command line parameter for standalone mode (raptaml)
+ * 2015-05-22 Removed outdated modules from documentation (svenkubiak)
+ * 2015-05-20 #354 Fixed bug with reverse routing with multiple regex parameters (arystan)
+ * 2015-05-16 Update to Guice 4.0 final (ra)
+ * 2015-05-10 Replaced net.sf.ehcache.internal with net.sf.ehcache to fix #352 (ra)
  * 2015-05-08 Added NinjaException.getHttpStatus() (icoloma)
- 
+ * 2015-05-07 (PR #350) Added ninja.idle.timeout command line parameter for standalone mode (raptaml)
+
 Version 5.1.1
 =============
 

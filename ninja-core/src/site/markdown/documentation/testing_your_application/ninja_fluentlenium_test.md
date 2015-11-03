@@ -5,8 +5,8 @@ Introduction
 ------------
 
 Fluentlenium is a great tool that facilitates the usage of Selenium a lot. Selenium is the best
-tool to test your application on html level. Click on elements, submit forms, make sure
-css styles are present and so on.
+tool to test your application on HTML level. Click on elements, submit forms, make sure
+CSS styles are present and so on.
 
 Ninja integrates FluentLenium via the NinjaFluentLeniumTest. 
 Simply extend the class and you are ready to go:

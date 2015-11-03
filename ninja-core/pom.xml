@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>5.1.2-SNAPSHOT</version>
+        <version>5.2.2-SNAPSHOT</version>
     </parent>
 
     <organization>
@@ -111,7 +111,7 @@
         </dependency>
         
         <!-- Afterburner lib optimizes Jackson and improves
-             performance -->
+        performance -->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-afterburner</artifactId>
@@ -201,10 +201,16 @@
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
         
+        <!-- jackson-dataformat-xml prefers Woodstox as Stax impl -->
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+        </dependency>
+        
         <!-- ehcache implementation -->
         <!-- IMPORTANT: only pull in core (~1MB) vs. entire distro which includes a server (~7MB) -->
         <dependency>
-            <groupId>net.sf.ehcache.internal</groupId>
+            <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
         </dependency>
         
@@ -216,7 +222,7 @@
 
         <!-- Migration framework -->
         <dependency>
-            <groupId>com.googlecode.flyway</groupId>
+            <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
 
@@ -252,7 +258,23 @@
             <artifactId>greenmail</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+        </dependency>  
+        
+         <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+        </dependency> 
+         
     </dependencies>
+    
 
     <distributionManagement>
         <site>

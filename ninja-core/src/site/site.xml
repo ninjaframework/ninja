@@ -78,15 +78,15 @@
 
             <item name="Configuration and modes" href="./documentation/configuration_and_modes.html"/>
 
-            <item name="Html templating" collapse="true" href="./documentation/html_templating/getting_started.html">
+            <item name="HTML templating" collapse="true" href="./documentation/html_templating/getting_started.html">
                 <item name="Rendering objects" href="./documentation/html_templating/rendering_objects.html"/>
                 <item name="Form parsing" href="./documentation/html_templating/form_parsing.html"/>
                 <item name="Security, i18n and more" href="./documentation/html_templating/advanced_topics.html"/>
             </item>
 
-            <item name="Working with Json / JsonP" href="./documentation/working_with_json_jsonp.html"/>
+            <item name="Working with JSON / JSONP" href="./documentation/working_with_json_jsonp.html"/>
 
-            <item name="Working with Xml" href="./documentation/working_with_xml.html"/>
+            <item name="Working with XML" href="./documentation/working_with_xml.html"/>
 
         </menu>
         <menu name="Advanced topics">
@@ -139,7 +139,7 @@
             </item>
 
             <item name="Upgrade guide" href="./documentation/upgrade_guide.html"/>
-            <item name="Api" href="./apidocs/index.html"/>
+            <item name="API docs (JavaDoc)" href="./apidocs/index.html"/>
 
         </menu>
 

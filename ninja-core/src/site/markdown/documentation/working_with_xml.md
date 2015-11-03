@@ -1,11 +1,11 @@
-Working with Xml
+Working with XML
 =================
 
-Ninja provides out of the box support to render arbitrary Java objects as Xml as
-well as parsing of Xml into Java objects.
+Ninja provides out of the box support to render arbitrary Java objects as XML as
+well as parsing of XML into Java objects.
 
 
-Rendering Xml
+Rendering XML
 --------------
 
 Consider this simple model class:
@@ -36,20 +36,20 @@ public class ApplicationController {
 }
 </pre>
 
-This controller will produce a nicely formatted Xml output:
+This controller will produce a nicely formatted XML output:
 
 <pre class="prettyprint">
 &lt;Person&gt;&lt;name&gt;John Johnson&lt;/name&gt;&lt;/Person&gt;
 </pre>
 
 
-Parsing Xml
+Parsing XML
 ------------
 
-If you want to parse incoming xml requests you simply have to add the mapping pojo
+If you want to parse incoming XML requests you simply have to add the mapping POJO
 to the controller method signature.
 
-Consider the following Xml:
+Consider the following XML:
 
 <pre class="prettyprint">
 &lt;Person&gt;&lt;name&gt;John Johnson&lt;/name&gt;&lt;/Person&gt;
@@ -66,9 +66,9 @@ public class Person {
 </pre>
 
 
-If you send that Xml to your application via a post request you only need to 
-add class Pojo to the controller method and Ninja will pase the incoming
-Xml for you:
+If you send that XML to your application via the HTTP body you only need to 
+add POJO class to the controller method and Ninja will pase the incoming
+XML for you:
 
 <pre class="prettyprint">
 package controllers;
@@ -85,11 +85,11 @@ public class ApplicationController {
 </pre>
 
 
-Advanced Xml usage
+Advanced XML usage
 -------------------
 
-Under the hood Ninja uses Jackson (http://jackson.codehaus.org/). Jackson
-is one of the most widely used Xml serializers of the Java ecosystem.
+Under the hood Ninja uses Jackson (http://wiki.fasterxml.com/JacksonHome). Jackson
+is one of the most widely used XML serializers of the Java ecosystem.
 
 If you want to customize the way Jackson works you can do so by injecting
 XmlMapper into a startup action and modifying it. 
@@ -115,6 +115,6 @@ by your application.
 
 It is safe to modify XmlMapper before
 it is actually used, but it is not threadsafe to modify XmlMapper 
-after is has been used to parse or generate Xml.
+after is has been used to parse or generate XML.
 
 More on Jackson modules: http://wiki.fasterxml.com/JacksonFeatureModules

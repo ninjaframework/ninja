@@ -2,18 +2,18 @@ Custom routing
 ==============
 
 In many projects Ninja's default routing is just fine. As well as the way
-Ninja handles and reacts to errors and exception.
+Ninja handles and reacts to errors and exceptions.
 
 But sometimes you need just more flexibility and control. Let's say you want
 to add extensive reporting to your application. In effect you want to report
-and log all requests, all error - everything that's going on inside your application.
+and log all requests, all errors - everything that's going on inside your application.
 
 You can try to tackle the issue by using a Filter. But there's a more powerful
 way.
 
 Center stage for <code>conf.Ninja</code>.
 
-Simple and straight forward
+Simple and straightforward
 ---------------------------
 
 The whole request cycle - and the response to errors and exceptions
@@ -56,10 +56,10 @@ All extension points of ninja.Ninja
 
 NinjaDefault is really nice, but you can also start from scratch and customize
 everything yourself. The only thing to keep in mind is that your <code>conf.Ninja</code> class 
-has to extend <code>ninja.Ninja</code> (That's the interface from the ninja framework).
+has to extend <code>ninja.Ninja</code> (That's an interface within the Ninja framework).
 
 <pre class="prettyprint">
-package conf;
+package ninja;
 
 public interface Ninja {
 
@@ -144,7 +144,7 @@ public interface Ninja {
 }
 </pre>
 
-<code>ninja.Ninja</code> nicely shows all options you have to tweak the
+<code>ninja.Ninja</code> nicely shows all the options you can tweak regarding the 
 request lifecycle. It does not really matter if you implement <code>ninja.Ninja</code> yourself
 or if you simply extend <code>ninja.NinjaDefault</code>. 
 But in general extending <code>ninja.NinjaDefault</code> is a very good starting point.

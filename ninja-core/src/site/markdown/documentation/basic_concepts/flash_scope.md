@@ -39,8 +39,8 @@ the flash.success message is not set. Therefore it will not be displayed to your
 user. Usually you want to use those messages when errors and success messages 
 from one page (hence controller method) to a another.
 
-Please refer to the "html templating" section about more informations regarding flash
-scope and html templates.
+Please refer to the "HTML templating" section for more information regarding flash
+scope and HTML templates.
 
 
 Setting error message
@@ -60,7 +60,7 @@ public Result flashError(FlashScope flashScope) {
 FlashScope and i18n
 -------------------
 
-If you are using the default html rendering engine Freemarker you should use keys 
+If you are using the default HTML rendering engine Freemarker you should use keys 
 for your flash message. Freemarker will automatically 
 translate your key into the correct message of the language your user is requesting.
 

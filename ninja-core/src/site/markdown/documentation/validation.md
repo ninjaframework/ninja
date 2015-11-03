@@ -5,8 +5,8 @@ Introduction
 ------------
 
 Ninja uses Hibernate's implementation of the <code>javax.validation</code> feature. 
-This means that all Jsr303-defined annotations work in your 
-Dto-objects when you let Ninja inject parameters into your controller. 
+This means that all JSR303-defined annotations work in your 
+DTO objects when you let Ninja inject parameters into your controller. 
 All you have to do is to set the <code>@JSR303Validation</code> 
 annotation in front of your method-parameter and catch the result of 
 the validation by injecting a <code>Validation</code>-parameter the same way.
@@ -50,12 +50,12 @@ method which gives you a complete list of all occured violations in your Dto.
 Conclusion
 ----------
 
-Jsr303 based validation is a generic approach that allows you to check 
+JSR303 based validation is a generic approach that allows you to check 
 the validity of submitted objects. These objects can be sent to your application
-via Http form submission, Json or Xml.
+via HTTP form submission, JSON or XML.
 
-The only important part is that your Dto objects contain valid Jsr303 validation
+The only important part is that your DTO objects contain valid JSR303 validation
 annotation which Ninja can evaluate.
 
-If you want to validate nested Dtos or get in deeper detail, visit this great 
-site: [JBOSS Validation API](http://docs.jboss.org/hibernate/validator/4.0.1/reference/en/html/validator-usingvalidator.html "JBOSS Validation API")
+If you want to validate nested DTOs or get in deeper detail, visit this great 
+site: [JBOSS Validation API](https://docs.jboss.org/hibernate/validator/4.3/reference/en-US/html/validator-usingvalidator.html "JBOSS Validation API")

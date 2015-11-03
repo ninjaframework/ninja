@@ -16,7 +16,6 @@
 
 package ninja.diagnostics;
 
-import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +31,7 @@ public class SourceSnippetHelperTest {
     Path baseDir = Paths.get("src", "test", "java");
     Path testSourceDir = Paths.get("ninja", "diagnostics");
     Path relativeSourcePath = testSourceDir.resolve("TestSource.txt");
+    Path relativeUTF8SourcePath = testSourceDir.resolve("TestSourceUTF8.txt");
     
     @Test
     public void readFromRelativeFilePath() throws Exception {
@@ -86,6 +86,16 @@ public class SourceSnippetHelperTest {
         Assert.assertEquals(1, snippet.getLineNumberFrom());
         Assert.assertEquals(3, snippet.getLineNumberTo());
         
+    }
+
+    @Test
+    public void readFromUTF8File() throws Exception {
+
+        SourceSnippet snippet = SourceSnippetHelper.readFromRelativeFilePath(
+            baseDir.toFile(), relativeUTF8SourcePath.toString(), 1, 1);
+
+        Assert.assertEquals("utf8=✓", snippet.getLines().get(0));
+
     }
     
 }

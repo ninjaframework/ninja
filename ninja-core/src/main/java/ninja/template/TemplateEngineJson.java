@@ -50,8 +50,14 @@ public class TemplateEngineJson implements TemplateEngine {
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
         try (OutputStream outputStream  = responseStreams.getOutputStream()) {
-            
-            objectMapper.writeValue(outputStream, result.getRenderable());
+
+            Class<?> jsonView = result.getJsonView();
+            if (jsonView != null) {
+                objectMapper.writerWithView(jsonView).writeValue(outputStream, result.getRenderable());
+            } else {
+                objectMapper.writeValue(outputStream, result.getRenderable());
+            }
+
             
         } catch (IOException e) {
 

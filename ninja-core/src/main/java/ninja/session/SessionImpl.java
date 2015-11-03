@@ -25,6 +25,7 @@ import java.util.UUID;
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
+import ninja.utils.Clock;
 import ninja.utils.CookieDataCodec;
 import ninja.utils.CookieEncryption;
 import ninja.utils.Crypto;
@@ -43,8 +44,10 @@ public class SessionImpl implements Session {
 
     private final Crypto crypto;
     private final CookieEncryption encryption;
+    private final Clock time;
 
-    private final Integer sessionExpireTimeInMs;
+    private Long sessionExpireTimeInMs;
+    private final Long defaultSessionExpireTimeInMs;
     private final Boolean sessionSendOnlyIfChanged;
     private final Boolean sessionTransferredOverHttpsOnly;
     private final Boolean sessionHttpOnly;
@@ -57,19 +60,22 @@ public class SessionImpl implements Session {
     private final String sessionCookieName;
 
     @Inject
-    public SessionImpl(Crypto crypto, CookieEncryption encryption, NinjaProperties ninjaProperties) {
+    public SessionImpl(Crypto crypto, CookieEncryption encryption, NinjaProperties ninjaProperties, Clock clock) {
 
         this.crypto = crypto;
         this.encryption = encryption;
+        this.time = clock;
 
         // read configuration stuff:
         Integer sessionExpireTimeInSeconds = ninjaProperties
                 .getInteger(NinjaConstant.sessionExpireTimeInSeconds);
         if (sessionExpireTimeInSeconds != null) {
-            this.sessionExpireTimeInMs = sessionExpireTimeInSeconds * 1000;
+            this.defaultSessionExpireTimeInMs = sessionExpireTimeInSeconds * 1000L;
         } else {
-            this.sessionExpireTimeInMs = null;
+            this.defaultSessionExpireTimeInMs = null;
         }
+
+        this.sessionExpireTimeInMs = defaultSessionExpireTimeInMs;
 
         this.sessionSendOnlyIfChanged = ninjaProperties.getBooleanWithDefault(
                 NinjaConstant.sessionSendOnlyIfChanged, true);
@@ -112,30 +118,71 @@ public class SessionImpl implements Session {
                     CookieDataCodec.decode(data, payload);
                 }
 
-                if (sessionExpireTimeInMs != null) {
-                    // Make sure session contains valid timestamp
-
-                    if (!data.containsKey(TIMESTAMP_KEY)) {
-
-                        data.clear();
-
-                    } else {
-                        if (Long.parseLong(data.get(TIMESTAMP_KEY))
-                                + sessionExpireTimeInMs < System
-                                    .currentTimeMillis()) {
-                            // Session expired
-                            sessionDataHasBeenChanged = true;
-                            data.clear();
-                        }
+                // If an expiry time was set previously use that instead of the
+                // default session expire time.
+                if (data.containsKey(EXPIRY_TIME_KEY)) {
+                    Long expiryTime = Long.parseLong(data.get(EXPIRY_TIME_KEY));
+                    if (expiryTime >= 0) {
+                        sessionExpireTimeInMs = expiryTime;
                     }
-
-                    // Everything's alright => prolong session
-                    data.put(TIMESTAMP_KEY, "" + System.currentTimeMillis());
                 }
+
+                checkExpire();
             }
 
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             logger.error("Encoding exception - this must not happen", unsupportedEncodingException);
+        }
+    }
+
+    protected boolean shouldExpire() {
+        if (sessionExpireTimeInMs != null) {
+            // Make sure session contains valid timestamp
+            if (!data.containsKey(TIMESTAMP_KEY)) {
+                return true;
+            }
+
+            Long timestamp = Long.parseLong(data.get(TIMESTAMP_KEY));
+
+            return (timestamp + sessionExpireTimeInMs < time.currentTimeMillis());
+        }
+
+        return false;
+    }
+
+    @Override
+    public void setExpiryTime(Long expiryTimeMs) {
+        if (expiryTimeMs == null) {
+            data.remove(EXPIRY_TIME_KEY);
+
+            sessionExpireTimeInMs = defaultSessionExpireTimeInMs;
+            sessionDataHasBeenChanged = true;
+        } else {
+            data.put(EXPIRY_TIME_KEY, "" + expiryTimeMs);
+
+            sessionExpireTimeInMs = expiryTimeMs;
+        }
+
+        if (sessionExpireTimeInMs != null) {
+            if (!data.containsKey(TIMESTAMP_KEY)) {
+                data.put(TIMESTAMP_KEY, "" + time.currentTimeMillis());
+            }
+
+            checkExpire();
+
+            sessionDataHasBeenChanged = true;
+        }
+    }
+
+    private void checkExpire() {
+        if (sessionExpireTimeInMs != null) {
+            if (shouldExpire()) {
+                sessionDataHasBeenChanged = true;
+                data.clear();
+            } else {
+                // Everything's alright => prolong session
+                data.put(TIMESTAMP_KEY, "" + time.currentTimeMillis());
+            }
         }
     }
 
@@ -144,8 +191,8 @@ public class SessionImpl implements Session {
         if (!data.containsKey(ID_KEY)) {
             put(ID_KEY, UUID.randomUUID().toString());
         }
-        return get(ID_KEY);
 
+        return get(ID_KEY);
     }
 
     @Override
@@ -167,7 +214,7 @@ public class SessionImpl implements Session {
         // Don't save the cookie nothing has changed, and if we're not expiring or
         // we are expiring but we're only updating if the session changes
         if (!sessionDataHasBeenChanged
-                && (sessionExpireTimeInMs == null || sessionSendOnlyIfChanged)) {
+            && (sessionExpireTimeInMs == null || sessionSendOnlyIfChanged)) {
             // Nothing changed and no cookie-expire, consequently send nothing
             // back.
             return;
@@ -189,7 +236,7 @@ public class SessionImpl implements Session {
 
         }
 
-        // Make sure if has a timestamp, if it needs one
+        // Make sure it has a timestamp, if it needs one
         if (sessionExpireTimeInMs != null && !data.containsKey(TIMESTAMP_KEY)) {
             data.put(TIMESTAMP_KEY, Long.toString(System.currentTimeMillis()));
         }
@@ -205,13 +252,14 @@ public class SessionImpl implements Session {
             Cookie.Builder cookie = Cookie.builder(sessionCookieName, sign + "-" + sessionData);
             cookie.setPath(context.getContextPath() + "/");
 
-            if(applicationCookieDomain != null){
+            if (applicationCookieDomain != null) {
                 cookie.setDomain(applicationCookieDomain);
             }
 
             if (sessionExpireTimeInMs != null) {
-                cookie.setMaxAge(sessionExpireTimeInMs / 1000);
+                cookie.setMaxAge((int)(sessionExpireTimeInMs / 1000L));
             }
+
             if (sessionTransferredOverHttpsOnly != null) {
                 cookie.setSecure(sessionTransferredOverHttpsOnly);
             }
@@ -268,8 +316,13 @@ public class SessionImpl implements Session {
 
     @Override
     public boolean isEmpty() {
-        return (data.isEmpty() || data.size() == 1
-                && data.containsKey(TIMESTAMP_KEY));
+        int itemsToIgnore = 0;
+        if (data.containsKey(TIMESTAMP_KEY)) {
+            itemsToIgnore++;
+        }
+        if (data.containsKey(EXPIRY_TIME_KEY)) {
+            itemsToIgnore++;
+        }
+        return (data.isEmpty() || data.size() == itemsToIgnore);
     }
-
 }

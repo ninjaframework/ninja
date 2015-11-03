@@ -141,6 +141,16 @@ public class ResultTest {
     }
 
     @Test
+    public void testSetAndGetJsonView() {
+
+        Result result = new Result(Result.SC_200_OK);
+
+        result.jsonView(TestObject.class);
+
+        assertEquals(TestObject.class, result.getJsonView());
+    }
+
+    @Test
     public void testRedirect() {
 
         Result result = new Result(Result.SC_200_OK);

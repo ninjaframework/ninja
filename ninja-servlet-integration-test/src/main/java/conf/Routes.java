@@ -34,6 +34,7 @@ import controllers.PersonController;
 import controllers.PrettyTimeController;
 import controllers.UdpPingController;
 import controllers.UploadController;
+import controllers.UploadControllerAuto;
 
 public class Routes implements ApplicationRoutes {
 
@@ -152,6 +153,7 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
+        router.POST().route("/uploadFinishAuto").with(UploadControllerAuto.class, "uploadFinishAuto");
         
         // /////////////////////////////////////////////////////////////////////
         // Authenticity

@@ -42,6 +42,12 @@ public interface NinjaConstant {
     String LOCATION_VIEW_FTL_HTML_UNAUTHORIZED = "views/system/401unauthorized.ftl.html";
     String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbidden.ftl.html";
     
+    String LOCATION_VIEW_HTML_NOT_FOUND_KEY = "application.views.404notFound";
+    String LOCATION_VIEW_HTML_BAD_REQUEST_KEY = "application.views.400badRequest";
+    String LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY = "application.views.500internalServerError";
+    String LOCATION_VIEW_HTML_UNAUTHORIZED_KEY = "application.views.401unauthorized";
+    String LOCATION_VIEW_HTML_FORBIDDEN_KEY = "application.views.403forbidden";
+    
     // i18n keys and default messages of Ninja
     // create the keys in your own messages.properties file to customize the message
     String I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY = "ninja.system.bad_request.text";
@@ -77,9 +83,6 @@ public interface NinjaConstant {
      * The cookie then looks like: "NINJA_LANG=en"
      */
     final String LANG_COOKIE_SUFFIX = "_LANG";
-
-    /** Used to specify static asset directory **/
-    final String APPLICATION_STATIC_ASSET_BASEDIR = "application.static.asset.basedir";
 
     /** Used to specify static base package for configuration modules and routes **/
     final String APPLICATION_MODULES_BASE_PACKAGE = "application.modules.package";
@@ -223,4 +226,30 @@ public interface NinjaConstant {
     String NINJA_JSONP_CALLBACK_PARAMETER = "ninja.jsonp.callbackParameter";
     
     String AUTHENTICITY_TOKEN = "authenticityToken";
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // File uploads constants used by FileProvider implementations.
+    ///////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * The maximum allowed size of a single uploaded file.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#fileSizeMax
+     */
+    final String UPLOADS_MAX_FILE_SIZE = "uploads.max_file_size";
+
+    /**
+     * The maximum allowed size of a complete request, i.e. size of all uploaded
+     * files.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#sizeMax
+     */
+    final String UPLOADS_MAX_TOTAL_SIZE = "uploads.max_total_size";
+
+    /**
+     * Directory where uploaded files are saved. Defaults to system's temporary
+     * directory, i.e. "java.io.tmpdir" system property is consulted
+     */
+    final String UPLOADS_TEMP_FOLDER = "uploads.temp_folder";
+
 }

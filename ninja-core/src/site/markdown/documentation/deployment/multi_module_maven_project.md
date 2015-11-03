@@ -1,6 +1,6 @@
-Multi module maven project deployment.
+Multi module Maven project deployment
 -------------------------------------
-Deployment of multi module maven project requires an additional step due the limiation of maven assebly plugin as described in http://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
+Deployment of multi module Maven project requires an additional step due to the limitation of Maven Assembly Plugin as described in http://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
 
 In essence,
 
@@ -8,7 +8,7 @@ In essence,
 
 So we need to create an additional distribution module just for the purpose of creating all-in-one jar.
 
-Create a maven module with an arbitary name say 'distriution'. The only file you need in that module is a pom.xml that has a depenency defined to all modules.
+Create a Maven module with an arbitrary name say 'distribution'. The only file you need in that module is a pom.xml that has a dependency defined to all modules.
 
 ```xml
 <modelVersion>4.0.0</modelVersion>

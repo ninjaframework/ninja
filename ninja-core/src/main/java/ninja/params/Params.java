@@ -30,6 +30,11 @@ import java.lang.annotation.Target;
  *
  */
 @WithArgumentExtractor(ArgumentExtractors.ParamsExtractor.class)
+@WithArgumentExtractors({
+    ArgumentExtractors.FileItemParamsExtractor.class,
+    ArgumentExtractors.FileParamsExtractor.class,
+    ArgumentExtractors.InputStreamParamsExtractor.class
+})
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
 public @interface Params {

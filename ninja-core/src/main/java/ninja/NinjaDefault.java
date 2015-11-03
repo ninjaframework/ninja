@@ -95,17 +95,24 @@ public class NinjaDefault implements Ninja {
 
         if (route != null) {
 
+            Result underlyingResult = null;
+            
             try {
                 
-                Result result = route.getFilterChain().next(context);
-
-                resultHandler.handleResult(result, context);
+                underlyingResult = route.getFilterChain().next(context);
+                
+                resultHandler.handleResult(underlyingResult, context);
                 
             } catch (Exception exception) {
                 
-                Result result = onException(context, exception);
+                // call special handler to capture the underlying result if there is one
+                Result result = onException(context, exception, underlyingResult);
                 renderErrorResultAndCatchAndLogExceptions(result, context);
                             
+            } finally {
+                
+                context.cleanup();
+                
             }
 
         } else {
@@ -154,7 +161,16 @@ public class NinjaDefault implements Ninja {
     @Override
     public Result onException(Context context, Exception exception) {
         
+        return onException(context, exception, null);
+        
+    }
+    
+    public Result onException(Context context, Exception exception, Result underlyingResult) {
+        
         Result result;
+        
+        // log the exception as debug
+        logger.debug("Unable to process request", exception);
         
         if (exception instanceof BadRequestException) {
             
@@ -164,11 +180,11 @@ public class NinjaDefault implements Ninja {
             
             RenderingException renderingException = (RenderingException)exception;
             
-            result = getRenderingExceptionResult(context, renderingException);
+            result = getRenderingExceptionResult(context, renderingException, underlyingResult);
             
         } else {
             
-            result = getInternalServerErrorResult(context, exception);
+            result = getInternalServerErrorResult(context, exception, underlyingResult);
 
         }
         
@@ -176,8 +192,7 @@ public class NinjaDefault implements Ninja {
         
     }
     
-    // TO-BE-EVENTUALLY-ADDED-TO-NINJA-DEFAULT-IF-FOLKS-LIKE-THIS
-    public Result getRenderingExceptionResult(Context context, RenderingException exception) {
+    public Result getRenderingExceptionResult(Context context, RenderingException exception, Result underlyingResult) {
         
         if (isDiagnosticsEnabled()) {
             
@@ -187,7 +202,8 @@ public class NinjaDefault implements Ninja {
                     (exception.getTitle() == null ? "Rendering exception" : exception.getTitle()),
                     (exception.getCause() == null ? exception : exception.getCause()),
                     exception.getSourcePath(),
-                    exception.getLineNumber());
+                    exception.getLineNumber(),
+                    underlyingResult);
 
             return Results.internalServerError().render(diagnosticError);
             
@@ -199,11 +215,15 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getInternalServerErrorResult(Context context, Exception exception) {
+        return getInternalServerErrorResult(context, exception, null);
+    }
+    
+    public Result getInternalServerErrorResult(Context context, Exception exception, Result underlyingResult) {
         
         if (isDiagnosticsEnabled()) {
             
             DiagnosticError diagnosticError =
-                DiagnosticErrorBuilder.build500InternalServerErrorDiagnosticError(exception, true);
+                DiagnosticErrorBuilder.build500InternalServerErrorDiagnosticError(exception, true, underlyingResult);
             
             return Results.internalServerError().render(diagnosticError);
             
@@ -230,7 +250,10 @@ public class NinjaDefault implements Ninja {
                 .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                 .fallbackContentType(Result.TEXT_HTML)
                 .render(message)
-                .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
         
 
         return result;
@@ -262,7 +285,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
           
         return result;
 
@@ -294,7 +320,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
         
         return result;
 
@@ -329,7 +358,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_UNAUTHORIZED_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED));
 
         return result;
 
@@ -344,7 +376,7 @@ public class NinjaDefault implements Ninja {
             DiagnosticError diagnosticError =
                 DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
             
-            return Results.unauthorized().render(diagnosticError);
+            return Results.forbidden().render(diagnosticError);
             
         }
         
@@ -362,7 +394,10 @@ public class NinjaDefault implements Ninja {
                         .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                         .fallbackContentType(Result.TEXT_HTML)
                         .render(message)
-                        .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
+                        .template(
+                                ninjaProperties.getWithDefault(
+                                        NinjaConstant.LOCATION_VIEW_HTML_FORBIDDEN_KEY,
+                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN));
         
         return result;
 

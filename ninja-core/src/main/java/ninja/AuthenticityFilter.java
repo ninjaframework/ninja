@@ -3,6 +3,8 @@ package ninja;
 import ninja.utils.NinjaConstant;
 
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -10,19 +12,22 @@ import com.google.inject.Inject;
  *
  */
 public class AuthenticityFilter implements Filter {
+    static private final Logger logger = LoggerFactory.getLogger(AuthenticityFilter.class);
     
-    private NinjaDefault ninjaDefault;
+    private final Ninja ninja;
 
     @Inject
-    public AuthenticityFilter(NinjaDefault ninjaDefault) {
-        this.ninjaDefault = ninjaDefault;
+    public AuthenticityFilter(Ninja ninja) {
+        this.ninja = ninja;
     }
     
     @Override
     public Result filter(FilterChain filterChain, Context context) {
         String authenticityToken = context.getParameter(NinjaConstant.AUTHENTICITY_TOKEN);
+        
         if (!context.getSession().getAuthenticityToken().equals(authenticityToken)) {
-            return ninjaDefault.getForbiddenResult(context);
+            logger.warn("Authenticity token mismatch. Request from {} is forbidden!", context.getRemoteAddr());
+            return ninja.getForbiddenResult(context);
         }
         
         return filterChain.next(context);

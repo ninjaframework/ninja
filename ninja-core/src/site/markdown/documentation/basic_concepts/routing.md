@@ -4,13 +4,13 @@ Routing
 Ninja features <b>one central route file</b>. 
 We think this is important, because you immediately
 can see  what routes your application provides. It especially 
-facilitates designing a nice restful application and Api, because you have a good 
+facilitates designing a nice RESTful application and API, because you have a good 
 overview what is going on.
 
 Basics
 ------
 
-The route file is a plain old java file living at <code>conf/Routes.java</code>.
+The route file is a plain old Java file living at <code>conf/Routes.java</code>.
 
 <code>Routes.java</code> implements the interface <code>ApplicationRoutes.java</code>. 
 This interface defines a method called <code>public void init(Router router) {...}</code>
@@ -36,7 +36,7 @@ public class Routes implements ApplicationRoutes {
 The <code>init(...)</code> method provides us with the <code>Router</code> and router allows us to
 define what happens for GET, POST, PUT, OPTIONS, HEAD and DELETE requests.
 
-And if you want to route a http method not yet supported by Ninja out of
+And if you want to route an HTTP method not yet supported by Ninja out of
 the box you can always use
 <code>route.METHOD("MY_CUSTOM_HTTP_METHOD").route(...)...</code>.
 
@@ -48,7 +48,7 @@ two routes, the route defined first is executed.
 
 With result directly
 --------------------
-You can use Result object to render a static page simply without controller.
+You can use a Result object to render a static page simply without any controller.
 
 <pre class="prettyprint">
 public class Routes implements ApplicationRoutes {
@@ -103,7 +103,7 @@ More on regular expressions:
 http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html
 
 
-Getting variable url parts into your controller method
+Getting variable URL parts into your controller method
 ------------------------------------------------------
 
 A controller usually not only renders stuff, 
@@ -155,7 +155,7 @@ Regular expressions in variable route parts
 -------------------------------------------
 
 Ninja allows you to specify regular expressions 
-that will be used to match arbitrary parts of your url.
+that will be used to match arbitrary parts of your URL.
 
 The syntax is <code>{PRAMETER_NAME: REGEX}</code> (with a whitespace after the ":").
 
@@ -175,8 +175,8 @@ router.GET().route("/categories/{catId: [0-9]+}/products/{productId: [0-9]+}").w
 router.GET().route("/categories/{catId: [0-9]+}/products/{productName: .*}").with(ProductController.class, "productByName");
 </pre>
 
-The request above will be handled by first route, and request to <code>/categories/1234/products/mouse</code>
-will be handled by second route.
+The request above will be handled by the first route, and request to <code>/categories/1234/products/mouse</code>
+will be handled by the second route.
 
 Values of variable parts of a route are injected into our controller (explained above)
 and are implicitly validated with regular expressions.
@@ -252,7 +252,7 @@ Reverse routing
 Let's say you want to know the final route of a class ApplicationController.class, method "index". Assume
 that the original raw route looked like a simple <code>"/"</code>.
 
-You can get the final url by injecting the router into your controller and then calling getReverseRoute
+You can get the final URL by injecting the router into your controller and then calling getReverseRoute
 
 <pre class="prettyprint">
 @Inject
@@ -271,7 +271,7 @@ public void myMethod() {
 </pre>
 
 Now consider a more complex example. Say the original raw route contained placeholders on the following form:
-<code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final url, but you must
+<code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final URL, but you must
 provide a map containing mappings from placeholders to final values. If the key cannot be found as
 placeholders their value will be added as query parameters:
 
@@ -305,8 +305,8 @@ public void myMethod() {
 A note on encoding / decoding
 -----------------------------
 
-Encoding / Decoding of Urls is not as easy as you think it is. Ninja tries to simplify everything
-as much as possible, but as user of the Api you have to know what you are 
+Encoding / Decoding of URLs is not as easy as you might think it is. Ninja tries to simplify everything
+as much as possible, but as a user of the API you have to know what you are 
 submitting to Ninja.
 
 We recommend the following [excellent article from Lunatech](http://blog.lunatech.com/2009/02/03/what-every-web-developer-must-know-about-url-encoding)
@@ -336,15 +336,14 @@ You can expect that String **id** and String **debug** are both correctly decode
 you are encoding the values correctly on the client side. 
 And encoding is different for
 query parameters or stuff in the path. Do not even think about using 
-URLEncoder for encoding urls. This is wrong.
+URLEncoder for encoding URLs. This is wrong.
 
 Simple example that outlines some of the difficulties:
 Think of a route "/user/{id}/userDashboard".
 
 Let's say your **id** is "rootuser/domain". If you do not encode the slash in 
-the middle you end up with a
-url like /user/rootuser/domain/userDashboard. 
-And the this url does not match the route
+the middle you end up with a URL like /user/rootuser/domain/userDashboard. 
+And the this URL does not match the route
 because of the "/".
 
 Therefore you have to encode your id correctly. In that case it would be: rootuser%2Fdomain.
@@ -413,7 +412,7 @@ The following example will register two **GET** routes `/base/middle/app/get` an
 If the `Base` and `Middle` parent classes had each specified multiple paths, all permutations of the complete routes would be registered too.
 
 
-#### Http Methods
+#### HTTP Methods
 
 By default, all routes are assumed to be **GET** routes unless they are specifically annotated.
 

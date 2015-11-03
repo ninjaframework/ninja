@@ -3,7 +3,7 @@ Scheduler
 
 Introduction
 -------------
-Sometimes you have to do some tasks in a scheduled way. Let's say each 24 hours.
+Sometimes you have to do some tasks in a scheduled way. Let's say every 24 hours.
 
 To make that happen in Ninja you need two things
 
