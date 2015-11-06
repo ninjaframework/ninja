@@ -42,6 +42,10 @@ Rocker templates
 Hazelcast Cache Implementation
 
  * https://github.com/raptaml/ninja-hazelcast-embedded
+ 
+MongoDB/Morphia Integration
+
+ * https://github.com/bihe/ninja-mongodb
 
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 
