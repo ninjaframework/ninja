@@ -50,9 +50,7 @@ public abstract class NinjaDocTester extends DocTester {
 
     @Override
     public Url testServerUrl() {
-    
-        return Url.host(ninjaTestServer.getServerAddress());
-    
+        return Url.host(ninjaTestServer.getServerUrl());
     }
     
     public Injector getInjector() {

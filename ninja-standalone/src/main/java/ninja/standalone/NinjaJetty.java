@@ -16,336 +16,182 @@
 
 package ninja.standalone;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
-import com.google.inject.CreationException;
+import com.google.inject.Injector;
 import ninja.servlet.NinjaServletListener;
-import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaModeHelper;
-import ninja.utils.NinjaPropertiesImpl;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
 import java.io.FileNotFoundException;
-import java.net.URI;
+import java.io.InputStream;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.xml.XmlConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class NinjaJetty {
-    static private final Logger logger = LoggerFactory.getLogger(NinjaJetty.class);
+/**
+ * Ninja standalone implemented with Jetty.
+ */
+public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
     
-    public final static String COMMAND_LINE_PARAMETER_NINJA_CONTEXT = "ninja.context";
-    public final static String COMMAND_LINE_PARAMETER_NINJA_PORT = "ninja.port";
-    public final static String COMMAND_LINE_PARAMETER_NINJA_HOST = "ninja.host";
-    public final static String COMMAND_LINE_PARAMETER_NINJA_IDLE_TIMEOUT = "ninja.idle.timeout";
-    public final static String COMMAND_LINE_PARAMETER_NINJA_JETTY_CONFIGURATION = "ninja.jetty.configuration";
-    
-    static final int DEFAULT_PORT = 8080;
-    static final String DEFAULT_HOST = null;                // bind to any
-    static final long DEFAULT_IDLE_TIMEOUT = 30000;  // set to Jetty 9 default
-    
-    // configuration
-    Integer port;
-    String host;
-    URI serverUri;
-    long idleTimeout;
-    NinjaMode ninjaMode;
-    String ninjaContextPath;
-    String jettyConfiguration;
-    // once started
-    Server server;
-    ServletContextHandler context;
-    NinjaPropertiesImpl ninjaProperties;
-    final NinjaServletListener ninjaServletListener;
+    static final public String KEY_NINJA_JETTY_CONFIGURATION = "ninja.jetty.configuration";
 
-    public static void main(String [] args) {
-        
-        // create new instance and run it (easier to unit test this way)
-        new NinjaJetty().run(args);
-        
-    }
+    static final public String DEFAULT_JETTY_CONFIGURATION = null;
+    
+    final protected NinjaServletListener ninjaServletListener;
+    protected Server jetty;
+    protected ServletContextHandler contextHandler;
+    protected String jettyConfiguration;
     
     public NinjaJetty() {
-        this.port = DEFAULT_PORT;
-        this.host = DEFAULT_HOST;
-        this.idleTimeout = DEFAULT_IDLE_TIMEOUT;
-        ninjaMode = NinjaMode.prod;
-        ninjaServletListener = new NinjaServletListener();
+        super("NinjaJetty");
+        this.ninjaServletListener = new NinjaServletListener();
     }
     
-    public void run(String[] args) {
-        
-        // configure self from system properties
-        setNinjaMode(NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
-        
-        setPort(tryToGetPortFromSystemPropertyOrReturnDefault());
-        
-        setHost(System.getProperty(COMMAND_LINE_PARAMETER_NINJA_HOST, DEFAULT_HOST));
-        
-        setIdleTimeout(tryToGetIdleTimeoutFromSystemPropertyOrReturnDefault());
-        
-        setNinjaContextPath(tryToGetContextPathFromSystemPropertyOrReturnDefault());
-        
-        setJettyConfiguration(System.getProperty(COMMAND_LINE_PARAMETER_NINJA_JETTY_CONFIGURATION));
-        
-        try {
-            
-            this.start();
-        
-        } catch (Exception e) {
-            
-            logger.error("Unable to start server.", e);
-            System.exit(1);
-            
-        }
-        
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            
-            @Override
-            public void run() {
-                shutdown();
-            }
-            
-        });
-        
-        try {
-            
-            // do not simply exit main() -- join server
-            server.join();
-        
-        } catch (InterruptedException e) {
-            
-            logger.error("Server interrupted (likely server is just shutting down)", e);
-            
-        }
-    }    
-
-    public Injector getInjector() {
-        return ninjaServletListener.getInjector();
+    public static void main(String [] args) {
+        // create new instance and run it
+        new NinjaJetty().run();
     }
     
-    public NinjaJetty setPort(int port) {
-        this.port = port;
-        return this;
-    }
-    
-    public NinjaJetty setIdleTimeout(long idleTimeout) {
-        this.idleTimeout = idleTimeout;
-        return this;
-    }
-    
-    public NinjaJetty setHost(String host) {
-        this.host = host;
-        return this;
-    }
-
-    public NinjaJetty setJettyConfiguration(String jettyConfiguration) {
-        this.jettyConfiguration = jettyConfiguration;
-        return this;
-    }
-
-    public void setServerUri(URI serverUri) {
-        this.serverUri = serverUri;
-    }
-    
-    public String createServerName() {
-        String h = this.host;
-        if (this.host == null) {
-            h = "localhost";
-        }
-        return "http://" + h + ":" + this.port;
-    }
-    
-    public NinjaJetty setNinjaMode(NinjaMode ninjaMode) {
-        this.ninjaMode = ninjaMode;
-        return this;
-    }
-
-    public NinjaJetty setNinjaContextPath(String ninjaContextPath) {
-        this.ninjaContextPath = ninjaContextPath;
-        return this;
-    }
-    
-    static private Server createServerOrApplyConfiguration(String jettyConfiguration, Server server) throws Exception {
+    @Override
+    protected void doConfigure() throws Exception {
+        // current value or system property or conf/application.conf or default value
+        jettyConfiguration(overlayedNinjaProperties.get(
+                KEY_NINJA_JETTY_CONFIGURATION, this.jettyConfiguration, DEFAULT_JETTY_CONFIGURATION));
         
-        // try local file first
-        Resource jettyConfigurationFile = Resource.newResource(jettyConfiguration);
-        
-        if (jettyConfigurationFile == null || !jettyConfigurationFile.exists()) {
-            
-            // fallback to classpath
-            jettyConfigurationFile = Resource.newClassPathResource(jettyConfiguration);
-            
-            if (jettyConfigurationFile == null || !jettyConfigurationFile.exists()) {
-            
-                throw new FileNotFoundException("Unable to find jetty configuration file either locally or on classpath [" + jettyConfiguration + "]");
-                
-            }
-        }
-        
-        logger.info("Using jetty configuration file to configure server: " + jettyConfigurationFile);
-        
-        XmlConfiguration configuration = new XmlConfiguration(jettyConfigurationFile.getInputStream());
-        
-        // create or apply to existing
-        if (server == null) {
-            
-            return (Server)configuration.configure();
-            
-        } else {
-            
-            return (Server)configuration.configure(server);
-            
-        }
-        
-        
-    }
-    
-    public void start() throws Exception {
-
-        if (this.jettyConfiguration != null && this.jettyConfiguration.length() > 0) {
+        // build jetty server, context, and servlet
+        if (this.jettyConfiguration != null) {
             
             String[] configs = this.jettyConfiguration.split(",");
-            
             for (String config : configs) {
-            
-                server = createServerOrApplyConfiguration(config, server);
-                
+                jetty = buildServerOrApplyConfiguration(config, jetty);
             }
+            
+            // since we don't know host and port, try to get it from jetty
+            tryToSetHostAndPortFromJetty();
             
         } else {
             
             // create very simple jetty configuration
-             server = new Server();
+            jetty = new Server();
         
-            // HTTP connector
-            ServerConnector http = new ServerConnector(server);
+            // build connector
+            ServerConnector http = new ServerConnector(jetty);
 
             http.setPort(port);
-            
             http.setIdleTimeout(idleTimeout);
-
             if (host != null) {
                 http.setHost(host);
             }
 
             // set the connector
-            server.addConnector(http);
-            
+            jetty.addConnector(http);
         }
-            
-        context = new ServletContextHandler(server, ninjaContextPath);
         
-        ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
-
-        // We are using an embeded jetty for quick server testing. The
-        // problem is that the port will change.
-        // Therefore we inject the server name here:
-        String serverName = (this.serverUri != null
-                                ? this.serverUri.toString() : createServerName());
+        this.ninjaServletListener.setNinjaProperties(ninjaProperties);
         
-        ninjaProperties.setProperty(NinjaConstant.serverName, serverName);
+        this.contextHandler = new ServletContextHandler(jetty, getContextPath());
+        this.contextHandler.addEventListener(ninjaServletListener);
+        this.contextHandler.addFilter(GuiceFilter.class, "/*", null);
+        this.contextHandler.addServlet(DefaultServlet.class, "/");
+    }  
 
-        ninjaServletListener.setNinjaProperties(ninjaProperties);
-
-        context.addEventListener(ninjaServletListener);
-        context.addFilter(GuiceFilter.class, "/*", null);
-        context.addServlet(DefaultServlet.class, "/");
-            
+    @Override
+    public void doStart() throws Exception {
+        String version = this.jetty.getClass().getPackage().getImplementationVersion();
+        
         try {
-
-            server.start();
-
+            logger.info("Trying to start jetty v{} {}", version, getLoggableIdentifier());
+            this.jetty.start();
         } catch (Exception e) {
-            
-            // inner exception on guice exception during start?
-            if (e.getCause() != null && e.getCause() instanceof CreationException) {
-            
-                // the injector exception is actually what we want thrown
-                throw (CreationException)e.getCause();
-                
-            } else {
-                
-                throw e;
-                
-            }
+            // since ninja bootstrap actually boots inside a servlet listener
+            // the underlying injector exception is wrapped - unwrap here!
+            throw tryToUnwrapInjectorException(e);
         }
+        
+        logger.info("Started jetty v{} {}", version, getLoggableIdentifier());
     }
     
-    public void shutdown() {
-        
+    @Override
+    public void doJoin() throws Exception {
+        this.jetty.join();
+    }
+    
+    @Override
+    public void doShutdown() {
         try {
-            
-            // shutdown should be safe to call even if server did not start
-            if (context != null) {
-                context.stop();
-                context.destroy();
+            if (this.contextHandler != null) {
+                this.contextHandler.stop();
+                this.contextHandler.destroy();
             }
-            
-            if (server != null) {
-                server.stop();
-                server.destroy();
-            }
-            
         } catch (Exception e) {
-            
+            // keep trying
+        }
+           
+        try {
+            if (this.jetty != null) {
+                logger.info("Trying to stop jetty {}", getLoggableIdentifier());
+                this.jetty.stop();
+                this.jetty.destroy();
+                logger.info("Stopped jetty {}", getLoggableIdentifier());
+            }
+        } catch (Exception e) {
             throw new RuntimeException(e);
-        
         }
     }
     
-    public static int tryToGetPortFromSystemPropertyOrReturnDefault() {
-
-        Integer port;
-
-        try {
-            
-            String portAsString = System.getProperty(COMMAND_LINE_PARAMETER_NINJA_PORT);
-            port = Integer.parseInt(portAsString);
-        
-        } catch (Exception e) {
-
-            return DEFAULT_PORT;
-        }
-
-        return port;
-
+    public String getJettyConfigureation() {
+        return this.jettyConfiguration;
     }
     
-    public static long tryToGetIdleTimeoutFromSystemPropertyOrReturnDefault() {
-        long idleTimeout;
-        
-        try {
-            
-            String idleTimeoutAsString = System.getProperty(COMMAND_LINE_PARAMETER_NINJA_IDLE_TIMEOUT);
-            idleTimeout = Long.parseLong(idleTimeoutAsString);
-            
-        } catch(Exception e) {
-            
-            return DEFAULT_IDLE_TIMEOUT;
-        }
-        
-        return idleTimeout;
+    public NinjaJetty jettyConfiguration(String jettyConfiguration) {
+        this.jettyConfiguration = jettyConfiguration;
+        return this;
     }
-
-    public static String tryToGetContextPathFromSystemPropertyOrReturnDefault() {
-
-        try {
-
-            return System.getProperty(COMMAND_LINE_PARAMETER_NINJA_CONTEXT);
-
-        } catch (Exception e) {
-
-            return null;
+    
+    @Override
+    public Injector getInjector() {
+        // only available after configure()
+        checkConfigured();
+        return ninjaServletListener.getInjector();
+    }
+    
+    private void tryToSetHostAndPortFromJetty() {
+        // do best attempt at fetching port jetty will start with
+        Connector[] connectors = jetty.getConnectors();
+        if (connectors != null && connectors.length > 0 && connectors[0] instanceof ServerConnector) {
+            ServerConnector connector = (ServerConnector)connectors[0];
+            host(connector.getHost());
+            port(connector.getPort());
         }
     }
     
+    private Server buildServerOrApplyConfiguration(String jettyConfiguration, Server server) throws Exception {
+        // try local file first
+        Resource jettyConfigurationFile = Resource.newResource(jettyConfiguration);
+        
+        if (jettyConfigurationFile == null || !jettyConfigurationFile.exists()) {
+            // fallback to classpath
+            jettyConfigurationFile = Resource.newClassPathResource(jettyConfiguration);
+            
+            if (jettyConfigurationFile == null || !jettyConfigurationFile.exists()) {
+                throw new FileNotFoundException("Unable to find jetty configuration file either locally or on classpath '" + jettyConfiguration + "'");
+            }
+        }
+        
+        logger.info("Applying jetty configuration '{}'", jettyConfigurationFile);
+        
+        try (InputStream is = jettyConfigurationFile.getInputStream()) {
+            XmlConfiguration configuration = new XmlConfiguration(is);
+
+            // create or apply to existing
+            if (server == null) {
+                return (Server)configuration.configure();
+            } else {
+                return (Server)configuration.configure(server);
+            }
+        }
+    }
 }

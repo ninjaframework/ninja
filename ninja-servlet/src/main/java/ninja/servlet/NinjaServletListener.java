@@ -16,6 +16,7 @@
 
 package ninja.servlet;
 
+import ninja.Bootstrap;
 import javax.servlet.ServletContextEvent;
 
 import ninja.utils.NinjaModeHelper;
@@ -36,10 +37,8 @@ import com.google.inject.servlet.GuiceServletContextListener;
  */
 public class NinjaServletListener extends GuiceServletContextListener {
     
-    private volatile NinjaBootstrap ninjaBootstrap;
-
+    private volatile Bootstrap ninjaBootstrap;
     NinjaPropertiesImpl ninjaProperties = null;
-    
     String contextPath;
 
     public synchronized void setNinjaProperties(NinjaPropertiesImpl ninjaPropertiesImpl) {
@@ -71,7 +70,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
     /**
      * Only available after context initialization attempted.
      */
-    public NinjaBootstrap getNinjaBootstrap() {
+    public Bootstrap getNinjaBootstrap() {
         return this.ninjaBootstrap;
     }
    
@@ -87,7 +86,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
         
         // fetch instance variable into method, so that we access the volatile
         // global variable only once - that's better performance wise.
-        NinjaBootstrap ninjaBootstrapLocal = ninjaBootstrap;
+        Bootstrap ninjaBootstrapLocal = ninjaBootstrap;
         
         if (ninjaBootstrapLocal == null) {
 
@@ -120,16 +119,14 @@ public class NinjaServletListener extends GuiceServletContextListener {
 
     }
     
-    
-    
-    private NinjaBootstrap createNinjaBootstrap(
+    private Bootstrap createNinjaBootstrap(
         NinjaPropertiesImpl ninjaProperties,
         String contextPath) {
     
-         // we set the contextpath.
+        // we set the contextpath.
         ninjaProperties.setContextPath(contextPath);
         
-        ninjaBootstrap = new NinjaBootstrap(ninjaProperties);
+        ninjaBootstrap = new NinjaServletBootstrap(ninjaProperties);
         
         ninjaBootstrap.boot();
         

@@ -29,3 +29,10 @@ Debugging via NetBeans
 4. Enter "jetty:run" into the "Execute Goals" input field
 5. Enter "jpda.listen=maven" into the "Set Properties" field
 6. Click the "OK"-Button and start a Debug-Session with Ctrl+F5 or the Debug-Button
+
+Debugging in SuperDevMode
+------------------------------------------
+
+The Ninja maven plugin supports `-Dninja.jvmArgs` as a property that allows any
+arbitrary values to passthru to the forked Ninja JVM.  You have the option of passing
+thru the required JVM properties to enable debugging.

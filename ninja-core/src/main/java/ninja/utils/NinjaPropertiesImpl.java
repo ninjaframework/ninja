@@ -39,7 +39,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     private static final Logger logger = LoggerFactory
             .getLogger(NinjaPropertiesImpl.class);
 
-    private NinjaMode ninjaMode;
+    private final NinjaMode ninjaMode;
     
     private String contextPath = "";
 
@@ -57,6 +57,11 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
     public NinjaPropertiesImpl(
             NinjaMode ninjaMode) {
+        this(ninjaMode, null);
+    }
+    
+    public NinjaPropertiesImpl(
+            NinjaMode ninjaMode, String externalConfigurationPath) {
         
         this.ninjaMode = ninjaMode;
 
@@ -111,9 +116,13 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             throw new RuntimeException(errorMessage);
         }
 
-        // third step => load external configuration when a system property is
-        // defined.
-        String ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
+        // third step => load external configuration when a system property is defined.
+        String ninjaExternalConf = externalConfigurationPath;
+        
+        if (ninjaExternalConf == null) {
+            // if not set fallback to system property
+            ninjaExternalConf = System.getProperty(NINJA_EXTERNAL_CONF);
+        }
 
         if (ninjaExternalConf != null) {
 

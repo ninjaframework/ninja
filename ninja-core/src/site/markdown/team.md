@@ -1,6 +1,23 @@
 The team - a.k.a the Ninjas
 ===========================
 
+Technical leads
+---------------
+
+Someone has to be in charge of integrating pull requests. Reviewing code. Cutting
+new releases. And driving the platform as a whole.
+
+That leadership role is currently performed by:
+
+ * The team of [FinalFrontierLabs](http://www.finalfrontierlabs.com) 
+   and [Raphael](http://raphaelbauer.com) as lead architect. 
+ * The team of [Fizzed, Inc.](http://fizzed.com) and [Joe Lauer](http://lauer.bz)
+   as lead architect.
+
+If you want to take over a more official role in the Ninja platform don't hesitate
+to contact us! The framework offers excellent
+opportunities to collaborate with nice people and drive an extraordinary project.
+
 Hall of fame
 ------------
 
@@ -57,20 +74,6 @@ intentionally. You can even add yourself to the list:
 You can do so easily by checking out the source code of Ninja and changing the file
 ninja/ninja-core/site/markdown/team.md .
 </div>
-
-Technical lead
---------------
-
-Someone has to be in charge of integrating pull requests. Reviewing code. Cutting
-new releases. And driving the platform as a whole.
-
-That leadership role is currently performed by the team of [FinalFrontierLabs](http://www.finalfrontierlabs.com) 
-and [Raphael](http://raphaelbauer.com) as lead architect. 
-
-If you want to take over a more official role in the Ninja platform don't hesitate
-to contact us! The framework offers excellent
-opportunities to collaborate with nice people and drive an extraordinary project.
-
 
 Become part of the team!
 ------------------------

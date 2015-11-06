@@ -20,15 +20,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import ninja.Context;
 import ninja.params.ArgumentExtractor;
-import ninja.servlet.ContextImpl;
+import ninja.servlet.NinjaServletContext;
 
 public class ResponseExtractor implements ArgumentExtractor<HttpServletResponse> {
 
     @Override
     public HttpServletResponse extract(Context context) {
 
-        if (context instanceof ContextImpl) {
-            return ((ContextImpl) context).getHttpServletResponse();
+        if (context instanceof NinjaServletContext) {
+            return ((NinjaServletContext) context).getHttpServletResponse();
         } else {
             throw new RuntimeException(
                     "RequestExtractor only works with Servlet container implementation of Context.");

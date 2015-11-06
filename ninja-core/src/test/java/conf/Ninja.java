@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package ninja.standalone;
+package conf;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+import ninja.NinjaDefault;
 
-public class StandaloneHelper {
+public class Ninja extends NinjaDefault {
     
-    static int findAvailablePort(int min, int max) {
-        for (int port = min; port < max; port++) {
-            try {
-                new ServerSocket(port).close();
-                return port;
-            } catch (IOException e) {
-                // Must already be taken
-            }
-        }
-        throw new IllegalStateException(
-                "Could not find available port in range " + min + " to " + max);
-    }
-
 }

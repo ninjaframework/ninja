@@ -62,14 +62,14 @@ public class FakeContext implements Context {
     private String scheme;
     private FlashScope flashScope;
     private Session session;
-    private List<Cookie> addedCookies = new ArrayList<Cookie>();
-    private Map<String, String> cookieValues = new HashMap<String, String>();
-    private ListMultimap<String, String> params = ArrayListMultimap.create();
-    private Map<String, String> pathParams = new HashMap<String, String>();
-    private ListMultimap<String, String> headers = ArrayListMultimap.create();
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private final List<Cookie> addedCookies = new ArrayList<>();
+    private final Map<String, String> cookieValues = new HashMap<>();
+    private final ListMultimap<String, String> params = ArrayListMultimap.create();
+    private final Map<String, String> pathParams = new HashMap<>();
+    private final ListMultimap<String, String> headers = ArrayListMultimap.create();
+    private final Map<String, Object> attributes = new HashMap<>();
     private Object body;
-    private Validation validation = new ValidationImpl();
+    private final Validation validation = new ValidationImpl();
 
     private String acceptContentType;
 

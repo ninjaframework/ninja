@@ -94,7 +94,7 @@ public class MultipartContextImplMemoryTest {
     private NinjaProperties ninjaProperties;
 
     @Mock
-    private ContextImpl context;
+    private NinjaServletContext context;
 
     private String paramA = "paramA";
     private String paramB = "paramB";
@@ -135,7 +135,7 @@ public class MultipartContextImplMemoryTest {
             }
         });
 
-        context = new ContextImpl(
+        context = new NinjaServletContext(
                 bodyParserEngineManager,
                 flashCookie,
                 ninjaProperties,

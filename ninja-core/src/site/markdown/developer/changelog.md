@@ -1,10 +1,31 @@
-Versoin X.X.X
+Version X.X.X
 =============
 
  * 2015-10-18 Added Session.setExpiryTime() to control session expiry (watsonmw)
-
  * 2015-10-18 OptionalBinder for ObjectMapper and XmlMapper, so that users can easily override
               the default types for both of them. (amit2103/jjlauer)
+ * 2015-10-09 Refactoring of ninja-servlet to extract non-servlet functionality
+              into ninja-core to enable reuse in future non-servlet environments. (jjlauer)
+    * ninja-servlet `ninja/servlet/NinjaBootstrap.java` split into ninja-core `ninja/Bootstrap.java` and
+      ninja-servlet `ninja/servlet/NinjaServletBootstrap.java`
+    * ninja-servlet `ninja/servlet/ContextImpl.java` split into ninja-core `ninja/utils/AbstractContext.java`
+      and ninja-servlet `ninja/servlet/NinjaServletContext.java`
+ * 2015-10-09 Refactoring of ninja-standalone to extract non-Jetty functionality
+              into ninja-core to enable reuse in future non-Jetty standalone implementations. (jjlauer)
+    * Much of the functionality in ninja-standalone `ninja/standalone/NinjaJetty.java` extracted to
+      ninja-core `ninja/standalone/AbstractStandalone.java`
+ * 2015-10-09 Standalone configuration properties can now be set in conf/application.conf
+              Supports ninja.host, ninja.port, ninja.context, and ninja.idle.timeout
+              The order of precedence is systemProperty > configProperty > defaultValue (jjlauer)
+ * 2015-10-09 New 'ninja.standalone.class' system property to control which concrete
+              standalone implementation is used by NinjaTestServer (jjlauer)
+ * 2015-10-09 ninja-maven-plugin support for 'jvmArgs' property to allow for any
+              properties to be passed thru to spawned Ninja JVM. (jjlauer)
+ * 2015-10-09 ninja-maven-plugin support for 'mainClass' property to override which
+              class is run by spawned Ninja JVM.
+ * 2015-10-09 ninja-maven-plugin deprecated 'contextPath' property in favor of new
+              'context' key to match what NinjaJetty has always used. (jjlauer)
+ * 2015-10-09 NinjaJetty has more polished logging messages on startup (jjlauer)
 
 Version 5.2.1
 =============

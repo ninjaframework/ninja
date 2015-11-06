@@ -56,6 +56,16 @@ public class NinjaTest {
         return ninjaTestServer.getInjector();
     }
 
+    public String to(String path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Path was null");
+        }
+        if (!path.startsWith("/")) {
+            throw new IllegalArgumentException("Path must start with '/'");
+        }
+        return ninjaTestServer.getBaseUrl() + path;
+    }
+
     /**
      * Something like http://localhost:8080/ 
      * 

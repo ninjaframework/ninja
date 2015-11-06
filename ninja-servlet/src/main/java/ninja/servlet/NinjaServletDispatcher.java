@@ -75,7 +75,7 @@ public class NinjaServletDispatcher extends HttpServlet {
         ServletContext servletContext = getServletContext();
 
         // We generate a Ninja compatible context element
-        ContextImpl context = (ContextImpl) injector.getProvider(Context.class)
+        NinjaServletContext context = (NinjaServletContext) injector.getProvider(Context.class)
                 .get();
 
         // And populate it

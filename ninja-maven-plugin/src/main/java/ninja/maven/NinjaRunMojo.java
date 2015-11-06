@@ -25,11 +25,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import ninja.build.ArgumentTokenizer;
 
 import ninja.standalone.NinjaJetty;
+import ninja.standalone.Standalone;
 import ninja.utils.NinjaConstant;
 
 import org.apache.maven.artifact.Artifact;
@@ -55,13 +58,13 @@ public class NinjaRunMojo extends AbstractMojo {
     protected MavenProject project;
     
     @Parameter(defaultValue = "${plugin.artifacts}", readonly = true)
-    private List<org.apache.maven.artifact.Artifact> pluginArtifacts;
+    protected List<org.apache.maven.artifact.Artifact> pluginArtifacts;
 
     /**
      * Skip execution of this plugin.
      */
     @Parameter(property = "ninja.skip", defaultValue="false", required = true)
-    private boolean skip;
+    protected boolean skip;
     
     /**
      * Directory containing the build files.
@@ -70,13 +73,13 @@ public class NinjaRunMojo extends AbstractMojo {
      * something like /User/username/workspace/project/target/classes
      */
     @Parameter(property = "ninja.outputDirectory", defaultValue = "${project.build.outputDirectory}", required = true)
-    private String buildOutputDirectory;
+    protected String buildOutputDirectory;
     
     /**
      * All directories to watch for changes.
      */
     @Parameter(property = "ninja.watchDirs", required = false)
-    private File[] watchDirs;
+    protected File[] watchDirs;
     
     /**
      * Watch all directories on runtime classpath of project.  For single
@@ -87,7 +90,7 @@ public class NinjaRunMojo extends AbstractMojo {
      * watch for changes across an entire multi-module project.
      */
     @Parameter(property = "ninja.watchAllClassPathDirs", defaultValue = "false", required = true)
-    private boolean watchAllClassPathDirs;
+    protected boolean watchAllClassPathDirs;
     
     /**
      * Watch all jars on runtime classpath of project. A simple way to monitor
@@ -99,7 +102,7 @@ public class NinjaRunMojo extends AbstractMojo {
      * then just be cautious you'll want to add exclude rules to not include them.
      */
     @Parameter(property = "ninja.watchAllClassPathJars", defaultValue = "false", required = true)
-    private boolean watchAllClassPathJars;
+    protected boolean watchAllClassPathJars;
     
     /**
      * Includes in Java regex format. Negative regex patterns are difficult to
@@ -114,7 +117,7 @@ public class NinjaRunMojo extends AbstractMojo {
      * freemarker templates use something like (.*)ftl.html$ for instance.
      */
     @Parameter(property = "ninja.excludes", required = false)
-    private List<String> excludes;
+    protected List<String> excludes;
     
     /**
      * Adds assets directory and freemarker templates to excluded files.
@@ -130,27 +133,45 @@ public class NinjaRunMojo extends AbstractMojo {
     /**
      * Context path for SuperDevMode.
      */
-    @Parameter(property = "ninja.contextPath", required = false)
-    private String contextPath;
+    @Parameter(property = "ninja.context", required = false)
+    protected String context;
+    
+    @Deprecated
+    protected String contextPath;
     
     /**
      * Mode for SuperDevMode.
      */
     @Parameter(property = "ninja.mode", defaultValue=NinjaConstant.MODE_DEV, required = false)
-    private String mode;
+    protected String mode;
 
     /**
-    * Port for SuperDevMode
-    */
-    @Parameter(property = "ninja.port", defaultValue="8080", required = false)
-    private Integer port;
+     * Port for SuperDevMode (can also now be set in conf/application.conf)
+     */
+    @Parameter(property = "ninja.port", required = false)
+    protected Integer port;
+    
+    /**
+     * Main class to run in SuperDevMode. Defaults to default standalone class
+     * in Ninja (ninja.standalone.NinjaJetty)
+     */
+    @Parameter(property = "ninja.mainClass", required = false)
+    protected String mainClass;
+    
+    /**
+     * Extra arguments to pass to the forked JVM. If you keep your arguments
+     * fairly simple, they should be tokenized (split) correctly.  Uses excellent
+     * DrJava ArgumentTokenizer class for splitting line into separate arguments.
+     */
+    @Parameter(property = "ninja.jvmArgs", required = false)
+    protected String jvmArgs;
     
     /**
      * Amount of time to wait for file changes to settle down before triggering a
      * restart in SuperDevMode.
      */
     @Parameter(property = "ninja.settleDownMillis", defaultValue="500", required = false)
-    private Long settleDownMillis;
+    protected Long settleDownMillis;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -170,7 +191,7 @@ public class NinjaRunMojo extends AbstractMojo {
         
         classpathItems.add(buildOutputDirectory);
 
-        for (org.apache.maven.artifact.Artifact artifact: project.getArtifacts()) {
+        for (org.apache.maven.artifact.Artifact artifact : project.getArtifacts()) {
             classpathItems.add(artifact.getFile().toString());           
         }
         
@@ -186,8 +207,8 @@ public class NinjaRunMojo extends AbstractMojo {
         
         }       
         
-        Set<String> includesAsSet = new LinkedHashSet<>(includes);
-        Set<String> excludesAsSet = new LinkedHashSet<>(excludes);
+        Set<String> includesAsSet = new LinkedHashSet<>((includes != null ? includes : Collections.EMPTY_LIST));
+        Set<String> excludesAsSet = new LinkedHashSet<>((excludes != null ? excludes : Collections.EMPTY_LIST));
         
         // start building set of directories to recursively watch
         Set<Path> directoriesToRecursivelyWatch = new LinkedHashSet<>();
@@ -236,6 +257,8 @@ public class NinjaRunMojo extends AbstractMojo {
             }       
         }
         
+        // which standalone (works with -Dninja.standalone to maven OR in pom.xml)
+        String mainClassToRun = (mainClass != null ? mainClass : Standalone.DEFAULT_STANDALONE_CLASS);
         
         getLog().info("------------------------------------------------------------------------");
         
@@ -243,37 +266,34 @@ public class NinjaRunMojo extends AbstractMojo {
         for (Path path : directoriesToRecursivelyWatch) {
             getLog().info(" " + path);
         }
-        
+        getLog().info("");
         getLog().info("Ninja will launch with:");
-        if (contextPath != null) {
-            getLog().info(" context path: '" + contextPath + "'");
-        } else {
-             getLog().info(" root context");
-        }
-        getLog().info(" mode: " + mode);
-        getLog().info(" port: " + port);
+        getLog().info("      context: " + (getContextPath() != null ? getContextPath() : "<default>"));
+        getLog().info("         mode: " + mode);
+        getLog().info("         port: " + (port != null ? port : "<default>"));
+        getLog().info("    mainClass: " + mainClassToRun);
+        getLog().info("extra jvmArgs: " + (jvmArgs != null ? jvmArgs : "<none>"));
         getLog().info("------------------------------------------------------------------------");
-        
-
         
         try {
             //
             // build dependencies, start them, and then watch
             //
-            RunClassInSeparateJvmMachine machine = new RunClassInSeparateJvmMachine(
-                "NinjaJetty",
-                NinjaMavenPluginConstants.NINJA_JETTY_CLASSNAME,
+            
+            RunClassInSeparateJvmMachine machine = buildRunClassInSeparateJvmMachine(
+                "Standalone",
+                mainClassToRun,
                 classpathItems,
                 buildJvmArguments(),
                 project.getBasedir()
             );
             
-            DelayedRestartTrigger restartTrigger = new DelayedRestartTrigger(machine);
+            DelayedRestartTrigger restartTrigger = buildDelayedRestartTrigger(machine);
             restartTrigger.setSettleDownMillis(settleDownMillis);
             
             restartTrigger.start();
             
-            WatchAndRestartMachine watcher = new WatchAndRestartMachine(
+            WatchAndRestartMachine watcher = buildWatchAndRestartMachine(
                 directoriesToRecursivelyWatch,
                 includesAsSet,
                 excludesAsSet,
@@ -289,7 +309,48 @@ public class NinjaRunMojo extends AbstractMojo {
         }
     }
     
-    private List<String> buildJvmArguments() {
+    protected String getContextPath() {
+        if (this.context != null) {
+            return this.context;
+        } else {
+            return this.contextPath;
+        }
+    }
+    
+    // so we can mock a fake one for unit testing
+    protected DelayedRestartTrigger buildDelayedRestartTrigger(RunClassInSeparateJvmMachine machine) {
+        return new DelayedRestartTrigger(machine);
+    }
+    
+    protected WatchAndRestartMachine buildWatchAndRestartMachine(
+            Set<Path> directoriesToRecursivelyWatch,
+            Set<String> includes,
+            Set<String> excludes,
+            DelayedRestartTrigger restartTrigger) throws IOException {
+        return new WatchAndRestartMachine(
+                directoriesToRecursivelyWatch,
+                includes,
+                excludes,
+                restartTrigger);
+    }
+    
+    // so we can mock a fake one for unit testing
+    protected RunClassInSeparateJvmMachine buildRunClassInSeparateJvmMachine(
+            String name,
+            String classNameWithMainToRun,
+            List<String> classpath, 
+            List<String> jvmArguments,
+            File mavenBaseDir) {
+        return new RunClassInSeparateJvmMachine(
+            name,
+            classNameWithMainToRun,
+            classpath,
+            buildJvmArguments(),
+            mavenBaseDir
+        );
+    }
+    
+    protected List<String> buildJvmArguments() {
         List<String> jvmArguments = new ArrayList<>();
         
         String systemPropertyDevMode 
@@ -297,20 +358,31 @@ public class NinjaRunMojo extends AbstractMojo {
         
         jvmArguments.add(systemPropertyDevMode);
 
-        String portSelection
-                = "-D" + NinjaJetty.COMMAND_LINE_PARAMETER_NINJA_PORT + "=" + port;
-
-        jvmArguments.add(portSelection);
+        if (port != null) {
+            String portSelection
+                    = "-D" + NinjaJetty.KEY_NINJA_PORT + "=" + port;
+            jvmArguments.add(portSelection);
+        }
         
-        if (contextPath != null) {
-            String systemPropertyContextPath = "-Dninja.context=" + contextPath;
+        if (getContextPath() != null) {
+            String systemPropertyContextPath = "-Dninja.context=" + getContextPath();
             jvmArguments.add(systemPropertyContextPath);
+        }
+        
+        if (jvmArgs != null) {
+            // use excellent DrJava library to tokenize arguments (do not keep tokens)
+            List<String> tokenizedArgs = ArgumentTokenizer.tokenize(jvmArgs, false);
+            getLog().debug("JVM arguments tokenizer results:");
+            for (String s : tokenizedArgs) {
+                getLog().debug("argument: " + s + "");
+            }
+            jvmArguments.addAll(tokenizedArgs);
         }
         
         return jvmArguments;
     }
     
-    private void initMojoFromUserSubmittedParameters() {
+    protected void initMojoFromUserSubmittedParameters() {
         
         if (useDefaultExcludes) {
             
@@ -341,7 +413,7 @@ public class NinjaRunMojo extends AbstractMojo {
      * @return All artifacts coming from artifactId "ninja-standalone" 
      *         (including transitive dependencies)
      */
-    private List<Artifact> getAllArtifactsComingFromNinjaStandalone(
+    protected List<Artifact> getAllArtifactsComingFromNinjaStandalone(
         List<Artifact> artifacts) {
     
         List<Artifact> resultingArtifacts = new ArrayList<>();
@@ -366,16 +438,23 @@ public class NinjaRunMojo extends AbstractMojo {
     
     }
     
-    public void alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
-        String directoryWithCompiledClassesOfThisProject) {
+    protected void alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist(
+        String directoryWithCompiledClassesOfThisProject) throws MojoExecutionException {
         
-        if (!new File(directoryWithCompiledClassesOfThisProject).exists()) {
+        File classesDir = null;
+
+        if (directoryWithCompiledClassesOfThisProject != null) {
+            classesDir = new File(directoryWithCompiledClassesOfThisProject);
+        }
+        
+        if (classesDir == null || !classesDir.exists()) {
             
             getLog().error("Directory with classes does not exist: " + directoryWithCompiledClassesOfThisProject);
             getLog().error("Maybe running 'mvn compile'  before running 'mvn ninja:run' helps :)");
             
             // BAM!
-            System.exit(1);
+            //System.exit(1);
+            throw new MojoExecutionException("Directory with classes does not exist: " + directoryWithCompiledClassesOfThisProject);
         }
     
     }

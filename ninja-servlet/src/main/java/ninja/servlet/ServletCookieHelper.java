@@ -22,9 +22,9 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CookieHelper {
+public class ServletCookieHelper {
     private static final Logger log = LoggerFactory
-            .getLogger(CookieHelper.class);
+            .getLogger(ServletCookieHelper.class);
 
     public static Cookie getCookie(String name, Cookie[] cookies) {
 
