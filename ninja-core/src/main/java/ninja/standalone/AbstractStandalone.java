@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * methods which are actually where you'll place most of your logic.  You'll
  * also want to subclass the configure() method to add any configuration
  * specific to your Standalone.  See NinjaJetty for example concrete implementation.
+ * @param <T> The concrete standalone implementation
  */
 abstract public class AbstractStandalone<T extends AbstractStandalone> implements Standalone<T>, Runnable {
     // allow logger to take on persona of concrete class
@@ -85,7 +86,7 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         try {
             this.start();
         } catch (Exception e) {
-            logger.error("Unable to start ", name, e);
+            logger.error("Unable to start {}", name, e);
             System.exit(1);
         }
         

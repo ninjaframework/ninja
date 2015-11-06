@@ -215,7 +215,6 @@ public class Bootstrap {
             ApplicationRoutes applicationRoutes = (ApplicationRoutes) injector
                     .getInstance(clazz);
 
-            // TODO: this is better if bound
             Router router = this.injector.getInstance(Router.class);
 
             applicationRoutes.init(router);
