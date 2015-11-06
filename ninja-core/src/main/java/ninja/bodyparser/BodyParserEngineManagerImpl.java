@@ -100,7 +100,7 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
     }
 
-    protected void logBodyParserEngines() {
+    protected final void logBodyParserEngines() {
         List<String> outputTypes = Lists.newArrayList(getContentTypes());
         Collections.sort(outputTypes);
 

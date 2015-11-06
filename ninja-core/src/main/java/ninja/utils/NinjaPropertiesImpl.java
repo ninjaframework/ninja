@@ -293,7 +293,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     }
 
     @Override
-    public boolean isProd() {
+    public final boolean isProd() {
         return (ninjaMode.equals(NinjaMode.prod));
     }
 

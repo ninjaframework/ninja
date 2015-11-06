@@ -198,9 +198,8 @@ public class LangImpl implements Lang {
         } 
 
     }
-    
-    
-    String getDefaultLanguage(NinjaProperties ninjaProperties) {
+
+    final String getDefaultLanguage(NinjaProperties ninjaProperties) {
     
         String [] applicationLanguages 
                 = ninjaProperties.getStringArray(NinjaConstant.applicationLanguages);

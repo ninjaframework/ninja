@@ -103,7 +103,7 @@ public class TemplateEngineManagerImpl implements TemplateEngineManager {
         }
     }
 
-    protected void logTemplateEngines() {
+    protected final void logTemplateEngines() {
         List<String> outputTypes = Lists.newArrayList(getContentTypes());
         Collections.sort(outputTypes);
 
