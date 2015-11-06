@@ -312,7 +312,7 @@ public class NinjaJetty {
             port = Integer.parseInt(portAsString);
         
         } catch (Exception e) {
-
+            logger.trace(e.getMessage(), e);
             return DEFAULT_PORT;
         }
 
@@ -329,7 +329,7 @@ public class NinjaJetty {
             idleTimeout = Long.parseLong(idleTimeoutAsString);
             
         } catch(Exception e) {
-            
+            logger.trace(e.getMessage(), e);
             return DEFAULT_IDLE_TIMEOUT;
         }
         
@@ -343,7 +343,7 @@ public class NinjaJetty {
             return System.getProperty(COMMAND_LINE_PARAMETER_NINJA_CONTEXT);
 
         } catch (Exception e) {
-
+            logger.trace(e.getMessage(), e);
             return null;
         }
     }

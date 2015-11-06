@@ -95,7 +95,7 @@ public class SwissKnife {
         } catch (ConfigurationException e) {
 
             logger.info("Could not load file " + fileOrUrlOrClasspathUrl
-                    + " (not a bad thing necessarily, but I am returing null)");
+                    + " (not a bad thing necessarily, but I am returing null)", e);
 
             return null;
         }
@@ -144,6 +144,7 @@ public class SwissKnife {
         try {
             result = (T[]) Array.newInstance(to, from.length);
         } catch (ClassCastException e) {
+            logger.trace(e.getMessage(), e);
             return null;
         }
         for (int i = 0; i < from.length; i++) {

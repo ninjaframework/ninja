@@ -130,6 +130,7 @@ public class CacheEhCacheImpl implements Cache {
             add(key, value, expiration);
             return true;
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             return false;
         }
     }

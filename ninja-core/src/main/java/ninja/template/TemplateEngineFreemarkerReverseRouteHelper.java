@@ -77,7 +77,7 @@ public class TemplateEngineFreemarkerReverseRouteHelper {
 
                 return new SimpleScalar(reverseRoute);
             } catch (ClassNotFoundException ex) {
-                throw new TemplateModelException("Error. Cannot find class for String: " + strings.get(0));
+                throw new TemplateModelException("Error. Cannot find class for String: " + strings.get(0), ex);
             }
         }
 

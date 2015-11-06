@@ -426,7 +426,7 @@ public class NinjaDefault implements Ninja {
         
         } catch (Exception e) {
             //this should not happen. Never.
-            throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + LOCATION_OF_NINJA_BUILTIN_PROPERTIES));
+            throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + LOCATION_OF_NINJA_BUILTIN_PROPERTIES, e));
         }
         
         return ninjaVersion;

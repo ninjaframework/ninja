@@ -143,6 +143,7 @@ public class CacheMemcachedImpl implements Cache {
         try {
             return future.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             future.cancel(false);
         }
         return null;
@@ -161,6 +162,7 @@ public class CacheMemcachedImpl implements Cache {
         try {
             return future.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             future.cancel(false);
         }
         return Collections.<String, Object>emptyMap();
@@ -183,6 +185,7 @@ public class CacheMemcachedImpl implements Cache {
         try {
             return future.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             future.cancel(false);
         }
         return false;
@@ -193,6 +196,7 @@ public class CacheMemcachedImpl implements Cache {
         try {
             return future.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             future.cancel(false);
         }
         return false;
@@ -203,6 +207,7 @@ public class CacheMemcachedImpl implements Cache {
         try {
             return future.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             future.cancel(false);
         }
         return false;
@@ -213,6 +218,7 @@ public class CacheMemcachedImpl implements Cache {
         try {
             return future.get(1, TimeUnit.SECONDS);
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             future.cancel(false);
         }
         return false;

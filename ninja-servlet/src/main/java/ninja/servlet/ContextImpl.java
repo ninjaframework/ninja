@@ -270,6 +270,7 @@ public class ContextImpl implements Context.Impl {
         try {
             return SwissKnife.convert(parameter, clazz);
         } catch (Exception e) {
+            logger.trace(e.getMessage(), e);
             return defaultValue;
         }
     }
@@ -462,6 +463,7 @@ public class ContextImpl implements Context.Impl {
                 // If ip4/6 address string handed over, simply does pattern validation.
                 InetAddress.getByName(remoteAddr);
             } catch (UnknownHostException e) {
+                logger.trace(e.getMessage(), e);
                 remoteAddr = httpServletRequest.getRemoteAddr();
             }
         } else {
@@ -750,7 +752,7 @@ public class ContextImpl implements Context.Impl {
         try {
             httpServletRequest.setCharacterEncoding(charset);
         } catch (UnsupportedEncodingException e) {
-            logger.error("Server does not support charset of content type: " + contentType);
+            logger.error("Server does not support charset of content type: " + contentType, e);
         }
 
     }
