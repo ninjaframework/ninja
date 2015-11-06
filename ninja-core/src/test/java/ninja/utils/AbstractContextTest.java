@@ -62,9 +62,6 @@ public class AbstractContextTest {
     private Route route;
 
     @Mock
-    private ResultHandler resultHandler;
-
-    @Mock
     private Validation validation;
 
     @Mock
