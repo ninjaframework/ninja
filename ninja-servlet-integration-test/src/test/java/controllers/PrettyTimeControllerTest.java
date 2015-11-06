@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class PrettyTimeControllerTest extends NinjaTest {
     String TEXT_FR = "il y a 1 jour";
     String TEXT_IT = "1 giorno fa";
     String TEXT_ZH = "1 天 前";
-    String TEXT_JA = "1 日 前";
+    String TEXT_JA = "1日前";
     String TEXT_KO = "1일 전";
 
     @Test

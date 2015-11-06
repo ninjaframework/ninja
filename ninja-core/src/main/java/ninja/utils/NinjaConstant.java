@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public interface NinjaConstant {
     String MODE_TEST = "test";
     String MODE_DEV = "dev";
     String MODE_PROD = "prod";
-
+    
     // /////////////////////////////////////////////////
     // The basic directories used in all convention
     // over configuration operations:
@@ -41,6 +41,12 @@ public interface NinjaConstant {
     String LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR = "views/system/500internalServerError.ftl.html";
     String LOCATION_VIEW_FTL_HTML_UNAUTHORIZED = "views/system/401unauthorized.ftl.html";
     String LOCATION_VIEW_FTL_HTML_FORBIDDEN = "views/system/403forbidden.ftl.html";
+    
+    String LOCATION_VIEW_HTML_NOT_FOUND_KEY = "application.views.404notFound";
+    String LOCATION_VIEW_HTML_BAD_REQUEST_KEY = "application.views.400badRequest";
+    String LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY = "application.views.500internalServerError";
+    String LOCATION_VIEW_HTML_UNAUTHORIZED_KEY = "application.views.401unauthorized";
+    String LOCATION_VIEW_HTML_FORBIDDEN_KEY = "application.views.403forbidden";
     
     // i18n keys and default messages of Ninja
     // create the keys in your own messages.properties file to customize the message
@@ -78,9 +84,6 @@ public interface NinjaConstant {
      */
     final String LANG_COOKIE_SUFFIX = "_LANG";
 
-    /** Used to specify static asset directory **/
-    final String APPLICATION_STATIC_ASSET_BASEDIR = "application.static.asset.basedir";
-
     /** Used to specify static base package for configuration modules and routes **/
     final String APPLICATION_MODULES_BASE_PACKAGE = "application.modules.package";
 
@@ -98,6 +101,10 @@ public interface NinjaConstant {
      */
     final String applicationCookieDomain = "application.cookie.domain";
 
+    /**
+     * Encryption of session cookies. Specify a boolean value. False by default.
+     */
+    final String applicationCookieEncrypted = "application.cookie.encryption";
 
     /** Used to verify client side cookie for instance. */
     final String applicationName = "application.name";
@@ -136,6 +143,12 @@ public interface NinjaConstant {
      * (XSS).
      */
     final String sessionHttpOnly = "application.session.http_only";
+    
+    // /////////////////////////////////////////////////
+    // Diagnostic mode - extension to dev mode where
+    // ninja.Ninja is forced with ninja.diagnostics.NinjaDiagnostic
+    String DIAGNOSTICS_KEY_NAME = "application.diagnostics";
+    
     
     ///////////////////////////////////////////////////////////////////////////
     // Cache configuration
@@ -210,9 +223,33 @@ public interface NinjaConstant {
     /** Password for db connection */
     String DB_CONNECTION_PASSWORD = "db.connection.password";
     
-    
     String NINJA_JSONP_CALLBACK_PARAMETER = "ninja.jsonp.callbackParameter";
     
+    String AUTHENTICITY_TOKEN = "authenticityToken";
     
+    ///////////////////////////////////////////////////////////////////////////
+    // File uploads constants used by FileProvider implementations.
+    ///////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * The maximum allowed size of a single uploaded file.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#fileSizeMax
+     */
+    final String UPLOADS_MAX_FILE_SIZE = "uploads.max_file_size";
+
+    /**
+     * The maximum allowed size of a complete request, i.e. size of all uploaded
+     * files.
+     *
+     * @see org.apache.commons.fileupload.FileUploadBase#sizeMax
+     */
+    final String UPLOADS_MAX_TOTAL_SIZE = "uploads.max_total_size";
+
+    /**
+     * Directory where uploaded files are saved. Defaults to system's temporary
+     * directory, i.e. "java.io.tmpdir" system property is consulted
+     */
+    final String UPLOADS_TEMP_FOLDER = "uploads.temp_folder";
 
 }

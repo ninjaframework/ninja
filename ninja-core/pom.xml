@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2012-2014 the original author or authors.
+    Copyright (C) 2012-2015 the original author or authors.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>4.0.3-SNAPSHOT</version>
+        <version>5.2.2-SNAPSHOT</version>
     </parent>
 
     <organization>
@@ -46,6 +46,9 @@
                 <includes>
                     <include>**/*</include>
                 </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
@@ -82,13 +85,6 @@
         <dependency>
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime</artifactId>
-            <version>3.2.1.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.7.2</version>
         </dependency>
     
         <!-- Thread-safe alternative for Java JDK time stuff -->
@@ -115,7 +111,7 @@
         </dependency>
         
         <!-- Afterburner lib optimizes Jackson and improves
-             performance -->
+        performance -->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-afterburner</artifactId>
@@ -205,10 +201,17 @@
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
         
+        <!-- jackson-dataformat-xml prefers Woodstox as Stax impl -->
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+        </dependency>
+        
         <!-- ehcache implementation -->
+        <!-- IMPORTANT: only pull in core (~1MB) vs. entire distro which includes a server (~7MB) -->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
+            <artifactId>ehcache-core</artifactId>
         </dependency>
         
         <!-- memcached client -->
@@ -219,7 +222,7 @@
 
         <!-- Migration framework -->
         <dependency>
-            <groupId>com.googlecode.flyway</groupId>
+            <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
 
@@ -255,7 +258,23 @@
             <artifactId>greenmail</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+        </dependency>  
+        
+         <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+        </dependency> 
+         
     </dependencies>
+    
 
     <distributionManagement>
         <site>

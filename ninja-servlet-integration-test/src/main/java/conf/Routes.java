@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 
 import controllers.ApplicationController;
 import controllers.AsyncController;
+import controllers.AuthenticityController;
 import controllers.FilterController;
 import controllers.I18nController;
 import controllers.InjectionExampleController;
@@ -33,6 +34,7 @@ import controllers.PersonController;
 import controllers.PrettyTimeController;
 import controllers.UdpPingController;
 import controllers.UploadController;
+import controllers.UploadControllerAuto;
 
 public class Routes implements ApplicationRoutes {
 
@@ -151,8 +153,18 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.GET().route("/upload").with(UploadController.class, "upload");
         router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
-
-
+        router.POST().route("/uploadFinishAuto").with(UploadControllerAuto.class, "uploadFinishAuto");
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Authenticity
+        // /////////////////////////////////////////////////////////////////////
+        router.GET().route("/token").with(AuthenticityController.class, "token");
+        router.GET().route("/form").with(AuthenticityController.class, "form");
+        router.GET().route("/authenticate").with(AuthenticityController.class, "authenticate");
+        router.GET().route("/notauthenticate").with(AuthenticityController.class, "notauthenticate");
+        router.GET().route("/unauthorized").with(AuthenticityController.class, "unauthorized");
+        router.POST().route("/authorized").with(AuthenticityController.class, "authorized");
+        
         //this is a route that should only be accessible when NOT in production
         // this is tested in RoutesTest
         if (!ninjaProperties.isProd()) {

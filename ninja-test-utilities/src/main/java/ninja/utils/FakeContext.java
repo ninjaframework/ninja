@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import ninja.Result;
 import ninja.Route;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
 import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
 
@@ -58,16 +59,17 @@ public class FakeContext implements Context {
     private String requestUri;
     private String hostname;
     private String remoteAddr;
+    private String scheme;
     private FlashScope flashScope;
     private Session session;
-    private List<Cookie> addedCookies = new ArrayList<Cookie>();
-    private Map<String, String> cookieValues = new HashMap<String, String>();
-    private ListMultimap<String, String> params = ArrayListMultimap.create();
-    private Map<String, String> pathParams = new HashMap<String, String>();
-    private ListMultimap<String, String> headers = ArrayListMultimap.create();
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private final List<Cookie> addedCookies = new ArrayList<>();
+    private final Map<String, String> cookieValues = new HashMap<>();
+    private final ListMultimap<String, String> params = ArrayListMultimap.create();
+    private final Map<String, String> pathParams = new HashMap<>();
+    private final ListMultimap<String, String> headers = ArrayListMultimap.create();
+    private final Map<String, Object> attributes = new HashMap<>();
     private Object body;
-    private Validation validation = new ValidationImpl();
+    private final Validation validation = new ValidationImpl();
 
     private String acceptContentType;
 
@@ -106,6 +108,7 @@ public class FakeContext implements Context {
      * @param requestUri
      * @return
      */
+    @Override
     @Deprecated
     public String getRequestUri() {
         return requestUri;
@@ -115,6 +118,13 @@ public class FakeContext implements Context {
     public String getHostname() {
         return hostname;
     }
+
+    @Override
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) { this.scheme = scheme;}
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
@@ -437,6 +447,11 @@ public class FakeContext implements Context {
         attributes.put(name, value);
     }
 
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+    
 	@Override
 	public String getContextPath() {
 		return contextPath;
@@ -466,5 +481,32 @@ public class FakeContext implements Context {
         return contentType.startsWith(ContentTypes.APPLICATION_XML);
     }
 
-    
+    @Override
+    public void addCookie(Cookie cookie) {
+        throw new UnsupportedOperationException("Not supported in fake context");        
+    }
+
+    @Override
+    public void unsetCookie(Cookie cookie) {
+        throw new UnsupportedOperationException("Not supported in fake context");        
+    }
+
+    @Override
+    public FileItem getParameterAsFileItem(String name) {
+        throw new UnsupportedOperationException("Not supported in fake context");        
+    }
+
+    @Override
+    public List<FileItem> getParameterAsFileItems(String name) {
+        throw new UnsupportedOperationException("Not supported in fake context");        
+    }
+
+    @Override
+    public Map<String, List<FileItem>> getParameterFileItems() {
+        throw new UnsupportedOperationException("Not supported in fake context");        
+    }
+
+    @Override
+    public void cleanup() {
+    }
 }

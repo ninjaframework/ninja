@@ -31,8 +31,8 @@ up with the following key features:
  * Super fast development cycles.
  * Simple and fast to test (Mocked tests / Integration tests).
  * Excellent build and CI support.
- * Simple Json consumption and rendering for clean restful Apis.
- * Html rendering / form submission validation and parsing.
+ * Simple JSON consumption and rendering for clean RESTful APIs.
+ * HTML rendering / Form submission validation and parsing.
  * Built-in support for authentication of users.
  * Not much bytecode magic. Clean codebase - easy to extend.
 

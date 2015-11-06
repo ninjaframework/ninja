@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+import org.junit.Assert;
 
 public class AssetsControllerTest extends NinjaTest {
 
@@ -72,14 +73,13 @@ public class AssetsControllerTest extends NinjaTest {
 
         // /redirect will send a location: redirect in the headers
         HttpResponse httpResponse = ninjaTestBrowser.makeRequestAndGetResponse(
-                getServerAddress() + "assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css", headers);
+                getServerAddress() + "assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css", headers);
 
         assertEquals(200, httpResponse.getStatusLine().getStatusCode());
     }
     
     @Test
     public void testThatStaticAssetsDoNotSetNinjaCookies() {
-
         // Some empty headers for now...
         Map<String, String> headers = Maps.newHashMap();
         headers.put("Cookie", "NINJA_FLASH=\"success=This+is+a+flashed+success+-+with+placeholder%3A+PLACEHOLDER\";Path=/");
@@ -92,7 +92,28 @@ public class AssetsControllerTest extends NinjaTest {
         // static assets should not set any session information        
         // ... and static assets should not set any flash information
         assertEquals(null, httpResponse.getFirstHeader("Set-Cookie"));
+    }
 
+    @Test
+    public void testSecurityRelativePathIntoOtherDirectoryDoesNotWork() throws Exception {
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+        // /redirect will send a location: redirect in the headers
+        String response = ninjaTestBrowser.makeRequest(
+                getServerAddress() + "assets/js/prettify.js/../../../conf/application.conf",
+                headers);
+        Assert.assertFalse(response.contains("application.secret"));
+    }
+
+    @Test
+    public void testSecurityRelativePathIntoOtherDirectoryDoesNotWorkWithEncodedSlashes() throws Exception {
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+        // /redirect will send a location: redirect in the headers
+        String response = ninjaTestBrowser.makeRequest(
+                getServerAddress() + "assets/js/prettify.js%2F..%2F..%2F..%2Fconf%2Fapplication.conf",
+                headers);
+        Assert.assertFalse(response.contains("application.secret"));
     }
 
 }

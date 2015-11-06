@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class PersonControllerTest extends NinjaTest {
         headers.put("Accept", "application/xml");
         response = ninjaTestBrowser
             .makeRequest(getServerAddress() + "api/person", headers);
-        assertThat(response, equalTo("<Person xmlns=\"\"><name>zeeess name - and some utf8 =&gt; öäü</name></Person>"));
+        assertThat(response, equalTo("<Person><name>zeeess name - and some utf8 => öäü</name></Person>"));
         
         //not supported => expecting error result:
         headers.put("Accept", "text/plain");

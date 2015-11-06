@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,14 @@ public class TemplateEngineJson implements TemplateEngine {
         ResponseStreams responseStreams = context.finalizeHeaders(result);
         
         try (OutputStream outputStream  = responseStreams.getOutputStream()) {
-            
-            objectMapper.writeValue(outputStream, result.getRenderable());
+
+            Class<?> jsonView = result.getJsonView();
+            if (jsonView != null) {
+                objectMapper.writerWithView(jsonView).writeValue(outputStream, result.getRenderable());
+            } else {
+                objectMapper.writeValue(outputStream, result.getRenderable());
+            }
+
             
         } catch (IOException e) {
 
@@ -63,7 +69,7 @@ public class TemplateEngineJson implements TemplateEngine {
 
     @Override
     public String getContentType() {
-        return Result.APPLICATON_JSON;
+        return Result.APPLICATION_JSON;
     }
 
     @Override

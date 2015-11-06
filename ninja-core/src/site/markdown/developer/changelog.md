@@ -1,3 +1,157 @@
+Version X.X.X
+=============
+
+ * 2015-10-18 Added Session.setExpiryTime() to control session expiry (watsonmw)
+ * 2015-10-18 OptionalBinder for ObjectMapper and XmlMapper, so that users can easily override
+              the default types for both of them. (amit2103/jjlauer)
+ * 2015-10-09 Refactoring of ninja-servlet to extract non-servlet functionality
+              into ninja-core to enable reuse in future non-servlet environments. (jjlauer)
+    * ninja-servlet `ninja/servlet/NinjaBootstrap.java` split into ninja-core `ninja/Bootstrap.java` and
+      ninja-servlet `ninja/servlet/NinjaServletBootstrap.java`
+    * ninja-servlet `ninja/servlet/ContextImpl.java` split into ninja-core `ninja/utils/AbstractContext.java`
+      and ninja-servlet `ninja/servlet/NinjaServletContext.java`
+ * 2015-10-09 Refactoring of ninja-standalone to extract non-Jetty functionality
+              into ninja-core to enable reuse in future non-Jetty standalone implementations. (jjlauer)
+    * Much of the functionality in ninja-standalone `ninja/standalone/NinjaJetty.java` extracted to
+      ninja-core `ninja/standalone/AbstractStandalone.java`
+ * 2015-10-09 Standalone configuration properties can now be set in conf/application.conf
+              Supports ninja.host, ninja.port, ninja.context, and ninja.idle.timeout
+              The order of precedence is systemProperty > configProperty > defaultValue (jjlauer)
+ * 2015-10-09 New 'ninja.standalone.class' system property to control which concrete
+              standalone implementation is used by NinjaTestServer (jjlauer)
+ * 2015-10-09 ninja-maven-plugin support for 'jvmArgs' property to allow for any
+              properties to be passed thru to spawned Ninja JVM. (jjlauer)
+ * 2015-10-09 ninja-maven-plugin support for 'mainClass' property to override which
+              class is run by spawned Ninja JVM.
+ * 2015-10-09 ninja-maven-plugin deprecated 'contextPath' property in favor of new
+              'context' key to match what NinjaJetty has always used. (jjlauer)
+ * 2015-10-09 NinjaJetty has more polished logging messages on startup (jjlauer)
+
+Version 5.2.1
+=============
+
+ * 2015-10-16 Context.getParameterFileItems() now returns Map<String, List<FileItem>> (jjlauer)
+
+Version 5.2.0
+=============
+
+ * 2015-08-17 Added gzip-enabled rollover appender examples to archetypes' logback.xml 
+              files & minor doc typo fixes (metacity)
+ * 2015-06-24 Injection of params and uploaded files from multipart requests (bazi, momiji)
+
+Version 5.1.7
+=============
+
+ * 2015-10-06 AuthenticityFilter uses Ninja interface not NinjaDefault class (jjlauer)
+ * 2015-10-06 AuthenticityFilter logs filtered requests as warnings (jjlauer)
+ * 2015-10-01 Fixed garbled snippets in diagnostics (mallowlabs)
+ * 2015-09-25 Upgrade FreeMarker from 2.3.22 to 2.3.23 (khmarbaise)
+ * 2015-09-28 Improved diagnostic mode w/ info about the context, request, and response (jjlauer)
+ * 2015-09-28 Fixed NPE issue with cookies not being set in underlying servlet request (jjlauer)
+ * 2015-09-28 NinjaDefault now logs exceptions in the debug level (jjlauer)
+
+Version 5.1.6
+=============
+
+ * 2015-09-17 Fixed bug in AssetsController that occurred in dev mode on some environments (ra).
+ * 2015-08-23 Added charset to error html files (mallowlabs)
+ * 2015-09-15 Fixed status code for forbidden results in diagnostic mode (jjlauer)
+ * 2015-09-15 Added documentation for session configuration properties (jjlauer)
+
+Version 5.1.5
+=============
+
+ * 2015-08-09 Website documentation improvements (metacity)
+ * 2015-07-28 Jackson will now use Woodstox as the StAX implementation (metacity)
+ * 2015-07-22 Added support for Jackson's JSON Views (metacity)
+ * 2015-07-21 Added properties to override system views location (momiji).
+
+Version 5.1.4
+=============
+
+ * 2015-06-24 Flyway upgrade from 2.3.1 to 3.2.1 & fix documentation (danielsawan)              
+ * 2015-06-30 Fix for asset controller incompatibility with windows file system (BjoernAkAManf).
+ * 2015-06-30 Improved tests in asset controller for serving webjars (ra).
+
+Version 5.1.3
+=============
+
+ * 2015-06-19 Fix for potential security issue. Under certain circumstances assets
+              controller did stream content from arbitrary directories (Christian B. / ra).
+
+Version 5.1.2
+=============
+
+ * 2015-05-22 Removed outdated modules from documentation (svenkubiak)
+ * 2015-05-20 #354 Fixed bug with reverse routing with multiple regex parameters (arystan)
+ * 2015-05-16 Update to Guice 4.0 final (ra)
+ * 2015-05-10 Replaced net.sf.ehcache.internal with net.sf.ehcache to fix #352 (ra)
+ * 2015-05-08 Added NinjaException.getHttpStatus() (icoloma)
+ * 2015-05-07 (PR #350) Added ninja.idle.timeout command line parameter for standalone mode (raptaml)
+
+Version 5.1.1
+=============
+
+ * 2015-03-31 Improved SuperDevMode (jjlauer)
+ * 2015-03-29 Tiny fix for a test that did not work with summertime (ra)
+ * 2015-03-27 Upgrade of external libraries to latest versions (ra)
+ * 2015-03-26 Tiny documentation fixes (ra)
+ * 2015-03-26 Upgrade archetypes / replace assembly with shade #341 (0xbaadf00d)
+
+Version 5.1.0
+=============
+
+ * 2015-03-25 Bump to Jetty 9.2.10.v20150310 (ra) 
+ * 2015-03-19 (PR #329) ninja-core supports new "Diagnostics" extension for DEV mode. See http://www.ninjaframework.org/documentation/configuration_and_modes.html for more info (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone will System.exit on any startup exception (previously it only exited in some cases, kept running in failed state for others) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone support for binding to specific host/address (e.g. -Dninja.host=localhost) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone support for advanced/power-user jetty configuration(s) (e.g. -Dninja.jetty.configuration=jetty.xml,jetty-ssl.xml) (jjlauer)
+ * 2015-03-16 (PR #333) ninja-standalone optimized to specifically handle Guice injector exception (most common startup error) - slightly cuts down on verbosity of failure logging (jjlauer)
+ * 2015-03-15 Added support for collections and arrays for body parser engine (gabrielhora)
+ * 2015-03-14 #320 Fixed bug in JSR 303 validation messages (Thibault Meyer)
+ * 2015-03-07 Using context.getContextPath() as prefix in cookie path (jfendler/ra)
+ * 2015-03-06 #327 Fixed bug that lead to failed authenticity check (svenkubiak)
+ * 2015-03-04 Added session cookie encryption (bazi)
+ * 2015-03-01 Bump to freemaker 2.3.22 (ra)
+ * 2015-02-24 Organized imports on all projects, refactored deprecated calls (svenkubiak)
+
+Version 4.0.6
+=============
+
+ * 2015-02-27 Important security fix against leak in Jetty [CVE-2015-2080] (ra)
+ * 2015-02-23 Full page template buffering for better error pages (PR #311) (t3hc13h)
+ * 2015-02-19 AuthenticityToken support (SecureFilter, template enhancements) (svenkubiak)
+ * 2015-02-12 #301 Fixed system specific line separator for String comparison (raptaml)
+ * 2015-02-05 Added Support for JaxRoutes methods without own path (lukaseichler)
+ * 2015-02-03 minor refactoring in JaxyRoutes init (lukaseichler)
+ * 2015-02-03 Added method to add and unset a cookie from context (svenkubiak)
+ * 2015-01-03 Added access to the freemarker configuration and default suffix (jlannoy)
+
+Version 4.0.5
+=============
+
+ * 2015-02-02 Added new module: Ninja Authentication (svenkubiak)
+ * 2015-01-29 Closes potential resource leaks (svenkubiak)
+ * 2015-01-26 Changed generic exception in postoffice to specific ones (svenkubiak)
+ * 2015-01-20 Set correct versions in changelog.md (svenkubiak)
+ * 2015-01-20 Bumped versions in archetypes (svenkubiak)
+ * 2015-01-20 Styled system pages for 404/403 in archetypes (svenkubiak)
+ 
+Version 4.0.4
+=============
+
+ * 2015-01-03 Bump to doctester 1.1.6 (sparkoo)
+ 
+Version 4.0.3
+=============
+
+ * 2014-12-30 Bump to doctester 1.1.5 (ra)
+ * 2014-12-20 #266 Enhanced body parameter exception message (t3hc13h)
+ * 2014-12-20 #263 (part 2) utf8 chars breaking integration tests on US Windows
+ * 2014-12-14 #257 Add protocol to ninja.Context (chrsin)
+ * 2014-12-14 #269 Fix name of import (fzakaria)
+ * 2014-12-09 Removed default secret key from simple archetype (inkookim + ra)
+
 Version 4.0.2
 =============
 

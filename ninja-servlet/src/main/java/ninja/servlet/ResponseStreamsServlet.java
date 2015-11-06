@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class ResponseStreamsServlet implements ResponseStreams {
      *
      * @return The output stream
      */
+    @Override
     public OutputStream getOutputStream() throws IOException {
         return httpServletResponse.getOutputStream();
     }
@@ -57,6 +58,7 @@ public class ResponseStreamsServlet implements ResponseStreams {
      *
      * @return The writer
      */
+    @Override
     public Writer getWriter() throws IOException {
         return httpServletResponse.getWriter();
     }

@@ -107,4 +107,4 @@ The entry point for your application is the module
 <code>conf/Module.java</code>.
 
 Guice can do a lot more for you. Read more about the abilities here: 
-https://code.google.com/p/google-guice/ .
+https://github.com/google/guice .

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,8 @@
 
 package ninja.scheduler;
 
-import com.google.inject.*;
-import com.google.inject.name.Names;
-import ninja.lifecycle.FailedStartException;
-import ninja.lifecycle.LifecycleService;
-import ninja.lifecycle.LifecycleSupport;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +25,21 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import ninja.lifecycle.FailedStartException;
+import ninja.lifecycle.LifecycleService;
+import ninja.lifecycle.LifecycleSupport;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Module;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 
 public class SchedulerSupportTest {
 

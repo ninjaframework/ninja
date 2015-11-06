@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import ninja.params.PathParam;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.joda.time.LocalDateTime;
 
 @Singleton
 public class PrettyTimeController {
@@ -42,10 +43,10 @@ public class PrettyTimeController {
         // just in case we set the language => we remove it...
         lang.clearLanguage(result);
 
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, -1);
-        Date date = c.getTime();
-        result.render("date", date);
+        // 25 works for summertime, too.
+        LocalDateTime localDateTime = LocalDateTime.now().minusHours(25);
+
+        result.render("date", new Date(localDateTime.toDateTime().getMillis()));
 
         return result;
     }

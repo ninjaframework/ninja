@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,16 @@ public class NinjaTest {
 
     public Injector getInjector(){
         return ninjaTestServer.getInjector();
+    }
+
+    public String to(String path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Path was null");
+        }
+        if (!path.startsWith("/")) {
+            throw new IllegalArgumentException("Path must start with '/'");
+        }
+        return ninjaTestServer.getBaseUrl() + path;
     }
 
     /**

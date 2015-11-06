@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Validates that the annoted element is conform to its JSR303-Annotations
+ * Validates that the annotated element is conform to its JSR303-Annotations
  *
  * @author psommer
- *
  */
 @WithValidator(Validators.JSRValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface JSR303Validation {
+
+    public static final String KEY = "validation.is.JSR303.violation";
+    public static final String MESSAGE = "{0} cannot be validated with JSR303 annotations";
+
     /**
      * The key for the violation message
      *
@@ -44,7 +47,4 @@ public @interface JSR303Validation {
      * @return The default message
      */
     String message() default MESSAGE;
-
-    public static final String KEY = "validation.is.JSR303.violation";
-    public static final String MESSAGE = "{0} cannot be validated with JSR303 annotations";
 }

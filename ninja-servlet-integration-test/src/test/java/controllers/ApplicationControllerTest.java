@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -288,7 +288,7 @@ public class ApplicationControllerTest extends NinjaTest {
                 ninjaTestBrowser.makeRequest(getServerAddress() + "/test_reverse_routing");
     
         assertTrue(response.contains("<li>/user/100000/me@me.com/userDashboard</li>"));
-        assertTrue(response.contains("<li>/assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css</li>"));
+        assertTrue(response.contains("<li>/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css</li>"));
         assertTrue(response.contains("<li>/assets/css/custom.css</li>"));
     }
     

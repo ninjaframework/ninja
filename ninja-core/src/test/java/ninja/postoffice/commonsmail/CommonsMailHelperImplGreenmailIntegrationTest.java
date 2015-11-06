@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import javax.mail.internet.InternetAddress;
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.common.MailImplTestHelper;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

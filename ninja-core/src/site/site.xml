@@ -21,8 +21,8 @@
                     Rock solid, fast and super productive."/>
             <link rel="icon" type="image/png" href="favicon.png" />
 
-            <link href='http://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'/>
-            <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+            <link href='//fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'/>
+            <link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
             <link href='//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'/>
 
             <script type="text/javascript">
@@ -78,15 +78,15 @@
 
             <item name="Configuration and modes" href="./documentation/configuration_and_modes.html"/>
 
-            <item name="Html templating" collapse="true" href="./documentation/html_templating/getting_started.html">
+            <item name="HTML templating" collapse="true" href="./documentation/html_templating/getting_started.html">
                 <item name="Rendering objects" href="./documentation/html_templating/rendering_objects.html"/>
                 <item name="Form parsing" href="./documentation/html_templating/form_parsing.html"/>
                 <item name="Security, i18n and more" href="./documentation/html_templating/advanced_topics.html"/>
             </item>
 
-            <item name="Working with Json / JsonP" href="./documentation/working_with_json_jsonp.html"/>
+            <item name="Working with JSON / JSONP" href="./documentation/working_with_json_jsonp.html"/>
 
-            <item name="Working with Xml" href="./documentation/working_with_xml.html"/>
+            <item name="Working with XML" href="./documentation/working_with_xml.html"/>
 
         </menu>
         <menu name="Advanced topics">
@@ -133,12 +133,13 @@
 
             <item name="Deployment" collapse="true" href="./documentation/deployment/getting_started.html">
                 <item name="Ninja standalone" href="./documentation/deployment/ninja_standalone.html"/>
+                <item name="Multi module maven project" href="./documentation/deployment/multi_module_maven_project.html"/>
                 <item name="War based deployment" href="./documentation/deployment/war_based_deployment.html"/>
                 <item name="Cloud hosting options" href="./documentation/deployment/cloud_hosting_options.html"/>
             </item>
 
             <item name="Upgrade guide" href="./documentation/upgrade_guide.html"/>
-            <item name="Api" href="./apidocs/index.html"/>
+            <item name="API docs (JavaDoc)" href="./apidocs/index.html"/>
 
         </menu>
 

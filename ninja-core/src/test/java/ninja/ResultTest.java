@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,24 @@
 package ninja;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.AbstractMap;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import ninja.utils.ResponseStreams;
 
-import org.apache.commons.io.ByteOrderMark;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
-
-import ch.qos.logback.core.db.dialect.MySQLDialect;
-import java.io.StringWriter;
-import java.io.Writer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultTest {
@@ -150,6 +141,16 @@ public class ResultTest {
     }
 
     @Test
+    public void testSetAndGetJsonView() {
+
+        Result result = new Result(Result.SC_200_OK);
+
+        result.jsonView(TestObject.class);
+
+        assertEquals(TestObject.class, result.getJsonView());
+    }
+
+    @Test
     public void testRedirect() {
 
         Result result = new Result(Result.SC_200_OK);
@@ -189,7 +190,7 @@ public class ResultTest {
         Result result = new Result(Result.SC_200_OK);
         result.json();
 
-        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(Result.APPLICATION_JSON, result.getContentType());
     }
 
     @Test
@@ -372,7 +373,7 @@ public class ResultTest {
         assertEquals(writer.toString(), stringToRender);
         
         // also make sure the content type is set correctly.
-        assertEquals(Result.APPLICATON_JSON, result.getContentType());
+        assertEquals(Result.APPLICATION_JSON, result.getContentType());
         
         
         

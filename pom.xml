@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2012-2014 the original author or authors.
+    Copyright (C) 2012-2015 the original author or authors.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>5.2.2-SNAPSHOT</version>
     <url>http://www.ninjaframework.org</url>
 
     <!-- Deploy to central maven using the oss-parent of sonatype -->
@@ -59,11 +59,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.2.3.v20140905</jetty.version>
-        <hibernate.version>4.3.5.Final</hibernate.version>
-        <jackson.version>2.4.3</jackson.version>
-        <guice.version>4.0-beta5</guice.version>
-        <metrics.version>3.1.0</metrics.version>
+        <jetty.version>9.2.10.v20150310</jetty.version>
+        <hibernate.version>4.3.8.Final</hibernate.version>
+        <jackson.version>2.5.1</jackson.version>
+        <guice.version>4.0</guice.version>
+        <metrics.version>3.1.1</metrics.version>
+        <powermock.version>1.5.6</powermock.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
@@ -89,7 +90,7 @@
                         <!-- bump submodule versions automatically -->
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <!-- install next final version in local repo, so that
-                             tests on archetypes work -->
+                        tests on archetypes work -->
                         <preparationGoals>clean install</preparationGoals>
                     </configuration>
                 </plugin>
@@ -174,8 +175,9 @@
                 </plugin>
 
                 <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.4</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.2</version>
                 </plugin>
             
                 <plugin>
@@ -221,8 +223,8 @@
         <url>https://github.com/ninjaframework/ninja</url>
         <connection>scm:git://github.com/ninjaframework/ninja.git</connection>
         <developerConnection>scm:git:git@github.com:ninjaframework/ninja.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <issueManagement>
         <system>GitHub</system>
@@ -345,7 +347,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.3</version>
+                <version>2.7</version>
             </dependency>
 
             <!-- Our favorite dependency injection framework: -->
@@ -366,7 +368,13 @@
                 <artifactId>guice-assistedinject</artifactId>
                 <version>${guice.version}</version>
             </dependency>
-
+            
+             <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-multibindings</artifactId>
+                <version>${guice.version}</version>
+            </dependency> 
+            
             <!-- We use Jackson for rendering jsons: -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -381,8 +389,15 @@
                 <version>${jackson.version}</version>
             </dependency>
             
+            <!-- Woodstox as a proper Stax API implementation -->
+            <dependency>
+                <groupId>com.fasterxml.woodstox</groupId>
+                <artifactId>woodstox-core</artifactId>
+                <version>5.0.1</version>
+            </dependency>  
+            
             <!-- Afterburner lib optimizes Jackson and improves
-                 performance -->
+            performance -->
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-afterburner</artifactId>
@@ -394,7 +409,7 @@
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker-gae</artifactId>
-                <version>2.3.21</version>
+                <version>2.3.23</version>
             </dependency>
 
             <!-- guava is just cool -->
@@ -415,7 +430,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.9</version>
+                <version>1.10</version>
             </dependency>
 
             <!-- Enrcyption library providing support for blowfish -->
@@ -429,21 +444,21 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.2</version>
+                <version>1.1.3</version>
             </dependency>
 		
             <!-- Replace commons-logging with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.7</version>
+                <version>1.7.12</version>
             </dependency>
         
             <!-- Replace log4j with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.7</version>
+                <version>1.7.12</version>
             </dependency>
 
             <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
@@ -501,24 +516,25 @@
             </dependency>
         
             <!-- ehcache implementation -->
+            <!-- IMPORTANT: only pull in core (~1MB) vs. entire distro which includes a server (~7MB) -->
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>2.8.5</version>
+                <artifactId>ehcache-core</artifactId>
+                <version>2.6.11</version>
             </dependency>
         
             <!-- memcached client -->
             <dependency>
                 <groupId>net.spy</groupId>
                 <artifactId>spymemcached</artifactId>
-                <version>2.11.4</version>
+                <version>2.11.6</version>
             </dependency>
 	
             <!-- Migration framework -->
             <dependency>
-                <groupId>com.googlecode.flyway</groupId>
+                <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
-                <version>2.3.1</version>
+                <version>3.2.1</version>
             </dependency>
 
             <!-- JPA dependencies -->
@@ -569,9 +585,15 @@
             </dependency>
             
             <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-xml</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            
+            <dependency>
                 <groupId>org.webjars</groupId>
                 <artifactId>bootstrap</artifactId>
-                <version>3.0.0</version>
+                <version>3.3.4</version>
             </dependency>
             
             <dependency>
@@ -584,7 +606,7 @@
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>1.4.182</version>
+                <version>1.4.186</version>
             </dependency>
             
             
@@ -592,7 +614,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.3.4</version>
+                <version>4.4</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
@@ -604,29 +626,29 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
-                <version>4.3.4</version>
+                <version>4.4</version>
             </dependency>
         
             <!-- Testing -->
             <!-- devbliss doctester should be removed at some point 
-             - superseeded by docterster.org -->
+            - superseeded by docterster.org -->
             <dependency>
                 <groupId>com.devbliss.doctest</groupId>
                 <artifactId>doctest</artifactId>
-                <version>0.7.0</version>
+                <version>0.9.1</version>
             </dependency>
 
             <dependency>
                 <groupId>org.doctester</groupId>
                 <artifactId>doctester-core</artifactId>
-                <version>1.1.3</version>
+                <version>1.1.6</version>
             </dependency>
 
             <!-- A very nice abstraction for making selenum tests: -->
             <dependency>
                 <groupId>org.fluentlenium</groupId>
                 <artifactId>fluentlenium-core</artifactId>
-                <version>0.10.2</version>
+                <version>0.10.3</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
@@ -648,14 +670,54 @@
                 <version>4.11</version>
                 <scope>test</scope>
             </dependency>
+            
+            <dependency>
+                <groupId>com.google.code.tempus-fugit</groupId>
+                <artifactId>tempus-fugit</artifactId>
+                <version>1.1</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>com.icegreen</groupId>
                 <artifactId>greenmail</artifactId>
-                <version>1.3.1b</version>
+                <version>1.4.0</version>
                 <scope>test</scope>
             </dependency>
-
+            
+            <dependency>
+                <groupId>org.ocpsoft.prettytime</groupId>
+                <artifactId>prettytime</artifactId>
+                <version>3.2.7.Final</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>zt-exec</artifactId>
+                <version>1.7</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>3.4</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+   
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>  
+            
         </dependencies>
         
         

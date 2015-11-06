@@ -30,11 +30,11 @@ db.connection.password=
 Setting up Flyway
 =================
 
-Flyway itself manages database migration scripts in a directory called db/migrations. You should use
+Flyway itself manages database migration scripts in a directory called <code>src/main/java/db/migration</code>. You should use
 the following naming convention: <code>V1\_\_.sql</code> is your first script, <code>V2\_\_.sql</code>
 is your second script and so on.
 
-V1__.sql may look like:
+<code>V1__.sql</code> may look like:
 
 <pre class="prettyprint">
 -- Just a simple table
@@ -53,7 +53,7 @@ create sequence hibernate_sequence;
 A migration script is just plain old SQL. It is really important to stress that Flyway's migration
 scripts are NOT database vendor independent. 
 
-Therefore it strongly discouraged to use different databases in test, dev and prod.
+Therefore it is strongly discouraged to use different databases in test, dev and prod.
 
 
 Collaboratively working on migrations
@@ -70,7 +70,7 @@ that your production upgrade will also work fine.
 Migrations in test, dev and prod
 ================================
 
-In test mode Ninja automatically drop the schema and runs all migrations from scratch. In dev and production 
+In test mode Ninja automatically drops the schema and runs all migrations from scratch. In dev and production 
 migration scripts are executed automatically when they are detected. Usually this happens when the 
 first deployed Ninja instance connects with your database. Flyway's migrations are "clustersafe". Therefore
 nothing will go wrong when you are deploying 20 instances of your application that try to run the evolutions at

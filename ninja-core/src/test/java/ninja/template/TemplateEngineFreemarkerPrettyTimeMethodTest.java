@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,6 +33,8 @@ import org.junit.Test;
 import freemarker.template.SimpleDate;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 /**
  *
@@ -50,7 +52,7 @@ public class TemplateEngineFreemarkerPrettyTimeMethodTest {
             put(Locale.FRENCH, "il y a 1 jour");
             put(Locale.ITALIAN, "1 giorno fa");
             put(Locale.CHINESE, "1 天 前");
-            put(Locale.JAPANESE, "1 日 前");
+            put(Locale.JAPANESE, "1日前");
             put(Locale.KOREAN, "1일 전");
         }
     };
@@ -58,32 +60,31 @@ public class TemplateEngineFreemarkerPrettyTimeMethodTest {
     @Test
     public void testThatJavaUtilDateWorks() throws Exception {
 
-        test(new SimpleDate(new java.util.Date(getTime()), SimpleDate.DATE));
+        test(new SimpleDate(new java.util.Date(getYesterdaysMillis()), SimpleDate.DATE));
     }
 
     @Test
     public void testThatJavaSqlDateWorks() throws Exception {
 
-        test(new SimpleDate(new Date(getTime())));
+        test(new SimpleDate(new Date(getYesterdaysMillis())));
     }
 
     @Test
     public void testThatJavaSqlTimeWorks() throws Exception {
 
-        test(new SimpleDate(new Time(getTime())));
+        test(new SimpleDate(new Time(getYesterdaysMillis())));
     }
 
     @Test
     public void testThatJavaSqlTimestampWorks() throws Exception {
 
-        test(new SimpleDate(new Timestamp(getTime())));
+        test(new SimpleDate(new Timestamp(getYesterdaysMillis())));
     }
 
-    private long getTime() {
-        // return yesterday
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, -1);
-        return c.getTimeInMillis();
+    private long getYesterdaysMillis() {
+        // return yesterday => "25" works even for summertime
+        LocalDateTime localDateTime = LocalDateTime.now().minusHours(25);
+        return localDateTime.toDateTime().getMillis();
     }
 
     public void test(SimpleDate simpleDate) throws Exception {

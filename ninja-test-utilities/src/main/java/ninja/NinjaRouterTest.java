@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package ninja;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import ninja.servlet.NinjaBootstrap;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
@@ -41,7 +40,7 @@ public class NinjaRouterTest {
     /** The router - initiated from a real server. Routes are verified with this router */
     public Router router;
     
-    NinjaBootstrap ninjaBootup;
+    Bootstrap ninjaBootup;
     
     /**
      * Start the server and load the routes.
@@ -53,13 +52,13 @@ public class NinjaRouterTest {
             NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
                     NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
             
-            ninjaBootup = new NinjaBootstrap(
+            ninjaBootup = new Bootstrap(
                     ninjaProperties);
         } else {
             // in this case servletContext can be null
             NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
             
-            ninjaBootup = new NinjaBootstrap(ninjaProperties);
+            ninjaBootup = new Bootstrap(ninjaProperties);
         }
 
         ninjaBootup.boot();

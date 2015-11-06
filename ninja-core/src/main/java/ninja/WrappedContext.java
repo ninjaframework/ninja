@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.util.Map;
 
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
@@ -50,6 +51,11 @@ public class WrappedContext implements Context {
     @Override
     public String getHostname() {
         return wrapped.getHostname();
+    }
+
+    @Override
+    public String getScheme() {
+        return wrapped.getScheme();
     }
 
     @Override
@@ -100,6 +106,21 @@ public class WrappedContext implements Context {
     @Override
     public Integer getParameterAsInteger(String key, Integer defaultValue) {
         return wrapped.getParameterAsInteger(key, defaultValue);
+    }
+
+    @Override
+    public FileItem getParameterAsFileItem(String key) {
+        return wrapped.getParameterAsFileItem(key);
+    }
+
+    @Override
+    public List<FileItem> getParameterAsFileItems(String name) {
+        return wrapped.getParameterAsFileItems(name);
+    }
+
+    @Override
+    public Map<String, List<FileItem>> getParameterFileItems() {
+        return wrapped.getParameterFileItems();
     }
 
     @Override
@@ -286,6 +307,11 @@ public class WrappedContext implements Context {
     public void setAttribute(String name, Object value) {
         wrapped.setAttribute(name, value);
     }
+    
+    @Override
+    public Map<String,Object> getAttributes() {
+        return wrapped.getAttributes();
+    }
 
     @Override
     public String getContextPath() {
@@ -302,4 +328,18 @@ public class WrappedContext implements Context {
         return wrapped.isRequestXml();
     }
 
+    @Override
+    public void addCookie(Cookie cookie) {
+        wrapped.addCookie(cookie);
+    }
+
+    @Override
+    public void unsetCookie(Cookie cookie) {
+        wrapped.unsetCookie(cookie);
+    }
+
+    @Override
+    public void cleanup() {
+        wrapped.cleanup();
+    }
 }

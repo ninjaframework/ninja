@@ -31,7 +31,7 @@ fullServerName references the previously set values of the keys and will return 
 Inside your application there are two basic ways to access the properties. 
 
 First way is to use <code>NinjaProperties.get(...)</code>. You have to inject NinjaProperties first, then you
-can use all sorts of functions to retrieve properties.
+can use all sorts of methods to retrieve properties.
 
 <pre class="prettyprint">
 @Inject 
@@ -99,10 +99,60 @@ database.name=database_production   # will be used when no mode is set (or prod)
 
 The convention is to use a "%" and the name of the mode followed by ".".
 
+Disabling diagnostic mode
+-------------------------
+
+As of version 4.0.7, Ninja features a new diagnostic extension to dev mode where
+detailed diagnostic error pages are returned from <code>ninja.NinjaDefault</code>
+rather than the typical Result which pulls a template from <code>system/views</code>.
+
+For example, in versions prior to 4.0.7, if your controller class method threw
+an <code>Exception</code> then the default behavior of <code>ninja.NinjaDefault</code>
+was to catch it in the <code>onException</code> method and return a Result using
+the template <code>views/system/500internalServerError.ftl.html</code>. The
+default system views are basic and more intended for use in production than
+during development.
+
+As of version 4.0.7, the default behavior of all the methods in
+<code>ninja.NinjaDefault</code> are to first check if dev mode is on and if 
+<code>NinjaProperties.areDiagnosticsEnabled()</code> is true.  If both are true
+then a <code>Result</code> is returned with the renderable set to a
+<code>DiagnosticError</code> instance.  Since <code>DiagnosticError</code>
+implements <code>Renderable</code> -- it knows how to render itself to the output
+stream and it will bypass the <code>TemplateEngine</code>.
+
+Diagnostic mode is disabled automatically in PROD/TEST modes, but it can also be
+disabled in DEV mode. Simply add the following to your <code>application.conf</code>:
+
+    application.diagnostics=false
+
+Retaining diagnostic mode if you provide conf.Ninja
+---------------------------------------------------
+
+If you provide your own conf.Ninja and extend ninja.NinjaDefault, then you will
+likely lose diagnostic mode for the particular methods you override.  You can
+retain the feature, by calling the super method and conditionally returning
+its result, rather than your own.
+
+<pre class="prettyprint">
+public class Ninja extends NinjaDefault {
+
+    @Override
+    public Result getInternalServerErrorResult(Context context, Exception exception) {
+        if (isDiagnosticsEnabled()) {
+            return super.getInternalServerErrorResult(context, exception);
+        }
+
+        // your impl only active in test/prod or dev (with diagnostic disabled)
+    }
+
+}
+</pre>
+
 Configuring application's base package
 ------------------------------------
 
-If you'd like to keep all java code in specific package you can define
+If you'd like to keep all Java code in specific package you can define
 <pre class="prettyprint">
 application.modules.package=com.someorganinization.somepackage
 </pre>
@@ -132,7 +182,7 @@ but values in conf/production.conf will overwrite values in conf/application.con
 That way you can manage a production configuration separately from
 your project. You may want to do this for instance when your server secret should only
 be available to a certain set of people and not the world. Or if your cloud hoster uses
-a completely different configuration from prod,test or dev.
+a completely different configuration from prod, test or dev.
 
 Ninja tries to load the file specified in <code>ninja.external.configuration</code> 
 from several locations:
@@ -140,7 +190,7 @@ from several locations:
 It tries to load in the following order:
 
 * From a URL.
-* From a absolute file path.
+* From an absolute file path.
 * From a relative file path.
 * From the user's home dir.
 * From the classpath.
@@ -148,7 +198,8 @@ It tries to load in the following order:
 Ninja uses the excellent Apache Configurations library to do the loading. Please refer to
 [their manual](http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
 
-=== Hot-reloading external configuration ===
+Hot-reloading external configuration
+------------------------------------
 
 By default Ninja does not reload your external configuration. However for some installations it may be very
 useful to hot-reload this config instead of restarting your application.

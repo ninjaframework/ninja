@@ -53,7 +53,7 @@ registrationPendingSuccess=Success confirming email.
 
 
 Internally we use MessageFormat.format(text, values) to format the messages. Therefore 
-all informations from http://docs.oracle.com/javase/6/docs/api/java/text/MessageFormat.html do apply.
+all the information from http://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html does apply.
 
 <div class="alert alert-info">
 MessageFormat is really cool, but there is one thing to keep in mind:
@@ -62,7 +62,7 @@ you have to enter them two times like ''.
 </div>
 
 
-Getting a message inside your code
+Getting a message in your code
 ----------------------------------
 
 Ninja provides the message through the class Messages.
@@ -102,7 +102,7 @@ public class ApplicationController {
 Getting a message inside a template
 -----------------------------------
 
-Inside a freemarker template (ftl.html) you can get internationalized messages by using
+Inside a Freemarker template (ftl.html) you can get internationalized messages by using
 
 <pre class="prettyprint">
 &lt;html&gt;
@@ -134,15 +134,15 @@ file is missing that key.
 Fallback messages
 -----------------
 
-You can define a fallback message as message.properties.
+You can define fallback messages in the file message.properties.
 
 Ninja always looks up messages from more specific to less specific.
 
-Example: The user requests "en-US". The lookup then is
+Example: The user requests a message in "en-US". The lookup then is
  
- * return messages_en-US.propertes if file and key is found or
- * return messages_en.propertes if file and key is found or
- * return messages_propertes if file and key is found or
+ * return messages_en-US.properties if file and key is found or
+ * return messages_en.properties if file and key is found or
+ * return messages.properties if file and key is found or
  * return null
  
 If you specify

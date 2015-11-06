@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@
 
 package ninja.utils;
 
-import java.io.OutputStream;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.OutputStream;
 import java.io.Writer;
 
 import ninja.Context;
@@ -31,8 +33,6 @@ import ninja.Result;
 import ninja.Results;
 import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineManager;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +79,7 @@ public class ResultHandlerTest {
         when(context.finalizeHeaders(any(Result.class)))
             .thenReturn(responseStreams);
         when(templateEngineManager
-            .getTemplateEngineForContentType(Result.APPLICATON_JSON))
+            .getTemplateEngineForContentType(Result.APPLICATION_JSON))
             .thenReturn(templateEngine);
         when(templateEngineManager.getTemplateEngineForContentType(Result.TEXT_HTML))
             .thenReturn(templateEngineHtml);

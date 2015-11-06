@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import ninja.Context;
 import ninja.params.ArgumentExtractor;
-import ninja.servlet.ContextImpl;
+import ninja.servlet.NinjaServletContext;
 
 public class RequestExtractor implements ArgumentExtractor<HttpServletRequest> {
 
     @Override
     public HttpServletRequest extract(Context context) {
 
-        if (context instanceof ContextImpl) {
-            return ((ContextImpl) context).getHttpServletRequest();
+        if (context instanceof NinjaServletContext) {
+            return ((NinjaServletContext) context).getHttpServletRequest();
         } else {
             throw new RuntimeException(
                     "RequestExtractor only works with Servlet container implementation of Context.");

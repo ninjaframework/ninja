@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package ninja.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +43,15 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.collect.Maps;
 
 public class NinjaTestBrowser {
-
-    private DefaultHttpClient httpClient;
+    private final Logger LOG = LoggerFactory.getLogger(NinjaTestBrowser.class);
+    private final DefaultHttpClient httpClient;
 
     public NinjaTestBrowser() {
         httpClient = new DefaultHttpClient();
@@ -124,7 +127,8 @@ public class NinjaTestBrowser {
 
     public String makeRequest(String url, Map<String, String> headers) {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = null;
         try {
 
             HttpGet getRequest = new HttpGet(url);
@@ -140,8 +144,7 @@ public class NinjaTestBrowser {
 
             response = httpClient.execute(getRequest);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (response.getEntity().getContent())));
+            br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
             String output;
             while ((output = br.readLine()) != null) {
@@ -152,6 +155,14 @@ public class NinjaTestBrowser {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    LOG.error("Failed to close resource", e);
+                }
+            }
         }
 
         return sb.toString();
@@ -162,8 +173,8 @@ public class NinjaTestBrowser {
                                                     Map<String, String> headers,
                                                     Map<String, String> formParameters) {
 
-        StringBuffer sb = new StringBuffer();
-
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = null;
         try {
 
             HttpPost postRequest = new HttpPost(url);
@@ -176,7 +187,7 @@ public class NinjaTestBrowser {
             }
 
             // add form parameters:
-            List<BasicNameValuePair> formparams = new ArrayList<BasicNameValuePair>();
+            List<BasicNameValuePair> formparams = new ArrayList<>();
             if (formParameters != null) {
 
                 for (Entry<String, String> parameter : formParameters
@@ -196,8 +207,7 @@ public class NinjaTestBrowser {
 
             response = httpClient.execute(postRequest);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (response.getEntity().getContent())));
+            br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
             String output;
             while ((output = br.readLine()) != null) {
@@ -208,6 +218,14 @@ public class NinjaTestBrowser {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    LOG.error("Failed to close resource", e);
+                }
+            }
         }
 
         return sb.toString();
@@ -230,6 +248,41 @@ public class NinjaTestBrowser {
 
             // For File parameters
             entity.addPart(paramName, new FileBody((File) fileToUpload));
+
+            post.setEntity(entity);
+
+            // Here we go!
+            response = EntityUtils.toString(httpClient.execute(post)
+                    .getEntity(), "UTF-8");
+            post.releaseConnection();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return response;
+
+    }
+
+    public String uploadFiles(String url, String[] paramNames, File[] fileToUploads) {
+
+        String response = null;
+
+        try {
+
+            httpClient.getParams().setParameter(
+                    CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+            HttpPost post = new HttpPost(url);
+
+            MultipartEntity entity = new MultipartEntity(
+                    HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            // For File parameters
+            for (int i=0; i<paramNames.length; i++) {
+                
+                entity.addPart(paramNames[i], new FileBody(fileToUploads[i]));
+            }
 
             post.setEntity(entity);
 
@@ -312,4 +365,5 @@ public class NinjaTestBrowser {
     public void shutdown() {
         httpClient.getConnectionManager().shutdown();
     }
+    
 }

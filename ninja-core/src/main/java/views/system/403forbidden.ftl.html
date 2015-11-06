@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>${message.text}</title>
+        <meta charset="UTF-8">
         <style type="text/css">
 
             .error-code {
@@ -42,7 +43,7 @@
         <div class="error-code centered">
             <div class="error-code__smiley">:(</div>
             <div class="error-code__text">${message.text}</div>
-            <div class="error-code__text"><a class="error-code__link" href="/">Back to homepage</a></div>
+            <div class="error-code__text"><a class="error-code__link" href="${contextPath}/">Back to homepage</a></div>
         </div>
     </body>
 </html>

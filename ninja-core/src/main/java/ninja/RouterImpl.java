@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class RouterImpl implements Router {
     private List<Route> routes;
 
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
-    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s(.*))?\\}";
+    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
 
     @Inject
     public RouterImpl(
@@ -137,9 +137,12 @@ public class RouterImpl implements Router {
             return finalUrl;
 
         }
-
-        return null;
-
+        else {
+            logger.info(
+                    "Could not find any reverse route for the method {} of the Controller class {}",
+                    controllerMethodName, controllerClass.getSimpleName());
+            return null;
+        }
     }
 
     @Override

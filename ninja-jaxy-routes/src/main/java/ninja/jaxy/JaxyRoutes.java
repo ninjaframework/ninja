@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ package ninja.jaxy;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,12 +36,13 @@ import ninja.utils.NinjaProperties;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -60,6 +62,10 @@ public class JaxyRoutes implements ApplicationRoutes {
     final NinjaProperties ninjaProperties;
 
     final NinjaMode runtimeMode;
+    private Reflections reflections;
+    private Set<Method> methods;
+    private Map<Class<?>, Set<String>> controllers;
+    private Router router;
 
     @Inject
     public JaxyRoutes(NinjaProperties ninjaProperties) {
@@ -83,20 +89,58 @@ public class JaxyRoutes implements ApplicationRoutes {
      */
     @Override
     public void init(Router router) {
+        this.router = router;
+        configureReflections();
 
-        ConfigurationBuilder builder = new ConfigurationBuilder();
+        controllers = Maps.newHashMap();
+        methods = Sets.newHashSet();
 
-        Set<URL> packagesToScan = getPackagesToScanForRoutes();
-        builder.addUrls(packagesToScan);
+        processFoundMethods();
+        sortMethods();
+        registerMethods();
+    }
 
-        builder.addScanners(new MethodAnnotationsScanner());
-        Reflections reflections = new Reflections(builder);
+    /**
+     * Takes all methods and registers them at the controller using the path: Class:@Path + Method:@Path.
+     * If no @Path Annotation is present at the method just the Class:@Path is used.
+     */
+    private void registerMethods() {
+        // register routes for all the methods
+        for (Method method : methods) {
 
-        // collect the allowed annotated methods
-        Map<Class<?>, Set<String>> controllers = Maps.newHashMap();
-        List<Method> methods = Lists.newArrayList();
-        for (Method method : reflections.getMethodsAnnotatedWith(Path.class)) {
+            final Class<?> controllerClass = method.getDeclaringClass();
+            final Path methodPath = method.getAnnotation(Path.class);
+            final Set<String> controllerPaths = controllers
+                    .get(controllerClass);
 
+            String[] paths = {"/"};
+            if (methodPath != null) {
+                paths = methodPath.value();
+            }
+            for (String controllerPath : controllerPaths) {
+
+                for (String methodPathSpec : paths) {
+
+                    final String httpMethod = getHttpMethod(method);
+                    final String fullPath = controllerPath + methodPathSpec;
+                    final String methodName = method.getName();
+
+                    router.METHOD(httpMethod).route(fullPath)
+                            .with(controllerClass, methodName);
+
+                }
+
+            }
+
+        }
+    }
+
+    /**
+     * Takes the found methods and checks if they have a valid format.
+     * If they do, the controller path classes for these methods are generated
+     */
+    private void processFoundMethods() {
+        for (Method method : findControllerMethods()) {
             if (allowMethod(method)) {
 
                 // add the method to our todo list
@@ -108,26 +152,19 @@ public class JaxyRoutes implements ApplicationRoutes {
                 if (!controllers.containsKey(controllerClass)) {
 
                     Set<String> paths = collectPaths(controllerClass);
-
-                    if (paths.isEmpty()) {
-                        controllers.put(controllerClass, new HashSet<String>());
-                    } else {
-                        controllers.put(controllerClass, paths);
-                    }
+                    controllers.put(controllerClass, paths);
 
                 }
-
             }
-
         }
+    }
 
-        if (methods.isEmpty()) {
-            // nothing to do
-            return;
-        }
-
-        // Sort the methods into registration order
-        Collections.sort(methods, new Comparator<Method>() {
+    /**
+     * Sorts the methods into registration order
+     */
+    private void sortMethods() {
+        List<Method> methodList = new ArrayList<>(methods);
+        Collections.sort(methodList, new Comparator<Method>() {
 
             @Override
             public int compare(Method m1, Method m2) {
@@ -159,32 +196,35 @@ public class JaxyRoutes implements ApplicationRoutes {
                 }
             }
         });
+        methods = new LinkedHashSet<>(methodList);
+    }
 
-        // register routes for all the methods
-        for (Method method : methods) {
+    /**
+     * Searches for Methods that have either a Path Annotation or a HTTP-Method Annotation
+     */
+    @SuppressWarnings("unchecked")
+    private Set<Method> findControllerMethods() {
+        Set<Method> methods = Sets.newLinkedHashSet();
 
-            final Class<?> controllerClass = method.getDeclaringClass();
-            final Path methodPath = method.getAnnotation(Path.class);
-            final Set<String> controllerPaths = controllers
-                    .get(controllerClass);
-
-            for (String controllerPath : controllerPaths) {
-
-                for (String methodPathSpec : methodPath.value()) {
-
-                    final String httpMethod = getHttpMethod(method);
-                    final String fullPath = controllerPath + methodPathSpec;
-                    final String methodName = method.getName();
-
-                    router.METHOD(httpMethod).route(fullPath)
-                            .with(controllerClass, methodName);
-
-                }
-
+        methods.addAll(reflections.getMethodsAnnotatedWith(Path.class));
+        Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
+        for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
+            if (httpMethod.isAnnotation()) {
+                methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
             }
-
         }
 
+        return methods;
+    }
+
+    private void configureReflections() {
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+
+        Set<URL> packagesToScan = getPackagesToScanForRoutes();
+        builder.addUrls(packagesToScan);
+
+        builder.addScanners(new MethodAnnotationsScanner());
+        reflections = new Reflections(builder);
     }
 
     /**
@@ -202,29 +242,26 @@ public class JaxyRoutes implements ApplicationRoutes {
         Set<String> paths = Sets.newLinkedHashSet();
         Path controllerPath = controllerClass.getAnnotation(Path.class);
 
-        if (controllerPath != null) {
+        if (controllerPath == null) {
+            return parentPaths;
+        }
 
-            if (parentPaths.isEmpty()) {
+        if (parentPaths.isEmpty()) {
 
-                // add all controller paths
-                paths.addAll(Arrays.asList(controllerPath.value()));
+            // add all controller paths
+            paths.addAll(Arrays.asList(controllerPath.value()));
 
-            } else {
+        } else {
 
-                // create controller paths based on the parent paths
-                for (String parentPath : parentPaths) {
+            // create controller paths based on the parent paths
+            for (String parentPath : parentPaths) {
 
-                    for (String path : controllerPath.value()) {
-                        paths.add(parentPath + path);
-                    }
-
+                for (String path : controllerPath.value()) {
+                    paths.add(parentPath + path);
                 }
 
             }
 
-        } else {
-            // add all parent paths
-            paths.addAll(parentPaths);
         }
 
         return paths;
@@ -235,7 +272,7 @@ public class JaxyRoutes implements ApplicationRoutes {
      *
      * @return the set of packages to scan
      */
-    private Set<URL> getPackagesToScanForRoutes() {
+    public Set<URL> getPackagesToScanForRoutes() {
 
         Set<URL> packagesToScanForRoutes = Sets.newHashSet();
 

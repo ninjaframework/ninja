@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,11 @@ import java.lang.annotation.Target;
  *
  */
 @WithArgumentExtractor(ArgumentExtractors.ParamsExtractor.class)
+@WithArgumentExtractors({
+    ArgumentExtractors.FileItemParamsExtractor.class,
+    ArgumentExtractors.FileParamsExtractor.class,
+    ArgumentExtractors.InputStreamParamsExtractor.class
+})
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
 public @interface Params {

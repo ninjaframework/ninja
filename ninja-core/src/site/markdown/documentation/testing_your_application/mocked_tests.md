@@ -7,7 +7,7 @@ Introduction
 Mocked tests are really fast tests. They allow you to test certain areas of your application in isolation.
 
 Consider the following controller. This controller gets a Dao injected. And the controller method 
-"postArticleJson" return a result with http code ok when the article can be posted, and a http code "not found" when
+"postArticleJson" return a result with an HTTP code "ok" when the article can be posted, and an HTTP code "not found" when
 the article cannot be posted.
 
 <pre class="prettyprint">
@@ -32,7 +32,7 @@ public class ApiController {
 </pre>
 
 Mocked tests are done via Mockito. A corresponding test would test if the controller really returns
-a "ok" or "not found".
+an "ok" or "not found".
 
 <pre class="prettyprint">
 @RunWith(MockitoJUnitRunner.class)
@@ -76,5 +76,5 @@ public class ApiControllerMockTest {
 }
 </pre>
 
-Mockito is really powerful. Please have a look at their site at: https://code.google.com/p/mockito/.
+Mockito is really powerful. Please have a look at their site at: http://mockito.org/.
 It contains a lot more documentation and wonderful examples how to test your code in a beautiful way.

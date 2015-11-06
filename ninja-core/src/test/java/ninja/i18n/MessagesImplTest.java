@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.Map;
 
 import ninja.Context;
@@ -29,6 +30,7 @@ import ninja.Results;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -36,8 +38,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.base.Optional;
-import java.util.Date;
-import org.joda.time.DateTime;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagesImplTest {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package ninja.template;
 
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import ninja.utils.NinjaProperties;
+
+import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -53,38 +53,14 @@ public class TemplateEngineFreemarkerExceptionHandler implements
 
     public void handleTemplateException(TemplateException te,
                                         Environment env,
-                                        Writer out) {
+                                        Writer out) throws TemplateException {
 
         if (ninjaProperties.isProd()) {
-            
-            PrintWriter pw = (out instanceof PrintWriter) ? (PrintWriter) out
-                    : new PrintWriter(out);
-            pw.println(
-                     "<script language=javascript>//\"></script>"
-                    + "<script language=javascript>//\'></script>"
-                    + "<script language=javascript>//\"></script>"
-                    + "<script language=javascript>//\'></script>"
-                    + "</title></xmp></script></noscript></style></object>"
-                    + "</head></pre></table>"
-                    + "</form></table></table></table></a></u></i></b>"
-                    + "<div align=left "
-                    + "style='background-color:#FFFF00; color:#FF0000; "
-                    + "display:block; border-top:double; padding:2pt; "
-                    + "font-size:medium; font-family:Arial,sans-serif; "
-                    + "font-style: normal; font-variant: normal; "
-                    + "font-weight: normal; text-decoration: none; "
-                    + "text-transform: none'>");
-            pw.println("<b style='font-size:medium'>Ooops. A really strange error occurred. Please contact admin if error persists.</b>");
-            pw.println("</div></html>");
-            pw.flush();
-            pw.close();
-            
-            logger.log(Level.SEVERE, "Templating error. This should not happen in production", te);
-            
-            
-
+            // Let the exception bubble up to the central handlers
+            // so the application can return the correct error page
+            // or perform some other application specific action.
+            throw te;
         } else {
-            
             // print out full stacktrace if we are in test or dev mode
 
             PrintWriter pw = (out instanceof PrintWriter) ? (PrintWriter) out
@@ -108,11 +84,7 @@ public class TemplateEngineFreemarkerExceptionHandler implements
                     + "<pre><xmp>");
             te.printStackTrace(pw);
             pw.println("</xmp></pre></div></html>");
-            pw.flush();
-            pw.close();
-            
-            logger.log(Level.SEVERE, "Templating error.", te);
+            logger.error("Templating error.", te);
         }
-
     }
 }

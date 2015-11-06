@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class PersonController {
         
         return Results
                 .ok()
-                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATON_JSON)
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON)
                 .fallbackContentType(Result.TEXT_HTML)
                 .template("views/PersonController/getPersonViaContentNegotiation.ftl.html")
                 .render(person);

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
 
 package ninja;
 
-import com.google.common.base.Optional;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
-import ninja.utils.NinjaProperties;
-import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+import ninja.utils.NinjaProperties;
+
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 /**
  * => Most tests are done via class RoutesTest in project
@@ -59,6 +59,7 @@ public class RouterImplTest {
         // add route:
         router.GET().route("/testroute").with(TestController.class, "index");
         router.GET().route("/user/{email}/{id: .*}").with(TestController.class, "user");
+        router.GET().route("/u{userId: .*}/entries/{entryId: .*}").with(TestController.class, "entry");
 
         router.compileRoutes();
     }
@@ -125,6 +126,18 @@ public class RouterImplTest {
 
     }
 
+    @Test
+    public void testGetReverseRouteWithMultipleRegexWorks() {
+
+        String contextPath = "";
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+
+        String route = router.getReverseRoute(TestController.class, "entry", "userId", 1, "entryId", 100);
+
+        assertThat(route, equalTo("/u1/entries/100"));
+
+    }
+
     // Just a dummy TestController for mocking...
     public static class TestController {
 
@@ -135,6 +148,12 @@ public class RouterImplTest {
         }
 
         public Result user() {
+
+            return Results.ok();
+
+        }
+
+        public Result entry() {
 
             return Results.ok();
 

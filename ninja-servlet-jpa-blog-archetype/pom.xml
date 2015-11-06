@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2012-2014 the original author or authors.
+    Copyright (C) 2012-2015 the original author or authors.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>4.0.3-SNAPSHOT</version>
+        <version>5.2.2-SNAPSHOT</version>
     </parent>
   
 

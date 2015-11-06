@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package ninja.template;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
@@ -29,6 +30,8 @@ import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
@@ -44,16 +47,22 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
+import freemarker.core.ParseException;
 import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 import freemarker.template.Version;
+import java.io.StringWriter;
+import ninja.exceptions.RenderingException;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
+	
+    public final static String FREEMARKER_CONFIGURATION_FILE_SUFFIX = "freemarker.suffix";
     
     // Selection of logging library has to be done manually until Freemarker 2.4
     // more: http://freemarker.org/docs/api/freemarker/log/Logger.html
@@ -66,12 +75,14 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     }
     // end
     
-    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 21);
+    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 22);
 
     private final String FILE_SUFFIX = ".ftl.html";
 
     private final Configuration cfg;
 
+    private final NinjaProperties ninjaProperties;
+    
     private final Messages messages;
     
     private final Lang lang;
@@ -80,19 +91,18 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     private final Logger logger;
 
-    private final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler;
-
     private final TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod;
             
     private final TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod;
     
     private final TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
     
+    private final String fileSuffix;
+    
     @Inject
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
                                     Logger logger,
-                                    TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
                                     TemplateEngineHelper templateEngineHelper,
                                     TemplateEngineManager templateEngineManager,
                                     TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod,
@@ -102,11 +112,12 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.messages = messages;
         this.lang = lang;
         this.logger = logger;
-        this.templateEngineFreemarkerExceptionHandler = templateEngineFreemarkerExceptionHandler;
+        this.ninjaProperties = ninjaProperties;
         this.templateEngineHelper = templateEngineHelper;
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
+        this.fileSuffix = ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, FILE_SUFFIX);
         
         cfg = new Configuration(INCOMPATIBLE_IMPROVEMENTS_VERSION);
         
@@ -121,8 +132,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         // Ninja does the localization itself - lookup is not needed.
         cfg.setLocalizedLookup(false);
-
-        cfg.setTemplateExceptionHandler(templateEngineFreemarkerExceptionHandler);
 
         ///////////////////////////////////////////////////////////////////////
         // 1) In dev we load templates from src/java/main first, then from the
@@ -258,6 +267,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("reverseRoute", templateEngineFreemarkerReverseRouteMethod);
         map.put("assetsAt", templateEngineFreemarkerAssetsAtMethod);
         map.put("webJarsAt", templateEngineFreemarkerWebJarsAtMethod);
+        
+        map.put("authenticityToken", new TemplateEngineFreemarkerAuthenticityTokenDirective(context));
+        map.put("authenticityForm", new TemplateEngineFreemarkerAuthenticityFormDirective(context));
 
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.
@@ -291,39 +303,80 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // Specify the data source where the template files come from.
         // Here I set a file directory for it:
         String templateName = templateEngineHelper.getTemplateForResult(
-                context.getRoute(), result, FILE_SUFFIX);
+                context.getRoute(), result, this.fileSuffix);
 
-        
         Template freemarkerTemplate = null;
         
         try {
             
             freemarkerTemplate = cfg.getTemplate(templateName);
             
-        } catch (IOException iOException) {
-            
-            logger.error(
-                    "Error reading Freemarker Template {} ", templateName, iOException);
-            
-            throw new RuntimeException(iOException);
-        }
-        
-        
-        ResponseStreams responseStreams = context.finalizeHeaders(result);
+            // Fully buffer the response so in the case of a template error we can 
+            // return the applications 500 error message. Without fully buffering 
+            // we can't guarantee we haven't flushed part of the response to the
+            // client.
+            StringWriter buffer = new StringWriter(64 * 1024);
+            freemarkerTemplate.process(map, buffer);
 
-        try (Writer writer = responseStreams.getWriter()) {
+            ResponseStreams responseStreams = context.finalizeHeaders(result);
+            try (Writer writer = responseStreams.getWriter()) {
+                writer.write(buffer.toString());
+            }
+        } catch (Exception cause) {   
             
-            freemarkerTemplate.process(map, writer);
-
-        } catch (Exception e) {
-            
-            logger.error(
-                    "Error processing Freemarker Template {} ", templateName, e);
-            
-            throw new RuntimeException(e);
+            // delegate rendering exception handling back to Ninja
+            throwRenderingException(context, result, cause, templateName);
             
         }
-
+    }
+    
+    public void throwRenderingException(
+            Context context,
+            Result result,
+            Exception cause,
+            String knownTemplateSourcePath) {
+        
+        // parse method above may throw an IOException whose cause is really
+        // a more useful ParseException
+        if (cause instanceof IOException
+                && cause.getCause() != null
+                && cause.getCause() instanceof ParseException) {
+            cause = (ParseException)cause.getCause();
+        }
+        
+        if (cause instanceof TemplateNotFoundException) {
+            
+            // inner cause will be better to display
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker template not found", knownTemplateSourcePath, -1);
+            
+        }
+        else if (cause instanceof TemplateException) {
+            
+            TemplateException te = (TemplateException)cause;
+            String templateSourcePath = te.getTemplateSourceName();
+            if (templateSourcePath == null) {
+                templateSourcePath = knownTemplateSourcePath;
+            }
+            
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker render exception", templateSourcePath, te.getLineNumber());
+            
+        }
+        else if (cause instanceof ParseException) {
+            
+            ParseException pe = (ParseException)cause;
+            
+            String templateSourcePath = pe.getTemplateName();
+            if (templateSourcePath == null) {
+                templateSourcePath = knownTemplateSourcePath;
+            }
+            
+            throw new RenderingException(cause.getMessage(), cause, result, "FreeMarker parser exception", templateSourcePath, pe.getLineNumber());
+            
+        }
+        
+        // fallback to throwing generic rendering exception
+        throw new RenderingException(cause.getMessage(), cause, result, knownTemplateSourcePath, -1);
+        
     }
 
     @Override
@@ -333,7 +386,18 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
     @Override
     public String getSuffixOfTemplatingEngine() {
-        return FILE_SUFFIX;
+        return this.fileSuffix;
+    }
+    
+    /**
+     * Allows to modify the FreeMarker configuration. According to the FreeMarker documentation, the configuration will be thread-safe once
+     * all settings have been set via a safe publication technique. Therefore, consider modifying this configuration only within the configure()
+     * method of your application Module singleton.
+     * 
+     * @return the freemarker configuration object
+     */
+    public Configuration getConfiguration() {
+    	return cfg;
     }
     
     private BeansWrapper createBeansWrapperWithExposedFields() {

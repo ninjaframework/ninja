@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import ninja.Results;
 import ninja.i18n.Messages;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,9 @@ public class YodaResults {
     @Inject
     Messages messages;
     
+    @Inject
+    NinjaProperties ninjaProperties;
+    
     public Result getTimeoutExceptionResult(Context context) {
         
         String messageI18n 
@@ -68,7 +72,10 @@ public class YodaResults {
         Result result = Results
                 .internalServerError()
                 .render(message)
-                .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
 
         return result;
     
@@ -88,7 +95,10 @@ public class YodaResults {
         Result result = Results
                 .internalServerError()
                 .render(message)
-                .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
 
         return result;
     
@@ -108,7 +118,10 @@ public class YodaResults {
         Result result = Results
                 .internalServerError()
                 .render(message)
-                .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
 
         return result;
         

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package ninja.servlet;
 
+import ninja.Bootstrap;
 import javax.servlet.ServletContextEvent;
 
 import ninja.utils.NinjaModeHelper;
@@ -36,10 +37,8 @@ import com.google.inject.servlet.GuiceServletContextListener;
  */
 public class NinjaServletListener extends GuiceServletContextListener {
     
-    private volatile NinjaBootstrap ninjaBootstrap;
-
+    private volatile Bootstrap ninjaBootstrap;
     NinjaPropertiesImpl ninjaProperties = null;
-    
     String contextPath;
 
     public synchronized void setNinjaProperties(NinjaPropertiesImpl ninjaPropertiesImpl) {
@@ -67,6 +66,13 @@ public class NinjaServletListener extends GuiceServletContextListener {
         ninjaBootstrap.shutdown();
         super.contextDestroyed(servletContextEvent);
     }
+    
+    /**
+     * Only available after context initialization attempted.
+     */
+    public Bootstrap getNinjaBootstrap() {
+        return this.ninjaBootstrap;
+    }
    
     /**
      * Getting the injector is done via double locking in conjuction
@@ -80,7 +86,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
         
         // fetch instance variable into method, so that we access the volatile
         // global variable only once - that's better performance wise.
-        NinjaBootstrap ninjaBootstrapLocal = ninjaBootstrap;
+        Bootstrap ninjaBootstrapLocal = ninjaBootstrap;
         
         if (ninjaBootstrapLocal == null) {
 
@@ -113,16 +119,14 @@ public class NinjaServletListener extends GuiceServletContextListener {
 
     }
     
-    
-    
-    private NinjaBootstrap createNinjaBootstrap(
+    private Bootstrap createNinjaBootstrap(
         NinjaPropertiesImpl ninjaProperties,
         String contextPath) {
     
-         // we set the contextpath.
+        // we set the contextpath.
         ninjaProperties.setContextPath(contextPath);
         
-        ninjaBootstrap = new NinjaBootstrap(ninjaProperties);
+        ninjaBootstrap = new NinjaServletBootstrap(ninjaProperties);
         
         ninjaBootstrap.boot();
         

@@ -4,8 +4,8 @@ Advanced topics - Security, i18n and more
 Security and templating
 -----------------------
 
-Ninja is html escaping all variables that you render by default. If you don't want to do that you
-can use the noescape directive around that particular variable.
+Ninja is HTML escaping all variables that you render by default. If you don't want to do that you
+can use the "noescape" directive around that particular variable.
 <pre class="prettyprint">
 &lt;#noescape&gt;${yourVariableThatShouldNotBeEscaped}&lt;/#noescape&gt;
 </pre>
@@ -32,12 +32,12 @@ You can then access the variable inside your view like that.
 &lt;html&gt;
 </pre>
 
-flash content in the view
+Flash content in the view
 -------------------------
 
 The flash scope of the application is important. It helps to maintain
 a little bit of state between requests even on
-a restful architecture.
+a RESTful architecture.
 
 Rendering the flash error and success messages is straight forward.
 
@@ -112,17 +112,17 @@ This would then result in the following output: <code>/assets/css/custom.css</co
 ### webJarsAt(...)
 
 webJarsAt allows you to render webjar contents. For instance
-<code>${webJarsAt("bootstrap/3.0.0/css/bootstrap.min.css")}</code> would render
+<code>${webJarsAt("bootstrap/3.3.4/css/bootstrap.min.css")}</code> would render
 a css file from a webJars jar. The corresponding route could be 
 <code>router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");</code>.
 
-This would then result in the following output: <code>/assets/webjars/bootstrap/3.0.0/css/bootstrap.min.css</code>.
+This would then result in the following output: <code>/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css</code>.
 
 ### i18n(...)
 
 i18n allows you to render translated strings. For instance <code>${i18n(&quot;myi18nKey&quot;)}</code> allows
 you to render the value for myi18nKey in the correct language for your user.
-Please refer to chapter "internationalization" for more informations.
+Please refer to chapter "internationalization" for more information.
 
 
 ### prettyTime(...)
@@ -133,6 +133,21 @@ prettyTime allows you to format localized relative dates.
 For instance, if you had a date object that represented yesterday, prettyTime would format that as *1 day ago* in the
 preferred Locale of the request.
 
+### authenticity(...)
+
+authenticity allows you to retrieve an authenticity token for protection against CSRF-requests. You can either get a prefilled hidden input field or simply the token itself.
+
+To get the prefilled hidden input field, use the following code
+<code><@authenticityForm/></code>
+
+To get the token, use the following code
+<code><@authenticityToken/></code>
+
+If you use either the form or the token you might want to check the token in your controller. Ninja offers a filter for checking the correctness of the token. Just add the following filter to your controller class or method.
+<code>FilterWith(AuthenticityFilter.class)</code>
+
+If the token is invalid the use will see a 403 Forbidden error page.
+
 Advanced usage of Freemarker
 ----------------------------
 
@@ -140,4 +155,4 @@ Freemarker is the templating language we are using for rendering views.
 It can do a lot of cool stuff, and you should refer to http://freemarker.org/
 to learn more.
 
-
+Note that the Freemarker <code>Configuration</code> object can be accessed via your application <code>TemplateEngineFreemarker</code> singleton. According to the FreeMarker documentation, the configuration will be thread-safe once all settings have been set via a safe publication technique. Therefore, consider modifying it only within the <code>configure()</code> method of your application <code>Module</code> singleton.

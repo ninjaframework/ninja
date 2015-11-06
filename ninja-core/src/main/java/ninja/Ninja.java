@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,21 @@ public interface Ninja {
      * @return a result you can use to render the error.
      */
     Result onException(Context context, Exception exception);
+    
+    /**
+     * Should handle cases where a <code>RenderingException</code> is thrown
+     * when handling the rendering of a Result.
+     * 
+     * Should lead to an html error 500 -- internal server error. If no special
+     * handling is required, simply:
+     * 
+     * <code>
+     *   return getInternalServerErrorResult(context, exception);
+     * </code>
+     */
+    /** NOT REQUIRED YET IN ORDER TO NOT BREAK COMPATIBILITY...
+    Result getRenderingExceptionResult(Context context, RenderingException exception);
+    */
     
     /**
      * Should handle cases where an exception is thrown

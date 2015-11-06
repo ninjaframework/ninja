@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,8 +71,14 @@ public class Result {
     // /////////////////////////////////////////////////////////////////////////
     public static final String TEXT_HTML = "text/html";
     public static final String TEXT_PLAIN = "text/plain";
-    public static final String APPLICATON_JSON = "application/json";
-    public static final String APPLICATON_JSONP = "application/javascript";
+    public static final String APPLICATION_JSON = "application/json";
+    /* @deprecated Naming mistake - Please use APPLICATION_JSON instead! */
+    @Deprecated
+    public static final String APPLICATON_JSON = APPLICATION_JSON;
+    public static final String APPLICATION_JSONP = "application/javascript";
+    /* @deprecated Naming mistake - Please use APPLICATION_JSONP instead! */
+    @Deprecated
+    public static final String APPLICATON_JSONP = APPLICATION_JSONP;
     public static final String APPLICATION_XML = "application/xml";
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
@@ -96,6 +102,8 @@ public class Result {
     public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
 
     private int statusCode;
+
+    private Class<?> jsonView;
 
     /* The object that will be rendered. Could be a Java Pojo. Or a map. Or xyz. Will be
      * handled by the TemplateReneringEngine. */
@@ -126,7 +134,7 @@ public class Result {
      * the box.
      */
     private final static List<String> DEFAULT_SUPPORTED_CONTENT_TYPES
-            = ImmutableList.of(TEXT_HTML, APPLICATON_JSON, APPLICATION_XML);
+            = ImmutableList.of(TEXT_HTML, APPLICATION_JSON, APPLICATION_XML);
 
     /**
      * Something like: "utf-8" => will be appended to the content-type. eg
@@ -618,6 +626,22 @@ public class Result {
         return this;
     }
 
+    public Class<?> getJsonView() {
+        return jsonView;
+    }
+
+    /**
+     * Set the Jackson JSON View.
+     * See <a href="http://wiki.fasterxml.com/JacksonJsonViews">http://wiki.fasterxml.com/JacksonJsonViews</a>
+     *
+     * @param jsonView JSON serialization view class to use when rendering
+     * @return The result that you executed the method on for chaining, with JSON view set
+     */
+    public Result jsonView(Class<?> jsonView) {
+        this.jsonView = jsonView;
+        return this;
+    }
+
     /**
      * A redirect that uses 303 see other.
      * 
@@ -660,22 +684,22 @@ public class Result {
     }
 
     /**
-     * Set the content type of this result to {@link Result#APPLICATON_JSON}.
+     * Set the content type of this result to {@link Result#APPLICATION_JSON}.
      * 
-     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATON_JSON}.
+     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATION_JSON}.
      */
     public Result json() {
-        contentType = APPLICATON_JSON;
+        contentType = APPLICATION_JSON;
         return this;
     }
 
     /**
-     * Set the content type of this result to {@link Result#APPLICATON_JSONP}.
+     * Set the content type of this result to {@link Result#APPLICATION_JSONP}.
      *
-     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATON_JSONP}.
+     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATION_JSONP}.
      */
     public Result jsonp() {
-        contentType = APPLICATON_JSONP;
+        contentType = APPLICATION_JSONP;
         return this;
     }
     

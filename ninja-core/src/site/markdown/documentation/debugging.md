@@ -8,7 +8,7 @@ Ninja is based around standards. If you run a Ninja application inside a servlet
 connect to the servlet container via your IDE and debug the running application. So there are
 potentially a lot of ways how you can debug your app.
 
-Fee free to suggest other ways to debug a Ninja application!
+Feel free to suggest other ways to debug a Ninja application!
 
 
 Debugging via Eclipse and m2eclipse plugin
@@ -18,10 +18,10 @@ Our favorite way to debug an application is to use Eclipse. We are always using 
 project.
 
 And if you make a left click on your project you get the option "Debug as...". Hit that and generate a profile
-that debugs the goal jetty:run. That's all. Now eclipse starts your application and you can cleanly debug
-all stuff that is going on
+that debugs the goal jetty:run. That's all. Now Eclipse starts your application and you can cleanly debug
+everything that is going on.
 
-Debugging via Netbeans
+Debugging via NetBeans
 ----------------------
 1. Right click your Project and open "Project"
 2. Click on "Action" on the left.
@@ -29,3 +29,10 @@ Debugging via Netbeans
 4. Enter "jetty:run" into the "Execute Goals" input field
 5. Enter "jpda.listen=maven" into the "Set Properties" field
 6. Click the "OK"-Button and start a Debug-Session with Ctrl+F5 or the Debug-Button
+
+Debugging in SuperDevMode
+------------------------------------------
+
+The Ninja maven plugin supports `-Dninja.jvmArgs` as a property that allows any
+arbitrary values to passthru to the forked Ninja JVM.  You have the option of passing
+thru the required JVM properties to enable debugging.

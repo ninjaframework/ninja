@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,36 @@
 
 package ninja;
 
-import com.google.common.base.Optional;
+
+import static org.mockito.Matchers.any;
+import ninja.diagnostics.DiagnosticError;
+
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.InternalServerErrorException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
+
+import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.Test;
 import static org.junit.Assert.*;
+
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
-import static org.mockito.Matchers.any;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.common.base.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NinjaDefaultTest {
@@ -59,6 +68,9 @@ public class NinjaDefaultTest {
     @Mock
     Result result;
     
+    @Mock
+    NinjaProperties ninjaProperties;
+    
     Route route;
     
     @Captor
@@ -75,6 +87,7 @@ public class NinjaDefaultTest {
         ninjaDefault.resultHandler = resultHandler;
         ninjaDefault.router = router;
         ninjaDefault.messages = messages;
+        ninjaDefault.ninjaProperties = ninjaProperties;
         
         // Just a dummy to make logging work without
         // Null pointer exceptions.
@@ -138,7 +151,7 @@ public class NinjaDefaultTest {
         
         ninjaDefault.onRouteRequest(contextImpl);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, exception);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, exception, null);
     
     }
     
@@ -155,8 +168,28 @@ public class NinjaDefaultTest {
         
         ninjaDefault.onRouteRequest(contextImpl);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, internalServerErrorException);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, internalServerErrorException, null);
     
+    }
+    
+    @Test
+    public void testOnRouteRequestWhenInternalServerErrorExceptionInDiagnosticMode() throws Exception {
+
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
+        Mockito.when(route.getFilterChain()).thenReturn(filterChain);
+          
+        InternalServerErrorException internalServerErrorException 
+                = new InternalServerErrorException("That's an InternalServerErrorException that should be handled by onError!");
+        
+        Mockito.when(filterChain.next(contextImpl)).thenThrow(internalServerErrorException);
+        when(ninjaProperties.isDev()).thenReturn(true);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, true)).thenReturn(true);
+        
+        ninjaDefault.onRouteRequest(contextImpl);
+        
+        Result localResult = ninjaDefault.getInternalServerErrorResult(contextImpl, internalServerErrorException);
+        
+        assertThat(localResult.getRenderable(), CoreMatchers.instanceOf(DiagnosticError.class));
     }
     
     @Test
@@ -174,6 +207,26 @@ public class NinjaDefaultTest {
         
         verify(ninjaDefault).getBadRequestResult(contextImpl, badRequest);
     
+    }
+    
+    @Test
+    public void testOnRouteRequestWhenOnBadRequestInDiagnosticMode() throws Exception {
+
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
+        Mockito.when(route.getFilterChain()).thenReturn(filterChain);
+          
+        BadRequestException badRequest 
+                = new BadRequestException("That's a BadRequest that should be handled by onBadRequest");;
+        
+        Mockito.when(filterChain.next(contextImpl)).thenThrow(badRequest);
+        when(ninjaProperties.isDev()).thenReturn(true);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, true)).thenReturn(true);
+        
+        ninjaDefault.onRouteRequest(contextImpl);
+        
+        Result localResult = ninjaDefault.getBadRequestResult(contextImpl, badRequest);
+        
+        assertThat(localResult.getRenderable(), CoreMatchers.instanceOf(DiagnosticError.class));
     }
     
     @Test
@@ -195,7 +248,30 @@ public class NinjaDefaultTest {
         
         verify(ninjaDefault).getNotFoundResult(contextImpl);
 
-    
+    }
+
+    @Test
+    public void testOnRouteRequestWhenOnNotFoundInDiagnosticMode() throws Exception {
+
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
+        Mockito.when(route.getFilterChain()).thenReturn(filterChain);
+
+        // This simulates that a route has not been found
+        // subsequently the onNotFound method should be called.
+        Mockito.when(
+                router.getRouteFor(
+                        Matchers.anyString(), 
+                        Matchers.anyString()))
+                .thenReturn(null);
+                 
+        when(ninjaProperties.isDev()).thenReturn(true);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, true)).thenReturn(true);
+        
+        ninjaDefault.onRouteRequest(contextImpl);
+        
+        Result localResult = ninjaDefault.getNotFoundResult(contextImpl);
+        
+        assertThat(localResult.getRenderable(), CoreMatchers.instanceOf(DiagnosticError.class));
     }
     
     @Test
@@ -217,7 +293,7 @@ public class NinjaDefaultTest {
     
         Result result = ninjaDefault.onException(contextImpl, anyException);
         
-        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, anyException);
+        verify(ninjaDefault).getInternalServerErrorResult(contextImpl, anyException, null);
         assertThat(result.getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
 
     }
@@ -225,7 +301,7 @@ public class NinjaDefaultTest {
      
     @Test
     public void testThatGetInternalServerErrorContentNegotiation() throws Exception {
-       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
        Result result = ninjaDefault.getInternalServerErrorResult(contextImpl, new Exception("not important"));
        assertThat(result.getContentType(), equalTo(null));
        assertThat(result.supportedContentTypes().size(), equalTo(3));
@@ -242,6 +318,11 @@ public class NinjaDefaultTest {
     @Test
     public void getInternalServerErrorResult() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+        
         // real test:
         Result result = ninjaDefault.getInternalServerErrorResult(
                 contextImpl,
@@ -256,12 +337,16 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
                 
     }
     
     @Test
     public void testThatGetBadRequestContentNegotiation() throws Exception {
-       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
        Result result = ninjaDefault.getBadRequestResult(contextImpl, new Exception("not important"));
        assertThat(result.getContentType(), equalTo(null));
        assertThat(result.supportedContentTypes().size(), equalTo(3));
@@ -278,6 +363,11 @@ public class NinjaDefaultTest {
     @Test
     public void testGetBadRequest() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST);
+
         // real test:
         Result result = ninjaDefault.getBadRequestResult(
                 contextImpl,
@@ -292,12 +382,16 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
                 
     }
     
     @Test
     public void testThatGetOnNotFoundDoesContentNegotiation() throws Exception {
-       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATON_JSON);
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
        Result result = ninjaDefault.getNotFoundResult(contextImpl);
        assertThat(result.getContentType(), equalTo(null));
        assertThat(result.supportedContentTypes().size(), equalTo(3));
@@ -307,6 +401,7 @@ public class NinjaDefaultTest {
     @Test
     public void testThatGetOnNotFoundDoesFallsBackToHtml() throws Exception {
         Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
+
         Result result = ninjaDefault.getNotFoundResult(contextImpl);
         assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
     }
@@ -314,6 +409,11 @@ public class NinjaDefaultTest {
     @Test
     public void testGetOnNotFoundResultWorks() throws Exception {
         
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
+
         Result result = ninjaDefault.getNotFoundResult(contextImpl);
         
         assertThat(result.getStatusCode(), equalTo(Result.SC_404_NOT_FOUND));
@@ -325,6 +425,10 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
                 
     }
     
@@ -365,6 +469,36 @@ public class NinjaDefaultTest {
     
         verify(resultHandler).handleResult(result, contextImpl);
 
+    }
+    
+    @Test
+    public void testIsDiagnosticsEnabled_TrueInDevAndWithProperNinjaPropertiesConfig() {
+        Mockito.when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE)).thenReturn(true);
+        Mockito.when(ninjaProperties.isDev()).thenReturn(true);
+        
+        assertThat(ninjaDefault.isDiagnosticsEnabled(), equalTo(true));
+        verify(ninjaProperties).isDev();
+        verify(ninjaProperties).getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
+    }
+    
+    @Test
+    public void testIsDiagnosticsEnabled_FalseDisabledWhenNotInDev() {
+        Mockito.when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE)).thenReturn(true);
+        Mockito.when(ninjaProperties.isDev()).thenReturn(false);
+        
+        assertThat(ninjaDefault.isDiagnosticsEnabled(), equalTo(false));
+        verify(ninjaProperties).isDev();
+        verify(ninjaProperties, Mockito.never()).getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
+    }
+    
+    @Test
+    public void testIsDiagnosticsEnabled_FalseWheInDevButDisabledInNinjaPropertiesConfig() {
+        Mockito.when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE)).thenReturn(false);
+        Mockito.when(ninjaProperties.isDev()).thenReturn(true);
+        
+        assertThat(ninjaDefault.isDiagnosticsEnabled(), equalTo(false));
+        verify(ninjaProperties).isDev();
+        verify(ninjaProperties).getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
     }
     
 }

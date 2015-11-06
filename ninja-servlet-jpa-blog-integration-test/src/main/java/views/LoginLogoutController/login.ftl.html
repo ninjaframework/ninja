@@ -1,9 +1,10 @@
-<#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout "Home page">
+<#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout "Login">
+
+<div class="alert alert-info">
+    <b>Pssst.</b> Default user is "bob@gmail.com" / password is "secret".
+</div>
 
 <div class="container">
-	<div class="alert alert-info">
-		<b>Pssst.</b> Default user is "bob@gmail.com" / password is "secret".
-	</div>
 
 	<!-- Example row of columns -->
 	<div class="row">
@@ -24,8 +25,18 @@
                         <input type="password" class="form-control" name="password" id="password" value="${(flash.password)!""}">
                     </div>
                 </div>
-			
-				<button type="submit" class="btn btn-success pull-right">${i18n("login.loginNowButton")}</button>
+
+                <div class="form-group">
+                    <div class="col-lg-8 pull-right">
+                        <div class="pull-right">
+                            <input name="rememberMe" type="checkbox" value="true"
+                                   <#if flash.rememberMe?? && flash.rememberMe == "true">checked</#if>>
+                            <label for="rememberMe"> Remember me </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success pull-right">${i18n("login.loginNowButton")}</button>
 			</form>
 
 		</div>

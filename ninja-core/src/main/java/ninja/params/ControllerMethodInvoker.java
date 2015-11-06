@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,15 +89,17 @@ public class ControllerMethodInvoker {
         }
 
         // Replace a null extractor with a bodyAs extractor, but make sure there's only one
-        boolean bodyAsFound = false;
+        int bodyAsFound = -1;
         for (int i = 0; i < argumentExtractors.length; i++) {
             if (argumentExtractors[i] == null) {
-                if (bodyAsFound) {
-                    throw new RoutingException("Only one parameter may be deserialised as the body " +
-                            method.getDeclaringClass().getName() + "." + method.getName() + "()");
+                if (bodyAsFound > -1) {
+                    throw new RoutingException("Only one parameter may be deserialised as the body "
+                            + method.getDeclaringClass().getName() + "." + method.getName() + "()\n"
+                            + "Extracted parameter is type: " + paramTypes[bodyAsFound].getName() + "\n"
+                            + "Extra parmeter is type: " + paramTypes[i].getName());
                 } else {
                     argumentExtractors[i] = new ArgumentExtractors.BodyAsExtractor(paramTypes[i]);
-                    bodyAsFound = true;
+                    bodyAsFound = i;
                 }
             }
         }
@@ -117,6 +120,24 @@ public class ControllerMethodInvoker {
         // First check if we have a static extractor
         ArgumentExtractor<?> extractor = ArgumentExtractors.getExtractorForType(paramType);
 
+        if (extractor == null) {
+            // See if we have a WithArgumentExtractors annotated annotation for specialized extractors
+            for (Annotation annotation : annotations) {
+                WithArgumentExtractors withArgumentExtractors = annotation.annotationType()
+                        .getAnnotation(WithArgumentExtractors.class);
+                if (withArgumentExtractors != null) {
+                    for (Class<? extends ArgumentExtractor<?>> argumentExtractor : withArgumentExtractors.value()) {
+                        Class<?> extractedType = (Class<?>) ((ParameterizedType)(argumentExtractor.getGenericInterfaces()[0])).getActualTypeArguments()[0];
+                        if (paramType.isAssignableFrom(extractedType)) {
+                            extractor = instantiateComponent(argumentExtractor, annotation,
+                                    paramType, injector);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
         if (extractor == null) {
             // See if we have a WithArgumentExtractor annotated annotation
             for (Annotation annotation : annotations) {

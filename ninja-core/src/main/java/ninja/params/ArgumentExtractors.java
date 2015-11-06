@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,16 @@
 
 package ninja.params;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import ninja.Context;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
 import ninja.validation.Validation;
 
 import com.google.common.collect.ImmutableMap;
@@ -83,7 +87,7 @@ public class ArgumentExtractors {
     public static class SessionExtractor implements ArgumentExtractor<Session> {
         @Override
         public Session extract(Context context) {
-            return context.getSessionCookie();
+            return context.getSession();
         }
 
         @Override
@@ -100,7 +104,7 @@ public class ArgumentExtractors {
     public static class FlashExtractor implements ArgumentExtractor<FlashScope> {
         @Override
         public FlashScope extract(Context context) {
-            return context.getFlashCookie();
+            return context.getFlashScope();
         }
 
         @Override
@@ -187,6 +191,156 @@ public class ArgumentExtractors {
         }
     }
 
+    public static class FileItemParamExtractor implements ArgumentExtractor<FileItem> {
+        private final String key;
+
+        public FileItemParamExtractor(Param param) {
+            this.key = param.value();
+        }
+
+        @Override
+        public FileItem extract(Context context) {
+            return context.getParameterAsFileItem(key);
+        }
+
+        @Override
+        public Class<FileItem> getExtractedType() {
+            return FileItem.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class FileItemParamsExtractor implements ArgumentExtractor<FileItem[]> {
+        private final String key;
+
+        public FileItemParamsExtractor(Params param) {
+            this.key = param.value();
+        }
+
+        @Override
+        public FileItem[] extract(Context context) {
+            List<FileItem> values = new ArrayList<FileItem>();
+            for (FileItem fileItem : context.getParameterAsFileItems(key)) {
+                values.add(fileItem);
+            }
+            return values.toArray(new FileItem[values.size()]);
+        }
+
+        @Override
+        public Class<FileItem[]> getExtractedType() {
+            return FileItem[].class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class FileParamExtractor implements ArgumentExtractor<File> {
+        private final String key;
+
+        public FileParamExtractor(Param param) {
+            this.key = param.value();
+        }
+
+        @Override
+        public File extract(Context context) {
+            return context.getParameterAsFileItem(key).getFile();
+        }
+
+        @Override
+        public Class<File> getExtractedType() {
+            return File.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class FileParamsExtractor implements ArgumentExtractor<File[]> {
+        private final String key;
+
+        public FileParamsExtractor(Params param) {
+            this.key = param.value();
+        }
+
+        @Override
+        public File[] extract(Context context) {
+            List<File> values = new ArrayList<File>();
+            for (FileItem fileItem : context.getParameterAsFileItems(key)) {
+                values.add(fileItem.getFile());
+            }
+            return values.toArray(new File[values.size()]);
+        }
+
+        @Override
+        public Class<File[]> getExtractedType() {
+            return File[].class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class InputStreamParamExtractor implements ArgumentExtractor<InputStream> {
+        private final String key;
+
+        public InputStreamParamExtractor(Param param) {
+            this.key = param.value();
+        }
+
+        @Override
+        public InputStream extract(Context context) {
+            return context.getParameterAsFileItem(key).getInputStream();
+        }
+
+        @Override
+        public Class<InputStream> getExtractedType() {
+            return InputStream.class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
+    public static class InputStreamParamsExtractor implements ArgumentExtractor<InputStream[]> {
+        private final String key;
+
+        public InputStreamParamsExtractor(Params param) {
+            this.key = param.value();
+        }
+
+        @Override
+        public InputStream[] extract(Context context) {
+            List<InputStream> values = new ArrayList<InputStream>();
+            for (FileItem fileItem : context.getParameterAsFileItems(key)) {
+                values.add(fileItem.getInputStream());
+            }
+            return values.toArray(new InputStream[values.size()]);
+        }
+
+        @Override
+        public Class<InputStream[]> getExtractedType() {
+            return InputStream[].class;
+        }
+
+        @Override
+        public String getFieldName() {
+            return key;
+        }
+    }
+
     public static class HeaderExtractor implements ArgumentExtractor<String> {
         private final String key;
 
@@ -246,7 +400,7 @@ public class ArgumentExtractors {
 
         @Override
         public String extract(Context context) {
-            return context.getSessionCookie().get(key);
+            return context.getSession().get(key);
         }
 
         @Override

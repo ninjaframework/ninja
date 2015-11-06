@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,28 @@
 
 package ninja.validation;
 
+import ninja.Context;
+
 /**
  * A validator for validating parameters
- * 
+ *
  * @author James Roper
+ * @author Thibault Meyer
  */
 public interface Validator<T> {
+
     /**
      * Validate the given value
-     * 
-     * @param value
-     *            The value, may be null
-     * @param field
-     *            The name of the field being validated, if applicable
-     * @param validation
-     *            The validation context
+     *
+     * @param value   The value, may be null
+     * @param field   The name of the field being validated, if applicable
+     * @param context The Ninja request context
      */
-    void validate(T value, String field, Validation validation);
+    void validate(T value, String field, Context context);
 
     /**
      * Get the type that this validator validates
-     * 
+     *
      * @return The type that the validator validates
      */
     Class<T> getValidatedType();

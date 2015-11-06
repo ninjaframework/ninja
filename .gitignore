@@ -9,6 +9,8 @@ bin
 *.iml
 .idea
 *~
+nbactions.xml
+nb-configuration.xml
 
 # when developing it is cool linking
 # the ninja framework in the main demo application
@@ -16,3 +18,5 @@ bin
 ninja-demo-application/src/main/java/ninja
 ninja-demo-application/src/main/java/ninjaModuleDemo
 
+#maven-shade-plugin auto-generated files
+dependency-reduced-pom.xml

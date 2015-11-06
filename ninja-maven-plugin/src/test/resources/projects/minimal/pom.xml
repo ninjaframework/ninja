@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apache.maven.plugin.my.unit</groupId>
+    <artifactId>project-to-test</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Test NinjaRunMojo</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>ninja-maven-plugin</artifactId>
+                <configuration>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                    <excludes>
+                        <exclude>(.*)/views/(.*).rocker.html$</exclude>
+                        <exclude>(.*)/views/(.*).class$</exclude>
+                        <exclude>(.*).netbeans_automatic_build$</exclude>
+                    </excludes>
+                    <!--<standaloneClass>ninja.standalone.undertow.NinjaUndertow</standaloneClass>-->
+                    <!--<context>/lockdown</context>-->
+                </configuration>
+                <!--
+                <executions>
+                    <execution>
+                        <id>ninja</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                -->
+            </plugin>
+        </plugins>
+    </build>
+</project>

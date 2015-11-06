@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.params.Param;
+import ninja.session.Session;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -44,27 +45,34 @@ public class LoginLogoutController {
 
     public Result loginPost(@Param("username") String username,
                             @Param("password") String password,
+                            @Param("rememberMe") Boolean rememberMe,
                             Context context) {
 
         boolean isUserNameAndPasswordValid = userDao.isUserAndPasswordValid(username, password);
         
-        
         if (isUserNameAndPasswordValid) {
-            context.getSessionCookie().put("username", username);
-            context.getFlashCookie().success("login.loginSuccessful");
+            Session session = context.getSession();
+            session.put("username", username);
+
+            if (rememberMe != null && rememberMe) {
+                session.setExpiryTime(24 * 60 * 60 * 1000L);
+            }
+
+            context.getFlashScope().success("login.loginSuccessful");
             
             return Results.redirect("/");
-            
+
         } else {
-            
+
             // something is wrong with the input or password not found.
-            context.getFlashCookie().put("username", username);
-            context.getFlashCookie().error("login.errorLogin");
+            context.getFlashScope().put("username", username);
+            context.getFlashScope().put("rememberMe", rememberMe);
+            context.getFlashScope().error("login.errorLogin");
 
             return Results.redirect("/login");
-            
+
         }
-        
+
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -73,8 +81,8 @@ public class LoginLogoutController {
     public Result logout(Context context) {
 
         // remove any user dependent information
-        context.getSessionCookie().clear();
-        context.getFlashCookie().success("login.logoutSuccessful");
+        context.getSession().clear();
+        context.getFlashScope().success("login.logoutSuccessful");
 
         return Results.redirect("/");
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2014 the original author or authors.
+ * Copyright (C) 2012-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@ import ninja.bodyparser.BodyParserEngineManager;
 import ninja.bodyparser.BodyParserEngineXml;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.uploads.FileItem;
+import ninja.uploads.FileItemProvider;
+import ninja.uploads.FileProvider;
 import ninja.utils.ResponseStreams;
 import ninja.validation.Validation;
 
@@ -112,6 +115,15 @@ public interface Context {
      * @return the host name as seen by the server
      */
     String getHostname();
+
+    /**
+     * For instance:
+     * http://example.com/index returns "http".
+     * https://example.com/index returns "https".
+     *
+     * @return the scheme of the request as seen by the server (e.g. "http" or "https").
+     */
+    String getScheme();
 
     /**
      * Returns the Internet Protocol (IP) address of the client
@@ -300,6 +312,38 @@ public interface Context {
     Integer getParameterAsInteger(String name, Integer defaultValue);
 
 
+    /**
+     * Same like {@link #getParameter(String, String)}, but converts the
+     * parameter to File if found.
+     * 
+     * The parameter is read from the multipart stream, using the FileProvider declared
+     * on the route method, class.
+     * 
+     * @param name
+     *            The name of the post or query parameter
+     * @return The value of the parameter or null if not found.
+     */
+    FileItem getParameterAsFileItem(String name);
+
+
+    /**
+     * Get the files parameter with the given key from the request.
+     *
+     * @param name
+     *            The key of the parameter
+     * @return The values, possibly an empty list.
+     */
+    List<FileItem> getParameterAsFileItems(String name);
+
+
+    /**
+     * Get all the file parameters from the request
+     * 
+     * @return The parameters, possibly a null map.
+     */
+    Map<String, List<FileItem>> getParameterFileItems();
+
+    
     /**
      * Same like {@link #getParameter(String)}, but converts the parameter to
      * Class type if found.
@@ -510,7 +554,12 @@ public interface Context {
      * 
      * @return the FileItemIterator of the request or null if there was an
      *         error.
+     *         
+     * @deprecated This method is kept for backward compatibility, use {@link FileProvider}
+     * to specify which {@link FileItemProvider} should be used to handle uploaded files, and
+     * access them using {@link #getParameterAsFileItem(String)}.
      */
+    @Deprecated
     FileItemIterator getFileItemIterator();
 
     /**
@@ -643,6 +692,13 @@ public interface Context {
     void setAttribute(String name, Object value);
     
     /**
+     * Get all the attributes from the request
+     * 
+     * @return The attributes
+     */
+    Map<String, Object> getAttributes();
+    
+    /**
      * Check to see if the request content type is JSON.
      * <p>
      * Checks to see if the request content type has been set application/json 
@@ -659,4 +715,23 @@ public interface Context {
      * @return true if the content type is to set {@code application/xml} 
      */
     boolean isRequestXml();
+
+    /**
+     * Adds a cookie to the response
+     * 
+     * @param cookie Ninja cookie
+     */
+    void addCookie(Cookie cookie);
+
+    /**
+     * Removes a cookie from the response
+     * 
+     * @param cookie Ninja Cookie
+     */
+    void unsetCookie(Cookie cookie);
+    
+    /**
+     * Cleanup context
+     */
+    void cleanup();
 }
