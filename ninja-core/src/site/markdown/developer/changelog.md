@@ -13,15 +13,16 @@ Version X.X.X
  * 2015-10-09 Refactoring of ninja-standalone to extract non-Jetty functionality
               into ninja-core to enable reuse in future non-Jetty standalone implementations. (jjlauer)
     * Much of the functionality in ninja-standalone `ninja/standalone/NinjaJetty.java` extracted to
-      `ninja/standalone/AbstractStandalone.java`
+      ninja-core `ninja/standalone/AbstractStandalone.java`
  * 2015-10-09 Standalone configuration properties can now be set in conf/application.conf
               Supports ninja.host, ninja.port, ninja.context, and ninja.idle.timeout
               The order of precedence is systemProperty > configProperty > defaultValue (jjlauer)
  * 2015-10-09 New 'ninja.standalone.class' system property to control which concrete
               standalone implementation is used by NinjaTestServer (jjlauer)
  * 2015-10-09 ninja-maven-plugin support for 'jvmArgs' property to allow for any
-              properties to be seamlessly passed thru to spawned Ninja JVM. (jjlauer)
+              properties to be passed thru to spawned Ninja JVM. (jjlauer)
  * 2015-10-09 ninja-maven-plugin support for 'mainClass' property to override which
+              class is run by spawned Ninja JVM.
  * 2015-10-09 ninja-maven-plugin deprecated 'contextPath' property in favor of new
               'context' key to match what NinjaJetty has always used. (jjlauer)
  * 2015-10-09 NinjaJetty has more polished logging messages on startup (jjlauer)
