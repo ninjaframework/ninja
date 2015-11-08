@@ -177,11 +177,11 @@ public class MessagesImpl implements Messages {
         }
 
         // Load each language into the HashMap containing the languages:
-        for (String lang : applicationLangs) {
+        for (String applicationLang : applicationLangs) {
 
             // First step: Load complete language eg. en-US
             Configuration configuration = loadLanguageConfiguration(String
-                    .format("conf/messages_%s.properties", lang));
+                    .format("conf/messages_%s.properties", applicationLang));
 
             Configuration configurationLangOnly = null;
 
@@ -189,9 +189,9 @@ public class MessagesImpl implements Messages {
             // the language, too. For instance missing variables in en-US will
             // be
             // Overwritten by the default languages.
-            if (lang.contains("-")) {
+            if (applicationLang.contains("-")) {
                 // get the lang
-                String langOnly = lang.split("-")[0];
+                String langOnly = applicationLang.split("-")[0];
 
                 // And load the configuraion
                 configurationLangOnly = loadLanguageConfiguration(String
@@ -204,7 +204,7 @@ public class MessagesImpl implements Messages {
             if (configuration == null) {
                 logger.info(
                         "Did not find conf/messages_{}.properties but it was specified in application.conf. Using default language instead.",
-                        lang);
+                        applicationLang);
 
             } else {
 
@@ -224,7 +224,7 @@ public class MessagesImpl implements Messages {
 
                 // and add the composed configuration to the hashmap with the
                 // mapping.
-                langToKeyAndValuesMappingMutable.put(lang,
+                langToKeyAndValuesMappingMutable.put(applicationLang,
                         (Configuration) compositeConfiguration);
             }
 

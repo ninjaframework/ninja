@@ -102,10 +102,10 @@ public class BasicAuthFilterTest {
                 NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED);
 
         // filter that
-        Result result = basicAuthFilter.filter(filterChain, context);
+        Result resultLocal = basicAuthFilter.filter(filterChain, context);
 
         assertEquals(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED,
-                result.getTemplate());
+                resultLocal.getTemplate());
         verifyZeroInteractions(filterChain);
     }
 
@@ -132,10 +132,10 @@ public class BasicAuthFilterTest {
                 auth("test", "user"));
 
         // filter that
-        Result result = basicAuthFilter.filter(filterChain, context);
+        Result resultLocal = basicAuthFilter.filter(filterChain, context);
 
         assertEquals(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED,
-                result.getTemplate());
+                resultLocal.getTemplate());
         verifyZeroInteractions(filterChain);
     }
 

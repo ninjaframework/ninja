@@ -50,7 +50,7 @@ public class CookieEncryption {
     @Inject
     public CookieEncryption(NinjaProperties properties) {
         
-        Optional<SecretKeySpec> secretKeySpec = Optional.absent();
+        Optional<SecretKeySpec> optionalSecretKeySpec = Optional.absent();
 
         if (properties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)) {
             
@@ -63,10 +63,10 @@ public class CookieEncryption {
                     maxKeyLengthBits = 256;
                 }
 
-                secretKeySpec = Optional.of(
+                optionalSecretKeySpec = Optional.of(
                         new SecretKeySpec(secret.getBytes(), 0, maxKeyLengthBits / Byte.SIZE, ALGORITHM));
                 
-                logger.info("Ninja session encryption is using {} / {} bit.", secretKeySpec.get().getAlgorithm(), maxKeyLengthBits);
+                logger.info("Ninja session encryption is using {} / {} bit.", optionalSecretKeySpec.get().getAlgorithm(), maxKeyLengthBits);
 
             } catch (Exception exception) {
                 logger.error("Can not create class to encrypt cookie.", exception);
@@ -75,10 +75,10 @@ public class CookieEncryption {
 
         } else {
             encryptionEnabled = false;
-            secretKeySpec = Optional.absent();
+            optionalSecretKeySpec = Optional.absent();
         }
         
-        this.secretKeySpec = secretKeySpec;
+        this.secretKeySpec = optionalSecretKeySpec;
 
     }
 

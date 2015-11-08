@@ -366,7 +366,7 @@ public class Result {
     @Deprecated
     public Result renderRaw(final String string) {
  
-        Renderable renderable = new Renderable() {
+        Renderable rawRenderable = new Renderable() {
  
             @Override
             public void render(Context context, Result result) {
@@ -392,7 +392,7 @@ public class Result {
             }
         };
  
-        render(renderable);
+        render(rawRenderable);
  
         return this;
         
@@ -415,7 +415,7 @@ public class Result {
      */
     public Result renderRaw(final byte [] bytes) {
  
-        Renderable renderable = new Renderable() {
+        Renderable renderableLocal = new Renderable() {
                     
             @Override
             public void render(Context context, Result result) {
@@ -435,7 +435,7 @@ public class Result {
             }
         };
                     
-        render(renderable);
+        render(renderableLocal);
  
         return this;
 

@@ -244,27 +244,27 @@ public class MessagesImplTest {
         
         // test fallback to default (english in that case)
         Optional<String> language = Optional.absent();
-        Optional<String> result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
+        Optional<String> resultLocal = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
         
-        assertEquals("that's a date: Jan 1, 1970", result.get());
+        assertEquals("that's a date: Jan 1, 1970", resultLocal.get());
 
         // de as language
         language = Optional.of("de");
-        result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
+        resultLocal = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
 
-        assertEquals("das ist ein datum: 01.01.1970", result.get());
+        assertEquals("das ist ein datum: 01.01.1970", resultLocal.get());
 
         // fr as language
         language = Optional.of("fr-FR");
-        result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
+        resultLocal = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
 
-        assertEquals("c'est la date: 1 janv. 1970", result.get());
+        assertEquals("c'est la date: 1 janv. 1970", resultLocal.get());
 
         // en as language
         language = Optional.of("en");
-        result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
+        resultLocal = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
 
-        assertEquals("that's a date: Jan 1, 1970", result.get());
+        assertEquals("that's a date: Jan 1, 1970", resultLocal.get());
     }
 
     @Test

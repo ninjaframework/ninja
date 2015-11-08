@@ -46,28 +46,28 @@ public class PostofficeCommonsmailImpl implements Postoffice {
 
         this.smtpHost = props.getOrDie(PostofficeConstant.smtpHost);
 
-        Integer smtpPort = props.getInteger(PostofficeConstant.smtpPort);
-        if (smtpPort == null) {
+        Integer smtpPortProp = props.getInteger(PostofficeConstant.smtpPort);
+        if (smtpPortProp == null) {
             this.smtpPort = 25;
         } else {
-            this.smtpPort = smtpPort;
+            this.smtpPort = smtpPortProp;
         }
 
-        Boolean smtpSsl = props.getBoolean(PostofficeConstant.smtpSsl);
-        if (smtpSsl == null) {
+        Boolean smtpSslProp = props.getBoolean(PostofficeConstant.smtpSsl);
+        if (smtpSslProp == null) {
             this.smtpSsl = false;
         } else {
-            this.smtpSsl = smtpSsl;
+            this.smtpSsl = smtpSslProp;
         }
 
         this.smtpUser = props.get(PostofficeConstant.smtpUser);
         this.smtpPassword = props.get(PostofficeConstant.smtpPassword);
 
-        Boolean smtpDebug = props.getBoolean(PostofficeConstant.smtpDebug);
-        if (smtpDebug == null) {
+        Boolean smtpDebugProp = props.getBoolean(PostofficeConstant.smtpDebug);
+        if (smtpDebugProp == null) {
             this.smtpDebug = false;
         } else {
-            this.smtpDebug = smtpDebug;
+            this.smtpDebug = smtpDebugProp;
         }
     }
 

@@ -165,11 +165,11 @@ public class RouterImpl implements Router {
         if (routes != null) {
             throw new IllegalStateException("Routes already compiled");
         }
-        List<Route> routes = new ArrayList<>();
+        List<Route> compiledRoutes = new ArrayList<>();
         for (RouteBuilderImpl routeBuilder : allRouteBuilders) {
-            routes.add(routeBuilder.buildRoute(injector));
+            compiledRoutes.add(routeBuilder.buildRoute(injector));
         }
-        this.routes = ImmutableList.copyOf(routes);
+        this.routes = ImmutableList.copyOf(compiledRoutes);
 
         logRoutes();
     }
