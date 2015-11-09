@@ -303,7 +303,7 @@ public class RouterImpl implements Router {
             }
 
             // now prepare the query string for this url if we got some query params
-            if (queryParameterMap.size() > 0) {
+            if (!queryParameterMap.isEmpty()) {
 
                 StringBuffer queryParameterStringBuffer = new StringBuffer();
 

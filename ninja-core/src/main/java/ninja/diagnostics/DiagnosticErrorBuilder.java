@@ -151,7 +151,7 @@ public class DiagnosticErrorBuilder {
                                                         Result underlyingResult) {
         
         // if source snippet exists then include it with diagnostic error
-        if (snippet != null && snippet.getLines() != null && snippet.getLines().size() > 0) {
+        if (snippet != null && snippet.getLines() != null && !snippet.getLines().isEmpty()) {
             return new DiagnosticError(
                 title, 
                 throwable,

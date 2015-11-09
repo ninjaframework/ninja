@@ -28,9 +28,9 @@ public class SetupDao {
         EntityManager entityManager = entityManagerProvider.get();
         
         Query q = entityManager.createQuery("SELECT x FROM User x");
-        List<User> users = (List<User>) q.getResultList();        
-        
-        if (users.size() == 0) {
+        List<User> users = (List<User>) q.getResultList();
+
+        if (users.isEmpty()) {
 
             // Create a new user and save it
             User bob = new User("bob@gmail.com", "secret", "Bob");
