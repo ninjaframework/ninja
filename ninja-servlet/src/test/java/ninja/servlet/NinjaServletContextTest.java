@@ -27,9 +27,13 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Map;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,6 +61,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Injector;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NinjaServletContextTest {
@@ -94,6 +99,9 @@ public class NinjaServletContextTest {
     @Mock
     private NinjaProperties ninjaProperties;
 
+    @Mock
+    private Injector injector;
+
     private NinjaServletContext context;
 
     @Before
@@ -110,7 +118,7 @@ public class NinjaServletContextTest {
                 resultHandler,
                 sessionCookie,
                 validation,
-                null);
+                injector);
     }
 
     @Test
@@ -869,5 +877,47 @@ public class NinjaServletContextTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(scheme, httpServletRequest.getScheme());
+    }
+
+    @Test
+    public void testIsMultipart() {
+        when(httpServletRequest.getContentType()).thenReturn("multipart/form-data");
+        when(httpServletRequest.getMethod()).thenReturn("POST");
+
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        assertEquals(true, context.isMultipart());
+    }
+
+    @Test
+    public void testGetUTF8ParameterInMultipart() throws Exception {
+        String body = "------Ninja\r\n"
+                + "Content-Disposition: form-data; name=\"utf8\"\r\n"
+                + "\r\n"
+                + "✓\r\n"
+                + "------Ninja--\r\n";
+        final ByteArrayInputStream bais = new ByteArrayInputStream(body.getBytes(NinjaConstant.UTF_8));
+
+        ServletInputStream sis = new ServletInputStream(){
+            @Override
+            public boolean isFinished() { return false; }
+            @Override
+            public boolean isReady() { return false; }
+            @Override
+            public void setReadListener(ReadListener readListener) { }
+            @Override
+            public int read() throws IOException { return bais.read(); }
+        };
+
+        when(httpServletRequest.getContentType()).thenReturn("multipart/form-data; boundary=----Ninja");
+        when(httpServletRequest.getMethod()).thenReturn("POST");
+        when(ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_FILE_SIZE, -1)).thenReturn(1024);
+        when(ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_TOTAL_SIZE, -1)).thenReturn(1024);
+
+        when(httpServletRequest.getInputStream()).thenReturn(sis);
+
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        assertEquals("✓", context.getParameter("utf8"));
     }
 }
