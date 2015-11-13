@@ -537,9 +537,17 @@ public class NinjaServletContext extends AbstractContext {
                 FileItemStream item = fileItemIterator.next();
 
                 if (item.isFormField()) {
+
+                    String charset = NinjaConstant.UTF_8;
+
+                    String contentType = item.getContentType();
+
+                    if (contentType != null) {
+                        charset = HttpHeaderUtils.getCharsetOfContentTypeOrUtf8(contentType);
+                    }
                     
                     // save the form field for later use from getParameter
-                    String value = Streams.asString(item.openStream());
+                    String value = Streams.asString(item.openStream(), charset);
                     formMap.put(item.getFieldName(), value);
 
                 } else {
