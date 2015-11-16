@@ -27,9 +27,14 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,6 +62,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Injector;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NinjaServletContextTest {
@@ -94,6 +100,9 @@ public class NinjaServletContextTest {
     @Mock
     private NinjaProperties ninjaProperties;
 
+    @Mock
+    private Injector injector;
+
     private NinjaServletContext context;
 
     @Before
@@ -110,7 +119,7 @@ public class NinjaServletContextTest {
                 resultHandler,
                 sessionCookie,
                 validation,
-                null);
+                injector);
     }
 
     @Test
@@ -869,5 +878,75 @@ public class NinjaServletContextTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
 
         assertEquals(scheme, httpServletRequest.getScheme());
+    }
+
+    @Test
+    public void testIsMultipart() {
+        when(httpServletRequest.getContentType()).thenReturn("multipart/form-data");
+        when(httpServletRequest.getMethod()).thenReturn("POST");
+
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        assertEquals(true, context.isMultipart());
+    }
+
+    @Test
+    public void testGetUTF8ParameterInMultipart() throws Exception {
+        String body = "------Ninja\r\n"
+                + "Content-Disposition: form-data; name=\"utf8\"\r\n"
+                + "\r\n"
+                + "✓\r\n"
+                + "------Ninja--\r\n";
+        ServletInputStream sis = createHttpServletRequestInputStream(body.getBytes(NinjaConstant.UTF_8));
+
+        when(httpServletRequest.getContentType()).thenReturn("multipart/form-data; boundary=----Ninja");
+        when(httpServletRequest.getMethod()).thenReturn("POST");
+        when(ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_FILE_SIZE, -1)).thenReturn(1024);
+        when(ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_TOTAL_SIZE, -1)).thenReturn(1024);
+
+        when(httpServletRequest.getInputStream()).thenReturn(sis);
+
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        assertEquals("✓", context.getParameter("utf8"));
+    }
+
+    @Test
+    public void testGetWindows1250ParameterInMultipart() throws Exception {
+        String body = "------Ninja\r\n"
+                + "content-disposition: form-data; name=\"field1\"\r\n"
+                + "content-type: text/plain; charset=windows-1250\r\n"
+                + "content-transfer-encoding: quoted-printable\r\n"
+                + "\r\n"
+                + "Joe owes €100.\r\n"
+                + "------Ninja--\r\n";
+        ServletInputStream sis = createHttpServletRequestInputStream(body.getBytes("windows-1250"));
+
+        when(httpServletRequest.getContentType()).thenReturn("multipart/form-data; boundary=----Ninja");
+        when(httpServletRequest.getMethod()).thenReturn("POST");
+        when(ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_FILE_SIZE, -1)).thenReturn(1024);
+        when(ninjaProperties.getIntegerWithDefault(NinjaConstant.UPLOADS_MAX_TOTAL_SIZE, -1)).thenReturn(1024);
+
+        when(httpServletRequest.getInputStream()).thenReturn(sis);
+
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        assertEquals("Joe owes €100.", context.getParameter("field1"));
+    }
+
+    private ServletInputStream createHttpServletRequestInputStream(byte[] bytes) throws UnsupportedEncodingException {
+        final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+
+        ServletInputStream sis = new ServletInputStream(){
+            @Override
+            public boolean isFinished() { return false; }
+            @Override
+            public boolean isReady() { return false; }
+            @Override
+            public void setReadListener(ReadListener readListener) { }
+            @Override
+            public int read() throws IOException { return bais.read(); }
+        };
+        return sis;
     }
 }
