@@ -39,7 +39,7 @@ import freemarker.template.TemplateModelException;
 public class TemplateEngineFreemarkerPrettyTimeMethod implements
         TemplateMethodModelEx {
 
-    public final static Logger logger = LoggerFactory
+    private static final Logger logger = LoggerFactory
             .getLogger(TemplateEngineFreemarkerPrettyTimeMethod.class);
 
     private final PrettyTime prettyTime;

@@ -47,7 +47,7 @@ public class FlashScopeImpl implements FlashScope {
 
     private String applicationCookiePrefix;
     
-    private static Logger logger = LoggerFactory.getLogger(FlashScopeImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FlashScopeImpl.class);
 
     @Inject
     public FlashScopeImpl(NinjaProperties ninjaProperties) {

@@ -39,7 +39,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TemplateEngineManagerImpl implements TemplateEngineManager {
 
-    private final Logger logger = LoggerFactory.getLogger(TemplateEngineManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TemplateEngineManagerImpl.class);
 
     // Keep a reference of providers rather than instances, so template engines
     // don't have

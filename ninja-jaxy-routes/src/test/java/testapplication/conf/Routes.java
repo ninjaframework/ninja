@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 
 public class Routes implements ApplicationRoutes {
 
-    Logger logger = LoggerFactory.getLogger(Routes.class);
+    private static final Logger logger = LoggerFactory.getLogger(Routes.class);
 
     private NinjaProperties ninjaProperties;
 

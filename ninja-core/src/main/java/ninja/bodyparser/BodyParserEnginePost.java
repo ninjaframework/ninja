@@ -35,7 +35,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class BodyParserEnginePost implements BodyParserEngine {
 
-    private final Logger logger = LoggerFactory.getLogger(BodyParserEnginePost.class);
+    private static final Logger logger = LoggerFactory.getLogger(BodyParserEnginePost.class);
 
     @Override
     public <T> T invoke(Context context, Class<T> classOfT) {

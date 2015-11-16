@@ -50,7 +50,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.collect.Maps;
 
 public class NinjaTestBrowser {
-    private final Logger LOG = LoggerFactory.getLogger(NinjaTestBrowser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NinjaTestBrowser.class);
     private final DefaultHttpClient httpClient;
 
     public NinjaTestBrowser() {

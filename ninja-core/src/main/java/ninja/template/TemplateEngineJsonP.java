@@ -49,7 +49,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TemplateEngineJsonP implements TemplateEngine {
 
-    private final Logger logger = LoggerFactory.getLogger(TemplateEngineJsonP.class);
+    private static final Logger logger = LoggerFactory.getLogger(TemplateEngineJsonP.class);
 
     static final String DEFAULT_CALLBACK_PARAMETER_NAME = "callback";
 

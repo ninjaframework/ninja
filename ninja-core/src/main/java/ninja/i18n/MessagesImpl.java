@@ -43,7 +43,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class MessagesImpl implements Messages {
 
-    private static Logger logger = LoggerFactory.getLogger(MessagesImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MessagesImpl.class);
 
     private final Map<String, Configuration> langToKeyAndValuesMapping;
 

@@ -40,7 +40,7 @@ public class RouterImpl implements Router {
 
     private final NinjaProperties ninjaProperties;
 
-    private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
 
     private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<>();
     private final Injector injector;
@@ -387,7 +387,7 @@ public class RouterImpl implements Router {
 
             } else {
 
-              logger.info("{} {}", route.getHttpMethod(), route.getUri());
+                logger.info("{} {}", route.getHttpMethod(), route.getUri());
 
             }
 

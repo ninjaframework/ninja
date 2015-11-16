@@ -64,7 +64,7 @@ import com.google.inject.Injector;
  */
 public class NinjaRunner extends BlockJUnit4ClassRunner {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(BlockJUnit4ClassRunner.class);
 
     private Injector injector = null;
 

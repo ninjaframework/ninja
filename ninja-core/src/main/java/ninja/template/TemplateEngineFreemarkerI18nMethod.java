@@ -37,7 +37,7 @@ import freemarker.template.TemplateModelException;
 public class TemplateEngineFreemarkerI18nMethod implements
         TemplateMethodModelEx {
     
-    public final static Logger logger 
+    private final static Logger logger
             = LoggerFactory.getLogger(TemplateEngineFreemarkerAssetsAtMethod.class);
 
     final Messages messages;

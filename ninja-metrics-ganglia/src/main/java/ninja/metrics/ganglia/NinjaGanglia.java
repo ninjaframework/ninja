@@ -43,7 +43,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class NinjaGanglia {
 
-    private final Logger log = LoggerFactory.getLogger(NinjaGanglia.class);
+    private static final Logger log = LoggerFactory.getLogger(NinjaGanglia.class);
 
     private final NinjaProperties ninjaProperties;
 

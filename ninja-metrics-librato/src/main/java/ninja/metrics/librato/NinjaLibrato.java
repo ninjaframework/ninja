@@ -39,7 +39,7 @@ import com.librato.metrics.LibratoReporter;
 @Singleton
 public class NinjaLibrato {
 
-    private final Logger log = LoggerFactory.getLogger(NinjaLibrato.class);
+    private static final Logger log = LoggerFactory.getLogger(NinjaLibrato.class);
 
     private final NinjaProperties ninjaProperties;
 

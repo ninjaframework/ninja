@@ -44,7 +44,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class NinjaGraphite {
 
-    private final Logger log = LoggerFactory.getLogger(NinjaGraphite.class);
+    private static final Logger log = LoggerFactory.getLogger(NinjaGraphite.class);
 
     private final NinjaProperties ninjaProperties;
 

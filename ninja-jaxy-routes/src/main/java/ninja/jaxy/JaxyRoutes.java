@@ -57,7 +57,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class JaxyRoutes implements ApplicationRoutes {
 
-    final static Logger logger = LoggerFactory.getLogger(JaxyRoutes.class);
+    private final static Logger logger = LoggerFactory.getLogger(JaxyRoutes.class);
 
     final NinjaProperties ninjaProperties;
 

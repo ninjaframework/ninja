@@ -35,7 +35,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class MimeTypes {
-    private final Logger logger = LoggerFactory.getLogger(MimeTypes.class);
+    private static final Logger logger = LoggerFactory.getLogger(MimeTypes.class);
 
     private final String PROPERTY_MIMETYPE_PREFIX = "mimetype.";
     private final String DEFAULT_MIMET_TYPE_LOCATIONS = "ninja/utils/mime-types.properties";

@@ -32,7 +32,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TemplateEngineText implements TemplateEngine {
 
-    private final Logger logger = LoggerFactory.getLogger(TemplateEngineText.class);
+    private static final Logger logger = LoggerFactory.getLogger(TemplateEngineText.class);
 
     @Inject
     public TemplateEngineText() {

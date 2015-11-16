@@ -39,7 +39,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
-    private final Logger logger = LoggerFactory.getLogger(BodyParserEngineManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BodyParserEngineManagerImpl.class);
 
     // Keep a reference of providers rather than instances, so body parser engines
     // don't have to be singleton if they don't want

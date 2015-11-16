@@ -23,7 +23,7 @@ import com.google.common.base.Optional;
 
 public class NinjaModeHelper {
     
-    static Logger logger = LoggerFactory.getLogger(NinjaModeHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(NinjaModeHelper.class);
     
     /**
      * returns an empty Optional<NinjaMode> if no mode is set. Or the valid mode

@@ -41,7 +41,7 @@ import metrics_influxdb.InfluxdbHttp;
 @Singleton
 public class NinjaInfluxDB {
 
-    private final Logger log = LoggerFactory.getLogger(NinjaInfluxDB.class);
+    private static final Logger log = LoggerFactory.getLogger(NinjaInfluxDB.class);
 
     private final NinjaProperties ninjaProperties;
 

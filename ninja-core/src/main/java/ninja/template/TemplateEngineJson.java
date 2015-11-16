@@ -33,7 +33,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TemplateEngineJson implements TemplateEngine {
 
-    private final Logger logger = LoggerFactory.getLogger(TemplateEngineJson.class);
+    private static final Logger logger = LoggerFactory.getLogger(TemplateEngineJson.class);
 
     private final ObjectMapper objectMapper;
 

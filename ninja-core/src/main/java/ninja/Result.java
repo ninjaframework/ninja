@@ -41,7 +41,7 @@ import com.google.common.collect.Maps;
 
 public class Result {
     
-    private final Logger logger = LoggerFactory.getLogger(Result.class);
+    private static final Logger logger = LoggerFactory.getLogger(Result.class);
 
     // /////////////////////////////////////////////////////////////////////////
     // HTTP Status codes (for convenience)
@@ -383,7 +383,7 @@ public class Result {
                     writer.write(string);
                     
                 } catch (IOException ioException) {
-                
+
                     logger.error(
                             "Error rendering raw String via renderRaw(...)", 
                             ioException);

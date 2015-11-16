@@ -35,7 +35,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class LangImpl implements Lang {
 
-    private static Logger logger = LoggerFactory.getLogger(LangImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(LangImpl.class);
     
     private final String applicationCookiePrefix;
     
