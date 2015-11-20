@@ -64,6 +64,7 @@
         <jackson.version>2.5.1</jackson.version>
         <guice.version>4.0</guice.version>
         <metrics.version>3.1.1</metrics.version>
+        <slf4j.version>1.7.13</slf4j.version>
         <powermock.version>1.5.6</powermock.version>
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
@@ -451,14 +452,14 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.12</version>
+                <version>${slf4j.version}</version>
             </dependency>
         
             <!-- Replace log4j with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.12</version>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <!-- Some nice stuff for handling IO. Some overlap with guava though... -->
