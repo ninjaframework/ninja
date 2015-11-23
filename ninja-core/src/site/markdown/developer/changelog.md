@@ -1,4 +1,4 @@
-Version 5.2.3
+Version 5.2.2
 =============
 
  * 2015-11-21 Bump to slf4j 1.7.13 (ra)
