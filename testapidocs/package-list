@@ -1,3 +1,6 @@
+com.example.conf
+com.example.controllers
+conf
 ninja
 ninja.bodyparser
 ninja.cache
@@ -13,5 +16,6 @@ ninja.postoffice.commonsmail
 ninja.postoffice.mock
 ninja.scheduler
 ninja.session
+ninja.standalone
 ninja.template
 ninja.utils

@@ -17,6 +17,7 @@ ninja.postoffice.guice
 ninja.postoffice.mock
 ninja.scheduler
 ninja.session
+ninja.standalone
 ninja.template
 ninja.template.directives
 ninja.uploads
