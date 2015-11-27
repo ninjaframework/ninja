@@ -1,5 +1,5 @@
-Advanced topics - Security, i18n and more
-=========================================
+Implicit functions & variables
+==============================
 
 Security and templating
 -----------------------
@@ -9,7 +9,6 @@ can use the "noescape" directive around that particular variable.
 <pre class="prettyprint">
 &lt;#noescape&gt;${yourVariableThatShouldNotBeEscaped}&lt;/#noescape&gt;
 </pre>
-
 
 i18n and the view
 ----------------
@@ -147,12 +146,3 @@ If you use either the form or the token you might want to check the token in you
 <code>FilterWith(AuthenticityFilter.class)</code>
 
 If the token is invalid the use will see a 403 Forbidden error page.
-
-Advanced usage of Freemarker
-----------------------------
-
-Freemarker is the templating language we are using for rendering views. 
-It can do a lot of cool stuff, and you should refer to http://freemarker.org/
-to learn more.
-
-Note that the Freemarker <code>Configuration</code> object can be accessed via your application <code>TemplateEngineFreemarker</code> singleton. According to the FreeMarker documentation, the configuration will be thread-safe once all settings have been set via a safe publication technique. Therefore, consider modifying it only within the <code>configure()</code> method of your application <code>Module</code> singleton.
