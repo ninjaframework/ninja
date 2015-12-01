@@ -61,4 +61,4 @@ And in your template :
 <#import "../layout/functions.ftl.html" as f> 
 <@f.bold>Make me bold</@f.bold>
 </pre>
-This last way should help you making reusable macros when using one or another CSS theme.
+This last way should help you making reusable macros when using one or another HTML/CSS framework.

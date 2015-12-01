@@ -145,4 +145,4 @@ To get the token, use the following code
 If you use either the form or the token you might want to check the token in your controller. Ninja offers a filter for checking the correctness of the token. Just add the following filter to your controller class or method.
 <code>FilterWith(AuthenticityFilter.class)</code>
 
-If the token is invalid the use will see a 403 Forbidden error page.
+If the token is invalid the user will see a 403 Forbidden error page.
