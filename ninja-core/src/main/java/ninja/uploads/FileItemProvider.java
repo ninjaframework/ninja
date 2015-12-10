@@ -27,9 +27,7 @@ import com.google.inject.ImplementedBy;
  * 
  * @author Christian Bourgeois
  */
-@ImplementedBy(NoFileItemProvider.class)
+@ImplementedBy(MemoryFileItemProvider.class)
 public interface FileItemProvider {
-    
     FileItem create(FileItemStream item);
-
 }

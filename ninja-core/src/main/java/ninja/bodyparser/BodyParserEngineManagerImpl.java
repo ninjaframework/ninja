@@ -47,6 +47,7 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
     @Inject
     public BodyParserEngineManagerImpl(Provider<BodyParserEnginePost> bodyParserEnginePost,
+                                       Provider<BodyParserEngineMultipart> bodyParserEngineMultipart,
                                        Provider<BodyParserEngineJson> bodyParserEngineJson,
                                        Provider<BodyParserEngineXml> bodyParserEngineXml,
                                        Injector injector) {
@@ -58,6 +59,8 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
         // custom bindings
         map.put(bodyParserEnginePost.get().getContentType(),
                 bodyParserEnginePost);
+        map.put(bodyParserEngineMultipart.get().getContentType(),
+                bodyParserEngineMultipart);
         map.put(bodyParserEngineJson.get().getContentType(),
                 bodyParserEngineJson);
         map.put(bodyParserEngineXml.get().getContentType(),
