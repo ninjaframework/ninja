@@ -1,3 +1,9 @@
+Version X
+=============
+
+ * 2015-12-15 Switch from to Travis CI (Cloudbees CI no longer available) (ra)
+
+
 Version 5.2.2
 =============
 
