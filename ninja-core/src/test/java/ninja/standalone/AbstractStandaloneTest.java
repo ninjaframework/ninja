@@ -19,9 +19,11 @@ package ninja.standalone;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -260,6 +262,33 @@ public class AbstractStandaloneTest {
                 .configure();
         
         assertThat(standalone.getPort(), is(not(0)));
+        assertThat(standalone.isPortEnabled(), is(true));
+        assertThat(standalone.isSslPortEnabled(), is(false));
+    }
+    
+    @Test
+    public void sslRandomPortAssigned() throws Exception {
+        FakeStandalone standalone = new FakeStandalone()
+                .port(-1)
+                .sslPort(0)
+                .configure();
+        
+        assertThat(standalone.getSslPort(), is(not(0)));
+    }
+    
+    @Test
+    public void sslConfiguration() throws Exception {
+        FakeStandalone standalone = new FakeStandalone()
+                .port(-1)
+                .sslPort(8443)
+                .start();
+        
+        assertThat(standalone.getSslPort(), is(not(0)));
+        assertThat(standalone.isPortEnabled(), is(false));
+        assertThat(standalone.isSslPortEnabled(), is(true));
+        assertThat(standalone.getServerUrls().size(), is(1));
+        assertThat(standalone.getServerUrls().get(0), endsWith(":8443"));
+        assertThat(standalone.getServerUrls().get(0), startsWith("https://"));
     }
 
 }
