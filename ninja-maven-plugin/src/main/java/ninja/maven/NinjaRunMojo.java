@@ -146,10 +146,16 @@ public class NinjaRunMojo extends AbstractMojo {
     protected String mode;
 
     /**
-     * Port for SuperDevMode (can also now be set in conf/application.conf)
+     * Port for SuperDevMode (can also be set in conf/application.conf)
      */
     @Parameter(property = "ninja.port", required = false)
     protected Integer port;
+    
+    /**
+     * SSL port for SuperDevMode (can also be set in conf/application.conf)
+     */
+    @Parameter(property = "ninja.ssl.port", required = false)
+    protected Integer sslPort;
     
     /**
      * Main class to run in SuperDevMode. Defaults to default standalone class
@@ -271,6 +277,7 @@ public class NinjaRunMojo extends AbstractMojo {
         getLog().info("      context: " + (getContextPath() != null ? getContextPath() : "<default>"));
         getLog().info("         mode: " + mode);
         getLog().info("         port: " + (port != null ? port : "<default>"));
+        getLog().info("     ssl port: " + (sslPort != null ? sslPort : "<default>"));
         getLog().info("    mainClass: " + mainClassToRun);
         getLog().info("extra jvmArgs: " + (jvmArgs != null ? jvmArgs : "<none>"));
         getLog().info("------------------------------------------------------------------------");
@@ -364,9 +371,16 @@ public class NinjaRunMojo extends AbstractMojo {
             jvmArguments.add(portSelection);
         }
         
+        if (sslPort != null) {
+            String sslPortSelection
+                    = "-D" + NinjaJetty.KEY_NINJA_SSL_PORT + "=" + sslPort;
+            jvmArguments.add(sslPortSelection);
+        }
+        
         if (getContextPath() != null) {
-            String systemPropertyContextPath = "-Dninja.context=" + getContextPath();
-            jvmArguments.add(systemPropertyContextPath);
+            String contextPathSelection
+                    = "-D" + NinjaJetty.KEY_NINJA_CONTEXT_PATH + "=" + getContextPath();
+            jvmArguments.add(contextPathSelection);
         }
         
         if (jvmArgs != null) {

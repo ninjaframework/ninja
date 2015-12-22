@@ -2,7 +2,7 @@ Version X
 =============
 
  * 2015-12-15 Switch from to Travis CI (Cloudbees CI no longer available) (ra)
-
+ * 2015-12-21 Basic HTTPS support for Ninja standalone & SuperDevMode (jjlauer)
 
 Version 5.2.2
 =============

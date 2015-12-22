@@ -20,6 +20,7 @@ import com.google.inject.CreationException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import ninja.utils.NinjaMode;
@@ -239,5 +240,42 @@ public class NinjaJettyTest {
         }
     }
     
-    
+    @Test
+    public void ssl() throws Exception {
+        NinjaJetty standalone = new NinjaJetty()
+            .externalConfigurationPath("conf/jetty.minimal.conf")
+            .ninjaMode(NinjaMode.test)
+            .port(-1)
+            .sslPort(RANDOM_PORT);
+        
+        try {
+            standalone.start();
+            
+            assertThat(standalone.getPort(), is(-1));
+            assertThat(standalone.getHost(), is(nullValue()));
+            assertThat(standalone.getContextPath(), is(""));
+            assertThat(standalone.getNinjaMode(), is(NinjaMode.test));
+            assertThat(standalone.getSslPort(), is(RANDOM_PORT));
+            assertThat(standalone.getSslKeystoreUri(), is(new URI(Standalone.DEFAULT_DEV_NINJA_SSL_KEYSTORE_URI)));
+            assertThat(standalone.getSslKeystorePassword(), is(Standalone.DEFAULT_DEV_NINJA_SSL_KEYSTORE_PASSWORD));
+            assertThat(standalone.getSslTruststoreUri(), is(new URI(Standalone.DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_URI)));
+            assertThat(standalone.getSslTruststorePassword(), is(Standalone.DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_PASSWORD));
+
+            assertThat(standalone.getServerUrls().get(0), is("https://localhost:" + RANDOM_PORT));
+            assertThat(standalone.contextHandler, is(not(nullValue())));
+            assertNotNull(standalone.ninjaServletListener);
+            assertThat(standalone.contextHandler.isAvailable(), is(true));
+            assertThat(standalone.contextHandler.isStarted(), is(true));
+            assertThat(standalone.jetty.isStarted(), is(true));
+            
+            
+            
+            standalone.shutdown();
+            
+            assertThat(standalone.contextHandler.isStopped(), is(true));
+            assertThat(standalone.jetty.isStopped(), is(true));
+        } finally {
+            standalone.shutdown();
+        }
+    }
 }
