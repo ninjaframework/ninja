@@ -46,7 +46,7 @@ public class BodyParserEngineManagerImplTest {
         List<String> types = Lists.newArrayList(createBodyParserEngineManager().getContentTypes());
         Collections.sort(types);
         assertThat(types.toString(),
-                equalTo("[application/json, application/x-www-form-urlencoded, application/xml]"));
+                equalTo("[application/json, application/x-www-form-urlencoded, application/xml, multipart/form-data]"));
     }
 
     private BodyParserEngineManager createBodyParserEngineManager(final Class<?>... toBind) {

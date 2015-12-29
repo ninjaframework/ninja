@@ -17,12 +17,11 @@
 package ninja;
 
 public interface ContentTypes {
-
     String TEXT_HTML = "text/html";
     String APPLICATION_JSON = "application/json";
     String APPLICATION_JSONP = "application/javascript";
     String APPLICATION_POST_FORM = "application/x-www-form-urlencoded";
+    String MULTIPART_FORM_DATA = "multipart/form-data";
     String APPLICATION_XML = "application/xml";
     String TEXT_CSS = "text/css";
-
 }

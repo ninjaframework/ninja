@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package ninja.uploads;
+package ninja.bodyparser;
 
-import org.apache.commons.fileupload.FileItemStream;
+import ninja.ContentTypes;
 
-/**
- * {@link FileItemProvider} default's implementation, to indicate to not handle uploaded files, and
- * let the users deal with the request by themselves
- * 
- * @author Christian Bourgeois
- */
-public class NoFileItemProvider implements FileItemProvider {
+import com.google.inject.Singleton;
 
+@Singleton
+public class BodyParserEngineMultipart extends BodyParserEnginePost {
     @Override
-    public FileItem create(FileItemStream item) {
-        throw new UnsupportedOperationException("Not supported in NoFileItemProvider");
+    public String getContentType() {
+        return ContentTypes.MULTIPART_FORM_DATA;
     }
-    
 }

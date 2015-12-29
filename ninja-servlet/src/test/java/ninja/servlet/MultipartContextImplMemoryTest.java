@@ -15,6 +15,8 @@
  */
 package ninja.servlet;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -33,8 +35,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ninja.Context;
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.bodyparser.BodyParserEngineManagerImpl;
+import ninja.params.ControllerMethodInvoker;
+import ninja.params.Param;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.uploads.FileItem;
@@ -57,6 +63,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -71,10 +79,10 @@ public class MultipartContextImplMemoryTest {
     private Session sessionCookie;
 
     @Mock
-    private FlashScope flashCookie;
+    private MockController mockController;
 
     @Mock
-    private BodyParserEngineManager bodyParserEngineManager;
+    private FlashScope flashCookie;
 
     @Mock
     private ServletContext servletContext;
@@ -132,11 +140,12 @@ public class MultipartContextImplMemoryTest {
             protected void configure() {
                 bind(NinjaProperties.class).toInstance(ninjaProperties);
                 bind(FileItemProvider.class).to(fileItemProviderClass);
+                bind(BodyParserEngineManager.class).to(BodyParserEngineManagerImpl.class);
             }
         });
 
         context = new NinjaServletContext(
-                bodyParserEngineManager,
+                injector.getInstance(BodyParserEngineManager.class),
                 flashCookie,
                 ninjaProperties,
                 resultHandler,
@@ -224,6 +233,82 @@ public class MultipartContextImplMemoryTest {
         Assert.assertEquals(valueB1, arr[0]);
         Assert.assertEquals(valueB2, arr[1]);
 
+    }
+
+    private ControllerMethodInvoker create(String methodName, final Object... toBind) {
+        Method method = null;
+        for (Method m : MockController.class.getMethods()) {
+            if (m.getName().equals(methodName)) {
+                method = m;
+                break;
+            }
+        }
+        return ControllerMethodInvoker.build(method, Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                for (Object o : toBind) {
+                    bind((Class<Object>) o.getClass()).toInstance(o);
+                }
+            }
+        }));
+    }
+
+    @Test
+    public void testMockControllerDto() throws NoSuchMethodException {
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        create("dto").invoke(mockController, context);
+
+        ArgumentCaptor<Dto> dtoCapture = ArgumentCaptor.forClass(Dto.class);
+        ArgumentCaptor<FileItem> fileItemCapture = ArgumentCaptor.forClass(FileItem.class);
+        verify(mockController).dto(dtoCapture.capture(), fileItemCapture.capture());
+
+        Dto dto = dtoCapture.getValue();
+        Assert.assertNotNull(dto);
+        Assert.assertEquals(valueA, dto.paramA);
+        Assert.assertEquals(valueB1, dto.paramB);
+
+        FileItem fileItem = fileItemCapture.getValue();
+        Assert.assertNotNull(fileItem);
+        Assert.assertEquals(file1Name, fileItem.getFileName());
+    }
+
+    @Test
+    public void testMockControllerParams() throws NoSuchMethodException, IOException {
+        /**
+         * Test manually extracting the file params from the context works
+         */
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        create("params").invoke(mockController, context);
+
+        ArgumentCaptor<FileItem> fileItemCapture = ArgumentCaptor.forClass(FileItem.class);
+
+        verify(mockController).params(Matchers.eq(valueA), fileItemCapture.capture(), Matchers.eq(valueB1));
+
+        FileItem fileItem = fileItemCapture.getValue();
+        Assert.assertNotNull(fileItem);
+        Assert.assertEquals(file1Name, fileItem.getFileName());
+    }
+
+    @Test
+    public void testMockControllerManual() throws NoSuchMethodException, IOException {
+        /**
+         * Test manually extracting the file params from the context works
+         */
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        create("context").invoke(mockController, context);
+
+        verify(mockController).context(Matchers.eq(context));
+
+        Assert.assertTrue(context.isMultipart());
+        InputStream is = context.getParameterAsFileItem(file1).getInputStream();
+        Assert.assertNotNull(is);
+        Assert.assertEquals(file1Data, IOUtils.toString(is));
+
+        Assert.assertNotNull(context.getParameterAsFileItem(file2));
+        Assert.assertNull(context.getParameterAsFileItem("fileX"));
     }
 
     @Test
@@ -395,17 +480,33 @@ public class MultipartContextImplMemoryTest {
         }
         
     }
-    
+
     @FileProvider(FileItemProviderImpl1.class)
     private class ControllerImpl {
         public void method1() {
         }
+
         @FileProvider(FileItemProviderImpl2.class)
         public void method2() {
             method1();
         }
     }
-    
+
+    public static class Dto {
+        String paramA;
+        String paramB;
+    }
+
+    public interface MockController {
+        void dto(Dto dto,
+                 @Param("file1") FileItem fileItem);
+
+        void params(@Param("paramA") String paramA,
+                    @Param("file1") FileItem fileItem,
+                    @Param("paramB") String paramB);
+
+        void context(Context context);
+    }
 }
 
 class FileItemProviderImpl1 implements FileItemProvider {

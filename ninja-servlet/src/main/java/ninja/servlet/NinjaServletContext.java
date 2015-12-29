@@ -44,7 +44,6 @@ import ninja.session.Session;
 import ninja.uploads.FileItem;
 import ninja.uploads.FileItemProvider;
 import ninja.uploads.FileProvider;
-import ninja.uploads.NoFileItemProvider;
 import ninja.utils.HttpHeaderUtils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
@@ -230,7 +229,9 @@ public class NinjaServletContext extends AbstractContext {
 
     @Override
     public Map<String, String[]> getParameters() {
-        if (!formFieldsProcessed) processFormFields();
+        if (!formFieldsProcessed) {
+            processFormFields();
+        }
         if (formFieldsMap == null) {
             return httpServletRequest.getParameterMap();
         } else {
@@ -504,9 +505,7 @@ public class NinjaServletContext extends AbstractContext {
         // call classic getFileItemIterator() by himself
         FileProvider fileProvider = null;
         if (route != null) {
-            if (fileProvider == null) {
-                fileProvider = route.getControllerMethod().getAnnotation(FileProvider.class);
-            }
+            fileProvider = route.getControllerMethod().getAnnotation(FileProvider.class);
             if (fileProvider == null) {
                 fileProvider = route.getControllerClass().getAnnotation(FileProvider.class);
             }
@@ -519,8 +518,6 @@ public class NinjaServletContext extends AbstractContext {
         } else {
             fileItemProvider = injector.getInstance(fileProvider.value());
         }
-        
-        if (fileItemProvider instanceof NoFileItemProvider) return;
         
         // Initialize maps and other constants
         ArrayListMultimap<String, String> formMap = ArrayListMultimap.create();
@@ -551,8 +548,8 @@ public class NinjaServletContext extends AbstractContext {
                     formMap.put(item.getFieldName(), value);
 
                 } else {
-                    
-                    // process file as input stream and save for later use in getParameterAsFile or getParameterAsInputStream
+                    // process file as input stream and save for later use in getParameterAsFile
+                    // or getParameterAsInputStream
                     FileItem fileItem = fileItemProvider.create(item);
                     fileMap.put(item.getFieldName(), fileItem);
                 }
