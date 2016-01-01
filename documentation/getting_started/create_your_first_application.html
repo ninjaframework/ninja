@@ -457,7 +457,9 @@ that allow you to generate a new project with a single command.</p><p>In Ninja&r
 <pre class="prettyprint">
 mvn archetype:generate -DarchetypeGroupId=org.ninjaframework -DarchetypeArtifactId=ninja-servlet-archetype-simple
 </pre><p>Please enter sensible values for &ldquo;groupId&rdquo; and &ldquo;artifactId&rdquo; and let Maven
-generate your first Ninja project.</p><p>After finishing the generation change into your project directory and execute:</p>
+generate your first Ninja project.</p>
+<div class="alert alert-info" ><a href="https://maven.apache.org/guides/mini/guide-naming-conventions.html">Guide to naming conventions on groupId, artifactId and version</a></div>
+<p>After finishing the generation change into your project directory and execute:</p>
 <pre class="prettyprint">
 cd MY_INSTALLED_PROJECT
 mvn clean install     // to generate the compiled classes the first time
