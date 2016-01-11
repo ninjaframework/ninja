@@ -1,6 +1,7 @@
-Version X
+Version 5.3.0
 =============
 
+ * 2016-01-11 Bump license headers to 2016 (ra) 
  * 2015-12-15 Switch from to Travis CI (Cloudbees CI no longer available) (ra)
  * 2015-12-21 Basic HTTPS support for Ninja standalone & SuperDevMode (jjlauer)
 
