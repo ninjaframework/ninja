@@ -47,7 +47,7 @@ public class AssetsControllerTest extends NinjaTest {
         // but it is listetd in the ninja mimetypes... therefore it will be found:
         // case insensitivity makes test realistic
         String contentType = httpResponse.getHeaders("Content-Type")[0].getValue();
-        assertThat("application/dxf; charset=UTF-8".equalsIgnoreCase(contentType), is(true));
+        assertThat("application/dxf;charset=utf-8".equalsIgnoreCase(contentType), is(true));
     }
     
     @Test
