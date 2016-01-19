@@ -21,128 +21,14 @@ mvn ninja:run
 </pre>
 
 
-Configuration
-=============
+You can access the application at
 
-Two things are important when it comes to configuring JPA.
+ * http://localhost:8080
+ * https://localhost:8443
 
- * Setting a database and persistence unit at your application.conf
- * The META-INF/persistence.xml
+Note: The application works out-of-the-box with an in-memory db (h2). If you like to change to another db, like Postgresql or MySQL, just review the `Configuration` section below.
 
-First of all you have to set your database credentials in application.conf:
-
-You also have to set the database connection string, username and password like so:
-
-<pre class="prettyprint">
-db.connection.url=jdbc:postgresql://localhost:5432/ra
-db.connection.username=ra
-db.connection.password=
-</pre>
-
-Of course you can take advantage of Ninja's different modes and specify a different database in test
-and in production:
-
-<pre class="prettyprint">
-# development database
-db.connection.url=jdbc:postgresql://localhost:5432/ra
-db.connection.username=ra
-db.connection.password=password
-
-# testing database
-%test.db.connection.url=jdbc:postgresql://localhost:5432/test
-%test.db.connection.username=ra
-%test.db.connection.password=password
-
-# production database
-%prod.db.connection.url=jdbc:postgresql://myserver:5432/production_db
-%prod.db.connection.username=user
-%prod.db.connection.password=password
-</pre>
-
- 
-To activate JPA you have set a variable called <code>ninja.jpa.persistence_unit_name</code>
-
-<pre class="prettyprint">
-ninja.jpa.persistence_unit_name=mypersistenceunit
-</pre>
-
-This tells Ninja what persistence unit to select from persitence.xml. You can of course
-again specify different persistence units for different modes:
-
-<pre class="prettyprint">
-ninja.jpa.persistence_unit_name=dev_unit
-%test.ninja.jpa.persistence_unit_name=test_unit
-%prod.ninja.jpa.persistence_unit_name=prod_unit
-</pre>
-
-This causes Ninja to use dev_unit in dev, test_unit in dev and prod_unit in prod. 
-You can then use for instance
-a db for testing, another regular PostgreSQL database for development and a highly tuned 
-connectionpooled PostgreSQL in production. All of them with different connection strings of course.
-
-To make that finally come to live you have to configure the second JPA component 
-- a file called <code>META-INF/persistence.xml</code> which can look like:
-
-<pre class="prettyprint">
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-
-&lt;persistence xmlns=&quot;http://java.sun.com/xml/ns/persistence&quot;
-    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-    xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd&quot;
-    version=&quot;2.0&quot;&gt;
-
-    &lt;!-- Database settings for development and for tests --&gt;
-    &lt;persistence-unit name=&quot;dev_unit&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
-        &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
-
-        &lt;properties&gt;
-            &lt;property name=&quot;hibernate.connection.driver_class&quot; value=&quot;org.postgresql.Driver&quot;/&gt;
-            &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.PostgreSQLDialect&quot; /&gt;
-
-            &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;true&quot; /&gt;
-            &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;true&quot; /&gt; 
-            
-            &lt;!-- Connection Pooling settings --&gt;
-            &lt;property name=&quot;hibernate.connection.provider_class&quot;
-                value=&quot;org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider&quot; /&gt;
-
-            &lt;property name=&quot;hibernate.c3p0.max_size&quot; value=&quot;100&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.min_size&quot; value=&quot;0&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.acquire_increment&quot; value=&quot;1&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.idle_test_period&quot; value=&quot;300&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.max_statements&quot; value=&quot;0&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.timeout&quot; value=&quot;100&quot; /&gt;      
-        &lt;/properties&gt;
-    &lt;/persistence-unit&gt;
-
-    &lt;!-- production database - with sensible connect strings optimized for the real servers. --&gt;
-    &lt;persistence-unit name=&quot;prod_unit&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
-        &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
-
-        &lt;properties&gt;
-            &lt;property name=&quot;hibernate.connection.driver_class&quot; value=&quot;org.postgresql.Driver&quot;/&gt;
-            &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.PostgreSQLDialect&quot; /&gt;
-
-            &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;false&quot; /&gt;
-            &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;false&quot; /&gt; 
-            
-             &lt;!-- Connection Pooling settings --&gt;
-            &lt;property name=&quot;hibernate.connection.provider_class&quot;
-                value=&quot;org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider&quot; /&gt;
-
-            &lt;property name=&quot;hibernate.c3p0.max_size&quot; value=&quot;100&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.min_size&quot; value=&quot;0&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.acquire_increment&quot; value=&quot;1&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.idle_test_period&quot; value=&quot;300&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.max_statements&quot; value=&quot;0&quot; /&gt;
-            &lt;property name=&quot;hibernate.c3p0.timeout&quot; value=&quot;100&quot; /&gt;      
-        &lt;/properties&gt;
-    &lt;/persistence-unit&gt;
-&lt;/persistence&gt;
-</pre>
-
-The file will reside under META-INF/persistence.xml.
-
+At this point you could use the existent Entities as an example to create your own ones, extending this way the Model and the Application.
 
 Models
 ======
@@ -279,6 +165,128 @@ here: you can wrap either a controller method or method of your service class.
 transactions within the same <code>@UnitOfWork</code>
  * b. use <code>@Transactional</code> or programmatic API of the <code>EntityManager</code> to 
 demarcate transactions within the same request or scheduler invocation without <code>@UnitOfWork</code>
+
+Configuration
+=============
+
+Two things are important when it comes to configuring JPA.
+
+ * Setting a database and persistence unit at your application.conf
+ * The META-INF/persistence.xml
+
+First of all you have to set your database credentials in application.conf:
+
+You also have to set the database connection string, username and password like so:
+
+<pre class="prettyprint">
+db.connection.url=jdbc:postgresql://localhost:5432/ra
+db.connection.username=ra
+db.connection.password=
+</pre>
+
+Of course you can take advantage of Ninja's different modes and specify a different database in test
+and in production:
+
+<pre class="prettyprint">
+# development database
+db.connection.url=jdbc:postgresql://localhost:5432/ra
+db.connection.username=ra
+db.connection.password=password
+
+# testing database
+%test.db.connection.url=jdbc:postgresql://localhost:5432/test
+%test.db.connection.username=ra
+%test.db.connection.password=password
+
+# production database
+%prod.db.connection.url=jdbc:postgresql://myserver:5432/production_db
+%prod.db.connection.username=user
+%prod.db.connection.password=password
+</pre>
+
+ 
+To activate JPA you have set a variable called <code>ninja.jpa.persistence_unit_name</code>
+
+<pre class="prettyprint">
+ninja.jpa.persistence_unit_name=mypersistenceunit
+</pre>
+
+This tells Ninja what persistence unit to select from persitence.xml. You can of course
+again specify different persistence units for different modes:
+
+<pre class="prettyprint">
+ninja.jpa.persistence_unit_name=dev_unit
+%test.ninja.jpa.persistence_unit_name=test_unit
+%prod.ninja.jpa.persistence_unit_name=prod_unit
+</pre>
+
+This causes Ninja to use dev_unit in dev, test_unit in dev and prod_unit in prod. 
+You can then use for instance
+a db for testing, another regular PostgreSQL database for development and a highly tuned 
+connectionpooled PostgreSQL in production. All of them with different connection strings of course.
+
+To make that finally come to live you have to configure the second JPA component 
+- a file called <code>META-INF/persistence.xml</code> which can look like:
+
+<pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;persistence xmlns=&quot;http://java.sun.com/xml/ns/persistence&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd&quot;
+    version=&quot;2.0&quot;&gt;
+
+    &lt;!-- Database settings for development and for tests --&gt;
+    &lt;persistence-unit name=&quot;dev_unit&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
+        &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
+
+        &lt;properties&gt;
+            &lt;property name=&quot;hibernate.connection.driver_class&quot; value=&quot;org.postgresql.Driver&quot;/&gt;
+            &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.PostgreSQLDialect&quot; /&gt;
+
+            &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;true&quot; /&gt;
+            &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;true&quot; /&gt; 
+            
+            &lt;!-- Connection Pooling settings --&gt;
+            &lt;property name=&quot;hibernate.connection.provider_class&quot;
+                value=&quot;org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider&quot; /&gt;
+
+            &lt;property name=&quot;hibernate.c3p0.max_size&quot; value=&quot;100&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.min_size&quot; value=&quot;0&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.acquire_increment&quot; value=&quot;1&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.idle_test_period&quot; value=&quot;300&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.max_statements&quot; value=&quot;0&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.timeout&quot; value=&quot;100&quot; /&gt;      
+        &lt;/properties&gt;
+    &lt;/persistence-unit&gt;
+
+    &lt;!-- production database - with sensible connect strings optimized for the real servers. --&gt;
+    &lt;persistence-unit name=&quot;prod_unit&quot; transaction-type=&quot;RESOURCE_LOCAL&quot;&gt;
+        &lt;provider&gt;org.hibernate.jpa.HibernatePersistenceProvider&lt;/provider&gt;
+
+        &lt;properties&gt;
+            &lt;property name=&quot;hibernate.connection.driver_class&quot; value=&quot;org.postgresql.Driver&quot;/&gt;
+            &lt;property name=&quot;hibernate.dialect&quot; value=&quot;org.hibernate.dialect.PostgreSQLDialect&quot; /&gt;
+
+            &lt;property name=&quot;hibernate.show_sql&quot; value=&quot;false&quot; /&gt;
+            &lt;property name=&quot;hibernate.format_sql&quot; value=&quot;false&quot; /&gt; 
+            
+             &lt;!-- Connection Pooling settings --&gt;
+            &lt;property name=&quot;hibernate.connection.provider_class&quot;
+                value=&quot;org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider&quot; /&gt;
+
+            &lt;property name=&quot;hibernate.c3p0.max_size&quot; value=&quot;100&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.min_size&quot; value=&quot;0&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.acquire_increment&quot; value=&quot;1&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.idle_test_period&quot; value=&quot;300&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.max_statements&quot; value=&quot;0&quot; /&gt;
+            &lt;property name=&quot;hibernate.c3p0.timeout&quot; value=&quot;100&quot; /&gt;      
+        &lt;/properties&gt;
+    &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+</pre>
+
+The file will reside under META-INF/persistence.xml.
 
 
 More
