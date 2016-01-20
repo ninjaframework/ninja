@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2015 the original author or authors.
+ * Copyright (C) 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,24 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import com.google.inject.servlet.GuiceFilter;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.xml.XmlConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ninja standalone implemented with Jetty.
  */
 public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
+    static final private Logger log = LoggerFactory.getLogger(NinjaJetty.class);
     
     static final public String KEY_NINJA_JETTY_CONFIGURATION = "ninja.jetty.configuration";
 
@@ -77,17 +86,51 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
             // create very simple jetty configuration
             jetty = new Server();
         
-            // build connector
-            ServerConnector http = new ServerConnector(jetty);
+            if (port > -1) {
+                // build http cleartext connector
+                ServerConnector http = new ServerConnector(jetty);
 
-            http.setPort(port);
-            http.setIdleTimeout(idleTimeout);
-            if (host != null) {
-                http.setHost(host);
+                http.setPort(port);
+                http.setIdleTimeout(idleTimeout);
+                if (host != null) {
+                    http.setHost(host);
+                }
+
+                jetty.addConnector(http);
             }
+            
 
-            // set the connector
-            jetty.addConnector(http);
+            if (sslPort > -1) {
+                // build https secure connector
+                // http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/examples/embedded/src/main/java/org/eclipse/jetty/embedded/ManyConnectors.java
+                HttpConfiguration httpConfig = new HttpConfiguration();
+                httpConfig.setSecureScheme("https");
+                httpConfig.setSecurePort(sslPort);
+                httpConfig.setOutputBufferSize(32768);
+                
+                HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+                httpsConfig.addCustomizer(new SecureRequestCustomizer());
+
+                // unfortunately jetty seems to only work when we pass a keystore
+                // and truststore (as opposed to our own prepared SSLContext)
+                // call createSSLContext() to simply verify configuration is correct
+                this.createSSLContext();
+                
+                SslContextFactory sslContextFactory = new SslContextFactory();
+                sslContextFactory.setKeyStore(StandaloneHelper.loadKeyStore(this.sslKeystoreUri, this.sslKeystorePassword.toCharArray()));
+                sslContextFactory.setKeyManagerPassword(this.sslKeystorePassword);
+                sslContextFactory.setTrustStore(StandaloneHelper.loadKeyStore(this.sslTruststoreUri, this.sslTruststorePassword.toCharArray()));
+                
+                ServerConnector https = new ServerConnector(
+                    jetty,
+                    new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+                    new HttpConnectionFactory(httpsConfig));
+
+                https.setPort(sslPort);
+                https.setIdleTimeout(idleTimeout);
+                
+                jetty.addConnector(https);
+            }
         }
         
         this.ninjaServletListener.setNinjaProperties(ninjaProperties);
