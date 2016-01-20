@@ -55,6 +55,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
 import com.google.common.base.Optional;
+import com.google.inject.Injector;
 
 import freemarker.template.Configuration;
 import org.junit.Assert;
@@ -98,6 +99,9 @@ public class TemplateEngineFreemarkerTest {
     
     @Mock
     Route route;
+    
+    @Mock
+    Injector injector;
 
     TemplateEngineFreemarker templateEngineFreemarker;
 
@@ -118,6 +122,7 @@ public class TemplateEngineFreemarkerTest {
                         templateEngineFreemarkerReverseRouteMethod,
                         templateEngineFreemarkerAssetsAtMethod,
                         templateEngineFreemarkerWebJarsAtMethod,
+                        injector,
                         ninjaProperties);
 
         

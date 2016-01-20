@@ -26,22 +26,15 @@ import java.util.Map.Entry;
 
 import javax.inject.Singleton;
 
-import ninja.Context;
-import ninja.Result;
-import ninja.i18n.Lang;
-import ninja.i18n.Messages;
-import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
-import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
-import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaProperties;
-import ninja.utils.ResponseStreams;
-
 import org.slf4j.Logger;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -54,10 +47,19 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateNotFoundException;
 import freemarker.template.Version;
-import java.io.StringWriter;
+import ninja.Context;
+import ninja.Result;
 import ninja.exceptions.RenderingException;
+import ninja.i18n.Lang;
+import ninja.i18n.Messages;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
+import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
+import ninja.utils.ResponseStreams;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
@@ -78,6 +80,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 22);
 
     private final String FILE_SUFFIX = ".ftl.html";
+    
+    private static final Key<Map<String, TemplateModel>> TEMPLATE_MODEL_MAP_KEY = 
+            Key.get(new TypeLiteral<Map<String, TemplateModel>>(){}); 
 
     private final Configuration cfg;
 
@@ -99,6 +104,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     
     private final String fileSuffix;
     
+    private final Injector injector;
+    
     @Inject
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
@@ -108,6 +115,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
                                     TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod,
                                     TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod,
                                     TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod,
+                                    Injector injector,
                                     NinjaProperties ninjaProperties) throws Exception {
         this.messages = messages;
         this.lang = lang;
@@ -117,8 +125,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
+        this.injector = injector;
         this.fileSuffix = ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, FILE_SUFFIX);
-        
         cfg = new Configuration(INCOMPATIBLE_IMPROVEMENTS_VERSION);
         
         // Set your preferred charset template files are stored in. UTF-8 is
@@ -270,7 +278,19 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         
         map.put("authenticityToken", new TemplateEngineFreemarkerAuthenticityTokenDirective(context));
         map.put("authenticityForm", new TemplateEngineFreemarkerAuthenticityFormDirective(context));
-
+        
+        // support custom template model
+        if (injector.getExistingBinding(TEMPLATE_MODEL_MAP_KEY) != null) {
+            Map<String, TemplateModel> templateModelMap = injector.getInstance(TEMPLATE_MODEL_MAP_KEY);
+            for (Entry<String, TemplateModel> entry: templateModelMap.entrySet()) {
+                if (entry.getValue() instanceof TemplateEngineFreemarkerContextDirectiveModel) {
+                    ((TemplateEngineFreemarkerContextDirectiveModel)entry.getValue()).setContext(context);
+                }
+            }
+            map.putAll(templateModelMap);
+        }
+        
+        
         ///////////////////////////////////////////////////////////////////////
         // Convenience method to translate possible flash scope keys.
         // !!! If you want to set messages with placeholders please do that
