@@ -125,7 +125,10 @@ If your custom object has a date/timestamp field, first make sure that you use t
 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Date.html">java.util.Date</a> 
 type and when you pass some date to the controller pass in the 
 <a href="http://joda-time.sourceforge.net/api-release/org/joda/time/format/ISODateTimeFormat.html#localDateOptionalTimeParser%28%29">format</a> 
-accepted by Joda Time library.
+accepted by Joda Time library. Or you can register a <code>ninja.params.ParamParser</code> with your own date format parsing in your <code>conf.Module</code>:
+<pre class="prettyprint">
+ParamParsers.registerParamParser(Date.class, MyDateParamParser.class);
+</pre>
 
 Therefore you don't have to worry if
 input is for instance XML or JSON. You simply get a parsed object.

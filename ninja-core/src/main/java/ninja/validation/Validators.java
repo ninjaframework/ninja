@@ -265,6 +265,41 @@ public class Validators {
             return String.class;
         }
     }
+    
+    public static class DateValidator implements Validator<String> {
+
+        private final IsDate isDate;
+
+        public DateValidator(IsDate aDate) {
+            this.isDate = aDate;
+        }
+
+        /**
+         * Validate the given value
+         *
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
+         */
+        @Override
+        public void validate(String value, String field, Context context) {
+            if (value != null) {
+                try {
+                    Double.parseDouble(value);
+                } catch (NumberFormatException e) {
+                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                            .createForFieldWithDefault(this.isDate.key(),
+                                    fieldKey(field, this.isDate.fieldKey()),
+                                    this.isDate.message(), value));
+                }
+            }
+        }
+
+        @Override
+        public Class<String> getValidatedType() {
+            return String.class;
+        }
+    }
 
     public static class MatchesValidator implements Validator<String> {
 

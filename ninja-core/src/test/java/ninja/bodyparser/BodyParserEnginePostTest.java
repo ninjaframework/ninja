@@ -17,21 +17,38 @@
 package ninja.bodyparser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import ninja.Context;
+import ninja.validation.FieldViolation;
+import ninja.validation.IsDate;
+import ninja.validation.IsFloat;
+import ninja.validation.IsInteger;
+import ninja.validation.Validation;
+import ninja.validation.ValidationImpl;
 
 import org.hamcrest.CoreMatchers;
 import org.joda.time.LocalDateTime;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  *
@@ -41,7 +58,21 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class BodyParserEnginePostTest {
     
     @Mock
-    Context context; 
+    Context context;
+    
+    Validation validation;
+    
+    BodyParserEnginePost bodyParserEnginePost; 
+    
+    @Before
+    public void setUp() {
+        Injector injector = Guice.createInjector();
+        
+    	validation = new ValidationImpl();
+    	Mockito.when(this.context.getValidation()).thenReturn(this.validation);
+        
+        bodyParserEnginePost = new BodyParserEnginePost(injector);
+    }
 
     @Test
     public void testBodyParser() {
@@ -51,24 +82,100 @@ public class BodyParserEnginePostTest {
         String dateTimeString = "2014-10-10T20:09:10";
 
         Map<String, String[]> map = new HashMap<>();
-        map.put("integer", new String [] {"1000"});
+        map.put("integerPrimitive", new String [] {"1000"});
+        map.put("integerObject", new String [] {"2000"});
+        map.put("longPrimitive", new String [] {"3000"});
+        map.put("longObject", new String [] {"4000"});
+        map.put("floatPrimitive", new String [] {"1.234"});
+        map.put("floatObject", new String [] {"2.345"});
+        map.put("doublePrimitive", new String [] {"3.456"});
+        map.put("doubleObject", new String [] {"4.567"});
         map.put("string", new String [] {"aString"});
+        map.put("characterPrimitive", new String [] {"a"});
+        map.put("characterObject", new String [] {"b"});
         map.put("date", new String[]{dateString});
         map.put("timestamp", new String[]{dateTimeString});
         map.put("somethingElseWhatShouldBeSkipped", new String [] {"somethingElseWhatShouldBeSkipped"});
 
         Mockito.when(context.getParameters()).thenReturn(map);
+        Mockito.when(context.getValidation()).thenReturn(validation);
 
         // do
-        BodyParserEnginePost bodyParserEnginePost = new BodyParserEnginePost();       
         TestObject testObject = bodyParserEnginePost.invoke(context, TestObject.class);
         
         // and test:
+        assertThat(testObject.integerPrimitive, CoreMatchers.equalTo(1000));
+        assertThat(testObject.integerObject, CoreMatchers.equalTo(2000));
+        assertThat(testObject.longPrimitive, CoreMatchers.equalTo(3000L));
+        assertThat(testObject.longObject, CoreMatchers.equalTo(4000L));
+        assertThat(testObject.floatPrimitive, CoreMatchers.equalTo(1.234F));
+        assertThat(testObject.floatObject, CoreMatchers.equalTo(2.345F));
+        assertThat(testObject.doublePrimitive, CoreMatchers.equalTo(3.456D));
+        assertThat(testObject.doubleObject, CoreMatchers.equalTo(4.567D));
         assertThat(testObject.string, equalTo("aString"));
-        assertThat(testObject.integer, CoreMatchers.equalTo(1000));
+        assertThat(testObject.characterPrimitive, equalTo('a'));
+        assertThat(testObject.characterObject, equalTo('b'));
         assertThat(testObject.date, CoreMatchers.equalTo(new LocalDateTime(dateString).toDate()));
         assertThat(testObject.timestamp, CoreMatchers.equalTo(new LocalDateTime(dateTimeString).toDate()));
         
+        assertFalse(validation.hasViolations());
+        
+    }
+    
+    @Test
+    public void testBodyParserWithValidationErrors() {
+
+        // some setup for this method:
+        Map<String, String[]> map = new HashMap<>();
+        map.put("integerPrimitive", new String [] {"a"});
+        map.put("integerObject", new String [] {"b"});
+        map.put("longPrimitive", new String [] {"c"});
+        map.put("longObject", new String [] {"d"});
+        map.put("floatPrimitive", new String [] {"e"});
+        map.put("floatObject", new String [] {"f"});
+        map.put("doublePrimitive", new String [] {"g"});
+        map.put("doubleObject", new String [] {"h"});
+        map.put("characterPrimitive", new String [] {null});
+        map.put("characterObject", new String [] {null});
+        map.put("date", new String[]{"cc"});
+        map.put("timestamp", new String[]{"dd"});
+        map.put("somethingElseWhatShouldBeSkipped", new String [] {"somethingElseWhatShouldBeSkipped"});
+
+        Mockito.when(context.getParameters()).thenReturn(map);
+        Mockito.when(context.getValidation()).thenReturn(validation);
+
+        // do
+        TestObject testObject = bodyParserEnginePost.invoke(context, TestObject.class);
+        
+        // and test:
+        assertTrue(validation.hasViolations());
+        assertViolation("integerPrimitive", IsInteger.KEY);
+        assertThat(testObject.integerPrimitive, equalTo(0));
+        assertViolation("integerObject", IsInteger.KEY);
+        assertNull(testObject.integerObject);
+        assertViolation("longPrimitive", IsInteger.KEY);
+        assertThat(testObject.longPrimitive, equalTo(0L));
+        assertViolation("longObject", IsInteger.KEY);
+        assertNull(testObject.longObject);
+        assertViolation("floatPrimitive", IsFloat.KEY);
+        assertThat(testObject.floatPrimitive, equalTo(0F));
+        assertViolation("floatObject", IsFloat.KEY);
+        assertNull(testObject.floatObject);
+        assertViolation("doublePrimitive", IsFloat.KEY);
+        assertThat(testObject.doublePrimitive, equalTo(0D));
+        assertViolation("doubleObject", IsFloat.KEY);
+        assertNull(testObject.doubleObject);
+        
+        assertViolation("date", IsDate.KEY);
+        assertNull(testObject.date);
+        assertViolation("timestamp", IsDate.KEY);
+        assertNull(testObject.timestamp);
+        
+        assertNull(testObject.string);
+        assertThat(testObject.characterPrimitive, equalTo('\0'));
+        assertNull(testObject.characterObject);
+        
+        assertNull(testObject.string);
     }
     
     @Test
@@ -81,9 +188,9 @@ public class BodyParserEnginePostTest {
         map.put("longs", new String[] {"1", "2"});
         
         Mockito.when(context.getParameters()).thenReturn(map);
+        Mockito.when(context.getValidation()).thenReturn(validation);
 
         // do
-        BodyParserEnginePost bodyParserEnginePost = new BodyParserEnginePost();       
         TestObjectWithUnsupportedFields testObject = bodyParserEnginePost.invoke(context, TestObjectWithUnsupportedFields.class);
         
         // and test:
@@ -101,9 +208,9 @@ public class BodyParserEnginePostTest {
         map.put("strings", new String[] {"hello", "world"});
 
         Mockito.when(context.getParameters()).thenReturn(map);
+        Mockito.when(context.getValidation()).thenReturn(validation);
 
         // do
-        BodyParserEnginePost bodyParserEnginePost = new BodyParserEnginePost();
         TestObjectWithArraysAndCollections testObject = bodyParserEnginePost.invoke(context, TestObjectWithArraysAndCollections.class);
 
         // and test:
@@ -114,17 +221,60 @@ public class BodyParserEnginePostTest {
         assertThat(testObject.strings.size(), equalTo(2));
         assertThat(testObject.strings.get(0), equalTo("hello"));
         assertThat(testObject.strings.get(1), equalTo("world"));
+        
+        assertFalse(validation.hasViolations());
+        
     }
 
+    @Test
+    public void testBodyParserWithEnumerations() {
+
+        // some setup for this method:
+        Map<String, String[]> map = new HashMap<>();
+        map.put("enum1", new String[] {MyEnum.VALUE_A.name()});
+        map.put("enum2", new String[] {new String("value_b")});
+
+        Mockito.when(context.getParameters()).thenReturn(map);
+        Mockito.when(context.getValidation()).thenReturn(validation);
+
+        // do
+        TestObjectWithEnum testObject = bodyParserEnginePost.invoke(context, TestObjectWithEnum.class);
+        
+        // and test:
+        assertThat(testObject.enum1, equalTo(MyEnum.VALUE_A));
+        assertThat(testObject.enum2, equalTo(MyEnum.VALUE_B));
+        assertFalse(validation.hasViolations());
+        
+    }
     
-    
+    private <T> void assertViolation(String fieldName, String violationMessage) {
+        assertTrue(validation.hasFieldViolation(fieldName));
+        assertFalse(validation.getFieldViolations().isEmpty());
+        assertThat(validation.getFieldViolations(fieldName).size(), equalTo(1));
+        FieldViolation violation = validation.getFieldViolations(fieldName).get(0);
+        assertThat(violation.field, equalTo(fieldName));
+        assertNotNull(violation.constraintViolation);
+        assertThat(violation.constraintViolation.getFieldKey(), equalTo(fieldName));
+        assertThat(violation.constraintViolation.getMessageKey(), equalTo(violationMessage));
+    }
     
     public static class TestObject {
     
-        public int integer;
+        public int integerPrimitive;
+        public Integer integerObject;
+        public long longPrimitive;
+        public Long longObject;
+        public float floatPrimitive;
+        public Float floatObject;
+        public double doublePrimitive;
+        public Double doubleObject;
         public String string;
-        public java.util.Date date;
-        public java.util.Date timestamp;
+        public char characterPrimitive;
+        public Character characterObject;
+        public Date date;
+        public Date timestamp;
+        @NotNull
+        public Object requiredObject;
 
     }
     
@@ -140,6 +290,17 @@ public class BodyParserEnginePostTest {
 
         public Integer[] integers;
         public List<String> strings;
+
+    }
+    
+    public static enum MyEnum {
+    	VALUE_A, VALUE_B, VALUE_C
+    }
+    
+    public static class TestObjectWithEnum {
+        
+        public MyEnum enum1;
+        public MyEnum enum2;
 
     }
     

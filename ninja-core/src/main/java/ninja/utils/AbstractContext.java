@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
@@ -245,7 +246,7 @@ abstract public class AbstractContext implements Context.Impl {
         String parameter = getParameter(key);
 
         try {
-            return SwissKnife.convert(parameter, clazz);
+            return (T) ParamParsers.getParamParser(clazz, injector).parseParameter(key, parameter, validation);
         } catch (Exception e) {
             return defaultValue;
         }

@@ -27,13 +27,14 @@ This allows you to process a request, extract things
 - Long (long)
 - Float (float)
 - Double (double)
-- Enum *requires runtime class registration in your conf.Module*
+- Enum (any)
 - Arrays of all these types (e.g. String[], int[], Enum[])
 
-**NOTE:**
-Collections and generics are not supported for parameter injection.  Types
-must be explicitly declared and basic arrays must be used to ensure runtime
-type-safety.
+**NOTES:**
+Enums do not require anymore a registration in conf.Module. Values are 
+converted automatically, ignoring case. Collections and generics are not 
+supported for parameter injection.  Types must be explicitly declared 
+and basic arrays must be used to ensure runtime type-safety.
  
 
 How to write an argument extractor
