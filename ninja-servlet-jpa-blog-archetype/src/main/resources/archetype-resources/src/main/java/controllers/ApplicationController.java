@@ -22,7 +22,7 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
-import models.Article;
+import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
 
@@ -32,7 +32,11 @@ import com.google.inject.Singleton;
 
 import dao.ArticleDao;
 import dao.SetupDao;
+import filters.RememberMeFilter;
+import models.Article;
 
+@FilterWith(RememberMeFilter.class)
+@Singleton
 public class ApplicationController {
 
     @Inject

@@ -42,8 +42,8 @@ class FilterChainEnd implements FilterChain {
 
     @Override
     public Result next(Context context) {
-        if(result != null) {
-            return result;
+        if (result != null) {
+            return result.copy();
         }
 
         Result controllerResult = (Result) controllerMethodInvoker.invoke(

@@ -746,8 +746,7 @@ public class Result {
         return this;
         
     } 
-    
-    
+
     private void assertObjectNoRenderableOrThrowException(Object object) {
         if (object instanceof Renderable) {
             throw new IllegalArgumentException(
@@ -756,7 +755,40 @@ public class Result {
             
         }
     }
-    
-  
 
+    /**
+     * Copy the result, creating a new result
+     *
+     * @return this new result
+     */
+    public Result copy() {
+        Result result = new Result(statusCode);
+
+        for (Cookie cookie : result.getCookies()) {
+            result.addCookie(cookie);
+        }
+
+        Map<String, String> headers = getHeaders();
+        for (Map.Entry<String,String> entry : headers.entrySet()) {
+            result.addHeader(entry.getKey(), entry.getValue());
+        }
+
+        result.contentType(getContentType());
+        result.charset(getCharset());
+        result.template(getTemplate());
+        result.jsonView(getJsonView());
+        result.render(getRenderable());
+
+        List<String> supportedContentTypes = supportedContentTypes();
+        for (String supportedContentType : supportedContentTypes) {
+            result.supportedContentType(supportedContentType);
+        }
+
+        Optional<String> fallbackContentType = fallbackContentType();
+        if (fallbackContentType.isPresent()) {
+            result.fallbackContentType(fallbackContentType.get());
+        }
+
+        return result;
+    }
 }

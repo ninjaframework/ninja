@@ -17,6 +17,7 @@
 package controllers;
 
 import ninja.Context;
+import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
 import ninja.params.Param;
@@ -26,8 +27,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import dao.UserDao;
+import filters.RememberMeFilter;
 
 @Singleton
+@FilterWith(RememberMeFilter.class)
 public class LoginLogoutController {
     
     @Inject
@@ -55,7 +58,7 @@ public class LoginLogoutController {
             session.put("username", username);
 
             if (rememberMe != null && rememberMe) {
-                session.setExpiryTime(24 * 60 * 60 * 1000L);
+                session.put("rememberMe", "");
             }
 
             context.getFlashScope().success("login.loginSuccessful");

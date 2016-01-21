@@ -25,8 +25,7 @@ More on sessions: (http://en.wikipedia.org/wiki/Session_(computer_science))
 
 <div class="alert alert-info">
 Ninja sessions are not encrypted by default. 
-Therefore you should not store any 
-critical information. Storing a user id, or username is fine. Storing
+Therefore you should not store any critical information. Storing a user id, or username is fine. Storing
 credit card information is really bad practice. But if you need to include sensitive data for any reasons,
 you can encrypt sessions as described in <a href="/documentation/security/getting_started.html">Security</a>
 page.
@@ -103,7 +102,7 @@ a request is made.  If the current time is past the expiry time, the session is
 cleared.  By default no expiry time is set, but one can be configured in
 <code>conf/application.conf</code> with the
 <code>application.session.expire_time_in_seconds</code> property (see below).  It can
-also be set in code using <code>setExpiryTime()</code>:
+also be set in code using <code>session.setExpiryTime()</code>:
 
 <pre class="prettyprint">
 public Result login(@Param("rememberMe") Boolean rememberMe,
@@ -120,6 +119,32 @@ public Result login(@Param("rememberMe") Boolean rememberMe,
     return Results.html();
 }
 </pre>
+
+By default, the session expiry won't be extended on every request.  If you wish to automatically
+extend the session expiry, you can call <code>session.setExpiryTime()<code> on each request you
+want to extend the timeout on.
+
+<pre class="prettyprint">
+public class RememberMeFilter implements Filter {
+    public Result filter(FilterChain chain, Context context) {
+        Result result = chain.next(context);
+
+        Session session = context.getSession();
+
+        // Only extend if we previously saved the value 'rememberMe' to the session
+        if (session.get("rememberMe") != null) {
+            // Set the expiry time 1 day (in milliseconds) in the future
+            session.setExpiryTime(24 * 60 * 60 * 1000L);
+        }
+
+        return result;
+    }
+}
+</pre>
+
+You can also set <code>application.session.send_only_if_changed = false</code> in
+<code>application.conf</code>, although convenient it has potentially serious drawbacks.
+See below.
 
 
 Disabling secure (HTTPS) flag for sessions during development
@@ -158,32 +183,26 @@ application.cookie.domain = .example.com
 </pre>
 
 The time until a session expires (in seconds).  By default, a session does not
-have an expiry time set.  However, the browser may expire the session cookie,
-typically after the browser is closed (this can vary based on browser settings).
-To set a session to expire after one minute of inactivity:
+have an expiry time set.  By default the session will not be extended on every
+request, see Session Expiry above.
 
 <pre class="prettyprint">
-application.session.expire_time_in_seconds = 60
+application.session.expire_time_in_seconds = 3600
 </pre>
 
-To send a session cookie to the user, but only if the data changed.  By default,
-this is set to true.  To send the session cookie data on every response, set
-this value to false:
+Send the cookie on every request.  By default, the session cookie is sent only
+when the cookie is changed.  You can send the cookie with every request using the
+following:
 
 <pre class="prettyprint">
 application.session.send_only_if_changed = false
 </pre>
 
 <div class="alert alert-info">
-When setting the <code>application.session.expire_time_in_seconds</code> property
-in conjunction with <code>application.session.send_only_if_changed = true</code>,
-the expiration seconds are no longer the "time of inactivity", but a hard
-expiration time after the last Set-Cookie is sent to the client. For example,
-with expire_time_in_seconds set to 60 and send_only_if_changed set to true, a
-user's logged-in session cookie will simply expire (unless new session values are
-added/modified within the expiry time frame) in 60 seconds no matter how many page loads
-he does. When send_only_if_changed is false, the session cookie and its expiration
-time is refreshed on every HTTP response.
+Sending the cookie with every single request increases the chance you'll be bitten by a
+Set-Cookie race condition.  If two requests are made at the same time from the same
+client, the last response received sets the cookie, potentially overwriting any changes
+you make to the cookie in the first request.
 </div>
 
 The <code>application.session.http_only</code> property can be used to mark the
