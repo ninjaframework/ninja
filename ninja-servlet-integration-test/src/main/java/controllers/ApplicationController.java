@@ -259,4 +259,9 @@ public class ApplicationController {
                 .render("contextGetContextPath", context.getContextPath());
         
     }
+
+    @Timed
+    public Result testTemplateNotFound(Context context) {
+        return Results.html().template("/views/A_TEMPLATE_THAT_DOES_NOT_EXIST.ftl.html");
+    }
 }

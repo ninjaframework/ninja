@@ -17,7 +17,9 @@
 package ninja;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import ninja.utils.NinjaProperties;
 
@@ -30,6 +32,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 import com.google.inject.Provider;
+
+import java.util.Map;
 
 /**
  * => Most tests are done via class RoutesTest in project
@@ -45,6 +49,9 @@ public class RouterImplTest {
 
     @Mock
     Injector injector;
+
+    @Mock
+    Context context;
 
     @Mock
     Provider<TestController> testControllerProvider;

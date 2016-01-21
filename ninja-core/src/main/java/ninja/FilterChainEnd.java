@@ -28,11 +28,6 @@ import com.google.inject.Provider;
 class FilterChainEnd implements FilterChain {
     private Provider<?> controllerProvider;
     private ControllerMethodInvoker controllerMethodInvoker;
-    private Result result;
-
-    FilterChainEnd(Result result) {
-        this.result = result;
-    }
 
     FilterChainEnd(Provider<?> controllerProvider,
                    ControllerMethodInvoker controllerMethodInvoker) {
@@ -42,10 +37,6 @@ class FilterChainEnd implements FilterChain {
 
     @Override
     public Result next(Context context) {
-        if(result != null) {
-            return result;
-        }
-
         Result controllerResult = (Result) controllerMethodInvoker.invoke(
                 controllerProvider.get(), context);
 

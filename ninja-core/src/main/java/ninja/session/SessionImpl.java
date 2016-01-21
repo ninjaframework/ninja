@@ -97,13 +97,11 @@ public class SessionImpl implements Session {
     public void init(Context context) {
 
         try {
-
             // get the cookie that contains session information:
             Cookie cookie = context.getCookie(sessionCookieName);
 
             // check that the cookie is not empty:
             if (cookie != null && cookie.getValue() != null && !cookie.getValue().trim().isEmpty()) {
-
                 String value = cookie.getValue();
 
                 // the first substring until "-" is the sign
@@ -221,8 +219,7 @@ public class SessionImpl implements Session {
         }
 
         if (isEmpty()) {
-            // It is empty, but there was a session coming in, therefore clear
-            // it
+            // It is empty, but there was a session coming in, therefore clear it
             if (context.hasCookie(sessionCookieName)) {
 
                 Cookie.Builder expiredSessionCookie = Cookie.builder(sessionCookieName, "");

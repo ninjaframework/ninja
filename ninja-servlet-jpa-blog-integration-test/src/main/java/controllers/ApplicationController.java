@@ -19,16 +19,21 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
-import models.Article;
+import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import dao.ArticleDao;
 import dao.SetupDao;
+import filters.RememberMeFilter;
+import models.Article;
 
+@Singleton
+@FilterWith(RememberMeFilter.class)
 public class ApplicationController {
 
     @Inject

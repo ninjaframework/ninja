@@ -1,3 +1,9 @@
+Version 5.3.1
+=============
+
+ * 2016-01-28 #450 Remove RouteBuilder.with(Result) style routes as they are potentially (very)
+              dangerous (watsonmw)
+
 Version 5.3.0
 =============
 
