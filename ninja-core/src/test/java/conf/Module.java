@@ -18,13 +18,26 @@ package conf;
 
 import com.google.inject.AbstractModule;
 
+import ninja.utils.NinjaProperties;
+
 
 // Just a dummy for testing.
 // Allows to check that custom Ninja module in user's conf directory
 // works properly.
 public class Module extends AbstractModule {
 
-  
+	NinjaProperties ninjaProperties;
+	
+	public Module(NinjaProperties ninjaProperties) {
+		
+		// Will fail any test based on this Module if properties not received
+		if(ninjaProperties == null) {
+			throw new IllegalArgumentException("null properties");
+		}
+		
+		this.ninjaProperties = ninjaProperties;
+	}
+	
     @Override
     protected void configure() {       
 
