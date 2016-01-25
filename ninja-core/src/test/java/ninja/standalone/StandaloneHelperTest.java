@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2015 the original author or authors.
+ * Copyright (C) 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,12 @@
 
 package ninja.standalone;
 
+import java.net.URI;
+import javax.net.ssl.SSLContext;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 public class StandaloneHelperTest {
@@ -36,5 +42,17 @@ public class StandaloneHelperTest {
         StandaloneHelper.checkContextPath("/mycontext/");
     }
     
-
+    @Test
+    public void createDevelopmentSSLContext() throws Exception {
+        URI keystoreUri = new URI(Standalone.DEFAULT_DEV_NINJA_SSL_KEYSTORE_URI);
+        char[] keystorePassword = Standalone.DEFAULT_DEV_NINJA_SSL_KEYSTORE_PASSWORD.toCharArray();
+        URI truststoreUri = new URI(Standalone.DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_URI);
+        char[] truststorePassword = Standalone.DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_PASSWORD.toCharArray();
+        
+        SSLContext sslContext
+            = StandaloneHelper.createSSLContext(keystoreUri, keystorePassword, truststoreUri, truststorePassword);
+        
+        assertThat(sslContext, is(not(nullValue())));
+    }
+    
 }

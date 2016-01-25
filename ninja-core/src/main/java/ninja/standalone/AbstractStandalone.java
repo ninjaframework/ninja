@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2015 the original author or authors.
+ * Copyright (C) 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,10 @@ package ninja.standalone;
 import ninja.utils.OverlayedNinjaProperties;
 import com.google.common.base.Optional;
 import com.google.inject.CreationException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.net.ssl.SSLContext;
 import static ninja.standalone.StandaloneHelper.checkContextPath;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
@@ -51,6 +53,11 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     protected Integer port;
     protected String contextPath;
     protected Long idleTimeout;
+    protected Integer sslPort;
+    protected URI sslKeystoreUri;
+    protected String sslKeystorePassword;
+    protected URI sslTruststoreUri;
+    protected String sslTruststorePassword;
     
     // internal state
     protected boolean configured;
@@ -127,9 +134,33 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         idleTimeout(overlayedNinjaProperties.getLong(
                 KEY_NINJA_IDLE_TIMEOUT, this.idleTimeout, DEFAULT_IDLE_TIMEOUT));
         
-        // assign a random port if needed
+        sslPort(overlayedNinjaProperties.getInteger(
+                KEY_NINJA_SSL_PORT, this.sslPort, DEFAULT_SSL_PORT));
+        
+        // defaults below (with self-signed cert) only valid in dev & test modes
+        
+        sslKeystoreUri(overlayedNinjaProperties.getURI(KEY_NINJA_SSL_KEYSTORE_URI, this.sslKeystoreUri, 
+                (this.ninjaMode == NinjaMode.prod ? null : new URI(DEFAULT_DEV_NINJA_SSL_KEYSTORE_URI))));
+        
+        sslKeystorePassword(overlayedNinjaProperties.get(
+                KEY_NINJA_SSL_KEYSTORE_PASSWORD, this.sslKeystorePassword, 
+                (this.ninjaMode == NinjaMode.prod ? null : DEFAULT_DEV_NINJA_SSL_KEYSTORE_PASSWORD)));
+        
+        sslTruststoreUri(overlayedNinjaProperties.getURI(KEY_NINJA_SSL_TRUSTSTORE_URI, this.sslTruststoreUri, 
+                (this.ninjaMode == NinjaMode.prod ? null : new URI(DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_URI))));
+        
+        sslTruststorePassword(overlayedNinjaProperties.get(
+                KEY_NINJA_SSL_TRUSTSTORE_PASSWORD, this.sslTruststorePassword, 
+                (this.ninjaMode == NinjaMode.prod ? null : DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_PASSWORD)));
+        
+        
+        // assign random ports if needed
         if (getPort() == null || getPort() == 0) {
             port(StandaloneHelper.findAvailablePort(8000, 9000));
+        }
+        
+        if (getSslPort() == null || getSslPort() == 0) {
+            sslPort(StandaloneHelper.findAvailablePort(9001, 9999));
         }
         
         doConfigure();
@@ -294,6 +325,61 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     }
     
     @Override
+    public Integer getSslPort() {
+        return this.sslPort;
+    }
+    
+    @Override
+    public T sslPort(int sslPort) {
+        this.sslPort = sslPort;
+        return (T)this;
+    }
+
+    @Override
+    public URI getSslKeystoreUri() {
+        return this.sslKeystoreUri;
+    }
+
+    @Override
+    public T sslKeystoreUri(URI keystoreUri) {
+        this.sslKeystoreUri = keystoreUri;
+        return (T)this;
+    }
+
+    @Override
+    public String getSslKeystorePassword() {
+        return this.sslKeystorePassword;
+    }
+
+    @Override
+    public T sslKeystorePassword(String keystorePassword) {
+        this.sslKeystorePassword = keystorePassword;
+        return (T)this;
+    }
+
+    @Override
+    public URI getSslTruststoreUri() {
+        return this.sslTruststoreUri;
+    }
+
+    @Override
+    public T sslTruststoreUri(URI truststoreUri) {
+        this.sslTruststoreUri = truststoreUri;
+        return (T)this;
+    }
+
+    @Override
+    public String getSslTruststorePassword() {
+        return this.sslTruststorePassword;
+    }
+
+    @Override
+    public T sslTruststorePassword(String truststorePassword) {
+        this.sslTruststorePassword = truststorePassword;
+        return (T)this;
+    }
+    
+    @Override
     public NinjaPropertiesImpl getNinjaProperties() {
         // only available after configure()
         checkConfigured();
@@ -314,14 +400,28 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         return baseUrls;
     }
     
+    @Override
+    public boolean isPortEnabled() {
+        return this.port != null && this.port > -1;
+    }
+    
+    @Override
+    public boolean isSslPortEnabled() {
+        return this.sslPort != null && this.sslPort > -1;
+    }
+    
     protected List<String> createServerUrls() {
         // only available after configure()
         checkConfigured();
         
         List<String> urls = new ArrayList<>();
         
-        if (getPort() > 0) {
+        if (isPortEnabled()) {
             urls.add(createServerUrl("http", getHost(), getPort()));
+        }
+        
+        if (isSslPortEnabled()) {
+            urls.add(createServerUrl("https", getHost(), getSslPort()));
         }
         
         return urls;
@@ -333,8 +433,12 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         
         List<String> urls = new ArrayList<>();
         
-        if (getPort() > 0) {
+        if (isPortEnabled()) {
             urls.add(createBaseUrl("http", getHost(), getPort(), getContextPath()));
+        }
+        
+        if (isSslPortEnabled()) {
+            urls.add(createBaseUrl("https", getHost(), getSslPort(), getContextPath()));
         }
         
         return urls;
@@ -379,13 +483,29 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
     }
     
     protected String getLoggableIdentifier() {
+        // build list of ports
+        StringBuilder ports = new StringBuilder();
+        
+        if (isPortEnabled()) {
+            ports.append(getPort());
+        }
+        
+        if (isSslPortEnabled()) {
+            if (ports.length() > 0) {
+                ports.append(", ");
+            }
+            ports.append(getSslPort());
+            ports.append("/ssl");
+        }
+        
         StringBuilder s = new StringBuilder();
         
         s.append("on ");
+        
         s.append(Optional.fromNullable(getHost()).or("<all>"));
         s.append(":");
-        s.append(getPort());
-        
+        s.append(ports);
+
         return s.toString();
     }
     
@@ -399,5 +519,30 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         }
         
         logger.info("-------------------------------------------------------");
+    }
+    
+    protected SSLContext createSSLContext() throws Exception {
+        if (this.sslKeystoreUri == null) {
+            throw new IllegalStateException("Unable to create SSL context. Configuration key " + KEY_NINJA_SSL_KEYSTORE_URI
+                    + " has empty value.  Please check your configuration file.");
+        }
+        
+        if (this.sslKeystorePassword == null) {
+            throw new IllegalStateException("Unable to create SSL context. Configuration key " + KEY_NINJA_SSL_KEYSTORE_PASSWORD
+                    + " has empty value.  Please check your configuration file.");
+        }
+        
+        if (this.sslTruststoreUri == null) {
+            throw new IllegalStateException("Unable to create SSL context. Configuration key " + KEY_NINJA_SSL_TRUSTSTORE_URI
+                    + " has empty value.  Please check your configuration file.");
+        }
+        
+        if (this.sslTruststorePassword == null) {
+            throw new IllegalStateException("Unable to create SSL context. Configuration key " + KEY_NINJA_SSL_TRUSTSTORE_PASSWORD
+                    + " has empty value.  Please check your configuration file.");
+        }
+        
+        return StandaloneHelper.createSSLContext(this.sslKeystoreUri, this.sslKeystorePassword.toCharArray(),
+            this.sslTruststoreUri, this.sslTruststorePassword.toCharArray());
     }
 }

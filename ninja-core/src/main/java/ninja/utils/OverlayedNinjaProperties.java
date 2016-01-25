@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2015 the original author or authors.
+ * Copyright (C) 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package ninja.utils;
 
 import com.google.inject.Singleton;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 
@@ -101,6 +103,21 @@ public class OverlayedNinjaProperties {
             return Long.valueOf(value);
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to convert property '" + key + "' with value '" + value + "' to a Long", e);
+        }
+    }
+    
+    public URI getURI(String key, URI currentValue, URI defaultValue) {
+        String value = null;
+        try {
+            value = get(key, safeToString(currentValue), safeToString(defaultValue));
+            
+            if (StringUtils.isEmpty(value)) {
+                return null;
+            }
+            
+            return new URI(value);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unable to convert property '" + key + "' with value '" + value + "' to a URI", e);
         }
     }
     

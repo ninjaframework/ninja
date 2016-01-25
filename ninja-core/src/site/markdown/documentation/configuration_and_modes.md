@@ -99,6 +99,50 @@ database.name=database_production   # will be used when no mode is set (or prod)
 
 The convention is to use a "%" and the name of the mode followed by ".".
 
+HTTPS (SSL) support
+-------------------------
+
+As of version 5.2.3, Ninja supports basic HTTPS (SSL) in both standalone and
+SuperDevMode. While other methods of handling SSL in production (e.g. nginx) are
+highly recommended, its convenient to use Ninja's builtin support during
+development, testing, or light production use.
+
+Ninja ships with a self-signed SSL certificate that is configured by default
+in either `dev` or `test` modes.  To enable SSL in either `dev` or `test` mode
+you'll simply need to set the port you'd like to start an HTTPS server on.
+
+<pre class="prettyprint">
+ninja.ssl.port=8443
+</pre>
+
+This can be accomplished by either adding this to your `conf/application.conf`
+configuration file or on the command line when you run Ninja's maven plugin
+
+<pre class="prettyprint">
+mvn ninja:run -Dninja.ssl.port=8443
+</pre>
+
+Ninja supports running both HTTP and HTTPS connectors at the same time.  If you'd
+like to only run HTTPS, simply set `ninja.port` to -1 to disable it.
+
+<pre class="prettyprint">
+ninja.port=-1               # disable clear text http connector
+ninja.ssl.port=8443         # enable ssl https connector
+</pre>
+
+The SSL keystore and truststore values can be configured as well.  The uri values
+may either be a classpath resource in the format `classpath:resourceName` or
+any other valid Java URL value since under-the-hood `URL.openStream()` is used.
+Please note that in dev and test mode the default keystore is `classpath:/ninja/standalone/ninja-development.keystore`
+and the default truststore is `classpath:/ninja/standalone/ninja-development.truststore`
+
+<pre class="prettyprint">
+ninja.ssl.keystore.uri=file:///var/etc/mysite.keystore
+ninja.ssl.keystore.password=changeit
+ninja.ssl.truststore.uri=file:///var/etc/mysite.truststore
+ninja.ssl.truststore.password=changeit
+</pre>
+
 Disabling diagnostic mode
 -------------------------
 

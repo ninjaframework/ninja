@@ -19,6 +19,6 @@ to your reverse proxy configuration. That's all.
 A note on GZIP, SPDY, SSL and more
 ----------------------------------
 
-Ninja does not provide support for SSL or GZip out of the box. We think that's
-the responsibility of the application container or better your reverse proxy like
-nginx. 
+Ninja provides basic support for SSL and no support for GZip out of the box.
+We think that's the responsibility of the application container or better your
+reverse proxy like nginx.
