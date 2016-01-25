@@ -30,6 +30,7 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.uploads.FileItem;
@@ -218,7 +219,7 @@ public class FakeContext implements Context {
     @Override
     public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
         try {
-            return SwissKnife.convert(key, clazz);
+            return (T) ParamParsers.getParamParser(clazz, null).parseParameter(key, key, validation);
         } catch (Exception e) {
             return defaultValue;
         }
