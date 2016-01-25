@@ -1,8 +1,3 @@
-Version 5.2.3
-=============
-
- * 2015-12-01 Added more documentation about Freemarker templates. (jlannoy)
-
 Version 5.2.2
 =============
 
