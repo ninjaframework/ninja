@@ -30,9 +30,8 @@ public class Module extends AbstractModule {
 	
 	public Module(NinjaProperties ninjaProperties) {
 		
-		// Will fail any test based on this Module if properties not received
 		if(ninjaProperties == null) {
-			throw new IllegalArgumentException("null properties");
+			throw new IllegalArgumentException("Received null as an instance of NinjaProperties");
 		}
 		
 		this.ninjaProperties = ninjaProperties;
