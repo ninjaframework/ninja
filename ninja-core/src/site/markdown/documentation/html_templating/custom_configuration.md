@@ -32,7 +32,7 @@ public class Ninja extends NinjaDefault {
 Custom functions - The Java way
 ---------------------------------
 
-While you can access the Freemarker <code>Configuration</code> object, you can add you own custom functions using Java code:
+While you can access the Freemarker <code>Configuration</code> object, you can add your own custom functions using Java code:
 <pre class="prettyprint">
 freemarkerConfiguration.setSharedVariable("upper", new TemplateMethodModelEx() {
 
