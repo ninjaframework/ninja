@@ -74,6 +74,8 @@
                 <item name="Flash scope" href="./documentation/basic_concepts/flash_scope.html"/>
                 <item name="Error handling" href="./documentation/basic_concepts/error_handling.html"/>
                 <item name="Metrics" href="./documentation/basic_concepts/metrics.html"/>
+                <item name="Logging" href="./documentation/logging.html"/>                
+                <item name="Sending mail" href="./documentation/sending_mail.html"/>
             </item>
 
             <item name="Configuration and modes" href="./documentation/configuration_and_modes.html"/>
@@ -81,7 +83,6 @@
             <item name="HTML templating" collapse="true" href="./documentation/html_templating/getting_started.html">
                 <item name="Rendering objects" href="./documentation/html_templating/rendering_objects.html"/>
                 <item name="Form parsing" href="./documentation/html_templating/form_parsing.html"/>
-                <item name="Security, i18n and more" href="./documentation/html_templating/advanced_topics.html"/>
             </item>
 
             <item name="Working with JSON / JSONP" href="./documentation/working_with_json_jsonp.html"/>
@@ -89,46 +90,35 @@
             <item name="Working with XML" href="./documentation/working_with_xml.html"/>
 
         </menu>
+
         <menu name="Advanced topics">
-
-            <item name="Validation" href="./documentation/validation.html"/>
-            <item name="Content negotiation" href="./documentation/content_negotiation.html"/>
-
-            <item name="Uploading files" collapse="true" href="./documentation/uploading_files.html"/>
-
-            <item name="Scheduler" href="./documentation/scheduler.html"/>
-            <item name="Lifecycle" href="./documentation/lifecycle.html"/>
+            <item name="Security, i18n and more" collapse="true" href="./documentation/html_templating/advanced_topics.html">
+                <item name="Security" collapse="true" href="./documentation/security/getting_started.html"/>
+                <item name="Internationalization" collapse="true" href="./documentation/internationalization.html"/>
+                <item name="Static assets" collapse="true" href="./documentation/static_assets.html"/>
+                <item name="Validation" href="./documentation/validation.html"/>                     
+                <item name="Uploading files"  href="./documentation/uploading_files.html"/>
+                <item name="Content negotiation"  href="./documentation/content_negotiation.html"/>                
+            </item>                     
 
             <item name="Working with relational DBs" collapse="true" href="./documentation/working_with_relational_dbs/jpa.html">
                 <item name="DB Migrations" href="./documentation/working_with_relational_dbs/db_migrations.html"/>
             </item>
 
-            <item name="Using the cache" collapse="true" href="./documentation/using_the_cache.html"/>
-
-            <item name="Internationalization" collapse="true" href="./documentation/internationalization.html"/>
-
-            <item name="Static assets" collapse="true" href="./documentation/static_assets.html"/>
-
-            <item name="Sending mail" href="./documentation/sending_mail.html"/>
-
-            <item name="Logging" href="./documentation/logging.html"/>
-
-            <item name="Custom routing" href="./documentation/custom_routing.html"/>
-
-            <item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>
-
+            <item name="Debugging" collapse="true"href="./documentation/debugging.html">
+                <item name="Scheduler" href="./documentation/scheduler.html"/>
+                <item name="Lifecycle" href="./documentation/lifecycle.html"/>            
+                <item name="Using the cache" href="./documentation/using_the_cache.html"/>
+                <item name="Custom routing" href="./documentation/custom_routing.html"/>
+                <item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>
+            </item>
+            
             <item name="Testing" collapse="true" href="./documentation/testing_your_application/getting_started.html">
                 <item name="Mocked tests" href="./documentation/testing_your_application/mocked_tests.html"/>
                 <item name="Ninja Test" href="./documentation/testing_your_application/ninja_test.html"/>
                 <item name="Ninja DocTester" href="./documentation/testing_your_application/ninja_doctester.html"/>
                 <item name="Ninja FluentLenium Test" href="./documentation/testing_your_application/ninja_fluentlenium_test.html"/>
                 <item name="Advanced" href="./documentation/testing_your_application/advanced.html"/>
-            </item>
-
-            <item name="Debugging" href="./documentation/debugging.html"/>
-
-            <item name="Security" collapse="true" href="./documentation/security/getting_started.html">
-
             </item>
 
             <item name="Deployment" collapse="true" href="./documentation/deployment/getting_started.html">
