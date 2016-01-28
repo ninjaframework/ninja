@@ -24,6 +24,7 @@ import ninja.lifecycle.LifecycleSupport;
 import ninja.logging.LogbackConfigurator;
 import ninja.scheduler.SchedulerSupport;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 
 import org.slf4j.Logger;
@@ -150,8 +151,20 @@ public class Bootstrap {
             Class<?> applicationModuleClass = Class
                     .forName(applicationModuleClassName);
 
-            AbstractModule applicationConfiguration = (AbstractModule)applicationModuleClass
-                    .getConstructor().newInstance();
+            AbstractModule applicationConfiguration = null;
+            
+            // Tries to instantiate module by giving the NinjaProperties as constructor arg
+            try {
+            	
+            	applicationConfiguration = (AbstractModule) applicationModuleClass
+            			.getConstructor(NinjaProperties.class).newInstance(ninjaProperties);
+            	
+            } catch(NoSuchMethodException e) {
+            	
+            	applicationConfiguration = (AbstractModule) applicationModuleClass
+            			.getConstructor().newInstance();
+            	
+            }
 
             addModule(applicationConfiguration);
         }

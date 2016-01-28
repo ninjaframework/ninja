@@ -27,7 +27,8 @@ Guice in Ninja
 By convention Ninja will look for a Java file at <code>conf/Module.java</code>.
 That module is a regular Guice module that will be automatically loaded when
 your application starts up. This file is 100% pure Guice and you can use
-all Guice goodies.
+all Guice goodies. If needed, the constructor of this module can take a 
+<code>NinjaProperties</code> object as argument, but it's not mandatory.
 
 
 An example
