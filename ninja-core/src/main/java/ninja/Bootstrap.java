@@ -155,15 +155,11 @@ public class Bootstrap {
             
             // Tries to instantiate module by giving the NinjaProperties as constructor arg
             try {
-            	
-            	applicationConfiguration = (AbstractModule) applicationModuleClass
-            			.getConstructor(NinjaProperties.class).newInstance(ninjaProperties);
-            	
-            } catch(NoSuchMethodException e) {
-            	
-            	applicationConfiguration = (AbstractModule) applicationModuleClass
-            			.getConstructor().newInstance();
-            	
+                applicationConfiguration = (AbstractModule) applicationModuleClass
+                        .getConstructor(NinjaProperties.class).newInstance(ninjaProperties);
+            } catch (NoSuchMethodException e) {
+                applicationConfiguration = (AbstractModule) applicationModuleClass
+                        .getConstructor().newInstance();
             }
 
             addModule(applicationConfiguration);
@@ -276,4 +272,5 @@ public class Bootstrap {
             return classLocationAsDefinedByNinja;
         }
     }
+
 }

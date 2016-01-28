@@ -13,40 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package conf;
 
 import com.google.inject.AbstractModule;
 
 import ninja.utils.NinjaProperties;
 
-
 // Just a dummy for testing.
 // Allows to check that custom Ninja module in user's conf directory
 // works properly.
 public class Module extends AbstractModule {
 
-	NinjaProperties ninjaProperties;
-	
-	public Module(NinjaProperties ninjaProperties) {
-		
-		if(ninjaProperties == null) {
-			throw new IllegalArgumentException("Received null as an instance of NinjaProperties");
-		}
-		
-		this.ninjaProperties = ninjaProperties;
-	}
-	
+    NinjaProperties ninjaProperties;
+
+    public Module(NinjaProperties ninjaProperties) {
+
+        if (ninjaProperties == null) {
+            throw new IllegalArgumentException("Received null as an instance of NinjaProperties");
+        }
+
+        this.ninjaProperties = ninjaProperties;
+    }
+
     @Override
-    protected void configure() {       
+    protected void configure() {
 
         bind(DummyInterfaceForTesting.class).to(DummyClassForTesting.class);
 
     }
-    
+
     public static interface DummyInterfaceForTesting {
     }
-    
+
     public static class DummyClassForTesting implements DummyInterfaceForTesting {
     }
 
