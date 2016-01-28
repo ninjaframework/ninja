@@ -24,17 +24,17 @@ import ninja.utils.NinjaProperties;
 // works properly.
 public class Module extends AbstractModule {
 
-	NinjaProperties ninjaProperties;
-	
-	public Module(NinjaProperties ninjaProperties) {
-		
-		if(ninjaProperties == null) {
-			throw new IllegalArgumentException("Received null as an instance of NinjaProperties");
-		}
-		
-		this.ninjaProperties = ninjaProperties;
-	}
-	
+    NinjaProperties ninjaProperties;
+
+    public Module(NinjaProperties ninjaProperties) {
+
+        if (ninjaProperties == null) {
+            throw new IllegalArgumentException("Received null as an instance of NinjaProperties");
+        }
+
+        this.ninjaProperties = ninjaProperties;
+    }
+
     @Override
     protected void configure() {
 
