@@ -209,7 +209,7 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public void save(Context context, Result result) {
+    public void save(Context context) {
 
         // Don't save the cookie nothing has changed, and if we're not expiring or
         // we are expiring but we're only updating if the session changes
@@ -229,7 +229,7 @@ public class SessionImpl implements Session {
                 expiredSessionCookie.setPath(context.getContextPath() + "/");
                 expiredSessionCookie.setMaxAge(0);
 
-                result.addCookie(expiredSessionCookie.build());
+                context.addCookie(expiredSessionCookie.build());
 
             }
             return;
@@ -267,7 +267,7 @@ public class SessionImpl implements Session {
                 cookie.setHttpOnly(sessionHttpOnly);
             }
 
-            result.addCookie(cookie.build());
+            context.addCookie(cookie.build());
 
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             logger.error("Encoding exception - this must not happen", unsupportedEncodingException);

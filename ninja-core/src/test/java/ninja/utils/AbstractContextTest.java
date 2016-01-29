@@ -289,8 +289,8 @@ public class AbstractContextTest {
         // abstract finalizeHeaders does not return anything
         assertThat(streams, is(nullValue()));
 
-        verify(flashCookie, times(1)).save(context, result);
-        verify(sessionCookie, times(1)).save(context, result);
+        verify(flashCookie, times(1)).save(context);
+        verify(sessionCookie, times(1)).save(context);
         verify(context, times(1)).addCookie(cookie);
     }
 

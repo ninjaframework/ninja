@@ -74,25 +74,23 @@ public class FlashScopeImpl implements FlashScope {
     }
 
     @Override
-    public void save(Context context, Result result) {
+    public void save(Context context) {
 
         if (outgoingFlashCookieData.isEmpty()) {
 
             if (context.hasCookie(applicationCookiePrefix
                     + ninja.utils.NinjaConstant.FLASH_SUFFIX)) {
 
+                // build empty flash cookie
                 Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
                     + NinjaConstant.FLASH_SUFFIX, "");
                 cookie.setPath(context.getContextPath() + "/");
                 cookie.setSecure(false);
                 cookie.setMaxAge(0);
 
-                result.addCookie(cookie.build());
+                context.addCookie(cookie.build());
 
             }
-
-            return;
-
         }
 
         else {
@@ -108,7 +106,7 @@ public class FlashScopeImpl implements FlashScope {
                 // => Cookie will live as long as the browser is open theoretically
                 cookie.setMaxAge(-1);
 
-                result.addCookie(cookie.build());
+                context.addCookie(cookie.build());
 
             } catch (Exception e) {
                 logger.error("Encoding exception - this must not happen", e);

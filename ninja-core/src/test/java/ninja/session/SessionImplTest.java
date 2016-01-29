@@ -129,10 +129,10 @@ public class SessionImplTest {
 
         // put nothing => empty session will not be sent as we send only changed
         // stuff...
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // no cookie should be set as the flash scope is empty...:
-        verify(result, never()).addCookie(Matchers.any(Cookie.class));
+        verify(context, never()).addCookie(Matchers.any(Cookie.class));
     }
 
     @Test
@@ -146,10 +146,10 @@ public class SessionImplTest {
 
         // put nothing => intentionally to check if no session cookie will be
         // saved
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals("NINJA_SESSION", cookieCaptor.getValue().getName());
@@ -183,10 +183,10 @@ public class SessionImplTest {
 
         // put nothing => intentionally to check if no session cookie will be
         // saved
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals(true, cookieCaptor.getValue().isSecure());
@@ -209,10 +209,10 @@ public class SessionImplTest {
 
         // put nothing => intentionally to check if no session cookie will be
         // saved
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals(false, cookieCaptor.getValue().isSecure());
@@ -230,10 +230,10 @@ public class SessionImplTest {
 
         // put nothing => intentionally to check if no session cookie will be
         // saved
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals(true, cookieCaptor.getValue().isHttpOnly());
@@ -255,10 +255,10 @@ public class SessionImplTest {
 
         // put nothing => intentionally to check if no session cookie will be
         // saved
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals(false, cookieCaptor.getValue().isHttpOnly());
@@ -278,10 +278,10 @@ public class SessionImplTest {
 
         // put nothing => intentionally to check if no session cookie will be
         // saved
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // a cookie will be set
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // now we simulate a new request => the session storage will generate a
         // new cookie:
@@ -377,9 +377,9 @@ public class SessionImplTest {
         sessionCookie.init(context);
         sessionCookie.put("anykey", "anyvalue");
 
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
         Cookie cookie = cookieCaptor.getValue();
         assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
     }
@@ -397,7 +397,7 @@ public class SessionImplTest {
 
         assertThat(sessionCookie1.get("a"), CoreMatchers.equalTo("2"));
 
-        sessionCookie1.save(context, result);
+        sessionCookie1.save(context);
 
         Session sessionCookie2 = roundTrip(sessionCookie1);
 
@@ -444,10 +444,10 @@ public class SessionImplTest {
     }
 
     private Session roundTrip(Session sessionCookie1) {
-        sessionCookie1.save(context, result);
+        sessionCookie1.save(context);
 
         // Get the cookie ...
-        verify(result, atLeastOnce()).addCookie(cookieCaptor.capture());
+        verify(context, atLeastOnce()).addCookie(cookieCaptor.capture());
 
         when(context.getCookie("NINJA_SESSION")).thenReturn(cookieCaptor.getValue());
 
@@ -462,10 +462,10 @@ public class SessionImplTest {
     }
 
     private String captureFinalCookie(Session sessionCookie) {
-        sessionCookie.save(context, result);
+        sessionCookie.save(context);
 
         // SessionImpl should set the cookie
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         String cookieValue = cookieCaptor.getValue().getValue();
         String cookieValueWithoutSign = cookieValue.substring(cookieValue.indexOf("-") + 1);
