@@ -1,4 +1,4 @@
-Version 5.X.X
+Version 5.3.1
 =============
 
  * 2016-01-29 Security: session and flash data save to Context instead of Result (jjlauer)
