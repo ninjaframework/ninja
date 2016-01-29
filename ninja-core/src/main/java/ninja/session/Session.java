@@ -60,9 +60,8 @@ public interface Session {
      * It basically serializes the session into the header of the response.
      * 
      * @param context The context from where to deduct a potentially existing session.
-     * @param result The result where to add the session.
      */
-	public void save(Context context, Result result);
+	public void save(Context context);
 
     /**
      * Puts key / value into the session. 

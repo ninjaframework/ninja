@@ -302,17 +302,18 @@ abstract public class AbstractContext implements Context.Impl {
     }
 
     protected ResponseStreams finalizeHeaders(Result result, Boolean handleFlashAndSessionCookie) {
-        // copy ninja cookies / flash and session
+        // copy ninja flash and session data directory to this context
         if (handleFlashAndSessionCookie) {
-            flashScope.save(this, result);
-            session.save(this, result);
+            flashScope.save(this);
+            session.save(this);
         }
-
-        // copy cookies from result
+        
+        // copy any cookies from result
         for (ninja.Cookie cookie : result.getCookies()) {
             addCookie(cookie);
         }
         
+        // subclasses responsible for creating the ResponseStreams instance
         return null;
     }
 

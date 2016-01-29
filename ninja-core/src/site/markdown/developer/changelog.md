@@ -1,6 +1,7 @@
 Version 5.X.X
 =============
 
+ * 2016-01-29 Security: session and flash data save to Context instead of Result (jjlauer)
  * 2016-01-16 Module.java of Ninja applications can now get NinjaProperties injected optionally. (jlannoy)
  * 2015-12-01 Added more documentation about Freemarker templates. (jlannoy)
 
