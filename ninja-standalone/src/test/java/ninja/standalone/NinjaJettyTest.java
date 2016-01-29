@@ -16,6 +16,7 @@
 
 package ninja.standalone;
 
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.inject.CreationException;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -274,6 +275,48 @@ public class NinjaJettyTest {
             
             assertThat(standalone.contextHandler.isStopped(), is(true));
             assertThat(standalone.jetty.isStopped(), is(true));
+        } finally {
+            standalone.shutdown();
+        }
+    }
+    
+    @Test
+    public void sessionsAreNotSharedOnSingleResultInstances() throws Exception {
+        // this test is not really specific to jetty, but its easier to test here
+        NinjaJetty standalone = new NinjaJetty()
+            .externalConfigurationPath("conf/jetty.com.session.conf")
+            .port(RANDOM_PORT);
+        
+        try {
+            standalone.start();
+            
+            // establish session with a set-cookie header
+            HttpRequest client0 = 
+                HttpRequest.get(standalone.getBaseUrls().get(0) + "/getOrCreateSession");
+            
+            assertThat(client0.code(), is(200));
+            assertThat(client0.header("Set-Cookie"), is(not(nullValue())));
+            
+            // call redirect so its session is processed first time (triggers bug for issue #450)
+            HttpRequest client1 = 
+                HttpRequest.get(standalone.getBaseUrls().get(0) + "/badRoute")
+                    .header("Cookie", client0.header("Set-Cookie"))
+                    .followRedirects(false);
+            
+            assertThat(client1.code(), is(303));
+            assertThat(client1.header("Set-Cookie"), is(not(nullValue())));
+            
+            // call redirect with a mock new browser (no cookie header) -- we
+            // should not get a session value back
+            HttpRequest client2 = 
+                HttpRequest.get(standalone.getBaseUrls().get(0) + "/badRoute")
+                    .followRedirects(false);
+            
+            assertThat(client2.code(), is(303));
+            // if cookie is NOT null then someone elses cookie (from the previous
+            // request above) got assigned to us!
+            assertThat(client2.header("Set-Cookie"), is(nullValue()));
+            
         } finally {
             standalone.shutdown();
         }

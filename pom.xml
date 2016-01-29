@@ -719,6 +719,15 @@
                 <scope>test</scope>
             </dependency>  
             
+            <!-- small http library for unit tests that don't need power of
+                 httpclient -->
+            <dependency>
+                <groupId>com.github.kevinsawicki</groupId>
+                <artifactId>http-request</artifactId>
+                <version>6.0</version>
+                <scope>test</scope>
+            </dependency>
+            
         </dependencies>
         
         
