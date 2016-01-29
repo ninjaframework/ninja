@@ -9,6 +9,8 @@ Version 5.X.X
 Version 5.3.0
 =============
 
+ * 2016-01-28 #450 Remove RouteBuilder.with(Result) style routes as they are potentially (very)
+              dangerous (watsonmw)
  * 2016-01-11 Bump license headers to 2016 (ra) 
  * 2015-12-15 Switch from to Travis CI (Cloudbees CI no longer available) (ra)
  * 2015-12-21 Basic HTTPS support for Ninja standalone & SuperDevMode (jjlauer)

@@ -68,8 +68,6 @@ public class RouterImplTest {
         router.GET().route("/user/{email}/{id: .*}").with(TestController.class, "user");
         router.GET().route("/u{userId: .*}/entries/{entryId: .*}").with(TestController.class, "entry");
 
-        router.GET().route("/.*").with(Results.redirect("/"));
-
         router.compileRoutes();
     }
 
@@ -145,49 +143,6 @@ public class RouterImplTest {
 
         assertThat(route, equalTo("/u1/entries/100"));
 
-    }
-
-    @Test
-    public void testRedirect() {
-        String contextPath = "";
-        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
-
-        Route route = router.getRouteFor("GET", "/this-should-redirect");
-
-        assertThat(route.getUrl(), equalTo("/.*"));
-
-        FilterChain filterChain = route.getFilterChain();
-        Result result = filterChain.next(context);
-
-        Map<String, String> headers = result.getHeaders();
-        assertTrue(headers.containsKey("Location"));
-        assertThat(result.getStatusCode(), equalTo(303));
-    }
-
-    @Test
-    public void testRedirectResultNotShared() {
-        // Make sure redirects result in a new 'Result' object each time,
-        // as the Result object can be modified by filters and by the default
-        // SessionImpl when Cookies are saved.
-        String contextPath = "";
-        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
-
-        Route route = router.getRouteFor("GET", "/redirect1");
-
-        assertThat(route.getUrl(), equalTo("/.*"));
-
-        FilterChain filterChain = route.getFilterChain();
-        Result result = filterChain.next(context);
-        result.addHeader("dummy", "value");
-
-        route = router.getRouteFor("GET", "/redirect2");
-        assertThat(route.getUrl(), equalTo("/.*"));
-
-        filterChain = route.getFilterChain();
-        result = filterChain.next(context);
-
-        Map<String, String> headers = result.getHeaders();
-        assertFalse(headers.containsKey("dummy"));
     }
 
     // Just a dummy TestController for mocking...
