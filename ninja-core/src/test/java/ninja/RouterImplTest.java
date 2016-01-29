@@ -31,6 +31,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 
+import java.util.Map;
+
 /**
  * => Most tests are done via class RoutesTest in project
  * ninja-servlet-integration-test.

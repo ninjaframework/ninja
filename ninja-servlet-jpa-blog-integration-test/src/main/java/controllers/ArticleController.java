@@ -16,8 +16,6 @@
 
 package controllers;
 
-import models.Article;
-import models.ArticleDto;
 import ninja.Context;
 import ninja.FilterWith;
 import ninja.Result;
@@ -32,8 +30,12 @@ import com.google.inject.Singleton;
 
 import dao.ArticleDao;
 import etc.LoggedInUser;
+import filters.RememberMeFilter;
+import models.Article;
+import models.ArticleDto;
 
 @Singleton
+@FilterWith(RememberMeFilter.class)
 public class ArticleController {
     
     @Inject

@@ -714,9 +714,9 @@ public class Result {
     }
 
     /**
-     * Set the content type of this result to {@link Result#APPLICATON_XML}.
+     * Set the content type of this result to {@link Result#APPLICATION_XML}.
      * 
-     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATON_XML}.
+     * @return the same result where you executed this method on. But the content type is now {@link Result#APPLICATION_XML}.
      */
     public Result xml() {
         contentType = APPLICATION_XML;
@@ -746,8 +746,7 @@ public class Result {
         return this;
         
     } 
-    
-    
+
     private void assertObjectNoRenderableOrThrowException(Object object) {
         if (object instanceof Renderable) {
             throw new IllegalArgumentException(
@@ -756,7 +755,4 @@ public class Result {
             
         }
     }
-    
-  
-
 }

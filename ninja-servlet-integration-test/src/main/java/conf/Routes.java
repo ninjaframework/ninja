@@ -64,9 +64,6 @@ public class Routes implements ApplicationRoutes {
         // simply render a page:
         router.GET().route("/").with(ApplicationController.class, "index");
 
-        // with result
-        router.GET().route("/route_with_result").with(Results.html().template("/views/routeWithResult.ftl.html"));
-
         // render a page with variable route parts:
         router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
 
@@ -86,7 +83,8 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/htmlEscaping").with(ApplicationController.class, "htmlEscaping");
         router.GET().route("/test_reverse_routing").with(ApplicationController.class, "testReverseRouting");
         router.GET().route("/test_get_context_path_works").with(ApplicationController.class, "testGetContextPathWorks");
-        router.GET().route("/test_that_freemarker_emits_400_when_template_not_found").with(Results.html().template("/views/A_TEMPLATE_THAT_DOES_NOT_EXIST.ftl.html"));
+        router.GET().route("/test_that_freemarker_emits_400_when_template_not_found").with(ApplicationController.class, "testTemplateNotFound");
+
         // /////////////////////////////////////////////////////////////////////
         // Json support
         // /////////////////////////////////////////////////////////////////////

@@ -16,7 +16,7 @@
 
 package ninja.servlet.conf;
 
-import ninja.Results;
+import controller.DummyControllerForTesting;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 
@@ -26,9 +26,8 @@ import ninja.application.ApplicationRoutes;
  * @author avarabyeu
  */
 public class Routes implements ApplicationRoutes {
-
     @Override
     public void init(Router router) {
-        router.GET().route("/").with(Results.ok());
+        router.GET().route("/").with(DummyControllerForTesting.class, "dummyMethod");
     }
 }

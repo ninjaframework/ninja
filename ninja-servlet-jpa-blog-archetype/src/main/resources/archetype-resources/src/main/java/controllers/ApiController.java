@@ -19,9 +19,6 @@
 
 package controllers;
 
-import models.ArticleDto;
-import models.ArticlesDto;
-import models.Article;
 import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
@@ -33,6 +30,9 @@ import com.google.inject.Singleton;
 
 import dao.ArticleDao;
 import etc.LoggedInUser;
+import models.ArticleDto;
+import models.ArticlesDto;
+import models.Article;
 
 public class ApiController {
 

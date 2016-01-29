@@ -38,7 +38,6 @@ class RouteBuilderImpl implements RouteBuilder {
     private String uri;
     private Class controller;
     private Method controllerMethod;
-    private Result result;
 
     public RouteBuilderImpl GET() {
         httpMethod = "GET";
@@ -80,11 +79,6 @@ class RouteBuilderImpl implements RouteBuilder {
         this.controller = controller;
         this.controllerMethod = verifyThatControllerAndMethodExists(controller,
                 controllerMethod);
-    }
-
-    @Override
-    public void with(Result result) {
-        this.result = result;
     }
 
     @Override
@@ -167,9 +161,9 @@ class RouteBuilderImpl implements RouteBuilder {
      *            The injector to build the route with
      */
     public Route buildRoute(Injector injector) {
-        if(controller == null && result == null) {
+        if (controller == null) {
             log.error("Error in route configuration for {}", uri);
-            throw new IllegalStateException("Route not with a controller or result");
+            throw new IllegalStateException("No controller for route");
         }
 
         // Calculate filters
@@ -189,29 +183,21 @@ class RouteBuilderImpl implements RouteBuilder {
 
         return new Route(httpMethod, uri, controller, controllerMethod,
                 buildFilterChain(injector, filters, controller,
-                        controllerMethod, result));
+                        controllerMethod));
     }
 
     private FilterChain buildFilterChain(Injector injector,
                                          LinkedList<Class<? extends Filter>> filters,
                                          Class<?> controller,
-                                         Method controllerMethod,
-                                         Result result) {
-
+                                         Method controllerMethod) {
         if (filters.isEmpty()) {
-
-            return result != null ? new FilterChainEnd(result) :
-                    new FilterChainEnd(injector.getProvider(controller),
+            return new FilterChainEnd(injector.getProvider(controller),
                             ControllerMethodInvoker.build(controllerMethod, injector));
-
         } else {
-
             Class<? extends Filter> filter = filters.pop();
-
             return new FilterChainImpl(injector.getProvider(filter),
                     buildFilterChain(injector, filters, controller,
-                            controllerMethod, result));
-
+                            controllerMethod));
         }
     }
 
