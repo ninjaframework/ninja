@@ -1,11 +1,23 @@
-How to contribute
-=================
+Contribute
+==========
 
-Great you want to contribute!
------------------------------
+**Great you want to contribute!**
 
-Contributing to Ninja is really simple. Well. There are some rules that you should follow:
+It's really simple. Well. There are some rules that you should follow:
 
+Documentation
+-------------
+
+The process is mostly automated and convenient.
+
+- You'll find the documentation within `ninja-core/src/site/markdown`
+- Edit the file from the github UI (https://github.com/ninjaframework/ninja/tree/develop/ninja-core/src/site/markdown)
+- Add some explanations (footer section `Propose file change`)
+- Press `Propose file change` button to create a PR (pull-request).
+
+
+Code
+----
 - Make sure you are following the code style below.
 - Make sure your feature is well tested.
 - Make sure your feature is well documented (Javadoc).
@@ -19,8 +31,7 @@ send us a pull request to become a happy member of the Ninja family :)
 
 
 
-Code style
-----------
+### Code style
 
 - Default Sun Java / Eclipse code style (a default config for eclipse can be found at the project root eclipse-ninja-format.xml.
 - If you change only tiny things only reformat stuff you actually changed. Otherwise reviewing is really hard.
@@ -29,13 +40,13 @@ Code style
 - All files are UTF-8.
 
 
-Making a release
------------------
+### Releasing
 
 Making a Ninja release
  
-1) Preliminary
+1) Preparations
 
+- Make sure you are using http://semver.org/ for versioning.
 - Make sure changelog.md is updated
 - Make sure upgrade-guide top version is updated
 - Make sure the archetypes are up-to-date (Ninja version must match release version)
@@ -43,14 +54,12 @@ Making a Ninja release
 
 2) Release to central maven repo
 
-- Make sure you are using http://semver.org/ for versioning.
-
 - mvn release:clean
 - mvn release:prepare
 - mvn release:perform
 - Log into http://oss.sonatype.org and release the packages
 
-3) publish website
+3) Publish website
 
 - git checkout TAG
 - cd ninja-core

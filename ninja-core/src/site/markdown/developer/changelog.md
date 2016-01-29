@@ -1,8 +1,10 @@
-Version 5.3.1
+Version 5.X.X
 =============
 
  * 2016-01-28 #450 Remove RouteBuilder.with(Result) style routes as they are potentially (very)
               dangerous (watsonmw)
+ * 2016-01-16 Module.java of Ninja applications can now get NinjaProperties injected optionally. (jlannoy)
+ * 2015-12-01 Added more documentation about Freemarker templates. (jlannoy)
 
 Version 5.3.0
 =============
