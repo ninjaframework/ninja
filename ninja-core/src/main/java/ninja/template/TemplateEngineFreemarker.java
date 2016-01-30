@@ -279,7 +279,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         map.put("authenticityToken", new TemplateEngineFreemarkerAuthenticityTokenDirective(context));
         map.put("authenticityForm", new TemplateEngineFreemarkerAuthenticityFormDirective(context));
         
-        // support custom template model
+        // supports custom functions
         if (injector.getExistingBinding(TEMPLATE_MODEL_MAP_KEY) != null) {
             Map<String, TemplateModel> templateModelMap = injector.getInstance(TEMPLATE_MODEL_MAP_KEY);
             for (Entry<String, TemplateModel> entry: templateModelMap.entrySet()) {

@@ -82,6 +82,7 @@
                 <item name="Rendering objects" href="./documentation/html_templating/rendering_objects.html"/>
                 <item name="Form parsing" href="./documentation/html_templating/form_parsing.html"/>
                 <item name="Implicit functions" href="./documentation/html_templating/implicit_functions.html"/>
+                <item name="Custom functions" href="./documentation/html_templating/custom_functions.html"/>
                 <item name="Custom configuration" href="./documentation/html_templating/custom_configuration.html"/>
             </item>
 

@@ -9,5 +9,9 @@ public abstract class TemplateEngineFreemarkerContextDirectiveModel implements T
     public void setContext(Context context) {
         this.context = context;
     }
+
+    public Context getContext() {
+        return context;
+    }
     
 }
