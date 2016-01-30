@@ -1,15 +1,17 @@
 Getting Started - Installing Ninja
 ==================================
 
-Not much to install
--------------------
+Prerequisites
+-------------
 
-Every good manual needs a "installing the software" section. But to be honest - 
-there is not much to install. Ninja just needs two tools to run: <b>Java</b> (from 1.7) and
-<b>Maven</b> (from 3.1.1). 
-If you already have those tools installed you can safely skip that page.
+You'll need just 3 things to develop with Ninja:
 
+* **JDK**  (Java Development Kit), version **1.7** and above
+* **Maven** (Project Management Tool), version **3.1.1** and above
+* **Internet** connection (to fetch libraries)
 
+If you already have the JDK and Maven installed you can safely skip the following sections.
+ 
 Installing Java
 ---------------
 
@@ -31,8 +33,10 @@ Java(TM) SE Runtime Environment (build 1.7.0_13-b20)
 Java HotSpot(TM) 64-Bit Server VM (build 23.7-b01, mixed mode)
 </pre>
 
-As you can see my machine is running Java 1.7.0_13. If you are using an older
-version please install the latest Java version from: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+As you can see, this machine is running Java 1.7.0_13. If you are using an older
+version please install the latest Java version from: 
+
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 
 Installing Maven
@@ -46,7 +50,7 @@ have it installed on your machine. Let's check if Maven is installed:
 mvn -version
 </pre>
 
-This will print out the version of your Maven installation. In my case:
+This will print out the version of your Maven installation, similar to this:
 
 <pre class="prettyprint">
 Apache Maven 3.1.1 (0728685237757ffbf44136acec0402957f723d9a; 2013-09-17 17:22:22+0200)
@@ -58,6 +62,7 @@ OS name: "mac os x", version: "10.7.5", arch: "x86_64", family: "mac"
 </pre>
 
 Make sure that you are using Maven 3 or greater. 
-If Maven is not available on your computer please 
-follow the following guide to setup Maven: http://maven.apache.org/guides/getting-started
+If Maven is not available on your computer please follow the following guide to setup Maven:
+
+http://maven.apache.org/guides/getting-started
 
