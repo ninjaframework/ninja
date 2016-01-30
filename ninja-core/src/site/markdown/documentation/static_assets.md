@@ -12,7 +12,7 @@ It provides support for ETags and caching out of the box.
 
 <div class="alert alert-info"><code>AssetsController</code> will serve all assets
 below your src/main/java/assets folder. Therefore you have to make sure
-that no sensible information is available in that folder and its subfolders.</div>
+that no sensitive information is available in that folder and its subfolders.</div>
 
 Serving static assets from a subdirectory
 -----------------------------------------
