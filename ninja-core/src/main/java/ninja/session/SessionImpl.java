@@ -221,16 +221,15 @@ public class SessionImpl implements Session {
         }
 
         if (isEmpty()) {
-            // It is empty, but there was a session coming in, therefore clear
-            // it
+            // It is empty, but there was a session coming in, therefore clear it
             if (context.hasCookie(sessionCookieName)) {
+                Cookie.Builder cookie = createApplicationCookie(
+                        sessionCookieName,
+                        "",
+                        context)
+                        .setMaxAge(0);
 
-                Cookie.Builder expiredSessionCookie = Cookie.builder(sessionCookieName, "");
-                expiredSessionCookie.setPath(context.getContextPath() + "/");
-                expiredSessionCookie.setMaxAge(0);
-
-                context.addCookie(expiredSessionCookie.build());
-
+                context.addCookie(cookie.build());
             }
             return;
 
@@ -246,25 +245,15 @@ public class SessionImpl implements Session {
             // first encrypt data and then generate HMAC from encrypted data
             // http://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac
             sessionData = encryption.encrypt(sessionData);
-
             String sign = crypto.signHmacSha1(sessionData);
 
-            Cookie.Builder cookie = Cookie.builder(sessionCookieName, sign + "-" + sessionData);
-            cookie.setPath(context.getContextPath() + "/");
-
-            if (applicationCookieDomain != null) {
-                cookie.setDomain(applicationCookieDomain);
-            }
+            Cookie.Builder cookie = createApplicationCookie(
+                    sessionCookieName,
+                    sign + "-" + sessionData,
+                    context);
 
             if (sessionExpireTimeInMs != null) {
-                cookie.setMaxAge((int)(sessionExpireTimeInMs / 1000L));
-            }
-
-            if (sessionTransferredOverHttpsOnly != null) {
-                cookie.setSecure(sessionTransferredOverHttpsOnly);
-            }
-            if (sessionHttpOnly != null) {
-                cookie.setHttpOnly(sessionHttpOnly);
+                cookie.setMaxAge((int) (sessionExpireTimeInMs / 1000L));
             }
 
             context.addCookie(cookie.build());
@@ -324,5 +313,27 @@ public class SessionImpl implements Session {
             itemsToIgnore++;
         }
         return (data.isEmpty() || data.size() == itemsToIgnore);
+    }
+
+    private Cookie.Builder createApplicationCookie(
+            String sessionCookieName,
+            String value,
+            Context context) {
+        Cookie.Builder cookie = Cookie.builder(sessionCookieName, value);
+        cookie.setPath(context.getContextPath() + "/");
+
+        if (applicationCookieDomain != null) {
+            cookie.setDomain(applicationCookieDomain);
+        }
+
+        if (sessionTransferredOverHttpsOnly != null) {
+            cookie.setSecure(sessionTransferredOverHttpsOnly);
+        }
+
+        if (sessionHttpOnly != null) {
+            cookie.setHttpOnly(sessionHttpOnly);
+        }
+
+        return cookie;
     }
 }
