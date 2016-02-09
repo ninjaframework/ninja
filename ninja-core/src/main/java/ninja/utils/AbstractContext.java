@@ -15,8 +15,10 @@
  */
 package ninja.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 import ninja.bodyparser.BodyParserEngine;
@@ -188,7 +190,22 @@ abstract public class AbstractContext implements Context.Impl {
         if (encodedParameter == null) {
             return null;
         } else {
-            return URI.create(encodedParameter).getPath();
+        	try {
+        		return URI.create(encodedParameter).getPath();
+        	} catch (IllegalArgumentException e) {
+        		StringBuilder sb = new StringBuilder();
+        		for (String part : encodedParameter.split("/")) {
+        			try {
+						sb.append(URLEncoder.encode(part, "UTF-8")).append("/");
+					} catch (UnsupportedEncodingException e1) {
+						// TODO: catch
+					}
+        		}
+        		if(sb.length() > 0 && !encodedParameter.substring(encodedParameter.length()-1).equals("/")) {
+        			sb.setLength(sb.length()-1);
+        		}
+        		return sb.toString();
+        	}
         }
     }
 
