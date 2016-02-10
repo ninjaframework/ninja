@@ -36,7 +36,7 @@ public interface FlashScope {
 
     void init(Context context);
 
-    void save(Context context, Result result);
+    void save(Context context);
 
     void put(String key, String value);
 

@@ -200,7 +200,7 @@ public class ControllerMethodInvoker {
             if (extractor.getFieldName() != null) {
                 if (String.class.isAssignableFrom(extractor.getExtractedType())) {
                     // Look up a parser for a single-valued parameter
-                    ParamParser<?> parser = ParamParsers.getParamParser(paramType);
+                    ParamParser<?> parser = ParamParsers.getParamParser(paramType, injector);
                     if (parser == null) {
                         throw new RoutingException("Can't find parameter parser for type "
                                 + extractor.getExtractedType() + " on field "
@@ -211,7 +211,7 @@ public class ControllerMethodInvoker {
                     }
                 } else if (String[].class.isAssignableFrom(extractor.getExtractedType())) {
                     // Look up a parser for a multi-valued parameter
-                    ArrayParamParser<?> parser = ParamParsers.getArrayParser(paramType);
+                    ArrayParamParser<?> parser = ParamParsers.getArrayParser(paramType, injector);
                     if (parser == null) {
                         throw new RoutingException("Can't find parameter array parser for type "
                                 + extractor.getExtractedType() + " on field "

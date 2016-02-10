@@ -19,17 +19,23 @@ package ninja.bodyparser;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import ninja.ContentTypes;
 import ninja.Context;
-import ninja.utils.SwissKnife;
+import ninja.params.ParamParser;
+import ninja.params.ParamParsers;
+import ninja.params.ParamParsers.ArrayParamParser;
+import ninja.params.ParamParsers.ListParamParser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -37,9 +43,16 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
     private final Logger logger = LoggerFactory.getLogger(BodyParserEnginePost.class);
 
+    private Injector injector;
+
+    @Inject
+    public BodyParserEnginePost(Injector injector) {
+        this.injector = injector;
+    }
+
     @Override
     public <T> T invoke(Context context, Class<T> classOfT) {
-        
+
         T t = null;
 
         try {
@@ -62,21 +75,34 @@ public class BodyParserEnginePost implements BodyParserEngine {
                     field.setAccessible(true);
 
                     String[] values = ent.getValue();
-                    Object convertedValue;
 
-                    // convert the values based on the field type,
-                    // supported types are collections, arrays and boxed primities
+                    if (Collection.class.isAssignableFrom(fieldType) || List.class.isAssignableFrom(fieldType)) {
 
-                    if (Collection.class.isAssignableFrom(fieldType)) {
-                        convertedValue = SwissKnife.convertCollection(values, getGenericType(field));
+                        ListParamParser<?> parser = (ListParamParser<?>) ParamParsers.getListParser(getGenericType(field), injector);
+                        if (parser == null) {
+                            logger.warn("No parser defined for a collection of type {}", getGenericType(field).getCanonicalName());
+                        } else {
+                            field.set(t, parser.parseParameter(field.getName(), values, context.getValidation()));
+                        }
+
                     } else if (fieldType.isArray()) {
-                        convertedValue = SwissKnife.convertArray(values, fieldType.getComponentType());
-                    } else {
-                        convertedValue = SwissKnife.convert(values[0], fieldType);
-                    }
 
-                    if (convertedValue != null) {
-                        field.set(t, convertedValue);
+                        ArrayParamParser<?> parser = ParamParsers.getArrayParser(fieldType, this.injector);
+                        if (parser == null) {
+                            logger.warn("No parser defined for an array of type {}", fieldType.getComponentType().getCanonicalName());
+                        } else {
+                            field.set(t, parser.parseParameter(field.getName(), values, context.getValidation()));
+                        }
+
+                    } else {
+
+                        ParamParser<?> parser = (ParamParser<?>) ParamParsers.getParamParser(fieldType, injector);
+                        if (parser == null) {
+                            logger.warn("No parser defined for type {}", fieldType.getCanonicalName());
+                        } else {
+                            field.set(t, parser.parseParameter(field.getName(), values[0], context.getValidation()));
+                        }
+
                     }
 
                 } catch (NoSuchFieldException 

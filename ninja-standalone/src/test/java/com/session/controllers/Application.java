@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 
-package ninja.utils;
+package com.session.controllers;
 
-import static org.junit.Assert.assertEquals;
+import ninja.Result;
+import ninja.Results;
+import ninja.session.Session;
 
-import org.junit.Test;
-
-public class SwissKnifeTest {
-
-    @Test
-    public void testGetRealClassNameLowerCamelCase() {
-
-        MySuperTestObject mySuperTestObject = new MySuperTestObject();
-
-        assertEquals("mySuperTestObject",
-                SwissKnife.getRealClassNameLowerCamelCase(mySuperTestObject));
-
+public class Application {
+    
+    public Result getOrCreateSession(Session session) {
+        if (session.get("user") == null) {
+            session.put("user", System.currentTimeMillis()+"");
+        }
+        
+        return Results
+            .ok()
+            .html()
+            .renderRaw(session.get("user"));
     }
-
-    // just for testing that camel case conversion stuff works
-    public class MySuperTestObject {
+    
+    public Result getSession(Session session) {
+        return Results
+            .ok()
+            .html()
+            .renderRaw(session.get("user"));
     }
-
+    
 }

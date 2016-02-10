@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
@@ -245,7 +246,7 @@ abstract public class AbstractContext implements Context.Impl {
         String parameter = getParameter(key);
 
         try {
-            return SwissKnife.convert(parameter, clazz);
+            return (T) ParamParsers.getParamParser(clazz, injector).parseParameter(key, parameter, validation);
         } catch (Exception e) {
             return defaultValue;
         }
@@ -302,17 +303,18 @@ abstract public class AbstractContext implements Context.Impl {
     }
 
     protected ResponseStreams finalizeHeaders(Result result, Boolean handleFlashAndSessionCookie) {
-        // copy ninja cookies / flash and session
+        // copy ninja flash and session data directory to this context
         if (handleFlashAndSessionCookie) {
-            flashScope.save(this, result);
-            session.save(this, result);
+            flashScope.save(this);
+            session.save(this);
         }
-
-        // copy cookies from result
+        
+        // copy any cookies from result
         for (ninja.Cookie cookie : result.getCookies()) {
             addCookie(cookie);
         }
         
+        // subclasses responsible for creating the ResponseStreams instance
         return null;
     }
 
