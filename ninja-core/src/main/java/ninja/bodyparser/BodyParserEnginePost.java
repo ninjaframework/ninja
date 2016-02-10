@@ -43,8 +43,8 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
     private final Logger logger = LoggerFactory.getLogger(BodyParserEnginePost.class);
 
-	Injector injector;
-	
+    private Injector injector;
+
     @Inject
     public BodyParserEnginePost(Injector injector) {
         this.injector = injector;
@@ -52,7 +52,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
     @Override
     public <T> T invoke(Context context, Class<T> classOfT) {
-        
+
         T t = null;
 
         try {
@@ -75,34 +75,34 @@ public class BodyParserEnginePost implements BodyParserEngine {
                     field.setAccessible(true);
 
                     String[] values = ent.getValue();
-                    
+
                     if (Collection.class.isAssignableFrom(fieldType) || List.class.isAssignableFrom(fieldType)) {
-                    	
-                    	ListParamParser<?> parser = (ListParamParser<?>) ParamParsers.getListParser(getGenericType(field));
-                    	if (parser == null) {
-                    		logger.warn("No parser defined for a collection of type {}", getGenericType(field).getCanonicalName());
-                    	} else {
-                    		field.set(t, parser.parseParameter(field.getName(), values, context.getValidation()));
-                    	}
-                    	
+
+                        ListParamParser<?> parser = (ListParamParser<?>) ParamParsers.getListParser(getGenericType(field), injector);
+                        if (parser == null) {
+                            logger.warn("No parser defined for a collection of type {}", getGenericType(field).getCanonicalName());
+                        } else {
+                            field.set(t, parser.parseParameter(field.getName(), values, context.getValidation()));
+                        }
+
                     } else if (fieldType.isArray()) {
-                    	
-                    	ArrayParamParser<?> parser = ParamParsers.getArrayParser(fieldType, this.injector);
-                    	if (parser == null) {
-                    		logger.warn("No parser defined for an array of type {}", fieldType.getComponentType().getCanonicalName());
-                    	} else {
-                    		field.set(t, parser.parseParameter(field.getName(), values, context.getValidation()));
-                    	}
-                    	
+
+                        ArrayParamParser<?> parser = ParamParsers.getArrayParser(fieldType, this.injector);
+                        if (parser == null) {
+                            logger.warn("No parser defined for an array of type {}", fieldType.getComponentType().getCanonicalName());
+                        } else {
+                            field.set(t, parser.parseParameter(field.getName(), values, context.getValidation()));
+                        }
+
                     } else {
-                    	
-                    	ParamParser<?> parser = (ParamParser<?>) ParamParsers.getParamParser(fieldType, injector);
-                    	if (parser == null) {
-                    		logger.warn("No parser defined for type {}", fieldType.getCanonicalName());
-                    	} else {
-                    		field.set(t, parser.parseParameter(field.getName(), values[0], context.getValidation()));
-                    	}
-                    	
+
+                        ParamParser<?> parser = (ParamParser<?>) ParamParsers.getParamParser(fieldType, injector);
+                        if (parser == null) {
+                            logger.warn("No parser defined for type {}", fieldType.getCanonicalName());
+                        } else {
+                            field.set(t, parser.parseParameter(field.getName(), values[0], context.getValidation()));
+                        }
+
                     }
 
                 } catch (NoSuchFieldException 

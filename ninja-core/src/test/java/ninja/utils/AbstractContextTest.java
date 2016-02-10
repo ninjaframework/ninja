@@ -214,7 +214,7 @@ public class AbstractContextTest {
 
     @Test
     public void getPathParameterAsInteger() {
-    	AbstractContextImpl context = spy(abstractContext);
+        AbstractContextImpl context = spy(abstractContext);
 
         //mock a parametermap:
         Map<String, String> parameterMap = Maps.newHashMap();

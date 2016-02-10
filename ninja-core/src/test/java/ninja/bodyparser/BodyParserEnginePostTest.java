@@ -31,6 +31,12 @@ import java.util.Map;
 import javax.validation.constraints.NotNull;
 
 import ninja.Context;
+import ninja.params.ParamParsers;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
+import ninja.params.ControllerMethodInvokerTest.Dep;
+import ninja.params.ControllerMethodInvokerTest.NeedingInjectionParamParser;
 import ninja.validation.FieldViolation;
 import ninja.validation.IsDate;
 import ninja.validation.IsFloat;
@@ -47,6 +53,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -66,10 +73,15 @@ public class BodyParserEnginePostTest {
     
     @Before
     public void setUp() {
-        Injector injector = Guice.createInjector();
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
+            }
+        });
         
-    	validation = new ValidationImpl();
-    	Mockito.when(this.context.getValidation()).thenReturn(this.validation);
+        validation = new ValidationImpl();
+        Mockito.when(this.context.getValidation()).thenReturn(this.validation);
         
         bodyParserEnginePost = new BodyParserEnginePost(injector);
     }
@@ -247,6 +259,41 @@ public class BodyParserEnginePostTest {
         
     }
     
+    @Test
+    public void testBodyParserWithCustomNeedingInjectionParamParser() {
+        ParamParsers.registerParamParser(Dep.class, NeedingInjectionParamParser.class);
+        
+        // some setup for this method:
+        Map<String, String[]> map = new HashMap<>();
+        map.put("dep", new String[] {"dep1"});
+        map.put("depArray", new String[] {"depArray1", "depArray2"});
+        map.put("depList", new String[] {"depList1", "depList2"});
+        
+        Mockito.when(context.getParameters()).thenReturn(map);
+        Mockito.when(context.getValidation()).thenReturn(validation);
+
+        // do
+        TestObjectWithCustomType testObject = bodyParserEnginePost.invoke(context, TestObjectWithCustomType.class);
+        
+        // and test:
+        assertThat(testObject.dep, equalTo(new Dep("hello_dep1")));
+        
+        assertNotNull(testObject.depArray);
+        assertThat(testObject.depArray.length, equalTo(2));
+        assertThat(testObject.depArray[0], equalTo(new Dep("hello_depArray1")));
+        assertThat(testObject.depArray[1], equalTo(new Dep("hello_depArray2")));
+        
+        assertNotNull(testObject.depList);
+        assertThat(testObject.depList.size(), equalTo(2));
+        assertThat(testObject.depList.get(0), equalTo(new Dep("hello_depList1")));
+        assertThat(testObject.depList.get(1), equalTo(new Dep("hello_depList2")));
+        
+        assertFalse(validation.hasViolations());
+        
+        ParamParsers.unregisterParamParser(Dep.class);
+        
+    }
+    
     private <T> void assertViolation(String fieldName, String violationMessage) {
         assertTrue(validation.hasFieldViolation(fieldName));
         assertFalse(validation.getFieldViolations().isEmpty());
@@ -294,13 +341,21 @@ public class BodyParserEnginePostTest {
     }
     
     public static enum MyEnum {
-    	VALUE_A, VALUE_B, VALUE_C
+        VALUE_A, VALUE_B, VALUE_C
     }
     
     public static class TestObjectWithEnum {
         
         public MyEnum enum1;
         public MyEnum enum2;
+
+    }
+    
+    public static class TestObjectWithCustomType {
+        
+        public Dep dep;
+        public Dep[] depArray;
+        public List<Dep> depList;
 
     }
     

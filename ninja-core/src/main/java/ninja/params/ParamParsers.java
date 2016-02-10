@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
 
 import ninja.validation.ConstraintViolation;
 import ninja.validation.IsDate;
@@ -69,23 +70,23 @@ public class ParamParsers {
      * ALlows to register a new parser for given Class parameters.
      */
     public static <T> void registerParamParser(final Class<T> paramClass, final Class<? extends ParamParser<T>> parserClass) {
-    	PARAM_PARSERS_CLASSES.put(paramClass, parserClass);
+        PARAM_PARSERS_CLASSES.put(paramClass, parserClass);
     }
     
     /**
      * Mainly for test purposes.
      */
     public static <T, P extends Class<ParamParser<T>>> void unregisterParamParser(final Class<T> paramClass) {
-    	PARAM_PARSERS_CLASSES.remove(paramClass);
+        PARAM_PARSERS_CLASSES.remove(paramClass);
     }
     
     public static ParamParser<?> getParamParser(Class<?> targetType, Injector injector) {
-    	Class<?> parserClass = PARAM_PARSERS_CLASSES.get(targetType);
-    	
-    	if(parserClass != null && injector != null) { 
-    		return (ParamParser<?>) injector.getInstance(parserClass); 
-    	}
-    	
+        Class<?> parserClass = PARAM_PARSERS_CLASSES.get(targetType);
+        
+        if(parserClass != null && injector != null) { 
+            return (ParamParser<?>) injector.getInstance(parserClass); 
+        }
+        
         if (targetType.isArray()) {
             // check for array of registered types
             Class<?> componentType = targetType.getComponentType();
@@ -98,7 +99,7 @@ public class ParamParsers {
         }
         
         if (targetType.isEnum()) {
-        	return new GenericEnumParamParser((Class<Enum>) targetType);
+            return new GenericEnumParamParser((Class<Enum>) targetType);
         }
 
         return PARAM_PARSERS.get(targetType);
@@ -117,7 +118,7 @@ public class ParamParsers {
      */
     @Deprecated
     public static <E extends Enum<E>> void unregisterEnum(final Class<E> enumClass) {
-    	// Not anymore used
+        // Not anymore used
     }
 
     /**
@@ -125,7 +126,7 @@ public class ParamParsers {
      */
     @Deprecated
     public static <E extends Enum<E>> void registerEnum(final Class<E> enumClass) {
-    	// Not anymore used 
+        // Not anymore used 
     }
 
     /**
@@ -141,7 +142,7 @@ public class ParamParsers {
      */
     @Deprecated
     public static ArrayParamParser<?> getArrayParser(Class<?> targetType) {
-    	return getArrayParser(targetType, null);
+        return getArrayParser(targetType, null);
     }
     
     public static ArrayParamParser<?> getArrayParser(Class<?> targetType, Injector injector) {
@@ -164,7 +165,7 @@ public class ParamParsers {
      */
     @Deprecated
     public static ListParamParser<?> getListParser(Class<?> targetInnerType) {
-    	return getListParser(targetInnerType, null);
+        return getListParser(targetInnerType, null);
     }
     
     public static ListParamParser<?> getListParser(Class<?> targetInnerType, Injector injector) {
@@ -525,27 +526,27 @@ public class ParamParsers {
     
     public static class GenericEnumParamParser<E extends Enum<E>> implements ParamParser<E> {
 
-    	private Class<E> targetType;
-    	
-    	public GenericEnumParamParser(Class<E> targetType) {
-    		this.targetType = targetType;
-    	}
+        private Class<E> targetType;
+        
+        public GenericEnumParamParser(Class<E> targetType) {
+            this.targetType = targetType;
+        }
 
-    	@Override
+        @Override
         public E parseParameter(String field, String parameterValue, Validation validation) {
             if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
-//            	try {
-//            		return Enum.valueOf(targetType, parameterValue);
-//            	}
-//            	catch(IllegalArgumentException e) {
-//            		validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-//            				IsEnum.KEY, field, IsEnum.MESSAGE, new Object[] {parameterValue, getParsedType().getName()}));
-//                	return null;
-//            	}
-            	
-            	// Equals ignore case will keep backward compatibility            	
+//                try {
+//                    return Enum.valueOf(targetType, parameterValue);
+//                }
+//                catch(IllegalArgumentException e) {
+//                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+//                            IsEnum.KEY, field, IsEnum.MESSAGE, new Object[] {parameterValue, getParsedType().getName()}));
+//                    return null;
+//                }
+                
+                // Equals ignore case will keep backward compatibility                
                 for (E value : getParsedType().getEnumConstants()) {
                     if (value.name().equalsIgnoreCase(parameterValue)) {
                         return value;
@@ -558,10 +559,10 @@ public class ParamParsers {
             }
         }
 
-    	@Override
-    	public Class<E> getParsedType() {
-    		return targetType;
-    	}
+        @Override
+        public Class<E> getParsedType() {
+            return targetType;
+        }
     }
     
     public static class DateParamParser implements ParamParser<Date> {
@@ -651,9 +652,9 @@ public class ParamParsers {
                 
                 T[] array;
                 try {
-                	array = (T[]) Array.newInstance(itemType, parameterValues.length);
+                    array = (T[]) Array.newInstance(itemType, parameterValues.length);
                 } catch(ClassCastException e) {
-                	return null;
+                    return null;
                 }
                 
                 for (int i = 0; i < parameterValues.length; i++) {
@@ -692,7 +693,7 @@ public class ParamParsers {
             if (parameterValues == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
-            	List<T> list = Lists.newArrayList();
+                List<T> list = Lists.newArrayList();
                 for (int i = 0; i < parameterValues.length; i++) {
                     list.add(itemParser.parseParameter(field, parameterValues[i], validation));
                 }

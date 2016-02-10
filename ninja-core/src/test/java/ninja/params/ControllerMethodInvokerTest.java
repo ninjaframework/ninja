@@ -602,7 +602,7 @@ public class ControllerMethodInvokerTest {
     
     @Test
     public void customDateFormatParamShouldBeParsedToDate() throws Exception {
-    	ParamParsers.registerParamParser(Date.class, DateParamParser.class);
+        ParamParsers.registerParamParser(Date.class, DateParamParser.class);
         when(context.getParameter("param1")).thenReturn("15/01/2015");
         create("dateParam", ninjaProperties).invoke(mockController, context);
         verify(mockController).dateParam(new LocalDateTime(2015, 1, 15, 0, 0).toDate());
@@ -611,7 +611,7 @@ public class ControllerMethodInvokerTest {
 
     @Test
     public void customDateFormatParamShouldHandleNull() throws Exception {
-    	ParamParsers.registerParamParser(Date.class, DateParamParser.class);
+        ParamParsers.registerParamParser(Date.class, DateParamParser.class);
         create("dateParam", ninjaProperties).invoke(mockController, context);
         verify(mockController).dateParam(null);
         assertFalse(validation.hasViolations());
@@ -620,12 +620,30 @@ public class ControllerMethodInvokerTest {
 
     @Test
     public void customDateFormatValidationShouldWork() throws Exception {
-    	ParamParsers.registerParamParser(Date.class, DateParamParser.class);
+        ParamParsers.registerParamParser(Date.class, DateParamParser.class);
         when(context.getParameter("param1")).thenReturn("blah");
         create("dateParam", ninjaProperties).invoke(mockController, context);
         verify(mockController).dateParam(null);
         assertTrue(validation.hasFieldViolation("param1"));
         ParamParsers.unregisterParamParser(Date.class);
+    }
+    
+    @Test
+    public void needingInjectionParamParser() throws Exception {
+        ParamParsers.registerParamParser(Dep.class, NeedingInjectionParamParser.class);
+        when(context.getParameter("param1")).thenReturn("hello");
+        create("needingInjectionParamParser", ninjaProperties).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
+        ParamParsers.unregisterParamParser(NeedingInjectionParamParser.class);
+    }
+    
+    @Test
+    public void needingInjectionParamParserArray() throws Exception {
+        ParamParsers.registerParamParser(Dep.class, NeedingInjectionParamParser.class);
+        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("hello1", "hello2"));
+        create("needingInjectionParamParserArray", ninjaProperties).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParserArray(new Dep[] { new Dep("hello_hello1"), new Dep("hello_hello2") });
+        ParamParsers.unregisterParamParser(NeedingInjectionParamParser.class);
     }
 
     @Test
@@ -941,6 +959,10 @@ public class ControllerMethodInvokerTest {
         public Result JSR303ValidationWithRequired(@Required @JSR303Validation Dto dto, Validation validation);
         
         public Result dateParam(@Param("param1") Date param1);
+        
+        public Result needingInjectionParamParser(@Param("param1") Dep param1);
+        
+        public Result needingInjectionParamParserArray(@Params("param1") Dep[] paramsArray);
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -1004,28 +1026,46 @@ public class ControllerMethodInvokerTest {
     
     public static class DateParamParser implements ParamParser<Date> {
 
-    	public static final String DATE_FORMAT = "dd/MM/yyyy";
+        public static final String DATE_FORMAT = "dd/MM/yyyy";
         
-    	public static final String KEY = "validation.is.date.violation";
+        public static final String KEY = "validation.is.date.violation";
         
         public static final String MESSAGE = "{0} must be a valid date";
         
-		@Override
-		public Date parseParameter(String field, String parameterValue, Validation validation) {
-			try {
-				return parameterValue == null ? null : new SimpleDateFormat(DATE_FORMAT).parse(parameterValue);
-			} catch(ParseException e) {
-				validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+        @Override
+        public Date parseParameter(String field, String parameterValue, Validation validation) {
+            try {
+                return parameterValue == null ? null : new SimpleDateFormat(DATE_FORMAT).parse(parameterValue);
+            } catch(ParseException e) {
+                validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                         KEY, field, MESSAGE, parameterValue));
                 return null;
-			}
-		}
+            }
+        }
 
-		@Override
-		public Class<Date> getParsedType() {
-			return Date.class;
-		}
-    	
+        @Override
+        public Class<Date> getParsedType() {
+            return Date.class;
+        }
+
+    }
+    
+    public static class NeedingInjectionParamParser implements ParamParser<Dep> {
+
+        // In a real application, you can also use @Named as each properties is binded by its name
+        @Inject
+        NinjaProperties properties;
+        
+        @Override
+        public Dep parseParameter(String field, String parameterValue, Validation validation) {
+            return new Dep(properties.get("needingInjectionParamParser.value") + "_" + parameterValue);
+        }
+
+        @Override
+        public Class<Dep> getParsedType() {
+            return Dep.class;
+        }
+        
     }
 
     /**
@@ -1061,7 +1101,7 @@ public class ControllerMethodInvokerTest {
         }
     }
 
-    public class Dep {
+    public static class Dep {
 
         private final String value;
 
@@ -1072,6 +1112,32 @@ public class ControllerMethodInvokerTest {
         public String value() {
             return value;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Dep other = (Dep) obj;
+            if (value == null) {
+                if (other.value != null)
+                    return false;
+            } else if (!value.equals(other.value))
+                return false;
+            return true;
+        }
+        
     }
 
     public class Dto {
