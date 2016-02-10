@@ -81,7 +81,8 @@
             <item name="HTML templating" collapse="true" href="./documentation/html_templating/getting_started.html">
                 <item name="Rendering objects" href="./documentation/html_templating/rendering_objects.html"/>
                 <item name="Form parsing" href="./documentation/html_templating/form_parsing.html"/>
-                <item name="Security, i18n and more" href="./documentation/html_templating/advanced_topics.html"/>
+                <item name="Implicit functions" href="./documentation/html_templating/implicit_functions.html"/>
+                <item name="Custom configuration" href="./documentation/html_templating/custom_configuration.html"/>
             </item>
 
             <item name="Working with JSON / JSONP" href="./documentation/working_with_json_jsonp.html"/>

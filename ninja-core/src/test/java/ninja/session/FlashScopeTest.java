@@ -71,10 +71,10 @@ public class FlashScopeTest {
 
         // put nothing => intentionally to check if no flash cookie will be
         // saved
-        flashCookie.save(context, result);
+        flashCookie.save(context);
 
         // no cookie should be set as the flash scope is empty...:
-        verify(result, never()).addCookie(Matchers.any(Cookie.class));
+        verify(context, never()).addCookie(Matchers.any(Cookie.class));
     }
 
     @Test
@@ -88,10 +88,10 @@ public class FlashScopeTest {
 
         // put nothing => intentionally to check if no flash cookie will be
         // saved
-        flashCookie.save(context, result);
+        flashCookie.save(context);
 
         // a cookie will be set => hello:flashScope
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals("NINJA_FLASH", cookieCaptor.getValue().getName());
@@ -123,10 +123,10 @@ public class FlashScopeTest {
         flashCookie.put("another message", "is there...");
         flashCookie.put("yet another message", "is there...");
 
-        flashCookie.save(context, result);
+        flashCookie.save(context);
 
         // a cookie will be set => hello:flashScope
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
 
         // verify some stuff on the set cookie
         assertEquals("NINJA_FLASH", cookieCaptor.getValue().getName());
@@ -239,9 +239,9 @@ public class FlashScopeTest {
         FlashScope flashScope = new FlashScopeImpl(ninjaProperties);
         flashScope.put("anykey", "anyvalue");
         flashScope.init(context);
-        flashScope.save(context, result);
+        flashScope.save(context);
 
-        verify(result).addCookie(cookieCaptor.capture());
+        verify(context).addCookie(cookieCaptor.capture());
         Cookie cookie = cookieCaptor.getValue();
         Assert.assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
     }
