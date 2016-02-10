@@ -1,6 +1,5 @@
- * 2016-01-19 SwissKnife converters replaced by usage (in BodyPostEngine) of ParamParsers (jlannoy)
+ * 2016-01-19 SwissKnife converters replaced by usage of ParamParsers in BodyPostEngine (jlannoy)
  * 2016-01-19 Support added for any enumeration value (registration deprecated) and custom ParamParser (jlannoy)
-
 
 Version 5.3.1
 =============
