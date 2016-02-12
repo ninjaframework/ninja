@@ -26,6 +26,7 @@ import ninja.Router;
 import ninja.RouterImpl;
 import ninja.i18n.Lang;
 import ninja.i18n.LangImpl;
+import ninja.params.ParamParser;
 import ninja.utils.LoggerProvider;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
@@ -38,6 +39,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.multibindings.Multibinder;
 
 public class BodyParserEngineManagerImplTest {
 
@@ -61,7 +63,8 @@ public class BodyParserEngineManagerImplTest {
                 bind(Logger.class).toProvider(LoggerProvider.class);
                 bind(Lang.class).to(LangImpl.class);
                 bind(Router.class).to(RouterImpl.class);
-
+                Multibinder.newSetBinder(binder(), ParamParser.class);
+                
                 bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
 
                 for (Class<?> clazz : toBind) {
@@ -69,6 +72,7 @@ public class BodyParserEngineManagerImplTest {
                     bind(clazz);
 
                 }
+                
             }
         });
     }

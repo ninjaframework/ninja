@@ -43,11 +43,11 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
     private final Logger logger = LoggerFactory.getLogger(BodyParserEnginePost.class);
 
-    private Injector injector;
+    private final ParamParsers paramParsers;
 
     @Inject
-    public BodyParserEnginePost(Injector injector) {
-        this.injector = injector;
+    public BodyParserEnginePost(ParamParsers paramParsers) {
+        this.paramParsers = paramParsers;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
                     if (Collection.class.isAssignableFrom(fieldType) || List.class.isAssignableFrom(fieldType)) {
 
-                        ListParamParser<?> parser = (ListParamParser<?>) ParamParsers.getListParser(getGenericType(field), injector);
+                        ListParamParser<?> parser = (ListParamParser<?>) paramParsers.getListParser(getGenericType(field));
                         if (parser == null) {
                             logger.warn("No parser defined for a collection of type {}", getGenericType(field).getCanonicalName());
                         } else {
@@ -87,7 +87,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
                     } else if (fieldType.isArray()) {
 
-                        ArrayParamParser<?> parser = ParamParsers.getArrayParser(fieldType, this.injector);
+                        ArrayParamParser<?> parser = paramParsers.getArrayParser(fieldType);
                         if (parser == null) {
                             logger.warn("No parser defined for an array of type {}", fieldType.getComponentType().getCanonicalName());
                         } else {
@@ -96,7 +96,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
                     } else {
 
-                        ParamParser<?> parser = (ParamParser<?>) ParamParsers.getParamParser(fieldType, injector);
+                        ParamParser<?> parser = (ParamParser<?>) paramParsers.getParamParser(fieldType);
                         if (parser == null) {
                             logger.warn("No parser defined for type {}", fieldType.getCanonicalName());
                         } else {

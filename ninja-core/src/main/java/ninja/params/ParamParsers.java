@@ -20,9 +20,9 @@ import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
 
 import ninja.validation.ConstraintViolation;
 import ninja.validation.IsDate;
@@ -34,6 +34,7 @@ import ninja.validation.Validation;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 /**
@@ -64,33 +65,24 @@ public class ParamParsers {
                     .put(Date.class, new DateParamParser())
                     .build();
 
-    private static final Map<Class<?>, Class<? extends ParamParser<?>>> PARAM_PARSERS_CLASSES = Maps.newHashMap();
+    private final Set<ParamParser> customParsers;
     
-    /**
-     * ALlows to register a new parser for given Class parameters.
-     */
-    public static <T> void registerParamParser(final Class<T> paramClass, final Class<? extends ParamParser<T>> parserClass) {
-        PARAM_PARSERS_CLASSES.put(paramClass, parserClass);
+    @Inject
+    public ParamParsers(Set<ParamParser> customParsers) {
+        this.customParsers = customParsers;
     }
     
-    /**
-     * Mainly for test purposes.
-     */
-    public static <T, P extends Class<ParamParser<T>>> void unregisterParamParser(final Class<T> paramClass) {
-        PARAM_PARSERS_CLASSES.remove(paramClass);
-    }
-    
-    public static ParamParser<?> getParamParser(Class<?> targetType, Injector injector) {
-        Class<?> parserClass = PARAM_PARSERS_CLASSES.get(targetType);
-        
-        if(parserClass != null && injector != null) { 
-            return (ParamParser<?>) injector.getInstance(parserClass); 
+    public ParamParser<?> getParamParser(Class<?> targetType) {
+        for(ParamParser parser : customParsers) {
+            if(targetType.isAssignableFrom(parser.getParsedType())) {
+                return parser;
+            }
         }
         
         if (targetType.isArray()) {
             // check for array of registered types
             Class<?> componentType = targetType.getComponentType();
-            ParamParser<?> componentParser = getParamParser(componentType, injector);
+            ParamParser<?> componentParser = getParamParser(componentType);
 
             if (componentParser != null) {
                 // return CSV parser
@@ -103,14 +95,6 @@ public class ParamParsers {
         }
 
         return PARAM_PARSERS.get(targetType);
-    }
-    
-    /**
-     * You must now use the same method but with an injector.
-     */
-    @Deprecated
-    public static ParamParser<?> getParamParser(Class<?> targetType) {
-        return getParamParser(targetType, null);
     }
 
     /**
@@ -137,19 +121,11 @@ public class ParamParsers {
         // Not anymore used
     }
 
-    /**
-     * You must now use the same method but with an injector.
-     */
-    @Deprecated
-    public static ArrayParamParser<?> getArrayParser(Class<?> targetType) {
-        return getArrayParser(targetType, null);
-    }
-    
-    public static ArrayParamParser<?> getArrayParser(Class<?> targetType, Injector injector) {
+    public ArrayParamParser<?> getArrayParser(Class<?> targetType) {
         if (targetType.isArray()) {
             // check for array of registered types
             Class<?> componentType = targetType.getComponentType();
-            ParamParser<?> componentParser = getParamParser(componentType, injector);
+            ParamParser<?> componentParser = getParamParser(componentType);
 
             if (componentParser != null) {
                 // return multi-valued parameter parser
@@ -160,16 +136,8 @@ public class ParamParsers {
         return null;
     }
     
-    /**
-     * You must now use the same method but with an injector.
-     */
-    @Deprecated
-    public static ListParamParser<?> getListParser(Class<?> targetInnerType) {
-        return getListParser(targetInnerType, null);
-    }
-    
-    public static ListParamParser<?> getListParser(Class<?> targetInnerType, Injector injector) {
-        ParamParser<?> componentParser = getParamParser(targetInnerType, injector);
+    public ListParamParser<?> getListParser(Class<?> targetInnerType) {
+        ParamParser<?> componentParser = getParamParser(targetInnerType);
 
         if (componentParser != null) {
             // return multi-valued parameter parser

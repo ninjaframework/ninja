@@ -37,6 +37,7 @@ import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import ninja.params.ControllerMethodInvokerTest.Dep;
 import ninja.params.ControllerMethodInvokerTest.NeedingInjectionParamParser;
+import ninja.params.ParamParser;
 import ninja.validation.FieldViolation;
 import ninja.validation.IsDate;
 import ninja.validation.IsFloat;
@@ -56,6 +57,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.multibindings.Multibinder;
 
 /**
  *
@@ -77,13 +79,16 @@ public class BodyParserEnginePostTest {
             @Override
             protected void configure() {
                 bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
+                
+                Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+                parsersBinder.addBinding().to(NeedingInjectionParamParser.class);
             }
         });
         
         validation = new ValidationImpl();
         Mockito.when(this.context.getValidation()).thenReturn(this.validation);
         
-        bodyParserEnginePost = new BodyParserEnginePost(injector);
+        bodyParserEnginePost = injector.getInstance(BodyParserEnginePost.class);
     }
 
     @Test
@@ -261,8 +266,6 @@ public class BodyParserEnginePostTest {
     
     @Test
     public void testBodyParserWithCustomNeedingInjectionParamParser() {
-        ParamParsers.registerParamParser(Dep.class, NeedingInjectionParamParser.class);
-        
         // some setup for this method:
         Map<String, String[]> map = new HashMap<>();
         map.put("dep", new String[] {"dep1"});
@@ -289,9 +292,6 @@ public class BodyParserEnginePostTest {
         assertThat(testObject.depList.get(1), equalTo(new Dep("hello_depList2")));
         
         assertFalse(validation.hasViolations());
-        
-        ParamParsers.unregisterParamParser(Dep.class);
-        
     }
     
     private <T> void assertViolation(String fieldName, String violationMessage) {
