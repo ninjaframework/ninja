@@ -48,6 +48,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
 
 import ninja.Context;
 import ninja.Result;
@@ -602,48 +603,45 @@ public class ControllerMethodInvokerTest {
     
     @Test
     public void customDateFormatParamShouldBeParsedToDate() throws Exception {
-        ParamParsers.registerParamParser(Date.class, DateParamParser.class);
         when(context.getParameter("param1")).thenReturn("15/01/2015");
-        create("dateParam", ninjaProperties).invoke(mockController, context);
+        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(new LocalDateTime(2015, 1, 15, 0, 0).toDate());
-        ParamParsers.unregisterParamParser(Date.class);
     }
 
     @Test
     public void customDateFormatParamShouldHandleNull() throws Exception {
-        ParamParsers.registerParamParser(Date.class, DateParamParser.class);
-        create("dateParam", ninjaProperties).invoke(mockController, context);
+        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(null);
         assertFalse(validation.hasViolations());
-        ParamParsers.unregisterParamParser(Date.class);
     }
 
     @Test
     public void customDateFormatValidationShouldWork() throws Exception {
-        ParamParsers.registerParamParser(Date.class, DateParamParser.class);
         when(context.getParameter("param1")).thenReturn("blah");
-        create("dateParam", ninjaProperties).invoke(mockController, context);
+        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(null);
         assertTrue(validation.hasFieldViolation("param1"));
-        ParamParsers.unregisterParamParser(Date.class);
+    }
+    
+    @Test(expected = RoutingException.class)
+    public void needingInjectionParamParserNotBinded() throws Exception {
+        when(context.getParameter("param1")).thenReturn("hello");
+        create("needingInjectionParamParser", ninjaProperties).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
     }
     
     @Test
     public void needingInjectionParamParser() throws Exception {
-        ParamParsers.registerParamParser(Dep.class, NeedingInjectionParamParser.class);
         when(context.getParameter("param1")).thenReturn("hello");
-        create("needingInjectionParamParser", ninjaProperties).invoke(mockController, context);
+        create("needingInjectionParamParser", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
         verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
-        ParamParsers.unregisterParamParser(NeedingInjectionParamParser.class);
     }
     
     @Test
     public void needingInjectionParamParserArray() throws Exception {
-        ParamParsers.registerParamParser(Dep.class, NeedingInjectionParamParser.class);
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("hello1", "hello2"));
-        create("needingInjectionParamParserArray", ninjaProperties).invoke(mockController, context);
+        create("needingInjectionParamParserArray", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
         verify(mockController).needingInjectionParamParserArray(new Dep[] { new Dep("hello_hello1"), new Dep("hello_hello2") });
-        ParamParsers.unregisterParamParser(NeedingInjectionParamParser.class);
     }
 
     @Test
@@ -863,8 +861,14 @@ public class ControllerMethodInvokerTest {
         return ControllerMethodInvoker.build(method, Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
+                Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+                
                 for (Object o : toBind) {
-                    bind((Class<Object>) o.getClass()).toInstance(o);
+                    if(o instanceof Class && ParamParser.class.isAssignableFrom((Class) o)) {
+                        parsersBinder.addBinding().to((Class<? extends ParamParser>) o);
+                    } else {
+                        bind((Class<Object>) o.getClass()).toInstance(o);
+                    }
                 }
             }
         }));

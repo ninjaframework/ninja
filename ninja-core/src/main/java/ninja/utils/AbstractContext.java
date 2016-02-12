@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
+
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
@@ -57,7 +57,7 @@ abstract public class AbstractContext implements Context.Impl {
     final protected NinjaProperties ninjaProperties;
     final protected Session session;
     final protected Validation validation;
-    final protected Injector injector;
+    final protected ParamParsers paramParsers;
 
     protected Route route;
     // in async mode these values will be set to null so its critical they
@@ -72,13 +72,13 @@ abstract public class AbstractContext implements Context.Impl {
             NinjaProperties ninjaProperties,
             Session session,
             Validation validation,
-            Injector injector) {
+            ParamParsers paramParsers) {
         this.bodyParserEngineManager = bodyParserEngineManager;
         this.flashScope = flashScope;
         this.ninjaProperties = ninjaProperties;
         this.session = session;
         this.validation = validation;
-        this.injector = injector;
+        this.paramParsers = paramParsers;
     }
 
     protected void init(String contextPath, String requestPath) {
@@ -246,8 +246,9 @@ abstract public class AbstractContext implements Context.Impl {
         String parameter = getParameter(key);
 
         try {
-            return (T) ParamParsers.getParamParser(clazz, injector).parseParameter(key, parameter, validation);
+            return (T) paramParsers.getParamParser(clazz).parseParameter(key, parameter, validation);
         } catch (Exception e) {
+            e.printStackTrace();
             return defaultValue;
         }
     }

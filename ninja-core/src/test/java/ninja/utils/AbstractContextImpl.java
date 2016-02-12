@@ -16,28 +16,30 @@
 
 package ninja.utils;
 
-import com.google.inject.Injector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.fileupload.FileItemIterator;
+
 import ninja.Cookie;
 import ninja.Result;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.uploads.FileItem;
 import ninja.validation.Validation;
-import org.apache.commons.fileupload.FileItemIterator;
 
 /**
  * Used for mocking an AbstractContext in unit tests.
  */
 public class AbstractContextImpl extends AbstractContext {
 
-    public AbstractContextImpl(BodyParserEngineManager bodyParserEngineManager, FlashScope flashScope, NinjaProperties ninjaProperties, Session session, Validation validation, Injector injector) {
-        super(bodyParserEngineManager, flashScope, ninjaProperties, session, validation, injector);
+    public AbstractContextImpl(BodyParserEngineManager bodyParserEngineManager, FlashScope flashScope, NinjaProperties ninjaProperties, Session session, Validation validation, ParamParsers paramParsers) {
+        super(bodyParserEngineManager, flashScope, ninjaProperties, session, validation, paramParsers);
     }
 
     @Override
