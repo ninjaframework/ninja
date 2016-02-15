@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import ninja.ContentTypes;
 import ninja.Context;
@@ -57,6 +58,7 @@ abstract public class AbstractContext implements Context.Impl {
     final protected NinjaProperties ninjaProperties;
     final protected Session session;
     final protected Validation validation;
+    final protected Injector injector;
     final protected ParamParsers paramParsers;
 
     protected Route route;
@@ -72,12 +74,14 @@ abstract public class AbstractContext implements Context.Impl {
             NinjaProperties ninjaProperties,
             Session session,
             Validation validation,
+            Injector injector,
             ParamParsers paramParsers) {
         this.bodyParserEngineManager = bodyParserEngineManager;
         this.flashScope = flashScope;
         this.ninjaProperties = ninjaProperties;
         this.session = session;
         this.validation = validation;
+        this.injector = injector;
         this.paramParsers = paramParsers;
     }
 
