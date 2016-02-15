@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.servlet.ReadListener;
@@ -46,6 +47,8 @@ import ninja.Results;
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParser;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.NinjaConstant;
@@ -119,7 +122,8 @@ public class NinjaServletContextTest {
                 resultHandler,
                 sessionCookie,
                 validation,
-                injector);
+                injector,
+                new ParamParsers(new HashSet<ParamParser>()));
     }
 
     @Test

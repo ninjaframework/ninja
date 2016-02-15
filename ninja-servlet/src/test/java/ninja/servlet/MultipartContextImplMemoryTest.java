@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParser;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.uploads.FileItem;
@@ -142,7 +145,8 @@ public class MultipartContextImplMemoryTest {
                 resultHandler,
                 sessionCookie,
                 validation,
-                injector
+                injector,
+                new ParamParsers(new HashSet<ParamParser>())
          )
         {
             public FileItemIterator getFileItemIterator() {

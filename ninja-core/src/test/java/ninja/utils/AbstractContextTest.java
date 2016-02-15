@@ -84,6 +84,7 @@ public class AbstractContextTest {
                 ninjaProperties,
                 sessionCookie,
                 validation,
+                null,
                 new ParamParsers(new HashSet<ParamParser>()));
         
         abstractContext.init("", "/");
