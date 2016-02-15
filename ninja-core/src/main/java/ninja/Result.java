@@ -381,10 +381,20 @@ public class Result {
                     writer.write(string);
                     
                 } catch (IOException ioException) {
-                
-                    logger.error(
-                            "Error rendering raw String via renderRaw(...)", 
-                            ioException);
+                    Throwable cause = ioException.getCause();
+                    if ( cause != null && "org.eclipse.jetty.io.EofException".equals(
+                            cause.getClass().getName())) {
+                        // Jetty indicating that the client closed the stream.
+                        // Let's be nice about this and not throw an exception.
+                        logger.info(
+                                "Client closed connection while rendering result.");
+                        return;
+                    } else {
+                        // any other IOException is still wrapped and thrown.
+                        logger.error(
+                                "Error rendering raw String via renderRaw(...)", 
+                                ioException);
+                    }
                 }
  
             }
@@ -428,7 +438,18 @@ public class Result {
                     outputStream.write(bytes);
                     
                 } catch (IOException ioException) {
-                    throw new InternalServerErrorException(ioException);
+                    Throwable cause = ioException.getCause();
+                	if ( cause != null && "org.eclipse.jetty.io.EofException".equals(
+                            cause.getClass().getName())) {
+                	    // Jetty indicating that the client closed the stream.
+                	    // Let's be nice about this and not throw an exception.
+                	    logger.info(
+                	            "Client closed connection while rendering result.");
+                	    return;
+                	} else {
+                        // any other IOException is still wrapped and thrown.
+                	    throw new InternalServerErrorException(ioException);
+                	}
                 }
             }
         };
