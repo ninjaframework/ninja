@@ -41,7 +41,8 @@ MongoDB support
 
 Quartz Scheduler support
 
- * https://github.com/svenkubiak/ninja-quartz
+ * https://github.com/svenkubiak/ninja-quartz (not available as per 2016/02/16)
+ * https://github.com/FendlerConsulting/ninja-quartz
 
 Validation module
 
