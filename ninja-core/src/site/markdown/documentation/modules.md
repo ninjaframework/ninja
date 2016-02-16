@@ -47,6 +47,11 @@ MongoDB/Morphia Integration
 
  * https://github.com/bihe/ninja-mongodb
 
+Quartz Scheduler Integration
+
+ * https://github.com/FendlerConsulting/ninja-quartz
+ 
+
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 
 (ninja/ninja-core/src/site/markdown/documentation/modules.md)
