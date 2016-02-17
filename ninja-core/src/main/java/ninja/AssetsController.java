@@ -168,8 +168,6 @@ public class AssetsController {
     /**
      * Loads files from assets directory. This is the default directory
      * of Ninja where to store stuff. Usually in src/main/java/assets/.
-     * But if user wants to use a dir outside of application project dir, then base dir can
-     * be overridden by static.asset.base.dir in application conf file.
      */
     private URL getStaticFileFromAssetsDir(String fileName) {
 
