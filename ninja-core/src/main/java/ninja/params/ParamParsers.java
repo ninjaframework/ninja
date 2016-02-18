@@ -34,6 +34,7 @@ import ninja.validation.Validation;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Built in parsers for parameters
@@ -41,6 +42,7 @@ import com.google.inject.Inject;
  * @author James Roper
  * @author Jonathan Lannoy
  */
+@Singleton
 public class ParamParsers {
     private static final Map<Class<?>, ParamParser<?>> PARAM_PARSERS =
             ImmutableMap.<Class<?>, ParamParser<?>>builder()
