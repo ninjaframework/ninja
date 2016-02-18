@@ -33,14 +33,13 @@ import ninja.validation.Validation;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 /**
  * Built in parsers for parameters
  *
- * @author James Roper, Jonathan Lannoy
+ * @author James Roper
+ * @author Jonathan Lannoy
  */
 public class ParamParsers {
     private static final Map<Class<?>, ParamParser<?>> PARAM_PARSERS =
