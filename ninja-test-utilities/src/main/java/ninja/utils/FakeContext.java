@@ -221,11 +221,8 @@ public class FakeContext implements Context {
 
     @Override
     public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
-        try {
-            return (T) paramParsers.getParamParser(clazz).parseParameter(key, key, validation);
-        } catch (Exception e) {
-            return defaultValue;
-        }
+        T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, key, validation);
+        return validation.hasFieldViolation(key) ? defaultValue : value;
     }
 
     public FakeContext addPathParameter(String key, String value) {
