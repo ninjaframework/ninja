@@ -33,9 +33,19 @@ This allows you to process a request, extract things
 **NOTES:**
 Enums do not require anymore a registration in conf.Module. Values are 
 converted automatically, ignoring case. Collections and generics are not 
-supported for parameter injection.  Types must be explicitly declared 
+supported for parameter injection. Types must be explicitly declared 
 and basic arrays must be used to ensure runtime type-safety.
- 
+
+### Custom Parameter Types
+
+You can also add your own supported type to Ninja, or override and existing one, 
+simply by implementing the <code>ParamParser</code> interface and binding it 
+with Guice in your conf.Module <code>configure()</code> method:
+
+<pre class="prettyprint">
+Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+parsersBinder.addBinding().to(MyParamParser.class);
+</pre>
 
 How to write an argument extractor
 ----------------------------------
