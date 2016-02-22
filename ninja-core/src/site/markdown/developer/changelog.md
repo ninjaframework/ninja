@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2016-01-08 Fix Cookie domain is not set when clearing session #462
+
 Version 5.3.1
 =============
 
