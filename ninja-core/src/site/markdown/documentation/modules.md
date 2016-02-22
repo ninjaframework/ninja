@@ -51,6 +51,10 @@ Quartz Scheduler Integration
 
  * https://github.com/FendlerConsulting/ninja-quartz
  
+Sitemap Generator
+
+ * https://github.com/FendlerConsulting/ninja-sitemap
+ 
 
 <div class="alert alert-info">
 Please feel free to add your modules to this page as pull request 
