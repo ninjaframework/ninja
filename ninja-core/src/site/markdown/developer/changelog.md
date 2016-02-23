@@ -1,5 +1,7 @@
- * 2016-01-19 SwissKnife converters replaced by usage of ParamParsers in BodyPostEngine (jlannoy)
- * 2016-01-19 Support added for any enumeration value (registration deprecated) and custom ParamParser (jlannoy)
+Version X.X.X
+=============
+
+ * 2016-01-08 Fix Cookie domain is not set when clearing session #462
 
 Version 5.3.1
 =============
