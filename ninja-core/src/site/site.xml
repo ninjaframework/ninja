@@ -123,6 +123,7 @@
                 <item name="Ninja Test" href="./documentation/testing_your_application/ninja_test.html"/>
                 <item name="Ninja DocTester" href="./documentation/testing_your_application/ninja_doctester.html"/>
                 <item name="Ninja FluentLenium Test" href="./documentation/testing_your_application/ninja_fluentlenium_test.html"/>
+                <item name="Ninja Recycled Tester" href="./documentation/testing_your_application/ninja_recycled_tester.html"/>
                 <item name="Advanced" href="./documentation/testing_your_application/advanced.html"/>
             </item>
 
