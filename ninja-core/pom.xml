@@ -135,12 +135,6 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
 
-        <!-- Enrcyption library providing support for blowfish -->
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-        </dependency>
-
         <!-- Logback is the successor of log4j. We use it: -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
