@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
 
-class RouteBuilderImpl implements RouteBuilder {
+public class RouteBuilderImpl implements RouteBuilder {
 
     private static final Logger log = LoggerFactory
             .getLogger(RouteBuilder.class);

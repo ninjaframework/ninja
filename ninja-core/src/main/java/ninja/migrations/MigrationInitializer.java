@@ -19,7 +19,10 @@ package ninja.migrations;
 import ninja.lifecycle.Start;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 
 /**
  * This class must be bound in a Guice module so that
@@ -33,13 +36,14 @@ import com.google.inject.Singleton;
 @Singleton
 public class MigrationInitializer {
 
-    private MigrationEngine migrationEngine;
-
+    private final Provider<MigrationEngine> migrationEngineProvider;
+    private final NinjaProperties ninjaProperties;
+    
     @Inject
-    public MigrationInitializer(MigrationEngine migrationEngine) {
-        this.migrationEngine = migrationEngine;
-      
-
+    public MigrationInitializer(NinjaProperties ninjaProperties,
+                                Provider<MigrationEngine> migrationEngineProvider) {
+        this.ninjaProperties = ninjaProperties;
+        this.migrationEngineProvider = migrationEngineProvider;
     }
     
     /**
@@ -47,9 +51,13 @@ public class MigrationInitializer {
      */
     @Start(order=9)
     public void start() {
+        // Run migration only when activated in configuration.conf:
+        Boolean runMigrations = ninjaProperties.getBoolean(NinjaConstant.NINJA_MIGRATION_RUN);
         
-        migrationEngine.migrate();
-        
+        if (runMigrations != null && runMigrations) {
+            // provider used for late binding
+            migrationEngineProvider.get().migrate();
+        }
     }
 
 }
