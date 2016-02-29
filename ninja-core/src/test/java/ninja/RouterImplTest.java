@@ -60,7 +60,9 @@ public class RouterImplTest {
         router.GET().route("/testroute").with(TestController.class, "index");
         router.GET().route("/user/{email}/{id: .*}").with(TestController.class, "user");
         router.GET().route("/u{userId: .*}/entries/{entryId: .*}").with(TestController.class, "entry");
-
+        // second route to index should not break reverse routing matching the first
+        router.GET().route("/testroute/another_url_by_index").with(TestController.class, "index");
+        
         router.compileRoutes();
     }
 
