@@ -18,10 +18,7 @@ package ninja.standalone;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.ServiceLoader;
-import static java.util.function.Predicate.isEqual;
 import javax.net.ssl.SSLContext;
 import ninja.utils.ForwardingServiceLoader;
 import static org.hamcrest.CoreMatchers.containsString;
