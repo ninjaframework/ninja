@@ -22,9 +22,9 @@ import static org.mockito.Mockito.mock;
 /**
  * Fake standalone for unit testing.
  */
-public class FakeStandalone extends AbstractStandalone<FakeStandalone> {
+public class MockStandalone extends AbstractStandalone<MockStandalone> {
 
-    public FakeStandalone() {
+    public MockStandalone() {
         super("FakeStandalone");
     }
 
