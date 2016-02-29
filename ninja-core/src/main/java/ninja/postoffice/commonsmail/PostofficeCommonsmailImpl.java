@@ -20,7 +20,7 @@ import javax.mail.internet.AddressException;
 
 import ninja.postoffice.Mail;
 import ninja.postoffice.Postoffice;
-import ninja.postoffice.guice.PostofficeConstant;
+import ninja.postoffice.PostofficeConstant;
 import ninja.utils.NinjaProperties;
 
 import org.apache.commons.mail.EmailException;

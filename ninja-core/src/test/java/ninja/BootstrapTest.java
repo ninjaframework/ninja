@@ -16,6 +16,7 @@
 
 package ninja;
 
+import ninja.cache.Cache;
 import static org.junit.Assert.assertTrue;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
@@ -126,5 +127,25 @@ public class BootstrapTest {
         assertThat(
                 "conf.Routes initialized properly. We get back the class we defined by the route.",
                 route.getControllerClass(), is(instanceOf(com.example.controllers.DummyApplication.class.getClass())));
+    }
+    
+    @Test
+    public void frameworkModuleSkipsNinjaClassicModule() {
+        ninjaPropertiesImpl = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
+        
+        Mockito.when(
+                ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
+                .thenReturn("com.example.frameworkmodule");
+        
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        
+        bootstrap.boot();
+
+        try {
+            Cache cache = bootstrap.getInjector().getInstance(Cache.class);
+            fail("cache should not have been found");
+        } catch (Exception e) {
+            assertThat(e.getMessage(), containsString("No implementation for ninja.cache.Cache was bound"));
+        }
     }
 }

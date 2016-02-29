@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package ninja.cache;
+package ninja.migrations;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import ninja.utils.NinjaConstant;
+import ninja.utils.ImplFromPropertiesFactory;
+
 import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
@@ -27,51 +26,42 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import ninja.utils.ImplFromPropertiesFactory;
+import ninja.utils.NinjaConstant;
 import org.slf4j.LoggerFactory;
 
 /**
- * A provider that determines which implementation to load as a Cache based on 
+ * A provider that determines which implementation to load as a MigrationEngine based on 
  * the value of a configuration key in {@link NinjaProperties} (aka application.conf).
  * 
  * The configured implementation is only resolved when its actually used vs.
  * at application startup.
  * 
  * If this variable is set the instance for that class is 
- * instantiated and used as cache implementation.
+ * instantiated and used as MigrationEngine implementation.
  * 
- * If the variable is not set {@link CacheEhCacheImpl} is used by default.
+ * If the variable is not set {@link MigrationEngineFlyway} is used by default.
  */
 @Singleton
-public class CacheProvider implements Provider<Cache> {
-    static private final Logger logger = LoggerFactory.getLogger(CacheProvider.class);
+public class MigrationEngineProvider implements Provider<MigrationEngine> {
+    static private final Logger logger = LoggerFactory.getLogger(MigrationEngineProvider.class);
     
-    private final ImplFromPropertiesFactory<Cache> factory;
-    private final Supplier<Cache> supplier;
+    private final ImplFromPropertiesFactory<MigrationEngine> factory;
     
     @Inject
-    public CacheProvider(Injector injector, NinjaProperties ninjaProperties) {
+    public MigrationEngineProvider(Injector injector, NinjaProperties ninjaProperties) {
         this.factory = new ImplFromPropertiesFactory<>(
             injector,
             ninjaProperties,
-            NinjaConstant.CACHE_IMPLEMENTATION,
-            Cache.class,
-            "ninja.cache.CacheEhCacheImpl",
+            NinjaConstant.MIGRATION_ENGINE_IMPLEMENTATION,
+            MigrationEngine.class,
+            "ninja.migrations.flyway.MigrationEngineFlyway",
             true,
             logger);
-        
-        // lazy singleton
-        this.supplier = Suppliers.memoize(new Supplier<Cache>() {
-            @Override
-            public Cache get() {
-                return factory.create();
-            }
-        });
     }
 
     @Override
-    public Cache get() {
-        return this.supplier.get();
+    public MigrationEngine get() {
+        return factory.create();
     }
-    
+   
 }

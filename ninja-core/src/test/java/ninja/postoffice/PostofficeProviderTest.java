@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package ninja.cache;
+package ninja.postoffice;
 
-import ninja.BaseAndClassicModules;
-import ninja.lifecycle.LifecycleSupport;
-import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 
@@ -28,79 +25,65 @@ import org.junit.rules.ExpectedException;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import javax.inject.Provider;
+import com.google.inject.Provider;
+import ninja.BaseAndClassicModules;
+import ninja.postoffice.mock.PostofficeMockImpl;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertThat;
 
-public class CacheProviderTest {
+public class PostofficeProviderTest {
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
+    
     @Test
     public void defaultImplementation() {
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
         
-        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, null);
+        ninjaProperties.setProperty(PostofficeConstant.postofficeImplementation, null);
         
         Injector injector = Guice.createInjector(new BaseAndClassicModules(ninjaProperties));
         
-        CacheProvider cacheProvider = injector.getInstance(CacheProvider.class);
+        PostofficeProvider postofficeProvider = injector.getInstance(PostofficeProvider.class);
         
-        assertThat(cacheProvider.get(), instanceOf(CacheEhCacheImpl.class));
-    }
-    
-    @Test
-    public void configuredImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
-        
-        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, CacheMemcachedImpl.class.getName());
-        // just a dummy to test that loading works
-        ninjaProperties.setProperty(NinjaConstant.MEMCACHED_HOST, "127.0.0.1:1234");
-        
-        Injector injector = Guice.createInjector(new BaseAndClassicModules(ninjaProperties));
-        
-        Provider<Cache> cacheProvider = injector.getProvider(Cache.class);
-        
-        assertThat(cacheProvider.get(), instanceOf(CacheMemcachedImpl.class));
-    }
+        assertThat(postofficeProvider.get(), instanceOf(PostofficeMockImpl.class));
+    }    
     
     @Test
     public void missingImplementationThrowsExceptionOnUseNotCreate() {
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
         
-        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, "not_existing_implementation");
+        ninjaProperties.setProperty(PostofficeConstant.postofficeImplementation, "not_existing_implementation");
         
         Injector injector = Guice.createInjector(new BaseAndClassicModules(ninjaProperties));
         
-        Provider<Cache> provider = injector.getProvider(Cache.class);
+        Provider<Postoffice> provider = injector.getProvider(Postoffice.class);
         
         // this will not work => we expect a runtime exception...
         thrown.expect(RuntimeException.class);
-        Cache cache = injector.getInstance(Cache.class);
+        Postoffice postoffice = injector.getInstance(Postoffice.class);
     }
     
     @Test
     public void verifySingletonProviderAndInstance() {
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
         
-        ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, CacheMockImpl.class.getCanonicalName());
+        ninjaProperties.setProperty(PostofficeConstant.postofficeImplementation, null);
         
         Injector injector = Guice.createInjector(new BaseAndClassicModules(ninjaProperties));
 
-        CacheProvider cacheProvider = injector.getInstance(CacheProvider.class);
+        PostofficeProvider provider = injector.getInstance(PostofficeProvider.class);
         
         // cache provider should be a singleton
-        assertThat(cacheProvider, sameInstance(injector.getInstance(CacheProvider.class)));
-        assertThat(cacheProvider, sameInstance(injector.getInstance(CacheProvider.class)));
+        assertThat(provider, sameInstance(injector.getInstance(PostofficeProvider.class)));
+        assertThat(provider, sameInstance(injector.getInstance(PostofficeProvider.class)));
         
-        Cache cache = cacheProvider.get();
+        Postoffice postoffice = provider.get();
         
         // cache should be a singleton
-        assertThat(cache, sameInstance(cacheProvider.get()));
-        assertThat(cache, sameInstance(injector.getInstance(Cache.class)));
+        assertThat(postoffice, sameInstance(provider.get()));
+        assertThat(postoffice, sameInstance(injector.getInstance(Postoffice.class)));
     }
-
 }
