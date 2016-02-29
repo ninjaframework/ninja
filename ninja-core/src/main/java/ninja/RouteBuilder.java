@@ -16,11 +16,16 @@
 
 package ninja;
 
+import ninja.utils.MethodReference;
+
 public interface RouteBuilder {
 
     RouteBuilder route(String uri);
 
     void with(Class controller, String controllerMethod);
 
+    void with(MethodReference controllerMethodRef);
+    
     void with(Result result);
+    
 }

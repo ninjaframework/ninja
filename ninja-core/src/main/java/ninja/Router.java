@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Optional;
+import ninja.utils.MethodReference;
 
 public interface Router {
 
@@ -102,6 +103,15 @@ public interface Router {
                                  String controllerMethodName,
                                  Optional<Map<String, Object>> parameterMap);
         
+    
+    public String getReverseRoute(MethodReference controllerMethodRef);
+    
+    public String getReverseRoute(MethodReference controllerMethodRef, Map<String, Object> parameterMap);
+    
+    public String getReverseRoute(MethodReference controllerMethodRef, Object ... parameterMap);
+    
+    public String getReverseRoute(MethodReference controllerMethodRef, Optional<Map<String, Object>> parameterMap);
+    
     /**
      * Compile all the routes that have been registered with the router. This
      * should be called once, during initialization, before the application
