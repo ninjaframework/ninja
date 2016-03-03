@@ -34,7 +34,7 @@ public class ParsingArrayExtractor<X> implements ArgumentExtractor<X> {
     @Override
     public X extract(Context context) {
         return (X) parser.parseParameter(wrapped.getFieldName(), wrapped.extract(context),
-                context.getValidation());
+                context.getValidation(), false);
     }
 
     @Override
