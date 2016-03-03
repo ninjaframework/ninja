@@ -137,5 +137,14 @@ public interface Validation {
      * @return A list of field violations
      */
     List<FieldViolation> getBeanViolations();
+    
+    /**
+     * Get a complete list of bean violations for a specified field. This list DOES NOT contain
+     * general violations
+     * (use getGeneralViolations() instead).
+     * 
+     * @return A List of FieldViolation-objects
+     */
+    List<FieldViolation> getBeanViolations(String fieldName);
 
 }
