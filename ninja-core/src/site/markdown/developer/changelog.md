@@ -4,6 +4,8 @@
 Version X.X.X
 =============
 
+ * 2016-02-26 Removed ninja-core dependency on org.mindrot:bcrypt (it was unused) (jjlauer)
+ * 2016-02-25 New RecycledNinjaServerTester in ninja-test-utilities to speed up your unit tests (jjlauer)
  * 2016-01-08 Fix Cookie domain is not set when clearing session #462
 
 Version 5.3.1

@@ -1,11 +1,11 @@
-/**
+/*
  * Copyright (C) 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,49 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package ninja;
 
 import ninja.utils.NinjaTestServer;
-
-import org.doctester.DocTester;
-import org.doctester.testbrowser.Url;
 import org.junit.After;
 import org.junit.Before;
 
-import com.google.inject.Injector;
-
 /**
- * Superclass for doctests that require a running server. Uses {@link NinjaTest} for the server
- * stuff.
+ * Creates a fresh <code>NinjaTestServer</code> for each unit test in your
+ * junit test class. Unless you really need a fresh server for each unit test,
+ * please note that its fairly expensive to start/stop a ninja test server 
+ * for each unit test.
  * 
- * @author hschuetz
+ * <code>
+ * public class MyControllerTest extends FreshNinjaServerTester {
  * 
+ *     @Test
+ *     public void usersIndex() {
+ *         String url = withBaseUrl("/users");
+ *         // do rest of test...
+ *     }
+ * 
+ * }
+ * </code>
+ * 
+ * @see RecycledNinjaServerTester
  */
-public abstract class NinjaDocTester extends DocTester {
+public class FreshNinjaServerTester extends BaseNinjaServerTester {
+    
     private NinjaTestServer ninjaTestServer;
-
-    public NinjaDocTester() {
-    }
-
+    
     @Before
-    public void startServerInTestMode() {
+    public void startNinjaServer() {
         ninjaTestServer = new NinjaTestServer();
     }
 
     @After
-    public void shutdownServer() {
+    public void shutdownNinjaServer() {
         ninjaTestServer.shutdown();
     }
 
     @Override
-    public Url testServerUrl() {
-        // v5.1.5+ includes configured context path
-        return Url.host(ninjaTestServer.getBaseUrl());
-    }
-    
-    public Injector getInjector() {
-        return ninjaTestServer.getInjector();
+    public NinjaTestServer getNinjaTestServer() {
+        return ninjaTestServer;
     }
 
 }
