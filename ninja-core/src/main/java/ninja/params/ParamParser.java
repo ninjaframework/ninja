@@ -28,9 +28,10 @@ public interface ParamParser<T> {
      * @param field The field that is being parsed
      * @param parameterValue The value to parse.  May be null.
      * @param validation The validation context.
+     * @param isBeanParameter True if representing a bean attribute value.
      * @return The parsed parameter value.  May be null.
      */
-    T parseParameter(String field, String parameterValue, Validation validation);
+    T parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter);
 
     /**
      * Get the type that this parser parses to

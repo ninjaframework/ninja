@@ -221,7 +221,7 @@ public class FakeContext implements Context {
 
     @Override
     public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
-        T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, key, validation);
+        T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, key, validation, false);
         return validation.hasFieldViolation(key) ? defaultValue : value;
     }
 
