@@ -28,11 +28,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
-import static java.util.function.Predicate.isEqual;
 import ninja.utils.MethodReference;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
