@@ -46,23 +46,8 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
     private final Map<String, Provider<? extends BodyParserEngine>> contentTypeToBodyParserMap;
 
     @Inject
-    public BodyParserEngineManagerImpl(Provider<BodyParserEnginePost> bodyParserEnginePost,
-                                       Provider<BodyParserEngineJson> bodyParserEngineJson,
-                                       Provider<BodyParserEngineXml> bodyParserEngineXml,
-                                       Injector injector) {
-
-
+    public BodyParserEngineManagerImpl(Injector injector) {
         Map<String, Provider<? extends BodyParserEngine>> map = Maps.newHashMap();
-
-        // First put the built in ones in, this is so they can be overridden by
-        // custom bindings
-        map.put(bodyParserEnginePost.get().getContentType(),
-                bodyParserEnginePost);
-        map.put(bodyParserEngineJson.get().getContentType(),
-                bodyParserEngineJson);
-        map.put(bodyParserEngineXml.get().getContentType(),
-                bodyParserEngineXml);
-
 
         // Now lookup all explicit bindings, and find the ones that implement
         // BodyParserEngine
@@ -100,7 +85,7 @@ public class BodyParserEngineManagerImpl implements BodyParserEngineManager {
 
     }
 
-    protected void logBodyParserEngines() {
+    final protected void logBodyParserEngines() {
         List<String> outputTypes = Lists.newArrayList(getContentTypes());
         Collections.sort(outputTypes);
 

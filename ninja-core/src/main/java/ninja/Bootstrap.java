@@ -38,6 +38,9 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
+import ninja.conf.FrameworkModule;
+import ninja.conf.NinjaBaseModule;
+import ninja.conf.NinjaClassicModule;
 
 /**
  * Bootstrap for a Ninja application.  Assists with initializing logging,
@@ -117,7 +120,6 @@ public class Bootstrap {
             Ninja ninja = injector.getInstance(Ninja.class);
             ninja.onFrameworkShutdown();
             injector = null;
-            ninja = null;
         } else {
             logger.error("Shutdown of Ninja not clean => injector already null.");
         }
@@ -133,36 +135,38 @@ public class Bootstrap {
     
     protected void configure() throws Exception {
 
-        // Bind lifecycle support
-        addModule(LifecycleSupport.getModule());
-        
-        // Scheduling support
-        addModule(SchedulerSupport.getModule());
-
         // Base configuration of Ninja
-        addModule(new Configuration(ninjaProperties));
+        addModule(new NinjaBaseModule(ninjaProperties));
         
         // Main application module (conf.Module or com.example.conf.Module)
         String applicationModuleClassName
                 = resolveApplicationClassName(APPLICATION_GUICE_MODULE_CONVENTION_LOCATION);
 
+        AbstractModule applicationModule = null;
+        
         if (doesClassExist(applicationModuleClassName)) {
-
             Class<?> applicationModuleClass = Class
                     .forName(applicationModuleClassName);
 
-            AbstractModule applicationConfiguration = null;
-            
             // Tries to instantiate module by giving the NinjaProperties as constructor arg
             try {
-                applicationConfiguration = (AbstractModule) applicationModuleClass
+                applicationModule = (AbstractModule) applicationModuleClass
                         .getConstructor(NinjaProperties.class).newInstance(ninjaProperties);
             } catch (NoSuchMethodException e) {
-                applicationConfiguration = (AbstractModule) applicationModuleClass
+                applicationModule = (AbstractModule) applicationModuleClass
                         .getConstructor().newInstance();
             }
-
-            addModule(applicationConfiguration);
+        }
+        
+        // Slipstream in the "classic" ninja configuration?
+        if (applicationModule == null || !(applicationModule instanceof FrameworkModule)) {
+            // Classic configuration of Ninja
+            logger.info("Enabling Ninja classic configuration");
+            addModule(new NinjaClassicModule(ninjaProperties));
+        }
+        
+        if (applicationModule != null) {
+            addModule(applicationModule);
         }
         
         // Ninja module

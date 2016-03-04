@@ -62,6 +62,10 @@ public class BodyParserEngineManagerImplTest {
                 bind(Lang.class).to(LangImpl.class);
                 bind(Router.class).to(RouterImpl.class);
 
+                bind(BodyParserEnginePost.class);
+                bind(BodyParserEngineJson.class);
+                bind(BodyParserEngineXml.class);
+                
                 bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
 
                 for (Class<?> clazz : toBind) {

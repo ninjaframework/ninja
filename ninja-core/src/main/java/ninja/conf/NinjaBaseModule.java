@@ -14,74 +14,51 @@
  * limitations under the License.
  */
 
-package ninja;
+package ninja.conf;
 
-import ninja.cache.Cache;
-import ninja.cache.CacheProvider;
-import ninja.jpa.JpaModule;
-import ninja.migrations.MigrationInitializer;
-import ninja.postoffice.Postoffice;
-import ninja.postoffice.guice.PostofficeProvider;
+import ninja.*;
 import ninja.utils.LoggerProvider;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
-import ninja.utils.ObjectMapperProvider;
-import ninja.utils.XmlMapperProvider;
 
 import org.slf4j.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.multibindings.OptionalBinder;
+import ninja.lifecycle.LifecycleSupport;
+import ninja.scheduler.SchedulerSupport;
 
 /**
  * The basic configuration of the main ninja framework.
- * 
- * @author ra
- * 
  */
-public class Configuration extends AbstractModule {
+public class NinjaBaseModule extends AbstractModule {
 
     private final NinjaPropertiesImpl ninjaProperties;
 
-    public Configuration(NinjaPropertiesImpl ninjaProperties) {
+    public NinjaBaseModule(NinjaPropertiesImpl ninjaProperties) {
         this.ninjaProperties = ninjaProperties;
     }
 
     @Override
     public void configure() {
-
         System.setProperty("file.encoding", "utf-8");
         
-        OptionalBinder.newOptionalBinder(binder(), ObjectMapper.class)
-                .setDefault().toProvider(ObjectMapperProvider.class)
-                .in(Singleton.class);
-
-        OptionalBinder.newOptionalBinder(binder(), XmlMapper.class).setDefault()
-                .toProvider(XmlMapperProvider.class).in(Singleton.class);
-
+        // Lifecycle support
+        install(LifecycleSupport.getModule());
+        
+        // Scheduling support
+        install(SchedulerSupport.getModule());
+        
+        // Routing
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
-
         bind(Router.class).to(RouterImpl.class).in(Singleton.class);
 
-        // provide logging
+        // Logging
         bind(Logger.class).toProvider(LoggerProvider.class);
 
         // Bind the configuration into Guice
         ninjaProperties.bindProperties(binder());
         bind(NinjaProperties.class).toInstance(ninjaProperties);
-
-        // Postoffice
-        bind(Postoffice.class).toProvider(PostofficeProvider.class);
-
-        // Cache
-        bind(Cache.class).toProvider(CacheProvider.class);
-        
-        bind(MigrationInitializer.class).asEagerSingleton();
-        install(new JpaModule(ninjaProperties));
-        
     }
 
 }

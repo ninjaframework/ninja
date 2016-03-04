@@ -81,6 +81,18 @@ public class TemplateEngineManagerImplTest {
         assertThat(createTemplateEngineManager(OverrideHtmlTemplateEngine.class).getTemplateEngineForContentType(
                 ContentTypes.TEXT_HTML), instanceOf(OverrideHtmlTemplateEngine.class));
     }
+    
+    @Test
+    public void testOverrideHtmlOrderMatters() {
+        TemplateEngineManager templateEngineManager
+            = createTemplateEngineManager(
+                OverrideHtmlTemplateEngine.class,
+                OverrideHtmlTemplateEngine3.class,
+                OverrideHtmlTemplateEngine2.class);
+        
+        assertThat(templateEngineManager.getTemplateEngineForContentType(
+                ContentTypes.TEXT_HTML), instanceOf(OverrideHtmlTemplateEngine2.class));
+    }
 
     @Test
     public void testContentTypes() {
@@ -129,6 +141,20 @@ public class TemplateEngineManagerImplTest {
             return ContentTypes.TEXT_HTML;
         }
     }
+    
+    public static class OverrideHtmlTemplateEngine2 extends MockTemplateEngine {
+        @Override
+        public String getContentType() {
+            return ContentTypes.TEXT_HTML;
+        }
+    }
+    
+    public static class OverrideHtmlTemplateEngine3 extends MockTemplateEngine {
+        @Override
+        public String getContentType() {
+            return ContentTypes.TEXT_HTML;
+        }
+    }
 
     private TemplateEngineManager createTemplateEngineManager(final Class<?>... toBind) {
         return createInjector(toBind).getInstance(TemplateEngineManager.class);
@@ -142,6 +168,12 @@ public class TemplateEngineManagerImplTest {
                 bind(Logger.class).toProvider(LoggerProvider.class);
                 bind(Lang.class).to(LangImpl.class);
                 bind(Router.class).to(RouterImpl.class);
+                
+                bind(TemplateEngineText.class);
+                bind(TemplateEngineFreemarker.class);
+                bind(TemplateEngineJson.class);
+                bind(TemplateEngineJsonP.class);
+                bind(TemplateEngineXml.class);
 
                 bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl(NinjaMode.test));
 

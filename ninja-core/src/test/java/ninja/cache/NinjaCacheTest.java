@@ -20,7 +20,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import net.sf.ehcache.CacheException;
 import ninja.utils.TimeUtil;
 
 import org.junit.Test;
