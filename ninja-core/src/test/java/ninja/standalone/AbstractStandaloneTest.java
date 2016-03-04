@@ -28,6 +28,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class AbstractStandaloneTest {
 
@@ -35,7 +40,7 @@ public class AbstractStandaloneTest {
     public void ninjaModeOnConstructor() {
         System.setProperty(NinjaConstant.MODE_KEY_NAME, "dev");
         
-        FakeStandalone standalone = new FakeStandalone();
+        MockStandalone standalone = new MockStandalone();
         
         assertThat(standalone.getNinjaMode(), is(NinjaMode.dev));
     }
@@ -43,7 +48,7 @@ public class AbstractStandaloneTest {
     @Test
     public void manuallySetExternalConfiguration() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .externalConfigurationPath("conf/standalone.conf");
         
         // port is still null (before configuration)
@@ -58,9 +63,9 @@ public class AbstractStandaloneTest {
     @Test
     public void configurationPropertyPriority() throws Exception {
         
-        FakeStandalone standalone;
+        MockStandalone standalone;
         
-        standalone = new FakeStandalone()
+        standalone = new MockStandalone()
                 .configure();
         
         // defaultValue
@@ -73,7 +78,7 @@ public class AbstractStandaloneTest {
 
         
         // configProperty > defaultValue
-        standalone = new FakeStandalone()
+        standalone = new MockStandalone()
                 .externalConfigurationPath("conf/standalone.conf")
                 .configure();
         
@@ -93,7 +98,7 @@ public class AbstractStandaloneTest {
         System.setProperty(Standalone.KEY_NINJA_IDLE_TIMEOUT, "80000");
         
         try {
-            standalone = new FakeStandalone()
+            standalone = new MockStandalone()
                     .externalConfigurationPath("conf/standalone.conf")
                     .configure();
             
@@ -107,7 +112,7 @@ public class AbstractStandaloneTest {
             
             
             // currentValue > systemProperty
-            standalone = new FakeStandalone()
+            standalone = new MockStandalone()
                 .externalConfigurationPath("conf/standalone.conf")
                 .host("3.3.3.3")
                 .port(9002)
@@ -136,7 +141,7 @@ public class AbstractStandaloneTest {
     @Test
     public void ninjaPropertiesThrowsExceptionUntilConfigured() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .externalConfigurationPath("conf/standalone.conf");
         
         try {
@@ -155,7 +160,7 @@ public class AbstractStandaloneTest {
     @Test
     public void urlUsesLocalhostInLieuOfNull() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .configure();
         
         assertThat(standalone.getServerUrls().get(0), is("http://localhost:8080"));
@@ -165,7 +170,7 @@ public class AbstractStandaloneTest {
     @Test
     public void urlIncludesContext() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .host("1.1.1.1")
                 .contextPath("/mycontext")
                 .configure();
@@ -177,7 +182,7 @@ public class AbstractStandaloneTest {
     @Test
     public void urlExcludesWellKnownPorts() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .host("1.1.1.1")
                 .port(80)
                 .contextPath("/mycontext")
@@ -190,7 +195,7 @@ public class AbstractStandaloneTest {
     @Test
     public void ninjaPropertiesServerNameSetAfterConfigure() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .host("1.1.1.1")
                 .configure();
         
@@ -201,7 +206,7 @@ public class AbstractStandaloneTest {
     @Test
     public void ninjaPropertiesServerNameSetButOnlyIfNotInConfigFile() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .externalConfigurationPath("conf/standalone.with.servername.conf")
                 .host("1.1.1.1")
                 .configure();
@@ -213,7 +218,7 @@ public class AbstractStandaloneTest {
     @Test
     public void injectorOnlyAvailableAfterStart() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone();
+        MockStandalone standalone = new MockStandalone();
         
         try {
             standalone.getInjector();
@@ -230,7 +235,7 @@ public class AbstractStandaloneTest {
     @Test
     public void validateContextPath() throws Exception {
         
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
             .externalConfigurationPath("conf/standalone.with.badcontext.conf");
         
         try {
@@ -246,7 +251,7 @@ public class AbstractStandaloneTest {
     @Test
     public void noPortsEnabled() throws Exception {
         try {
-            FakeStandalone standalone = new FakeStandalone()
+            MockStandalone standalone = new MockStandalone()
                     .port(-1)
                     .configure();
             fail("exception expected");
@@ -257,7 +262,7 @@ public class AbstractStandaloneTest {
     
     @Test
     public void randomPortAssigned() throws Exception {
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .port(0)
                 .configure();
         
@@ -268,7 +273,7 @@ public class AbstractStandaloneTest {
     
     @Test
     public void sslRandomPortAssigned() throws Exception {
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .port(-1)
                 .sslPort(0)
                 .configure();
@@ -278,7 +283,7 @@ public class AbstractStandaloneTest {
     
     @Test
     public void sslConfiguration() throws Exception {
-        FakeStandalone standalone = new FakeStandalone()
+        MockStandalone standalone = new MockStandalone()
                 .port(-1)
                 .sslPort(8443)
                 .start();

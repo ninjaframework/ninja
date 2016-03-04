@@ -32,6 +32,7 @@ import java.util.Set;
 import ninja.build.ArgumentTokenizer;
 
 import ninja.standalone.NinjaJetty;
+import ninja.standalone.AutoStandalone;
 import ninja.standalone.Standalone;
 import ninja.utils.NinjaConstant;
 
@@ -159,7 +160,7 @@ public class NinjaRunMojo extends AbstractMojo {
     
     /**
      * Main class to run in SuperDevMode. Defaults to default standalone class
-     * in Ninja (ninja.standalone.NinjaJetty)
+     * in Ninja.
      */
     @Parameter(property = "ninja.mainClass", required = false)
     protected String mainClass;
@@ -264,7 +265,7 @@ public class NinjaRunMojo extends AbstractMojo {
         }
         
         // which standalone (works with -Dninja.standalone to maven OR in pom.xml)
-        String mainClassToRun = (mainClass != null ? mainClass : Standalone.DEFAULT_STANDALONE_CLASS);
+        String mainClassToRun = (mainClass != null ? mainClass : AutoStandalone.class.getCanonicalName());
         
         getLog().info("------------------------------------------------------------------------");
         
@@ -367,19 +368,19 @@ public class NinjaRunMojo extends AbstractMojo {
 
         if (port != null) {
             String portSelection
-                    = "-D" + NinjaJetty.KEY_NINJA_PORT + "=" + port;
+                    = "-D" + Standalone.KEY_NINJA_PORT + "=" + port;
             jvmArguments.add(portSelection);
         }
         
         if (sslPort != null) {
             String sslPortSelection
-                    = "-D" + NinjaJetty.KEY_NINJA_SSL_PORT + "=" + sslPort;
+                    = "-D" + Standalone.KEY_NINJA_SSL_PORT + "=" + sslPort;
             jvmArguments.add(sslPortSelection);
         }
         
         if (getContextPath() != null) {
             String contextPathSelection
-                    = "-D" + NinjaJetty.KEY_NINJA_CONTEXT_PATH + "=" + getContextPath();
+                    = "-D" + Standalone.KEY_NINJA_CONTEXT_PATH + "=" + getContextPath();
             jvmArguments.add(contextPathSelection);
         }
         
