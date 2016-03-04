@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.Iterator;
-import java.util.ServiceLoader;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;

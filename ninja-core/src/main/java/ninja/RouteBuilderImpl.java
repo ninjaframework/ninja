@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
+import ninja.utils.MethodReference;
 
 public class RouteBuilderImpl implements RouteBuilder {
 
@@ -80,6 +81,11 @@ public class RouteBuilderImpl implements RouteBuilder {
         this.controller = controller;
         this.controllerMethod = verifyThatControllerAndMethodExists(controller,
                 controllerMethod);
+    }
+
+    @Override
+    public void with(MethodReference controllerMethodRef) {
+        with(controllerMethodRef.getDeclaringClass(), controllerMethodRef.getMethodName());
     }
 
     @Override

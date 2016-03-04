@@ -30,6 +30,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 import com.google.inject.Provider;
+import ninja.utils.MethodReference;
+import static org.hamcrest.CoreMatchers.is;
 
 /**
  * => Most tests are done via class RoutesTest in project
@@ -60,7 +62,10 @@ public class RouterImplTest {
         router.GET().route("/testroute").with(TestController.class, "index");
         router.GET().route("/user/{email}/{id: .*}").with(TestController.class, "user");
         router.GET().route("/u{userId: .*}/entries/{entryId: .*}").with(TestController.class, "entry");
-
+        // second route to index should not break reverse routing matching the first
+        router.GET().route("/testroute/another_url_by_index").with(TestController.class, "index");
+        router.GET().route("/ref").with(new MethodReference(TestController.class, "ref"));
+        
         router.compileRoutes();
     }
 
@@ -137,6 +142,20 @@ public class RouterImplTest {
         assertThat(route, equalTo("/u1/entries/100"));
 
     }
+    
+    @Test
+    public void testGetReverseRouteWithMethodReference() {
+
+        String contextPath = "";
+        when(ninjaProperties.getContextPath()).thenReturn(contextPath);
+
+        String route = router.getReverseRoute(TestController.class, "ref");
+        
+        String route2 = router.getReverseRoute(new MethodReference(TestController.class, "ref"));
+
+        assertThat(route, is("/ref"));
+        assertThat(route2, is("/ref"));
+    }
 
     // Just a dummy TestController for mocking...
     public static class TestController {
@@ -154,6 +173,12 @@ public class RouterImplTest {
         }
 
         public Result entry() {
+
+            return Results.ok();
+
+        }
+        
+        public Result ref() {
 
             return Results.ok();
 
