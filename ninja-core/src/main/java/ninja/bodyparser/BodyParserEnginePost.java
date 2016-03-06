@@ -90,7 +90,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
                         if (parser == null) {
                             logger.warn("No parser defined for an array of type {}", fieldType.getComponentType().getCanonicalName());
                         } else {
-                            field.set(t, parser.parseParameter(field.getName(), values, context.getValidation(), true));
+                            field.set(t, parser.parseParameter(field.getName(), values, context.getValidation()));
                         }
 
                     } else {
@@ -99,7 +99,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
                         if (parser == null) {
                             logger.warn("No parser defined for type {}", fieldType.getCanonicalName());
                         } else {
-                            field.set(t, parser.parseParameter(field.getName(), values[0], context.getValidation(), true));
+                            field.set(t, parser.parseParameter(field.getName(), values[0], context.getValidation()));
                         }
 
                     }

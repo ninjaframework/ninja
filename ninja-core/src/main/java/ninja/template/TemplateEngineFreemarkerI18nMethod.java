@@ -21,7 +21,6 @@ import java.util.List;
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Messages;
-import ninja.validation.FieldViolation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-import freemarker.ext.beans.StringModel;
 import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
@@ -58,13 +56,6 @@ public class TemplateEngineFreemarkerI18nMethod implements
     public TemplateModel exec(List args) throws TemplateModelException {
 
         if (args.size() == 1) {
-            
-            if (args.get(0) instanceof StringModel 
-                    && ((StringModel) args.get(0)).getWrappedObject() instanceof FieldViolation) {
-                
-                return translateViolation((FieldViolation) ((StringModel) args.get(0)).getWrappedObject());
-                
-            }
             
             String messageKey = ((SimpleScalar) args.get(0)).getAsString();
 
@@ -111,18 +102,6 @@ public class TemplateEngineFreemarkerI18nMethod implements
                 "Using i18n without any key is not possible.");
         }
 
-    }
-    
-    protected TemplateModel translateViolation(FieldViolation arg) {
-
-        String messageValue = messages
-                .get(arg.constraintViolation.getMessageKey(), context,
-                        result, arg.constraintViolation.getMessageParams())
-                .or(arg.constraintViolation.getDefaultMessage() == null
-                        ? "error"
-                        : arg.constraintViolation.getDefaultMessage());
-
-        return new SimpleScalar(messageValue);
     }
     
     public void logIfMessageKeyIsMissing(

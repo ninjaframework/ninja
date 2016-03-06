@@ -295,10 +295,10 @@ public class BodyParserEnginePostTest {
     }
     
     private <T> void assertViolation(String fieldName, String violationMessage) {
-        assertFalse(validation.getBeanViolations().isEmpty());
-        assertTrue(validation.hasBeanViolation(fieldName));
-        assertThat(validation.getBeanViolations(fieldName).size(), equalTo(1));
-        FieldViolation violation = validation.getBeanViolations(fieldName).get(0);
+        assertTrue(validation.hasFieldViolation(fieldName));
+        assertFalse(validation.getFieldViolations().isEmpty());
+        assertThat(validation.getFieldViolations(fieldName).size(), equalTo(1));
+        FieldViolation violation = validation.getFieldViolations(fieldName).get(0);
         assertThat(violation.field, equalTo(fieldName));
         assertNotNull(violation.constraintViolation);
         assertThat(violation.constraintViolation.getFieldKey(), equalTo(fieldName));

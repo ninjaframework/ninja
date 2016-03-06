@@ -25,7 +25,6 @@ import java.util.Set;
 import org.joda.time.LocalDateTime;
 
 import ninja.validation.ConstraintViolation;
-import ninja.validation.FieldViolation;
 import ninja.validation.IsDate;
 import ninja.validation.IsEnum;
 import ninja.validation.IsFloat;
@@ -148,29 +147,17 @@ public class ParamParsers {
 
         return null;
     }
-    
-    public static boolean violationExists(Validation validation, String field, boolean isBeanParameter) {
-        return (isBeanParameter ? validation.hasBeanViolation(field) : validation.hasFieldViolation(field));
-    }
-    
-    protected static void addViolation(Validation validation, String field, boolean isBeanParameter, ConstraintViolation violation) {
-        if(isBeanParameter) {
-            validation.addBeanViolation(new FieldViolation(field, violation));
-        } else {
-            validation.addFieldViolation(field, violation);
-        }
-    }
 
     public static class PrimitiveIntegerParamParser implements ParamParser<Integer> {
         @Override
-        public Integer parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Integer parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0;
             } else {
                 try {
                     return Integer.parseInt(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return 0;
                 }
@@ -185,14 +172,14 @@ public class ParamParsers {
 
     public static class IntegerParamParser implements ParamParser<Integer> {
         @Override
-        public Integer parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Integer parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Integer.parseInt(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return null;
                 }
@@ -207,8 +194,8 @@ public class ParamParsers {
 
     public static class BooleanParamParser implements ParamParser<Boolean> {
         @Override
-        public Boolean parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Boolean parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 return Boolean.parseBoolean(parameterValue);
@@ -223,8 +210,8 @@ public class ParamParsers {
 
     public static class PrimitiveBooleanParamParser implements ParamParser<Boolean> {
         @Override
-        public Boolean parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Boolean parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return false;
             } else {
                 return Boolean.parseBoolean(parameterValue);
@@ -239,14 +226,14 @@ public class ParamParsers {
 
     public static class LongParamParser implements ParamParser<Long> {
         @Override
-        public Long parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Long parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Long.parseLong(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return null;
                 }
@@ -261,14 +248,14 @@ public class ParamParsers {
 
     public static class PrimitiveLongParamParser implements ParamParser<Long> {
         @Override
-        public Long parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Long parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0L;
             } else {
                 try {
                     return Long.parseLong(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return 0L;
                 }
@@ -283,14 +270,14 @@ public class ParamParsers {
 
     public static class FloatParamParser implements ParamParser<Float> {
         @Override
-        public Float parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Float parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Float.parseFloat(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return null;
                 }
@@ -305,14 +292,14 @@ public class ParamParsers {
 
     public static class PrimitiveFloatParamParser implements ParamParser<Float> {
         @Override
-        public Float parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Float parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0f;
             } else {
                 try {
                     return Float.parseFloat(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return 0f;
                 }
@@ -327,14 +314,14 @@ public class ParamParsers {
 
     public static class DoubleParamParser implements ParamParser<Double> {
         @Override
-        public Double parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Double parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Double.parseDouble(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return null;
                 }
@@ -349,14 +336,14 @@ public class ParamParsers {
 
     public static class PrimitiveDoubleParamParser implements ParamParser<Double> {
         @Override
-        public Double parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Double parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0d;
             } else {
                 try {
                     return Double.parseDouble(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsFloat.KEY, field, IsFloat.MESSAGE, parameterValue));
                     return 0d;
                 }
@@ -371,8 +358,8 @@ public class ParamParsers {
 
     public static class StringParamParser implements ParamParser<String> {
         @Override
-        public String parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || violationExists(validation, field, isBeanParameter)) {
+        public String parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 return parameterValue;
@@ -387,14 +374,14 @@ public class ParamParsers {
 
     public static class ByteParamParser implements ParamParser<Byte> {
         @Override
-        public Byte parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Byte parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Byte.parseByte(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return null;
                 }
@@ -409,14 +396,14 @@ public class ParamParsers {
 
     public static class PrimitiveByteParamParser implements ParamParser<Byte> {
         @Override
-        public Byte parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Byte parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0;
             } else {
                 try {
                     return Byte.parseByte(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return 0;
                 }
@@ -431,14 +418,14 @@ public class ParamParsers {
 
     public static class ShortParamParser implements ParamParser<Short> {
         @Override
-        public Short parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Short parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return Short.parseShort(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return null;
                 }
@@ -453,14 +440,14 @@ public class ParamParsers {
 
     public static class PrimitiveShortParamParser implements ParamParser<Short> {
         @Override
-        public Short parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Short parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0;
             } else {
                 try {
                     return Short.parseShort(parameterValue);
                 } catch (NumberFormatException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
                     return 0;
                 }
@@ -475,8 +462,8 @@ public class ParamParsers {
 
     public static class CharacterParamParser implements ParamParser<Character> {
         @Override
-        public Character parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Character parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 return parameterValue.charAt(0);
@@ -491,8 +478,8 @@ public class ParamParsers {
 
     public static class PrimitiveCharacterParamParser implements ParamParser<Character> {
         @Override
-        public Character parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Character parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return '\0';
             } else {
                 return parameterValue.charAt(0);
@@ -515,15 +502,15 @@ public class ParamParsers {
         }
 
         @Override
-        public E parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public E parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
 //                try {
 //                    return Enum.valueOf(targetType, parameterValue);
 //                }
 //                catch(IllegalArgumentException e) {
-//                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+//                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
 //                            IsEnum.KEY, field, IsEnum.MESSAGE, new Object[] {parameterValue, getParsedType().getName()}));
 //                    return null;
 //                }
@@ -535,7 +522,7 @@ public class ParamParsers {
                     }
                 }
 
-                addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(  
+                validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                         IsEnum.KEY, field, IsEnum.MESSAGE, new Object[] {parameterValue, getParsedType().getName()}));
                 return null;
             }
@@ -549,14 +536,14 @@ public class ParamParsers {
     
     public static class DateParamParser implements ParamParser<Date> {
         @Override
-        public Date parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public Date parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
                     return new LocalDateTime(parameterValue).toDate();
                 } catch (IllegalArgumentException e) {
-                    addViolation(validation, field, isBeanParameter, ConstraintViolation.createForFieldWithDefault(
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                             IsDate.KEY, field, IsDate.MESSAGE, parameterValue));
                     return null;
                 }
@@ -583,8 +570,8 @@ public class ParamParsers {
         }
 
         @Override
-        public T[] parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
-            if (parameterValue == null || parameterValue.isEmpty() || violationExists(validation, field, isBeanParameter)) {
+        public T[] parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 // split the string value as a csv
@@ -594,11 +581,11 @@ public class ParamParsers {
                 Class<T> itemType = (Class<T>) arrayType.getComponentType();
                 T[] array = (T[]) Array.newInstance(itemType, values.length);
                 for (int i = 0; i < values.length; i++) {
-                    T t = itemParser.parseParameter(field, values[i], validation, isBeanParameter);
+                    T t = itemParser.parseParameter(field, values[i], validation);
                     Array.set(array, i, t);
                 }
 
-                if (violationExists(validation, field, isBeanParameter)) {
+                if (validation.hasFieldViolation(field)) {
                     return null;
                 }
 
@@ -625,8 +612,8 @@ public class ParamParsers {
             this.itemParser = parser;
         }
 
-        public T[] parseParameter(String field, String[] parameterValues, Validation validation, boolean isBeanParameter) {
-            if (parameterValues == null || violationExists(validation, field, isBeanParameter)) {
+        public T[] parseParameter(String field, String[] parameterValues, Validation validation) {
+            if (parameterValues == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 // parse the individual values as the target item type
@@ -640,11 +627,11 @@ public class ParamParsers {
                 }
                 
                 for (int i = 0; i < parameterValues.length; i++) {
-                    T t = itemParser.parseParameter(field, parameterValues[i], validation, isBeanParameter);
+                    T t = itemParser.parseParameter(field, parameterValues[i], validation);
                     Array.set(array, i, t);
                 }
 
-                if (violationExists(validation, field, isBeanParameter)) {
+                if (validation.hasFieldViolation(field)) {
                     return null;
                 }
 
@@ -672,12 +659,12 @@ public class ParamParsers {
         }
 
         public List<T> parseParameter(String field, String[] parameterValues, Validation validation) {
-            if (parameterValues == null || violationExists(validation, field, true)) {
+            if (parameterValues == null || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 List<T> list = Lists.newArrayList();
                 for (int i = 0; i < parameterValues.length; i++) {
-                    list.add(itemParser.parseParameter(field, parameterValues[i], validation, true));
+                    list.add(itemParser.parseParameter(field, parameterValues[i], validation));
                 }
 
                 if (validation.hasFieldViolation(field)) {

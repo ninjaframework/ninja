@@ -249,7 +249,7 @@ abstract public class AbstractContext implements Context.Impl {
     public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
         String parameter = getParameter(key);
 
-        T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, parameter, validation, false);
+        T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, parameter, validation);
         return validation.hasFieldViolation(key) ? defaultValue : value;
     }
 
