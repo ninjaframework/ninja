@@ -210,7 +210,6 @@ public class Bootstrap {
             @Override
             protected void configure() {
                 bind(Ninja.class).to(ninjaClass).in(Singleton.class);
-                Multibinder.newSetBinder(binder(), ParamParser.class);
             }
         });
     }
