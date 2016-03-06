@@ -28,6 +28,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
+import ninja.utils.MethodReference;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RouteBuilderImplTest {
@@ -356,6 +359,17 @@ public class RouteBuilderImplTest {
         } catch (Exception e) {
             assertTrue(e instanceof IllegalStateException);
         }
+    }
+    
+    @Test
+    public void testRouteWithMethodReference() throws Exception {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/method_reference").with(new MethodReference(MockController.class, "execute"));
+
+        Route route = routeBuilder.buildRoute(injector);
+        assertTrue(route.matches("GET", "/method_reference"));
+
+        assertThat(route.getControllerClass().newInstance(), instanceOf(MockController.class));
     }
 
     private Route buildRoute(RouteBuilderImpl builder) {

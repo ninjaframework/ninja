@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package ninja;
+package ninja.postoffice;
 
-import ninja.utils.MethodReference;
 
-public interface RouteBuilder {
-
-    RouteBuilder route(String uri);
-
-    void with(Class controller, String controllerMethod);
-
-    void with(MethodReference controllerMethodRef);
+public interface PostofficeConstant {
     
-    void with(Result result);
-    
+    public static final String postofficeImplementation = "postoffice.implementation";
+
+    public static final String smtpHost = "smtp.host";
+
+    public static final String smtpPort = "smtp.port";
+
+    public static final String smtpSsl = "smtp.ssl";
+
+    public static final String smtpUser = "smtp.user";
+
+    public static final String smtpPassword = "smtp.password";
+
+    public static final String smtpDebug = "smtp.debug";
+
 }

@@ -209,6 +209,9 @@ public interface NinjaConstant {
      * Database stuff and JPA
      */    
     /** run migrations on startup of application */
+    final String MIGRATION_ENGINE_IMPLEMENTATION = "migration.engine.implementation";
+    
+    /** run migrations on startup of application */
     final String NINJA_MIGRATION_RUN = "ninja.migration.run";
     
     /** The name of the persistence unit to use */

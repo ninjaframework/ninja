@@ -1,11 +1,11 @@
-/**
- * Copyright (C) 2012-2016 the original author or authors.
+/*
+ * Copyright 2016 ninjaframework.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package ninja.cache;
 
-package ninja;
+public class CacheException extends RuntimeException {
 
-import ninja.utils.MethodReference;
+    public CacheException(String msg, Throwable t) {
+        super(msg, t);
+    }
 
-public interface RouteBuilder {
-
-    RouteBuilder route(String uri);
-
-    void with(Class controller, String controllerMethod);
-
-    void with(MethodReference controllerMethodRef);
-    
-    void with(Result result);
-    
 }

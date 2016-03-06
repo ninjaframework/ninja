@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package ninja.postoffice.guice;
+package com.example.frameworkmodule.conf;
 
+import ninja.conf.FrameworkModule;
 
-public interface PostofficeConstant {
+public class Module extends FrameworkModule {
+
+    @Override
+    protected void configure() {       
+        bind(DummyInterfaceForTesting.class).to(DummyClassForTesting.class);
+    }
     
-    public static final String postofficeImplementation = "postoffice.implementation";
-
-    public static final String smtpHost = "smtp.host";
-
-    public static final String smtpPort = "smtp.port";
-
-    public static final String smtpSsl = "smtp.ssl";
-
-    public static final String smtpUser = "smtp.user";
-
-    public static final String smtpPassword = "smtp.password";
-
-    public static final String smtpDebug = "smtp.debug";
+    public static interface DummyInterfaceForTesting {
+    }
+    
+    public static class DummyClassForTesting implements DummyInterfaceForTesting {
+    }
 
 }

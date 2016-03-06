@@ -16,16 +16,26 @@
 
 package ninja;
 
-import ninja.utils.MethodReference;
+import ninja.conf.*;
+import ninja.utils.NinjaPropertiesImpl;
+import com.google.inject.AbstractModule;
+import ninja.utils.NinjaProperties;
 
-public interface RouteBuilder {
+/**
+ * The basic configuration of the main ninja framework.
+ */
+public class BaseAndClassicModules extends AbstractModule {
 
-    RouteBuilder route(String uri);
+    private final NinjaPropertiesImpl ninjaProperties;
 
-    void with(Class controller, String controllerMethod);
+    public BaseAndClassicModules(NinjaPropertiesImpl ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+    }
 
-    void with(MethodReference controllerMethodRef);
-    
-    void with(Result result);
-    
+    @Override
+    public void configure() {
+        install(new NinjaBaseModule(ninjaProperties));
+        install(new NinjaClassicModule((NinjaProperties)ninjaProperties));
+    }
+
 }

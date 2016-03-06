@@ -16,6 +16,7 @@
 
 package ninja;
 
+import ninja.utils.MethodReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import java.lang.reflect.Method;
 
 public class RouterImpl implements Router {
 
@@ -46,6 +48,8 @@ public class RouterImpl implements Router {
     private final Injector injector;
 
     private List<Route> routes;
+    // for fast reverse route lookups
+    private Map<MethodReference,Route> reverseRoutes;
 
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
     private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
@@ -107,21 +111,31 @@ public class RouterImpl implements Router {
     }
 
     @Override
+    public String getReverseRoute(Class<?> controllerClass,
+            String controllerMethodName,
+            Map<String, Object> parameterMap) {
+
+        Optional<Map<String, Object>> parameterMapOptional
+                = Optional.fromNullable(parameterMap);
+
+        return getReverseRoute(
+                controllerClass,
+                controllerMethodName,
+                parameterMapOptional);
+
+    }
+    
+    @Override
     public String getReverseRoute(
             Class<?> controllerClass,
             String controllerMethodName,
             Optional<Map<String, Object>> parameterMap) {
 
-        if (routes == null) {
-            throw new IllegalStateException(
-                    "Attempt to get route when routes not compiled");
-        }
-
         Optional<Route> route
                 = getRouteForControllerClassAndMethod(
                         controllerClass,
                         controllerMethodName);
-
+        
         if (route.isPresent()) {
 
             // The original url. Something like route/user/{id}/{email}/userDashboard/{name: .*}
@@ -143,21 +157,38 @@ public class RouterImpl implements Router {
                     controllerMethodName, controllerClass.getSimpleName());
             return null;
         }
+        
     }
-
+    
     @Override
-    public String getReverseRoute(Class<?> controllerClass,
-            String controllerMethodName,
-            Map<String, Object> parameterMap) {
-
-        Optional<Map<String, Object>> parameterMapOptional
-                = Optional.fromNullable(parameterMap);
-
+    public String getReverseRoute(MethodReference controllerMethodRef) {
         return getReverseRoute(
-                controllerClass,
-                controllerMethodName,
-                parameterMapOptional);
-
+            controllerMethodRef.getDeclaringClass(),
+            controllerMethodRef.getMethodName());
+    }
+    
+    @Override
+    public String getReverseRoute(MethodReference controllerMethodRef, Map<String, Object> parameterMap) {
+        return getReverseRoute(
+            controllerMethodRef.getDeclaringClass(),
+            controllerMethodRef.getMethodName(),
+            parameterMap);
+    }
+    
+    @Override
+    public String getReverseRoute(MethodReference controllerMethodRef, Object ... parameterMap) {
+        return getReverseRoute(
+            controllerMethodRef.getDeclaringClass(),
+            controllerMethodRef.getMethodName(),
+            parameterMap);
+    }
+    
+    @Override
+    public String getReverseRoute(MethodReference controllerMethodRef, Optional<Map<String, Object>> parameterMap) {
+        return getReverseRoute(
+            controllerMethodRef.getDeclaringClass(),
+            controllerMethodRef.getMethodName(),
+            parameterMap);
     }
 
     @Override
@@ -165,20 +196,39 @@ public class RouterImpl implements Router {
         if (routes != null) {
             throw new IllegalStateException("Routes already compiled");
         }
-        List<Route> routes = new ArrayList<>();
+        List<Route> routesLocal = new ArrayList<>();
+        
         for (RouteBuilderImpl routeBuilder : allRouteBuilders) {
-            routes.add(routeBuilder.buildRoute(injector));
+            routesLocal.add(routeBuilder.buildRoute(injector));
         }
-        this.routes = ImmutableList.copyOf(routes);
+        
+        this.routes = ImmutableList.copyOf(routesLocal);
+        
+        // compile reverse routes for O(1) lookups
+        this.reverseRoutes = new HashMap<>(this.routes.size());
+        
+        for (Route route : this.routes) {
+            // its possible this route is a Result instead of a controller method
+            if (route.getControllerClass() != null) {
+                MethodReference controllerMethodRef
+                    = new MethodReference(
+                        route.getControllerClass(),
+                        route.getControllerMethod().getName());
+                
+                if (this.reverseRoutes.containsKey(controllerMethodRef)) {
+                    // the first one wins with reverse routing so we ignore this route
+                } else {
+                    this.reverseRoutes.put(controllerMethodRef, route);
+                }
+            }
+        }
 
         logRoutes();
     }
 
     @Override
     public List<Route> getRoutes() {
-        if (routes == null) {
-            throw new IllegalStateException("Routes have not been compiled");
-        }
+        verifyRoutesCompiled();
         return routes;
     }
 
@@ -238,25 +288,26 @@ public class RouterImpl implements Router {
 
         return routeBuilder;
     }
+    
+    private void verifyRoutesCompiled() {
+        if (routes == null) {
+            throw new IllegalStateException(
+                "Routes not compiled!");
+        }
+    }
 
     private Optional<Route> getRouteForControllerClassAndMethod(
             Class<?> controllerClass,
             String controllerMethodName) {
 
-        for (Route route : routes) {
+        verifyRoutesCompiled();
 
-            if (route.getControllerClass() != null
-                    && route.getControllerClass().equals(controllerClass)
-                    && route.getControllerMethod().getName().equals(controllerMethodName)) {
-
-                return Optional.of(route);
-
-            }
-
-        }
-
-        return Optional.absent();
-
+        MethodReference reverseRouteKey
+            = new MethodReference(controllerClass, controllerMethodName);
+        
+        Route route = this.reverseRoutes.get(reverseRouteKey);
+        
+        return Optional.fromNullable(route);
     }
 
     private String replaceVariablePartsOfUrlWithValuesProvidedByUser(
@@ -305,7 +356,7 @@ public class RouterImpl implements Router {
             // now prepare the query string for this url if we got some query params
             if (queryParameterMap.size() > 0) {
 
-                StringBuffer queryParameterStringBuffer = new StringBuffer();
+                StringBuilder queryParameterStringBuffer = new StringBuilder();
 
                 // The uri is now replaced => we now have to add potential query parameters
                 for (Iterator<Entry<String, Object>> iterator = queryParameterMap.entrySet().iterator();

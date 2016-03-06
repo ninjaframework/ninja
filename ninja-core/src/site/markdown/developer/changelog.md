@@ -1,9 +1,22 @@
+ * 2016-03-06 Documentation for Validation enhanced (jlannoy)
  * 2016-01-19 SwissKnife converters replaced by usage of ParamParsers in BodyPostEngine (jlannoy)
  * 2016-01-19 Support added for any enumeration value (registration deprecated) and custom ParamParser (jlannoy)
 
 Version X.X.X
 =============
 
+ * 2016-02-29 New ninja.standalone.AutoStandalone class locates standalone to use based on
+              System property, then META-INF/services, then default value of Jetty (jjlauer)
+ * 2016-02-29 Reverse routing is now O(1) from O(N) by using a pre-calculated hashmap (jjlauer)
+ * 2016-02-28 More flexible Ninja guice configuration! Your `conf.Module` can optionally extend 
+              `ninja.conf.FrameworkModule` to skip Ninja's default guice bindings
+              for its "classic" stack of Freemarker, Jackson, Cache, etc. (jjlauer)
+ * 2016-02-28 New `ninja.conf.NinjaClassicModule` guice module to aid power users
+              with configuring the exact set of features they want to include. (jjlauer)
+ * 2016-02-28 Migration engine implementation is now configurable with property `migration.engine.implementation` (jjlauer)
+ * 2016-02-28 Ehcache dependency can now be safely excluded if not used (jjlauer)
+ * 2016-02-28 New `utils.ImplFromPropertiesFactory` to aid in loading your
+              implementations from NinjaProperties. (jjlauer)
  * 2016-02-26 Removed ninja-core dependency on org.mindrot:bcrypt (it was unused) (jjlauer)
  * 2016-02-25 New RecycledNinjaServerTester in ninja-test-utilities to speed up your unit tests (jjlauer)
  * 2016-01-08 Fix Cookie domain is not set when clearing session #462

@@ -22,11 +22,13 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URL;
 import java.security.KeyStore;
+import java.util.Iterator;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import ninja.utils.ForwardingServiceLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,12 +60,58 @@ public class StandaloneHelper {
      * @return The resolved standalone class to use
      */
     static public Class<? extends Standalone> resolveStandaloneClass() {
-        String standaloneClassName = System.getProperty(Standalone.KEY_NINJA_STANDALONE_CLASS, Standalone.DEFAULT_STANDALONE_CLASS);
-        try {
-            return (Class<Standalone>)Class.forName(standaloneClassName);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to find standalone class '" + standaloneClassName + "' (class does not exist)");
+        return resolveStandaloneClass(
+            System.getProperty(Standalone.KEY_NINJA_STANDALONE_CLASS),
+            ForwardingServiceLoader.loadWithSystemServiceLoader(Standalone.class),
+            Standalone.DEFAULT_STANDALONE_CLASS
+        );
+    }
+    
+    // used for testing (so we can inject mocks of system static methods)
+    static Class<? extends Standalone> resolveStandaloneClass(String standaloneClassNameSystemProperty,
+                                                              ForwardingServiceLoader<Standalone> standaloneServiceLoader,
+                                                              String standaloneClassNameDefaultValue) {
+        Class<? extends Standalone> resolvedStandaloneClass = null;
+        
+        // 1. System property for 'ninja.standalone.class'
+        if (standaloneClassNameSystemProperty != null) {
+            try {
+                resolvedStandaloneClass
+                    = (Class<Standalone>)Class.forName(standaloneClassNameSystemProperty);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to find standalone class '" + standaloneClassNameSystemProperty + "' (class does not exist)");
+            }
         }
+        
+        // 2. Implementation on classpath that's registered as service?
+        if (resolvedStandaloneClass == null) {
+            try {
+                Iterator<Standalone> standaloneIterator = standaloneServiceLoader.iterator();
+                // first one wins
+                if (standaloneIterator.hasNext()) {
+                    resolvedStandaloneClass = standaloneIterator.next().getClass();
+                }
+                // more than one triggers warning
+                if (standaloneIterator.hasNext()) {
+                    log.warn("More than one implementation of {} on classpath! Using {} which was the first", Standalone.class, resolvedStandaloneClass);
+                }
+            } finally {
+                // always kill cache (since ServiceLoader actually instantiates an instance)
+                standaloneServiceLoader.reload();
+            }
+        }
+        
+        // 3. Fallback to ninja default
+        if (resolvedStandaloneClass == null) {
+            try {
+                resolvedStandaloneClass
+                    = (Class<Standalone>)Class.forName(standaloneClassNameDefaultValue);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to find standalone class '" + standaloneClassNameDefaultValue + "' (class does not exist)");
+            }
+        }
+        
+        return resolvedStandaloneClass;
     }
     
     static public Standalone create(Class<? extends Standalone> standaloneClass) {

@@ -16,9 +16,6 @@
 
 package ninja.migrations;
 
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(MigrationEngineFlyway.class)
 public interface MigrationEngine {
     
     /**
