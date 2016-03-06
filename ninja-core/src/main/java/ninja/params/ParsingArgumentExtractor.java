@@ -33,7 +33,7 @@ public class ParsingArgumentExtractor<T> implements ArgumentExtractor<T> {
     @Override
     public T extract(Context context) {
         return parser.parseParameter(wrapped.getFieldName(), wrapped.extract(context),
-                context.getValidation(), false);
+                context.getValidation());
     }
 
     @Override

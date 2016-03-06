@@ -1037,7 +1037,7 @@ public class ControllerMethodInvokerTest {
         public static final String MESSAGE = "{0} must be a valid date";
         
         @Override
-        public Date parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
+        public Date parseParameter(String field, String parameterValue, Validation validation) {
             try {
                 return parameterValue == null ? null : new SimpleDateFormat(DATE_FORMAT).parse(parameterValue);
             } catch(ParseException e) {
@@ -1061,7 +1061,7 @@ public class ControllerMethodInvokerTest {
         NinjaProperties properties;
         
         @Override
-        public Dep parseParameter(String field, String parameterValue, Validation validation, boolean isBeanParameter) {
+        public Dep parseParameter(String field, String parameterValue, Validation validation) {
             return new Dep(properties.get("needingInjectionParamParser.value") + "_" + parameterValue);
         }
 
