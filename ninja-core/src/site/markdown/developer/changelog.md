@@ -1,5 +1,5 @@
 
-Version X.X.X
+Version 5.4.0
 =============
 
  * 2016-02-29 New ninja.standalone.AutoStandalone class locates standalone to use based on
