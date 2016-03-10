@@ -10,6 +10,34 @@ version and then work your way up to the top of the document.
 to latest
 ---------
 
+to 5.4.0
+--------
+
+Guice bindings for template engines like Freemarker were modified to be bound
+differently than in previous versions.  If you use a custom template engine
+via a third party module then it may need to be bound into Guice slightly
+different.  This is how template engines typically were bound:
+
+```java
+public class CustomTemplateEngineModule extends AbstractModule {
+    @Override
+    protected void configure() {
+        bind(TemplateEngine.class).to(CustomTemplateEngine.class);
+    }
+}
+```
+
+This is how template engines need to be bound as of v5.4.0:
+
+```java
+public class CustomTemplateEngineModule extends AbstractModule {
+    @Override
+    protected void configure() {
+        bind(CustomTemplateEngine.class);
+    }
+}
+```
+
 to 3.3.0
 --------
 
