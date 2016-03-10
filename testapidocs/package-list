@@ -1,5 +1,6 @@
 com.example.conf
 com.example.controllers
+com.example.frameworkmodule.conf
 conf
 ninja
 ninja.bodyparser
@@ -10,7 +11,9 @@ ninja.i18n
 ninja.jpa
 ninja.lifecycle
 ninja.logging
+ninja.migrations
 ninja.params
+ninja.postoffice
 ninja.postoffice.common
 ninja.postoffice.commonsmail
 ninja.postoffice.mock

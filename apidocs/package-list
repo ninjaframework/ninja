@@ -2,6 +2,7 @@ ninja
 ninja.application
 ninja.bodyparser
 ninja.cache
+ninja.conf
 ninja.diagnostics
 ninja.exceptions
 ninja.i18n
@@ -9,11 +10,11 @@ ninja.jpa
 ninja.lifecycle
 ninja.logging
 ninja.migrations
+ninja.migrations.flyway
 ninja.params
 ninja.postoffice
 ninja.postoffice.common
 ninja.postoffice.commonsmail
-ninja.postoffice.guice
 ninja.postoffice.mock
 ninja.scheduler
 ninja.session
