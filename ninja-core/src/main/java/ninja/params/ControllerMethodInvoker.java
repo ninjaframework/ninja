@@ -24,14 +24,14 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+
 import ninja.Context;
 import ninja.RoutingException;
 import ninja.params.ParamParsers.ArrayParamParser;
 import ninja.validation.Validator;
 import ninja.validation.WithValidator;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
 
 /**
  * Invokes methods on the controller, extracting arguments out
@@ -200,7 +200,7 @@ public class ControllerMethodInvoker {
             if (extractor.getFieldName() != null) {
                 if (String.class.isAssignableFrom(extractor.getExtractedType())) {
                     // Look up a parser for a single-valued parameter
-                    ParamParser<?> parser = ParamParsers.getParamParser(paramType);
+                    ParamParser<?> parser = injector.getInstance(ParamParsers.class).getParamParser(paramType);
                     if (parser == null) {
                         throw new RoutingException("Can't find parameter parser for type "
                                 + extractor.getExtractedType() + " on field "
@@ -211,7 +211,7 @@ public class ControllerMethodInvoker {
                     }
                 } else if (String[].class.isAssignableFrom(extractor.getExtractedType())) {
                     // Look up a parser for a multi-valued parameter
-                    ArrayParamParser<?> parser = ParamParsers.getArrayParser(paramType);
+                    ArrayParamParser<?> parser = injector.getInstance(ParamParsers.class).getArrayParser(paramType);
                     if (parser == null) {
                         throw new RoutingException("Can't find parameter array parser for type "
                                 + extractor.getExtractedType() + " on field "

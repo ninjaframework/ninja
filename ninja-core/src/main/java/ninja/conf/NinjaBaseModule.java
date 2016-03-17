@@ -25,7 +25,10 @@ import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
+
 import ninja.lifecycle.LifecycleSupport;
+import ninja.params.ParamParser;
 import ninja.scheduler.SchedulerSupport;
 
 /**
@@ -50,6 +53,7 @@ public class NinjaBaseModule extends AbstractModule {
         install(SchedulerSupport.getModule());
         
         // Routing
+        Multibinder.newSetBinder(binder(), ParamParser.class);
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
         bind(Router.class).to(RouterImpl.class).in(Singleton.class);
 

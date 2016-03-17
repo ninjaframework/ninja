@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParsers;
 import ninja.servlet.async.AsyncStrategy;
 import ninja.servlet.async.AsyncStrategyFactoryHolder;
 import ninja.session.FlashScope;
@@ -97,14 +98,16 @@ public class NinjaServletContext extends AbstractContext {
             ResultHandler resultHandler,
             Session session,
             Validation validation,
-            Injector injector) {
+            Injector injector,
+            ParamParsers paramParsers) {
         
         super(bodyParserEngineManager,
               flashScope,
               ninjaProperties,
               session,
               validation,
-              injector);
+              injector,
+              paramParsers);
         
         this.resultHandler = resultHandler;
     }

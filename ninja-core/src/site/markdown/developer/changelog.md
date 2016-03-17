@@ -1,3 +1,6 @@
+ * 2016-03-06 Documentation for Validation enhanced (jlannoy)
+ * 2016-01-19 SwissKnife converters replaced by usage of ParamParsers in BodyPostEngine (jlannoy)
+ * 2016-01-19 Support added for any enumeration value (registration deprecated) and custom ParamParser (jlannoy)
 
 Version 5.4.0
 =============
