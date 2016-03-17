@@ -43,6 +43,10 @@ Rocker templates
 
  * https://github.com/fizzed/ninja-rocker
  
+Pebble templates
+
+ * https://github.com/jjfidalgo/ninja-pebble
+ 
 Hazelcast Cache Implementation
 
  * https://github.com/raptaml/ninja-hazelcast-embedded
