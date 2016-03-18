@@ -1,3 +1,8 @@
+Version 5.X.X
+=============
+
+ * 2016-03-18 Improved javadoc of Cache interface (ra).
+
 
 Version 5.4.0
 =============
