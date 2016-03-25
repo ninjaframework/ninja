@@ -23,7 +23,7 @@ Code
 - Make sure your feature is well documented (Javadoc).
 - Make sure there is documentation for your feature at ninja-core/src/site/markdown.
 - Make sure your feature runs inside ninja-integration-test
-  or ninja-servlet-jpa-blog-integrationt-est if you wrote a feature related to JPA.
+  or ninja-servlet-jpa-blog-integration-test if you wrote a feature related to JPA.
 - Add your changes to changelog.md and your name to team.md.
 
 Sign the [contributor agreement (electronically)](https://docs.google.com/forms/d/1Yasrxa17kYfaNDgbRvn77rM3WTnU_Um0rwz3GfzPp9g/viewform) and
