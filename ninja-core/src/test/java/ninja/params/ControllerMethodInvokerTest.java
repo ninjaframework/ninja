@@ -643,6 +643,20 @@ public class ControllerMethodInvokerTest {
         create("needingInjectionParamParserArray", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
         verify(mockController).needingInjectionParamParserArray(new Dep[] { new Dep("hello_hello1"), new Dep("hello_hello2") });
     }
+    
+    @Test
+    public void needingInjectionParamParser() throws Exception {
+        when(context.getParameter("param1")).thenReturn("hello");
+        create("needingInjectionParamParser", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
+    }
+    
+    @Test
+    public void needingInjectionParamParserArray() throws Exception {
+        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("hello1", "hello2"));
+        create("needingInjectionParamParserArray", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParserArray(new Dep[] { new Dep("hello_hello1"), new Dep("hello_hello2") });
+    }
 
     @Test
     public void customArgumentExtractorWithNoArgsShouldBeInstantiated() {

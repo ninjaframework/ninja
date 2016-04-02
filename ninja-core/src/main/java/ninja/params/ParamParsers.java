@@ -67,7 +67,7 @@ public class ParamParsers {
                     .build();
 
     private final Set<ParamParser> customParsers;
-    
+
     @Inject
     public ParamParsers(Set<ParamParser> customParsers) {
         this.customParsers = customParsers;
