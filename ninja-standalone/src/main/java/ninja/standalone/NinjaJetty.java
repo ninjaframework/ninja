@@ -25,14 +25,19 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import com.google.inject.servlet.GuiceFilter;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
+import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.xml.XmlConfiguration;
@@ -139,6 +144,12 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
         this.contextHandler.addEventListener(ninjaServletListener);
         this.contextHandler.addFilter(GuiceFilter.class, "/*", null);
         this.contextHandler.addServlet(DefaultServlet.class, "/");
+                
+        // disable directory browsing
+        this.contextHandler.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
+        // Add an error handler that does not print stack traces in case
+        // something happens that is not under control of Ninja
+        this.contextHandler.setErrorHandler(new SilentErrorHandler());
     }  
 
     @Override
@@ -235,6 +246,39 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
             } else {
                 return (Server)configuration.configure(server);
             }
+        }
+    }
+    
+    /**
+     * That error handler does not print out any stack traces.
+     * 
+     * In production it may happen that an exception occurs that is outside
+     * of the control of Ninja. The default error handler happily prints out 
+     * stacktraces. This is not what you want in production systems.
+     * 
+     * More here: https://virgo47.wordpress.com/2015/02/07/jetty-hardening/
+     * 
+     * Therefore we simply print out a very simple error and log the problem.
+     */
+    public static class SilentErrorHandler extends ErrorPageErrorHandler {
+        private static final Logger log = LoggerFactory.getLogger(SilentErrorHandler.class);
+        
+        final String DEFAULT_RESPONSE_HTML =
+            "<html>\n" +
+            "  <head>\n" +
+            "    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>\n" +
+            "    <title>Oops. An error occurred.</title>\n" +
+            "  </head>\n" +
+            "  <body>\n" +
+            "    <h1>Oops. An error occurred.</h1>\n" +
+            "    <p>Please contact support if error persists.</p>\n" +       
+            "  </body>\n" +
+            "</html>";
+        
+        @Override
+        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+            log.error("An error occurred that cannot be handled by Ninja {}. Responsing with default error page.", target);
+            response.getWriter().append(DEFAULT_RESPONSE_HTML);
         }
     }
 }
