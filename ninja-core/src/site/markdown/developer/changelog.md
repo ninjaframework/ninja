@@ -1,7 +1,8 @@
 Version 5.X.X
 =============
 
-
+ * 2016-03-06 Added silent error handle to NinjaJetty that does not print out stacktraces.
+              Directory listing by NinjaJetty disabled (ra).
  * 2016-04-05 Improve Ninja usability in Google AppEngine Environment (ra).
  * 2016-04-04 Flyway version bump to 4.0 (nate-kingsley).
  * 2016-03-18 Improved javadoc of Cache interface (ra).
