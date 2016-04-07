@@ -1,4 +1,4 @@
-Version 5.X.X
+Version 5.5.0
 =============
 
  * 2016-03-06 Added silent error handle to NinjaJetty that does not print out stacktraces.
