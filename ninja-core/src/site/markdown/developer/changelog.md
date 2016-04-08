@@ -1,3 +1,9 @@
+Version X.Y.Z
+=============
+
+ * 2016-04-08 Fixed issue #497. Capturing groups in route regex. (bazi).
+
+
 Version 5.5.0
 =============
 
