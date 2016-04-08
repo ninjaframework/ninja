@@ -171,7 +171,12 @@ public class Route {
      */
     protected static String convertRawUriToRegex(String rawUri) {
 
-        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(rawUri);
+        // convert capturing groups in route regex to non-capturing groups
+        // this is to avoid count mismatch of path params and groups in uri regex
+        Matcher groupMatcher = Pattern.compile("\\((.*)\\)").matcher(rawUri);
+        String converted = groupMatcher.replaceAll("\\(?:$1\\)");
+
+        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(converted);
 
         StringBuffer stringBuffer = new StringBuffer();
 
