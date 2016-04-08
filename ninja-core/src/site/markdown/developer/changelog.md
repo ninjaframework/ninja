@@ -1,3 +1,9 @@
+Version 5.X.X
+=============
+
+ * 2016-04-08 Fixed another glitch to improve Ninja usability in Google AppEngine Environment (ra).
+
+
 Version 5.5.0
 =============
 
