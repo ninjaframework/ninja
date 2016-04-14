@@ -61,8 +61,9 @@ public class SourceSnippetHelper {
                                                             int lineTo) throws IOException {
         // try to find source template as local file
         if (baseDirectory != null && templateRelativePath != null) {
-            File templateFile = baseDirectory.toPath()
-                .resolve(templateRelativePath).toFile();
+            File templateFile = new File(baseDirectory.getAbsolutePath()
+                    + File.separator
+                    + templateRelativePath);
             return readFromFile(templateFile, lineFrom, lineTo);
         }
         
