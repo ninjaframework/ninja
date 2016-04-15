@@ -244,8 +244,7 @@ public class Bootstrap {
             logger.info("Successfully configured Logback.");
              // It is available
         } catch (ClassNotFoundException exception) {
-            logger.info(
-                    "Logback is not on classpath (you are probably using slf4j-jdk14). I did not configure anything. It's up to you now...", exception);
+            logger.info("Ninja did not configure any logging because Logback is not on the classpath (you are probably using slf4j-jdk14).");
         }
     }
     

@@ -67,6 +67,7 @@ contributed to Ninja. In some random order:
  * Christian Bourgeois (momiji/xtian)
  * Amit Pandey (amit2103)
  * Mark Watson (watsonmw)
+ * Nate Kingsley (nate-kingsley)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

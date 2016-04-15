@@ -26,10 +26,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import ninja.utils.NinjaMode;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -317,6 +319,34 @@ public class NinjaJettyTest {
             // request above) got assigned to us!
             assertThat(client2.header("Set-Cookie"), is(nullValue()));
             
+        } finally {
+            standalone.shutdown();
+        }
+    }
+    
+    @Test
+    public void directoryListingIsForbidden() throws Exception {
+        NinjaJetty standalone = new NinjaJetty()
+                .externalConfigurationPath("conf/jetty.minimal.conf")
+                .port(RANDOM_PORT);
+        try {
+            standalone.start();
+            String directoryLisingAllowed = standalone.contextHandler.getInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed");
+            assertThat(directoryLisingAllowed, is("false"));
+        } finally {
+            standalone.shutdown();
+        }
+    }
+    
+    @Test
+    public void checkThatSilentErrorHandlerIsRegistered() throws Exception {
+        NinjaJetty standalone = new NinjaJetty()
+                .externalConfigurationPath("conf/jetty.minimal.conf")
+                .port(RANDOM_PORT);
+        try {
+            standalone.start();
+            ErrorHandler errorHandler = standalone.contextHandler.getErrorHandler();
+            assertThat(errorHandler, instanceOf(NinjaJetty.SilentErrorHandler.class));
         } finally {
             standalone.shutdown();
         }

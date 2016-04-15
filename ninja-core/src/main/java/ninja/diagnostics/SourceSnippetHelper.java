@@ -16,6 +16,8 @@
 
 package ninja.diagnostics;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,10 +43,12 @@ public class SourceSnippetHelper {
                                                                     int lineTo) throws IOException {
         // try to find source template as local file
         if (baseDirectory != null) {
-            Path templatePath = baseDirectory.toPath()
-                .resolve(packageName.replace(".", File.separator))
-                .resolve(fileName);
-            File templateFile = templatePath.toFile();
+            File templateFile = new File(
+                baseDirectory.getAbsolutePath() 
+                + File.separator 
+                + packageName.replace(".", File.separator)
+                + File.separator 
+                + fileName);
             return readFromFile(templateFile, lineFrom, lineTo);
         }
         
@@ -59,8 +61,9 @@ public class SourceSnippetHelper {
                                                             int lineTo) throws IOException {
         // try to find source template as local file
         if (baseDirectory != null && templateRelativePath != null) {
-            File templateFile = baseDirectory.toPath()
-                .resolve(templateRelativePath).toFile();
+            File templateFile = new File(baseDirectory.getAbsolutePath()
+                    + File.separator
+                    + templateRelativePath);
             return readFromFile(templateFile, lineFrom, lineTo);
         }
         
@@ -109,7 +112,7 @@ public class SourceSnippetHelper {
         }
         
         BufferedReader in = new BufferedReader(
-                new InputStreamReader(is, StandardCharsets.UTF_8));
+                new InputStreamReader(is, Charsets.UTF_8));
         
         List<String> lines = new ArrayList<>();
   
