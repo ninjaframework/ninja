@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,8 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
+import ninja.params.ParamParser;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.uploads.FileItem;
@@ -70,6 +73,7 @@ public class FakeContext implements Context {
     private final Map<String, Object> attributes = new HashMap<>();
     private Object body;
     private final Validation validation = new ValidationImpl();
+    private final ParamParsers paramParsers = new ParamParsers(new HashSet<ParamParser>());
 
     private String acceptContentType;
 
@@ -217,11 +221,8 @@ public class FakeContext implements Context {
 
     @Override
     public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
-        try {
-            return SwissKnife.convert(key, clazz);
-        } catch (Exception e) {
-            return defaultValue;
-        }
+        T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, key, validation);
+        return validation.hasFieldViolation(key) ? defaultValue : value;
     }
 
     public FakeContext addPathParameter(String key, String value) {

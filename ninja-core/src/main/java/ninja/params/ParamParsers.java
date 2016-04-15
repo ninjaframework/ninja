@@ -17,22 +17,32 @@
 package ninja.params;
 
 import java.lang.reflect.Array;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.joda.time.LocalDateTime;
 
 import ninja.validation.ConstraintViolation;
+import ninja.validation.IsDate;
 import ninja.validation.IsEnum;
 import ninja.validation.IsFloat;
 import ninja.validation.IsInteger;
 import ninja.validation.Validation;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Built in parsers for parameters
  *
  * @author James Roper
+ * @author Jonathan Lannoy
  */
+@Singleton
 public class ParamParsers {
     private static final Map<Class<?>, ParamParser<?>> PARAM_PARSERS =
             ImmutableMap.<Class<?>, ParamParser<?>>builder()
@@ -53,12 +63,23 @@ public class ParamParsers {
                     .put(short.class, new PrimitiveShortParamParser())
                     .put(Character.class, new CharacterParamParser())
                     .put(char.class, new PrimitiveCharacterParamParser())
+                    .put(Date.class, new DateParamParser())
                     .build();
 
-    private static final Map<Class<? extends Enum<?>>, ParamParser<?>> ENUM_PARSERS = Maps.newHashMap();
+    private final Set<ParamParser> customParsers;
 
-    public static ParamParser<?> getParamParser(Class<?> targetType) {
-
+    @Inject
+    public ParamParsers(Set<ParamParser> customParsers) {
+        this.customParsers = customParsers;
+    }
+    
+    public ParamParser<?> getParamParser(Class<?> targetType) {
+        for(ParamParser parser : customParsers) {
+            if(targetType.isAssignableFrom(parser.getParsedType())) {
+                return parser;
+            }
+        }
+        
         if (targetType.isArray()) {
             // check for array of registered types
             Class<?> componentType = targetType.getComponentType();
@@ -70,40 +91,38 @@ public class ParamParsers {
             }
         }
 
-        if (ENUM_PARSERS.containsKey(targetType)) {
-            return ENUM_PARSERS.get(targetType);
+        if (targetType.isEnum()) {
+            return new GenericEnumParamParser((Class<Enum>) targetType);
         }
 
         return PARAM_PARSERS.get(targetType);
     }
 
+    /**
+     * Registering enums is not anymore needed, the EnumParser will handle all possible enum values, ignoring case.
+     */
+    @Deprecated
     public static <E extends Enum<E>> void unregisterEnum(final Class<E> enumClass) {
-        ENUM_PARSERS.remove(enumClass);
+        // Not anymore used
     }
 
+    /**
+     * Registering enums is not anymore needed, the EnumParser will handle all possible enum values, ignoring case.
+     */
+    @Deprecated
     public static <E extends Enum<E>> void registerEnum(final Class<E> enumClass) {
-        registerEnum(enumClass, true);
+        // Not anymore used 
     }
 
+    /**
+     * Registering enums is not anymore needed, the EnumParser will handle all possible enum values, ignoring case.
+     */
+    @Deprecated
     public static <E extends Enum<E>> void registerEnum(final Class<E> enumClass, final boolean caseSensitive) {
-        EnumParamParser<E> parser = new EnumParamParser<E>() {
-
-            @Override
-            public Class<E> getParsedType() {
-                return enumClass;
-            }
-
-            @Override
-            protected boolean isCaseSensitive() {
-                return caseSensitive;
-            }
-
-        };
-
-        ENUM_PARSERS.put(enumClass, parser);
+        // Not anymore used
     }
 
-    public static ArrayParamParser<?> getArrayParser(Class<?> targetType) {
+    public ArrayParamParser<?> getArrayParser(Class<?> targetType) {
         if (targetType.isArray()) {
             // check for array of registered types
             Class<?> componentType = targetType.getComponentType();
@@ -117,11 +136,22 @@ public class ParamParsers {
 
         return null;
     }
+    
+    public ListParamParser<?> getListParser(Class<?> targetInnerType) {
+        ParamParser<?> componentParser = getParamParser(targetInnerType);
+
+        if (componentParser != null) {
+            // return multi-valued parameter parser
+            return new ListParamParser(targetInnerType, componentParser);
+        }
+
+        return null;
+    }
 
     public static class PrimitiveIntegerParamParser implements ParamParser<Integer> {
         @Override
         public Integer parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0;
             } else {
                 try {
@@ -143,7 +173,7 @@ public class ParamParsers {
     public static class IntegerParamParser implements ParamParser<Integer> {
         @Override
         public Integer parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
@@ -165,7 +195,7 @@ public class ParamParsers {
     public static class BooleanParamParser implements ParamParser<Boolean> {
         @Override
         public Boolean parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 return Boolean.parseBoolean(parameterValue);
@@ -181,7 +211,7 @@ public class ParamParsers {
     public static class PrimitiveBooleanParamParser implements ParamParser<Boolean> {
         @Override
         public Boolean parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return false;
             } else {
                 return Boolean.parseBoolean(parameterValue);
@@ -197,7 +227,7 @@ public class ParamParsers {
     public static class LongParamParser implements ParamParser<Long> {
         @Override
         public Long parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
@@ -219,7 +249,7 @@ public class ParamParsers {
     public static class PrimitiveLongParamParser implements ParamParser<Long> {
         @Override
         public Long parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0L;
             } else {
                 try {
@@ -241,7 +271,7 @@ public class ParamParsers {
     public static class FloatParamParser implements ParamParser<Float> {
         @Override
         public Float parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
@@ -263,7 +293,7 @@ public class ParamParsers {
     public static class PrimitiveFloatParamParser implements ParamParser<Float> {
         @Override
         public Float parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0f;
             } else {
                 try {
@@ -285,7 +315,7 @@ public class ParamParsers {
     public static class DoubleParamParser implements ParamParser<Double> {
         @Override
         public Double parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
@@ -307,7 +337,7 @@ public class ParamParsers {
     public static class PrimitiveDoubleParamParser implements ParamParser<Double> {
         @Override
         public Double parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0d;
             } else {
                 try {
@@ -345,7 +375,7 @@ public class ParamParsers {
     public static class ByteParamParser implements ParamParser<Byte> {
         @Override
         public Byte parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
@@ -367,7 +397,7 @@ public class ParamParsers {
     public static class PrimitiveByteParamParser implements ParamParser<Byte> {
         @Override
         public Byte parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0;
             } else {
                 try {
@@ -389,7 +419,7 @@ public class ParamParsers {
     public static class ShortParamParser implements ParamParser<Short> {
         @Override
         public Short parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
                 try {
@@ -411,7 +441,7 @@ public class ParamParsers {
     public static class PrimitiveShortParamParser implements ParamParser<Short> {
         @Override
         public Short parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return 0;
             } else {
                 try {
@@ -462,46 +492,68 @@ public class ParamParsers {
         }
     }
 
-    /**
-     * Converts a parameter to an Enum value by (case-insensitive) value matching.
-     *
-     * @param <E>
-     */
-    public static abstract class EnumParamParser<E extends Enum<E>> implements ParamParser<E> {
+    
+    public static class GenericEnumParamParser<E extends Enum<E>> implements ParamParser<E> {
+
+        private Class<E> targetType;
+        
+        public GenericEnumParamParser(Class<E> targetType) {
+            this.targetType = targetType;
+        }
+
         @Override
         public E parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasFieldViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
-                final boolean caseSensitive = isCaseSensitive();
-
-                E[] values = getParsedType().getEnumConstants();
-                for (E value : values) {
-                    if (caseSensitive) {
-                        if (value.name().equals(parameterValue)) {
-                            return value;
-                        }
-                    } else {
-                        if (value.name().equalsIgnoreCase(parameterValue)) {
-                            return value;
-                        }
+//                try {
+//                    return Enum.valueOf(targetType, parameterValue);
+//                }
+//                catch(IllegalArgumentException e) {
+//                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+//                            IsEnum.KEY, field, IsEnum.MESSAGE, new Object[] {parameterValue, getParsedType().getName()}));
+//                    return null;
+//                }
+                
+                // Equals ignore case will keep backward compatibility                
+                for (E value : getParsedType().getEnumConstants()) {
+                    if (value.name().equalsIgnoreCase(parameterValue)) {
+                        return value;
                     }
                 }
 
                 validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
                         IsEnum.KEY, field, IsEnum.MESSAGE, new Object[] {parameterValue, getParsedType().getName()}));
-
                 return null;
             }
         }
 
         @Override
-        public abstract Class<E> getParsedType();
+        public Class<E> getParsedType() {
+            return targetType;
+        }
+    }
+    
+    public static class DateParamParser implements ParamParser<Date> {
+        @Override
+        public Date parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
+                return null;
+            } else {
+                try {
+                    return new LocalDateTime(parameterValue).toDate();
+                } catch (IllegalArgumentException e) {
+                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                            IsDate.KEY, field, IsDate.MESSAGE, parameterValue));
+                    return null;
+                }
+            }
+        }
 
-        /**
-         * Determines if the enum parser is case-sensitive.
-         */
-        protected abstract boolean isCaseSensitive();
+        @Override
+        public Class<Date> getParsedType() {
+            return Date.class;
+        }
     }
 
     /**
@@ -566,7 +618,14 @@ public class ParamParsers {
             } else {
                 // parse the individual values as the target item type
                 Class<T> itemType = getItemType();
-                T[] array = (T[]) Array.newInstance(itemType, parameterValues.length);
+                
+                T[] array;
+                try {
+                    array = (T[]) Array.newInstance(itemType, parameterValues.length);
+                } catch(ClassCastException e) {
+                    return null;
+                }
+                
                 for (int i = 0; i < parameterValues.length; i++) {
                     T t = itemParser.parseParameter(field, parameterValues[i], validation);
                     Array.set(array, i, t);
@@ -586,6 +645,38 @@ public class ParamParsers {
 
         public Class<T> getItemType() {
             return (Class<T>) arrayType.getComponentType();
+        }
+    }
+    
+    public static class ListParamParser<T> {
+
+        private final Class<T> itemType;
+        private final ParamParser<T> itemParser;
+
+        public ListParamParser(Class<T> itemType, ParamParser<T> parser) {
+            this.itemType = itemType;
+            this.itemParser = parser;
+        }
+
+        public List<T> parseParameter(String field, String[] parameterValues, Validation validation) {
+            if (parameterValues == null || validation.hasFieldViolation(field)) {
+                return null;
+            } else {
+                List<T> list = Lists.newArrayList();
+                for (int i = 0; i < parameterValues.length; i++) {
+                    list.add(itemParser.parseParameter(field, parameterValues[i], validation));
+                }
+
+                if (validation.hasFieldViolation(field)) {
+                    return null;
+                }
+
+                return list;
+            }
+        }
+
+        public Class<T> getItemType() {
+            return itemType;
         }
     }
 

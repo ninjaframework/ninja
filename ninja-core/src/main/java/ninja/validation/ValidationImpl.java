@@ -16,20 +16,24 @@
 
 package ninja.validation;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Validation object
  *
  * @author James Roper
  * @author Philip Sommer
+ * @author Jonathan Lannoy
  */
 public class ValidationImpl implements Validation {
 
-    private final List<FieldViolation> fieldViolations = new ArrayList<FieldViolation>();
-    private final List<ConstraintViolation> generalViolations = new ArrayList<ConstraintViolation>();
-    private final List<FieldViolation> beanViolations = new ArrayList<FieldViolation>();
+    private final Map<String, List<FieldViolation>> fieldViolations = Maps.newHashMap();
+    private final List<ConstraintViolation> generalViolations = Lists.newArrayList();
+    private final Map<String, List<FieldViolation>> beanViolations = Maps.newHashMap();
 
     @Override
     public boolean hasViolations() {
@@ -42,7 +46,10 @@ public class ValidationImpl implements Validation {
         if (fieldViolation.field == null) {
             this.generalViolations.add(fieldViolation.constraintViolation);
         } else {
-            this.fieldViolations.add(fieldViolation);
+            if(!this.fieldViolations.containsKey(fieldViolation.field)) {
+                this.fieldViolations.put(fieldViolation.field, Lists.<FieldViolation>newArrayList());
+            }
+            this.fieldViolations.get(fieldViolation.field).add(fieldViolation);
         }
     }
 
@@ -53,43 +60,34 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasFieldViolation(String field) {
-        for (FieldViolation fieldViolation : this.fieldViolations) {
-            if (fieldViolation.field.contentEquals(field)) {
-                return true;
-            }
-        }
-        return false;
+        return this.fieldViolations.containsKey(field);
     }
 
     @Override
     public List<FieldViolation> getFieldViolations() {
-        return this.fieldViolations;
+        List<FieldViolation> sumViolations = Lists.newArrayList();
+        for(List<FieldViolation> fieldViolation : this.fieldViolations.values()) {
+            sumViolations.addAll(fieldViolation);
+        }
+        return sumViolations;
     }
 
     @Override
     public List<FieldViolation> getFieldViolations(String field) {
-        List<FieldViolation> violationsForThisField = new ArrayList<FieldViolation>();
-        for (FieldViolation fieldViolation : this.fieldViolations) {
-            if (fieldViolation.field.contentEquals(field)) {
-                violationsForThisField.add(fieldViolation);
-            }
-        }
-        return violationsForThisField;
+        return this.fieldViolations.get(field);
     }
 
     @Override
     public void addBeanViolation(FieldViolation fieldViolation) {
-        this.beanViolations.add(fieldViolation);
+        if(!this.beanViolations.containsKey(fieldViolation.field)) {
+            this.beanViolations.put(fieldViolation.field, Lists.<FieldViolation>newArrayList());
+        }
+        this.beanViolations.get(fieldViolation.field).add(fieldViolation);
     }
 
     @Override
     public boolean hasBeanViolation(String field) {
-        for (FieldViolation beanViolation : this.beanViolations) {
-            if (beanViolation.field.contentEquals(field)) {
-                return true;
-            }
-        }
-        return false;
+        return this.beanViolations.containsKey(field);
     }
 
     @Override
@@ -99,7 +97,16 @@ public class ValidationImpl implements Validation {
 
     @Override
     public List<FieldViolation> getBeanViolations() {
-        return this.beanViolations;
+        List<FieldViolation> sumViolations = Lists.newArrayList();
+        for(List<FieldViolation> fieldViolation : this.beanViolations.values()) {
+            sumViolations.addAll(fieldViolation);
+        }
+        return sumViolations;
+    }
+    
+    @Override
+    public List<FieldViolation> getBeanViolations(String field) {
+        return this.beanViolations.get(field);
     }
 
     @Override

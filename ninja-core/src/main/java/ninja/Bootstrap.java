@@ -20,9 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ninja.application.ApplicationRoutes;
-import ninja.lifecycle.LifecycleSupport;
 import ninja.logging.LogbackConfigurator;
-import ninja.scheduler.SchedulerSupport;
+import ninja.params.ParamParser;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
@@ -38,6 +37,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
+import com.google.inject.multibindings.Multibinder;
+
 import ninja.conf.FrameworkModule;
 import ninja.conf.NinjaBaseModule;
 import ninja.conf.NinjaClassicModule;
@@ -208,6 +209,7 @@ public class Bootstrap {
             @Override
             protected void configure() {
                 bind(Ninja.class).to(ninjaClass).in(Singleton.class);
+                Multibinder.newSetBinder(binder(), ParamParser.class);
             }
         });
     }
