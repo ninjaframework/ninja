@@ -18,7 +18,10 @@ package ninja.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import org.joda.time.LocalDateTime;
 import org.junit.Test;
+
+import java.util.Date;
 
 public class SwissKnifeTest {
 
@@ -42,7 +45,11 @@ public class SwissKnifeTest {
         String byteStr = "89";
         char charStr = 'x';
         String emptyString = "";
+        String dateString = "1992-04-30";
+        String dateTimeString = "2014-10-10T20:09:10";
 
+        assertEquals(new LocalDateTime(dateString).toDate(), SwissKnife.convert(dateString, Date.class));
+        assertEquals(new LocalDateTime(dateTimeString).toDate(), SwissKnife.convert(dateTimeString, Date.class));
         assertEquals(Integer.valueOf(str), SwissKnife.convert(str, int.class));
         assertEquals(Integer.valueOf(str), SwissKnife.convert(str, Integer.class));
         assertEquals(Long.valueOf(str), SwissKnife.convert(str, long.class));
@@ -63,6 +70,8 @@ public class SwissKnifeTest {
         assertEquals(null, SwissKnife.convert(String.valueOf(aString), Integer.class));
         
         assertEquals(aString, SwissKnife.convert(String.valueOf(aString), String.class));
+
+
     }
 
     // just for testing that camel case conversion stuff works
