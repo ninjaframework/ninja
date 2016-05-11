@@ -112,3 +112,21 @@ As you can see the interface of the argument extractor references
 and will return the object
 annotated initially by 
 <code>@LoggedInUser</code>. In our example this was <code>@LoggedInUser String loggedInUser</code>.
+
+### Note: Using dependency injection
+
+Currently, there is a bug that causes <code>@Inject</code> fields to not be injected if you use an empty constructor. The workaround is to create a constructor with an injected parameter, such as <code>Context context</code>.
+
+<pre class="prettyprint">
+public class LoggedInUserExtractor implements ArgumentExtractor&lt;String&gt; {
+
+    @Inject
+    public LoggedInUserExtractor(Context context) {}
+
+    @Inject
+    UserDao userDao;
+    
+    ...
+    
+}
+</pre>
