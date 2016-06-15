@@ -65,7 +65,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
             return null;
         }
 
-        for(String declaredField : getAllDeclaredFieldsAsStringSet(classOfT)) {
+        for (String declaredField : getAllDeclaredFieldsAsStringSet(classOfT)) {
 
             try {
 
@@ -109,7 +109,7 @@ public class BodyParserEnginePost implements BodyParserEngine {
                 } else {
                     
                     // Check if we have a parameter key corresponding to inner attributes of this field
-                    for(String parameter : context.getParameters().keySet()) {
+                    for (String parameter : context.getParameters().keySet()) {
                         if(parameter.startsWith(paramPrefix + declaredField + ".")) {
                             field.set(t, invoke(context, fieldType, paramPrefix + declaredField + "."));
                             break;

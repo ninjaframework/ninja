@@ -506,15 +506,6 @@ public class ParamParsers {
             if (parameterValue == null || parameterValue.isEmpty() || validation.hasFieldViolation(field)) {
                 return null;
             } else {
-//                try {
-//                    return Enum.valueOf(targetType, parameterValue);
-//                }
-//                catch(IllegalArgumentException e) {
-//                    validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
-//                            IsEnum.KEY, field, IsEnum.MESSAGE, new Object[] {parameterValue, getParsedType().getName()}));
-//                    return null;
-//                }
-                
                 // Equals ignore case will keep backward compatibility                
                 for (E value : getParsedType().getEnumConstants()) {
                     if (value.name().equalsIgnoreCase(parameterValue)) {
