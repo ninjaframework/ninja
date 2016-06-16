@@ -17,17 +17,10 @@
 package ninja.utils;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.primitives.Primitives;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * A helper class that contains a lot of random stuff that helps to get things
@@ -39,19 +32,6 @@ import java.util.*;
 public class SwissKnife {
 
     private static final Logger logger = LoggerFactory.getLogger(SwissKnife.class);
-
-    private static final Map<String, Method> CONVERTERS = new HashMap<>();
-
-    static {
-        Method[] methods = Converter.class.getDeclaredMethods();
-        for (Method method : methods) {
-            if (method.getParameterTypes().length == 1
-                    && method.getParameterTypes()[0] == String.class) {
-                
-                CONVERTERS.put(method.getReturnType().getName(), method);
-            }
-        }
-    }
 
     /**
      * This is important: We load stuff as UTF-8.
@@ -114,147 +94,6 @@ public class SwissKnife {
 
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
 
-    }
-
-    /**
-     * Convert value to a collection type
-     *
-     * @param from string values
-     * @param to collection type of the class
-     * @return collection class type value or null if something goes wrong
-     */
-    public static <T> Collection<T> convertCollection(String[] from, Class<T> to) {
-        Collection<T> result = new ArrayList<>();
-        for (String value : from) {
-            result.add(convert(value, to));
-        }
-        return result;
-    }
-
-    /**
-     * Convert value to an array of type
-     *
-     * @param from string values
-     * @param to type of array
-     * @return array of values or null if something goes wrong
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T[] convertArray(String[] from, Class<T> to) {
-        T[] result;
-        try {
-            result = (T[]) Array.newInstance(to, from.length);
-        } catch (ClassCastException e) {
-            return null;
-        }
-        for (int i = 0; i < from.length; i++) {
-            result[i] = convert(from[i], to);
-        }
-        return result;
-    }
-
-    /**
-     * Convert value to class type value.
-     * 
-     * If something goes wrong it returns null.
-     *
-     * @param from string value
-     * @param to type of the class
-     * @return class type value or null if something goes wrong.
-     */
-    public static <T> T convert(String from, Class<T> to) {
-       
-        Class<T> toAsNonPrimitiveType;
-        
-        if (from == null) {
-            return null;
-        }
-                      
-        T t = null;
-         
-        toAsNonPrimitiveType = Primitives.wrap(to);
-
-        if (toAsNonPrimitiveType.isAssignableFrom(from.getClass())) {
-            return toAsNonPrimitiveType.cast(from);
-        }
-
-        Method converter = CONVERTERS.get(toAsNonPrimitiveType.getName());
-        
-        if (converter == null) {
-            
-            logger.error(
-                    "No converter found to convert {}. "
-                    + "Returning null. "
-                    + "You may want to extend the class.", toAsNonPrimitiveType);
-            
-        } else {
-            
-            try {
-
-                t = toAsNonPrimitiveType.cast(converter.invoke(toAsNonPrimitiveType, from));
-                
-            } catch (IllegalAccessException 
-                    | IllegalArgumentException 
-                    | InvocationTargetException ex) {
-
-                logger.error(
-                        "Cannot convert from "
-                        + from.getClass().getName() + " to " + toAsNonPrimitiveType.getName()
-                        + ". Conversion failed with " + ex.getMessage(), ex);
-            }
-
-        }
-        
-         return t;
-
-    }
-
-    private static class Converter {
-
-        public static Integer toInteger(String value) {
-            return Integer.valueOf(value);
-        }
-
-        public static Long toLong(String value) {
-            return Long.valueOf(value);
-        }
-
-        public static Float toFloat(String value) {
-            return Float.valueOf(value);
-        }
-
-        public static Double toDouble(String value) {
-            return Double.valueOf(value);
-        }
-
-        public static Boolean toBoolean(String value) {
-            return Boolean.valueOf(value);
-        }
-
-        public static Byte toByte(String value) {
-            return Byte.valueOf(value);
-        }
-
-        public static Short toShort(String value) {
-            return Short.valueOf(value);
-        }
-
-        public static Date toDate(String value) {
-            if (value != null && value.length() > 0) {
-              return new LocalDateTime(value).toDate();
-            } else {
-                return null;
-            }
-        }
-
-        public static Character toCharacter(String value) {
-
-            if (value.length() > 0) {
-                return value.charAt(0);
-            } else {
-                return null;
-            }
-
-        }
     }
 
 }

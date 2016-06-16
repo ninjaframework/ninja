@@ -1,6 +1,9 @@
 Version X.Y.Z
 =============
 
+ * 2016-04-15 Documentation for Validation enhanced (jlannoy)
+ * 2016-04-15 SwissKnife converters replaced by usage of ParamParsers in BodyPostEngine (jlannoy)
+ * 2016-04-15 Support for enumeration value (registration deprecated), custom types parsing and POST objects parsing (jlannoy)
  * 2016-04-08 Fixed issue #497. Capturing groups in route regex. (bazi).
  * 2016-04-08 Fixed another glitch to improve Ninja usability in Google AppEngine Environment (ra).
 

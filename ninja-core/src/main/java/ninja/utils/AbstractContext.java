@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
@@ -57,6 +58,7 @@ abstract public class AbstractContext implements Context.Impl {
     final protected Session session;
     final protected Validation validation;
     final protected Injector injector;
+    final protected ParamParsers paramParsers;
 
     protected Route route;
     // in async mode these values will be set to null so its critical they
@@ -71,13 +73,15 @@ abstract public class AbstractContext implements Context.Impl {
             NinjaProperties ninjaProperties,
             Session session,
             Validation validation,
-            Injector injector) {
+            Injector injector,
+            ParamParsers paramParsers) {
         this.bodyParserEngineManager = bodyParserEngineManager;
         this.flashScope = flashScope;
         this.ninjaProperties = ninjaProperties;
         this.session = session;
         this.validation = validation;
         this.injector = injector;
+        this.paramParsers = paramParsers;
     }
 
     protected void init(String contextPath, String requestPath) {
@@ -244,11 +248,8 @@ abstract public class AbstractContext implements Context.Impl {
     public <T> T getParameterAs(String key, Class<T> clazz, T defaultValue) {
         String parameter = getParameter(key);
 
-        try {
-            return SwissKnife.convert(parameter, clazz);
-        } catch (Exception e) {
-            return defaultValue;
-        }
+        T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, parameter, validation);
+        return validation.hasFieldViolation(key) ? defaultValue : value;
     }
 
     @Override

@@ -19,6 +19,8 @@ package ninja.params;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.RoutingException;
@@ -30,6 +32,8 @@ import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import ninja.validation.*;
+
+import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,8 +49,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
@@ -499,126 +506,135 @@ public class ControllerMethodInvokerTest {
 
     @Test
     public void enumParamShouldBeParsedToEnumCaseSensitive() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameter("param1")).thenReturn("Red");
         create("enumParam").invoke(mockController, context);
         verify(mockController).enumParam(Rainbow.Red);
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumParamShouldBeParsedToEnumCaseInsensitive() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class, false);
         when(context.getParameter("param1")).thenReturn("red");
         create("enumParam").invoke(mockController, context);
         verify(mockController).enumParam(Rainbow.Red);
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumParamShouldHandleNull() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         create("enumParam").invoke(mockController, context);
         verify(mockController).enumParam(null);
         assertFalse(validation.hasViolations());
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumParamValidationShouldWork() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameter("param1")).thenReturn("blah");
         create("enumParam").invoke(mockController, context);
         verify(mockController).enumParam(null);
         assertTrue(validation.hasFieldViolation("param1"));
-        ParamParsers.unregisterEnum(Rainbow.class);
-    }
-
-    @Test
-    public void enumParamUnregisteredShouldFail() throws Exception {
-        try {
-            when(context.getParameter("param1")).thenReturn("red");
-            create("enumParam").invoke(mockController, context);
-            assertTrue("Enum was unregistered! This should have failed.", false);
-        } catch (Exception e) {
-            assertTrue(e instanceof RoutingException);
-        }
     }
 
     @Test
     public void enumCsvParamSingleShouldBeParsed() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameter("param1")).thenReturn("Red");
         create("enumCsvParam").invoke(mockController, context);
         verify(mockController).enumCsvParam(new Rainbow[]{Rainbow.Red});
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumCsvParamMultipleShouldBeParsed() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameter("param1")).thenReturn("Red,Orange,Yellow");
         create("enumCsvParam").invoke(mockController, context);
         verify(mockController).enumCsvParam(new Rainbow[]{Rainbow.Red, Rainbow.Orange, Rainbow.Yellow});
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumCsvParamShouldReturnNull() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameter("param1")).thenReturn("");
         create("enumCsvParam").invoke(mockController, context);
         verify(mockController).enumCsvParam(null);
         assertFalse(validation.hasFieldViolation("param1"));
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumCsvParamValidationShouldWork() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
-        when(context.getParameter("param1")).thenReturn("red,orange,yellow");
+        when(context.getParameter("param1")).thenReturn("White,Black");
         create("enumCsvParam").invoke(mockController, context);
         verify(mockController).enumCsvParam(null);
         assertTrue(validation.hasFieldViolation("param1"));
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumArrayParamSingleShouldBeParsed() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("Blue"));
         create("enumArrayParam").invoke(mockController, context);
         verify(mockController).enumArrayParam(new Rainbow[]{Rainbow.Blue});
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumArrayParamMultipleShouldBeParsed() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("Blue", "Indigo", "Violet"));
         create("enumArrayParam").invoke(mockController, context);
         verify(mockController).enumArrayParam(new Rainbow[]{Rainbow.Blue, Rainbow.Indigo, Rainbow.Violet});
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumArrayParamShouldReturnNull() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
         when(context.getParameterValues("param1")).thenReturn(new ArrayList<String>());
         create("enumArrayParam").invoke(mockController, context);
         verify(mockController).enumArrayParam(null);
         assertFalse(validation.hasFieldViolation("param1"));
-        ParamParsers.unregisterEnum(Rainbow.class);
     }
 
     @Test
     public void enumArrayParamValidationShouldWork() throws Exception {
-        ParamParsers.registerEnum(Rainbow.class);
-        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("blue", "indigo", "violet"));
+        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("White", "Black"));
         create("enumArrayParam").invoke(mockController, context);
         verify(mockController).enumArrayParam(null);
         assertTrue(validation.hasFieldViolation("param1"));
-        ParamParsers.unregisterEnum(Rainbow.class);
+    }
+    
+    
+    @Test
+    public void customDateFormatParamShouldBeParsedToDate() throws Exception {
+        when(context.getParameter("param1")).thenReturn("15/01/2015");
+        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        verify(mockController).dateParam(new LocalDateTime(2015, 1, 15, 0, 0).toDate());
+    }
+
+    @Test
+    public void customDateFormatParamShouldHandleNull() throws Exception {
+        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        verify(mockController).dateParam(null);
+        assertFalse(validation.hasViolations());
+    }
+
+    @Test
+    public void customDateFormatValidationShouldWork() throws Exception {
+        when(context.getParameter("param1")).thenReturn("blah");
+        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        verify(mockController).dateParam(null);
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
+    
+    @Test(expected = RoutingException.class)
+    public void needingInjectionParamParserNotBinded() throws Exception {
+        when(context.getParameter("param1")).thenReturn("hello");
+        create("needingInjectionParamParser", ninjaProperties).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
+    }
+    
+    @Test
+    public void needingInjectionParamParser() throws Exception {
+        when(context.getParameter("param1")).thenReturn("hello");
+        create("needingInjectionParamParser", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
+    }
+    
+    @Test
+    public void needingInjectionParamParserArray() throws Exception {
+        when(context.getParameterValues("param1")).thenReturn(Arrays.asList("hello1", "hello2"));
+        create("needingInjectionParamParserArray", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        verify(mockController).needingInjectionParamParserArray(new Dep[] { new Dep("hello_hello1"), new Dep("hello_hello2") });
     }
 
     @Test
@@ -838,8 +854,14 @@ public class ControllerMethodInvokerTest {
         return ControllerMethodInvoker.build(method, Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
+                Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+                
                 for (Object o : toBind) {
-                    bind((Class<Object>) o.getClass()).toInstance(o);
+                    if(o instanceof Class && ParamParser.class.isAssignableFrom((Class) o)) {
+                        parsersBinder.addBinding().to((Class<? extends ParamParser>) o);
+                    } else {
+                        bind((Class<Object>) o.getClass()).toInstance(o);
+                    }
                 }
             }
         }));
@@ -932,6 +954,12 @@ public class ControllerMethodInvokerTest {
         public Result JSR303Validation(@JSR303Validation Dto dto, Validation validation);
 
         public Result JSR303ValidationWithRequired(@Required @JSR303Validation Dto dto, Validation validation);
+        
+        public Result dateParam(@Param("param1") Date param1);
+        
+        public Result needingInjectionParamParser(@Param("param1") Dep param1);
+        
+        public Result needingInjectionParamParserArray(@Params("param1") Dep[] paramsArray);
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -992,6 +1020,51 @@ public class ControllerMethodInvokerTest {
             return null;
         }
     }
+    
+
+    public static class DateParamParser implements ParamParser<Date> {
+
+        public static final String DATE_FORMAT = "dd/MM/yyyy";
+        
+        public static final String KEY = "validation.is.date.violation";
+        
+        public static final String MESSAGE = "{0} must be a valid date";
+        
+        @Override
+        public Date parseParameter(String field, String parameterValue, Validation validation) {
+            try {
+                return parameterValue == null ? null : new SimpleDateFormat(DATE_FORMAT).parse(parameterValue);
+            } catch(ParseException e) {
+                validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                        KEY, field, MESSAGE, parameterValue));
+                return null;
+            }
+        }
+
+        @Override
+        public Class<Date> getParsedType() {
+            return Date.class;
+        }
+
+    }
+    
+    public static class NeedingInjectionParamParser implements ParamParser<Dep> {
+
+        // In a real application, you can also use @Named as each properties is binded by its name
+        @Inject
+        NinjaProperties properties;
+        
+        @Override
+        public Dep parseParameter(String field, String parameterValue, Validation validation) {
+            return new Dep(properties.get("needingInjectionParamParser.value") + "_" + parameterValue);
+        }
+
+        @Override
+        public Class<Dep> getParsedType() {
+            return Dep.class;
+        }
+        
+    }
 
     /**
      * Argument extractor that has a complex constructor for Guice. It depends on some
@@ -1026,7 +1099,7 @@ public class ControllerMethodInvokerTest {
         }
     }
 
-    public class Dep {
+    public static class Dep {
 
         private final String value;
 
@@ -1036,6 +1109,31 @@ public class ControllerMethodInvokerTest {
 
         public String value() {
             return value;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Dep other = (Dep) obj;
+            if (value == null) {
+                if (other.value != null)
+                    return false;
+            } else if (!value.equals(other.value))
+                return false;
+            return true;
         }
     }
 

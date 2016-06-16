@@ -25,6 +25,7 @@ import java.util.Map;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.uploads.FileItem;
@@ -36,8 +37,8 @@ import org.apache.commons.fileupload.FileItemIterator;
  */
 public class AbstractContextImpl extends AbstractContext {
 
-    public AbstractContextImpl(BodyParserEngineManager bodyParserEngineManager, FlashScope flashScope, NinjaProperties ninjaProperties, Session session, Validation validation, Injector injector) {
-        super(bodyParserEngineManager, flashScope, ninjaProperties, session, validation, injector);
+    public AbstractContextImpl(BodyParserEngineManager bodyParserEngineManager, FlashScope flashScope, NinjaProperties ninjaProperties, Session session, Validation validation, Injector injector, ParamParsers paramParsers) {
+        super(bodyParserEngineManager, flashScope, ninjaProperties, session, validation, injector, paramParsers);
     }
 
     @Override

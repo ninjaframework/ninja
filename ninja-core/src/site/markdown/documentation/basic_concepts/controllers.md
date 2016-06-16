@@ -120,15 +120,31 @@ request - parameters, headers and so on...
 
 Even better: Ninja will parse an arbitrary object given in the method.
 In the above case MyObject will be automatically parsed by Ninja. The way
-it will parsed (JSON, XML, PostForm) will be determined via the "Content-Type" request header.
+it will parsed (JSON, XML, POST form) will be determined via the "Content-Type" request header.
+
+If you are using the POST form way, this object can contains any parameter type listed in the 
+<a href="http://www.ninjaframework.org/documentation/basic_concepts/argument_extractors.html">Argument extractors</a> 
+chapter (or custom ones, as described in the same chapter). Custom objects contained in this 
+arbitrary object can also be parsed if they have a constructor without arguments.
+
+<pre class="prettyprint">
+public class Address {
+    String street;
+}
+
+public class User {
+    Address address;
+}
+</pre>
+
+Assuming your controller method want to receive a User object, your HTML form can send a field 
+value for the key <code>address.street</code>.
+
 If your custom object has a date/timestamp field, first make sure that you use the 
 <a href="http://docs.oracle.com/javase/7/docs/api/java/util/Date.html">java.util.Date</a> 
 type and when you pass some date to the controller pass in the 
-<a href="http://joda-time.sourceforge.net/api-release/org/joda/time/format/ISODateTimeFormat.html#localDateOptionalTimeParser%28%29">format</a> 
-accepted by Joda Time library.
-
-Therefore you don't have to worry if
-input is for instance XML or JSON. You simply get a parsed object.
+<a href="http://joda-time.sourceforge.net/api-release/org/joda/time/format/ISODateTimeFormat.html#localDateOptionalTimeParser%28%29">format</a> accepted by Joda Time library, or implement your own 
+<code>ParamParser</code> for a java.util.Date.
 
 
 ## Ninja and content negotiation

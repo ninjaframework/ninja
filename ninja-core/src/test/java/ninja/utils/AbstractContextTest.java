@@ -17,6 +17,8 @@
 package ninja.utils;
 
 import com.google.common.collect.Maps;
+
+import java.util.HashSet;
 import java.util.Map;
 import ninja.ContentTypes;
 import ninja.Context;
@@ -26,6 +28,8 @@ import ninja.Results;
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
+import ninja.params.ParamParser;
+import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
@@ -80,7 +84,8 @@ public class AbstractContextTest {
                 ninjaProperties,
                 sessionCookie,
                 validation,
-                null);
+                null,
+                new ParamParsers(new HashSet<ParamParser>()));
         
         abstractContext.init("", "/");
     }
@@ -214,7 +219,7 @@ public class AbstractContextTest {
 
     @Test
     public void getPathParameterAsInteger() {
-    	AbstractContextImpl context = spy(abstractContext);
+    	  AbstractContextImpl context = spy(abstractContext);
 
         //mock a parametermap:
         Map<String, String> parameterMap = Maps.newHashMap();

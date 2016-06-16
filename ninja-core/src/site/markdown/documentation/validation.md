@@ -1,8 +1,25 @@
 Validation
 =========
 
-Introduction
-------------
+Parameters validation
+---------------------
+
+When using a parameter either as controller method argument or as a DTO field value, 
+if you're using one of the default supported type (see the Argument Extractors chapter 
+for more information), it may produce a conversion error. For example when you are 
+expecting an integer for your field but the given value contains characters.
+
+In such cases, conversion issues are available in the
+<code>validation</code>-parameter by calling the 
+<code>validation.hasFieldViolations()</code>-method in your 
+controller which gives you a <code>true</code> or <code>false</code>.
+You have the ability to check which parameters
+caused the violations by using the <code>getFieldViolations()</code> method.
+Note that these violations must still be translated by using the <code>messageKey</code> 
+attribute of each violation object.
+
+Bean validation
+---------------
 
 Ninja uses Hibernate's implementation of the <code>javax.validation</code> feature. 
 This means that all JSR303-defined annotations work in your 
@@ -46,13 +63,13 @@ controller which gives you a <code>true</code> or <code>false</code>.
 You have the ability to check which field(s) inside your Dto
 caused the violations by using the <code>getBeanViolations()</code> 
 method which gives you a complete list of all occured violations in your Dto.
-
-Conclusion
-----------
+With bean violations, the <code>messageKey</code> of each violation represents 
+an interpolated message using the current locale.
 
 JSR303 based validation is a generic approach that allows you to check 
 the validity of submitted objects. These objects can be sent to your application
-via HTTP form submission, JSON or XML.
+via HTTP form submission, JSON or XML. The only important part is that your DTO 
+objects contain valid JSR303 validation annotation which Ninja can evaluate.
 
 The only important part is that your DTO objects contain valid JSR303 validation
 annotation which Ninja can evaluate.
