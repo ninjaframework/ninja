@@ -1,4 +1,4 @@
-Version X.Y.Z
+Version 5.6.0
 =============
 
  * 2016-04-15 Documentation for Validation enhanced (jlannoy)
