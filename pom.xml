@@ -25,14 +25,6 @@
     <version>5.5.1-SNAPSHOT</version>
     <url>http://www.ninjaframework.org</url>
 
-    <!-- Deploy to central maven using the oss-parent of sonatype -->
-    <!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
-
     <modules>
         <module>ninja-core</module>
         <module>ninja-metrics</module>
@@ -93,6 +85,9 @@
                         <!-- install next final version in local repo, so that
                         tests on archetypes work -->
                         <preparationGoals>clean install</preparationGoals>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>release</releaseProfiles>
+                        <goals>deploy</goals>
                     </configuration>
                 </plugin>
             
@@ -134,11 +129,24 @@
                     </configuration>
                 </plugin>
                 
+                
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <configuration>
                         <additionalparam>-Xdoclint:none</additionalparam>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.3</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
                     </configuration>
                 </plugin>
                 
@@ -240,6 +248,16 @@
         </mailingList>
     </mailingLists>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 
     <licenses>
@@ -370,7 +388,7 @@
                 <version>${guice.version}</version>
             </dependency>
             
-             <dependency>
+            <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-multibindings</artifactId>
                 <version>${guice.version}</version>
@@ -720,7 +738,7 @@
             </dependency>  
             
             <!-- small http library for unit tests that don't need power of
-                 httpclient -->
+            httpclient -->
             <dependency>
                 <groupId>com.github.kevinsawicki</groupId>
                 <artifactId>http-request</artifactId>
