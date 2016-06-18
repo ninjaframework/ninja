@@ -22,8 +22,31 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>5.6.0</version>
+    <version>5.6.0-SNAPSHOT</version>
     <url>http://www.ninjaframework.org</url>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Ninja is a full stack web framework for Java.
+        Rock solid, fast, and super productive.</description>
+        
+        <developers>
+            <developer>
+                <name>Raphael A. Bauer</name>
+                <email>ra@raphaelbauer.com</email>
+                <url>http://www.raphaelbauer.com</url>
+                <roles>
+                    <role>Lead Architect</role>
+                </roles>
+            </developer>
+            <developer>
+                <name>Joe Lauer</name>
+                <email>joe@lauer.bz/</email>
+                <organization>Fizzed, Inc.</organization>
+                <organizationUrl>http://fizzed.com</organizationUrl>
+                <roles>
+                    <role>Lead Architect</role>
+                </roles>
+            </developer>
+        </developers>
 
     <modules>
         <module>ninja-core</module>
@@ -232,7 +255,7 @@
         <url>https://github.com/ninjaframework/ninja</url>
         <connection>scm:git://github.com/ninjaframework/ninja.git</connection>
         <developerConnection>scm:git:git@github.com:ninjaframework/ninja.git</developerConnection>
-        <tag>ninja-5.6.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
