@@ -127,6 +127,9 @@ public class AssetsController {
         // check if stream exists. if not print a notfound exception
         if (url == null) {
             context.finalizeHeadersWithoutFlashAndSessionCookie(Results.notFound());
+        } else if (url.getProtocol().equals("file") && new File(url.getPath()).isDirectory()) {
+            // Disable listing of directory contents
+            context.finalizeHeadersWithoutFlashAndSessionCookie(Results.notFound());
         } else {
             try {
                 URLConnection urlConnection = url.openConnection();

@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2016-07-04 Fixed directory listing in AssetsController (mallowlabs)
+
 Version 5.6.0
 =============
 
