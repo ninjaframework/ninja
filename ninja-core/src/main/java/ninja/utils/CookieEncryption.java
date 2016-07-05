@@ -15,11 +15,11 @@
  */
 package ninja.utils;
 
-import com.google.common.base.Optional;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * This class encrypts/decrypts session cookie data. Resultant encrypted strings are encoded in base64, and decryption
@@ -45,17 +44,13 @@ public class CookieEncryption {
 
     private final Optional<SecretKeySpec> secretKeySpec;
     
-    private final boolean encryptionEnabled;
-
     @Inject
     public CookieEncryption(NinjaProperties properties) {
         
-        Optional<SecretKeySpec> secretKeySpec = Optional.absent();
+        Optional<SecretKeySpec> secretKeySpec = Optional.empty();
 
         if (properties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)) {
             
-            encryptionEnabled = true;
-
             String secret = properties.getOrDie(NinjaConstant.applicationSecret);
             try {
                 int maxKeyLengthBits = Cipher.getMaxAllowedKeyLength(ALGORITHM);
@@ -73,9 +68,6 @@ public class CookieEncryption {
                 throw new RuntimeException(exception);
             }
 
-        } else {
-            encryptionEnabled = false;
-            secretKeySpec = Optional.absent();
         }
         
         this.secretKeySpec = secretKeySpec;
@@ -92,7 +84,7 @@ public class CookieEncryption {
 
         Objects.requireNonNull(data, "Data to be encrypted");
         
-        if (!encryptionEnabled) {
+        if (!secretKeySpec.isPresent()) {
             return data;
         }
 
@@ -124,7 +116,7 @@ public class CookieEncryption {
 
         Objects.requireNonNull(data, "Data to be decrypted");
 
-        if (!encryptionEnabled) {
+        if (!secretKeySpec.isPresent()) {
             return data;
         }
 
