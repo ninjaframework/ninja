@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,6 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -47,7 +47,7 @@ public class CookieEncryption {
     @Inject
     public CookieEncryption(NinjaProperties properties) {
         
-        Optional<SecretKeySpec> secretKeySpec = Optional.empty();
+        Optional<SecretKeySpec> secretKeySpec = Optional.absent();
 
         if (properties.getBooleanWithDefault(NinjaConstant.applicationCookieEncrypted, false)) {
             
