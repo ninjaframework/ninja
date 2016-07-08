@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2016-07-08 Security fix against DoS in Commons FileUpload (CVE-2016-3092) (suer)
+
 Version 5.6.0
 =============
 
