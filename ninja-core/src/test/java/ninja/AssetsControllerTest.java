@@ -138,6 +138,21 @@ public class AssetsControllerTest {
     }
 
     @Test
+    public void testServeStaticDirectory() throws Exception {
+        when(contextRenderable.getRequestPath()).thenReturn("/");
+        Result result2 = assetsController.serveStatic();
+
+        Renderable renderable = (Renderable) result2.getRenderable();
+
+        Result result = Results.ok();
+
+        renderable.render(contextRenderable, result);
+
+        verify(contextRenderable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
+        assertEquals(Results.notFound().getStatusCode(), resultCaptor.getValue().getStatusCode());
+    }
+
+    @Test
     public void testServeStatic304NotModified() throws Exception {
 
         when(contextRenderable.getRequestPath()).thenReturn(
