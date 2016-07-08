@@ -70,7 +70,7 @@ public class Crypto {
             // Convert raw bytes to Hex
             byte[] hexBytes = new Hex().encode(rawHmac);
 
-            // Covert array of Hex bytes to a String
+            // Convert array of Hex bytes to a String
             return new String(hexBytes, "UTF-8");
         } catch (Exception e) {
             throw new RuntimeException(e);
