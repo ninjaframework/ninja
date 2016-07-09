@@ -1,6 +1,7 @@
-Version X.X.X
+Version 5.7.0
 =============
 
+ * 2016-07-08 Update of the encryption class (MTDdk)
  * 2016-07-08 Security fix against DoS in Commons FileUpload (CVE-2016-3092) (suer)
  * 2016-07-04 Fixed directory listing in AssetsController (mallowlabs)
 
