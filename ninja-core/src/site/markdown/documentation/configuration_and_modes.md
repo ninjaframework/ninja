@@ -251,3 +251,15 @@ useful to hot-reload this config instead of restarting your application.
     java -Dninja.external.reload=true -Dninja.external.configuration=conf/production.conf
 
 This tells Ninja to reload your configuration if it is modified during runtime.
+
+
+Referencing system properties in configuration files
+----------------------------------------------------
+
+You can reference system properties inside your configuration files by
+using the default apache commons configuration syntax:
+
+    %prod.db.connection.password=${env:db.connection.password}
+
+That's especially handy when it comes to production credentials 
+that should not be known inside your application code.

@@ -12,6 +12,7 @@ Version 5.6.0
  * 2016-04-15 Support for enumeration value (registration deprecated), custom types parsing and POST objects parsing (jlannoy)
  * 2016-04-08 Fixed issue #497. Capturing groups in route regex. (bazi).
  * 2016-04-08 Fixed another glitch to improve Ninja usability in Google AppEngine Environment (ra).
+ * 2016-05-20 Tiny documentation improvement regarding configuration files (ra).
 
 
 Version 5.5.0
