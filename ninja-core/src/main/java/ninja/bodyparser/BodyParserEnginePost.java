@@ -108,11 +108,13 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
                 } else {
                     
-                    // Check if we have a parameter key corresponding to inner attributes of this field
+                    // Check if we have one parameter key corresponding to one valued inner attribute of this object field
                     for (String parameter : context.getParameters().keySet()) {
                         if(parameter.startsWith(paramPrefix + declaredField + ".")) {
-                            field.set(t, invoke(context, fieldType, paramPrefix + declaredField + "."));
-                            break;
+                            if(context.getParameter(parameter) != null && !context.getParameter(parameter).isEmpty()) {
+                                field.set(t, invoke(context, fieldType, paramPrefix + declaredField + "."));
+                                break;
+                            }
                         }
                     }
                     
