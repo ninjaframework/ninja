@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ninja.ContentTypes;
@@ -50,11 +51,14 @@ public class BodyParserEnginePost implements BodyParserEngine {
     
     @Override
     public <T> T invoke(Context context, Class<T> classOfT) {
-        return invoke(context, classOfT, "");
+        // Grab parameters from context only once for efficiency
+        Map<String, String[]> parameters = context.getParameters();
+        
+        return invoke(context, parameters, classOfT, "");
     }
     
     // Allows to instantiate inner objects with a prefix for each parameter key
-    private <T> T invoke(Context context, Class<T> classOfT, String paramPrefix) {
+    private <T> T invoke(Context context, Map<String, String[]> parameters, Class<T> classOfT, String paramPrefix) {
         
         T t = null;
 
@@ -73,9 +77,9 @@ public class BodyParserEnginePost implements BodyParserEngine {
                 Class<?> fieldType = field.getType();
                 field.setAccessible(true);
 
-                if (context.getParameters().containsKey(paramPrefix + declaredField)) {
+                if (parameters.containsKey(paramPrefix + declaredField)) {
                     
-                    String[] values = context.getParameters().get(paramPrefix + declaredField);
+                    String[] values = parameters.get(paramPrefix + declaredField);
 
                     if (Collection.class.isAssignableFrom(fieldType) || List.class.isAssignableFrom(fieldType)) {
 
@@ -109,10 +113,10 @@ public class BodyParserEnginePost implements BodyParserEngine {
                 } else {
                     
                     // Check if we have one parameter key corresponding to one valued inner attribute of this object field
-                    for (String parameter : context.getParameters().keySet()) {
+                    for (String parameter : parameters.keySet()) {
                         if(parameter.startsWith(paramPrefix + declaredField + ".")) {
-                            if(context.getParameter(parameter) != null && !context.getParameter(parameter).isEmpty()) {
-                                field.set(t, invoke(context, fieldType, paramPrefix + declaredField + "."));
+                            if(isEmptyParameter(parameters.get(parameter))) {
+                                field.set(t, invoke(context, parameters, fieldType, paramPrefix + declaredField + "."));
                                 break;
                             }
                         }
@@ -127,11 +131,22 @@ public class BodyParserEnginePost implements BodyParserEngine {
 
                 logger.warn(
                         "Error parsing incoming Post request into class {}. Key {} and value {}.", 
-                        classOfT.getName(), paramPrefix + declaredField, context.getParameters().get(paramPrefix + declaredField), e);
+                        classOfT.getName(), paramPrefix + declaredField, parameters.get(paramPrefix + declaredField), e);
             }
 
         }
         return t;
+    }
+    
+    private boolean isEmptyParameter(String[] parameterValues) {
+        if(parameterValues != null && parameterValues.length > 0) {
+            for(String parameterValue : parameterValues) {
+                if(parameterValue != null && !parameterValue.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public String getContentType() {
