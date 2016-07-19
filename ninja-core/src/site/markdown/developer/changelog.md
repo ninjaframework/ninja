@@ -1,3 +1,5 @@
+ * 2016-07-19 Fix for request body parsing of inner objects (jlannoy)
+
 Version 5.7.0
 =============
 
