@@ -302,6 +302,11 @@ public class BodyParserEnginePostTest {
         map.put("object2.integerPrimitive", new String [] {"3000"});
         map.put("object2.integerObject", new String [] {"4000"});
         
+        Mockito.when(context.getParameter("object1.integerPrimitive")).thenReturn("1000");
+        Mockito.when(context.getParameter("object1.integerObject")).thenReturn("2000");
+        Mockito.when(context.getParameter("object2.integerPrimitive")).thenReturn("3000");
+        Mockito.when(context.getParameter("object2.integerObject")).thenReturn("4000");
+        
         Mockito.when(context.getParameters()).thenReturn(map);
         Mockito.when(context.getValidation()).thenReturn(validation);
 
@@ -316,6 +321,34 @@ public class BodyParserEnginePostTest {
         assertNotNull(testObject.object2);
         assertThat(testObject.object2.integerPrimitive, equalTo(3000));
         assertThat(testObject.object2.integerObject, equalTo(4000));
+        
+        assertFalse(validation.hasViolations());
+    }
+    
+    @Test
+    public void testBodyParserWithEmptyInnerObjects() {
+        // some setup for this method:
+        Map<String, String[]> map = new HashMap<>();
+        map.put("object1.integerPrimitive", new String [] {""});
+        map.put("object1.integerObject", new String [] {""});
+        map.put("object2.integerPrimitive", new String [] {null});
+        map.put("object2.integerObject", new String [] {null});
+        
+        Mockito.when(context.getParameter("object1.integerPrimitive")).thenReturn("");
+        Mockito.when(context.getParameter("object1.integerObject")).thenReturn("");
+        Mockito.when(context.getParameter("object2.integerPrimitive")).thenReturn(null);
+        Mockito.when(context.getParameter("object2.integerObject")).thenReturn(null);
+        
+        Mockito.when(context.getParameters()).thenReturn(map);
+        Mockito.when(context.getValidation()).thenReturn(validation);
+
+        // do
+        TestObjectWithInnerObjects testObject = bodyParserEnginePost.invoke(context, TestObjectWithInnerObjects.class);
+        
+        // and test:
+        assertNull(testObject.object1);
+        assertNull(testObject.object2);
+        // objects should not have been initialized for empty content
         
         assertFalse(validation.hasViolations());
     }
