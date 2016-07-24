@@ -1,3 +1,7 @@
+Version X.X.X
+=============
+
+ * 2016-07-24 Fix directory listing when the server running path contains whitespaces (mallowlabs)
  * 2016-07-19 Fix for request body parsing of inner objects (jlannoy)
 
 Version 5.7.0

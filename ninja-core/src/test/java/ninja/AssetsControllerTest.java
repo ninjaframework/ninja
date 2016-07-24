@@ -139,6 +139,14 @@ public class AssetsControllerTest {
 
     @Test
     public void testServeStaticDirectory() throws Exception {
+        AssetsControllerHelper assetsControllerHelper = Mockito.mock(AssetsControllerHelper.class, Mockito.CALLS_REAL_METHODS);
+
+        assetsController = new AssetsController(
+                assetsControllerHelper,
+                httpCacheToolkit,
+                mimeTypes,
+                ninjaProperties);
+
         when(contextRenderable.getRequestPath()).thenReturn("/");
         Result result2 = assetsController.serveStatic();
 
@@ -148,6 +156,7 @@ public class AssetsControllerTest {
 
         renderable.render(contextRenderable, result);
 
+        verify(assetsControllerHelper).isDirectoryURL(this.getClass().getResource("/assets/"));
         verify(contextRenderable).finalizeHeadersWithoutFlashAndSessionCookie(resultCaptor.capture());
         assertEquals(Results.notFound().getStatusCode(), resultCaptor.getValue().getStatusCode());
     }
