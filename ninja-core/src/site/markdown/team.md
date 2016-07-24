@@ -68,6 +68,7 @@ contributed to Ninja. In some random order:
  * Amit Pandey (amit2103)
  * Mark Watson (watsonmw)
  * Nate Kingsley (nate-kingsley)
+ * Jens Fenedler (jfendler)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen
