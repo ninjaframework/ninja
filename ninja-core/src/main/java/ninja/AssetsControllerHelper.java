@@ -15,6 +15,10 @@
  */
 package ninja;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,4 +52,23 @@ public class AssetsControllerHelper {
                 : FilenameUtils.normalize(fileName);
         return StringUtils.removeStart(fileNameNormalized, "/");
     }
+
+    /**
+     * Check the URL is a directory.
+     * With war style deployment, AssetsController exposes the file list of assets directories.
+     * For example, a request to http://localhost:8080/assets/css/ displays the file list of css directory.
+     * So this method checks the URL is a directory.
+     *
+     * @param url A URL of assets
+     * @return true if the URL is a directory
+     */
+    public boolean isDirectoryURL(URL url) {
+        try {
+            return url.getProtocol().equals("file") && new File(url.toURI()).isDirectory();
+        } catch (URISyntaxException e) {
+            logger.error("Could not URL convert to URI", e);
+        }
+        return false;
+    }
+
 }
