@@ -49,9 +49,13 @@ Pebble templates
 Databases and ORM
 -----------------
 
-EBean RDBMS ORM support
+EBean RDBMS ORM support (for EBean versions <= 7.2.3)
 
  * https://github.com/ninjaframework/ninja-ebean
+ 
+EBean RDBMS ORM support (for EBean versions > 7.2.3)
+
+ * https://github.com/jfendler/ninja-ebean-ng
  
 MongoDB/Morphia Integration
 
@@ -65,7 +69,7 @@ Activity support - light-weight workflow and Business Process Management (BPM)
 
  * http://mortezaadi.github.io/ninja-activiti-module/ 
 
-Camunda BPMN Integration - Camunda Workflow and Business Process, and Decision Management 
+Camunda BPMN Integration - Camunda Workflow, Business Process, and Decision Management 
 
  * http://github.com/FendlerConsulting/ninja-camunda
 
