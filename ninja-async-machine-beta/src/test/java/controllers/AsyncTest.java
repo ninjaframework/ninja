@@ -16,8 +16,6 @@ package controllers;
  * limitations under the License.
  */
 
-
-
 import ninja.NinjaDocTester;
 import ninja.utils.Message;
 
@@ -26,11 +24,18 @@ import org.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
-
-
+import org.junit.Before;
+import static org.junit.Assume.assumeTrue;
 
 public class AsyncTest extends NinjaDocTester {
 
+    @Before
+    public void runTests() {
+        String val = System.getProperty("asyncMachineTests", "true");
+        boolean test = val.equalsIgnoreCase("true");
+        assumeTrue("run async-machine tests?", test);
+    }
+    
     @Test
     public void testThatAsyncWorks() {
 
