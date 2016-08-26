@@ -1,7 +1,7 @@
 Version 5.8.0
 =============
 
- * 2016-08-26 Final release supporting Java 7! Future development will target Java 8+.
+ * 2016-08-26 Final release supporting Java 7! Future development will target Java 8+
  * 2016-08-26 jetty from 9.2.10.v20150310 to 9.2.18.v20160721
  * 2016-08-26 slf4j from 1.7.13 to 1.7.21
  * 2016-08-26 joda from 2.7 to 2.9.4
