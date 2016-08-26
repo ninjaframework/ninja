@@ -1,6 +1,17 @@
-Version X.X.X
+Version 5.8.0
 =============
 
+ * 2016-08-26 Final release supporting Java 7! Future development will target Java 8+.
+ * 2016-08-26 jetty from 9.2.10.v20150310 to 9.2.18.v20160721
+ * 2016-08-26 slf4j from 1.7.13 to 1.7.21
+ * 2016-08-26 joda from 2.7 to 2.9.4
+ * 2016-08-26 jackson from 2.5.1 to 2.8.1
+ * 2016-08-26 commons-io from 2.4 to 2.5
+ * 2016-08-26 commons-lang3 from 3.3.2 to 3.4
+ * 2016-08-26 commons-email from 1.3.3 to 1.4
+ * 2016-08-26 flyway-core from 4.0 to 4.0.3
+ * 2016-08-26 zt-exec from 1.7 to 1.9
+ * 2016-08-25 Migration module can be configured to drop schema with `ninja.migration.drop` property (jfendler)
  * 2016-07-24 Fix directory listing when the server running path contains whitespaces (mallowlabs)
  * 2016-07-19 Fix for request body parsing of inner objects (jlannoy)
 
