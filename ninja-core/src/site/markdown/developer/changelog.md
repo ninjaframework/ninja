@@ -1,3 +1,11 @@
+Version 6.x.x
+=============
+
+ * 2016-09-01 Bump to minimum requirement of Java 8
+ * 2016-09-01 jetty from 9.2.10.v20150310 to 9.3.11.v20160721
+ * 2016-09-01 guava from 18.0 to 19.0
+ * 2016-09-01 prettytime from 3.2.7.Final to 4.0.1
+
 Version 5.8.0
 =============
 

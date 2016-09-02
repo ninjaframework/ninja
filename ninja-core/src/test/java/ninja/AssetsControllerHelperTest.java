@@ -18,23 +18,13 @@ package ninja;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.net.URL;
-
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(FilenameUtils.class)
 public class AssetsControllerHelperTest {
 
     AssetsControllerHelper assetsControllerHelper;
@@ -57,20 +47,7 @@ public class AssetsControllerHelperTest {
         assertEquals(null, assetsControllerHelper.normalizePathWithoutLeadingSlash(null, true));
         assertEquals("", assetsControllerHelper.normalizePathWithoutLeadingSlash("", true));
     }
-
-    @Test
-    public void testNormalizePathWithoutLeadingSlashCorrectFilnameUtilStaticMethodsCalled() {
-        PowerMockito.mockStatic(FilenameUtils.class, Mockito.CALLS_REAL_METHODS);
-
-        assetsControllerHelper.normalizePathWithoutLeadingSlash("/dir1/test.test", false);
-        PowerMockito.verifyStatic();
-        FilenameUtils.normalize("/dir1/test.test");
-
-        assetsControllerHelper.normalizePathWithoutLeadingSlash("/dir1/test.test", true);
-        PowerMockito.verifyStatic();
-        FilenameUtils.normalize("/dir1/test.test", true);
-    }
-
+    
     @Test
     public void testIsDirectoryURLWithJarProtocol() throws Exception {
         boolean result = assetsControllerHelper.isDirectoryURL(new URL("jar:file:/home/ninja/ninja.jar!/"));

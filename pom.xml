@@ -22,9 +22,9 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>5.8.1-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <url>http://www.ninjaframework.org</url>
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>${project.artifactId}</name>
     <description>Ninja is a full stack web framework for Java.
         Rock solid, fast, and super productive.</description>
         
@@ -73,8 +73,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.2.10.v20150310</jetty.version>
+        <jetty.version>9.3.11.v20160721</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.8.1</jackson.version>
         <guice.version>4.0</guice.version>
@@ -92,7 +93,7 @@
         <!-- end formatting options for Netbeans -->
     </properties>
 
-    <!-- Fix version 1.7 of java compiler in all submodules: -->
+    <!-- Fix version 1.8 of java compiler in all submodules: -->
     <build>
 
         <pluginManagement>
@@ -117,10 +118,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
+                    <version>3.5.1</version>
                     <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                     </configuration>
                 </plugin>
                 <!--
@@ -495,7 +496,7 @@
             <dependency>
                 <groupId>com.fasterxml.woodstox</groupId>
                 <artifactId>woodstox-core</artifactId>
-                <version>5.0.1</version>
+                <version>5.0.3</version>
             </dependency>  
             
             <!-- Afterburner lib optimizes Jackson and improves
@@ -518,7 +519,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>18.0</version>
+                <version>19.0</version>
             </dependency>
 
             <!-- reflections is used for classpath scanning -->
@@ -693,6 +694,29 @@
             </dependency>
             
             <dependency>
+                <groupId>org.ocpsoft.prettytime</groupId>
+                <artifactId>prettytime</artifactId>
+                <version>4.0.1.Final</version>
+            </dependency>
+            
+            <!-- for ninja-maven-plugin -->
+            
+            <dependency>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>zt-exec</artifactId>
+                <version>1.9</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>3.4</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <!-- UI and databases for demos -->
+            
+            <dependency>
                 <groupId>org.webjars</groupId>
                 <artifactId>bootstrap</artifactId>
                 <version>3.3.4</version>
@@ -704,13 +728,11 @@
                 <version>3.4.9</version>
             </dependency>
 
-
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>1.4.186</version>
             </dependency>
-            
             
             <!--HttpCient is used to mainly test low level Json Apis -->
             <dependency>
@@ -758,18 +780,25 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-        
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>java-hamcrest</artifactId>
+                <version>2.0.0.0</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+                        
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>1.9.5</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.11</version>
                 <scope>test</scope>
             </dependency>
             
@@ -783,27 +812,8 @@
             <dependency>
                 <groupId>com.icegreen</groupId>
                 <artifactId>greenmail</artifactId>
-                <version>1.4.0</version>
+                <version>1.5.1</version>
                 <scope>test</scope>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.ocpsoft.prettytime</groupId>
-                <artifactId>prettytime</artifactId>
-                <version>3.2.7.Final</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.zeroturnaround</groupId>
-                <artifactId>zt-exec</artifactId>
-                <version>1.9</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.apache.maven.plugin-tools</groupId>
-                <artifactId>maven-plugin-annotations</artifactId>
-                <version>3.4</version>
-                <scope>provided</scope>
             </dependency>
             
             <dependency>
@@ -820,8 +830,7 @@
                 <scope>test</scope>
             </dependency>  
             
-            <!-- small http library for unit tests that don't need power of
-            httpclient -->
+            <!-- small http library for unit tests that don't need power of httpclient -->
             <dependency>
                 <groupId>com.github.kevinsawicki</groupId>
                 <artifactId>http-request</artifactId>
