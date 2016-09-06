@@ -32,6 +32,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import ninja.RecycledNinjaServerTester;
 import ninja.utils.NinjaTestBrowser;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 
 public class ApplicationControllerTest extends RecycledNinjaServerTester {
@@ -55,6 +57,22 @@ public class ApplicationControllerTest extends RecycledNinjaServerTester {
         // from the index screen:
         assertTrue(result.contains("Integration Test"));
 
+    }
+    
+    @Test
+    public void lambdaAnonymous() {
+        // if lambda worked then we'd be redirected to index
+        String result = ninjaTestBrowser.makeRequest(withBaseUrl("/lambda_anonymous"));
+        
+        assertThat(result, containsString("Hi!"));
+    }
+    
+    @Test
+    public void lambdaAnonymousArgs() {
+        // if lambda worked then we'd be redirected to index
+        String result = ninjaTestBrowser.makeRequest(withBaseUrl("/lambda_anonymous_args?a=joe"));
+        
+        assertThat(result, containsString("Query: joe"));
     }
 
     @Test

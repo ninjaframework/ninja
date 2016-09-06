@@ -45,7 +45,6 @@ public class Route {
     //private static final String PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = "\\{.*?:\\s(.*?)\\}";
     private final String httpMethod;
     private final String uri;
-    private final Class controllerClass;
     private final Method controllerMethod;
     private final FilterChain filterChain;
 
@@ -54,15 +53,12 @@ public class Route {
 
     public Route(String httpMethod,
             String uri,
-            Class controllerClass,
             Method controllerMethod,
             FilterChain filterChain) {
         this.httpMethod = httpMethod;
         this.uri = uri;
-        this.controllerClass = controllerClass;
         this.controllerMethod = controllerMethod;
         this.filterChain = filterChain;
-
         parameterNames = ImmutableList.copyOf(doParseParameters(uri));
         regex = Pattern.compile(convertRawUriToRegex(uri));
     }
@@ -80,7 +76,7 @@ public class Route {
     }
 
     public Class<?> getControllerClass() {
-        return controllerClass;
+        return controllerMethod != null ? controllerMethod.getDeclaringClass() : null;
     }
 
     public FilterChain getFilterChain() {
