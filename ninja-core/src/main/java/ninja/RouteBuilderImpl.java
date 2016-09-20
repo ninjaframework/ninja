@@ -316,23 +316,29 @@ public class RouteBuilderImpl implements RouteBuilder {
     private Set<Class<? extends Filter>> calculateFiltersForClass(Class controller) {
         LinkedHashSet<Class<? extends Filter>> filters = new LinkedHashSet<>();
         
+        //
         // Step up the superclass tree, so that superclass filters come first
+        //
+        
         // Superclass
         if (controller.getSuperclass() != null) {
             filters.addAll(calculateFiltersForClass(controller.getSuperclass()));
         }
+        
         // Interfaces
         if (controller.getInterfaces() != null) {
             for (Class clazz : controller.getInterfaces()) {
                 filters.addAll(calculateFiltersForClass(clazz));
             }
         }
+        
         // Now add from here
         FilterWith filterWith = (FilterWith) controller
                 .getAnnotation(FilterWith.class);
         if (filterWith != null) {
             filters.addAll(Arrays.asList(filterWith.value()));
         }
+        
         // And return
         return filters;
     }

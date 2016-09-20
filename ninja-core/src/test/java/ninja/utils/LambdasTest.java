@@ -19,6 +19,7 @@ package ninja.utils;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -172,26 +173,6 @@ public class LambdasTest {
         assertThat(serializedLambda.getImplMethodSignature(), is("(Lninja/Context;)Lninja/Result;"));
         assertThat(serializedLambda.getImplMethodKind(), is(6));    // 6 = REF_invokeStatic
         assertThat(serializedLambda.getCapturedArgCount(), is(0));
-    }
-    
-    @Test @Ignore
-    public void anonymousMethodReferenceErasesParameterAnnotations() throws Exception {
-        ControllerMethod2<Context,String> lambda = (Context context, @Param("a") String a) -> Results.html().renderRaw(a.getBytes(StandardCharsets.UTF_8));
-        
-        Method method = Arrays.asList(lambda.getClass().getDeclaredMethods()).stream()
-            .filter(m -> m.getName().equals("apply"))
-            .findFirst()
-            .get();
-        
-        System.out.println("method: " + method);
-        
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        for (Annotation[] as : parameterAnnotations) {
-            for (Annotation a : as) {
-                System.out.println("annotation: " + a.annotationType());
-            }
-        }
-        
     }
 
 }

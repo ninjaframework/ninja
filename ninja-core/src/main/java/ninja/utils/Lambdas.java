@@ -30,7 +30,7 @@ public class Lambdas {
      * or anonymously defined.
      * https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
      */
-    static public enum Kind {
+    public static enum Kind {
         // Reference to a static method (e.g. ContainingClass::staticMethodName)
         STATIC_METHOD_REFERENCE,
         // Reference to an instance method of a specific object (e.g. specificObject::instanceMethodName)
@@ -41,7 +41,7 @@ public class Lambdas {
         ANONYMOUS_METHOD_REFERENCE
     }
     
-    static public class LambdaInfo {
+    public static class LambdaInfo {
         private final Object lambda;
         private final Kind kind;
         private final SerializedLambda serializedLambda;
@@ -93,22 +93,20 @@ public class Lambdas {
         }
     }
     
-    static public LambdaInfo reflect(Object lambda) {
+    public static LambdaInfo reflect(Object lambda) {
         Objects.requireNonNull(lambda);
         
-        // this will fail 
+        // note: this throws a runtime exception if the lambda isn't serializable
+        // or if the object isn't actually a lambda (e.g. an anon class)
         SerializedLambda serializedLambda = getSerializedLambda(lambda);
         
         Method functionalMethod;
         try {
             functionalMethod = getMethod(lambda.getClass(),
                 serializedLambda.getFunctionalInterfaceMethodName());
-            //log.debug("functionalMethod: {}", functionalMethod);
             
             // important: only way classes other than the creator can invoke it
             functionalMethod.setAccessible(true);
-            
-            //functionalMethod = getFunctionalMethod(serializedLambda);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new RuntimeException("Unable to getFunctionalMethod", e);
         }
@@ -116,7 +114,6 @@ public class Lambdas {
         Method implementationMethod;
         try {
             implementationMethod = getImplementationMethod(serializedLambda);
-            //log.debug("implementationMethod: {}", implementationMethod);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new RuntimeException("Unable to getImplementationMethod", e);
         }
@@ -150,7 +147,7 @@ public class Lambdas {
      * @param lambda An object that is an instance of a functional interface. 
      * @return The SerializedLambda
      */
-    static public SerializedLambda getSerializedLambda(Object lambda) {
+    public static SerializedLambda getSerializedLambda(Object lambda) {
         Objects.requireNonNull(lambda);
         
         if (!(lambda instanceof java.io.Serializable)) {
@@ -178,22 +175,22 @@ public class Lambdas {
         throw new RuntimeException("writeReplace method not found");
     }
     
-    static public Method getFunctionalMethod(SerializedLambda serializedLambda) throws NoSuchMethodException, ClassNotFoundException {
+    public static Method getFunctionalMethod(SerializedLambda serializedLambda) throws NoSuchMethodException, ClassNotFoundException {
         return getMethod(serializedLambda.getFunctionalInterfaceClass(),
             serializedLambda.getFunctionalInterfaceMethodName());
     }
     
-    static public Method getImplementationMethod(SerializedLambda serializedLambda) throws NoSuchMethodException, ClassNotFoundException {
+    public static Method getImplementationMethod(SerializedLambda serializedLambda) throws NoSuchMethodException, ClassNotFoundException {
         return getMethod(serializedLambda.getImplClass(),
             serializedLambda.getImplMethodName());
     }
     
-    static public Method getMethod(String className, String methodName) throws NoSuchMethodException, ClassNotFoundException {
+    public static Method getMethod(String className, String methodName) throws NoSuchMethodException, ClassNotFoundException {
         Class<?> clazz = Class.forName(className.replace('/', '.'));
         return getMethod(clazz, methodName);
     }
     
-    static public Method getMethod(Class<?> clazz, String methodName) throws NoSuchMethodException, ClassNotFoundException {
+    public static Method getMethod(Class<?> clazz, String methodName) throws NoSuchMethodException, ClassNotFoundException {
         while (clazz != null) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(methodName)) {
