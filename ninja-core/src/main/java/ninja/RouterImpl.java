@@ -25,32 +25,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import ninja.utils.NinjaProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import java.lang.reflect.Method;
 
 public class RouterImpl implements Router {
-
+    static private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+    
     private final NinjaProperties ninjaProperties;
-
-    private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-
     private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<>();
     private final Injector injector;
-
     private List<Route> routes;
     // for fast reverse route lookups
     private Map<MethodReference,Route> reverseRoutes;
-
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
     private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
 
