@@ -92,7 +92,7 @@ public class ApplicationController {
                                 @PathParam("id") Integer id,
                                 Context context) {
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         // generate tuples, convert integer to string here because Freemarker
         // does it in locale
         // dependent way with commas etc
@@ -108,8 +108,8 @@ public class ApplicationController {
     }
 
     @Timed
-    public Result validation(Validation validation,
-                             @Param("email") @Required String email) {
+    public Result validation(@Param("email") @Required String email,
+                             Validation validation) {
 
         if (validation.hasViolations()) {
             return Results.json()

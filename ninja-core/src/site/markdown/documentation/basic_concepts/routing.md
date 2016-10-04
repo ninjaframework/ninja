@@ -24,7 +24,7 @@ public class Routes implements ApplicationRoutes {
         
         // a GET request to "index" will be handled by a class called
         // "AppController" its method "index".
-        router.GET().route("/index").with(AppController.class, "index");
+        router.GET().route("/index").with(AppController::index);
 
         ...
 
@@ -45,6 +45,75 @@ Routes are matched top down. If an incoming request potentially maps to
 two routes, the route defined first is executed.
 </div>
 
+Java 8 routing with lambda expressions
+--------------------------------------
+
+Ninja 6 introduced support for routing using Java 8 lambda expressions.  Ninja
+includes support for various kinds of lambda expressions including method
+references and anonymous lambdas.  See https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
+for more info.
+
+The class <code>ninja.ControllerMethods</code> defines the various interfaces
+that are acceptable method signatures for Java 8 lambda expressions. A controller
+method returns a <code>ninja.Result</code> and has anywhere from 0 to 12 arguments.
+If you need more than 12 arguments, you can fallback to Ninja's legacy routing
+strategy of Class + "method".
+
+The most common and recommended lambda expression is a reference to an instance
+method of an arbitrary type.
+
+<pre class="prettyprint">
+public class Routes implements ApplicationRoutes {
+
+    @Override
+    public void init(Router router) {
+        
+        router.GET().route("/").with(AppController::index);
+
+    }
+}
+</pre>
+
+You can also use a lambda expression of a reference to an instance method of a
+particular object.  Please note that Guice will not construct this instance
+and Ninja will use the one referenced instead.
+
+<pre class="prettyprint">
+public class Routes implements ApplicationRoutes {
+
+    @Override
+    public void init(Router router) {
+            
+        AppController controller = new AppController();
+        router.GET().route("/").with(controller::index);
+
+    }
+}
+</pre>
+
+You can also use a lambda expression of an anonymously defined method.  The
+lambda method can take anywhere of 0 to 12 arguments.  Please note that unlike
+methods defined in a regular class, Java 8 does not retain parameter annotations
+on anonymously defined lambda expressions.  Ninja will still try to inject
+parameters via Guice into these methods, but it will only handle injection by
+type only.  So while <code>ninja.Context</code> can be injected be aware that
+<code>@Param("a") String a</code> cannot until a future JDK addresses this
+limitation. We recommend using either zero arguments or <code>ninja.Context</code>
+with anonymously defined lambdas.
+
+<pre class="prettyprint">
+public class Routes implements ApplicationRoutes {
+
+    @Override
+    public void init(Router router) {
+ 
+        router.GET().route("/").with(() -> Results.redirect("/home"));
+        router.GET().route("/home").with((Context context) -> Results.ok());
+
+    }
+}
+</pre>
+
 
 With result directly
 --------------------
@@ -57,18 +126,16 @@ public class Routes implements ApplicationRoutes {
     public void init(Router router) {
         
         // a GET request to "/" will be redirect to "/dashboard"
-        router.GET().route("/").with(Results.redirect("/dashboard"));
+        router.GET().route("/").with(() -> Results.redirect("/dashboard"));
         
         // show a static page
-        router.GET().route("/dashboard").with(Results.html().template("/dashboard.html"));
+        router.GET().route("/dashboard").with(() -> Results.html().template("/dashboard.html"));
 
         ...
 
     }
 }
 </pre>
-
-
 
 
 Regex in your routes
@@ -82,10 +149,10 @@ Some examples:
 <pre class="prettyprint">
 
 // matches for instance "/assets/00012", "/assets/12334", ...
-router.GET().route("/assets/\\d*").with(AssetsController.class, "serveDigits");
+router.GET().route("/assets/\\d*").with(AssetsController::serveDigits);
 
 // matches for instance "/assets/myasset.xml", "/assets/boing.txt", ...
-router.GET().route("/assets/.*").with(AssetsController.class, "serveArbitrary");
+router.GET().route("/assets/.*").with(AssetsController::serveArbitrary);
 
 </pre>
 
@@ -121,7 +188,7 @@ allows you to define and name parts of your routes via
 curly braces <code>{...}</code>:
 
 <pre class="prettyprint">
-router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
+router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController::userDashboard);
 </pre>
 
 We can then inject <code>id</code> and <code>email</code> into our controller via
@@ -171,8 +238,8 @@ expected to be an integer value and product to be either integer or string value
 you can define routes like that:
 
 <pre class="prettyprint">
-router.GET().route("/categories/{catId: [0-9]+}/products/{productId: [0-9]+}").with(ProductController.class, "product");
-router.GET().route("/categories/{catId: [0-9]+}/products/{productName: .*}").with(ProductController.class, "productByName");
+router.GET().route("/categories/{catId: [0-9]+}/products/{productId: [0-9]+}").with(ProductController::product);
+router.GET().route("/categories/{catId: [0-9]+}/products/{productName: .*}").with(ProductController::productByName);
 </pre>
 
 The request above will be handled by the first route, and request to <code>/categories/1234/products/mouse</code>
@@ -233,13 +300,13 @@ public class Routes implements ApplicationRoutes {
         
         // a GET request to "index" will be handled by a class called
         // "AppController" its method "index".
-        router.GET().route("/index").with(AppController.class, "index");
+        router.GET().route("/index").with(AppController::index);
 
         ...
 
         // only active when not in production mode:
         if (!ninjaProperties.isProd) {
-            router.GET().route("/setup").with(AppController.class, "setup");
+            router.GET().route("/setup").with(AppController::setup);
         }
     }
 }
