@@ -2,6 +2,7 @@ Version 6.x.x
 =============
  
  * 2016-09-29 Route using Java 8 lambda expressions (jjlauer)
+ * 2016-09-20 Session signatures now explicitly use UTF-8 for String.getBytes (lishid)
  * 2016-09-01 Bump to minimum requirement of Java 8 (jjlauer)
  * 2016-09-01 jetty from 9.2.10.v20150310 to 9.3.11.v20160721
  * 2016-09-01 guava from 18.0 to 19.0
