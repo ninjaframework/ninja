@@ -7,8 +7,10 @@ your application to the latest Ninja version. Simply start with your current
 version and then work your way up to the top of the document.
 
 
-to latest
----------
+to 6.0.0
+--------
+
+Java 8 is required.
 
 to 5.4.0
 --------

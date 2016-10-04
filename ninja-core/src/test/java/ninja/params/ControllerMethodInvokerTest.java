@@ -851,7 +851,7 @@ public class ControllerMethodInvokerTest {
                 break;
             }
         }
-        return ControllerMethodInvoker.build(method, Guice.createInjector(new AbstractModule() {
+        return ControllerMethodInvoker.build(method, method, Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);

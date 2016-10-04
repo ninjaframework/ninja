@@ -22,6 +22,7 @@ import com.google.inject.Provider;
  * Implementation of the filter chain
  */
 class FilterChainImpl implements FilterChain {
+    
     private final Provider<? extends Filter> filterProvider;
     private final FilterChain next;
 

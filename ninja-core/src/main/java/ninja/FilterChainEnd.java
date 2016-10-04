@@ -26,28 +26,20 @@ import com.google.inject.Provider;
  * @author James Roper
  */
 class FilterChainEnd implements FilterChain {
-    private Provider<?> controllerProvider;
-    private ControllerMethodInvoker controllerMethodInvoker;
-    private Result result;
+    
+    private final Provider<?> targetObjectProvider;
+    private final ControllerMethodInvoker controllerMethodInvoker;
 
-    FilterChainEnd(Result result) {
-        this.result = result;
-    }
-
-    FilterChainEnd(Provider<?> controllerProvider,
+    FilterChainEnd(Provider<?> targetObjectProvider,
                    ControllerMethodInvoker controllerMethodInvoker) {
-        this.controllerProvider = controllerProvider;
+        this.targetObjectProvider = targetObjectProvider;
         this.controllerMethodInvoker = controllerMethodInvoker;
     }
 
     @Override
     public Result next(Context context) {
-        if(result != null) {
-            return result;
-        }
-
-        Result controllerResult = (Result) controllerMethodInvoker.invoke(
-                controllerProvider.get(), context);
+        Result controllerResult = (Result)controllerMethodInvoker.invoke(
+            targetObjectProvider.get(), context);
 
         if (controllerResult instanceof AsyncResult) {
             // Make sure handle async has been called
