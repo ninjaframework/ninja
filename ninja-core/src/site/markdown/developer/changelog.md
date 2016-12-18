@@ -1,7 +1,8 @@
 Version 6.x.x
 =============
  
- * 2016-10-03 Remove `async-machine-beta` module
+ * 2016-12-19 New `ninja.ReverseRouter` for validated, URL-safe reverse routing using Java 8 lambda expressions in addition to legacy Class + method name references. (jjlauer)
+ * 2016-10-03 Remove `async-machine-beta` module (jjlauer)
  * 2016-09-29 Route using Java 8 lambda expressions (jjlauer)
  * 2016-09-20 Session signatures now explicitly use UTF-8 for String.getBytes (lishid)
  * 2016-09-01 Bump to minimum requirement of Java 8 (jjlauer)

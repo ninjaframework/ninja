@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import ninja.ReverseRouter;
 
 @Singleton
 public class ApplicationController {
@@ -62,7 +63,7 @@ public class ApplicationController {
     Messages messages;
 
     @Inject
-    Router router;
+    ReverseRouter reverseRouter;
     
     @Inject
     NinjaCache ninjaCache;
@@ -99,7 +100,10 @@ public class ApplicationController {
         map.put("id", Integer.toString(id));
         map.put("email", email);
         
-        String reverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard", map);
+        String reverseRoute = reverseRouter
+            .with(ApplicationController::userDashboard)
+                .params(map)
+                .build();
 
         map.put("reverseRoute", reverseRoute);
         
