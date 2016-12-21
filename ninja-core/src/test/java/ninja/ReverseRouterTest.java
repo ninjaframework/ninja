@@ -96,10 +96,10 @@ public class ReverseRouterTest {
     @Test
     public void simpleWithQuery() {
         String route = reverseRouter.with(TestController::home)
-            .query("filter", true)
-            .query("a", 1L)
-            .query("foo", "bar")
-            .query("email", "test@example.com")
+            .queryParam("filter", true)
+            .queryParam("a", 1L)
+            .queryParam("foo", "bar")
+            .queryParam("email", "test@example.com")
             .build();
         
         // insertion order retained
@@ -109,7 +109,7 @@ public class ReverseRouterTest {
     @Test
     public void simpleWithRawQuery() {
         String route = reverseRouter.with(TestController::home)
-            .rawQuery("email", "test@example.com")
+            .rawQueryParam("email", "test@example.com")
             .build();
         
         // insertion order retained
@@ -125,14 +125,14 @@ public class ReverseRouterTest {
     @Test(expected=IllegalArgumentException.class)
     public void simpleNoPathParamsThrowsException() {
         reverseRouter.with(TestController::home)
-            .path("id", 1000000L)
+            .pathParam("id", 1000000L)
             .build();
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void simpleInvalidPathParamThrowsException() {
         reverseRouter.with(TestController::user)
-            .path("id2", 1000000L)
+            .pathParam("id2", 1000000L)
             .build();
     }
     
@@ -147,15 +147,15 @@ public class ReverseRouterTest {
     public void simpleNotEnoughPathParamThrowsException() {
         // param for email missing
         reverseRouter.with(TestController::user)
-            .path("id", 1000000L)
+            .pathParam("id", 1000000L)
             .build();
     }
     
     @Test
     public void path() {
         String route = reverseRouter.with(TestController::user)
-            .path("email", "test@example.com")
-            .path("id", 1000000L)
+            .pathParam("email", "test@example.com")
+            .pathParam("id", 1000000L)
             .build();
         
         assertThat(route, is("/user/test%40example.com/1000000"));
@@ -164,8 +164,8 @@ public class ReverseRouterTest {
     @Test
     public void rawPath() {
         String route = reverseRouter.with(TestController::user)
-            .rawPath("email", "test@example.com")
-            .path("id", 1000000L)
+            .rawPathParam("email", "test@example.com")
+            .pathParam("id", 1000000L)
             .build();
         
         assertThat(route, is("/user/test@example.com/1000000"));
@@ -177,70 +177,6 @@ public class ReverseRouterTest {
             .build();
         
         assertThat(route, is("/home/index"));
-    }
-    
-    @Test
-    public void param() {
-        String route = reverseRouter.with(TestController::user)
-            .param("email", "test@example.com")
-            .param("id", 1000000L)
-            .param("filter", true)
-            .build();
-        
-        assertThat(route, is("/user/test%40example.com/1000000?filter=true"));
-    }
-    
-    @Test
-    public void rawParam() {
-        String route = reverseRouter.with(TestController::user)
-            .rawParam("email", "test@example.com")
-            .rawParam("id", 1000000L)
-            .rawParam("filter", true)
-            .build();
-        
-        assertThat(route, is("/user/test@example.com/1000000?filter=true"));
-    }
-    
-    @Test
-    public void paramsWithMap() {
-        ImmutableMap<String,Object> parameterMap = ImmutableMap.of(
-                "filter", true, "email", "test@example.com", "id", 1000000L);
-        
-        String route = reverseRouter.with(TestController::user)
-            .params(parameterMap)
-            .build();
-        
-        assertThat(route, is("/user/test%40example.com/1000000?filter=true"));
-    }
-    
-    @Test
-    public void rawParamsWithMap() {
-        ImmutableMap<String,Object> parameterMap = ImmutableMap.of(
-                "filter", true, "email", "test@example.com", "id", 1000000L);
-        
-        String route = reverseRouter.with(TestController::user)
-            .rawParams(parameterMap)
-            .build();
-        
-        assertThat(route, is("/user/test@example.com/1000000?filter=true"));
-    }
-    
-    @Test
-    public void paramsWithVarArgs() {
-        String route = reverseRouter.with(TestController::user)
-            .params("filter", true, "email", "test@example.com", "id", 1000000L)
-            .build();
-        
-        assertThat(route, is("/user/test%40example.com/1000000?filter=true"));
-    }
-    
-    @Test
-    public void rawParamsWithVarArgs() {
-        String route = reverseRouter.with(TestController::user)
-            .rawParams("filter", true, "email", "test@example.com", "id", 1000000L)
-            .build();
-        
-        assertThat(route, is("/user/test@example.com/1000000?filter=true"));
     }
     
     /**

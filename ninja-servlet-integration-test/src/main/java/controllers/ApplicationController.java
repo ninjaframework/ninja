@@ -23,7 +23,6 @@ import models.FormObject;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
-import ninja.Router;
 import ninja.cache.NinjaCache;
 import ninja.exceptions.BadRequestException;
 import ninja.i18n.Lang;
@@ -40,6 +39,7 @@ import ninja.validation.Validation;
 import org.slf4j.Logger;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import ninja.ReverseRouter;
@@ -92,20 +92,19 @@ public class ApplicationController {
     public Result userDashboard(@PathParam("email") String email,
                                 @PathParam("id") Integer id,
                                 Context context) {
-
-        Map<String, Object> map = new HashMap<>();
-        // generate tuples, convert integer to string here because Freemarker
-        // does it in locale
-        // dependent way with commas etc
-        map.put("id", Integer.toString(id));
-        map.put("email", email);
-        
+        // build reverse route
         String reverseRoute = reverseRouter
             .with(ApplicationController::userDashboard)
-                .params(map)
+                .pathParam("id", id)
+                .pathParam("email", email)
                 .build();
 
-        map.put("reverseRoute", reverseRoute);
+        // build map
+        Map<String,Object> map = new HashMap<String,Object>() {{
+            put("id", id);
+            put("email", email);
+            put("reverseRoute", reverseRoute);
+        }};
         
         // and render page with both parameters:
         return Results.html().render(map);

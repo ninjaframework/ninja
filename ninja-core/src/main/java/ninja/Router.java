@@ -47,6 +47,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> clazz, String methodName);
     
     /**
@@ -68,6 +69,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> clazz, String methodName, Map<String, Object> parameterMap);
 
     /**
@@ -89,6 +91,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> clazz, String methodName, Object ... parameterMap);
     
     
@@ -111,6 +114,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> controllerClass,
                                  String controllerMethodName,
                                  Optional<Map<String, Object>> parameterMap);
@@ -120,6 +124,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef);
     
     /**
@@ -127,6 +132,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef, Map<String, Object> parameterMap);
     
     /**
@@ -134,6 +140,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef, Object ... parameterMap);
     
     /**
@@ -141,6 +148,7 @@ public interface Router {
      *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
      *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef, Optional<Map<String, Object>> parameterMap);
     
     /**

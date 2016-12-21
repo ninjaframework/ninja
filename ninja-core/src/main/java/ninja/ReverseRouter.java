@@ -19,7 +19,6 @@ import com.google.common.base.Optional;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -44,8 +43,8 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
         
         private final String contextPath;
         private final Route route;
-        private Map<String,String> paths;
-        private Map<String,String> queries;
+        private Map<String,String> pathParams;
+        private Map<String,String> queryParams;
         
         public Builder(String contextPath, Route route) {
             this.contextPath = contextPath;
@@ -55,6 +54,14 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
         public Route getRoute() {
             return route;
         }
+
+        public Map<String, String> getPathParams() {
+            return pathParams;
+        }
+
+        public Map<String, String> getQueryParams() {
+            return queryParams;
+        }
         
         /**
          * Add a parameter as a path replacement. Will validate the path parameter
@@ -63,10 +70,10 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
          * @param name The path parameter name
          * @param value The path parameter value
          * @return A reference to this builder
-         * @see #rawPath(java.lang.String, java.lang.Object) 
+         * @see #rawPathParam(java.lang.String, java.lang.Object) 
          */
-        public Builder path(String name, Object value) {
-            return setPath(name, value, false);
+        public Builder pathParam(String name, Object value) {
+            return setPathParam(name, value, false);
         }
         
         /**
@@ -75,13 +82,13 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
          * @param name The path parameter name
          * @param value The path parameter value
          * @return A reference to this builder
-         * @see #path(java.lang.String, java.lang.Object) 
+         * @see #pathParam(java.lang.String, java.lang.Object) 
          */
-        public Builder rawPath(String name, Object value) {
-            return setPath(name, value, true);
+        public Builder rawPathParam(String name, Object value) {
+            return setPathParam(name, value, true);
         }
         
-        private Builder setPath(String name, Object value, boolean raw) {
+        private Builder setPathParam(String name, Object value, boolean raw) {
             Objects.requireNonNull(name, "name required");
             Objects.requireNonNull(value, "value required");
 
@@ -90,171 +97,50 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
                     + " does not have a path parameter '" + name + "'");
             }
             
-            if (this.paths == null) {
-                this.paths = new HashMap<>();
+            if (this.pathParams == null) {
+                this.pathParams = new LinkedHashMap<>();
             }
             
-            this.paths.put(name, safeValue(value, raw));
+            this.pathParams.put(name, safeValue(value, raw));
             
             return this;
         }
         
         /**
-         * Add a parameter as a query string value. This method will URL encode
+         * Add a parameter as a queryParam string value. This method will URL encode
          * the values when building the final result.
-         * @param name The query string parameter name
-         * @param value The query string parameter value
+         * @param name The queryParam string parameter name
+         * @param value The queryParam string parameter value
          * @return A reference to this builder
-         * @see #rawQuery(java.lang.String, java.lang.Object) 
+         * @see #rawQueryParam(java.lang.String, java.lang.Object) 
          */
-        public Builder query(String name, Object value) {
-            return setQuery(name, value, false);
+        public Builder queryParam(String name, Object value) {
+            return setQueryParam(name, value, false);
         }
         
         /**
-         * Identical to <code>query</code> except the query string value will
+         * Identical to <code>queryParam</code> except the queryParam string value will
          * NOT be url encoded when building the final url.
-         * @param name The query string parameter name
-         * @param value The query string parameter value
+         * @param name The queryParam string parameter name
+         * @param value The queryParam string parameter value
          * @return A reference to this builder
-         * @see #query(java.lang.String, java.lang.Object) 
+         * @see #queryParam(java.lang.String, java.lang.Object) 
          */
-        public Builder rawQuery(String name, Object value) {
-            return setQuery(name, value, true);
+        public Builder rawQueryParam(String name, Object value) {
+            return setQueryParam(name, value, true);
         }
         
-        private Builder setQuery(String name, Object value, boolean raw) {
+        private Builder setQueryParam(String name, Object value, boolean raw) {
             Objects.requireNonNull(name, "name required");
 
-            if (this.queries == null) {
+            if (this.queryParams == null) {
                 // retain ordering
-                this.queries = new LinkedHashMap<>();
+                this.queryParams = new LinkedHashMap<>();
             }
             
-            this.queries.put(name, safeValue(value, raw));
+            this.queryParams.put(name, safeValue(value, raw));
             
             return this;
-        }
-        
-        /**
-         * Add a map containing pairs with replacements for either path or query
-         * string parameters. This method will URL encode the values when building
-         * the final result.  When replacing path parameters it's recommended
-         * to use the <code>path</code> method since it will validate the parameter
-         * exists, while this method would fallback to adding the value as a query
-         * string parameter if the path parameter did not exist.
-         * @param parameterMap The map containing pairs of name and values.
-         * @return A reference to this builder
-         * @see #path(java.lang.String, java.lang.Object)
-         * @see #query(java.lang.String, java.lang.Object) 
-         */
-        public Builder params(Map<String,Object> parameterMap) {
-            return setParams(parameterMap, false);
-        }
-        
-        /**
-         * Identical to <code>params</code> except this method will NOT url
-         * encode the values when building the final result.  When replacing path
-         * parameters it's recommended to use the <code>path</code> method since
-         * it will validate the parameter exists, while this method would fallback
-         * to adding the value as a query string parameter if the path parameter
-         * did not exist.
-         * @param parameterMap The map containing pairs of name and values.
-         * @return A reference to this builder
-         * @see #path(java.lang.String, java.lang.Object)
-         * @see #query(java.lang.String, java.lang.Object) 
-         */
-        public Builder rawParams(Map<String,Object> parameterMap) {
-            return setParams(parameterMap, true);
-        }
-        
-        private Builder setParams(Map<String,Object> parameterMap, boolean raw) {
-            if (parameterMap != null) {
-                parameterMap.forEach((name, value) -> setParam(name, value, raw));
-            }
-            return this;
-        }
-        
-        /**
-         * Add a list containing pairs with replacements for either path or query
-         * string parameters. This method will URL encode the values when building
-         * the final result.  When replacing path parameters it's recommended
-         * to use the <code>path</code> method since it will validate the parameter
-         * exists, while this method would fallback to adding the value as a query
-         * string parameter if the path parameter did not exist.
-         * @param parameterMap The list of pairs of name and values.
-         * @return A reference to this builder
-         * @see #path(java.lang.String, java.lang.Object)
-         * @see #query(java.lang.String, java.lang.Object) 
-         */
-        public Builder params(Object... parameterMap) {
-            return setParams(false, parameterMap);
-        }
-        
-        /**
-         * Identical to <code>params</code> except this method will NOT url
-         * encode the values when building the final result.  When replacing path
-         * parameters it's recommended to use the <code>path</code> method since
-         * it will validate the parameter exists, while this method would fallback
-         * to adding the value as a query string parameter if the path parameter
-         * did not exist.
-         * @param parameterMap The list of pairs of name and values.
-         * @return A reference to this builder
-         * @see #path(java.lang.String, java.lang.Object)
-         * @see #query(java.lang.String, java.lang.Object) 
-         */
-        public Builder rawParams(Object... parameterMap) {
-            return setParams(true, parameterMap);
-        }
-        
-        private Builder setParams(boolean raw, Object... parameterMap) {
-            if (parameterMap != null) {
-                if (parameterMap.length % 2 != 0) {
-                    throw new IllegalArgumentException("Always provide key (as String) value (as Object) pairs in parameterMap. That means providing e.g. 2, 4, 6... objects.");
-                }
-
-                for (int i = 0; i < parameterMap.length; i += 2) {
-                    setParam((String)parameterMap[i], parameterMap[i+1], raw);
-                }
-            }
-            return this;
-        }
-        
-        /**
-         * Add a parameter as a path replacement if it exists or will fallback
-         * to adding it a a query string value.  This method will URL encode the
-         * values when building the final result.
-         * @param name The parameter name
-         * @param value The parameter value
-         * @return A reference to this builder
-         * @see #path(java.lang.String, java.lang.Object)
-         * @see #query(java.lang.String, java.lang.Object) 
-         */
-        public Builder param(String name, Object value) {
-            return setParam(name, value, false);
-        }
-        
-        /**
-         * Identical to <code>param</code> except this method will NOT url
-         * encode the values when building the final result.
-         * @param name The parameter name
-         * @param value The parameter value
-         * @return A reference to this builder
-         * @see #path(java.lang.String, java.lang.Object)
-         * @see #query(java.lang.String, java.lang.Object)
-         */
-        public Builder rawParam(String name, Object value) {
-            return setParam(name, value, true);
-        }
-        
-        private Builder setParam(String name, Object value, boolean raw) {
-            Objects.requireNonNull(name, "name required");
-            
-            if (this.route.getParameters().containsKey(name)) {
-                return setPath(name, value, raw);
-            } else {
-                return setQuery(name, value, raw);
-            }
         }
         
         private String safeValue(Object value, boolean raw) {
@@ -278,9 +164,9 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
          * @return The final resulting url
          */
         public String build() {
-            // number of params valid?
+            // number of pathOrQueryParams valid?
             int expectedParamSize = safeMapSize(this.route.getParameters());
-            int actualParamSize = safeMapSize(this.paths);
+            int actualParamSize = safeMapSize(this.pathParams);
             if (expectedParamSize != actualParamSize) {
                 throw new IllegalArgumentException("Reverse route " + route.getUri()
                     + " requires " + expectedParamSize + " parameters but got "
@@ -299,9 +185,9 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
             // replace path parameters
             int lastIndex = 0;
             
-            if (this.paths != null) {
+            if (this.pathParams != null) {
                 for (RouteParameter rp : this.route.getParameters().values()) {
-                    String value = this.paths.get(rp.getName());
+                    String value = this.pathParams.get(rp.getName());
                     
                     if (value == null) {
                         throw new IllegalArgumentException("Reverse route " + route.getUri()
@@ -322,10 +208,10 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
                 buffer.append(rawUri.substring(lastIndex));
             }
             
-            // append query params
-            if (this.queries != null) {
+            // append queryParam pathOrQueryParams
+            if (this.queryParams != null) {
                 int i = 0;
-                for (Map.Entry<String,String> entry : this.queries.entrySet()) {
+                for (Map.Entry<String,String> entry : this.queryParams.entrySet()) {
                     buffer.append((i == 0 ? '?' : '&'));
                     buffer.append(entry.getKey());
                     if (entry.getValue() != null) {
@@ -369,7 +255,7 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
      * @param controllerClass The controllerClass e.g. ApplicationController.class
      * @param methodName the methodName of the class e.g. "index"
      * @return A <code>Builder</code> allowing setting path placeholders and
-     *      query string parameters.
+      queryParam string parameters.
      */
     public Builder with(Class<?> controllerClass, String methodName) {
         return builder(controllerClass, methodName);
@@ -381,7 +267,7 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
      * 
      * @param methodRef The reference to a method
      * @return A <code>Builder</code> allowing setting path placeholders and
-     *      query string parameters.
+      queryParam string parameters.
      */
     public Builder with(MethodReference methodRef) {
         return builder(methodRef.getDeclaringClass(), methodRef.getMethodName());
@@ -394,7 +280,7 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
      * @param controllerMethod The Java-8 style method reference such as
      *      <code>ApplicationController::index</code>.
      * @return A <code>Builder</code> allowing setting path placeholders and
-     *      query string parameters.
+      queryParam string parameters.
      */
     @Override
     public Builder with(ControllerMethod controllerMethod) {

@@ -78,8 +78,8 @@ public class RouteParameter {
      * @return A map containing the named parameters in the order they were
      *      parsed or null if no parameters were parsed.
      */
-    static public LinkedHashMap<String,RouteParameter> parse(String path) {
-        LinkedHashMap<String,RouteParameter> params = null;
+    static public LinkedHashMap<String, RouteParameter> parse(String path) {
+        LinkedHashMap<String, RouteParameter> params = null;
         
         // extract any named parameters
         Matcher matcher = Route.PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(path);
@@ -87,7 +87,7 @@ public class RouteParameter {
             RouteParameter param = new RouteParameter(
                 matcher.start(0), matcher.group(0), matcher.group(1), matcher.group(3));
             
-            // lazily create map (so its null if no path params exist)
+            // lazily create map (so it's null if no path params exist)
             if (params == null) {
                 params = new LinkedHashMap<>();
             }

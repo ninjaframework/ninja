@@ -121,9 +121,16 @@ public class RouterImpl implements Router {
                     .with(controllerClass, controllerMethodName);
             
             if (parameterMap.isPresent()) {
-                // params are not escaped with the deprecated method of creating
+                // pathOrQueryParams are not escaped with the deprecated method of creating
                 // reverse routes.  use ReverseRouter!
-                reverseRouteBuilder.rawParams(parameterMap.get());
+                parameterMap.get().forEach((name, value) -> {
+                    // path or query param?
+                    if (reverseRouteBuilder.getRoute().getParameters().containsKey(name)) {
+                        reverseRouteBuilder.rawPathParam(name, value);
+                    } else {
+                        reverseRouteBuilder.rawQueryParam(name, value);
+                    }
+                });
             }
             
             return reverseRouteBuilder.build();
