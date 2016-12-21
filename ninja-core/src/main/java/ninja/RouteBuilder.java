@@ -16,10 +16,9 @@
 
 package ninja;
 
-import ninja.ControllerMethods.*;
 import ninja.utils.MethodReference;
 
-public interface RouteBuilder {
+public interface RouteBuilder extends WithControllerMethod<Void> {
 
     RouteBuilder route(String uri);
 
@@ -36,29 +35,5 @@ public interface RouteBuilder {
      */
     @Deprecated
     void with(Result result);
-    
-    void with(ControllerMethod functionalMethod);
-    
-    void with(ControllerMethod0 functionalMethod);
-    
-    <A> void with(ControllerMethod1<A> functionalMethod);
-    
-    <A,B> void with(ControllerMethod2<A,B> functionalMethod);
-    
-    <A,B,C> void with(ControllerMethod3<A,B,C> functionalMethod);
-    
-    <A,B,C,D> void with(ControllerMethod4<A,B,C,D> functionalMethod);
-    
-    <A,B,C,D,E> void with(ControllerMethod5<A,B,C,D,E> functionalMethod);
-    
-    <A,B,C,D,E,F> void with(ControllerMethod6<A,B,C,D,E,F> functionalMethod);
-    
-    <A,B,C,D,E,F,G> void with(ControllerMethod7<A,B,C,D,E,F,G> functionalMethod);
-    
-    <A,B,C,D,E,F,G,H> void with(ControllerMethod8<A,B,C,D,E,F,G,H> functionalMethod);
-    
-    <A,B,C,D,E,F,G,H,I> void with(ControllerMethod9<A,B,C,D,E,F,G,H,I> functionalMethod);
-    
-    <A,B,C,D,E,F,G,H,I,J> void with(ControllerMethod10<A,B,C,D,E,F,G,H,I,J> functionalMethod);
 
 }

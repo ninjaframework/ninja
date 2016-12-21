@@ -79,7 +79,7 @@ public class RoutesTest extends NinjaRouterTest {
         generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard");
         
         // this looks strange, but is expected:
-        assertEquals("/user/{id}/{email}/userDashboard", generatedReverseRoute);
+        assertEquals(null, generatedReverseRoute);
         
 
 

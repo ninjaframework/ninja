@@ -317,54 +317,69 @@ Reverse routing
 ---------------
 
 Let's say you want to know the final route of a class ApplicationController.class, method "index". Assume
-that the original raw route looked like a simple <code>"/"</code>.
+that the original raw route looked like <code>"/"</code>.
 
-You can get the final URL by injecting the router into your controller and then calling getReverseRoute
+You can get the final URL by injecting a `ninja.ReverseRouter` into your controller
+and calling various `with` methods to lookup the route and optionally replace path
+or add query string parameters.
 
 <pre class="prettyprint">
 @Inject
-Router router;
-
-...
+ReverseRouter reverseRouter;
 
 public void myMethod() {
 
     // will result into "/"
-    String generatedReverseRoute 
-        = router.getReverseRoute(ApplicationController.class, "index");
-    ...
+    String url = reverseRouter.with(ApplicationController::index)
+        .build();
+    
+    // url would be "/"
 
 }      
 </pre>
 
 Now consider a more complex example. Say the original raw route contained placeholders on the following form:
-<code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final URL, but you must
-provide a map containing mappings from placeholders to final values. If the key cannot be found as
-placeholders their value will be added as query parameters:
-
+<code>/user/{id}/{email}/userDashboard</code>. You can now ask the router for the final URL 
+and swap in path parameters in addition to adding query string parameters.
 
 <pre class="prettyprint">
 @Inject
-Router router;
-
-...
+ReverseRouter reverseRouter;
 
 public void myMethod() {
 
-    map = Maps.newHashMap();
-    map.put(&quot;id&quot;,&quot;myId&quot;);
-    map.put(&quot;email&quot;,&quot;myEmail&quot;);
-    map.put(&quot;paging_size&quot;,&quot;100&quot;);
-    map.put(&quot;page&quot;,&quot;1&quot;);
+    String url = reverseRouter.with(ApplicationController::userDashboard)
+        .path(&quot;id&quot;, &quot;123&quot;)
+        .path(&quot;email&quot;, &quot;test@example.com&quot;)
+        .query(&quot;paging_size&quot;, 100)
+        .query(&quot;page&quot;, 1)
+        .build();
 
-    // this will result into &quot;/user/myId/myEmail/userDashboard?paging_size=100&amp;page=1&quot;
-    String generatedReverseRoute 
-        = router.getReverseRoute(
-            ApplicationController.class, 
-            &quot;userDashboard&quot;, 
-            map);
+    // url will be "/user/123/test%40example.com/userDashboard?paging_size=100&amp;page=1"
+}      
+</pre>
 
-    ...
+<div class="alert alert-info">
+The `ninja.ReverseRouter` will validate that all path parameters were set
+or will throw an `IllegalArgumentException` while building. All values are URL-escaped
+by default or various `raw` methods can be used instead to directly build your
+final URL.
+</div>
+
+Redirecting a user to a reverse route is a common use case.  The `Builder`
+object returned by the reverse router has a handy `redirect()` method to build
+a `ninja.Result` that will redirect the user.
+
+<pre class="prettyprint">
+@Inject
+ReverseRouter reverseRouter;
+
+public Result myMethod() {
+
+    // will redirect to "/"
+    return reverseRouter.with(ApplicationController::index)
+        .redirect();
+
 }      
 </pre>
 

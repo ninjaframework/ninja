@@ -28,9 +28,8 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import java.util.Optional;
-import ninja.ControllerMethods.*;
-import ninja.utils.Lambdas;
-import ninja.utils.Lambdas.LambdaInfo;
+import ninja.ControllerMethods.ControllerMethod;
+import ninja.utils.LambdaRoute;
 import ninja.utils.MethodReference;
 
 public class RouteBuilderImpl implements RouteBuilder {
@@ -95,104 +94,16 @@ public class RouteBuilderImpl implements RouteBuilder {
     
     @Override @Deprecated
     public void with(final Result result) {
-        withFunctionalMethod(ControllerMethods.of(() -> result));
+        with(ControllerMethods.of(() -> result));
     }
     
     @Override
-    public void with(ControllerMethod functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public void with(ControllerMethod0 functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A> void with(ControllerMethod1<A> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B> void with(ControllerMethod2<A,B> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C> void with(ControllerMethod3<A,B,C> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C,D> void with(ControllerMethod4<A,B,C,D> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C,D,E> void with(ControllerMethod5<A,B,C,D,E> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C,D,E,F> void with(ControllerMethod6<A,B,C,D,E,F> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C,D,E,F,G> void with(ControllerMethod7<A,B,C,D,E,F,G> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C,D,E,F,G,H> void with(ControllerMethod8<A,B,C,D,E,F,G,H> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C,D,E,F,G,H,I> void with(ControllerMethod9<A,B,C,D,E,F,G,H,I> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-    
-    @Override
-    public <A,B,C,D,E,F,G,H,I,J> void with(ControllerMethod10<A,B,C,D,E,F,G,H,I,J> functionalMethod) {
-        withFunctionalMethod(functionalMethod);
-    }
-
-    private void withFunctionalMethod(ControllerMethod functionalMethod) {
-        try {
-            LambdaInfo lambdaInfo = Lambdas.reflect(functionalMethod);
-
-            log.trace("uri {} with lambda {}", uri, lambdaInfo);
-            
-            switch (lambdaInfo.getKind()) {
-                case ANY_INSTANCE_METHOD_REFERENCE:
-                case STATIC_METHOD_REFERENCE:
-                    // call impl method just like before Java 8
-                    this.functionalMethod = lambdaInfo.getImplementationMethod();
-                    return;
-                case SPECIFIC_INSTANCE_METHOD_REFERENCE:
-                case ANONYMOUS_METHOD_REFERENCE:
-                    // only safe to use the impl method for argument types if
-                    // the number of arguments matches between the methods
-                    if (lambdaInfo.areMethodParameterCountsEqual()) {    
-                        this.functionalMethod = lambdaInfo.getFunctionalMethod();
-                        this.implementationMethod = Optional.of(lambdaInfo.getImplementationMethod());
-                        this.targetObject = Optional.of(functionalMethod);
-                        return;
-                    }
-            }
-        } catch (IllegalArgumentException e) {
-            // unable to detect lambda (e.g. such as anonymous/concrete class)
-        }
-        
-        // fallback to simple call the "apply" method on the supplied method instance
-        try {
-            this.functionalMethod = Lambdas.getMethod(functionalMethod.getClass(), "apply");
-            this.functionalMethod.setAccessible(true);
-            this.targetObject = Optional.of(functionalMethod);
-        } catch (NoSuchMethodException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public Void with(ControllerMethod controllerMethod) {
+        LambdaRoute lambdaRoute = LambdaRoute.resolve(controllerMethod);
+        this.functionalMethod = lambdaRoute.getFunctionalMethod();
+        this.implementationMethod = lambdaRoute.getImplementationMethod();
+        this.targetObject = lambdaRoute.getTargetObject();
+        return null;
     }
 
     @Override
