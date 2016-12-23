@@ -102,7 +102,7 @@ public class CookieEncryption {
             throw new RuntimeException(ex);
         } catch (GeneralSecurityException ex) {
             logger.error("Failed to encrypt data.", ex);
-            throw new RuntimeException(ex);
+            return "";
         }
     }
 
@@ -136,7 +136,7 @@ public class CookieEncryption {
             throw new RuntimeException(ex);
         } catch (GeneralSecurityException ex) {
             logger.error("Failed to decrypt data.", ex);
-            throw new RuntimeException(ex);
+            return "";
         }
     }
 
