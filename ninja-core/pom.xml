@@ -123,12 +123,6 @@
             <artifactId>freemarker-gae</artifactId>
         </dependency>
 
-        <!-- guava is just cool -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
         <!-- Needed for Hex transforms (security, cookies) and more... -->
         <dependency>
             <groupId>commons-codec</groupId>
