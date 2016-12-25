@@ -17,6 +17,7 @@
 package ninja.template;
 
 import java.util.List;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Result;
@@ -25,7 +26,6 @@ import ninja.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import freemarker.template.SimpleNumber;
@@ -61,7 +61,7 @@ public class TemplateEngineFreemarkerI18nMethod implements
 
             String messageValue = messages
                     .get(messageKey, context, result)
-                    .or(messageKey);
+                    .orElse(messageKey);
             
             logIfMessageKeyIsMissing(messageKey, messageValue);
             
@@ -91,7 +91,7 @@ public class TemplateEngineFreemarkerI18nMethod implements
                             context, 
                             result, 
                             strings.subList(1, strings.size()).toArray())
-                    .or(messageKey);
+                            .orElse(messageKey);
             
             logIfMessageKeyIsMissing(messageKey, messageValue);
             

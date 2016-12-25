@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import ninja.exceptions.InternalServerErrorException;
 import ninja.utils.DateUtil;
@@ -34,7 +35,6 @@ import ninja.utils.SwissKnife;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -119,7 +119,7 @@ public class Result {
      * header of request this fallback will be used. If it is not set 
      * a bad request exception will be thrown.
      */
-    private Optional<String> fallbackContentType = Optional.absent();
+    private Optional<String> fallbackContentType = Optional.empty();
     
     /**
      * A list of content types this result will handle. If you got a general

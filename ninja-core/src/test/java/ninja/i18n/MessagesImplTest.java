@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Cookie;
@@ -36,8 +37,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.google.common.base.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessagesImplTest {
@@ -81,7 +80,7 @@ public class MessagesImplTest {
 
         assertEquals("defaultlanguage", messages.get("language", Optional.of("fr")).get());
 
-        assertEquals(Optional.absent(), messages.get("a_non_existing_key", Optional.of("fr")));
+        assertEquals(Optional.empty(), messages.get("a_non_existing_key", Optional.of("fr")));
     }
     
     @Test
@@ -243,7 +242,7 @@ public class MessagesImplTest {
         
         
         // test fallback to default (english in that case)
-        Optional<String> language = Optional.absent();
+        Optional<String> language = Optional.empty();
         Optional<String> result = messages.get("message_with_placeholder_date", language, DATE_1970_JAN);
         
         assertEquals("that's a date: Jan 1, 1970", result.get());

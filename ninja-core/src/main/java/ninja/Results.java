@@ -16,9 +16,9 @@
 
 package ninja;
 
-import ninja.utils.NoHttpBody;
+import java.util.Optional;
 
-import com.google.common.base.Optional;
+import ninja.utils.NoHttpBody;
 
 
 /**

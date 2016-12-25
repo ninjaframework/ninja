@@ -19,6 +19,7 @@ package ninja.i18n;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Result;
@@ -34,7 +35,6 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -79,7 +79,7 @@ public class MessagesImpl implements Messages {
             MessageFormat messageFormat = getMessageFormatForLocale(value, language);
             return Optional.of(messageFormat.format(params));
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
     
