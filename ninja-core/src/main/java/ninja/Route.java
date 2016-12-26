@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * A route
@@ -45,28 +45,26 @@ public class Route {
     //private static final String PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = "\\{.*?:\\s(.*?)\\}";
     private final String httpMethod;
     private final String uri;
-    private final Class controllerClass;
     private final Method controllerMethod;
     private final FilterChain filterChain;
-
-    private final List<String> parameterNames;
+    private final LinkedHashMap<String,RouteParameter> parameters;
     private final Pattern regex;
 
     public Route(String httpMethod,
             String uri,
-            Class controllerClass,
             Method controllerMethod,
             FilterChain filterChain) {
         this.httpMethod = httpMethod;
         this.uri = uri;
-        this.controllerClass = controllerClass;
         this.controllerMethod = controllerMethod;
         this.filterChain = filterChain;
-
-        parameterNames = ImmutableList.copyOf(doParseParameters(uri));
-        regex = Pattern.compile(convertRawUriToRegex(uri));
+        this.parameters = RouteParameter.parse(uri);
+        this.regex = Pattern.compile(convertRawUriToRegex(uri));
     }
 
+    /**
+     * @deprecated Use getUri()
+     */
     public String getUrl() {
         return uri;
     }
@@ -80,7 +78,7 @@ public class Route {
     }
 
     public Class<?> getControllerClass() {
-        return controllerClass;
+        return controllerMethod != null ? controllerMethod.getDeclaringClass() : null;
     }
 
     public FilterChain getFilterChain() {
@@ -91,6 +89,10 @@ public class Route {
         return controllerMethod;
     }
 
+    public LinkedHashMap<String,RouteParameter> getParameters() {
+        return parameters;
+    }
+    
     /**
      * Matches /index to /index or /me/1 to /person/{id}
      *
@@ -118,45 +120,19 @@ public class Route {
      * @return A map with all parameters of that uri. Encoded in => encoded out.
      */
     public Map<String, String> getPathParametersEncoded(String uri) {
-
         Map<String, String> map = Maps.newHashMap();
 
         Matcher m = regex.matcher(uri);
 
         if (m.matches()) {
+            Iterator<String> it = this.parameters.keySet().iterator();
             for (int i = 1; i < m.groupCount() + 1; i++) {
-                map.put(parameterNames.get(i - 1), m.group(i));
+                String parameterName = it.next();
+                map.put(parameterName, m.group(i));
             }
         }
-
+        
         return map;
-
-    }
-
-    /**
-     *
-     * Extracts the name of the parameters from a route
-     *
-     * /{my_id}/{my_name}
-     *
-     * would return a List with "my_id" and "my_name"
-     *
-     * @param rawRoute
-     * @return a list with the names of all parameters in that route.
-     */
-    private static List<String> doParseParameters(String rawRoute) {
-        List<String> list = new ArrayList<String>();
-
-        Matcher m = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(rawRoute);
-
-        while (m.find()) {
-            // group(1) is the name of the group. Must be always there...
-            // "/assets/{file}" and "/assets/{file: [a-zA-Z][a-zA-Z_0-9]}" 
-            // will return file.
-            list.add(m.group(1));
-        }
-
-        return list;
     }
 
     /**

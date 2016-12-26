@@ -214,6 +214,9 @@ public interface NinjaConstant {
     /** run migrations on startup of application */
     final String NINJA_MIGRATION_RUN = "ninja.migration.run";
     
+    /** boolean flag to determine if Flyway should drop the existing DB schema */
+    final String NINJA_MIGRATION_DROP_SCHEMA = "ninja.migration.drop";
+    
     /** The name of the persistence unit to use */
     String PERSISTENCE_UNIT_NAME = "ninja.jpa.persistence_unit_name";
     

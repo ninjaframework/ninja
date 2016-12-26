@@ -49,7 +49,8 @@ public class MigrationEngineFlyway implements MigrationEngine {
 
         // In testmode we are cleaning the database so that subsequent testcases
         // get a fresh database.
-        if (ninjaProperties.isTest()) {
+        if (ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_MIGRATION_DROP_SCHEMA,
+                ninjaProperties.isTest() ? true : false )) {
             flyway.clean();
         }
 

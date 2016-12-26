@@ -21,26 +21,31 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
-
 import ninja.params.ControllerMethodInvoker;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.inject.Injector;
+import com.google.inject.Provider;
+import com.google.inject.util.Providers;
+import java.util.Optional;
+import ninja.ControllerMethods.ControllerMethod;
+import ninja.utils.LambdaRoute;
 import ninja.utils.MethodReference;
 
 public class RouteBuilderImpl implements RouteBuilder {
-
-    private static final Logger log = LoggerFactory
-            .getLogger(RouteBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(RouteBuilder.class);
 
     private String httpMethod;
     private String uri;
-    private Class controller;
-    private Method controllerMethod;
-    private Result result;
+    private Method functionalMethod;
+    private Optional<Method> implementationMethod;  // method to use for parameter/annotation extraction
+    private Optional<Object> targetObject;          // instance to invoke
 
+    public RouteBuilderImpl() {
+        this.implementationMethod = Optional.empty();
+        this.targetObject = Optional.empty();
+    }
+    
     public RouteBuilderImpl GET() {
         httpMethod = "GET";
         return this;
@@ -77,20 +82,28 @@ public class RouteBuilderImpl implements RouteBuilder {
     }
 
     @Override
-    public void with(Class controller, String controllerMethod) {
-        this.controller = controller;
-        this.controllerMethod = verifyThatControllerAndMethodExists(controller,
-                controllerMethod);
+    public void with(Class controllerClass, String controllerMethod) {
+        this.functionalMethod
+            = verifyControllerMethod(controllerClass, controllerMethod);
     }
-
-    @Override
-    public void with(MethodReference controllerMethodRef) {
-        with(controllerMethodRef.getDeclaringClass(), controllerMethodRef.getMethodName());
+    
+    @Override @Deprecated
+    public void with(MethodReference methodRef) {
+        with(methodRef.getDeclaringClass(), methodRef.getMethodName());
     }
-
+    
+    @Override @Deprecated
+    public void with(final Result result) {
+        with(ControllerMethods.of(() -> result));
+    }
+    
     @Override
-    public void with(Result result) {
-        this.result = result;
+    public Void with(ControllerMethod controllerMethod) {
+        LambdaRoute lambdaRoute = LambdaRoute.resolve(controllerMethod);
+        this.functionalMethod = lambdaRoute.getFunctionalMethod();
+        this.implementationMethod = lambdaRoute.getImplementationMethod();
+        this.targetObject = lambdaRoute.getTargetObject();
+        return null;
     }
 
     @Override
@@ -115,28 +128,22 @@ public class RouteBuilderImpl implements RouteBuilder {
      *            The method
      * @return The actual method
      */
-    private Method verifyThatControllerAndMethodExists(Class controller,
-                                                       String controllerMethod) {
-
+    private Method verifyControllerMethod(Class<?> controllerClass,
+                                          String controllerMethod) {
         try {
-
             Method methodFromQueryingClass = null;
 
             // 1. Make sure method is in class
             // 2. Make sure only one method is there. Otherwise we cannot really
-            // know what
-            // to do with the parameters.
-            for (Method method : controller.getMethods()) {
-
+            // know what to do with the parameters.
+            for (Method method : controllerClass.getMethods()) {
                 if (method.getName().equals(controllerMethod)) {
                     if (methodFromQueryingClass == null) {
                         methodFromQueryingClass = method;
                     } else {
                         throw new NoSuchMethodException();
                     }
-
                 }
-
             }
 
             if (methodFromQueryingClass == null) {
@@ -156,9 +163,8 @@ public class RouteBuilderImpl implements RouteBuilder {
                     "Error while checking for valid Controller / controllerMethod combination",
                     e);
         } catch (NoSuchMethodException e) {
-
             log.error("Error in route configuration!!!");
-            log.error("Can not find Controller " + controller.getName()
+            log.error("Can not find Controller " + controllerClass.getName()
                     + " and method " + controllerMethod);
             log.error("Hint: make sure the controller returns a ninja.Result!");
             log.error("Hint: Ninja does not allow more than one method with the same name!");
@@ -167,80 +173,83 @@ public class RouteBuilderImpl implements RouteBuilder {
     }
 
     /**
-     * Build the route
-     *
-     * @param injector
-     *            The injector to build the route with
+     * Build the route.
+     * @param injector The injector to build the route with
+     * @return The built route
      */
     public Route buildRoute(Injector injector) {
-        if(controller == null && result == null) {
+        if (functionalMethod == null) {
             log.error("Error in route configuration for {}", uri);
-            throw new IllegalStateException("Route not with a controller or result");
+            throw new IllegalStateException("Route missing a controller method");
         }
 
         // Calculate filters
-        LinkedList<Class<? extends Filter>> filters = new LinkedList<Class<? extends Filter>>();
-        if(controller != null) {
-            if (controllerMethod == null) {
-                throw new IllegalStateException(
-                        String.format("Route '%s' does not have a controller method", uri));
-            }
-            filters.addAll(calculateFiltersForClass(controller));
-            FilterWith filterWith = controllerMethod
-                    .getAnnotation(FilterWith.class);
-            if (filterWith != null) {
-                filters.addAll(Arrays.asList(filterWith.value()));
-            }
+        LinkedList<Class<? extends Filter>> filters = new LinkedList<>();
+        filters.addAll(calculateFiltersForClass(functionalMethod.getDeclaringClass()));
+        FilterWith filterWith = functionalMethod
+                .getAnnotation(FilterWith.class);
+        if (filterWith != null) {
+            filters.addAll(Arrays.asList(filterWith.value()));
         }
+        
+        FilterChain filterChain = buildFilterChain(injector, filters);
 
-        return new Route(httpMethod, uri, controller, controllerMethod,
-                buildFilterChain(injector, filters, controller,
-                        controllerMethod, result));
+        return new Route(httpMethod, uri, functionalMethod, filterChain);
     }
 
     private FilterChain buildFilterChain(Injector injector,
-                                         LinkedList<Class<? extends Filter>> filters,
-                                         Class<?> controller,
-                                         Method controllerMethod,
-                                         Result result) {
+                                         LinkedList<Class<? extends Filter>> filters) {
 
         if (filters.isEmpty()) {
+            
+            // either target object (functional method) or guice will create new instance
+            Provider<?> targetProvider = (targetObject.isPresent() ?
+                Providers.of(targetObject.get())
+                    : injector.getProvider(functionalMethod.getDeclaringClass()));
 
-            return result != null ? new FilterChainEnd(result) :
-                    new FilterChainEnd(injector.getProvider(controller),
-                            ControllerMethodInvoker.build(controllerMethod, injector));
+            // invoke functional method with optionally using impl for argument extraction
+            ControllerMethodInvoker methodInvoker
+                = ControllerMethodInvoker.build(
+                    functionalMethod, implementationMethod.orElse(functionalMethod), injector);
 
+            return new FilterChainEnd(targetProvider, methodInvoker);
+            
         } else {
 
             Class<? extends Filter> filter = filters.pop();
 
             return new FilterChainImpl(injector.getProvider(filter),
-                    buildFilterChain(injector, filters, controller,
-                            controllerMethod, result));
-
+                buildFilterChain(injector, filters));
+            
         }
     }
 
     private Set<Class<? extends Filter>> calculateFiltersForClass(Class controller) {
-        LinkedHashSet<Class<? extends Filter>> filters = new LinkedHashSet<Class<? extends Filter>>();
-        // First step up the superclass tree, so that superclass filters come
-        // first
+        LinkedHashSet<Class<? extends Filter>> filters = new LinkedHashSet<>();
+        
+        //
+        // Step up the superclass tree, so that superclass filters come first
+        //
+        
         // Superclass
         if (controller.getSuperclass() != null) {
             filters.addAll(calculateFiltersForClass(controller.getSuperclass()));
         }
+        
         // Interfaces
         if (controller.getInterfaces() != null) {
             for (Class clazz : controller.getInterfaces()) {
                 filters.addAll(calculateFiltersForClass(clazz));
             }
         }
+        
         // Now add from here
         FilterWith filterWith = (FilterWith) controller
                 .getAnnotation(FilterWith.class);
         if (filterWith != null) {
             filters.addAll(Arrays.asList(filterWith.value()));
         }
+        
         // And return
         return filters;
     }
