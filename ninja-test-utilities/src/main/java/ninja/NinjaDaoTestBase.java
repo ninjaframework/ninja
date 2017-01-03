@@ -16,6 +16,8 @@
 
 package ninja;
 
+import java.util.Optional;
+
 import ninja.jpa.JpaInitializer;
 import ninja.jpa.JpaModule;
 import ninja.utils.NinjaMode;
@@ -25,7 +27,6 @@ import ninja.utils.NinjaPropertiesImpl;
 import org.junit.After;
 import org.junit.Before;
 
-import com.google.common.base.Optional;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 

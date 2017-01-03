@@ -18,11 +18,11 @@ package ninja.i18n;
 
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Result;
 
-import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(MessagesImpl.class)

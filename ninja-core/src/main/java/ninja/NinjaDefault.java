@@ -17,6 +17,7 @@
 package ninja;
 
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.management.RuntimeErrorException;
@@ -35,7 +36,6 @@ import ninja.utils.ResultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 public class NinjaDefault implements Ninja {
@@ -241,7 +241,7 @@ public class NinjaDefault implements Ninja {
                         NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY,
                         NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT,
                         context,
-                        Optional.<Result>absent());
+                        Optional.<Result>empty());
         
         Message message = new Message(messageI18n);
 
@@ -276,7 +276,7 @@ public class NinjaDefault implements Ninja {
                         NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY,
                         NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT,
                         context,
-                        Optional.<Result>absent());
+                        Optional.<Result>empty());
         
         Message message = new Message(messageI18n); 
         
@@ -311,7 +311,7 @@ public class NinjaDefault implements Ninja {
                         NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY,
                         NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT,
                         context,
-                        Optional.<Result>absent());
+                        Optional.<Result>empty());
         
         Message message = new Message(messageI18n); 
            
@@ -346,7 +346,7 @@ public class NinjaDefault implements Ninja {
                         NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY,
                         NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_DEFAULT,
                         context,
-                        Optional.<Result>absent());
+                        Optional.<Result>empty());
 
         Message message = new Message(messageI18n);
 
@@ -385,7 +385,7 @@ public class NinjaDefault implements Ninja {
                         NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY,
                         NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT,
                         context,
-                        Optional.<Result>absent());
+                        Optional.<Result>empty());
         
         Message message = new Message(messageI18n); 
            

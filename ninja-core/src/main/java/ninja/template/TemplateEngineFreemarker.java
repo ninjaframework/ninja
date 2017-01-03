@@ -23,11 +23,13 @@ import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.inject.Singleton;
 
 import ninja.Context;
 import ninja.Result;
+import ninja.exceptions.RenderingException;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
@@ -39,7 +41,6 @@ import ninja.utils.ResponseStreams;
 import org.slf4j.Logger;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
@@ -56,8 +57,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 import freemarker.template.Version;
-import java.io.StringWriter;
-import ninja.exceptions.RenderingException;
 
 @Singleton
 public class TemplateEngineFreemarker implements TemplateEngine {
