@@ -69,7 +69,7 @@ The integrated new way
 --------------
 
 The controller at <code>/uploadFinish</code> can automatically handle the upload, and return either a FileItem, InputStream or File.
-Using FileItem allows provides access to additional properties, like <code>getFileName()</code> to get the original file name sent by the browser.
+Using FileItem allows provides access to additional properties, like <code>getFileName()</code> to get the original file name sent by the browser. **NOTE:** By default, the file provider is set to <code>NoFileItemProvider</code> - in order to use this new way, you need to configure a file provider as described below.
 
 <pre class="prettyprint">
 public Result uploadFinish(Context context, @Param("upfile") FileItem upfile) throws Exception {
