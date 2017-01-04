@@ -17,11 +17,11 @@
 package ninja.i18n;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Result;
 
-import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(LangImpl.class)

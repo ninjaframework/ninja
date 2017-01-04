@@ -22,6 +22,7 @@ import static ninja.utils.NinjaConstant.HTTP_USE_ETAG;
 import static ninja.utils.NinjaConstant.HTTP_USE_ETAG_DEFAULT;
 
 import java.util.Date;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Result;
@@ -29,7 +30,6 @@ import ninja.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 public class HttpCacheToolkitImpl implements HttpCacheToolkit {
@@ -106,7 +106,7 @@ public class HttpCacheToolkitImpl implements HttpCacheToolkit {
         }
 
 
-        if (!isModified(Optional.fromNullable(etag), Optional.fromNullable(lastModified), context)) {
+        if (!isModified(Optional.ofNullable(etag), Optional.ofNullable(lastModified), context)) {
 
             if (context.getMethod().toLowerCase().equals("get")) {
                 result.status(Result.SC_304_NOT_MODIFIED);

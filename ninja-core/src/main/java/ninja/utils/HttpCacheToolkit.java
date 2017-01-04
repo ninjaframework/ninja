@@ -16,10 +16,11 @@
 
 package ninja.utils;
 
+import java.util.Optional;
+
 import ninja.Context;
 import ninja.Result;
 
-import com.google.common.base.Optional;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(HttpCacheToolkitImpl.class)

@@ -18,10 +18,10 @@ package ninja;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import ninja.application.ApplicationRoutes;
 import ninja.logging.LogbackConfigurator;
-import ninja.params.ParamParser;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
@@ -29,7 +29,6 @@ import ninja.utils.NinjaPropertiesImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -37,7 +36,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
-import com.google.inject.multibindings.Multibinder;
 
 import ninja.conf.FrameworkModule;
 import ninja.conf.NinjaBaseModule;
@@ -72,8 +70,8 @@ public class Bootstrap {
         
         // custom base package for application modules (e.g. com.example.conf.Routes)
         this.applicationModulesBasePackage
-            = Optional.fromNullable(ninjaProperties.get(
-                    NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
+                = Optional.ofNullable(ninjaProperties.get(
+                        NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
         
     }
 
