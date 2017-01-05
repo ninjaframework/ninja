@@ -348,7 +348,7 @@ public class ControllerMethodInvoker {
      * 
      * It investigates the type parameter and allows to remember whether a type
      * was wrapped in an Optional or not. It stores the "real" type of the parameter
-     * that the extractor should extract (String and not optional in example above).
+     * that the extractor should extract (String and not Optional in example above).
      */
     private static class MethodParameter {
         public boolean isOptional;
@@ -394,7 +394,7 @@ public class ControllerMethodInvoker {
             } else {
                 throw new RuntimeException(
                         "Oops. That's a strange internal Ninja error.\n"
-                        + "Seems somone tried to convert a type into a class that is not a real class. ( " + type.getTypeName() + ")");
+                        + "Seems someone tried to convert a type into a class that is not a real class. ( " + type.getTypeName() + ")");
             }
         }
     
