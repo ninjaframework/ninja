@@ -425,14 +425,14 @@ public interface Context {
     /**
      * Get the (first) request header with the given name
      * 
-     * @return The header value
+     * @return The header value or null if not found.
      */
     String getHeader(String name);
 
     /**
      * Get all the request headers with the given name.
      *
-     * @return the header values
+     * @return the header values. Returns empty list if none are found.
      */
     List<String> getHeaders(String name);
 

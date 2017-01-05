@@ -32,11 +32,12 @@ import ninja.validation.WithValidator;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
+import java.lang.reflect.Type;
+import java.util.Optional;
 
 /**
  * Invokes methods on the controller, extracting arguments out
  *
- * @author James Roper
  */
 public class ControllerMethodInvoker {
     
@@ -66,7 +67,7 @@ public class ControllerMethodInvoker {
             }
         }
     }
-    
+
     /**
      * Builds an invoker for a functional method.  Understands what parameters
      * to inject and extract based on type and annotations.
@@ -80,17 +81,18 @@ public class ControllerMethodInvoker {
      */
     public static ControllerMethodInvoker build(Method functionalMethod, Method implementationMethod, Injector injector) {
         // get both the parameters...
-        final Class[] paramTypes = implementationMethod.getParameterTypes();
+        final Type[] genericParameterTypes = implementationMethod.getGenericParameterTypes();
+        final MethodParameter[] methodParameters = MethodParameter.convertIntoMethodParameters(genericParameterTypes);
         // ... and all annotations for the parameters
         final Annotation[][] paramAnnotations = implementationMethod
                 .getParameterAnnotations();
 
-        ArgumentExtractor<?>[] argumentExtractors = new ArgumentExtractor<?>[paramTypes.length];
+        ArgumentExtractor<?>[] argumentExtractors = new ArgumentExtractor<?>[methodParameters.length];
 
         // now we skip through the parameters and process the annotations
-        for (int i = 0; i < paramTypes.length; i++) {
+        for (int i = 0; i < methodParameters.length; i++) {
             try {
-                argumentExtractors[i] = getArgumentExtractor(paramTypes[i], paramAnnotations[i],
+                argumentExtractors[i] = getArgumentExtractor(methodParameters[i], paramAnnotations[i],
                         injector);
             } catch (RoutingException e) {
                 throw new RoutingException("Error building argument extractor for parameter " + i +
@@ -105,10 +107,10 @@ public class ControllerMethodInvoker {
                 if (bodyAsFound > -1) {
                     throw new RoutingException("Only one parameter may be deserialised as the body "
                             + implementationMethod.getDeclaringClass().getName() + "." + implementationMethod.getName() + "()\n"
-                            + "Extracted parameter is type: " + paramTypes[bodyAsFound].getName() + "\n"
-                            + "Extra parmeter is type: " + paramTypes[i].getName());
+                            + "Extracted parameter is type: " + methodParameters[bodyAsFound].parameterClass.getName() + "\n"
+                            + "Extra parmeter is type: " + methodParameters[i].parameterClass.getName());
                 } else {
-                    argumentExtractors[i] = new ArgumentExtractors.BodyAsExtractor(paramTypes[i]);
+                    argumentExtractors[i] = new ArgumentExtractors.BodyAsExtractor(methodParameters[i].parameterClass);
                     bodyAsFound = i;
                 }
             }
@@ -118,17 +120,21 @@ public class ControllerMethodInvoker {
         // parameters
         for (int i = 0; i < argumentExtractors.length; i++) {
             argumentExtractors[i] =
-                    validateArgumentWithExtractor(paramTypes[i], paramAnnotations[i], injector,
-                    argumentExtractors[i]);
+                    validateArgumentWithExtractor(
+                            methodParameters[i],
+                            paramAnnotations[i], 
+                            injector,
+                            argumentExtractors[i]);
         }
 
         return new ControllerMethodInvoker(functionalMethod, argumentExtractors);
     }
 
-    private static ArgumentExtractor<?> getArgumentExtractor(Class<?> paramType,
+    private static ArgumentExtractor<?> getArgumentExtractor(
+            MethodParameter methodParameter,
             Annotation[] annotations, Injector injector) {
         // First check if we have a static extractor
-        ArgumentExtractor<?> extractor = ArgumentExtractors.getExtractorForType(paramType);
+        ArgumentExtractor<?> extractor = ArgumentExtractors.getExtractorForType(methodParameter.parameterClass);
 
         if (extractor == null) {
             // See if we have a WithArgumentExtractors annotated annotation for specialized extractors
@@ -138,9 +144,9 @@ public class ControllerMethodInvoker {
                 if (withArgumentExtractors != null) {
                     for (Class<? extends ArgumentExtractor<?>> argumentExtractor : withArgumentExtractors.value()) {
                         Class<?> extractedType = (Class<?>) ((ParameterizedType)(argumentExtractor.getGenericInterfaces()[0])).getActualTypeArguments()[0];
-                        if (paramType.isAssignableFrom(extractedType)) {
+                        if (methodParameter.parameterClass.isAssignableFrom(extractedType)) {
                             extractor = instantiateComponent(argumentExtractor, annotation,
-                                    paramType, injector);
+                                    methodParameter.parameterClass, injector);
                             break;
                         }
                     }
@@ -155,7 +161,7 @@ public class ControllerMethodInvoker {
                         .getAnnotation(WithArgumentExtractor.class);
                 if (withArgumentExtractor != null) {
                     extractor = instantiateComponent(withArgumentExtractor.value(), annotation,
-                            paramType, injector);
+                            methodParameter.parameterClass, injector);
                     break;
                 }
             }
@@ -164,16 +170,19 @@ public class ControllerMethodInvoker {
         return extractor;
     }
 
-    private static ArgumentExtractor<?> validateArgumentWithExtractor(Class<?> paramType,
-            Annotation[] annotations, Injector injector, ArgumentExtractor<?> extractor) {
+    private static ArgumentExtractor<?> validateArgumentWithExtractor(
+            MethodParameter methodParameter,
+            Annotation[] annotations, 
+            Injector injector, 
+            ArgumentExtractor<?> extractor) {
         // We have validators that get applied before parsing, and validators
         // that get applied after parsing.
         List<Validator<?>> preParseValidators = new ArrayList<>();
         List<Validator<?>> postParseValidators = new ArrayList<>();
 
-        Class<?> boxedParamType = paramType;
-        if (paramType.isPrimitive()) {
-            boxedParamType = box(paramType);
+        Class<?> boxedParamType = methodParameter.parameterClass;
+        if (methodParameter.parameterClass.isPrimitive()) {
+            boxedParamType = box(methodParameter.parameterClass);
         }
 
         // Now we have an extractor, lets apply validators that are able to validate
@@ -182,7 +191,7 @@ public class ControllerMethodInvoker {
                     .getAnnotation(WithValidator.class);
             if (withValidator != null) {
                 Validator<?> validator = instantiateComponent(withValidator.value(), annotation,
-                        paramType, injector);
+                        methodParameter.parameterClass, injector);
                 // If the validator can validate the extractors type, then it's a pre parse validator
                 if (validator.getValidatedType().isAssignableFrom(extractor.getExtractedType())) {
                     preParseValidators.add(validator);
@@ -194,7 +203,7 @@ public class ControllerMethodInvoker {
                     throw new RoutingException("Validator for field " + extractor.getFieldName() +
                             " validates type " + validator.getValidatedType() +
                             ", which doesn't match extracted type " + extractor.getExtractedType() +
-                            " or parameter type " + paramType);
+                            " or parameter type " + methodParameter.parameterClass);
                 }
             }
         }
@@ -210,7 +219,7 @@ public class ControllerMethodInvoker {
             if (extractor.getFieldName() != null) {
                 if (String.class.isAssignableFrom(extractor.getExtractedType())) {
                     // Look up a parser for a single-valued parameter
-                    ParamParser<?> parser = injector.getInstance(ParamParsers.class).getParamParser(paramType);
+                    ParamParser<?> parser = injector.getInstance(ParamParsers.class).getParamParser(methodParameter.parameterClass);
                     if (parser == null) {
                         throw new RoutingException("Can't find parameter parser for type "
                                 + extractor.getExtractedType() + " on field "
@@ -218,10 +227,11 @@ public class ControllerMethodInvoker {
                     } else {
                         extractor =
                                 new ParsingArgumentExtractor(extractor, parser);
+                        
                     }
                 } else if (String[].class.isAssignableFrom(extractor.getExtractedType())) {
                     // Look up a parser for a multi-valued parameter
-                    ArrayParamParser<?> parser = injector.getInstance(ParamParsers.class).getArrayParser(paramType);
+                    ArrayParamParser<?> parser = injector.getInstance(ParamParsers.class).getArrayParser(methodParameter.parameterClass);
                     if (parser == null) {
                         throw new RoutingException("Can't find parameter array parser for type "
                                 + extractor.getExtractedType() + " on field "
@@ -234,7 +244,7 @@ public class ControllerMethodInvoker {
                 } else {
                     throw new RoutingException("Extracted type " + extractor.getExtractedType()
                             + " for field " + extractor.getFieldName()
-                            + " doesn't match parameter type " + paramType);
+                            + " doesn't match parameter type " + methodParameter.parameterClass);
                 }
             }
         }
@@ -242,6 +252,10 @@ public class ControllerMethodInvoker {
         // If we have any post parse validators, wrap our extractor in them
         if (!postParseValidators.isEmpty()) {
             extractor = new ValidatingArgumentExtractor(extractor, postParseValidators);
+        }
+        
+        if (methodParameter.isOptional) {
+            extractor = new OptionalArgumentExtractor(extractor);
         }
 
         return extractor;
@@ -327,6 +341,63 @@ public class ControllerMethodInvoker {
         }
         throw new IllegalArgumentException("Don't know how to box type of " + typeToBox);
     }
+    
+    /**
+     * Just a little helper that makes it possible to handle things like
+     *     myControllerMethod(@Param("param1") Optional<String> myValue)
+     * 
+     * It investigates the type parameter and allows to remember whether a type
+     * was wrapped in an Optional or not. It stores the "real" type of the parameter
+     * that the extractor should extract (String and not optional in example above).
+     */
+    private static class MethodParameter {
+        public boolean isOptional;
+        public Class<?> parameterClass;
 
+        private MethodParameter(Type genericType) {
+            try {
+                // a ParameterizedType is something like Optional<String> or List<String>...
+                if (genericType instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                    Class<?> maybeOptional = getClass(parameterizedType.getRawType());
+
+                    // The method expects an Optional, so we extract the first 
+                    // generic which should determine the extractor that will be used to 
+                    // extract the value;
+                    if (maybeOptional.isAssignableFrom(Optional.class)) {
+                        isOptional = true;
+                        parameterClass = getClass(parameterizedType.getActualTypeArguments()[0]);
+                    }
+                }
+                
+                if (parameterClass == null) {
+                    isOptional = false;
+                    parameterClass = getClass(genericType);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Oops. Something went wrong while investigating method parameters for controller class invocation", e);
+            }
+
+        }
+        
+        public static MethodParameter[] convertIntoMethodParameters(Type[] genericParameterTypes) {
+            MethodParameter[] methodParameters = new MethodParameter[genericParameterTypes.length];
+            for (int i = 0; i < genericParameterTypes.length; i++) {
+                methodParameters[i] = new MethodParameter(genericParameterTypes[i]);
+            }
+            return methodParameters;
+        }
+        
+        private Class<?> getClass(Type type) {
+            if (type instanceof Class) {
+                return (Class<?>) type;
+            } else {
+                throw new RuntimeException(
+                        "Oops. That's a strange internal Ninja error.\n"
+                        + "Seems somone tried to convert a type into a class that is not a real class. ( " + type.getTypeName() + ")");
+            }
+        }
+    
+    }
 
 }

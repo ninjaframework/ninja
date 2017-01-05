@@ -54,8 +54,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
+import org.hamcrest.Matchers;
 
 import static org.junit.Assert.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Captor;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -677,7 +682,169 @@ public class ControllerMethodInvokerTest {
         verify(mockController).required("value");
         assertFalse(validation.hasViolations());
     }
+    
+    @Test
+    public void optionalSessionParam() {
+        when(session.get("param1")).thenReturn("value");
+        create("optionalSessionParam").invoke(mockController, context);
+        verify(mockController).optionalSessionParam(Optional.of("value"));
+    }
+    
+    @Test
+    public void optionalSessionParamEmpty() {
+        when(session.get("param1")).thenReturn(null);
+        create("optionalSessionParam").invoke(mockController, context);
+        verify(mockController).optionalSessionParam(Optional.empty());
+    }
 
+    @Test
+    public void optionalAttribute() {
+        Dep dep = new Dep("dep");
+        when(context.getAttribute("param1", Dep.class)).thenReturn(dep);
+        create("optionalAttribute").invoke(mockController, context);
+        verify(mockController).optionalAttribute(Optional.of(dep));
+    }
+    
+    @Test
+    public void optionalAttributeEmpty() {
+        when(context.getAttribute("param1", Dep.class)).thenReturn(null);
+        create("optionalAttribute").invoke(mockController, context);
+        verify(mockController).optionalAttribute(Optional.empty());
+    }
+
+    @Test
+    public void optionalHeader() {
+        when(context.getHeader("param1")).thenReturn("value");
+        create("optionalHeader").invoke(mockController, context);
+        verify(mockController).optionalHeader(Optional.of("value"));
+    }
+    
+    @Test
+    public void optionalHeaderEmpty() {
+        when(context.getHeader("param1")).thenReturn(null);
+        create("optionalHeader").invoke(mockController, context);
+        verify(mockController).optionalHeader(Optional.empty());
+    }
+
+    @Test
+    public void optionalStringParam() {
+        when(context.getParameter("param1")).thenReturn("value");
+        create("optionalStringParam").invoke(mockController, context);
+        verify(mockController).optionalStringParam(Optional.of("value"));
+    }
+    
+    @Test
+    public void optionalStringParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalStringParam").invoke(mockController, context);
+        verify(mockController).optionalStringParam(Optional.empty());
+    }
+    
+    @Test
+    public void optionalIntegerParam() {
+        when(context.getParameter("param1")).thenReturn("1");
+        create("optionalIntegerParam").invoke(mockController, context);
+        verify(mockController).optionalIntegerParam(Optional.of(1));
+    }
+    
+    @Test
+    public void optionalIntegerParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalIntegerParam").invoke(mockController, context);
+        verify(mockController).optionalIntegerParam(Optional.empty());
+    }
+    
+    @Test
+    public void optionalLongParam() {
+        when(context.getParameter("param1")).thenReturn("1");
+        create("optionalLongParam").invoke(mockController, context);
+        verify(mockController).optionalLongParam(Optional.of(1L));
+    }
+    
+    @Test
+    public void optionalLongParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalLongParam").invoke(mockController, context);
+        verify(mockController).optionalLongParam(Optional.empty());
+    }
+    
+    @Test
+    public void optionalShortParam() {
+        when(context.getParameter("param1")).thenReturn("1");
+        create("optionalShortParam").invoke(mockController, context);
+        verify(mockController).optionalShortParam(Optional.of(new Short("1")));
+    }
+    
+    @Test
+    public void optionalShortParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalShortParam").invoke(mockController, context);
+        verify(mockController).optionalShortParam(Optional.empty());
+    }
+    
+    @Test
+    public void optionalRainbowParam() {
+        when(context.getParameter("param1")).thenReturn("red");
+        create("optionalRainbowParam").invoke(mockController, context);
+        verify(mockController).optionalRainbowParam(Optional.of(Rainbow.Red));
+    }
+    
+    @Test
+    public void optionalRainbowParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalRainbowParam").invoke(mockController, context);
+        verify(mockController).optionalRainbowParam(Optional.empty());
+    }
+    
+    @Captor
+    ArgumentCaptor<Optional<Rainbow[]>> argumentCaptor;
+    
+    @Test
+    public void optionalRainbowArrayParam() {
+        when(context.getParameter("param1")).thenReturn("Red,Orange,Yellow");
+        create("optionalRainbowArrayParam").invoke(mockController, context);
+        verify(mockController).optionalRainbowArrayParam(argumentCaptor.capture());
+        Rainbow [] rainbows = argumentCaptor.getValue().get();
+        assertThat(rainbows, Matchers.arrayContaining(Rainbow.Red, Rainbow.Orange, Rainbow.Yellow));
+    }
+    
+    @Test
+    public void optionalRainbowArrayParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalRainbowArrayParam").invoke(mockController, context);
+        verify(mockController).optionalRainbowArrayParam(Optional.empty());
+    }
+    
+    @Test
+    public void optionalDateParam() {
+        when(context.getParameter("param1")).thenReturn("15/01/2015");
+        create("optionalDateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        verify(mockController).optionalDateParam(Optional.of(new LocalDateTime(2015, 1, 15, 0, 0).toDate()));
+    }
+    
+    @Test
+    public void optionalDateParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalDateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        verify(mockController).optionalDateParam(Optional.empty());
+    }
+    
+    @Test
+    public void optionalBody() {
+        Object body = new Object();
+        when(context.parseBody(Object.class)).thenReturn(body);
+        create("optionalBody").invoke(mockController, context);
+        verify(mockController).optionalBody(Optional.of(body));
+    }
+    
+    @Test
+    public void optionalBodyEmpty() {
+        Object body = new Object();
+        when(context.parseBody(Object.class)).thenReturn(null);
+        create("optionalBody").invoke(mockController, context);
+        verify(mockController).optionalBody(Optional.empty());
+    }
+    
     @Test
     public void validationShouldBeAppliedInCorrectOrderPreFail() {
         create("requiredInt").invoke(mockController, context);
@@ -942,6 +1109,30 @@ public class ControllerMethodInvokerTest {
                                Context context, Session session);
 
         public Result required(@Param("param1") @Required String param1);
+        
+        public Result optionalSessionParam(@SessionParam("param1") Optional<String> param1);
+
+        public Result optionalAttribute(@Attribute("param1") Optional<Dep> param1);
+
+        public Result optionalHeader(@Header("param1") Optional<String> param1);
+
+        public Result optionalHeaders(@Headers("param1") Optional<String[]> param1);
+        
+        public Result optionalStringParam(@Param("param1") Optional<String> param1);
+        
+        public Result optionalIntegerParam(@Param("param1") Optional<Integer> param1);
+        
+        public Result optionalLongParam(@Param("param1") Optional<Long> param1);
+        
+        public Result optionalShortParam(@Param("param1") Optional<Short> param1);
+        
+        public Result optionalRainbowParam(@Param("param1") Optional<Rainbow> param1);
+        
+        public Result optionalRainbowArrayParam(@Param("param1") Optional<Rainbow[]> param1);
+        
+        public Result optionalDateParam(@Param("param1") Optional<Date> param1);
+        
+        public Result optionalBody(Optional<Object> body);
 
         public Result requiredInt(@Param("param1") @Required @NumberValue(min = 10) int param1);
 
