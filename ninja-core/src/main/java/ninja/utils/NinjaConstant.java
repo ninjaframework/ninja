@@ -70,7 +70,7 @@ public interface NinjaConstant {
      * If true Ninja will not execute controller method when argument would be null
      * and redirect to Bad Request page.
      * 
-     * Note: Default is false by default, but will change to true in the future (breaking change).
+     * Note: Default is false, but will change to true in the future (breaking change).
      * 
      * More: http://www.ninjaframework.org/documentation/basic_concepts/controllers.html
      */
