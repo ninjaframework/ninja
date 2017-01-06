@@ -61,6 +61,7 @@ import static org.junit.Assert.*;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Captor;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,7 +91,7 @@ public class ControllerMethodInvokerTest {
 
     @Before
     public void setUp() throws Exception {
-        this.ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        this.ninjaProperties = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
         this.lang = new LangImpl(this.ninjaProperties);
         this.validation = new ValidationImpl();
 
@@ -602,13 +603,13 @@ public class ControllerMethodInvokerTest {
     @Test
     public void customDateFormatParamShouldBeParsedToDate() throws Exception {
         when(context.getParameter("param1")).thenReturn("15/01/2015");
-        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(new LocalDateTime(2015, 1, 15, 0, 0).toDate());
     }
 
     @Test
     public void customDateFormatParamShouldHandleNull() throws Exception {
-        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(null);
         assertFalse(validation.hasViolations());
     }
@@ -616,7 +617,7 @@ public class ControllerMethodInvokerTest {
     @Test
     public void customDateFormatValidationShouldWork() throws Exception {
         when(context.getParameter("param1")).thenReturn("blah");
-        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(null);
         assertTrue(validation.hasFieldViolation("param1"));
     }
@@ -624,21 +625,21 @@ public class ControllerMethodInvokerTest {
     @Test(expected = RoutingException.class)
     public void needingInjectionParamParserNotBinded() throws Exception {
         when(context.getParameter("param1")).thenReturn("hello");
-        create("needingInjectionParamParser", ninjaProperties).invoke(mockController, context);
+        create("needingInjectionParamParser").invoke(mockController, context);
         verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
     }
     
     @Test
     public void needingInjectionParamParser() throws Exception {
         when(context.getParameter("param1")).thenReturn("hello");
-        create("needingInjectionParamParser", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        create("needingInjectionParamParser", NeedingInjectionParamParser.class).invoke(mockController, context);
         verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
     }
     
     @Test
     public void needingInjectionParamParserArray() throws Exception {
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("hello1", "hello2"));
-        create("needingInjectionParamParserArray", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        create("needingInjectionParamParserArray", NeedingInjectionParamParser.class).invoke(mockController, context);
         verify(mockController).needingInjectionParamParserArray(new Dep[] { new Dep("hello_hello1"), new Dep("hello_hello2") });
     }
 
@@ -818,14 +819,14 @@ public class ControllerMethodInvokerTest {
     @Test
     public void optionalDateParam() {
         when(context.getParameter("param1")).thenReturn("15/01/2015");
-        create("optionalDateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("optionalDateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).optionalDateParam(Optional.of(new LocalDateTime(2015, 1, 15, 0, 0).toDate()));
     }
     
     @Test
     public void optionalDateParamEmpty() {
         when(context.getParameter("param1")).thenReturn(null);
-        create("optionalDateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("optionalDateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).optionalDateParam(Optional.empty());
     }
     
@@ -994,12 +995,12 @@ public class ControllerMethodInvokerTest {
 
     private void validateJSR303(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
-        create("JSR303Validation", this.ninjaProperties, this.lang).invoke(mockController, context);
+        create("JSR303Validation", this.lang).invoke(mockController, context);
     }
 
     private void validateJSR303WithRequired(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
-        create("JSR303ValidationWithRequired", this.ninjaProperties, this.lang).invoke(mockController, context);
+        create("JSR303ValidationWithRequired", this.lang).invoke(mockController, context);
     }
 
     private Dto buildDto(String regex, String length, int range) {
@@ -1023,6 +1024,8 @@ public class ControllerMethodInvokerTest {
             protected void configure() {
                 Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
                 
+                bind(NinjaProperties.class).toInstance(ninjaProperties);
+                
                 for (Object o : toBind) {
                     if(o instanceof Class && ParamParser.class.isAssignableFrom((Class) o)) {
                         parsersBinder.addBinding().to((Class<? extends ParamParser>) o);
@@ -1031,7 +1034,7 @@ public class ControllerMethodInvokerTest {
                     }
                 }
             }
-        }));
+        }), ninjaProperties);
     }
 
     public enum Rainbow {

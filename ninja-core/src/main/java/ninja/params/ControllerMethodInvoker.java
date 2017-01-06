@@ -34,6 +34,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import java.lang.reflect.Type;
 import java.util.Optional;
+import ninja.exceptions.BadRequestException;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Invokes methods on the controller, extracting arguments out
@@ -41,12 +46,19 @@ import java.util.Optional;
  */
 public class ControllerMethodInvoker {
     
+    private final static Logger logger = LoggerFactory.getLogger(ControllerMethodInvoker.class);
+    
     private final Method method;
     private final ArgumentExtractor<?>[] argumentExtractors;
+    private final boolean useStrictArgumentExtractors;
 
-    ControllerMethodInvoker(Method method, ArgumentExtractor<?>[] argumentExtractors) {
+    ControllerMethodInvoker(
+            Method method, 
+            ArgumentExtractor<?>[] argumentExtractors,
+            boolean useStrictArgumentExtractors) {
         this.method = method;
         this.argumentExtractors = argumentExtractors;
+        this.useStrictArgumentExtractors = useStrictArgumentExtractors;
     }
 
     public Object invoke(Object controller, Context context) {
@@ -55,6 +67,9 @@ public class ControllerMethodInvoker {
         for (int i = 0; i < argumentExtractors.length; i++) {
             arguments[i] = argumentExtractors[i].extract(context);
         }
+        
+        checkNullArgumentsAndThrowBadRequestExceptionIfConfigured(arguments);
+        
         try {
             return method.invoke(controller, arguments);
         } catch (IllegalAccessException | IllegalArgumentException e) {
@@ -64,6 +79,17 @@ public class ControllerMethodInvoker {
                 throw (RuntimeException) e.getCause();
             } else {
                 throw new RuntimeException(e.getCause());
+            }
+        }
+    }
+    
+    private void checkNullArgumentsAndThrowBadRequestExceptionIfConfigured(Object[] arguments) {
+        if (!useStrictArgumentExtractors) {
+            return;
+        }
+        for (Object object : arguments) {
+            if (object == null) {
+                throw new BadRequestException();
             }
         }
     }
@@ -77,9 +103,14 @@ public class ControllerMethodInvoker {
      *      when type/lambda erasure makes the functional interface not reliable
      *      for reflecting.
      * @param injector The guice injector
+     * @param ninjaProperties The NinjaProperties of this application
      * @return An invoker
      */
-    public static ControllerMethodInvoker build(Method functionalMethod, Method implementationMethod, Injector injector) {
+    public static ControllerMethodInvoker build(
+            Method functionalMethod, 
+            Method implementationMethod, 
+            Injector injector,
+            NinjaProperties ninjaProperties) {
         // get both the parameters...
         final Type[] genericParameterTypes = implementationMethod.getGenericParameterTypes();
         final MethodParameter[] methodParameters = MethodParameter.convertIntoMethodParameters(genericParameterTypes);
@@ -126,8 +157,25 @@ public class ControllerMethodInvoker {
                             injector,
                             argumentExtractors[i]);
         }
+        
+        boolean useStrictArgumentExtractors = determineWhetherToUseStrictArgumentExtractorMode(ninjaProperties);
 
-        return new ControllerMethodInvoker(functionalMethod, argumentExtractors);
+        return new ControllerMethodInvoker(functionalMethod, argumentExtractors, useStrictArgumentExtractors);
+    }
+    
+    private static boolean determineWhetherToUseStrictArgumentExtractorMode(NinjaProperties ninjaProperties) {
+        boolean useStrictArgumentExtractors = ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false);
+  
+        if (useStrictArgumentExtractors == false) {
+            String message = "Using deprecated non-strict mode for injection of parameters into controller "
+                    + "(" + NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS + " = false)."
+                    + "This mode will soon be removed from Ninja. Make sure you upgrade your application asap. "
+                    + "More: http://www.ninjaframework.org/documentation/basic_concepts/controllers.html 'A note about null and Optional'";
+            logger.warn(message);
+        }
+        
+        return useStrictArgumentExtractors;
+    
     }
 
     private static ArgumentExtractor<?> getArgumentExtractor(

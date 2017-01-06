@@ -36,6 +36,10 @@ import testapplication.conf.Routes;
 import testapplication.controllers.ApplicationController;
 
 import com.google.inject.Injector;
+import com.google.inject.Provider;
+import ninja.RouteBuilderImpl;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApplicationControllerTest extends NinjaDocTester {
@@ -237,9 +241,10 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     @Test
     public void testRouteOrdering() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
-                NinjaMode.test);
-        RouterImpl router = new RouterImpl(injector, ninjaProperties);
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
+        when(routeBuilderImplProvider.get()).thenAnswer((invocation) -> new RouteBuilderImpl(ninjaProperties));
+        RouterImpl router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
         Routes routes = new Routes(ninjaProperties);
         routes.init(router);
         router.compileRoutes();
@@ -260,9 +265,10 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     @Test
     public void testMissingKeyedRoute() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
-                NinjaMode.test);
-        RouterImpl router = new RouterImpl(injector, ninjaProperties);
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
+        when(routeBuilderImplProvider.get()).thenAnswer((invocation) -> new RouteBuilderImpl(ninjaProperties));
+        RouterImpl router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
         Routes routes = new Routes(ninjaProperties);
         routes.init(router);
         router.compileRoutes();
@@ -276,10 +282,11 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     @Test
     public void testHasKeyedRoute() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
-                NinjaMode.test);
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
         ninjaProperties.setProperty("testkey", "true");
-        RouterImpl router = new RouterImpl(injector, ninjaProperties);
+        Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
+        when(routeBuilderImplProvider.get()).thenAnswer((invocation) -> new RouteBuilderImpl(ninjaProperties));
+        RouterImpl router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
         Routes routes = new Routes(ninjaProperties);
         routes.init(router);
         router.compileRoutes();

@@ -31,6 +31,7 @@ import java.util.Optional;
 import ninja.ControllerMethods.ControllerMethod;
 import ninja.utils.LambdaRoute;
 import ninja.utils.MethodReference;
+import ninja.utils.NinjaProperties;
 
 public class RouteBuilderImpl implements RouteBuilder {
     private static final Logger log = LoggerFactory.getLogger(RouteBuilder.class);
@@ -40,10 +41,13 @@ public class RouteBuilderImpl implements RouteBuilder {
     private Method functionalMethod;
     private Optional<Method> implementationMethod;  // method to use for parameter/annotation extraction
     private Optional<Object> targetObject;          // instance to invoke
+    private final NinjaProperties ninjaProperties;
 
-    public RouteBuilderImpl() {
+    @Inject
+    public RouteBuilderImpl(NinjaProperties ninjaProperties) {
         this.implementationMethod = Optional.empty();
         this.targetObject = Optional.empty();
+        this.ninjaProperties = ninjaProperties;
     }
     
     public RouteBuilderImpl GET() {
@@ -210,7 +214,7 @@ public class RouteBuilderImpl implements RouteBuilder {
             // invoke functional method with optionally using impl for argument extraction
             ControllerMethodInvoker methodInvoker
                 = ControllerMethodInvoker.build(
-                    functionalMethod, implementationMethod.orElse(functionalMethod), injector);
+                    functionalMethod, implementationMethod.orElse(functionalMethod), injector, ninjaProperties);
 
             return new FilterChainEnd(targetProvider, methodInvoker);
             

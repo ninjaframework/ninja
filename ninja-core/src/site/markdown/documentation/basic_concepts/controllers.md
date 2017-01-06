@@ -77,7 +77,8 @@ public class AppController {
     public Result userDashboard(
             @PathParam("id") String id, 
             @PathParam("email") String email, 
-            @Param("debug") String debug,
+            @Param("debug") Optional&lt;String&gt; debug,
+            @Param("isAdmin") Boolean isAdmin,
             @Params("filters") String [] filters,
             @Header("user-agent") String userAgent) {
 
@@ -104,7 +105,8 @@ public class ApplicationController {
     public Result index(
             @PathParam("id") String id, 
             @PathParam("email") String email, 
-            @Param("debug") String debug,
+            @Param("debug") Optional&lt;String&gt; debug,
+            @Param("isAdmin") Boolean isAdmin,
             Context context,
             MyObject myObject) {
 
@@ -145,6 +147,62 @@ If your custom object has a date/timestamp field, first make sure that you use t
 type and when you pass some date to the controller pass in the 
 <a href="http://joda-time.sourceforge.net/api-release/org/joda/time/format/ISODateTimeFormat.html#localDateOptionalTimeParser%28%29">format</a> accepted by Joda Time library, or implement your own 
 <code>ParamParser</code> for a java.util.Date.
+
+## A note about null and Optional
+
+### The default, but deprecated way
+
+In the example above we got two parameters: "debug" and "isAdmin". If both
+parameters are not supplied then debug will be Optional.empty() and 
+isAdmin will be null.
+
+But null has a lot of problems and Optional is the clean solution to say "The
+value may be there - or not". Therefore <b>Ninja will deprecate the usage of null
+in controller methods from version 7.0.0 onwards</b>.
+
+Ninja makes the transition smooth by providing a configuration variable that
+allows to control what behavior you want to use. By default the value will be false.
+
+<pre>
+ninja.strict_argument_extractors=false        # accepts null 
+</pre>
+
+
+### The new way (Default from Ninja 7.0.0)
+
+The new way eliminates the need to check for nulls.
+
+Activate the mode by setting a configuration variable in application.conf: 
+
+<pre>
+ninja.strict_argument_extractors=true         # redirects to Bad Request page if parameter is null 
+</pre>
+
+Then
+
+* use Optional (eg Optional&lt;String&gt; debug) when the parameter may be supplied by the user - or not.
+* don't use Optional (eg Boolean isAdmin) if you expect the parameter to be there.
+  If the parameter is not supplied by a user request then Ninja issues a Bad Request. Your controller method
+  code will never be executed.
+
+### How to upgrade from the deprecated way to the new way
+
+Make sure you upgrade asap to be compatible with future versions of Ninja.
+
+1) Activate the mode by setting a configuration variable in application.conf: 
+
+<pre>
+ninja.strict_argument_extractors=true         # redirects to Bad Request page if parameter is null 
+</pre>
+
+2) Then investigate all your controller methods. 
+
+If you do null checks on parameters that get injected into your controller 
+then change them to Optional. That way you get rid of all null checks.
+
+Things like @PathParam, Context and Session will never be Optional, because Ninja
+is always able to provide them. But things like @Param or custom argument
+extractors may well be optional.
 
 
 ## Ninja and content negotiation
