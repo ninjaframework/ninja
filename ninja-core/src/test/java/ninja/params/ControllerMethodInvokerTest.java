@@ -55,6 +55,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+import ninja.exceptions.BadRequestException;
+import ninja.utils.NinjaConstant;
 import org.hamcrest.Matchers;
 
 import static org.junit.Assert.*;
@@ -697,6 +699,13 @@ public class ControllerMethodInvokerTest {
         create("optionalSessionParam").invoke(mockController, context);
         verify(mockController).optionalSessionParam(Optional.empty());
     }
+    
+    @Test(expected = BadRequestException.class)
+    public void sessionParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(session.get("param1")).thenReturn(null);
+        create("sessionParam").invoke(mockController, context);
+    }
 
     @Test
     public void optionalAttribute() {
@@ -712,6 +721,13 @@ public class ControllerMethodInvokerTest {
         create("optionalAttribute").invoke(mockController, context);
         verify(mockController).optionalAttribute(Optional.empty());
     }
+    
+    @Test(expected = BadRequestException.class)
+    public void attributeStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getAttribute("param1", Dep.class)).thenReturn(null);
+        create("attribute").invoke(mockController, context);
+    }
 
     @Test
     public void optionalHeader() {
@@ -726,19 +742,33 @@ public class ControllerMethodInvokerTest {
         create("optionalHeader").invoke(mockController, context);
         verify(mockController).optionalHeader(Optional.empty());
     }
+    
+    @Test(expected = BadRequestException.class)
+    public void headerStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getHeader("param1")).thenReturn(null);
+        create("header").invoke(mockController, context);
+    }
 
     @Test
-    public void optionalStringParam() {
+    public void optionalParam() {
         when(context.getParameter("param1")).thenReturn("value");
-        create("optionalStringParam").invoke(mockController, context);
-        verify(mockController).optionalStringParam(Optional.of("value"));
+        create("optionalParam").invoke(mockController, context);
+        verify(mockController).optionalParam(Optional.of("value"));
     }
     
     @Test
-    public void optionalStringParamEmpty() {
+    public void optionalParamEmpty() {
         when(context.getParameter("param1")).thenReturn(null);
-        create("optionalStringParam").invoke(mockController, context);
-        verify(mockController).optionalStringParam(Optional.empty());
+        create("optionalParam").invoke(mockController, context);
+        verify(mockController).optionalParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void paramStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("param").invoke(mockController, context);
     }
     
     @Test
@@ -755,6 +785,13 @@ public class ControllerMethodInvokerTest {
         verify(mockController).optionalIntegerParam(Optional.empty());
     }
     
+    @Test(expected = BadRequestException.class)
+    public void integerParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("integerParam").invoke(mockController, context);
+    }
+    
     @Test
     public void optionalLongParam() {
         when(context.getParameter("param1")).thenReturn("1");
@@ -767,6 +804,13 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn(null);
         create("optionalLongParam").invoke(mockController, context);
         verify(mockController).optionalLongParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void longParamEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("longParam").invoke(mockController, context);
     }
     
     @Test
@@ -783,37 +827,58 @@ public class ControllerMethodInvokerTest {
         verify(mockController).optionalShortParam(Optional.empty());
     }
     
-    @Test
-    public void optionalRainbowParam() {
-        when(context.getParameter("param1")).thenReturn("red");
-        create("optionalRainbowParam").invoke(mockController, context);
-        verify(mockController).optionalRainbowParam(Optional.of(Rainbow.Red));
+    @Test(expected = BadRequestException.class)
+    public void shortParamEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("shortParam").invoke(mockController, context);
     }
     
     @Test
-    public void optionalRainbowParamEmpty() {
+    public void optionalEnumParam() {
+        when(context.getParameter("param1")).thenReturn("red");
+        create("optionalEnumParam").invoke(mockController, context);
+        verify(mockController).optionalEnumParam(Optional.of(Rainbow.Red));
+    }
+    
+    @Test
+    public void optionalEnumParamEmpty() {
         when(context.getParameter("param1")).thenReturn(null);
-        create("optionalRainbowParam").invoke(mockController, context);
-        verify(mockController).optionalRainbowParam(Optional.empty());
+        create("optionalEnumParam").invoke(mockController, context);
+        verify(mockController).optionalEnumParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void rainbowParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("enumParam").invoke(mockController, context);
     }
     
     @Captor
     ArgumentCaptor<Optional<Rainbow[]>> argumentCaptor;
     
     @Test
-    public void optionalRainbowArrayParam() {
+    public void optionalEnumArrayParam() {
         when(context.getParameter("param1")).thenReturn("Red,Orange,Yellow");
-        create("optionalRainbowArrayParam").invoke(mockController, context);
-        verify(mockController).optionalRainbowArrayParam(argumentCaptor.capture());
+        create("optionalEnumArrayParam").invoke(mockController, context);
+        verify(mockController).optionalEnumArrayParam(argumentCaptor.capture());
         Rainbow [] rainbows = argumentCaptor.getValue().get();
         assertThat(rainbows, Matchers.arrayContaining(Rainbow.Red, Rainbow.Orange, Rainbow.Yellow));
     }
     
     @Test
-    public void optionalRainbowArrayParamEmpty() {
+    public void optionalEnumArrayParamEmpty() {
         when(context.getParameter("param1")).thenReturn(null);
-        create("optionalRainbowArrayParam").invoke(mockController, context);
-        verify(mockController).optionalRainbowArrayParam(Optional.empty());
+        create("optionalEnumArrayParam").invoke(mockController, context);
+        verify(mockController).optionalEnumArrayParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void rainbowArrayParamEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("enumArrayParam").invoke(mockController, context);
     }
     
     @Test
@@ -830,6 +895,13 @@ public class ControllerMethodInvokerTest {
         verify(mockController).optionalDateParam(Optional.empty());
     }
     
+    @Test(expected = BadRequestException.class)
+    public void dateParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
+    }
+    
     @Test
     public void optionalBody() {
         Object body = new Object();
@@ -840,10 +912,16 @@ public class ControllerMethodInvokerTest {
     
     @Test
     public void optionalBodyEmpty() {
-        Object body = new Object();
         when(context.parseBody(Object.class)).thenReturn(null);
         create("optionalBody").invoke(mockController, context);
         verify(mockController).optionalBody(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void bodyEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.parseBody(Object.class)).thenReturn(null);
+        create("body").invoke(mockController, context);
     }
     
     @Test
@@ -1121,7 +1199,7 @@ public class ControllerMethodInvokerTest {
 
         public Result optionalHeaders(@Headers("param1") Optional<String[]> param1);
         
-        public Result optionalStringParam(@Param("param1") Optional<String> param1);
+        public Result optionalParam(@Param("param1") Optional<String> param1);
         
         public Result optionalIntegerParam(@Param("param1") Optional<Integer> param1);
         
@@ -1129,9 +1207,9 @@ public class ControllerMethodInvokerTest {
         
         public Result optionalShortParam(@Param("param1") Optional<Short> param1);
         
-        public Result optionalRainbowParam(@Param("param1") Optional<Rainbow> param1);
+        public Result optionalEnumParam(@Param("param1") Optional<Rainbow> param1);
         
-        public Result optionalRainbowArrayParam(@Param("param1") Optional<Rainbow[]> param1);
+        public Result optionalEnumArrayParam(@Param("param1") Optional<Rainbow[]> param1);
         
         public Result optionalDateParam(@Param("param1") Optional<Date> param1);
         
