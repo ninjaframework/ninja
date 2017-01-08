@@ -51,6 +51,8 @@ public class ControllerMethodInvoker {
     private final Method method;
     private final ArgumentExtractor<?>[] argumentExtractors;
     private final boolean useStrictArgumentExtractors;
+    
+    private static boolean nonStrictModeWarningLoggedAlready = false;
 
     ControllerMethodInvoker(
             Method method, 
@@ -166,16 +168,16 @@ public class ControllerMethodInvoker {
     private static boolean determineWhetherToUseStrictArgumentExtractorMode(NinjaProperties ninjaProperties) {
         boolean useStrictArgumentExtractors = ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false);
   
-        if (useStrictArgumentExtractors == false) {
+        if (useStrictArgumentExtractors == false && nonStrictModeWarningLoggedAlready == false) {
             String message = "Using deprecated non-strict mode for injection of parameters into controller "
-                    + "(" + NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS + " = false)."
-                    + "This mode will soon be removed from Ninja. Make sure you upgrade your application asap. "
-                    + "More: http://www.ninjaframework.org/documentation/basic_concepts/controllers.html 'A note about null and Optional'";
+                    + "(" + NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS + " = false). "
+                    + "This mode will soon be removed from Ninja. Make sure you upgrade your application as soon as possible. "
+                    + "More: http://www.ninjaframework.org/documentation/basic_concepts/controllers.html 'A note about null and Optional'.";
             logger.warn(message);
+            nonStrictModeWarningLoggedAlready = true;
         }
         
         return useStrictArgumentExtractors;
-    
     }
 
     private static ArgumentExtractor<?> getArgumentExtractor(
