@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,18 @@
 
 package ninja;
 
-import ninja.utils.MethodReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import ninja.utils.MethodReference;
 import ninja.utils.NinjaProperties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.base.Optional;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -71,7 +74,7 @@ public class RouterImpl implements Router {
             Class<?> controllerClass,
             String controllerMethodName) {
 
-        Optional<Map<String, Object>> parameterMap = Optional.absent();
+        Optional<Map<String, Object>> parameterMap = Optional.empty();
 
         return getReverseRoute(controllerClass, controllerMethodName, parameterMap);
 
@@ -102,7 +105,7 @@ public class RouterImpl implements Router {
             String controllerMethodName,
             Map<String, Object> parameterMap) {
         Optional<Map<String, Object>> parameterMapOptional
-                = Optional.fromNullable(parameterMap);
+                = Optional.ofNullable(parameterMap);
 
         return getReverseRoute(
                 controllerClass, controllerMethodName,
@@ -288,7 +291,7 @@ public class RouterImpl implements Router {
         
         Route route = this.reverseRoutes.get(reverseRouteKey);
         
-        return Optional.fromNullable(route);
+        return Optional.ofNullable(route);
     }
     
     private void logRoutes() {

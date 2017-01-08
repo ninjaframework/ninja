@@ -1,6 +1,8 @@
 Version 6.x.x
 =============
+
  
+ * 2017-01-03 Replaced Guava Optionals with Java8 Optionals (bazi)
  * 2016-12-19 New `ninja.ReverseRouter` for validated, URL-safe reverse routing using Java 8 lambda expressions in addition to legacy Class + method name references. (jjlauer)
  * 2016-10-03 Remove `async-machine-beta` module (jjlauer)
  * 2016-09-29 Route using Java 8 lambda expressions (jjlauer)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,15 @@
 package ninja;
 
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import ninja.diagnostics.DiagnosticError;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
+import ninja.diagnostics.DiagnosticError;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.InternalServerErrorException;
 import ninja.i18n.Messages;
@@ -30,9 +36,6 @@ import ninja.utils.NinjaProperties;
 import ninja.utils.ResultHandler;
 
 import org.hamcrest.CoreMatchers;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,11 +44,7 @@ import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.google.common.base.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NinjaDefaultTest {

@@ -15,21 +15,24 @@
  */
 package ninja;
 
-import com.google.common.base.Optional;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.inject.Inject;
+import java.util.Optional;
+
 import ninja.ControllerMethods.ControllerMethod;
 import ninja.ReverseRouter.Builder;
 import ninja.utils.LambdaRoute;
 import ninja.utils.MethodReference;
 import ninja.utils.NinjaProperties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 /**
  * Reverse routing. Lookup the uri associated with a controller method.
