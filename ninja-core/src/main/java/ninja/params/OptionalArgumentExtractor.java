@@ -41,7 +41,6 @@ class OptionalArgumentExtractor<T> implements ArgumentExtractor<Optional<T>> {
 
     @Override
     public Class<Optional<T>> getExtractedType() {
-         // FIXME => how can I create the Class for it during runtime?
         throw new RuntimeException("This is a framework-internal ArgumentExtractor. This method should not be used by anyone.");
     }
 
