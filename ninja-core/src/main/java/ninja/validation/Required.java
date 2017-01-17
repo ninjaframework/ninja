@@ -24,11 +24,13 @@ import java.lang.annotation.Target;
 /**
  * Validates that the length of the field meets the given length constraints
  *
+ * @deprecated Please use Optional in controller method instead. 
  * @author James Roper
  */
 @WithValidator(Validators.RequiredValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
+@Deprecated
 public @interface Required {
     /**
      * The key for the violation message
