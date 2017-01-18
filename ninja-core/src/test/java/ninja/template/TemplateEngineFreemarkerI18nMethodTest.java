@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Result;
@@ -41,9 +42,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.core.Appender;
-
-import com.google.common.base.Optional;
-
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -131,7 +129,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         Mockito.when(
                 messages.get("my.message.key", context, resultOptional))
-                .thenReturn(Optional.<String>absent());
+                .thenReturn(Optional.<String>empty());
         
         List args = new ArrayList();
         args.add(new SimpleScalar("my.message.key"));
@@ -188,7 +186,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
                         Matchers.eq(context), 
                         Matchers.eq(resultOptional),
                         Matchers.any(Object.class)))
-                .thenReturn(Optional.<String>absent());
+                .thenReturn(Optional.<String>empty());
         
         TemplateModel returnValue 
                 = templateEngineFreemarkerI18nMethod.exec(args);

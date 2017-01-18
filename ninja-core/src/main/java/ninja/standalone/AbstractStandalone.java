@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,26 @@
 
 package ninja.standalone;
 
-import ninja.utils.OverlayedNinjaProperties;
-import com.google.common.base.Optional;
-import com.google.inject.CreationException;
+import static ninja.standalone.StandaloneHelper.checkContextPath;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import javax.net.ssl.SSLContext;
-import static ninja.standalone.StandaloneHelper.checkContextPath;
+import java.util.Optional;
+
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
-import org.apache.commons.lang3.StringUtils;
+import ninja.utils.OverlayedNinjaProperties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.CreationException;
+
+import javax.net.ssl.SSLContext;
 
 /**
  * Abstract Standalone that implements most functionality required to write
@@ -502,7 +506,7 @@ abstract public class AbstractStandalone<T extends AbstractStandalone> implement
         
         s.append("on ");
         
-        s.append(Optional.fromNullable(getHost()).or("<all>"));
+        s.append(Optional.ofNullable(getHost()).orElse("<all>"));
         s.append(":");
         s.append(ports);
 

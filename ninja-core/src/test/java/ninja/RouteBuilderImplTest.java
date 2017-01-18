@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 import ninja.utils.MethodReference;
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RouteBuilderImplTest {
@@ -39,83 +41,69 @@ public class RouteBuilderImplTest {
     Injector injector;
 
     @Test
-    public void testBasicGETRoute() {
-
+    public void basicGETRoute() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("GET", "/index"));
-
     }
 
     @Test
-    public void testBasicPOSTRoute() {
-
+    public void basicPOSTRoute() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.POST().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("POST", "/index"));
-
     }
 
     @Test
-    public void testBasicPUTRoute() {
-
+    public void basicPUTRoute() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.PUT().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("PUT", "/index"));
-
     }
 
     @Test
-    public void testBasicRoutes() {
-
+    public void basicRoutes() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.OPTIONS().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("OPTIONS", "/index"));
-
     }
     
     @Test
-    public void testBasisHEAD() {
-
+    public void basisHEAD() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.HEAD().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("HEAD", "/index"));
-
     }
     
     @Test
-    public void testBasicAnyHttpMethod() {
-
+    public void basicAnyHttpMethod() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.METHOD("PROPFIND").route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("PROPFIND", "/index"));
-
     }
 
     @Test
-    public void testBasicRoutesWithRegex() {
-
+    public void basicRoutesWithRegex() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/.*");
 
         Route route = buildRoute(routeBuilder);
-        // make sure the route catches everything:
+        
+        // make sure the route catches everything
         assertTrue(route.matches("GET", "/index"));
         assertTrue(route.matches("GET", "/stylesheet.css"));
         assertTrue(route.matches("GET", "/public/stylesheet.css"));
         assertTrue(route.matches("GET", "/public/bootstrap.js"));
-
     }
 
     @Test
-    public void testBasicPlaceholersAndParameters() {
-
+    public void basicPlaceholersAndParameters() {
         // /////////////////////////////////////////////////////////////////////
         // One parameter:
         // /////////////////////////////////////////////////////////////////////
@@ -149,12 +137,10 @@ public class RouteBuilderImplTest {
         assertEquals(2, map.entrySet().size());
         assertEquals("John", map.get("name"));
         assertEquals("20", map.get("id"));
-
     }
 
     @Test
-    public void testBasicPlaceholersParametersAndRegex() {
-
+    public void basicPlaceholersParametersAndRegex() {
         // test that parameter parsing works in conjunction with
         // regex expressions...
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
@@ -178,9 +164,8 @@ public class RouteBuilderImplTest {
 
     }
 
-        @Test
-    public void testBasicPlaceholersParametersAndRegexInsideVariableParts() {
-
+    @Test
+    public void basicPlaceholersParametersAndRegexInsideVariableParts() {
         // test that parameter parsing works in conjunction with
         // regex expressions...
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
@@ -220,7 +205,7 @@ public class RouteBuilderImplTest {
     }
 
     @Test
-    public void testParametersDontCrossSlashes() {
+    public void parametersDontCrossSlashes() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}/{id2}/{id3}/morestuff/at/the/end");
         Route route = buildRoute(routeBuilder);
@@ -232,7 +217,7 @@ public class RouteBuilderImplTest {
     }
 
     @Test
-    public void testPointsInRegexDontCrashRegexInTheMiddleOfTheRoute() {
+    public void pointsInRegexDontCrashRegexInTheMiddleOfTheRoute() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}/myname");
         Route route = buildRoute(routeBuilder);
@@ -254,7 +239,7 @@ public class RouteBuilderImplTest {
     }
 
     @Test
-    public void testPointsInRegexDontCrashRegexAtEnd() {
+    public void pointsInRegexDontCrashRegexAtEnd() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}");
         Route route = buildRoute(routeBuilder);
@@ -269,7 +254,7 @@ public class RouteBuilderImplTest {
     }
 
     @Test
-    public void testRegexInRouteWorksWithEscapes() {
+    public void regexInRouteWorksWithEscapes() {
         // Test escaped constructs in regex
         // regex with escaped construct in a route
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
@@ -290,7 +275,7 @@ public class RouteBuilderImplTest {
     }
 
     @Test
-    public void testRegexInRouteWorksWithoutSlashAtTheEnd() {
+    public void regexInRouteWorksWithoutSlashAtTheEnd() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}/.*");
         Route route = buildRoute(routeBuilder);
@@ -317,7 +302,7 @@ public class RouteBuilderImplTest {
     }
 
     @Test
-    public void testRouteWithUrlEncodedSlashGetsChoppedCorrectly() {
+    public void routeWithUrlEncodedSlashGetsChoppedCorrectly() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/blah/{id}/.*");
         Route route = buildRoute(routeBuilder);
@@ -336,7 +321,9 @@ public class RouteBuilderImplTest {
     }
 
     @Test
-    public void testRouteWithResult() {
+    public void routeWithResult() {
+        Context context = mock(Context.class);
+        
         String template = "/directly_result/stuff";
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/directly_result/route").with(Results.html().template(template));
@@ -344,12 +331,12 @@ public class RouteBuilderImplTest {
         Route route = routeBuilder.buildRoute(injector);
         assertTrue(route.matches("GET", "/directly_result/route"));
 
-        Result result = route.getFilterChain().next(null);
+        Result result = route.getFilterChain().next(context);
         assertEquals(result.getTemplate(), template);
     }
 
     @Test
-    public void testFailedControllerRegistration() {
+    public void failedControllerRegistration() {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/failure").with(MockController.class, "DoesNotExist");
 
@@ -362,14 +349,14 @@ public class RouteBuilderImplTest {
     }
     
     @Test
-    public void testRouteWithMethodReference() throws Exception {
+    public void routeWithMethodReference() throws Exception {
         RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
         routeBuilder.GET().route("/method_reference").with(new MethodReference(MockController.class, "execute"));
 
         Route route = routeBuilder.buildRoute(injector);
         assertTrue(route.matches("GET", "/method_reference"));
 
-        assertThat(route.getControllerClass().newInstance(), instanceOf(MockController.class));
+        assertThat(route.getControllerClass(), is(MockController.class));
     }
 
     private Route buildRoute(RouteBuilderImpl builder) {
@@ -381,6 +368,78 @@ public class RouteBuilderImplTest {
         public Result execute() {
             return null;
         }
+        public Result execute2(Context context) {
+            return null;
+        }
+        static public Result execute3(Context context) {
+            return null;
+        }
+    }
+    
+    @Test
+    public void routeToAnyInstanceMethodReference() throws Exception {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/execute").with(MockController::execute);
+        Route route = routeBuilder.buildRoute(injector);
+        
+        assertTrue(route.matches("GET", "/execute"));
+        assertThat(route.getControllerClass(), is(MockController.class));
+        assertThat(route.getControllerMethod().getName(), is("execute"));
+    }
+    
+    @Test
+    public void routeToSpecificInstanceMethodReference() throws Exception {
+        MockController controller = new MockController();
+        
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/execute").with(controller::execute);
+        Route route = routeBuilder.buildRoute(injector);
+        
+        assertTrue(route.matches("GET", "/execute"));
+        assertThat(route.getControllerClass().getCanonicalName(), startsWith(this.getClass().getCanonicalName()));
+        assertThat(route.getControllerMethod().getName(), is("apply"));
+    }
+    
+    @Test
+    public void routeToStaticMethodReference() throws Exception {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/execute").with(MockController::execute3);
+        Route route = routeBuilder.buildRoute(injector);
+        
+        assertTrue(route.matches("GET", "/execute"));
+        assertThat(route.getControllerClass(), is(MockController.class));
+        assertThat(route.getControllerMethod().getName(), is("execute3"));
+    }
+    
+    @Test
+    @SuppressWarnings("Convert2Lambda")
+    public void routeToAnonymousClassReference() throws Exception {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        
+        routeBuilder.GET().route("/execute").with(new ControllerMethods.ControllerMethod0() {
+            @Override
+            public Result apply() {
+                return Results.redirect("/");
+            }
+        });
+        
+        Route route = routeBuilder.buildRoute(injector);
+        
+        assertTrue(route.matches("GET", "/execute"));
+        assertThat(route.getControllerClass().isAnonymousClass(), is(true));
+        assertThat(route.getControllerMethod().getName(), is("apply"));
+    }
+    
+    @Test
+    public void routeToAnonymousMethodReference() throws Exception {
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        routeBuilder.GET().route("/execute").with(() -> Results.redirect("/"));
+        Route route = routeBuilder.buildRoute(injector);
+        
+        assertTrue(route.matches("GET", "/execute"));
+        // should be a class within this test class as a real lambda
+        assertThat(route.getControllerClass().getCanonicalName(), startsWith(this.getClass().getCanonicalName()));
+        assertThat(route.getControllerMethod().getName(), is("apply"));
     }
 
 }

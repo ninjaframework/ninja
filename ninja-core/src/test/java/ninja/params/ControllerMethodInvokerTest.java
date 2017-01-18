@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -851,7 +851,7 @@ public class ControllerMethodInvokerTest {
                 break;
             }
         }
-        return ControllerMethodInvoker.build(method, Guice.createInjector(new AbstractModule() {
+        return ControllerMethodInvoker.build(method, method, Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);

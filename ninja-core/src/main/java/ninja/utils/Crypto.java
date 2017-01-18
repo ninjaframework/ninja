@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import java.nio.charset.StandardCharsets;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -57,7 +58,7 @@ public class Crypto {
         try {
 
             // Get an hmac_sha1 key from the raw key bytes
-            byte[] keyBytes = key.getBytes();
+            byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
             SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "HmacSHA1");
 
             // Get an hmac_sha1 Mac instance and initialize with the signing key
@@ -65,7 +66,7 @@ public class Crypto {
             mac.init(signingKey);
 
             // Compute the hmac on input data bytes
-            byte[] rawHmac = mac.doFinal(value.getBytes());
+            byte[] rawHmac = mac.doFinal(value.getBytes(StandardCharsets.UTF_8));
 
             // Convert raw bytes to Hex
             byte[] hexBytes = new Hex().encode(rawHmac);

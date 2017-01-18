@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,6 +19,7 @@ import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_F
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -30,6 +31,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Singleton;
 
@@ -54,11 +56,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
-import com.google.common.base.Optional;
-
 import freemarker.template.Configuration;
-import org.junit.Assert;
-import static org.junit.Assert.fail;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineFreemarkerTest {
@@ -121,7 +119,7 @@ public class TemplateEngineFreemarkerTest {
                         ninjaProperties);
 
         
-        when(lang.getLanguage(any(Context.class), any(Optional.class))).thenReturn(Optional.<String>absent());
+        when(lang.getLanguage(any(Context.class), any(Optional.class))).thenReturn(Optional.<String>empty());
 
         Session session = Mockito.mock(Session.class);
         when(session.isEmpty()).thenReturn(true);

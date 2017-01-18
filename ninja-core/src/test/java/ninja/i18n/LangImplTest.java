@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import ninja.Context;
 import ninja.Cookie;
@@ -37,8 +38,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.google.common.base.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LangImplTest {
@@ -152,7 +151,7 @@ public class LangImplTest {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"en"});
         Lang lang = new LangImpl(ninjaProperties);
         
-        Optional<String> language = Optional.absent();
+        Optional<String> language = Optional.empty();
         Locale locale = lang.getLocaleFromStringOrDefault(language);
         
         assertEquals(Locale.ENGLISH, locale);
@@ -161,7 +160,7 @@ public class LangImplTest {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"de", "en"});
         lang = new LangImpl(ninjaProperties);
         
-        language = Optional.absent();
+        language = Optional.empty();
         locale = lang.getLocaleFromStringOrDefault(language);
         
         assertEquals(Locale.GERMAN, locale);
@@ -170,7 +169,7 @@ public class LangImplTest {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"de-DE", "en"});
         lang = new LangImpl(ninjaProperties);
         
-        language = Optional.absent();
+        language = Optional.empty();
         locale = lang.getLocaleFromStringOrDefault(language);
         
         assertEquals(Locale.GERMANY, locale);
@@ -186,7 +185,7 @@ public class LangImplTest {
         when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {});
         Lang lang = new LangImpl(ninjaProperties);
         
-        Optional<String> language = Optional.absent();
+        Optional<String> language = Optional.empty();
         lang.getLocaleFromStringOrDefault(language);
         
         // ISE expected

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package ninja;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,14 +29,12 @@ import ninja.utils.MimeTypes;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This controller serves public resources under /assets.
@@ -127,7 +123,7 @@ public class AssetsController {
         // check if stream exists. if not print a notfound exception
         if (url == null) {
             context.finalizeHeadersWithoutFlashAndSessionCookie(Results.notFound());
-        } else if (url.getProtocol().equals("file") && new File(url.getPath()).isDirectory()) {
+        } else if (assetsControllerHelper.isDirectoryURL(url)) {
             // Disable listing of directory contents
             context.finalizeHeadersWithoutFlashAndSessionCookie(Results.notFound());
         } else {

@@ -1,3 +1,32 @@
+Version 6.x.x
+=============
+
+ 
+ * 2017-01-03 Replaced Guava Optionals with Java8 Optionals (bazi)
+ * 2016-12-19 New `ninja.ReverseRouter` for validated, URL-safe reverse routing using Java 8 lambda expressions in addition to legacy Class + method name references. (jjlauer)
+ * 2016-10-03 Remove `async-machine-beta` module (jjlauer)
+ * 2016-09-29 Route using Java 8 lambda expressions (jjlauer)
+ * 2016-09-20 Session signatures now explicitly use UTF-8 for String.getBytes (lishid)
+ * 2016-09-01 Bump to minimum requirement of Java 8 (jjlauer)
+ * 2016-09-01 jetty from 9.2.10.v20150310 to 9.3.11.v20160721
+ * 2016-09-01 guava from 18.0 to 19.0
+ * 2016-09-01 prettytime from 3.2.7.Final to 4.0.1
+
+Version 5.8.0
+=============
+
+ * 2016-08-26 Final release supporting Java 7! Future development will target Java 8+
+ * 2016-08-26 jetty from 9.2.10.v20150310 to 9.2.18.v20160721
+ * 2016-08-26 slf4j from 1.7.13 to 1.7.21
+ * 2016-08-26 joda from 2.7 to 2.9.4
+ * 2016-08-26 jackson from 2.5.1 to 2.8.1
+ * 2016-08-26 commons-io from 2.4 to 2.5
+ * 2016-08-26 commons-lang3 from 3.3.2 to 3.4
+ * 2016-08-26 commons-email from 1.3.3 to 1.4
+ * 2016-08-26 flyway-core from 4.0 to 4.0.3
+ * 2016-08-26 zt-exec from 1.7 to 1.9
+ * 2016-08-25 Migration module can be configured to drop schema with `ninja.migration.drop` property (jfendler)
+ * 2016-07-24 Fix directory listing when the server running path contains whitespaces (mallowlabs)
  * 2016-07-19 Fix for request body parsing of inner objects (jlannoy)
 
 Version 5.7.0

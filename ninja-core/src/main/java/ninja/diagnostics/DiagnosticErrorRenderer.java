@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,14 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
 import ninja.exceptions.InternalServerErrorException;
 import ninja.utils.ResponseStreams;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -361,7 +363,7 @@ public class DiagnosticErrorRenderer {
             }
         }
         
-        appendNameValue(s, "Fallback content type", result.fallbackContentType().or("None set")); 
+        appendNameValue(s, "Fallback content type", result.fallbackContentType().orElse("None set"));
         appendNameValue(s, "Json View", (result.getJsonView() != null ? result.getJsonView().getClass().getCanonicalName() : "None")); 
         
         

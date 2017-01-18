@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package ninja;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import com.google.common.base.Optional;
 import ninja.utils.MethodReference;
 
 public interface Router {
@@ -43,7 +43,11 @@ public interface Router {
      * @param clazz The controllerClass e.g. ApplicationController.class
      * @param methodName the methodName of the class e.g. "index"
      * @return The final url (without server, and without any prefixes)
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> clazz, String methodName);
     
     /**
@@ -61,7 +65,11 @@ public interface Router {
      *          or simply use a String. If the raw uri does not contain the placeholders
      *          they will be added as query parameters ?key=value&key2=value2 and so on
      * @return The final url (without server, and without any prefixes)
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> clazz, String methodName, Map<String, Object> parameterMap);
 
     /**
@@ -79,7 +87,11 @@ public interface Router {
      *          or simply use a String. If the raw uri does not contain the placeholders
      *          they will be added as query parameters ?key=value&key2=value2 and so on
      * @return The final url (without server, and without any prefixes)
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> clazz, String methodName, Object ... parameterMap);
     
     
@@ -98,18 +110,45 @@ public interface Router {
      *          or simply use a String. If the raw uri does not contain the placeholders
      *          they will be added as query parameters ?key=value&key2=value2 and so on
      * @return The final url (without server, and without any prefixes)
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
      */
+    @Deprecated
     public String getReverseRoute(Class<?> controllerClass,
                                  String controllerMethodName,
                                  Optional<Map<String, Object>> parameterMap);
         
-    
+    /**
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
+     */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef);
     
+    /**
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
+     */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef, Map<String, Object> parameterMap);
     
+    /**
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
+     */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef, Object ... parameterMap);
     
+    /**
+     * @deprecated Reverse routing in the Router is not validated and does not
+     *      URL-escape path or query parameters. Use <code>ninja.ReverseRouter</code>
+     *      to build your reverse routes.
+     */
+    @Deprecated
     public String getReverseRoute(MethodReference controllerMethodRef, Optional<Map<String, Object>> parameterMap);
     
     /**
@@ -123,6 +162,9 @@ public interface Router {
      * Returns the list of compiled routes.
      */
     public List<Route> getRoutes();
+    
+    public Optional<Route> getRouteForControllerClassAndMethod(
+        Class<?> controllerClass, String controllerMethodName);
 
     // /////////////////////////////////////////////////////////////////////////
     // convenience methods to use the route in a DSL like way

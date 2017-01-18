@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -285,7 +285,7 @@ public class MultipartContextImplMemoryTest {
 
         Class<ControllerImpl> controllerClass = ControllerImpl.class;
         Method controllerMethod = ControllerImpl.class.getMethod("method1");
-        Route route = new Route("GET", "/", controllerClass, controllerMethod, null);
+        Route route = new Route("GET", "/", controllerMethod, null);
         context.setRoute(route);
 
         Assert.assertEquals("test#1", context.getParameterAsFileItem(file1).getContentType());
@@ -297,7 +297,7 @@ public class MultipartContextImplMemoryTest {
 
         Class<ControllerImpl> controllerClass = ControllerImpl.class;
         Method controllerMethod = ControllerImpl.class.getMethod("method2");
-        Route route = new Route("GET", "/", controllerClass, controllerMethod, null);
+        Route route = new Route("GET", "/", controllerMethod, null);
         context.setRoute(route);
         
         context.init(servletContext, httpServletRequest, httpServletResponse);

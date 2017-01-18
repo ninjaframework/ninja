@@ -22,13 +22,43 @@ Ninja is fully compatible to the App Engine via the ninja-appengine module.
 
 Please follow the guide at: https://github.com/ninjaframework/ninja-appengine/
 
-
 Heroku support
 --------------
 
-Ninja is fully supported by Heroku. Check out the blog post at:
+Ninja is fully supported by [Heroku] (http://www.heroku.com). Check out the blog post at:
 http://ars-codia.raphaelbauer.com/2013/07/running-ninja-web-framework-apps-on.html
 
+Clever Cloud
+------------
+
+One other cloud option is [Clever Cloud] (http://www.clever-cloud.com), a Europe-based PaaS company. 
+It supports different Java runtimes, with automatic scaling and cloud-friendly features. 
+You can for example deploy your Ninja application directly from a [GitHub] (http://www.github.com) 
+public or private repository, by following these simple steps :
+ * First, create the file <code>clevercloud/jar.json</code> at the root of your project
+<pre class="prettyprint">
+  {
+    "build": {
+      "type": "maven", 
+      "goal":"package -DskipTests"
+    }, 
+    "deploy": {
+      "type": "jar", 
+      "jarName": "target/yourApplicationArtifactId-1.0-SNAPSHOT.jar"
+    }
+  }
+</pre>
+ * Log in on Clever Cloud using your GitHub account
+ * Click on "Add an application" and select the right GitHub repository
+ * Select the "Java+Jar" runtime and fill in your application properties (name...)
+
+That's enough to deploy a first instance of your application. And each time 
+you will publish modifications on the repository, it will run the maven <code>package</code> 
+command and use the generated fat Jar as an executable.
+
+You can also add a database (PostgreSQL, MySQL...) to your application, by "Add an add-on" feature. 
+Link it to your application and then use the add-on environment variables in your <code>conf/application.conf</code> 
+file(using ${env:XXX} format). Some other add-ons are availalble, like an S3 file storage.
 
 More
 ----

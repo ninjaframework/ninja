@@ -220,7 +220,7 @@ ninja.jpa.persistence_unit_name=dev_unit
 %prod.ninja.jpa.persistence_unit_name=prod_unit
 </pre>
 
-This causes Ninja to use dev_unit in dev, test_unit in dev and prod_unit in prod. 
+This causes Ninja to use dev_unit in dev, test_unit in test and prod_unit in prod. 
 You can then use for instance
 a db for testing, another regular PostgreSQL database for development and a highly tuned 
 connectionpooled PostgreSQL in production. All of them with different connection strings of course.

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,14 @@ import controllers.PrettyTimeController;
 import controllers.UdpPingController;
 import controllers.UploadController;
 import controllers.UploadControllerAuto;
+import java.nio.charset.StandardCharsets;
+import ninja.Context;
+import ninja.ControllerMethods;
+import ninja.session.Session;
 
 public class Routes implements ApplicationRoutes {
 
-    private NinjaProperties ninjaProperties;
+    private final NinjaProperties ninjaProperties;
 
     @Inject
     public Routes(NinjaProperties ninjaProperties) {
@@ -61,120 +65,138 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         // some default functions
         // /////////////////////////////////////////////////////////////////////
-        // simply render a page:
-        router.GET().route("/").with(ApplicationController.class, "index");
+        // render a page
+        router.GET().route("/").with(ApplicationController::index);
 
-        // with result
-        router.GET().route("/route_with_result").with(Results.html().template("/views/routeWithResult.ftl.html"));
+        // with static result (not recommended w/ new lambda feature)
+        router.GET().route("/route_with_result")
+            .with(Results.html().template("/views/routeWithResult.ftl.html"));
 
+        // lambda routing
+        router.GET().route("/lambda_anonymous")
+            .with(() -> {
+                return Results.status(201).renderRaw("Hi!".getBytes(StandardCharsets.UTF_8));
+            });
+
+        // controller method using lambda and arguments
+        router.GET().route("/lambda_anonymous_args")
+            .with((Context context, Session session) -> {
+                session.clear();
+                String body = "Query: " + context.getParameter("a");
+                return Results.html().renderRaw(body.getBytes(StandardCharsets.UTF_8));
+            });
+        
         // render a page with variable route parts:
-        router.GET().route("/user/{id}/{email}/userDashboard").with(ApplicationController.class, "userDashboard");
+        // use of() method to verify it works
+        router.GET().route("/user/{id}/{email}/userDashboard").with(ControllerMethods.of(ApplicationController::userDashboard));
 
-        router.GET().route("/validation").with(ApplicationController.class, "validation");
+        router.GET().route("/validation").with(ApplicationController::validation);
 
+        // retain legacy class+methodName to verify backwards compat
         router.GET().route("/jsonp").with(ApplicationController.class, "testJsonP");
 
         // redirect back to /
-        router.GET().route("/redirect").with(ApplicationController.class, "redirect");
+        router.GET().route("/redirect").with(ApplicationController::redirect);
 
-        router.GET().route("/session").with(ApplicationController.class, "session");
+        router.GET().route("/session").with(ApplicationController::session);
 
-        router.GET().route("/flash_success").with(ApplicationController.class, "flashSuccess");
-        router.GET().route("/flash_error").with(ApplicationController.class, "flashError");
-        router.GET().route("/flash_any").with(ApplicationController.class, "flashAny");
+        router.GET().route("/flash_success").with(ApplicationController::flashSuccess);
+        router.GET().route("/flash_error").with(ApplicationController::flashError);
+        router.GET().route("/flash_any").with(ApplicationController::flashAny);
 
-        router.GET().route("/htmlEscaping").with(ApplicationController.class, "htmlEscaping");
-        router.GET().route("/test_reverse_routing").with(ApplicationController.class, "testReverseRouting");
-        router.GET().route("/test_get_context_path_works").with(ApplicationController.class, "testGetContextPathWorks");
-        router.GET().route("/test_that_freemarker_emits_400_when_template_not_found").with(Results.html().template("/views/A_TEMPLATE_THAT_DOES_NOT_EXIST.ftl.html"));
+        router.GET().route("/htmlEscaping").with(ApplicationController::htmlEscaping);
+        router.GET().route("/test_reverse_routing").with(ApplicationController::testReverseRouting);
+        router.GET().route("/test_get_context_path_works").with(ApplicationController::testGetContextPathWorks);
+        router.GET().route("/test_that_freemarker_emits_400_when_template_not_found")
+            .with(Results.html().template("/views/A_TEMPLATE_THAT_DOES_NOT_EXIST.ftl.html"));
         // /////////////////////////////////////////////////////////////////////
         // Json support
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/api/person.json").with(PersonController.class, "getPersonJson");
-        router.POST().route("/api/person.json").with(PersonController.class, "postPersonJson");
+        router.GET().route("/api/person.json").with(PersonController::getPersonJson);
+        router.POST().route("/api/person.json").with(PersonController::postPersonJson);
 
-        router.GET().route("/api/person.xml").with(PersonController.class, "getPersonXml");
-        router.POST().route("/api/person.xml").with(PersonController.class, "postPersonXml");
+        router.GET().route("/api/person.xml").with(PersonController::getPersonXml);
+        router.POST().route("/api/person.xml").with(PersonController::postPersonXml);
 
-        router.GET().route("/api/person").with(PersonController.class, "getPersonViaContentNegotiation");
-        router.GET().route("/api/person_with_content_negotiation_fallback").with(PersonController.class, "getPersonViaContentNegotiationAndFallback");
+        router.GET().route("/api/person").with(PersonController::getPersonViaContentNegotiation);
+        router.GET().route("/api/person_with_content_negotiation_fallback").with(PersonController::getPersonViaContentNegotiationAndFallback);
 
         // /////////////////////////////////////////////////////////////////////
         // Form parsing support
         // /////////////////////////////////////////////////////////////////////
-        router.POST().route("/form").with(ApplicationController.class, "postForm");
+        router.POST().route("/form").with(ApplicationController::postForm);
 
         // /////////////////////////////////////////////////////////////////////
         // Direct object rendering with template test
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/direct_rendering").with(ApplicationController.class, "directObjectTemplateRendering");
+        router.GET().route("/direct_rendering").with(ApplicationController::directObjectTemplateRendering);
 
         // /////////////////////////////////////////////////////////////////////
         // Cache support test
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/test_caching").with(ApplicationController.class, "testCaching");
+        router.GET().route("/test_caching").with(ApplicationController::testCaching);
 
         // /////////////////////////////////////////////////////////////////////
         // Lifecycle support
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/udpcount").with(UdpPingController.class, "getCount");
+        router.GET().route("/udpcount").with(UdpPingController::getCount);
 
         // /////////////////////////////////////////////////////////////////////
         // Route filtering example:
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/filter").with(FilterController.class, "filter");
-        router.GET().route("/teapot").with(FilterController.class, "teapot");
+        router.GET().route("/filter").with(FilterController::filter);
+        router.GET().route("/teapot").with(FilterController::teapot);
 
         // /////////////////////////////////////////////////////////////////////
         // Route filtering example:
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/injection").with(InjectionExampleController.class, "injection");
-        router.GET().route("/serviceInitTime").with(InjectionExampleController.class, "serviceInitTime");
+        router.GET().route("/injection").with(InjectionExampleController::injection);
+        router.GET().route("/serviceInitTime").with(InjectionExampleController::serviceInitTime);
 
         // /////////////////////////////////////////////////////////////////////
         // Async example:
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/async").with(AsyncController.class, "asyncEcho");
+        router.GET().route("/async").with(AsyncController::asyncEcho);
 
         // /////////////////////////////////////////////////////////////////////
         // I18n:
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/i18n").with(I18nController.class, "index");
-        router.GET().route("/i18n/{language}").with(I18nController.class, "indexWithLanguage");
+        router.GET().route("/i18n").with(I18nController::index);
+        router.GET().route("/i18n/{language}").with(I18nController::indexWithLanguage);
 
         // /////////////////////////////////////////////////////////////////////
         // PrettyTime:
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/prettyTime").with(PrettyTimeController.class, "index");
-        router.GET().route("/prettyTime/{language}").with(PrettyTimeController.class, "indexWithLanguage");
+        router.GET().route("/prettyTime").with(PrettyTimeController::index);
+        router.GET().route("/prettyTime/{language}").with(PrettyTimeController::indexWithLanguage);
 
         // /////////////////////////////////////////////////////////////////////
         // Upload showcase
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/upload").with(UploadController.class, "upload");
-        router.POST().route("/uploadFinish").with(UploadController.class, "uploadFinish");
-        router.POST().route("/uploadFinishAuto").with(UploadControllerAuto.class, "uploadFinishAuto");
+        router.GET().route("/upload").with(UploadController::upload);
+        router.POST().route("/uploadFinish").with(UploadController::uploadFinish);
+        router.POST().route("/uploadFinishAuto").with(UploadControllerAuto::uploadFinishAuto);
         
         // /////////////////////////////////////////////////////////////////////
         // Authenticity
         // /////////////////////////////////////////////////////////////////////
-        router.GET().route("/token").with(AuthenticityController.class, "token");
-        router.GET().route("/form").with(AuthenticityController.class, "form");
-        router.GET().route("/authenticate").with(AuthenticityController.class, "authenticate");
-        router.GET().route("/notauthenticate").with(AuthenticityController.class, "notauthenticate");
-        router.GET().route("/unauthorized").with(AuthenticityController.class, "unauthorized");
-        router.POST().route("/authorized").with(AuthenticityController.class, "authorized");
+        router.GET().route("/token").with(AuthenticityController::token);
+        router.GET().route("/form").with(AuthenticityController::form);
+        router.GET().route("/authenticate").with(AuthenticityController::authenticate);
+        router.GET().route("/notauthenticate").with(AuthenticityController::notauthenticate);
+        router.GET().route("/unauthorized").with(AuthenticityController::unauthorized);
+        router.POST().route("/authorized").with(AuthenticityController::authorized);
         
         //this is a route that should only be accessible when NOT in production
         // this is tested in RoutesTest
         if (!ninjaProperties.isProd()) {
-            router.GET().route("/_test/testPage").with(ApplicationController.class, "testPage");
+            router.GET().route("/_test/testPage").with(ApplicationController::testPage);
         }
 
-        router.GET().route("/bad_request").with(ApplicationController.class, "badRequest");
+        router.GET().route("/bad_request").with(ApplicationController::badRequest);
 
-        router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
-        router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
+        router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController::serveWebJars);
+        router.GET().route("/assets/{fileName: .*}").with(AssetsController::serveStatic);
 
     }
 

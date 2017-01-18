@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import models.FormObject;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
-import ninja.Router;
+import ninja.ReverseRouter;
 import ninja.cache.NinjaCache;
 import ninja.exceptions.BadRequestException;
 import ninja.i18n.Lang;
@@ -39,9 +39,10 @@ import ninja.validation.Validation;
 
 import org.slf4j.Logger;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import models.FormObject;
 
 @Singleton
 public class ApplicationController {
@@ -62,7 +63,7 @@ public class ApplicationController {
     Messages messages;
 
     @Inject
-    Router router;
+    ReverseRouter reverseRouter;
     
     @Inject
     NinjaCache ninjaCache;
@@ -91,25 +92,27 @@ public class ApplicationController {
     public Result userDashboard(@PathParam("email") String email,
                                 @PathParam("id") Integer id,
                                 Context context) {
+        // build reverse route
+        String reverseRoute = reverseRouter
+            .with(ApplicationController::userDashboard)
+                .pathParam("id", id)
+                .pathParam("email", email)
+                .build();
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        // generate tuples, convert integer to string here because Freemarker
-        // does it in locale
-        // dependent way with commas etc
-        map.put("id", Integer.toString(id));
-        map.put("email", email);
-        
-        String reverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard", map);
-
-        map.put("reverseRoute", reverseRoute);
+        // build map
+        Map<String,Object> map = new HashMap<String,Object>() {{
+            put("id", id);
+            put("email", email);
+            put("reverseRoute", reverseRoute);
+        }};
         
         // and render page with both parameters:
         return Results.html().render(map);
     }
 
     @Timed
-    public Result validation(Validation validation,
-                             @Param("email") @Required String email) {
+    public Result validation(@Param("email") @Required String email,
+                             Validation validation) {
 
         if (validation.hasViolations()) {
             return Results.json()

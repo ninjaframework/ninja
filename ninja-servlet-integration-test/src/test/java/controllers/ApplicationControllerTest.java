@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import ninja.RecycledNinjaServerTester;
 import ninja.utils.NinjaTestBrowser;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 
 public class ApplicationControllerTest extends RecycledNinjaServerTester {
@@ -55,6 +57,22 @@ public class ApplicationControllerTest extends RecycledNinjaServerTester {
         // from the index screen:
         assertTrue(result.contains("Integration Test"));
 
+    }
+    
+    @Test
+    public void lambdaAnonymous() {
+        // if lambda worked then we'd be redirected to index
+        String result = ninjaTestBrowser.makeRequest(withBaseUrl("/lambda_anonymous"));
+        
+        assertThat(result, containsString("Hi!"));
+    }
+    
+    @Test
+    public void lambdaAnonymousArgs() {
+        // if lambda worked then we'd be redirected to index
+        String result = ninjaTestBrowser.makeRequest(withBaseUrl("/lambda_anonymous_args?a=joe"));
+        
+        assertThat(result, containsString("Query: joe"));
     }
 
     @Test
@@ -111,10 +129,10 @@ public class ApplicationControllerTest extends RecycledNinjaServerTester {
                 ninjaTestBrowser.makeRequest(withBaseUrl("/user/12345/john@example.com/userDashboard"), headers);
 
         // And assert that stuff is visible on page:
-        assertTrue(response.contains("john@example.com"));
-        assertTrue(response.contains("12345"));
+        assertThat(response, containsString("john@example.com"));
+        assertThat(response, containsString("12345"));
         // Assert that reverse routing works:
-        assertTrue(response.contains("By the way... Reverse url of this rawUrl is: /user/12345/john@example.com/userDashboard"));
+        assertThat(response, containsString("By the way... Reverse url of this rawUrl is: /user/12345/john@example.com/userDashboard"));
 
     }
 

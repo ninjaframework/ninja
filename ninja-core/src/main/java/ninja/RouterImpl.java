@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,38 @@
 
 package ninja;
 
-import ninja.utils.MethodReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
+import ninja.utils.MethodReference;
 import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import java.lang.reflect.Method;
 
 public class RouterImpl implements Router {
-
+    static private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
+    
     private final NinjaProperties ninjaProperties;
-
-    private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
-
     private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<>();
     private final Injector injector;
-
     private List<Route> routes;
     // for fast reverse route lookups
     private Map<MethodReference,Route> reverseRoutes;
-
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
     private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
 
     @Inject
-    public RouterImpl(
-            Injector injector,
-            NinjaProperties ninjaProperties) {
+    public RouterImpl(Injector injector,
+                      NinjaProperties ninjaProperties) {
         this.injector = injector;
         this.ninjaProperties = ninjaProperties;
     }
@@ -84,7 +74,7 @@ public class RouterImpl implements Router {
             Class<?> controllerClass,
             String controllerMethodName) {
 
-        Optional<Map<String, Object>> parameterMap = Optional.absent();
+        Optional<Map<String, Object>> parameterMap = Optional.empty();
 
         return getReverseRoute(controllerClass, controllerMethodName, parameterMap);
 
@@ -114,15 +104,12 @@ public class RouterImpl implements Router {
     public String getReverseRoute(Class<?> controllerClass,
             String controllerMethodName,
             Map<String, Object> parameterMap) {
-
         Optional<Map<String, Object>> parameterMapOptional
-                = Optional.fromNullable(parameterMap);
+                = Optional.ofNullable(parameterMap);
 
         return getReverseRoute(
-                controllerClass,
-                controllerMethodName,
+                controllerClass, controllerMethodName,
                 parameterMapOptional);
-
     }
     
     @Override
@@ -131,33 +118,29 @@ public class RouterImpl implements Router {
             String controllerMethodName,
             Optional<Map<String, Object>> parameterMap) {
 
-        Optional<Route> route
-                = getRouteForControllerClassAndMethod(
-                        controllerClass,
-                        controllerMethodName);
-        
-        if (route.isPresent()) {
-
-            // The original url. Something like route/user/{id}/{email}/userDashboard/{name: .*}
-            String urlWithReplacedPlaceholders
-                    = replaceVariablePartsOfUrlWithValuesProvidedByUser(
-                            route.get().getUrl(),
-                            parameterMap);
-
-            String finalUrl = addContextPathToUrlIfAvailable(
-                    urlWithReplacedPlaceholders,
-                    ninjaProperties);
-
-            return finalUrl;
-
-        }
-        else {
-            logger.info(
-                    "Could not find any reverse route for the method {} of the Controller class {}",
-                    controllerMethodName, controllerClass.getSimpleName());
+        try {
+            ReverseRouter.Builder reverseRouteBuilder
+                = new ReverseRouter(ninjaProperties, this)
+                    .with(controllerClass, controllerMethodName);
+            
+            if (parameterMap.isPresent()) {
+                // pathOrQueryParams are not escaped with the deprecated method of creating
+                // reverse routes.  use ReverseRouter!
+                parameterMap.get().forEach((name, value) -> {
+                    // path or query param?
+                    if (reverseRouteBuilder.getRoute().getParameters().containsKey(name)) {
+                        reverseRouteBuilder.rawPathParam(name, value);
+                    } else {
+                        reverseRouteBuilder.rawQueryParam(name, value);
+                    }
+                });
+            }
+            
+            return reverseRouteBuilder.build();
+        } catch (IllegalArgumentException e) {
+            logger.error("Unable to cleanly build reverse route", e);
             return null;
         }
-        
     }
     
     @Override
@@ -296,7 +279,8 @@ public class RouterImpl implements Router {
         }
     }
 
-    private Optional<Route> getRouteForControllerClassAndMethod(
+    @Override
+    public Optional<Route> getRouteForControllerClassAndMethod(
             Class<?> controllerClass,
             String controllerMethodName) {
 
@@ -307,96 +291,9 @@ public class RouterImpl implements Router {
         
         Route route = this.reverseRoutes.get(reverseRouteKey);
         
-        return Optional.fromNullable(route);
+        return Optional.ofNullable(route);
     }
-
-    private String replaceVariablePartsOfUrlWithValuesProvidedByUser(
-            String routeUrlWithVariableParts,
-            Optional<Map<String, Object>> parameterMap) {
-
-        String urlWithReplacedPlaceholders = routeUrlWithVariableParts;
-
-        if (parameterMap.isPresent()) {
-
-            Map<String, Object> queryParameterMap = new HashMap<>(parameterMap.get().size());
-
-            for (Entry<String, Object> parameterPair : parameterMap.get().entrySet()) {
-
-                boolean foundAsPathParameter = false;
-
-                StringBuffer stringBuffer = new StringBuffer();
-
-                String buffer = String.format(
-                        VARIABLE_PART_PATTERN_WITH_PLACEHOLDER,
-                        parameterPair.getKey());
-
-                Pattern PATTERN = Pattern.compile(buffer);
-                Matcher matcher = PATTERN.matcher(urlWithReplacedPlaceholders);
-
-                while (matcher.find()) {
-
-                    String resultingRegexReplacement = parameterPair.getValue().toString();
-
-                    matcher.appendReplacement(stringBuffer, resultingRegexReplacement);
-
-                    foundAsPathParameter = true;
-                }
-
-                matcher.appendTail(stringBuffer);
-                urlWithReplacedPlaceholders = stringBuffer.toString();
-
-                if (!foundAsPathParameter) {
-
-                    queryParameterMap.put(parameterPair.getKey(), parameterPair.getValue());
-
-                }
-
-            }
-
-            // now prepare the query string for this url if we got some query params
-            if (queryParameterMap.size() > 0) {
-
-                StringBuilder queryParameterStringBuffer = new StringBuilder();
-
-                // The uri is now replaced => we now have to add potential query parameters
-                for (Iterator<Entry<String, Object>> iterator = queryParameterMap.entrySet().iterator();
-                        iterator.hasNext();) {
-
-                    Entry<String, Object> queryParameterEntry = iterator.next();
-                    queryParameterStringBuffer.append(queryParameterEntry.getKey());
-                    queryParameterStringBuffer.append("=");
-                    queryParameterStringBuffer.append(queryParameterEntry.getValue());
-
-                    if (iterator.hasNext()) {
-                        queryParameterStringBuffer.append("&");
-                    }
-
-                }
-
-                urlWithReplacedPlaceholders = urlWithReplacedPlaceholders
-                        + "?"
-                        + queryParameterStringBuffer.toString();
-
-            }
-
-        }
-
-        return urlWithReplacedPlaceholders;
-    }
-
-    private String addContextPathToUrlIfAvailable(
-            String routeWithoutContextPath,
-            NinjaProperties ninjaProperties) {
-
-
-
-        // contextPath can only be empty. never null.
-        return ninjaProperties.getContextPath()
-                    + routeWithoutContextPath;
-
-
-    }
-
+    
     private void logRoutes() {
         // determine the width of the columns
         int maxMethodLen = 0;

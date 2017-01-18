@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,46 +50,46 @@ public class Routes implements ApplicationRoutes {
         
         // puts test data into db:
         if (!ninjaProperties.isProd()) {
-            router.GET().route("/setup").with(ApplicationController.class, "setup");
+            router.GET().route("/setup").with(ApplicationController::setup);
         }
         
         ///////////////////////////////////////////////////////////////////////
         // Login / Logout
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/login").with(LoginLogoutController.class, "login");
-        router.POST().route("/login").with(LoginLogoutController.class, "loginPost");
-        router.GET().route("/logout").with(LoginLogoutController.class, "logout");
+        router.GET().route("/login").with(LoginLogoutController::login);
+        router.POST().route("/login").with(LoginLogoutController::loginPost);
+        router.GET().route("/logout").with(LoginLogoutController::logout);
         
         ///////////////////////////////////////////////////////////////////////
         // Create new article
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/article/new").with(ArticleController.class, "articleNew");
-        router.POST().route("/article/new").with(ArticleController.class, "articleNewPost");
+        router.GET().route("/article/new").with(ArticleController::articleNew);
+        router.POST().route("/article/new").with(ArticleController::articleNewPost);
         
         ///////////////////////////////////////////////////////////////////////
         // Create new article
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/article/{id}").with(ArticleController.class, "articleShow");
+        router.GET().route("/article/{id}").with(ArticleController::articleShow);
 
         ///////////////////////////////////////////////////////////////////////
         // Api for management of software
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/api/{username}/articles.json").with(ApiController.class, "getArticlesJson");
-        router.GET().route("/api/{username}/article/{id}.json").with(ApiController.class, "getArticleJson");
-        router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
-        router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
-        router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");
+        router.GET().route("/api/{username}/articles.json").with(ApiController::getArticlesJson);
+        router.GET().route("/api/{username}/article/{id}.json").with(ApiController::getArticleJson);
+        router.GET().route("/api/{username}/articles.xml").with(ApiController::getArticlesXml);
+        router.POST().route("/api/{username}/article.json").with(ApiController::postArticleJson);
+        router.POST().route("/api/{username}/article.xml").with(ApiController::postArticleXml);
  
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)
         ///////////////////////////////////////////////////////////////////////    
-        router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");
-        router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
+        router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController::serveWebJars);
+        router.GET().route("/assets/{fileName: .*}").with(AssetsController::serveStatic);
         
         ///////////////////////////////////////////////////////////////////////
         // Index / Catchall shows index page
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/.*").with(ApplicationController.class, "index");
+        router.GET().route("/.*").with(ApplicationController::index);
     }
 
 }

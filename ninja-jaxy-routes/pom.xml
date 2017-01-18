@@ -1,4 +1,4 @@
-<!-- Copyright (C) 2012-2016 the original author or authors. Licensed under 
+<!-- Copyright (C) 2012-2017 the original author or authors. Licensed under 
 	the Apache License, Version 2.0 (the "License"); you may not use this file 
 	except in compliance with the License. You may obtain a copy of the License 
 	at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable 
@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
-		<version>5.7.1-SNAPSHOT</version>
+		<version>6.0.0-beta2-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>

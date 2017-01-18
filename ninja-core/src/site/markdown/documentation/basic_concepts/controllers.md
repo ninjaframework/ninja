@@ -62,7 +62,7 @@ Let's say and the user visits the following URL...
 ... and we got a route definition like that:
 
 <pre class="prettyprint">
-router.GET().route("/user/{id}/{email}/userDashboard").with(AppController.class, "userDashboard");
+router.GET().route("/user/{id}/{email}/userDashboard").with(AppController::userDashboard);
 </pre>
 
 We can then get all variable parts of this URL via the following method controller

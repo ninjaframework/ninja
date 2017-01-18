@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,21 @@
 
 package ninja.validation;
 
-import com.google.common.base.Optional;
-import com.google.inject.Inject;
-import ninja.Context;
-import ninja.Result;
-import ninja.i18n.Lang;
+import java.io.Serializable;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 import javax.validation.metadata.ConstraintDescriptor;
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.Set;
-import java.util.regex.Pattern;
+
+import ninja.Context;
+import ninja.Result;
+import ninja.i18n.Lang;
+
+import com.google.inject.Inject;
 
 /**
  * Built in validators.
@@ -111,7 +113,7 @@ public class Validators {
                 final ValidatorFactory validatorFactory = javax.validation.Validation.buildDefaultValidatorFactory();
                 final javax.validation.Validator validator = validatorFactory.getValidator();
                 final Set<javax.validation.ConstraintViolation<Object>> violations = validator.validate(value);
-                final Locale localeToUse = this.requestLanguage.getLocaleFromStringOrDefault(this.requestLanguage.getLanguage(context, Optional.<Result>absent()));
+                final Locale localeToUse = this.requestLanguage.getLocaleFromStringOrDefault(this.requestLanguage.getLanguage(context, Optional.<Result>empty()));
                 final Validation validation = context.getValidation();
 
                 for (final javax.validation.ConstraintViolation<Object> violation : violations) {

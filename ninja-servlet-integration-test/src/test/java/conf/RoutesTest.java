@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class RoutesTest extends NinjaRouterTest {
         generatedReverseRoute = router.getReverseRoute(ApplicationController.class, "userDashboard");
         
         // this looks strange, but is expected:
-        assertEquals("/user/{id}/{email}/userDashboard", generatedReverseRoute);
+        assertEquals(null, generatedReverseRoute);
         
 
 

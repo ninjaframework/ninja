@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,8 @@ public class MigrationEngineFlyway implements MigrationEngine {
 
         // In testmode we are cleaning the database so that subsequent testcases
         // get a fresh database.
-        if (ninjaProperties.isTest()) {
+        if (ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_MIGRATION_DROP_SCHEMA,
+                ninjaProperties.isTest() ? true : false )) {
             flyway.clean();
         }
 
