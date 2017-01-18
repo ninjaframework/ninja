@@ -29,7 +29,9 @@ import ninja.params.Param;
 import ninja.params.ParamParsers;
 import ninja.utils.MethodReference;
 import static org.hamcrest.CoreMatchers.is;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ReverseRouterTest {
 
@@ -48,7 +50,9 @@ public class ReverseRouterTest {
         when(testControllerProvider.get()).thenReturn(new TestController());
         when(injector.getProvider(TestController.class)).thenReturn(testControllerProvider);
         when(injector.getInstance(ParamParsers.class)).thenReturn(new ParamParsers(Collections.emptySet()));
-        router = new RouterImpl(injector, ninjaProperties);
+        Provider<RouteBuilderImpl> routeBuilderImplProvider = mock(Provider.class);
+        when(routeBuilderImplProvider.get()).thenAnswer((invocation) -> new RouteBuilderImpl(ninjaProperties));
+        router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
         reverseRouter = new ReverseRouter(ninjaProperties, router);
         
         router.GET().route("/home").with(TestController::home);

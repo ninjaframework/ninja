@@ -29,6 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 import ninja.utils.MethodReference;
+import ninja.utils.NinjaProperties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -39,10 +40,13 @@ public class RouteBuilderImplTest {
 
     @Mock
     Injector injector;
+    
+    @Mock
+    NinjaProperties ninjaProperties;
 
     @Test
     public void basicGETRoute() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("GET", "/index"));
@@ -50,7 +54,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void basicPOSTRoute() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.POST().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("POST", "/index"));
@@ -58,7 +62,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void basicPUTRoute() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.PUT().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("PUT", "/index"));
@@ -66,7 +70,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void basicRoutes() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.OPTIONS().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("OPTIONS", "/index"));
@@ -74,7 +78,7 @@ public class RouteBuilderImplTest {
     
     @Test
     public void basisHEAD() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.HEAD().route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("HEAD", "/index"));
@@ -82,7 +86,7 @@ public class RouteBuilderImplTest {
     
     @Test
     public void basicAnyHttpMethod() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.METHOD("PROPFIND").route("/index");
 
         assertTrue(buildRoute(routeBuilder).matches("PROPFIND", "/index"));
@@ -90,7 +94,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void basicRoutesWithRegex() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/.*");
 
         Route route = buildRoute(routeBuilder);
@@ -107,7 +111,7 @@ public class RouteBuilderImplTest {
         // /////////////////////////////////////////////////////////////////////
         // One parameter:
         // /////////////////////////////////////////////////////////////////////
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/{name}/dashboard");
 
         Route route = buildRoute(routeBuilder);
@@ -124,7 +128,7 @@ public class RouteBuilderImplTest {
         // /////////////////////////////////////////////////////////////////////
         // More parameters
         // /////////////////////////////////////////////////////////////////////
-        routeBuilder = new RouteBuilderImpl();
+        routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/{name}/{id}/dashboard");
         route = buildRoute(routeBuilder);
 
@@ -143,7 +147,7 @@ public class RouteBuilderImplTest {
     public void basicPlaceholersParametersAndRegex() {
         // test that parameter parsing works in conjunction with
         // regex expressions...
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/John/{id}/.*");
         Route route = buildRoute(routeBuilder);
         assertTrue(route.matches("GET", "/John/20/dashboard"));
@@ -168,7 +172,7 @@ public class RouteBuilderImplTest {
     public void basicPlaceholersParametersAndRegexInsideVariableParts() {
         // test that parameter parsing works in conjunction with
         // regex expressions...
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/assets/{file: .*}");
         Route route = buildRoute(routeBuilder);
 
@@ -191,7 +195,7 @@ public class RouteBuilderImplTest {
         assertEquals("robots.txt", map.get("file"));
 
         // multiple parameter parsing with regex expressions
-        routeBuilder = new RouteBuilderImpl();
+        routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/{name: .+}/photos/{id: [0-9]+}");
         route = buildRoute(routeBuilder);
 
@@ -206,7 +210,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void parametersDontCrossSlashes() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/blah/{id}/{id2}/{id3}/morestuff/at/the/end");
         Route route = buildRoute(routeBuilder);
         // this must match
@@ -218,7 +222,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void pointsInRegexDontCrashRegexInTheMiddleOfTheRoute() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/blah/{id}/myname");
         Route route = buildRoute(routeBuilder);
 
@@ -240,7 +244,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void pointsInRegexDontCrashRegexAtEnd() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/blah/{id}");
         Route route = buildRoute(routeBuilder);
         // the "." in the route should not make any trouble:
@@ -257,7 +261,7 @@ public class RouteBuilderImplTest {
     public void regexInRouteWorksWithEscapes() {
         // Test escaped constructs in regex
         // regex with escaped construct in a route
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/customers/\\d+");
         Route route = buildRoute(routeBuilder);
         assertTrue(route.matches("GET", "/customers/1234"));
@@ -276,7 +280,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void regexInRouteWorksWithoutSlashAtTheEnd() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/blah/{id}/.*");
         Route route = buildRoute(routeBuilder);
 
@@ -303,7 +307,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void routeWithUrlEncodedSlashGetsChoppedCorrectly() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/blah/{id}/.*");
         Route route = buildRoute(routeBuilder);
 
@@ -325,7 +329,7 @@ public class RouteBuilderImplTest {
         Context context = mock(Context.class);
         
         String template = "/directly_result/stuff";
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/directly_result/route").with(Results.html().template(template));
 
         Route route = routeBuilder.buildRoute(injector);
@@ -337,7 +341,7 @@ public class RouteBuilderImplTest {
 
     @Test
     public void failedControllerRegistration() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/failure").with(MockController.class, "DoesNotExist");
 
         try {	
@@ -350,7 +354,7 @@ public class RouteBuilderImplTest {
     
     @Test
     public void routeWithMethodReference() throws Exception {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/method_reference").with(new MethodReference(MockController.class, "execute"));
 
         Route route = routeBuilder.buildRoute(injector);
@@ -378,7 +382,7 @@ public class RouteBuilderImplTest {
     
     @Test
     public void routeToAnyInstanceMethodReference() throws Exception {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/execute").with(MockController::execute);
         Route route = routeBuilder.buildRoute(injector);
         
@@ -391,7 +395,7 @@ public class RouteBuilderImplTest {
     public void routeToSpecificInstanceMethodReference() throws Exception {
         MockController controller = new MockController();
         
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/execute").with(controller::execute);
         Route route = routeBuilder.buildRoute(injector);
         
@@ -402,7 +406,7 @@ public class RouteBuilderImplTest {
     
     @Test
     public void routeToStaticMethodReference() throws Exception {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/execute").with(MockController::execute3);
         Route route = routeBuilder.buildRoute(injector);
         
@@ -414,7 +418,7 @@ public class RouteBuilderImplTest {
     @Test
     @SuppressWarnings("Convert2Lambda")
     public void routeToAnonymousClassReference() throws Exception {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         
         routeBuilder.GET().route("/execute").with(new ControllerMethods.ControllerMethod0() {
             @Override
@@ -432,7 +436,7 @@ public class RouteBuilderImplTest {
     
     @Test
     public void routeToAnonymousMethodReference() throws Exception {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl();
+        RouteBuilderImpl routeBuilder = new RouteBuilderImpl(ninjaProperties);
         routeBuilder.GET().route("/execute").with(() -> Results.redirect("/"));
         Route route = routeBuilder.buildRoute(injector);
         
