@@ -23,7 +23,7 @@ package ninja.validation;
  */
 public class ConstraintViolation {
     private final String messageKey;
-    private final String fieldKey;
+    private String fieldKey;
     private final String defaultMessage;
     private final Object[] messageParams;
 
@@ -64,12 +64,23 @@ public class ConstraintViolation {
     public Object[] getMessageParams() {
         return messageParams;
     }
+    
+    /**
+     * This setter is only used by ValidationImpl to keep backward compatibility between Ninja 5.8.0 and 6.x.
+     * @param fieldKey
+     */
+    @Deprecated
+    void setFieldKey(String fieldKey) {
+        this.fieldKey = fieldKey;
+    }
 
+    @Deprecated
     public static ConstraintViolation create(String messageKey,
                                              Object... messageParams) {
         return new ConstraintViolation(messageKey, null, null, messageParams);
     }
 
+    @Deprecated
     public static ConstraintViolation createWithDefault(String messageKey,
                                                         String defaultMessage,
                                                         Object... messageParams) {
@@ -77,6 +88,7 @@ public class ConstraintViolation {
                 messageParams);
     }
 
+    @Deprecated
     public static ConstraintViolation createForField(String messageKey,
                                                      String fieldKey,
                                                      Object... messageParams) {
@@ -84,6 +96,7 @@ public class ConstraintViolation {
                 messageParams);
     }
 
+    @Deprecated
     public static ConstraintViolation createForFieldWithDefault(String messageKey,
                                                                 String fieldKey,
                                                                 String defaultMessage,

@@ -996,6 +996,8 @@ public class ControllerMethodInvokerTest {
         create("requiredInt").invoke(mockController, context);
         verify(mockController).requiredInt(0);
         assertTrue(validation.hasFieldViolation("param1"));
+        assertEquals(1, validation.getFieldViolations("param1").size());
+        assertEquals("validation.required.violation", validation.getFieldViolations("param1").get(0).constraintViolation.getMessageKey());
     }
     
     @Test
@@ -1011,6 +1013,8 @@ public class ControllerMethodInvokerTest {
         create("requiredInt").invoke(mockController, context);
         verify(mockController).requiredInt(5);
         assertTrue(validation.hasFieldViolation("param1"));
+        assertEquals(1, validation.getFieldViolations("param1").size());
+        assertEquals("validation.number.min.violation", validation.getFieldViolations("param1").get(0).constraintViolation.getMessageKey());
     }
     
     @Test
