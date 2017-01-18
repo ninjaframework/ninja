@@ -1,7 +1,7 @@
 Version 6.x.x
 =============
 
- 
+ * 2017-01-06 Support for Optional in controller methods #541 (reyez)
  * 2017-01-03 Replaced Guava Optionals with Java8 Optionals (bazi)
  * 2016-12-25 Fix issue #532: return clean session instead of runtime error when session cookies can not be decrypted (bazi)
  * 2016-12-19 New `ninja.ReverseRouter` for validated, URL-safe reverse routing using Java 8 lambda expressions in addition to legacy Class + method name references. (jjlauer)

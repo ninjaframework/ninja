@@ -65,7 +65,16 @@ public interface NinjaConstant {
     String I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY = "ninja.system.forbidden.text";
     String I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT = "Oops. That''s forbidden and all we know.";
     
-                   
+    /**
+     * If false it will allow null as argument in controller methods. 
+     * If true Ninja will not execute controller method when argument would be null
+     * and redirect to Bad Request page.
+     * 
+     * Note: Default is false, but will change to true in the future (breaking change).
+     * 
+     * More: http://www.ninjaframework.org/documentation/basic_concepts/controllers.html
+     */
+    String NINJA_STRICT_ARGUMENT_EXTRACTORS = "ninja.strict_argument_extractors";
 
     /**
      * Comma separated list in application.conf. Determines which languages are
@@ -73,7 +82,7 @@ public interface NinjaConstant {
      * 
      * Something like
      * 
-     * ninja.application.languages=de,en
+     * application.languages=de,en
      */
     final String applicationLanguages = "application.languages";
     
