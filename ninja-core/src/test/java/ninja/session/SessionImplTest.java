@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -522,6 +522,47 @@ public class SessionImplTest {
         assertThat(cookieCaptor.getValue().getDomain(), CoreMatchers.equalTo("domain.com"));
         assertThat(cookieCaptor.getValue().getMaxAge(), CoreMatchers.equalTo(0));
     }    
+
+    @Test
+    public void testSessionEncryptionKeysMismatch() {
+
+        if (!encrypted) {
+            assertTrue("N/A for plain session cookies without encryption", true);
+            return;
+        }
+
+        // (1) create session with some data and save
+        Session session_1 = createNewSession();
+        session_1.init(context);
+        session_1.put("key", "value");
+        session_1.save(context);
+
+        // (2) verify that cookie with our data is created and added to context
+        verify(context).addCookie(cookieCaptor.capture());
+        assertEquals("value", session_1.get("key"));
+
+        // save reference to our cookie - we will use it to init sessions below
+        Cookie cookie = cookieCaptor.getValue();
+
+        // (3) create new session with the same cookie and assert that it still has our data
+        Session session_2 = createNewSession();
+        when(context.getCookie("NINJA_SESSION")).thenReturn(cookie);
+        session_2.init(context);
+        assertFalse(session_2.isEmpty());
+        assertEquals("value", session_2.get("key"));
+
+        // (4) now we change our application secret and thus our encryption key is modified
+        when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret))
+                .thenReturn(SecretGenerator.generateSecret());
+        encryption = new CookieEncryption(ninjaProperties);
+
+        // (5) creating new session with the same cookie above would result in clean session
+        // because that cookie was encrypted with another key and decryption with the new key
+        // is not possible; usually such a case throws `javax.crypto.BadPaddingException`
+        Session session_3 = createNewSession();
+        session_3.init(context);
+        assertTrue(session_3.isEmpty());
+    }
 
     private Session roundTrip(Session sessionCookie1) {
         sessionCookie1.save(context);

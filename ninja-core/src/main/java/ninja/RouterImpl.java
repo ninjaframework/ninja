@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 public class RouterImpl implements Router {
     static private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
@@ -44,12 +45,15 @@ public class RouterImpl implements Router {
     private Map<MethodReference,Route> reverseRoutes;
     // This regex works for both {myParam} AND {myParam: .*} (with regex)
     private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
+    private final Provider<RouteBuilderImpl> routeBuilderImplProvider;
 
     @Inject
     public RouterImpl(Injector injector,
-                      NinjaProperties ninjaProperties) {
+                      NinjaProperties ninjaProperties,
+                      Provider<RouteBuilderImpl> routeBuilderImplProvider) {
         this.injector = injector;
         this.ninjaProperties = ninjaProperties;
+        this.routeBuilderImplProvider = routeBuilderImplProvider;
     }
 
     @Override
@@ -218,7 +222,7 @@ public class RouterImpl implements Router {
     @Override
     public RouteBuilder GET() {
 
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().GET();
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().GET();
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -226,7 +230,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder POST() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().POST();
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().POST();
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -234,7 +238,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder PUT() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().PUT();
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().PUT();
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -242,7 +246,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder DELETE() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().DELETE();
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().DELETE();
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -250,7 +254,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder OPTIONS() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().OPTIONS();
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().OPTIONS();
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -258,7 +262,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder HEAD() {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().HEAD();
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().HEAD();
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;
@@ -266,7 +270,7 @@ public class RouterImpl implements Router {
 
     @Override
     public RouteBuilder METHOD(String method) {
-        RouteBuilderImpl routeBuilder = new RouteBuilderImpl().METHOD(method);
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().METHOD(method);
         allRouteBuilders.add(routeBuilder);
 
         return routeBuilder;

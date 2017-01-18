@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,8 +54,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
+import ninja.exceptions.BadRequestException;
+import ninja.utils.NinjaConstant;
+import org.hamcrest.Matchers;
 
 import static org.junit.Assert.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Captor;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -85,7 +93,7 @@ public class ControllerMethodInvokerTest {
 
     @Before
     public void setUp() throws Exception {
-        this.ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        this.ninjaProperties = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
         this.lang = new LangImpl(this.ninjaProperties);
         this.validation = new ValidationImpl();
 
@@ -597,21 +605,35 @@ public class ControllerMethodInvokerTest {
     @Test
     public void customDateFormatParamShouldBeParsedToDate() throws Exception {
         when(context.getParameter("param1")).thenReturn("15/01/2015");
-        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(new LocalDateTime(2015, 1, 15, 0, 0).toDate());
+    }
+    
+    @Test
+    public void customDateFormatParamWithOptionalShouldBeParsedToDate() throws Exception {
+        when(context.getParameter("param1")).thenReturn("15/01/2015");
+        create("dateParamWithOptional", DateParamParser.class).invoke(mockController, context);
+        verify(mockController).dateParamWithOptional(Optional.of(new LocalDateTime(2015, 1, 15, 0, 0).toDate()));
     }
 
     @Test
     public void customDateFormatParamShouldHandleNull() throws Exception {
-        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(null);
+        assertFalse(validation.hasViolations());
+    }
+    
+    @Test
+    public void customDateFormatParamWithOptionalShouldHandleEmpty() throws Exception {
+        create("dateParamWithOptional", DateParamParser.class).invoke(mockController, context);
+        verify(mockController).dateParamWithOptional(Optional.empty());
         assertFalse(validation.hasViolations());
     }
 
     @Test
     public void customDateFormatValidationShouldWork() throws Exception {
         when(context.getParameter("param1")).thenReturn("blah");
-        create("dateParam", ninjaProperties, DateParamParser.class).invoke(mockController, context);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(null);
         assertTrue(validation.hasFieldViolation("param1"));
     }
@@ -619,21 +641,21 @@ public class ControllerMethodInvokerTest {
     @Test(expected = RoutingException.class)
     public void needingInjectionParamParserNotBinded() throws Exception {
         when(context.getParameter("param1")).thenReturn("hello");
-        create("needingInjectionParamParser", ninjaProperties).invoke(mockController, context);
+        create("needingInjectionParamParser").invoke(mockController, context);
         verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
     }
     
     @Test
     public void needingInjectionParamParser() throws Exception {
         when(context.getParameter("param1")).thenReturn("hello");
-        create("needingInjectionParamParser", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        create("needingInjectionParamParser", NeedingInjectionParamParser.class).invoke(mockController, context);
         verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
     }
     
     @Test
     public void needingInjectionParamParserArray() throws Exception {
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("hello1", "hello2"));
-        create("needingInjectionParamParserArray", ninjaProperties, NeedingInjectionParamParser.class).invoke(mockController, context);
+        create("needingInjectionParamParserArray", NeedingInjectionParamParser.class).invoke(mockController, context);
         verify(mockController).needingInjectionParamParserArray(new Dep[] { new Dep("hello_hello1"), new Dep("hello_hello2") });
     }
 
@@ -653,6 +675,12 @@ public class ControllerMethodInvokerTest {
     public void customArgumentExtractorWithGuiceShouldBeInstantiated() {
         create("guiceArgumentExtractor", new Dep("dep")).invoke(mockController, context);
         verify(mockController).guiceArgumentExtractor("dep:bar:java.lang.String");
+    }
+    
+    @Test
+    public void customArgumentExtractorWithOptionalAndGuiceShouldBeInstantiated() {
+        create("guiceArgumentExtractorWithOptional", new Dep("dep")).invoke(mockController, context);
+        verify(mockController).guiceArgumentExtractorWithOptional(Optional.of("dep:bar:java.lang.String"));
     }
 
     @Test
@@ -677,7 +705,245 @@ public class ControllerMethodInvokerTest {
         verify(mockController).required("value");
         assertFalse(validation.hasViolations());
     }
+    
+    @Test
+    public void optionalSessionParam() {
+        when(session.get("param1")).thenReturn("value");
+        create("optionalSessionParam").invoke(mockController, context);
+        verify(mockController).optionalSessionParam(Optional.of("value"));
+    }
+    
+    @Test
+    public void optionalSessionParamEmpty() {
+        when(session.get("param1")).thenReturn(null);
+        create("optionalSessionParam").invoke(mockController, context);
+        verify(mockController).optionalSessionParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void sessionParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(session.get("param1")).thenReturn(null);
+        create("sessionParam").invoke(mockController, context);
+    }
 
+    @Test
+    public void optionalAttribute() {
+        Dep dep = new Dep("dep");
+        when(context.getAttribute("param1", Dep.class)).thenReturn(dep);
+        create("optionalAttribute").invoke(mockController, context);
+        verify(mockController).optionalAttribute(Optional.of(dep));
+    }
+    
+    @Test
+    public void optionalAttributeEmpty() {
+        when(context.getAttribute("param1", Dep.class)).thenReturn(null);
+        create("optionalAttribute").invoke(mockController, context);
+        verify(mockController).optionalAttribute(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void attributeStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getAttribute("param1", Dep.class)).thenReturn(null);
+        create("attribute").invoke(mockController, context);
+    }
+
+    @Test
+    public void optionalHeader() {
+        when(context.getHeader("param1")).thenReturn("value");
+        create("optionalHeader").invoke(mockController, context);
+        verify(mockController).optionalHeader(Optional.of("value"));
+    }
+    
+    @Test
+    public void optionalHeaderEmpty() {
+        when(context.getHeader("param1")).thenReturn(null);
+        create("optionalHeader").invoke(mockController, context);
+        verify(mockController).optionalHeader(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void headerStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getHeader("param1")).thenReturn(null);
+        create("header").invoke(mockController, context);
+    }
+
+    @Test
+    public void optionalParam() {
+        when(context.getParameter("param1")).thenReturn("value");
+        create("optionalParam").invoke(mockController, context);
+        verify(mockController).optionalParam(Optional.of("value"));
+    }
+    
+    @Test
+    public void optionalParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalParam").invoke(mockController, context);
+        verify(mockController).optionalParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void paramStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("param").invoke(mockController, context);
+    }
+    
+    @Test
+    public void optionalIntegerParam() {
+        when(context.getParameter("param1")).thenReturn("1");
+        create("optionalIntegerParam").invoke(mockController, context);
+        verify(mockController).optionalIntegerParam(Optional.of(1));
+    }
+    
+    @Test
+    public void optionalIntegerParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalIntegerParam").invoke(mockController, context);
+        verify(mockController).optionalIntegerParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void integerParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("integerParam").invoke(mockController, context);
+    }
+    
+    @Test
+    public void optionalLongParam() {
+        when(context.getParameter("param1")).thenReturn("1");
+        create("optionalLongParam").invoke(mockController, context);
+        verify(mockController).optionalLongParam(Optional.of(1L));
+    }
+    
+    @Test
+    public void optionalLongParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalLongParam").invoke(mockController, context);
+        verify(mockController).optionalLongParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void longParamEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("longParam").invoke(mockController, context);
+    }
+    
+    @Test
+    public void optionalShortParam() {
+        when(context.getParameter("param1")).thenReturn("1");
+        create("optionalShortParam").invoke(mockController, context);
+        verify(mockController).optionalShortParam(Optional.of(new Short("1")));
+    }
+    
+    @Test
+    public void optionalShortParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalShortParam").invoke(mockController, context);
+        verify(mockController).optionalShortParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void shortParamEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("shortParam").invoke(mockController, context);
+    }
+    
+    @Test
+    public void optionalEnumParam() {
+        when(context.getParameter("param1")).thenReturn("red");
+        create("optionalEnumParam").invoke(mockController, context);
+        verify(mockController).optionalEnumParam(Optional.of(Rainbow.Red));
+    }
+    
+    @Test
+    public void optionalEnumParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalEnumParam").invoke(mockController, context);
+        verify(mockController).optionalEnumParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void rainbowParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("enumParam").invoke(mockController, context);
+    }
+    
+    @Captor
+    ArgumentCaptor<Optional<Rainbow[]>> argumentCaptor;
+    
+    @Test
+    public void optionalEnumArrayParam() {
+        when(context.getParameter("param1")).thenReturn("Red,Orange,Yellow");
+        create("optionalEnumArrayParam").invoke(mockController, context);
+        verify(mockController).optionalEnumArrayParam(argumentCaptor.capture());
+        Rainbow [] rainbows = argumentCaptor.getValue().get();
+        assertThat(rainbows, Matchers.arrayContaining(Rainbow.Red, Rainbow.Orange, Rainbow.Yellow));
+    }
+    
+    @Test
+    public void optionalEnumArrayParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalEnumArrayParam").invoke(mockController, context);
+        verify(mockController).optionalEnumArrayParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void rainbowArrayParamEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("enumArrayParam").invoke(mockController, context);
+    }
+    
+    @Test
+    public void optionalDateParam() {
+        when(context.getParameter("param1")).thenReturn("15/01/2015");
+        create("optionalDateParam", DateParamParser.class).invoke(mockController, context);
+        verify(mockController).optionalDateParam(Optional.of(new LocalDateTime(2015, 1, 15, 0, 0).toDate()));
+    }
+    
+    @Test
+    public void optionalDateParamEmpty() {
+        when(context.getParameter("param1")).thenReturn(null);
+        create("optionalDateParam", DateParamParser.class).invoke(mockController, context);
+        verify(mockController).optionalDateParam(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void dateParamStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.getParameter("param1")).thenReturn(null);
+        create("dateParam", DateParamParser.class).invoke(mockController, context);
+    }
+    
+    @Test
+    public void optionalBody() {
+        Object body = new Object();
+        when(context.parseBody(Object.class)).thenReturn(body);
+        create("optionalBody").invoke(mockController, context);
+        verify(mockController).optionalBody(Optional.of(body));
+    }
+    
+    @Test
+    public void optionalBodyEmpty() {
+        when(context.parseBody(Object.class)).thenReturn(null);
+        create("optionalBody").invoke(mockController, context);
+        verify(mockController).optionalBody(Optional.empty());
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void bodyEmptyStrictModeWorks() {
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+        when(context.parseBody(Object.class)).thenReturn(null);
+        create("body").invoke(mockController, context);
+    }
+    
     @Test
     public void validationShouldBeAppliedInCorrectOrderPreFail() {
         create("requiredInt").invoke(mockController, context);
@@ -685,6 +951,13 @@ public class ControllerMethodInvokerTest {
         assertTrue(validation.hasFieldViolation("param1"));
         assertEquals(1, validation.getFieldViolations("param1").size());
         assertEquals("validation.required.violation", validation.getFieldViolations("param1").get(0).constraintViolation.getMessageKey());
+    }
+    
+    @Test
+    public void validationWithOptionalShouldBeAppliedInCorrectOrderPreFail() {
+        create("requiredIntWithOptional").invoke(mockController, context);
+        verify(mockController).requiredIntWithOptional(Optional.empty());
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -696,6 +969,14 @@ public class ControllerMethodInvokerTest {
         assertEquals(1, validation.getFieldViolations("param1").size());
         assertEquals("validation.number.min.violation", validation.getFieldViolations("param1").get(0).constraintViolation.getMessageKey());
     }
+    
+    @Test
+    public void validationWithOptionalShouldBeAppliedInCorrectOrderPostFail() {
+        when(context.getParameter("param1")).thenReturn("5");
+        create("requiredIntWithOptional").invoke(mockController, context);
+        verify(mockController).requiredIntWithOptional(Optional.of(5));
+        assertTrue(validation.hasFieldViolation("param1"));
+    }
 
     @Test
     public void validationShouldBeAppliedInCorrectOrderPass() {
@@ -704,10 +985,23 @@ public class ControllerMethodInvokerTest {
         verify(mockController).requiredInt(20);
         assertFalse(validation.hasViolations());
     }
+    
+    @Test
+    public void validationWithOptionalShouldBeAppliedInCorrectOrderPass() {
+        when(context.getParameter("param1")).thenReturn("20");
+        create("requiredIntWithOptional").invoke(mockController, context);
+        verify(mockController).requiredIntWithOptional(Optional.of(20));
+        assertFalse(validation.hasViolations());
+    }
 
     @Test(expected = RoutingException.class)
     public void invalidValidatorShouldBeFlagged() {
         create("badValidator").invoke(mockController, context);
+    }
+    
+    @Test(expected = RoutingException.class)
+    public void invalidValidatorWithOptionalShouldBeFlagged() {
+        create("badValidatorWithOptional").invoke(mockController, context);
     }
 
     @Test(expected = RoutingException.class)
@@ -722,19 +1016,54 @@ public class ControllerMethodInvokerTest {
         create("body").invoke(mockController, context);
         verify(mockController).body(body);
     }
+    
+    @Test
+    public void bodyWithOptionalShouldBeParsedIntoLeftOverParameter() {
+        Object body = new Object();
+        when(context.parseBody(Object.class)).thenReturn(body);
+        create("bodyWithOptional").invoke(mockController, context);
+        verify(mockController).bodyWithOptional(Optional.of(body));
+    }
+    
+    @Test
+    public void bodyWithOptionalShouldBeEmptyIfNoBodyPresent() {
+        when(context.parseBody(Object.class)).thenReturn(null);
+        create("bodyWithOptional").invoke(mockController, context);
+        verify(mockController).bodyWithOptional(Optional.empty());
+    }
 
     // JSR303Validation(@Pattern(regexp = "[a-z]*") String param1,
     // @Length(min = 5, max = 10) String param2, @Min(3) @Max(10) int param3);
     @Test
     public void validationPassed() {
         validateJSR303(buildDto("regex", "length", 5));
+        doCheckValidationPassed(context);
+    }
+    
+    @Test
+    public void validationWithOptionalPassed() {
+        validateJSR303WithOptional(buildDto("regex", "length", 5));
+        doCheckValidationPassed(context);
+    }
+    
+    private void doCheckValidationPassed(Context context) {
         assertFalse(context.getValidation().hasViolations());
         assertFalse("Expected not to have regex violation.", context.getValidation().hasBeanViolation("regex"));
     }
-
+    
     @Test
     public void validationFailedRegex() {
         validateJSR303(buildDto("regex!!!", "length", 5));
+        docheckValidationFailedRegex(context);
+    }
+        
+    @Test
+    public void validationWithOptionalFailedRegex() {
+        validateJSR303WithOptional(buildDto("regex!!!", "length", 5));
+        docheckValidationFailedRegex(context);
+    }
+
+    private void docheckValidationFailedRegex(Context context) {
         assertTrue(context.getValidation().hasViolations());
         assertEquals(context.getValidation().getBeanViolations().size(), 1);
         assertTrue("Expected to have regex violation.",
@@ -742,10 +1071,20 @@ public class ControllerMethodInvokerTest {
         assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("regex"));
     }
-
+    
     @Test
     public void validationFailedLength() {
         validateJSR303(buildDto("regex", "length - too long", 5));
+        doCheckValidationFailedLength(context);
+    }
+    
+    @Test
+    public void validationWithOptionalFailedLength() {
+        validateJSR303WithOptional(buildDto("regex", "length - too long", 5));
+        doCheckValidationFailedLength(context);
+    }
+
+    private void doCheckValidationFailedLength(Context context) {
         assertTrue(context.getValidation().hasViolations());
         assertEquals(context.getValidation().getBeanViolations().size(), 1);
         assertTrue("Expected to have length violation.",
@@ -757,6 +1096,16 @@ public class ControllerMethodInvokerTest {
     @Test
     public void validationFailedRange() {
         validateJSR303(buildDto("regex", "length", 25));
+        doCheckValidationFailedRange(context);
+    }
+    
+    @Test
+    public void validationWithOptionalFailedRange() {
+        validateJSR303WithOptional(buildDto("regex", "length", 25));
+        doCheckValidationFailedRange(context);
+    }
+    
+    private void doCheckValidationFailedRange(Context context) {
         assertTrue(context.getValidation().hasViolations());
         assertEquals(context.getValidation().getBeanViolations().size(), 1);
         assertTrue("Expected to have range violation.",
@@ -769,23 +1118,55 @@ public class ControllerMethodInvokerTest {
     public void validationFailedTranslationFr() {
         when(this.context.getAcceptLanguage()).thenReturn("fr");
         validateJSR303(buildDto("regex", "length - too long", 5));
+        doCheckValidationFailedTranslationFr(context);
+    }
+    
+    @Test
+    public void validationWithOptionalFailedTranslationFr() {
+        when(this.context.getAcceptLanguage()).thenReturn("fr");
+        validateJSR303WithOptional(buildDto("regex", "length - too long", 5));
+        doCheckValidationFailedTranslationFr(context);
+    }
+    
+    private void doCheckValidationFailedTranslationFr(Context context) {
         assertTrue(this.context.getValidation().hasViolations());
         assertEquals(this.context.getValidation().getBeanViolations().size(), 1);
         assertEquals(this.context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "la taille doit être entre 5 et 10");
     }
-
+    
     @Test
     public void validationFailedTranslationEn() {
         when(this.context.getAcceptLanguage()).thenReturn("en");
         validateJSR303(buildDto("regex", "length - too long", 5));
-        assertTrue(this.context.getValidation().hasViolations());
-        assertEquals(this.context.getValidation().getBeanViolations().size(), 1);
-        assertEquals(this.context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "size must be between 5 and 10");
+        doCheckValidationFailedTranslationEn(context);
+    }
+    
+    @Test
+    public void validationWithOptionalFailedTranslationEn() {
+        when(this.context.getAcceptLanguage()).thenReturn("en");
+        validateJSR303WithOptional(buildDto("regex", "length - too long", 5));
+        doCheckValidationFailedTranslationEn(context);
+    }
+
+    private void doCheckValidationFailedTranslationEn(Context context) {
+        assertTrue(context.getValidation().hasViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertEquals(context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "size must be between 5 and 10");
     }
 
     @Test
     public void validationFailedWithThreeFields() {
         validateJSR303(buildDto("regex!!!", "length is now tooooo loooong", 25));
+        doCheckValidationFailedWithThreeFields(context);
+    }
+
+    @Test
+    public void validationWithOptionalFailedWithThreeFields() {
+        validateJSR303WithOptional(buildDto("regex!!!", "length is now tooooo loooong", 25));
+        doCheckValidationFailedWithThreeFields(context);
+    }
+    
+    private void doCheckValidationFailedWithThreeFields(Context context) {
         assertTrue(context.getValidation().hasViolations());
         assertTrue(context.getValidation().hasBeanViolations());
         assertTrue("Expected to have regex violation.",
@@ -803,6 +1184,16 @@ public class ControllerMethodInvokerTest {
     @Test
     public void validationFailedWithTwoAnnotations() {
         validateJSR303(buildDto("regex!!! which is also too long", "length", 5));
+        doValidationFailedWithTwoAnnotations(context);
+    }
+    
+    @Test
+    public void validationWithOptionalFailedWithTwoAnnotations() {
+        validateJSR303WithOptional(buildDto("regex!!! which is also too long", "length", 5));
+        doValidationFailedWithTwoAnnotations(context);
+    }
+    
+    private void doValidationFailedWithTwoAnnotations(Context context) {
         assertTrue(context.getValidation().hasViolations());
         assertTrue(context.getValidation().hasBeanViolations());
         assertEquals(context.getValidation().getBeanViolations().size(), 2);
@@ -825,18 +1216,25 @@ public class ControllerMethodInvokerTest {
     public void validationWithNullObject() {
         validateJSR303(null);
         assertFalse(context.getValidation().hasViolations());
+        validateJSR303WithOptional(null);
+        assertFalse(context.getValidation().hasViolations());
         validateJSR303WithRequired(null);
         assertTrue(context.getValidation().hasViolations());
     }
 
     private void validateJSR303(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
-        create("JSR303Validation", this.ninjaProperties, this.lang).invoke(mockController, context);
+        create("JSR303Validation", this.lang).invoke(mockController, context);
+    }
+    
+    private void validateJSR303WithOptional(Dto dto) {
+        when(context.parseBody(Dto.class)).thenReturn(dto);
+        create("JSR303ValidationWithOptional", this.lang).invoke(mockController, context);
     }
 
     private void validateJSR303WithRequired(Dto dto) {
         when(context.parseBody(Dto.class)).thenReturn(dto);
-        create("JSR303ValidationWithRequired", this.ninjaProperties, this.lang).invoke(mockController, context);
+        create("JSR303ValidationWithRequired", this.lang).invoke(mockController, context);
     }
 
     private Dto buildDto(String regex, String length, int range) {
@@ -860,6 +1258,8 @@ public class ControllerMethodInvokerTest {
             protected void configure() {
                 Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
                 
+                bind(NinjaProperties.class).toInstance(ninjaProperties);
+                
                 for (Object o : toBind) {
                     if(o instanceof Class && ParamParser.class.isAssignableFrom((Class) o)) {
                         parsersBinder.addBinding().to((Class<? extends ParamParser>) o);
@@ -868,7 +1268,7 @@ public class ControllerMethodInvokerTest {
                     }
                 }
             }
-        }));
+        }), ninjaProperties);
     }
 
     public enum Rainbow {
@@ -941,25 +1341,61 @@ public class ControllerMethodInvokerTest {
         public Result classArgArgumentExtractor(@ClassArg String param1);
 
         public Result guiceArgumentExtractor(@GuiceAnnotation(foo = "bar") String param1);
+        
+        public Result guiceArgumentExtractorWithOptional(@GuiceAnnotation(foo = "bar") Optional<String> param1);
 
         public Result multiple(@Param("param1") String param1, @PathParam("param2") int param2,
                                Context context, Session session);
 
         public Result required(@Param("param1") @Required String param1);
+        
+        public Result optionalSessionParam(@SessionParam("param1") Optional<String> param1);
+
+        public Result optionalAttribute(@Attribute("param1") Optional<Dep> param1);
+
+        public Result optionalHeader(@Header("param1") Optional<String> param1);
+
+        public Result optionalHeaders(@Headers("param1") Optional<String[]> param1);
+        
+        public Result optionalParam(@Param("param1") Optional<String> param1);
+        
+        public Result optionalIntegerParam(@Param("param1") Optional<Integer> param1);
+        
+        public Result optionalLongParam(@Param("param1") Optional<Long> param1);
+        
+        public Result optionalShortParam(@Param("param1") Optional<Short> param1);
+        
+        public Result optionalEnumParam(@Param("param1") Optional<Rainbow> param1);
+        
+        public Result optionalEnumArrayParam(@Param("param1") Optional<Rainbow[]> param1);
+        
+        public Result optionalDateParam(@Param("param1") Optional<Date> param1);
+        
+        public Result optionalBody(Optional<Object> body);
 
         public Result requiredInt(@Param("param1") @Required @NumberValue(min = 10) int param1);
+        
+        public Result requiredIntWithOptional(@Param("param1") @Required @NumberValue(min = 10) Optional<Integer> param1);
 
         public Result badValidator(@Param("param1") @NumberValue(min = 10) String param1);
+        
+        public Result badValidatorWithOptional(@Param("param1") @NumberValue(min = 10) Optional<String> param1);
 
         public Result body(Object body);
+        
+        public Result bodyWithOptional(Optional<Object> body);
 
         public Result tooManyBodies(Object body1, Object body2);
 
         public Result JSR303Validation(@JSR303Validation Dto dto, Validation validation);
+        
+        public Result JSR303ValidationWithOptional(@JSR303Validation Optional<Dto> dto, Validation validation);
 
         public Result JSR303ValidationWithRequired(@Required @JSR303Validation Dto dto, Validation validation);
         
         public Result dateParam(@Param("param1") Date param1);
+        
+        public Result dateParamWithOptional(@Param("param1") Optional<Date> param1);
         
         public Result needingInjectionParamParser(@Param("param1") Dep param1);
         

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2016 the original author or authors.
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import ninja.validation.ValidationImpl;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * => Most tests are done via class RoutesTest in project
@@ -62,7 +63,9 @@ public class RouterImplTest {
         when(testControllerProvider.get()).thenReturn(new TestController());
         when(injector.getProvider(TestController.class)).thenReturn(testControllerProvider);
         when(injector.getInstance(ParamParsers.class)).thenReturn(new ParamParsers(Collections.emptySet()));
-        router = new RouterImpl(injector, ninjaProperties);
+        Provider<RouteBuilderImpl> routeBuilderImplProvider = mock(Provider.class);
+        when(routeBuilderImplProvider.get()).thenAnswer((invocation) -> new RouteBuilderImpl(ninjaProperties));
+        router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
 
         // add route:
         router.GET().route("/testroute").with(TestController.class, "index");

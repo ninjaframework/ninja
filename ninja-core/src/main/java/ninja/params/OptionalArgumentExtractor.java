@@ -16,30 +16,32 @@
 
 package ninja.params;
 
+import java.util.Optional;
 import ninja.Context;
-import ninja.params.ParamParsers.ArrayParamParser;
 
 /**
- * Argument extractor that parses the String[] argument into a X[]
+ * Argument extractor that wraps an extractor so that it can handle Optional<...>
+ * in controller methods.
+ * 
+ * For example:
+ * 
+ *     myControllerMethod(@Param("param1") Optional<String> myValue)
  */
-public class ParsingArrayExtractor<X> implements ArgumentExtractor<X> {
-    private final ArgumentExtractor<? extends String[]> wrapped;
-    private final ArrayParamParser<?> parser;
+class OptionalArgumentExtractor<T> implements ArgumentExtractor<Optional<T>> {
+    private final ArgumentExtractor<T> wrapped;
 
-    public ParsingArrayExtractor(ArgumentExtractor<? extends String[]> wrapped, ArrayParamParser<?> parser) {
+    public OptionalArgumentExtractor(ArgumentExtractor<T> wrapped) {
         this.wrapped = wrapped;
-        this.parser = parser;
     }
 
     @Override
-    public X extract(Context context) {
-        return (X) parser.parseParameter(wrapped.getFieldName(), wrapped.extract(context),
-                context.getValidation());
+    public Optional<T> extract(Context context) {
+        return Optional.ofNullable(wrapped.extract(context));
     }
 
     @Override
-    public Class<X> getExtractedType() {
-        return (Class<X>) parser.getArrayType();
+    public Class<Optional<T>> getExtractedType() {
+        throw new RuntimeException("This is a framework-internal ArgumentExtractor. This method should not be used by anyone.");
     }
 
     @Override
