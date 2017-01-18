@@ -41,13 +41,13 @@ public class ValidatingArgumentExtractor<T> implements ArgumentExtractor<T> {
     public T extract(Context context) {
         final T value = this.wrapped.extract(context);
         // Check if we already have a validation error from a previous stage
-        if (context.getValidation().hasFieldViolation(this.wrapped.getFieldName())) {
+        if (context.getValidation().hasViolation(this.wrapped.getFieldName())) {
             return value;
         }
         // Apply validators
         for (Validator<T> validator : this.validators) {
             validator.validate(value, this.wrapped.getFieldName(), context);
-            if (context.getValidation().hasFieldViolation(this.wrapped.getFieldName())) {
+            if (context.getValidation().hasViolation(this.wrapped.getFieldName())) {
                 // Break if validation failed
                 break;
             }

@@ -42,12 +42,42 @@ public interface Validation {
      * @return True if it does
      */
     boolean hasViolations();
+    
+    /**
+     * Whether the validation context has a violation for the given field
+     * 
+     * @return True if it does
+     */
+    boolean hasViolation(String paramName);
+    
+    /**
+     * Get all constraint violations.
+     * 
+     * @return The list of all violations.
+     */
+    List<ConstraintViolation> getViolations();
+    
+    /**
+     * Get a complete list of field violations for a specified parameter.
+     * 
+     * @return A List of FieldViolation-objects
+     */
+    List<ConstraintViolation> getViolations(String paramName);
+    
+    /**
+     * Add a violation
+     * 
+     * @param constraintViolation
+     *            The constraint violation
+     */
+    void addViolation(ConstraintViolation constraintViolation);
 
     /**
      * Whether the validation context has a violation for the given field
      * 
      * @return True if it does
      */
+    @Deprecated
     boolean hasFieldViolation(String field);
 
     /**
@@ -58,16 +88,8 @@ public interface Validation {
      * @param constraintViolation
      *            The constraint violation
      */
-    void addFieldViolation(String field, ConstraintViolation constraintViolation);
-
-    /**
-     * Add a general violation
-     * 
-     * @param constraintViolation
-     *            The constraint violation
-     */
     @Deprecated
-    void addViolation(ConstraintViolation constraintViolation);
+    void addFieldViolation(String field, ConstraintViolation constraintViolation);
 
     /**
      * Get a complete list of all field violations. This list DOES NOT contain general violations
@@ -75,6 +97,7 @@ public interface Validation {
      * 
      * @return A List of FieldViolation-objects
      */
+    @Deprecated
     List<FieldViolation> getFieldViolations();
 
     /**
@@ -84,6 +107,7 @@ public interface Validation {
      * 
      * @return A List of FieldViolation-objects
      */
+    @Deprecated
     List<FieldViolation> getFieldViolations(String fieldName);
 
     /**
@@ -100,6 +124,7 @@ public interface Validation {
      * 
      * @param fieldViolation
      */
+    @Deprecated
     void addFieldViolation(FieldViolation fieldViolation);
 
     /**
@@ -111,6 +136,7 @@ public interface Validation {
      * @param fieldViolation the FieldViolation consisting of a cinstraintViolation and the fields
      *            name
      */
+    @Deprecated
     void addBeanViolation(FieldViolation fieldViolation);
 
     /**
@@ -119,6 +145,7 @@ public interface Validation {
      * @param name Name of the bean.
      * @return Whether the named bean has violation.
      */
+    @Deprecated
     boolean hasBeanViolation(String name);
 
     /**
@@ -127,6 +154,7 @@ public interface Validation {
      * 
      * @return true if there are any, false if none
      */
+    @Deprecated
     boolean hasBeanViolations();
 
     /**
@@ -136,6 +164,7 @@ public interface Validation {
      * @param beanName
      * @return A list of field violations
      */
+    @Deprecated
     List<FieldViolation> getBeanViolations();
 
     /**
@@ -145,5 +174,6 @@ public interface Validation {
      * 
      * @return A List of FieldViolation-objects
      */
+    @Deprecated
     List<FieldViolation> getBeanViolations(String fieldName);
 }

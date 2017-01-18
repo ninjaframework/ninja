@@ -26,11 +26,11 @@ import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 import javax.validation.metadata.ConstraintDescriptor;
 
+import com.google.inject.Inject;
+
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Lang;
-
-import com.google.inject.Inject;
 
 /**
  * Built in validators.
@@ -122,8 +122,10 @@ public class Validators {
                             new NinjaContextMsgInterpolator(value, violation.getConstraintDescriptor()),
                             localeToUse
                     );
-                    final ConstraintViolation constraintViolation = ConstraintViolation.create(violationMessage, violation.getInvalidValue());
-                    validation.addBeanViolation(new FieldViolation(violation.getPropertyPath().toString(), constraintViolation));
+                    final String messageKey = violation.getMessage().replaceAll("[{}]", "");
+                    final ConstraintViolation constraintViolation = new ConstraintViolation(
+                            messageKey, violation.getPropertyPath().toString(), violationMessage, violation.getInvalidValue());
+                    validation.addViolation(constraintViolation);
                 }
             }
         }
@@ -145,9 +147,8 @@ public class Validators {
         @Override
         public void validate(Object value, String field, Context context) {
             if (value == null) {
-                context.getValidation().addFieldViolation(
-                        field,
-                        ConstraintViolation.createForFieldWithDefault(
+                context.getValidation().addViolation(
+                        new ConstraintViolation(
                                 this.required.key(),
                                 fieldKey(field, this.required.fieldKey()),
                                 this.required.message()));
@@ -179,12 +180,12 @@ public class Validators {
         public void validate(String value, String field, Context context) {
             if (value != null) {
                 if (this.length.max() != -1 && value.length() > this.length.max()) {
-                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                    context.getValidation().addViolation(ConstraintViolation
                             .createForFieldWithDefault(this.length.maxKey(),
                                     fieldKey(field, this.length.fieldKey()),
                                     this.length.maxMessage(), this.length.max(), value));
                 } else if (this.length.min() != -1 && value.length() < this.length.min()) {
-                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                    context.getValidation().addViolation(ConstraintViolation
                             .createForFieldWithDefault(this.length.minKey(),
                                     fieldKey(field, this.length.fieldKey()),
                                     this.length.minMessage(), this.length.min(), value));
@@ -219,7 +220,7 @@ public class Validators {
                 try {
                     Long.parseLong(value);
                 } catch (NumberFormatException e) {
-                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                    context.getValidation().addViolation(ConstraintViolation
                             .createForFieldWithDefault(this.isInteger.key(),
                                     fieldKey(field, this.isInteger.fieldKey()),
                                     this.isInteger.message(), value));
@@ -254,7 +255,7 @@ public class Validators {
                 try {
                     Double.parseDouble(value);
                 } catch (NumberFormatException e) {
-                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                    context.getValidation().addViolation(ConstraintViolation
                             .createForFieldWithDefault(this.isFloat.key(),
                                     fieldKey(field, this.isFloat.fieldKey()),
                                     this.isFloat.message(), value));
@@ -289,7 +290,7 @@ public class Validators {
                 try {
                     Double.parseDouble(value);
                 } catch (NumberFormatException e) {
-                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                    context.getValidation().addViolation(ConstraintViolation
                             .createForFieldWithDefault(this.isDate.key(),
                                     fieldKey(field, this.isDate.fieldKey()),
                                     this.isDate.message(), value));
@@ -324,9 +325,8 @@ public class Validators {
         public void validate(String value, String field, Context context) {
             if (value != null) {
                 if (!this.pattern.matcher(value).matches()) {
-                    context.getValidation().addFieldViolation(
-                            field,
-                            ConstraintViolation.createForFieldWithDefault(
+                    context.getValidation().addViolation(
+                            new ConstraintViolation(
                                     this.matches.key(),
                                     fieldKey(field, this.matches.fieldKey()),
                                     this.matches.message(),
@@ -361,13 +361,13 @@ public class Validators {
             if (value != null) {
                 if (this.number.max() != Double.MAX_VALUE
                         && value.doubleValue() > this.number.max()) {
-                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                    context.getValidation().addViolation(ConstraintViolation
                             .createForFieldWithDefault(this.number.maxKey(),
                                     fieldKey(field, this.number.fieldKey()),
                                     this.number.maxMessage(), this.number.max(), value));
                 } else if (this.number.min() != -1
                         && value.doubleValue() < this.number.min()) {
-                    context.getValidation().addFieldViolation(field, ConstraintViolation
+                    context.getValidation().addViolation(ConstraintViolation
                             .createForFieldWithDefault(this.number.minKey(),
                                     fieldKey(field, this.number.fieldKey()),
                                     this.number.minMessage(), this.number.min(), value));
@@ -412,7 +412,7 @@ public class Validators {
                     }
                 }
 
-                context.getValidation().addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                context.getValidation().addViolation(new ConstraintViolation(
                         IsEnum.KEY, field, IsEnum.MESSAGE, value, this.isEnum.enumClass().getName()));
             }
         }

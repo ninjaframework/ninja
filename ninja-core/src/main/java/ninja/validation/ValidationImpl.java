@@ -30,27 +30,52 @@ import com.google.common.collect.Maps;
  * @author Jonathan Lannoy
  */
 public class ValidationImpl implements Validation {
+    
+    private final static String HIBERNATE_VALIDATION_PREFIX = "org.hibernate.";
+    
+    private final static String JAVAX_VALIDATION_PREFIX = "javax.validation.";
 
-    private final Map<String, List<FieldViolation>> fieldViolations = Maps.newHashMap();
-    private final List<ConstraintViolation> generalViolations = Lists.newArrayList();
-    private final Map<String, List<FieldViolation>> beanViolations = Maps.newHashMap();
+    private final Map<String, List<ConstraintViolation>> violations = Maps.newHashMap();
 
     @Override
     public boolean hasViolations() {
-        return !this.fieldViolations.isEmpty() || !this.generalViolations.isEmpty()
-                || !this.beanViolations.isEmpty();
+        return !this.violations.isEmpty();
+    }
+    
+    @Override
+    public boolean hasViolation(String paramName) {
+        return this.violations.containsKey(paramName);
+    }
+    
+    @Override
+    public List<ConstraintViolation> getViolations() {
+        List<ConstraintViolation> sumViolations = Lists.newArrayList();
+        for(List<ConstraintViolation> fieldViolation : this.violations.values()) {
+            sumViolations.addAll(fieldViolation);
+        }
+        return sumViolations;
+    }
+    
+    @Override
+    public List<ConstraintViolation> getViolations(String paramName) {
+        if(this.violations.containsKey(paramName)) {
+            return this.violations.get(paramName);
+        } else {
+            return Lists.newArrayList();
+        }
+    }
+    
+    @Override
+    public void addViolation(ConstraintViolation violation) {
+        if(!this.violations.containsKey(violation.getFieldKey())) {
+            this.violations.put(violation.getFieldKey(), Lists.<ConstraintViolation>newArrayList());
+        }
+        this.violations.get(violation.getFieldKey()).add(violation);
     }
 
     @Override
     public void addFieldViolation(FieldViolation fieldViolation) {
-        if (fieldViolation.field == null) {
-            this.generalViolations.add(fieldViolation.constraintViolation);
-        } else {
-            if(!this.fieldViolations.containsKey(fieldViolation.field)) {
-                this.fieldViolations.put(fieldViolation.field, Lists.<FieldViolation>newArrayList());
-            }
-            this.fieldViolations.get(fieldViolation.field).add(fieldViolation);
-        }
+        this.addViolation(fieldViolation.constraintViolation);
     }
 
     @Override
@@ -60,62 +85,80 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasFieldViolation(String field) {
-        return this.fieldViolations.containsKey(field);
+        return this.getFieldViolations(field).isEmpty();
     }
 
     @Override
     public List<FieldViolation> getFieldViolations() {
         List<FieldViolation> sumViolations = Lists.newArrayList();
-        for(List<FieldViolation> fieldViolation : this.fieldViolations.values()) {
-            sumViolations.addAll(fieldViolation);
+        for(ConstraintViolation violation : this.getViolations()) {
+            if(violation.getMessageKey() != null 
+                    && !violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
+                    && !violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX)) {
+                sumViolations.add(new FieldViolation(violation.getFieldKey(), violation));
+            }
         }
         return sumViolations;
     }
 
     @Override
     public List<FieldViolation> getFieldViolations(String field) {
-        return this.fieldViolations.get(field);
+        List<FieldViolation> sumViolations = Lists.newArrayList();
+        for(ConstraintViolation violation : this.getViolations(field)) {
+            if(violation.getMessageKey() != null 
+                    && !violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
+                    && !violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX)) {
+                sumViolations.add(new FieldViolation(violation.getFieldKey(), violation));
+            }
+        }
+        return sumViolations;
     }
 
     @Override
     public void addBeanViolation(FieldViolation fieldViolation) {
-        if(!this.beanViolations.containsKey(fieldViolation.field)) {
-            this.beanViolations.put(fieldViolation.field, Lists.<FieldViolation>newArrayList());
-        }
-        this.beanViolations.get(fieldViolation.field).add(fieldViolation);
+        this.addViolation(fieldViolation.constraintViolation);
     }
 
     @Override
     public boolean hasBeanViolation(String field) {
-        return this.beanViolations.containsKey(field);
+        return this.getBeanViolations(field).isEmpty();
     }
 
     @Override
     public boolean hasBeanViolations() {
-        return !this.beanViolations.isEmpty();
+        return !this.getBeanViolations().isEmpty();
     }
 
     @Override
     public List<FieldViolation> getBeanViolations() {
         List<FieldViolation> sumViolations = Lists.newArrayList();
-        for(List<FieldViolation> fieldViolation : this.beanViolations.values()) {
-            sumViolations.addAll(fieldViolation);
+        for(ConstraintViolation violation : this.getViolations()) {
+            if(violation.getMessageKey() != null 
+                    && violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
+                    && violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX)) {
+                sumViolations.add(new FieldViolation(violation.getFieldKey(), 
+                        new ConstraintViolation(violation.getDefaultMessage(), null, null, violation.getMessageParams())));
+            }
         }
         return sumViolations;
     }
     
     @Override
     public List<FieldViolation> getBeanViolations(String field) {
-        return this.beanViolations.get(field);
-    }
-
-    @Override
-    public void addViolation(ConstraintViolation constraintViolation) {
-        this.generalViolations.add(constraintViolation);
+        List<FieldViolation> sumViolations = Lists.newArrayList();
+        for(ConstraintViolation violation : this.getViolations(field)) {
+            if(violation.getMessageKey() != null 
+                    && violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
+                    && violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX)) {
+                sumViolations.add(new FieldViolation(violation.getFieldKey(), 
+                        new ConstraintViolation(violation.getDefaultMessage(), null, null, violation.getMessageParams())));
+            }
+        }
+        return sumViolations;
     }
 
     @Override
     public List<ConstraintViolation> getGeneralViolations() {
-        return this.generalViolations;
+        return Lists.newArrayList();
     }
 }
