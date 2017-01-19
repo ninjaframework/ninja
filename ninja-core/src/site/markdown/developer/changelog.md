@@ -1,3 +1,8 @@
+Version 6.0.0-beta3
+===================
+
+ * 2017-01-19 Fix for parsing of Boolean into controller methods #557 (reyez)
+
 Version 6.0.0-beta2
 ===================
 
