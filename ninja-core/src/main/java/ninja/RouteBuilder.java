@@ -16,11 +16,20 @@
 
 package ninja;
 
+import java.util.List;
 import ninja.utils.MethodReference;
 
 public interface RouteBuilder extends WithControllerMethod<Void> {
 
     RouteBuilder route(String uri);
+    
+    RouteBuilder globalFilters(Class<? extends Filter> ... filters);
+    
+    RouteBuilder globalFilters(List<Class<? extends Filter>> filters);
+    
+    RouteBuilder filters(Class<? extends Filter> ... filters);
+    
+    RouteBuilder filters(List<Class<? extends Filter>> filters);
 
     void with(Class<?> controllerClass, String controllerMethod);
 

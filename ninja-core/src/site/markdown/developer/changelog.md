@@ -1,3 +1,8 @@
+Version X.X.X
+=============
+
+ * 2017-02-16 Add global filtering capabilities #547 (ra)
+
 Version 6.0.0-beta3
 ===================
 

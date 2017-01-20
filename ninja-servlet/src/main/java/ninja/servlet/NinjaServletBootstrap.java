@@ -22,6 +22,7 @@ import ninja.utils.NinjaPropertiesImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
+import ninja.utils.SwissKnife;
 
 /**
  * Ninja bootstrap for servlet environments.  Binds the context implementation
@@ -49,9 +50,9 @@ public class NinjaServletBootstrap extends Bootstrap {
         // the user can register other servlets and servlet filters
         // If the file does not exist we simply load the default servlet
         String servletModuleClassName
-            = resolveApplicationClassName(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
+            = ninjaBaseDirectoryResolver.resolveApplicationClassName(APPLICATION_GUICE_SERVLET_MODULE_CONVENTION_LOCATION);
 
-        if (doesClassExist(servletModuleClassName)) {
+        if (SwissKnife.doesClassExist(servletModuleClassName, this)) {
 
             Class<?> servletModuleClass = Class
                     .forName(servletModuleClassName);
