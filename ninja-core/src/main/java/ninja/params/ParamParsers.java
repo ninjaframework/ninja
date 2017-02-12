@@ -198,7 +198,7 @@ public class ParamParsers {
             if (parameterValue == null || parameterValue.isEmpty() || validation.hasViolation(field)) {
                 return null;
             } else {
-                return Boolean.parseBoolean(parameterValue);
+                return parseBoolean(parameterValue);
             }
         }
 
@@ -206,6 +206,18 @@ public class ParamParsers {
         public Class<Boolean> getParsedType() {
             return Boolean.class;
         }
+        
+        private Boolean parseBoolean(String value) {
+            if (value == null) {
+                return null;
+            } else if (value.equalsIgnoreCase("true")) {
+                return Boolean.TRUE;
+            } else if (value.equalsIgnoreCase("false")) {
+                return Boolean.FALSE;
+            } else {
+                return null;
+            }
+        }    
     }
 
     public static class PrimitiveBooleanParamParser implements ParamParser<Boolean> {
