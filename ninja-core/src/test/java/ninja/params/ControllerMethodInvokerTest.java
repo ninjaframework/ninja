@@ -364,6 +364,23 @@ public class ControllerMethodInvokerTest {
         verify(mockController).booleanParam(null);
         assertFalse(validation.hasViolations());
     }
+    
+    
+    @Test(expected = BadRequestException.class)
+    public void booleanParamShouldHandleNullInStrictMode() throws Exception {
+        when(context.getParameter("param1")).thenReturn(null);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+
+        create("booleanParam").invoke(mockController, context);
+    }
+    
+    @Test(expected = BadRequestException.class)
+    public void booleanParamShouldHandleWrongInputForBooleanInStrictMode() throws Exception {
+        when(context.getParameter("param1")).thenReturn("test");
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+
+        create("booleanParam").invoke(mockController, context);
+    }
 
     @Test
     public void primBooleanParamShouldBeParsedToBoolean() throws Exception {
@@ -377,6 +394,36 @@ public class ControllerMethodInvokerTest {
         create("primBooleanParam").invoke(mockController, context);
         verify(mockController).primBooleanParam(false);
         assertFalse(validation.hasViolations());
+    }
+        
+    @Test
+    public void booleanParamWithOptionalShouldHandleWrongInputForBooleanInStrictMode() throws Exception {
+        when(context.getParameter("param1")).thenReturn("test");
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+
+        create("booleanParamWithOptional").invoke(mockController, context);
+        
+        verify(mockController).booleanParamWithOptional(Optional.empty());
+    }
+        
+    @Test
+    public void booleanParamWithOptionalShouldHandleTrueInStrictMode() throws Exception {
+        when(context.getParameter("param1")).thenReturn("true");
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+
+        create("booleanParamWithOptional").invoke(mockController, context);
+        
+        verify(mockController).booleanParamWithOptional(Optional.of(Boolean.TRUE));
+    }
+    
+    @Test
+    public void booleanParamWithOptionalShouldHandleFalseInStrictMode() throws Exception {
+        when(context.getParameter("param1")).thenReturn("false");
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
+
+        create("booleanParamWithOptional").invoke(mockController, context);
+        
+        verify(mockController).booleanParamWithOptional(Optional.of(Boolean.FALSE));
     }
 
     @Test
@@ -1311,6 +1358,8 @@ public class ControllerMethodInvokerTest {
         public Result primByteParam(@Param("param1") byte param1);
 
         public Result booleanParam(@Param("param1") Boolean param1);
+        
+        public Result booleanParamWithOptional(@Param("param1") Optional<Boolean> param1);
 
         public Result primBooleanParam(@Param("param1") boolean param1);
 
