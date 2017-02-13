@@ -75,7 +75,7 @@ import static org.mockito.Mockito.when;
  * ControllerMethodInvokerTest.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ControllerMethodInvokerTest {
+public class ControllerMethodInvokerWithDeprecatedValidationTest {
 
     @Mock
     private MockController mockController;
@@ -214,7 +214,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("integerParam").invoke(mockController, context);
         verify(mockController).integerParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -236,7 +236,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("intParam").invoke(mockController, context);
         verify(mockController).intParam(0);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -258,7 +258,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("shortParam").invoke(mockController, context);
         verify(mockController).shortParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -280,7 +280,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primShortParam").invoke(mockController, context);
         verify(mockController).primShortParam((short) 0);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -330,7 +330,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("byteParam").invoke(mockController, context);
         verify(mockController).byteParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -352,7 +352,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primByteParam").invoke(mockController, context);
         verify(mockController).primByteParam((byte) 0);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -449,7 +449,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("longParam").invoke(mockController, context);
         verify(mockController).longParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
 
@@ -472,7 +472,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primLongParam").invoke(mockController, context);
         verify(mockController).primLongParam(0L);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -494,7 +494,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("floatParam").invoke(mockController, context);
         verify(mockController).floatParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -516,7 +516,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primFloatParam").invoke(mockController, context);
         verify(mockController).primFloatParam(0);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -538,7 +538,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("doubleParam").invoke(mockController, context);
         verify(mockController).doubleParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -560,7 +560,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("primDoubleParam").invoke(mockController, context);
         verify(mockController).primDoubleParam(0);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -589,7 +589,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("enumParam").invoke(mockController, context);
         verify(mockController).enumParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -611,7 +611,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("");
         create("enumCsvParam").invoke(mockController, context);
         verify(mockController).enumCsvParam(null);
-        assertFalse(validation.hasViolation("param1"));
+        assertFalse(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -619,7 +619,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("White,Black");
         create("enumCsvParam").invoke(mockController, context);
         verify(mockController).enumCsvParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -641,7 +641,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameterValues("param1")).thenReturn(new ArrayList<String>());
         create("enumArrayParam").invoke(mockController, context);
         verify(mockController).enumArrayParam(null);
-        assertFalse(validation.hasViolation("param1"));
+        assertFalse(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -649,7 +649,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameterValues("param1")).thenReturn(Arrays.asList("White", "Black"));
         create("enumArrayParam").invoke(mockController, context);
         verify(mockController).enumArrayParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
     
     
@@ -686,7 +686,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("blah");
         create("dateParam", DateParamParser.class).invoke(mockController, context);
         verify(mockController).dateParam(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
     
     @Test(expected = RoutingException.class)
@@ -746,7 +746,7 @@ public class ControllerMethodInvokerTest {
     public void validationShouldFailWhenBadRequest() {
         create("required").invoke(mockController, context);
         verify(mockController).required(null);
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -999,16 +999,16 @@ public class ControllerMethodInvokerTest {
     public void validationShouldBeAppliedInCorrectOrderPreFail() {
         create("requiredInt").invoke(mockController, context);
         verify(mockController).requiredInt(0);
-        assertTrue(validation.hasViolation("param1"));
-        assertEquals(1, validation.getViolations("param1").size());
-        assertEquals("validation.required.violation", validation.getViolations("param1").get(0).getMessageKey());
+        assertTrue(validation.hasFieldViolation("param1"));
+        assertEquals(1, validation.getFieldViolations("param1").size());
+        assertEquals("validation.required.violation", validation.getFieldViolations("param1").get(0).constraintViolation.getMessageKey());
     }
     
     @Test
     public void validationWithOptionalShouldBeAppliedInCorrectOrderPreFail() {
         create("requiredIntWithOptional").invoke(mockController, context);
         verify(mockController).requiredIntWithOptional(Optional.empty());
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -1016,9 +1016,9 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("5");
         create("requiredInt").invoke(mockController, context);
         verify(mockController).requiredInt(5);
-        assertTrue(validation.hasViolation("param1"));
-        assertEquals(1, validation.getViolations("param1").size());
-        assertEquals("validation.number.min.violation", validation.getViolations("param1").get(0).getMessageKey());
+        assertTrue(validation.hasFieldViolation("param1"));
+        assertEquals(1, validation.getFieldViolations("param1").size());
+        assertEquals("validation.number.min.violation", validation.getFieldViolations("param1").get(0).constraintViolation.getMessageKey());
     }
     
     @Test
@@ -1026,7 +1026,7 @@ public class ControllerMethodInvokerTest {
         when(context.getParameter("param1")).thenReturn("5");
         create("requiredIntWithOptional").invoke(mockController, context);
         verify(mockController).requiredIntWithOptional(Optional.of(5));
-        assertTrue(validation.hasViolation("param1"));
+        assertTrue(validation.hasFieldViolation("param1"));
     }
 
     @Test
@@ -1099,7 +1099,7 @@ public class ControllerMethodInvokerTest {
     
     private void doCheckValidationPassed(Context context) {
         assertFalse(context.getValidation().hasViolations());
-        assertFalse("Expected not to have regex violation.", context.getValidation().hasViolation("regex"));
+        assertFalse("Expected not to have regex violation.", context.getValidation().hasBeanViolation("regex"));
     }
     
     @Test
@@ -1116,10 +1116,10 @@ public class ControllerMethodInvokerTest {
 
     private void docheckValidationFailedRegex(Context context) {
         assertTrue(context.getValidation().hasViolations());
-        assertEquals(context.getValidation().getViolations().size(), 1);
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
         assertTrue("Expected to have regex violation.",
-                context.getValidation().hasViolation("regex"));
-        assertTrue(context.getValidation().getViolations().get(0).getFieldKey()
+                context.getValidation().hasBeanViolation("regex"));
+        assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("regex"));
     }
     
@@ -1137,10 +1137,10 @@ public class ControllerMethodInvokerTest {
 
     private void doCheckValidationFailedLength(Context context) {
         assertTrue(context.getValidation().hasViolations());
-        assertEquals(context.getValidation().getViolations().size(), 1);
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
         assertTrue("Expected to have length violation.",
-                context.getValidation().hasViolation("length"));
-        assertTrue(context.getValidation().getViolations().get(0).getFieldKey()
+                context.getValidation().hasBeanViolation("length"));
+        assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("length"));
     }
 
@@ -1158,10 +1158,10 @@ public class ControllerMethodInvokerTest {
     
     private void doCheckValidationFailedRange(Context context) {
         assertTrue(context.getValidation().hasViolations());
-        assertEquals(context.getValidation().getViolations().size(), 1);
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
         assertTrue("Expected to have range violation.",
-                context.getValidation().hasViolation("range"));
-        assertTrue(context.getValidation().getViolations().get(0).getFieldKey()
+                context.getValidation().hasBeanViolation("range"));
+        assertTrue(context.getValidation().getBeanViolations().get(0).field
                 .contentEquals("range"));
     }
 
@@ -1181,8 +1181,8 @@ public class ControllerMethodInvokerTest {
     
     private void doCheckValidationFailedTranslationFr(Context context) {
         assertTrue(this.context.getValidation().hasViolations());
-        assertEquals(this.context.getValidation().getViolations().size(), 1);
-        assertEquals(this.context.getValidation().getViolations().get(0).getDefaultMessage(), "la taille doit être entre 5 et 10");
+        assertEquals(this.context.getValidation().getBeanViolations().size(), 1);
+        assertEquals(this.context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "la taille doit être entre 5 et 10");
     }
     
     @Test
@@ -1201,8 +1201,8 @@ public class ControllerMethodInvokerTest {
 
     private void doCheckValidationFailedTranslationEn(Context context) {
         assertTrue(context.getValidation().hasViolations());
-        assertEquals(context.getValidation().getViolations().size(), 1);
-        assertEquals(context.getValidation().getViolations().get(0).getDefaultMessage(), "size must be between 5 and 10");
+        assertEquals(context.getValidation().getBeanViolations().size(), 1);
+        assertEquals(context.getValidation().getBeanViolations().get(0).constraintViolation.getMessageKey(), "size must be between 5 and 10");
     }
 
     @Test
@@ -1219,13 +1219,13 @@ public class ControllerMethodInvokerTest {
     
     private void doCheckValidationFailedWithThreeFields(Context context) {
         assertTrue(context.getValidation().hasViolations());
-        assertTrue(context.getValidation().hasViolations());
+        assertTrue(context.getValidation().hasBeanViolations());
         assertTrue("Expected to have regex violation.",
-                context.getValidation().hasViolation("regex"));
-        assertEquals(context.getValidation().getViolations().size(), 3);
+                context.getValidation().hasBeanViolation("regex"));
+        assertEquals(context.getValidation().getBeanViolations().size(), 3);
 
-        for (int i = 0; i < context.getValidation().getViolations().size(); i++) {
-            String fieldName = context.getValidation().getViolations().get(i).getFieldKey();
+        for (int i = 0; i < context.getValidation().getBeanViolations().size(); i++) {
+            String fieldName = context.getValidation().getBeanViolations().get(i).field;
             assertTrue(fieldName.contentEquals("regex") || fieldName.contentEquals("length")
                     || fieldName.contentEquals("range"));
         }
@@ -1246,18 +1246,20 @@ public class ControllerMethodInvokerTest {
     
     private void doValidationFailedWithTwoAnnotations(Context context) {
         assertTrue(context.getValidation().hasViolations());
-        assertTrue(context.getValidation().hasViolations());
-        assertEquals(context.getValidation().getViolations().size(), 2);
+        assertTrue(context.getValidation().hasBeanViolations());
+        assertEquals(context.getValidation().getBeanViolations().size(), 2);
 
-        for (int i = 0; i < context.getValidation().getViolations().size(); i++) {
-            String fieldName = context.getValidation().getViolations().get(i).getFieldKey();
+        for (int i = 0; i < context.getValidation().getBeanViolations().size(); i++) {
+            String fieldName = context.getValidation().getBeanViolations().get(i).field;
             assertTrue(fieldName.contentEquals("regex"));
         }
 
         String message0 =
-                context.getValidation().getViolations().get(0).getMessageKey();
+                context.getValidation().getBeanViolations().get(0).constraintViolation
+                        .getMessageKey();
         String message1 =
-                context.getValidation().getViolations().get(1).getMessageKey();
+                context.getValidation().getBeanViolations().get(1).constraintViolation
+                        .getMessageKey();
         assertFalse(message0.contentEquals(message1));
     }
 
@@ -1303,9 +1305,6 @@ public class ControllerMethodInvokerTest {
             }
         }
         return ControllerMethodInvoker.build(method, method, Guice.createInjector(new AbstractModule() {
-            @SuppressWarnings({
-                    "rawtypes", "unchecked"
-            })
             @Override
             protected void configure() {
                 Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
@@ -1529,7 +1528,8 @@ public class ControllerMethodInvokerTest {
             try {
                 return parameterValue == null ? null : new SimpleDateFormat(DATE_FORMAT).parse(parameterValue);
             } catch(ParseException e) {
-                validation.addViolation(new ConstraintViolation(KEY, field, MESSAGE, parameterValue));
+                validation.addFieldViolation(field, ConstraintViolation.createForFieldWithDefault(
+                        KEY, field, MESSAGE, parameterValue));
                 return null;
             }
         }

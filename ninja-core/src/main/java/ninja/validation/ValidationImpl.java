@@ -85,7 +85,7 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasFieldViolation(String field) {
-        return this.getFieldViolations(field).isEmpty();
+        return !this.getFieldViolations(field).isEmpty();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean hasBeanViolation(String field) {
-        return this.getBeanViolations(field).isEmpty();
+        return !this.getBeanViolations(field).isEmpty();
     }
 
     @Override
@@ -134,8 +134,8 @@ public class ValidationImpl implements Validation {
         List<FieldViolation> sumViolations = Lists.newArrayList();
         for(ConstraintViolation violation : this.getViolations()) {
             if(violation.getMessageKey() != null 
-                    && violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
-                    && violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX)) {
+                    && (violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
+                    || violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX))) {
                 sumViolations.add(new FieldViolation(violation.getFieldKey(), 
                         new ConstraintViolation(violation.getDefaultMessage(), null, null, violation.getMessageParams())));
             }
@@ -148,8 +148,8 @@ public class ValidationImpl implements Validation {
         List<FieldViolation> sumViolations = Lists.newArrayList();
         for(ConstraintViolation violation : this.getViolations(field)) {
             if(violation.getMessageKey() != null 
-                    && violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
-                    && violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX)) {
+                    && (violation.getMessageKey().startsWith(JAVAX_VALIDATION_PREFIX)
+                    || violation.getMessageKey().startsWith(HIBERNATE_VALIDATION_PREFIX))) {
                 sumViolations.add(new FieldViolation(violation.getFieldKey(), 
                         new ConstraintViolation(violation.getDefaultMessage(), null, null, violation.getMessageParams())));
             }
