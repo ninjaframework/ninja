@@ -250,7 +250,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         }
         
         map.put("contextPath", context.getContextPath());
-        
+        map.put("validation", context.getValidation());
         
         //////////////////////////////////////////////////////////////////////
         // A method that renders i18n messages and can also render messages with 
@@ -258,7 +258,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // E.g.: ${i18n("mykey", myPlaceholderVariable)}
         //////////////////////////////////////////////////////////////////////
         map.put("i18n", new TemplateEngineFreemarkerI18nMethod(messages, context, result));
-
+        
         Optional<String> requestLang = lang.getLanguage(context, Optional.of(result));
         Locale locale = lang.getLocaleFromStringOrDefault(requestLang);
         map.put("prettyTime", new TemplateEngineFreemarkerPrettyTimeMethod(locale));

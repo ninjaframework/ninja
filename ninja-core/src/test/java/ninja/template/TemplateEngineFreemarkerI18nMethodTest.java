@@ -25,7 +25,11 @@ import java.util.Optional;
 
 import ninja.Context;
 import ninja.Result;
+import ninja.i18n.Lang;
 import ninja.i18n.Messages;
+import ninja.validation.ConstraintViolation;
+import ninja.validation.IsInteger;
+import ninja.validation.Validators.JSRValidator;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -42,6 +46,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.core.Appender;
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.StringModel;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -199,4 +205,49 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
     }
     
+    @Test
+    public void testThatConstraintViolationWorks() throws Exception {
+
+        Optional<Result> resultOptional = Optional.of(result);
+        
+        Mockito.when(
+                messages.get(IsInteger.KEY, context, resultOptional))
+                .thenReturn(Optional.of("This simulates the translated message!"));
+        
+        ConstraintViolation violation = new ConstraintViolation(IsInteger.KEY, "theField", IsInteger.MESSAGE);
+        
+        List args = new ArrayList();
+        args.add(new StringModel(violation, new BeansWrapper()));
+        
+        
+        TemplateModel returnValue = templateEngineFreemarkerI18nMethod.exec(args);
+        
+        assertThat(((SimpleScalar) returnValue).getAsString(), CoreMatchers.equalTo("This simulates the translated message!"));
+        
+        Mockito.verify(mockAppender, Mockito.never()).doAppend(Matchers.anyObject());
+
+    }
+    
+    @Test
+    public void testThatConstraintViolationWorksWithDefault() throws Exception {
+
+        Optional<Result> resultOptional = Optional.of(result);
+        
+        Mockito.when(
+                messages.get(IsInteger.KEY, context, resultOptional))
+                .thenReturn(Optional.empty());
+        
+        ConstraintViolation violation = new ConstraintViolation(IsInteger.KEY, "theField", IsInteger.MESSAGE);
+        
+        List args = new ArrayList();
+        args.add(new StringModel(violation, new BeansWrapper()));
+        
+        
+        TemplateModel returnValue = templateEngineFreemarkerI18nMethod.exec(args);
+        
+        assertThat(((SimpleScalar) returnValue).getAsString(), CoreMatchers.equalTo("theField must be an integer"));
+        
+        Mockito.verify(mockAppender, Mockito.never()).doAppend(Matchers.anyObject());
+
+    }
 }

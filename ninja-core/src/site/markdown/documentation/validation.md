@@ -1,5 +1,5 @@
 Validation
-=========
+==========
 
 Parameters validation
 ---------------------
@@ -11,12 +11,12 @@ expecting an integer for your field but the given value contains characters.
 
 In such cases, conversion issues are available in the
 <code>validation</code>-parameter by calling the 
-<code>validation.hasFieldViolations()</code>-method in your 
+<code>validation.hasViolations()</code>-method in your 
 controller which gives you a <code>true</code> or <code>false</code>.
 You have the ability to check which parameters
-caused the violations by using the <code>getFieldViolations()</code> method.
-Note that these violations must still be translated by using the <code>messageKey</code> 
-attribute of each violation object.
+caused the violations by using the <code>getViolations()</code> method. 
+Each field or parameter that didn't caused any conversion error will then 
+be checked against its validation annotations, if any.
 
 Bean validation
 ---------------
@@ -58,13 +58,11 @@ public class Dto {
 
 You can check the result of the validation by evaluating the 
 <code>validation</code>-parameter by calling its 
-<code>validation.hasBeanViolations()</code>-method in your 
+<code>validation.hasViolations()</code>-method in your 
 controller which gives you a <code>true</code> or <code>false</code>.
 You have the ability to check which field(s) inside your Dto
-caused the violations by using the <code>getBeanViolations()</code> 
+caused the violations by using the <code>getViolations()</code> 
 method which gives you a complete list of all occured violations in your Dto.
-With bean violations, the <code>messageKey</code> of each violation represents 
-an interpolated message using the current locale.
 
 JSR303 based validation is a generic approach that allows you to check 
 the validity of submitted objects. These objects can be sent to your application
@@ -76,3 +74,20 @@ annotation which Ninja can evaluate.
 
 If you want to validate nested DTOs or get in deeper detail, visit this great 
 site: [JBOSS Validation API](https://docs.jboss.org/hibernate/validator/4.3/reference/en-US/html/validator-usingvalidator.html "JBOSS Validation API")
+
+Validation messages
+-------------------
+
+If you are using Freemarker as the template engine (by default), 
+the <code>validation</code> object will be automatically available inside your templates. 
+You will then be able to check if an action has produced some validation error. 
+You can pass each violation from the <code>getViolation()</code>-method 
+to the <code>i18n</code> method to have it translated. Either you have defined the corresponding key 
+in your message properties, either it will use a default message, interpolated with the current 
+request locale (except for conversion errors).
+
+<pre class="prettyprint">
+&lt;#list validation.violations as violation&gt;
+   ${i18n(violation)}
+&lt;/#list&gt;
+</pre>
