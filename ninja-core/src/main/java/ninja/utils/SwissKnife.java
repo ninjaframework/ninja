@@ -95,5 +95,25 @@ public class SwissKnife {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
 
     }
+    
+    /**
+     * Used to check whether a class exists on the classpath.
+     * 
+     * @param nameWithPackage  for instance com.example.conf.GloablFilters
+     * @param instanceToGetClassloaderFrom usually "this" if you call this method.
+     * @return true if class exists, false if not.
+     */
+    public static boolean doesClassExist(String nameWithPackage, Object instanceToGetClassloaderFrom) {
+        boolean exists = false;
+
+        try {
+            Class.forName(nameWithPackage, false, instanceToGetClassloaderFrom.getClass().getClassLoader());
+            exists = true;
+        } catch (ClassNotFoundException e) {
+            exists = false;
+        }
+
+        return exists;
+    }
 
 }
