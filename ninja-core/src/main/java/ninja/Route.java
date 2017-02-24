@@ -17,8 +17,6 @@
 package ninja;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,10 +123,12 @@ public class Route {
         Matcher m = regex.matcher(uri);
 
         if (m.matches()) {
-            Iterator<String> it = this.parameters.keySet().iterator();
-            for (int i = 1; i < m.groupCount() + 1; i++) {
-                String parameterName = it.next();
-                map.put(parameterName, m.group(i));
+            if (this.parameters != null) {
+                Iterator<String> it = this.parameters.keySet().iterator();
+                for (int i = 1; i < m.groupCount() + 1; i++) {
+                    String parameterName = it.next();
+                    map.put(parameterName, m.group(i));
+                }
             }
         }
         

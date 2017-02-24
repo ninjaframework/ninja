@@ -28,6 +28,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import java.util.Collections;
+import java.util.Map;
 import ninja.ControllerMethods.ControllerMethod0;
 import ninja.ControllerMethods.ControllerMethod1;
 import ninja.params.Param;
@@ -35,6 +36,8 @@ import ninja.params.ParamParsers;
 import ninja.utils.MethodReference;
 import ninja.validation.ValidationImpl;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -103,6 +106,15 @@ public class RouterImplTest {
         router.compileRoutes();
     }
 
+    @Test
+    public void getPathParametersEncodedWithNoPathParams() {
+        Route route = router.getRouteFor("GET", "/testroute");
+        
+        Map<String,String> pathParameters = route.getPathParametersEncoded("/testroute");
+        
+        assertThat(pathParameters, aMapWithSize(0));
+    }
+    
     @Test
     public void getReverseRouteWithNoContextPathWorks() {
         String contextPath = "";
