@@ -16,6 +16,7 @@
 
 package ninja;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -28,14 +29,21 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
+import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import ninja.ControllerMethods.ControllerMethod;
 import ninja.utils.LambdaRoute;
 import ninja.utils.MethodReference;
+import ninja.utils.NinjaBaseDirectoryResolver;
 import ninja.utils.NinjaProperties;
+import ninja.utils.SwissKnife;
+import ninja.application.ApplicationFilters;
 
 public class RouteBuilderImpl implements RouteBuilder {
     private static final Logger log = LoggerFactory.getLogger(RouteBuilder.class);
+    
+    protected final static String GLOBAL_FILTERS_DEFAULT_LOCATION = "conf.Filters";
 
     private String httpMethod;
     private String uri;
@@ -43,12 +51,20 @@ public class RouteBuilderImpl implements RouteBuilder {
     private Optional<Method> implementationMethod;  // method to use for parameter/annotation extraction
     private Optional<Object> targetObject;          // instance to invoke
     private final NinjaProperties ninjaProperties;
+    private Optional<List<Class<? extends Filter>>> globalFiltersOptional;
+    private final List<Class<? extends Filter>> localFilters;
+    private final NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
 
     @Inject
-    public RouteBuilderImpl(NinjaProperties ninjaProperties) {
+    public RouteBuilderImpl(
+            NinjaProperties ninjaProperties,
+            NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver) {
         this.implementationMethod = Optional.empty();
         this.targetObject = Optional.empty();
         this.ninjaProperties = ninjaProperties;
+        this.ninjaBaseDirectoryResolver = ninjaBaseDirectoryResolver;
+        this.globalFiltersOptional = Optional.empty();
+        this.localFilters = Lists.newArrayList();
     }
     
     public RouteBuilderImpl GET() {
@@ -109,6 +125,32 @@ public class RouteBuilderImpl implements RouteBuilder {
         this.implementationMethod = lambdaRoute.getImplementationMethod();
         this.targetObject = lambdaRoute.getTargetObject();
         return null;
+    }
+    
+    @Override
+    public RouteBuilder globalFilters(List<Class<? extends Filter>> filtersToAdd) {
+        this.globalFiltersOptional = Optional.of(filtersToAdd);
+        return this;
+    }
+    
+    @Override
+    public RouteBuilder globalFilters(Class<? extends Filter> ... filtersToAdd) {
+        List<Class<? extends Filter>> globalFiltersTemp = Lists.newArrayList(filtersToAdd);
+        globalFilters(globalFiltersTemp);
+        return this;
+    }
+    
+    @Override
+    public RouteBuilder filters(List<Class<? extends Filter>> filtersToAdd) {
+        this.localFilters.addAll(filtersToAdd);
+        return this;
+    }
+    
+    @Override
+    public RouteBuilder filters(Class<? extends Filter> ... filtersToAdd) {
+        List<Class<? extends Filter>> filtersTemp = Lists.newArrayList(filtersToAdd);
+        filters(filtersTemp);
+        return this;
     }
 
     @Override
@@ -189,22 +231,56 @@ public class RouteBuilderImpl implements RouteBuilder {
         }
 
         // Calculate filters
-        LinkedList<Class<? extends Filter>> filters = new LinkedList<>();
-        filters.addAll(calculateFiltersForClass(functionalMethod.getDeclaringClass()));
-        FilterWith filterWith = functionalMethod
-                .getAnnotation(FilterWith.class);
+        LinkedList<Class<? extends Filter>> allFilters = new LinkedList<>();
+        
+        allFilters.addAll(calculateGlobalFilters(this.globalFiltersOptional, injector));
+
+        allFilters.addAll(this.localFilters);
+        
+        allFilters.addAll(calculateFiltersForClass(functionalMethod.getDeclaringClass()));
+        FilterWith filterWith = functionalMethod.getAnnotation(FilterWith.class);
         if (filterWith != null) {
-            filters.addAll(Arrays.asList(filterWith.value()));
+            allFilters.addAll(Arrays.asList(filterWith.value()));
         }
         
-        FilterChain filterChain = buildFilterChain(injector, filters);
+        FilterChain filterChain = buildFilterChain(injector, allFilters);
 
         return new Route(httpMethod, uri, functionalMethod, filterChain);
+    }
+    
+    private List<Class<? extends Filter>> calculateGlobalFilters(
+            Optional<List<Class<? extends Filter>>> globalFiltersList,
+            Injector injector) {
+        List<Class<? extends Filter>> allFilters = Lists.newArrayList();
+        // Setting globalFilters in route will deactivate the filters defined
+        // by conf.Filters
+        if (globalFiltersList.isPresent()) {
+            allFilters.addAll(globalFiltersList.get());
+        } else {
+            String globalFiltersWithPrefixMaybe
+                    = ninjaBaseDirectoryResolver.resolveApplicationClassName(GLOBAL_FILTERS_DEFAULT_LOCATION);
+ 
+            if (SwissKnife.doesClassExist(globalFiltersWithPrefixMaybe, this)) {
+                try {
+                    Class<?> globalFiltersClass = Class.forName(globalFiltersWithPrefixMaybe);
+                    ApplicationFilters globalFilters = (ApplicationFilters) injector.getInstance(globalFiltersClass);
+                    globalFilters.addFilters(allFilters);
+                } catch (Exception exception) {
+                    // That simply means the user did not configure conf.Filters.
+                }
+            }
+        }
+        
+        return allFilters;
+    
     }
 
     private FilterChain buildFilterChain(Injector injector,
                                          LinkedList<Class<? extends Filter>> filters) {
 
+                
+       
+         
         if (filters.isEmpty()) {
             
             // either target object (functional method) or guice will create new instance
@@ -222,20 +298,23 @@ public class RouteBuilderImpl implements RouteBuilder {
         } else {
 
             Class<? extends Filter> filter = filters.pop();
-
-            return new FilterChainImpl(injector.getProvider(filter),
-                buildFilterChain(injector, filters));
+            
+           
+            Provider<? extends Filter> filterProvider = injector.getProvider(filter);
+                        
+            return new FilterChainImpl(filterProvider,buildFilterChain(injector, filters));
             
         }
     }
 
-    private Set<Class<? extends Filter>> calculateFiltersForClass(Class controller) {
+    private Set<Class<? extends Filter>> calculateFiltersForClass(
+            Class controller) {
         LinkedHashSet<Class<? extends Filter>> filters = new LinkedHashSet<>();
         
         //
         // Step up the superclass tree, so that superclass filters come first
         //
-        
+
         // Superclass
         if (controller.getSuperclass() != null) {
             filters.addAll(calculateFiltersForClass(controller.getSuperclass()));

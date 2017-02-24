@@ -33,6 +33,7 @@ import ninja.ControllerMethods.ControllerMethod1;
 import ninja.params.Param;
 import ninja.params.ParamParsers;
 import ninja.utils.MethodReference;
+import ninja.utils.NinjaBaseDirectoryResolver;
 import ninja.validation.ValidationImpl;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.fail;
@@ -50,6 +51,8 @@ public class RouterImplTest {
 
     @Mock
     NinjaProperties ninjaProperties;
+    
+    NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
 
     @Mock
     Injector injector;
@@ -60,11 +63,13 @@ public class RouterImplTest {
     @Before
     @SuppressWarnings("Convert2Lambda")
     public void before() {
+        this.ninjaBaseDirectoryResolver = new NinjaBaseDirectoryResolver(ninjaProperties);
         when(testControllerProvider.get()).thenReturn(new TestController());
         when(injector.getProvider(TestController.class)).thenReturn(testControllerProvider);
         when(injector.getInstance(ParamParsers.class)).thenReturn(new ParamParsers(Collections.emptySet()));
         Provider<RouteBuilderImpl> routeBuilderImplProvider = mock(Provider.class);
-        when(routeBuilderImplProvider.get()).thenAnswer((invocation) -> new RouteBuilderImpl(ninjaProperties));
+        when(routeBuilderImplProvider.get()).thenAnswer(
+                (invocation) -> new RouteBuilderImpl(ninjaProperties, ninjaBaseDirectoryResolver));
         router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
 
         // add route:

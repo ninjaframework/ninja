@@ -10,7 +10,15 @@ Let's say you want to implement authorization in your application. Only users
 authorized should be able to access a certain route and controller. Otherwise
 they should get an error page.
 
-First step is to annotate our controller method with a <code>@FilterWith</code> 
+There are two principal ways how to add filters to your controller:
+
+Option 1 is to add filters in the Routes file:
+
+<pre class="prettyprint">
+router.GET().route("/index").filters(SecureFilter.class).with(AppController::index);  
+</pre>
+
+Option 2 is to annotate our controller method with a <code>@FilterWith</code> 
 annotation:
 
 <pre class="prettyprint">
@@ -71,8 +79,13 @@ return Results.forbidden().html().template("/views/forbidden403.ftl.html");
 Chaining filters
 ----------------
 
-Filters are really powerful. And you can use more than one filter as a chain. 
-Consider the following method:
+You can define filters that run sequentially either in the Routes file ...
+
+<pre class="prettyprint">
+router.GET().route("/index").filters(LoggerFilter.class, TeaPotFilter.class).with(AppController::index);  
+</pre>
+
+... or by specifying them as annotation:
 
 <pre class="prettyprint">
 @FilterWith({
@@ -84,7 +97,7 @@ public Result teapot(Context context) {
 </pre>
 
 This method will first call the LoggerFilter and then the 
-TeaPotFilter. Each of the individual methods can
+TeaPotFilter. Each of the individual filters can
 break the chain or even alter the result and the context.
 
 @FilterWith - class level and inheritance
@@ -97,6 +110,39 @@ be filtered.
 Sometimes it is also useful to have a <code>BaseController</code> that is annotated with 
 <code>@FilterWith</code>. Other controllers extending <code>BaseContoller</code> will automatically
 inherit <code>@FilterWith</code>.
+
+Global filters
+--------------
+
+Sometimes it's needed to run filters for every request reaching your application.
+
+This is possible by creating a class Filters in package conf that implements
+the interface ApplicationFilters:
+
+<pre class="prettyprint">
+package conf;
+
+import java.util.List;
+import ninja.application.ApplicationFilters;
+import ninja.Filter;
+
+public class Filters implements ApplicationFilters {
+
+    @Override
+    public void addFilters(List&lt;Class&lt;? extends Filter&gt;&gt; filters) {
+        filters.add(SecureFilter.class);
+    }
+}
+</pre>
+
+You can override these global filters for individual routes in the Routes file:
+
+<pre class="prettyprint">
+router.GET().route("/index")
+            .globalFilters(SecureFilter.class, LoggerFilter.class)
+            .with(AppController::index);  
+</pre>
+
 
 Passing values from a filter to other filters/controller
 --------------------------------------------------------
