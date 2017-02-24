@@ -1,3 +1,8 @@
+Version 6.0.0-beta4
+===================
+
+ * 2017-02-23 Fix routes w/ no path params triggering NPE in some cases #565 (jjlauer)
+
 Version 6.0.0-beta3
 ===================
 

@@ -10,9 +10,16 @@ new releases. And driving the platform as a whole.
 That leadership role is currently performed by:
 
  * The team of [FinalFrontierLabs](http://www.finalfrontierlabs.com) 
-   and [Raphael](http://raphaelbauer.com) as lead architect. 
+   and [Raphael](http://raphaelbauer.com) as lead architect.
+
  * The team of [Fizzed, Inc.](http://fizzed.com) and [Joe Lauer](http://lauer.bz)
    as lead architect.
+
+Ninja is proudly sponsored by <a href="https://www.greenback.com">Greenback</a>
+
+<a href="https://www.greenback.com" title="Greenback - Expenses made simple"><img src="https://www.greenback.com/assets/images/logo-greenback.png" height="48" width="166" alt="Greenback"></a>
+
+<a href="https://www.greenback.com" title="Greenback - Expenses made simple">More engineering. Less paperwork. Expenses made simple.</a>
 
 If you want to take over a more official role in the Ninja platform don't hesitate
 to contact us! The framework offers excellent
