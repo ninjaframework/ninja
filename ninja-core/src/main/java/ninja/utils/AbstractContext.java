@@ -249,7 +249,7 @@ abstract public class AbstractContext implements Context.Impl {
         String parameter = getParameter(key);
 
         T value = (T) paramParsers.getParamParser(clazz).parseParameter(key, parameter, validation);
-        return validation.hasFieldViolation(key) ? defaultValue : value;
+        return validation.hasViolation(key) ? defaultValue : value;
     }
 
     @Override

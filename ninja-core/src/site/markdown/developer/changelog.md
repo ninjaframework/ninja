@@ -7,6 +7,7 @@ Version 6.0.0-beta3
 ===================
 
  * 2017-01-19 Fix for parsing of Boolean into controller methods #557 (reyez)
+ * 2017-02-14 Validation handler enhancements #549 (jlannoy)
 
 Version 6.0.0-beta2
 ===================

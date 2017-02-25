@@ -30,20 +30,6 @@ import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
-import ninja.Context;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaProperties;
-import ninja.utils.NinjaPropertiesImpl;
-import ninja.params.ControllerMethodInvokerTest.Dep;
-import ninja.params.ControllerMethodInvokerTest.NeedingInjectionParamParser;
-import ninja.params.ParamParser;
-import ninja.validation.FieldViolation;
-import ninja.validation.IsDate;
-import ninja.validation.IsFloat;
-import ninja.validation.IsInteger;
-import ninja.validation.Validation;
-import ninja.validation.ValidationImpl;
-
 import org.hamcrest.CoreMatchers;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -57,6 +43,20 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
+
+import ninja.Context;
+import ninja.params.ControllerMethodInvokerTest.Dep;
+import ninja.params.ControllerMethodInvokerTest.NeedingInjectionParamParser;
+import ninja.params.ParamParser;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
+import ninja.validation.ConstraintViolation;
+import ninja.validation.IsDate;
+import ninja.validation.IsFloat;
+import ninja.validation.IsInteger;
+import ninja.validation.Validation;
+import ninja.validation.ValidationImpl;
 
 /**
  *
@@ -354,14 +354,13 @@ public class BodyParserEnginePostTest {
     }
     
     private <T> void assertViolation(String fieldName, String violationMessage) {
-        assertTrue(validation.hasFieldViolation(fieldName));
-        assertFalse(validation.getFieldViolations().isEmpty());
-        assertThat(validation.getFieldViolations(fieldName).size(), equalTo(1));
-        FieldViolation violation = validation.getFieldViolations(fieldName).get(0);
-        assertThat(violation.field, equalTo(fieldName));
-        assertNotNull(violation.constraintViolation);
-        assertThat(violation.constraintViolation.getFieldKey(), equalTo(fieldName));
-        assertThat(violation.constraintViolation.getMessageKey(), equalTo(violationMessage));
+        assertTrue(validation.hasViolation(fieldName));
+        assertFalse(validation.getViolations().isEmpty());
+        assertThat(validation.getViolations(fieldName).size(), equalTo(1));
+        ConstraintViolation violation = validation.getViolations(fieldName).get(0);
+        assertNotNull(violation);
+        assertThat(violation.getFieldKey(), equalTo(fieldName));
+        assertThat(violation.getMessageKey(), equalTo(violationMessage));
     }
     
     public static class TestObject {
