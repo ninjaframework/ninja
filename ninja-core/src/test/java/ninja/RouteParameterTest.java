@@ -19,9 +19,9 @@ package ninja;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import java.util.Map;
-import ninja.params.Param;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.aMapWithSize;
 
 public class RouteParameterTest {
 
@@ -32,7 +32,7 @@ public class RouteParameterTest {
         
         // no named parameters is null
         params = RouteParameter.parse("/user");
-        assertThat(params, is(nullValue()));
+        assertThat(params, aMapWithSize(0));
         
         params = RouteParameter.parse("/user/{id}/{email: [0-9]+}");
         

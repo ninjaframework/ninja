@@ -195,9 +195,9 @@ public class Routes implements ApplicationRoutes {
 
         router.GET().route("/bad_request").with(ApplicationController::badRequest);
 
-        router.GET().route("/robots.txt").with(AssetsController::serveStatic);
         router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController::serveWebJars);
         router.GET().route("/assets/{fileName: .*}").with(AssetsController::serveStatic);
+        router.GET().route("/robots.txt").with(AssetsController::serveStatic);
     }
 
 }

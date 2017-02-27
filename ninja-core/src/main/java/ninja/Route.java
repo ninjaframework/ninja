@@ -45,7 +45,7 @@ public class Route {
     private final String uri;
     private final Method controllerMethod;
     private final FilterChain filterChain;
-    private final LinkedHashMap<String,RouteParameter> parameters;
+    private final Map<String,RouteParameter> parameters;
     private final Pattern regex;
 
     public Route(String httpMethod,
@@ -87,7 +87,7 @@ public class Route {
         return controllerMethod;
     }
 
-    public LinkedHashMap<String,RouteParameter> getParameters() {
+    public Map<String,RouteParameter> getParameters() {
         return parameters;
     }
     
@@ -123,12 +123,10 @@ public class Route {
         Matcher m = regex.matcher(uri);
 
         if (m.matches()) {
-            if (this.parameters != null) {
-                Iterator<String> it = this.parameters.keySet().iterator();
-                for (int i = 1; i < m.groupCount() + 1; i++) {
-                    String parameterName = it.next();
-                    map.put(parameterName, m.group(i));
-                }
+            Iterator<String> it = this.parameters.keySet().iterator();
+            for (int i = 1; i < m.groupCount() + 1; i++) {
+                String parameterName = it.next();
+                map.put(parameterName, m.group(i));
             }
         }
         
