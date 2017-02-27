@@ -307,13 +307,12 @@ public class ApplicationControllerTest extends RecycledNinjaServerTester {
     
     @Test
     public void testThatReverseRoutingWorks() {
-        
         String response =
                 ninjaTestBrowser.makeRequest(withBaseUrl("/test_reverse_routing"));
     
-        assertTrue(response.contains("<li>/user/100000/me@me.com/userDashboard</li>"));
-        assertTrue(response.contains("<li>/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css</li>"));
-        assertTrue(response.contains("<li>/assets/css/custom.css</li>"));
+        assertThat(response, containsString("<li>/user/100000/me@me.com/userDashboard</li>"));
+        assertThat(response, containsString("<li>/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css</li>"));
+        assertThat(response, containsString("<li>/assets/css/custom.css</li>"));
     }
     
     @Test

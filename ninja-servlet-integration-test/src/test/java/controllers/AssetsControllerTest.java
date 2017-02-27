@@ -26,6 +26,7 @@ import org.apache.http.HttpResponse;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+import static org.hamcrest.CoreMatchers.containsString;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
@@ -113,6 +114,18 @@ public class AssetsControllerTest extends NinjaTest {
                 getServerAddress() + "assets/js/prettify.js%2F..%2F..%2F..%2Fconf%2Fapplication.conf",
                 headers);
         Assert.assertFalse(response.contains("application.secret"));
+    }
+    
+    @Test
+    public void serveStaticWithoutFileNameParam() {
+        // Some empty headers for now...
+        Map<String, String> headers = Maps.newHashMap();
+
+        String response = ninjaTestBrowser.makeRequest(
+            getServerAddress() + "robots.txt",
+            headers);
+
+        assertThat(response, containsString("User-agent: *"));
     }
 
 }
