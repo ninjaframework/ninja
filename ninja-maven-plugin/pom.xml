@@ -31,11 +31,11 @@
     <url>http://www.ninjaframework.org</url>
     
     <prerequisites>
-        <maven>3.1.0</maven>
+        <maven>3.3.9</maven>
     </prerequisites>
 
     <properties>
-        <mavenVersion>3.1.1</mavenVersion>
+        <mavenVersion>3.3.9</mavenVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

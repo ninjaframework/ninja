@@ -1,6 +1,7 @@
 Version 6.0.0-beta4
 ===================
 
+ * 2017-02-27 Bump Guice to version 4.1.0 #536 (ra)
  * 2017-02-23 Fix routes w/ no path params triggering NPE in some cases #565 (jjlauer)
  * 2017-02-16 Add global filtering capabilities #547 (ra)
 
