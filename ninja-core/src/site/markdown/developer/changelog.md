@@ -1,26 +1,14 @@
-Version 6.0.0-beta4
-===================
+Version 6.0.0
+=============
 
  * 2017-02-27 Bump Guice to version 4.1.0 #536 (ra)
  * 2017-02-23 Fix routes w/ no path params triggering NPE in some cases #565 (jjlauer)
  * 2017-02-16 Add global filtering capabilities #547 (ra)
-
-Version 6.0.0-beta3
-===================
-
  * 2017-01-19 Fix for parsing of Boolean into controller methods #557 (reyez)
  * 2017-02-14 Validation handler enhancements #549 (jlannoy)
-
-Version 6.0.0-beta2
-===================
-
  * 2017-01-06 Support for Optional in controller methods #541 (reyez)
  * 2017-01-03 Replaced Guava Optionals with Java8 Optionals (bazi)
  * 2016-12-25 Fix issue #532: return clean session instead of runtime error when session cookies can not be decrypted (bazi)
-
-Version 6.0.0-beta1
-===================
-
  * 2016-12-19 New `ninja.ReverseRouter` for validated, URL-safe reverse routing using Java 8 lambda expressions in addition to legacy Class + method name references. (jjlauer)
  * 2016-10-03 Remove `async-machine-beta` module (jjlauer)
  * 2016-09-29 Route using Java 8 lambda expressions (jjlauer)

@@ -10,7 +10,10 @@ version and then work your way up to the top of the document.
 to 6.0.0
 --------
 
-Java 8 is required.
+- Java 8 is required.
+- Maven 3.3.9 is required.
+- Replace all usages of Guava’s Optional with Java8 Optional. Your compiler
+  will guide you.
 
 to 5.4.0
 --------
