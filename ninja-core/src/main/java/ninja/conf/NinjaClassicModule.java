@@ -41,6 +41,7 @@ import ninja.template.TemplateEngineJsonP;
 import ninja.template.TemplateEngineText;
 import ninja.template.TemplateEngineXml;
 import ninja.utils.NinjaProperties;
+import ninja.scheduler.SchedulerSupport;
 
 /**
  * The classic configuration of the ninja framework (jackson, freemarker, 
@@ -56,6 +57,7 @@ public class NinjaClassicModule extends AbstractModule {
     private boolean cache;
     private boolean migrations;
     private boolean jpa;
+    private boolean scheduler;
 
     public NinjaClassicModule(NinjaProperties ninjaProperties) {
         this(ninjaProperties, true);
@@ -70,6 +72,7 @@ public class NinjaClassicModule extends AbstractModule {
         this.cache = defaultEnabled;
         this.migrations = defaultEnabled;
         this.jpa = defaultEnabled;
+        this.scheduler = defaultEnabled;
     }
 
     public NinjaClassicModule freemarker(boolean enabled) {
@@ -107,6 +110,11 @@ public class NinjaClassicModule extends AbstractModule {
         return this;
     }
     
+    public NinjaClassicModule scheduler(boolean scheduler) {
+        this.scheduler = scheduler;
+        return this;
+    }
+
     @Override
     public void configure() {
         // NOTE: these are grouped to line up with third-party dependencies
@@ -159,6 +167,11 @@ public class NinjaClassicModule extends AbstractModule {
         // JPA
         if (jpa) {
             install(new JpaModule(ninjaProperties));
+        }
+
+        // Scheduler
+        if (scheduler) {
+            install(SchedulerSupport.getModule());
         }
     }
 

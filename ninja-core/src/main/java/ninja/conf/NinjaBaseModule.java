@@ -29,7 +29,6 @@ import com.google.inject.multibindings.Multibinder;
 
 import ninja.lifecycle.LifecycleSupport;
 import ninja.params.ParamParser;
-import ninja.scheduler.SchedulerSupport;
 
 /**
  * The basic configuration of the main ninja framework.
@@ -48,10 +47,7 @@ public class NinjaBaseModule extends AbstractModule {
         
         // Lifecycle support
         install(LifecycleSupport.getModule());
-        
-        // Scheduling support
-        install(SchedulerSupport.getModule());
-        
+
         // Routing
         Multibinder.newSetBinder(binder(), ParamParser.class);
         bind(RouteBuilder.class).to(RouteBuilderImpl.class);
