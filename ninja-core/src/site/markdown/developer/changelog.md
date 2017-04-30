@@ -1,3 +1,5 @@
+ * 2017-04-30 Handling empty string param parsing (jlannoy)
+
 Version 6.0.0
 =============
 
