@@ -66,3 +66,19 @@ If Maven is not available on your computer please follow the following guide to 
 
 http://maven.apache.org/guides/getting-started
 
+If you like to use the simplified form of calling the Ninja Maven plugin you have to
+define the pluginGroup within your <code>settings.xml</code>:
+
+<pre class="prettyprint">
+  .
+  <pluginGroups>
+    <pluginGroup>org.ninjaframework</pluginGroup>
+  </pluginGroups>
+  .
+</pre>
+
+otherwise you have to use the full qualified way of calling the Ninja Maven plugin via:
+
+<pre class="prettyprint">
+mvn org.ninjaframework:ninja-maven-plugin:run
+</pre>
