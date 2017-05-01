@@ -58,6 +58,9 @@ public class TemplateEngineHelper {
             String parentControllerPackageAsPath = parentPackageOfController
                     .replaceAll("\\.", "/");
 
+            parentControllerPackageAsPath = (result.getUaType().isEmpty() ? "" : result.getUaType() + "/")
+                    + parentControllerPackageAsPath;
+
             // and the final path of the controller will be something like:
             // views/some/package/submoduleName/ControllerName/templateName.ftl.html
             return String.format("/%s/%s/%s%s", parentControllerPackageAsPath,
