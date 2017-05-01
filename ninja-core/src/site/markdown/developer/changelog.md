@@ -192,6 +192,7 @@ Version 5.1.2
 Version 5.1.1
 =============
 
+ * 2015-05-07 (PR #350) Added ninja.idle.timeout command line parameter for standalone mode (raptaml) 
  * 2015-03-31 Improved SuperDevMode (jjlauer)
  * 2015-03-29 Tiny fix for a test that did not work with summertime (ra)
  * 2015-03-27 Upgrade of external libraries to latest versions (ra)
