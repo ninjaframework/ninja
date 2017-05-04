@@ -770,14 +770,19 @@
             <!-- A very nice abstraction for making selenum tests: -->
             <dependency>
                 <groupId>org.fluentlenium</groupId>
-                <artifactId>fluentlenium-core</artifactId>
-                <version>0.10.3</version>
+                <artifactId>fluentlenium-junit</artifactId>
+                <version>3.2.0</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
                         <groupId>commons-logging</groupId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>htmlunit-driver</artifactId>
+                <version>2.25</version>
             </dependency>
 
             <dependency>

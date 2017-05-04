@@ -1,3 +1,5 @@
+ * 2017-05-04 fluentlenium from 0.10.3 to 3.2.0 - refer to ninja doc for backward compatibility (jlannoy)
+
 Version 6.0.0
 =============
 
