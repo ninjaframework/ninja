@@ -10,20 +10,20 @@ public class AuthenticityFormTest extends NinjaFluentLeniumTest {
     
     @Test
     public void testAuthenticitySuccess() {
-        goTo(getServerAddress() + "/authenticate");
+        goTo("/authenticate");
         assertTrue(pageSource().contains("Login"));
         
-        click("#login");
+        $("#login").click();
         
         assertTrue(pageSource().contains("only visible with valid authenticationToken"));
     }
     
     @Test
     public void testAuthenticityFails() {
-        goTo(getServerAddress() + "/notauthenticate");
+        goTo("/notauthenticate");
         assertTrue(pageSource().contains("Login"));
         
-        click("#login");
+        $("#login").click();
         
         assertTrue(!pageSource().contains("only visible with valid authenticationToken"));
     }
