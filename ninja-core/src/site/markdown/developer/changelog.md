@@ -1,3 +1,5 @@
+ * 2017-05-05 Make scheduling support a feature of `ninja.conf.NinjaClassicModule` #572 (patrickabner)
+
 Version 6.0.0
 =============
 
