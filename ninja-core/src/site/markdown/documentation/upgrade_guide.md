@@ -6,6 +6,13 @@ into Ninja's behavior. This document describes which steps are needed to upgrade
 your application to the latest Ninja version. Simply start with your current 
 version and then work your way up to the top of the document.
 
+to 6.0.1
+--------
+
+### FluentLenium update causes backward incompatibility
+
+Refer to the FluentLenium migration guide http://fluentlenium.org/migration/from-0.13.2-to-1.0-or-3.0/ 
+or force usage of fluentlenium-core 0.10.3 in your project dependencies.
 
 to 6.0.0
 --------
