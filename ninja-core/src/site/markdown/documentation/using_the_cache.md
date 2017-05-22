@@ -52,6 +52,8 @@ waiting for the call to be successful,
 while the unprefixed methods issue a fire-and-forget call that does not guarantee 
 that call succeeds. You should prefer the non-safe methods as they do not block your application.
 
+Duration can optionally be set in days("2d"), hours ("2h"), minutes ("2mn") or seconds ("2s"). 
+It defaults to 30 days.
 
 Configuring Memcached
 ---------------------
