@@ -70,7 +70,12 @@
         <!-- A very nice abstraction for making selenum tests: -->
         <dependency>
             <groupId>org.fluentlenium</groupId>
-            <artifactId>fluentlenium-core</artifactId>
+            <artifactId>fluentlenium-junit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>htmlunit-driver</artifactId>
             <scope>compile</scope>
         </dependency>
         

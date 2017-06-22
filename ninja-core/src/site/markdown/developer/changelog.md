@@ -1,4 +1,8 @@
+Version X.X.X
+=============
  * 2017-04-30 Handling empty string param parsing (jlannoy)
+ * 2017-05-04 fluentlenium from 0.10.3 to 3.2.0 - refer to ninja doc for backward compatibility (jlannoy)
+ * 2017-05-05 Make scheduling support a feature of `ninja.conf.NinjaClassicModule` #572 (patrickabner)
 
 Version 6.0.0
 =============
