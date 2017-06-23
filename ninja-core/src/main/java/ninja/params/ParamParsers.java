@@ -371,7 +371,7 @@ public class ParamParsers {
     public static class StringParamParser implements ParamParser<String> {
         @Override
         public String parseParameter(String field, String parameterValue, Validation validation) {
-            if (parameterValue == null || validation.hasViolation(field)) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasViolation(field)) {
                 return null;
             } else {
                 return parameterValue;
