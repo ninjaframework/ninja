@@ -1,4 +1,4 @@
-Version X.X.X
+Version 6.1.0
 =============
  * 2017-04-30 Handling empty string param parsing (jlannoy)
  * 2017-05-04 fluentlenium from 0.10.3 to 3.2.0 - refer to ninja doc for backward compatibility (jlannoy)
