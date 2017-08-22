@@ -27,6 +27,8 @@ import org.junit.Test;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class NinjaPropertiesImplTest {
 
@@ -339,6 +341,33 @@ public class NinjaPropertiesImplTest {
                 ninjaProperties
                         .getStringArray("getMultipleElementStringArrayWithoutSpaces")[1]);
 
+    }
+    
+    @Test
+    public void systemProperties() {
+        // verify property in external conf is set
+        NinjaProperties ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev, "conf/system_property.conf");
+        
+        assertThat(ninjaProperties.get("unit.test.123"), is("123-value-via-external-conf"));
+        
+        // verify system property overrides it
+        System.setProperty("unit.test.123", "123-value-via-system-property");
+        try {
+            ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev, "conf/system_property.conf");
+            assertThat(ninjaProperties.get("unit.test.123"), is("123-value-via-system-property"));
+        } finally {
+            System.clearProperty("unit.test.123");
+        }
+        
+        // verify prefixed system property overrides both
+        System.setProperty("unit.test.123", "123-value-via-system-property");
+        System.setProperty("%dev.unit.test.123", "123-value-via-prefixed-system-property");
+        try {
+            ninjaProperties = new NinjaPropertiesImpl(NinjaMode.dev, "conf/system_property.conf");
+            assertThat(ninjaProperties.get("unit.test.123"), is("123-value-via-prefixed-system-property"));
+        } finally {
+            System.clearProperty("unit.test.123");
+        }
     }
 
 }

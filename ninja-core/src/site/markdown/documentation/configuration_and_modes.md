@@ -242,6 +242,26 @@ It tries to load in the following order:
 Ninja uses the excellent Apache Configurations library to do the loading. Please refer to
 [their manual](http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
 
+
+System properties to override
+-------------------------------------
+
+As of Ninja v6.1.1, system properties can override any configuration key set
+with your standard conf/application.conf or external configuration file. For
+example, if you have a key `db.connection.password` set to `mypass` in `conf/production.conf`,
+then you can override it via a system property to `otherpass` at runtime like so:
+
+<pre class="prettyprint">
+java -Dninja.external.configuration=conf/production.conf -Ddb.connection.password=otherpass
+</pre>
+
+Prefixed system properties are honored as well.  Using the previous example, if you only
+wanted the property to take effect while in `test` mode you can do this:
+
+<pre class="prettyprint">
+java -Dninja.external.configuration=conf/production.conf -D%test.db.connection.password=otherpass
+</pre>
+
 Hot-reloading external configuration
 ------------------------------------
 
@@ -253,13 +273,13 @@ useful to hot-reload this config instead of restarting your application.
 This tells Ninja to reload your configuration if it is modified during runtime.
 
 
-Referencing system properties in configuration files
-----------------------------------------------------
+Referencing environment variables in configuration files
+--------------------------------------------------------
 
 You can reference system properties inside your configuration files by
 using the default apache commons configuration syntax:
 
-    %prod.db.connection.password=${env:db.connection.password}
+    %prod.db.connection.password=${env:DB_PASSWORD}
 
 That's especially handy when it comes to production credentials 
 that should not be known inside your application code.

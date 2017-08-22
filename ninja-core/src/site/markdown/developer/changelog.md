@@ -1,3 +1,8 @@
+Version 6.1.x
+=============
+
+ * 2017-08-22 System properties (as well as prefixed system properties) can override any configuration keys (jjlauer)
+
 Version 6.1.0
 =============
  * 2017-04-30 Handling empty string param parsing (jlannoy)
