@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 the original author or authors.
+ * Copyright (C) 2012-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import com.google.common.collect.Iterables;
 import com.google.inject.Binder;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import org.apache.commons.configuration.SystemConfiguration;
 
 @Singleton
 public class NinjaPropertiesImpl implements NinjaProperties {
@@ -83,6 +84,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         // (Optional) Config of prefixed mode corresponding to current mode (eg.
         // %test.myproperty=...)
         Configuration prefixedExternalConfiguration = null;
+        
+        // (Optional) Config of keys via system property
+        Configuration systemPropertiesConfiguration = null;
+        
+        // (Optional) Config of prefixed keys via system property
+        Configuration prefixedSystemPropertiesConfiguration = null;
 
         // First step => load application.conf and also merge properties that
         // correspond to a mode into the configuration.
@@ -162,13 +169,29 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             }
 
         }
+        
+        // fourth step: system properties ultimate override of any key
+        systemPropertiesConfiguration = new SystemConfiguration();
+        
+        prefixedSystemPropertiesConfiguration = systemPropertiesConfiguration
+            .subset("%" + ninjaMode.name());
 
         // /////////////////////////////////////////////////////////////////////
         // Finally add the stuff to the composite configuration
         // Note: Configurations added earlier will overwrite configurations
         // added later.
         // /////////////////////////////////////////////////////////////////////
-
+        
+        if (prefixedSystemPropertiesConfiguration != null) {
+            compositeConfiguration
+                    .addConfiguration(prefixedSystemPropertiesConfiguration);
+        }
+        
+        if (systemPropertiesConfiguration != null) {
+            compositeConfiguration
+                    .addConfiguration(systemPropertiesConfiguration);
+        }
+        
         if (prefixedExternalConfiguration != null) {
             compositeConfiguration
                     .addConfiguration(prefixedExternalConfiguration);
