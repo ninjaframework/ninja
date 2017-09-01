@@ -46,6 +46,7 @@ public class Result {
     // /////////////////////////////////////////////////////////////////////////
     // HTTP Status codes (for convenience)
     // /////////////////////////////////////////////////////////////////////////
+    public static final int SC_101_SWITCHING_PROTOCOLS = 101;
     public static final int SC_200_OK = 200;
     public static final int SC_201_CREATED = 201;
     public static final int SC_204_NO_CONTENT = 204;

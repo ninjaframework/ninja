@@ -50,19 +50,19 @@
 
     <modules>
         <module>ninja-core</module>
+        <module>ninja-jaxy-routes</module>
+        <module>ninja-websockets-jsr356</module>
         <module>ninja-metrics</module>
         <module>ninja-metrics-graphite</module>
         <module>ninja-metrics-ganglia</module>
         <module>ninja-metrics-librato</module>
         <module>ninja-metrics-influxdb</module>
-        <module>ninja-jaxy-routes</module>
         <module>ninja-servlet</module>
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
         <module>ninja-servlet-integration-test</module>
         <module>ninja-servlet-jpa-blog-integration-test</module>
         <module>ninja-maven-plugin</module>
-
         <!-- archetypes -->
         <module>ninja-servlet-jpa-blog-archetype</module>
         <module>ninja-servlet-archetype-simple</module>
@@ -74,7 +74,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.3.11.v20160721</jetty.version>
+        <jetty.version>9.3.15.v20161220</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.8.1</jackson.version>
         <guice.version>4.1.0</guice.version>
@@ -425,6 +425,12 @@
                 <artifactId>ninja-jaxy-routes</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-websockets-jsr356</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.ninjaframework</groupId>
@@ -675,6 +681,12 @@
             </dependency>
             
             <dependency>
+                <groupId>javax.websocket</groupId>
+                <artifactId>javax.websocket-api</artifactId>
+                <version>1.1</version>
+            </dependency>
+            
+            <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
                 <version>${jetty.version}</version>
@@ -689,6 +701,12 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-xml</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty.websocket</groupId>
+                <artifactId>javax-websocket-server-impl</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             
@@ -839,6 +857,14 @@
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>  
+            
+            <!-- small websocket library for unit tests -->
+            
+            <dependency>
+                <groupId>com.neovisionaries</groupId>
+                <artifactId>nv-websocket-client</artifactId>
+                <version>2.3</version>
+            </dependency>
             
             <!-- small http library for unit tests that don't need power of httpclient -->
             <dependency>

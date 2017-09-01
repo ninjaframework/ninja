@@ -249,7 +249,7 @@ public class ApplicationControllerTest extends NinjaDocTester {
         Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
         when(routeBuilderImplProvider.get()).thenAnswer(
                 (invocation) -> new RouteBuilderImpl(ninjaProperties, ninjaBaseDirectoryResolver));
-        RouterImpl router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
+        RouterImpl router = new RouterImpl(injector, ninjaProperties, null, routeBuilderImplProvider);
         Routes routes = new Routes(ninjaProperties);
         routes.init(router);
         router.compileRoutes();
@@ -274,7 +274,7 @@ public class ApplicationControllerTest extends NinjaDocTester {
         Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
         when(routeBuilderImplProvider.get()).thenAnswer(
                 (invocation) -> new RouteBuilderImpl(ninjaProperties, ninjaBaseDirectoryResolver));
-        RouterImpl router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
+        RouterImpl router = new RouterImpl(injector, ninjaProperties, null, routeBuilderImplProvider);
         Routes routes = new Routes(ninjaProperties);
         routes.init(router);
         router.compileRoutes();
@@ -293,7 +293,7 @@ public class ApplicationControllerTest extends NinjaDocTester {
         Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
         when(routeBuilderImplProvider.get()).thenAnswer(
                 (invocation) -> new RouteBuilderImpl(ninjaProperties, ninjaBaseDirectoryResolver));
-        RouterImpl router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
+        RouterImpl router = new RouterImpl(injector, ninjaProperties, null, routeBuilderImplProvider);
         Routes routes = new Routes(ninjaProperties);
         routes.init(router);
         router.compileRoutes();

@@ -16,9 +16,7 @@
 
 package ninja;
 
-import com.google.common.collect.ImmutableMap;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 import ninja.utils.NinjaProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +27,8 @@ import ninja.params.Param;
 import ninja.params.ParamParsers;
 import ninja.utils.MethodReference;
 import ninja.utils.NinjaBaseDirectoryResolver;
+import ninja.websockets.WebSockets;
 import static org.hamcrest.CoreMatchers.is;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,6 +37,7 @@ public class ReverseRouterTest {
     Router router;
     ReverseRouter reverseRouter;
     NinjaProperties ninjaProperties;
+    WebSockets webSockets;
     NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
     Injector injector;
     Provider<TestController> testControllerProvider;
@@ -48,6 +47,8 @@ public class ReverseRouterTest {
     public void before() {
         this.ninjaProperties = mock(NinjaProperties.class);
         this.injector = mock(Injector.class);
+        this.webSockets = mock(WebSockets.class);
+        when(this.webSockets.isEnabled()).thenReturn(true);
         this.testControllerProvider = mock(Provider.class);
         this.ninjaBaseDirectoryResolver = new NinjaBaseDirectoryResolver(ninjaProperties);
         when(testControllerProvider.get()).thenReturn(new TestController());
@@ -55,7 +56,7 @@ public class ReverseRouterTest {
         when(injector.getInstance(ParamParsers.class)).thenReturn(new ParamParsers(Collections.emptySet()));
         Provider<RouteBuilderImpl> routeBuilderImplProvider = mock(Provider.class);
         when(routeBuilderImplProvider.get()).thenAnswer((invocation) -> new RouteBuilderImpl(ninjaProperties, ninjaBaseDirectoryResolver));
-        router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
+        router = new RouterImpl(injector, ninjaProperties, webSockets, routeBuilderImplProvider);
         reverseRouter = new ReverseRouter(ninjaProperties, router);
         
         router.GET().route("/home").with(TestController::home);
@@ -63,6 +64,7 @@ public class ReverseRouterTest {
         router.GET().route("/u{userId: .*}/entries/{entryId: .*}").with(TestController::entry);
         // second route to index should not break reverse routing matching the first
         router.GET().route("/home/index").with(TestController::index);
+        router.WS().route("/websocket").with(TestController::websocket);
         
         router.compileRoutes();
     }
@@ -186,6 +188,44 @@ public class ReverseRouterTest {
         assertThat(route, is("/home/index"));
     }
     
+    @Test
+    public void absolute() {
+        String route = reverseRouter.with(TestController::user)
+            .absolute("https", "www.greenback.com")
+            .pathParam("email", "test@example.com")
+            .pathParam("id", 1000000L)
+            .build();
+        
+        assertThat(route, is("https://www.greenback.com/user/test%40example.com/1000000"));
+    }
+    
+    @Test
+    public void absoluteWebSocket() {
+        Context context = mock(Context.class);
+        when(context.getScheme()).thenReturn("http");
+        when(context.getHostname()).thenReturn("www.example.com:8080");
+        
+        String route = reverseRouter.with(TestController::websocket)
+            .absolute(context)
+            .queryParam("a", 1)
+            .build();
+        
+        assertThat(route, is("ws://www.example.com:8080/websocket?a=1"));
+    }
+    
+    @Test
+    public void absoluteSecureWebSocket() {
+        Context context = mock(Context.class);
+        when(context.getScheme()).thenReturn("https");
+        when(context.getHostname()).thenReturn("www.example.com:8080");
+        
+        String route = reverseRouter.with(TestController::websocket)
+            .absolute(context)
+            .build();
+        
+        assertThat(route, is("wss://www.example.com:8080/websocket"));
+    }
+    
     /**
      * A dummy TestController for mocking.
      */
@@ -236,6 +276,11 @@ public class ReverseRouterTest {
         public Result exception() throws Exception {
             throw new Exception("test");
         }
+        
+        public Result websocket() {
+            return Results.webSocketContinue();
+        }
+        
     }
     
 }

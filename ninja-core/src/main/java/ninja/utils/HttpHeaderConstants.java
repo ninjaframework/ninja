@@ -31,5 +31,7 @@ public interface HttpHeaderConstants {
     String ETAG = "ETag";
 
     String LAST_MODIFIED = "Last-Modified";
+    
+    String SEC_WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
 
 }

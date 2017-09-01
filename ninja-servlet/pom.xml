@@ -37,6 +37,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-websockets-jsr356</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-servlet</artifactId>
         </dependency>
@@ -44,6 +49,12 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -56,7 +67,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
         </dependency>
-
 
     </dependencies>
     

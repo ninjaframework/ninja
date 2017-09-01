@@ -171,9 +171,20 @@ public class Results {
 
         return result;
     }
-
+    
+    /**
+     * Instructs ninja (and the http container) that it is okay to continue with
+     * the websocket handshake.  This sets the HTTP status code to
+     * <code>101 Switching Protocols</code>.  Do not include any result via
+     * a render() as writing it out will not be possible if you intend on
+     * switching protocols (e.g. upgrade to a websocket).
+     */
+    public static Result webSocketContinue() {
+        return status(Result.SC_101_SWITCHING_PROTOCOLS);
+    }
+    
     public static AsyncResult async() {
         return new AsyncResult();
     }
-
+    
 }

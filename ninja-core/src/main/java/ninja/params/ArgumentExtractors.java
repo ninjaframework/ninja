@@ -30,6 +30,8 @@ import ninja.validation.Validation;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import ninja.websockets.WebSocketHandshake;
+import ninja.websockets.WebSocketHandshakeExtractor;
 
 /**
  * Built in argument extractors
@@ -44,6 +46,7 @@ public class ArgumentExtractors {
                 .put(Validation.class, new ValidationExtractor())
                 .put(Session.class, new SessionExtractor())
                 .put(FlashScope.class, new FlashExtractor())
+                .put(WebSocketHandshake.class, new WebSocketHandshakeExtractor())
                 .build();
 
     public static ArgumentExtractor<?> getExtractorForType(Class<?> type) {

@@ -1,5 +1,6 @@
 package com.session.conf;
 
+import com.example.controllers.ExampleWebSocket;
 import com.session.controllers.Application;
 import ninja.Results;
 import ninja.Router;
@@ -15,6 +16,7 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/getOrCreateSession").with(Application.class, "getOrCreateSession");
         router.GET().route("/getSession").with(Application.class, "getSession");
         router.GET().route("/badRoute").with(Results.redirect("/getSession"));
+        router.WS().route("/example").with(ExampleWebSocket::handshake);
         
     }
     

@@ -19,11 +19,13 @@ package ninja;
 import ninja.params.ControllerMethodInvoker;
 
 import com.google.inject.Provider;
+import ninja.websockets.WebSocketUtils;
 
 /**
- * The end of the filter chain
- *
+ * The end of the filter chain.
+ * 
  * @author James Roper
+ * @author jjlauer
  */
 class FilterChainEnd implements FilterChain {
     
@@ -38,18 +40,33 @@ class FilterChainEnd implements FilterChain {
 
     @Override
     public Result next(Context context) {
-        Result controllerResult = (Result)controllerMethodInvoker.invoke(
-            targetObjectProvider.get(), context);
+        Object targetObject = targetObjectProvider.get();
+        
+        Result result = (Result)controllerMethodInvoker.invoke(
+            targetObject, context);
 
-        if (controllerResult instanceof AsyncResult) {
+        // handling a websocket?
+        if (context != null && context.getRoute() != null && context.getRoute().isHttpMethodWebSocket()) {
+            // do we need to add a renderable?
+            if (result.getRenderable() == null) {
+                // renderable that saves the target object so it can be used
+                // again when the websocket handshake completes
+                result.render((Context context1, Result result1) -> {
+                    context1.finalizeHeadersWithoutFlashAndSessionCookie(result1);
+                    context1.setAttribute(WebSocketUtils.ATTRIBUTE_ENDPOINT, targetObject);
+                });
+            }
+        }
+        
+        if (result instanceof AsyncResult) {
             // Make sure handle async has been called
             context.handleAsync();
             Result newResult = context.controllerReturned();
             if (newResult != null) {
-                controllerResult = newResult;
+                result = newResult;
             }
         }
 
-        return controllerResult;
+        return result;
     }
 }

@@ -36,7 +36,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
-            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
@@ -46,12 +53,8 @@
                     <stopPort>8889</stopPort>					
                     <scanIntervalSeconds>1</scanIntervalSeconds>
                     <reload>automatic</reload>
-                    <classesDirectory>
-                        target/classes;../ninja-core/target/classes;../ninja-core-test/target/classes
-                    </classesDirectory>
                     <scanTargets>
                         <scanTarget>../ninja-core/target/classes</scanTarget>
-                        <scanTarget>../ninja-core-test/target/classes</scanTarget>
                     </scanTargets>                   
                     <scanTargetPatterns>
                         <scanTargetPattern>               
@@ -73,7 +76,6 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-
             <!-- Allows you to run Ninja via the SuperDevMode. -->
             <!-- run "mvn ninja:run" on the command line for the best -->
             <!-- development experience. -->
@@ -88,7 +90,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -96,45 +97,7 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <createDependencyReducedPom>true</createDependencyReducedPom>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/*.SF</exclude>
-                                <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>ninja.standalone.NinjaJetty</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
-
-
 
         <resources>
             <resource>
@@ -159,16 +122,6 @@
     <dependencies>
     
         <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
         </dependency>
@@ -179,18 +132,41 @@
         </dependency>
         
         <dependency>
-            <groupId>org.ninjaframework</groupId>
-            <artifactId>ninja-standalone</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- for web ui only -->
+        
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-test-utilities</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>com.neovisionaries</groupId>
+            <artifactId>nv-websocket-client</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
-
-
-
+    
 </project>
