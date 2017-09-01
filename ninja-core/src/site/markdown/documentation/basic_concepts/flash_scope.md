@@ -5,8 +5,8 @@ Introduction
 ------------
 
 The flash scope is designed to transport success and error messages between
-stateless web applications. Flash messages only live for one request and
-will be deleted afterwards.
+stateless web applications. Flash messages can either live for the current
+request or both the current and next request (then deleted afterwards).
 
 The flash scope is similar to a Session. Like a session the flash scope 
 is implemented as client side cookie. But the flash scope is not signed.
@@ -56,6 +56,15 @@ public Result flashError(FlashScope flashScope) {
 }
 </pre>
 
+FlashScope for only current request
+-----------------------------------
+
+If you are simply using the FlashScope to display a message for the current
+request, its safer to use `flash.now()` as opposed to `flash.put()`, `flash.error()`,
+or `flash.success()`.  This makes your flash data only available to the current
+request and avoids writing it out as a client side cookie.  This helps avoid
+unexpected flash messages in the browser on the next request when you didn't
+intend them to show up.
 
 FlashScope and i18n
 -------------------
