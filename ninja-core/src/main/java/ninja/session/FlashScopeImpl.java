@@ -19,40 +19,29 @@ package ninja.session;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-
 import ninja.Context;
 import ninja.Cookie;
-import ninja.Result;
 import ninja.utils.CookieDataCodec;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.inject.Inject;
 
 /**
- * Flash scope: A client side cookie that can be used to transfer information
- * from one request to another.
- * 
- * Stuff in a flash cookie gets deleted after the next request.
- * 
- * Please note also that flash cookies are not signed.
+ * Default FlashScope implementation.
  */
 public class FlashScopeImpl implements FlashScope {
-
-    private Map<String, String> currentFlashCookieData = new HashMap<String, String>();
-    private Map<String, String> outgoingFlashCookieData = new HashMap<String, String>();
-
-    private String applicationCookiePrefix;
+    static private Logger log = LoggerFactory.getLogger(FlashScopeImpl.class);
     
-    private static Logger logger = LoggerFactory.getLogger(FlashScopeImpl.class);
+    private final Map<String,String> currentFlashCookieData = new HashMap<>();
+    private final Map<String,String> outgoingFlashCookieData = new HashMap<>();
+    private final String applicationCookiePrefix;
 
     @Inject
     public FlashScopeImpl(NinjaProperties ninjaProperties) {
         this.applicationCookiePrefix = ninjaProperties
-                .getOrDie(NinjaConstant.applicationCookiePrefix);
+            .getOrDie(NinjaConstant.applicationCookiePrefix);
     }
 
     @Override
@@ -67,17 +56,18 @@ public class FlashScopeImpl implements FlashScope {
                 CookieDataCodec.decode(currentFlashCookieData, flashCookie.getValue());
 
             } catch (UnsupportedEncodingException e) {
-                logger.error("Encoding exception - this must not happen", e); 
+                log.error("Encoding exception - this must not happen", e); 
             }
         }
 
     }
 
     @Override
+    @SuppressWarnings("UseSpecificCatch")
     public void save(Context context) {
 
         if (outgoingFlashCookieData.isEmpty()) {
-
+            // only need to buid a cookie (to empty its contents) if one currently exists
             if (context.hasCookie(applicationCookiePrefix
                     + ninja.utils.NinjaConstant.FLASH_SUFFIX)) {
 
@@ -89,13 +79,10 @@ public class FlashScopeImpl implements FlashScope {
                 cookie.setMaxAge(0);
 
                 context.addCookie(cookie.build());
-
             }
-        }
-
-        else {
+        } else {
+            // build a cookie with this flash data
             try {
-
                 String flashData = CookieDataCodec.encode(outgoingFlashCookieData);
 
                 Cookie.Builder cookie = Cookie.builder(applicationCookiePrefix
@@ -107,38 +94,62 @@ public class FlashScopeImpl implements FlashScope {
                 cookie.setMaxAge(-1);
 
                 context.addCookie(cookie.build());
-
             } catch (Exception e) {
-                logger.error("Encoding exception - this must not happen", e);
+                log.error("Encoding exception - this must not happen", e);
             }
         }
     }
 
-    @Override
-    public void put(String key, String value) {
+    private void validateKey(String key) {
+        if (key == null) {
+            throw new IllegalArgumentException(
+                "Flash key may not be null");
+        }
         if (key.contains(":")) {
             throw new IllegalArgumentException(
-                    "Character ':' is invalid in a flash key.");
+                "Flash key may not contain character ':'");
         }
+    }
+    
+    @Override
+    public void now(String key, String value) {
+        this.validateKey(key);
+        currentFlashCookieData.put(key, value);
+    }
+    
+    @Override
+    public String get(String key) {
+        this.validateKey(key);
+        return currentFlashCookieData.get(key);
+    }
+
+    @Override
+    public boolean remove(String key) {
+        this.validateKey(key);
+        this.outgoingFlashCookieData.remove(key);
+        return currentFlashCookieData.remove(key) != null;
+    }
+    
+    @Override
+    public boolean contains(String key) {
+        this.validateKey(key);
+        return currentFlashCookieData.containsKey(key);
+    }
+    
+    @Override
+    public void put(String key, String value) {
+        this.validateKey(key);
         currentFlashCookieData.put(key, value);
         outgoingFlashCookieData.put(key, value);
     }
 
     @Override
     public void put(String key, Object value) {
+        this.validateKey(key);
         if (value == null) {
             put(key, (String) null);
         }
         put(key, value + "");
-    }
-
-    @Override
-    public void now(String key, String value) {
-        if (key.contains(":")) {
-            throw new IllegalArgumentException(
-                    "Character ':' is invalid in a flash key.");
-        }
-        currentFlashCookieData.put(key, value);
     }
 
     @Override
@@ -153,6 +164,7 @@ public class FlashScopeImpl implements FlashScope {
 
     @Override
     public void discard(String key) {
+        this.validateKey(key);
         outgoingFlashCookieData.remove(key);
     }
 
@@ -163,6 +175,7 @@ public class FlashScopeImpl implements FlashScope {
 
     @Override
     public void keep(String key) {
+        this.validateKey(key);
         if (currentFlashCookieData.containsKey(key)) {
             outgoingFlashCookieData.put(key, currentFlashCookieData.get(key));
         }
@@ -174,32 +187,18 @@ public class FlashScopeImpl implements FlashScope {
     }
 
     @Override
-    public String get(String key) {
-        return currentFlashCookieData.get(key);
-    }
-
-    @Override
-    public boolean remove(String key) {
-        return currentFlashCookieData.remove(key) != null;
-    }
-
-    @Override
     public void clearCurrentFlashCookieData() {
         currentFlashCookieData.clear();
     }
 
     @Override
-    public boolean contains(String key) {
-        return currentFlashCookieData.containsKey(key);
-    }
-
-    @Override
-    public Map<String, String> getCurrentFlashCookieData() {
+    public Map<String,String> getCurrentFlashCookieData() {
         return currentFlashCookieData;
     }
 
     @Override
-    public Map<String, String> getOutgoingFlashCookieData() {
+    public Map<String,String> getOutgoingFlashCookieData() {
         return outgoingFlashCookieData;
     }
+    
 }

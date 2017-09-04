@@ -18,7 +18,6 @@ package ninja.session;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import ninja.Context;
 import ninja.Cookie;
@@ -26,6 +25,7 @@ import ninja.Result;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
 
 import org.junit.Before;
@@ -36,6 +36,7 @@ import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -45,9 +46,6 @@ public class FlashScopeTest {
     @Mock
     private Context context;
 
-    @Mock
-    private Result result;
-
     @Captor
     private ArgumentCaptor<Cookie> cookieCaptor;
 
@@ -56,10 +54,8 @@ public class FlashScopeTest {
 
     @Before
     public void setUp() {
-
         when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
                 .thenReturn("NINJA");
-
     }
 
     @Test
@@ -244,6 +240,18 @@ public class FlashScopeTest {
         verify(context).addCookie(cookieCaptor.capture());
         Cookie cookie = cookieCaptor.getValue();
         Assert.assertThat(cookie.getPath(), CoreMatchers.equalTo("/my_context/"));
+    }
+    
+    @Test
+    public void removeClearsBothCurrentAndOutgoing() {
+        FlashScope flashScope = new FlashScopeImpl(ninjaProperties);
+        flashScope.init(context);
+        flashScope.put("anykey", "anyvalue");
+        flashScope.remove("anykey");
+        flashScope.save(context);
+
+        // cookie will not be created
+        verify(context, times(0)).addCookie(cookieCaptor.capture());
     }
 
 }
