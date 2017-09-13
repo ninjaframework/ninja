@@ -23,12 +23,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import com.google.inject.servlet.GuiceFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import ninja.servlet.NinjaServletFilter;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -40,6 +40,7 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,10 +142,15 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
         this.ninjaServletListener.setNinjaProperties(ninjaProperties);
         
         this.contextHandler = new ServletContextHandler(jetty, getContextPath());
+        
         this.contextHandler.addEventListener(ninjaServletListener);
-        this.contextHandler.addFilter(GuiceFilter.class, "/*", null);
+        this.contextHandler.addFilter(NinjaServletFilter.class, "/*", null);
         this.contextHandler.addServlet(DefaultServlet.class, "/");
-                
+        
+        // Note: adding websockets support (e.g. upgrade filter) last (after user filters)
+        // is how jetty, tomcat, and wildfly all do it. We mimic it here.
+        WebSocketServerContainerInitializer.configureContext(this.contextHandler);
+        
         // disable directory browsing
         this.contextHandler.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
         // Add an error handler that does not print stack traces in case
@@ -181,7 +187,7 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
                 this.contextHandler.destroy();
             }
         } catch (Exception e) {
-            // keep trying
+            // keep 
         }
            
         try {
@@ -192,7 +198,8 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
                 logger.info("Stopped jetty {}", getLoggableIdentifier());
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Unable to cleanly stop jetty", e);
+            //throw new RuntimeException(e);
         }
     }
     

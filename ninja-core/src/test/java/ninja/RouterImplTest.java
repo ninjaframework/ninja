@@ -18,7 +18,6 @@ package ninja;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 import ninja.utils.NinjaProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,11 +35,13 @@ import ninja.params.ParamParsers;
 import ninja.utils.MethodReference;
 import ninja.utils.NinjaBaseDirectoryResolver;
 import ninja.validation.ValidationImpl;
+import ninja.websockets.WebSockets;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.aMapWithSize;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.fail;
+import org.mockito.ArgumentCaptor;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -62,18 +63,25 @@ public class RouterImplTest {
 
     @Mock
     Provider<TestController> testControllerProvider;
+    
+    @Mock
+    WebSockets webSockets;
+    
+    ArgumentCaptor<Route> webSocketsCompileRouteCaptor;
 
     @Before
     @SuppressWarnings("Convert2Lambda")
     public void before() {
+        webSocketsCompileRouteCaptor = ArgumentCaptor.forClass(Route.class);
         this.ninjaBaseDirectoryResolver = new NinjaBaseDirectoryResolver(ninjaProperties);
+        when(webSockets.isEnabled()).thenReturn(true);
         when(testControllerProvider.get()).thenReturn(new TestController());
         when(injector.getProvider(TestController.class)).thenReturn(testControllerProvider);
         when(injector.getInstance(ParamParsers.class)).thenReturn(new ParamParsers(Collections.emptySet()));
         Provider<RouteBuilderImpl> routeBuilderImplProvider = mock(Provider.class);
         when(routeBuilderImplProvider.get()).thenAnswer(
                 (invocation) -> new RouteBuilderImpl(ninjaProperties, ninjaBaseDirectoryResolver));
-        router = new RouterImpl(injector, ninjaProperties, routeBuilderImplProvider);
+        router = new RouterImpl(injector, ninjaProperties, webSockets, routeBuilderImplProvider);
 
         // add route:
         router.GET().route("/testroute").with(TestController.class, "index");
@@ -107,10 +115,21 @@ public class RouterImplTest {
                 return Results.status(status);
             }
         });
+        router.WS().route("/websocket").with(TestController::websocket);
         
         router.compileRoutes();
     }
 
+    @Test
+    public void webSocketCompileDelegatedToImpl() {
+        verify(webSockets).compileRoute(webSocketsCompileRouteCaptor.capture());
+        
+        Route route = webSocketsCompileRouteCaptor.getValue();
+        
+        assertThat(route.getHttpMethod(), is(Route.HTTP_METHOD_WEBSOCKET));
+        assertThat(route.getUri(), is("/websocket"));
+    }
+    
     @Test
     public void getPathParametersEncodedWithNoPathParams() {
         Route route = router.getRouteFor("GET", "/testroute");
@@ -358,6 +377,10 @@ public class RouterImplTest {
         
         public Result exception() throws Exception {
             throw new Exception("test");
+        }
+        
+        public Result websocket() {
+            return Results.webSocketContinue();
         }
     }
     

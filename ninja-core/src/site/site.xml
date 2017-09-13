@@ -92,6 +92,8 @@
         </menu>
         <menu name="Advanced topics">
 
+            <item name="Web Sockets" href="./documentation/websockets.html"/>
+            
             <item name="Validation" href="./documentation/validation.html"/>
             <item name="Content negotiation" href="./documentation/content_negotiation.html"/>
 

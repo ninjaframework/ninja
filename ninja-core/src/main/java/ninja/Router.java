@@ -182,6 +182,8 @@ public interface Router {
     
     public RouteBuilder HEAD();
     
+    public RouteBuilder WS();
+    
     /**
      * To match any http method. E.g. METHOD("PROPFIND") would route PROPFIND methods.
      * @param method The http method like "GET" or "PROPFIND"

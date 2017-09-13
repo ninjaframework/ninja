@@ -30,7 +30,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 import com.google.inject.Provider;
-import java.util.List;
 import ninja.utils.MethodReference;
 import ninja.utils.NinjaBaseDirectoryResolver;
 import ninja.utils.NinjaConstant;
@@ -42,7 +41,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
-import ninja.application.ApplicationFilters;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RouteBuilderImplTest {
@@ -105,6 +103,13 @@ public class RouteBuilderImplTest {
         assertTrue(buildRoute(routeBuilder).matches("PROPFIND", "/index"));
     }
 
+    @Test
+    public void basisWS() {
+        routeBuilder.WS().route("/index");
+
+        assertTrue(buildRoute(routeBuilder).matches("WS", "/index"));
+    }
+    
     @Test
     public void basicRoutesWithRegex() {
         routeBuilder.GET().route("/.*");

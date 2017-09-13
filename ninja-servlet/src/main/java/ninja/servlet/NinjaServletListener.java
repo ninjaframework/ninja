@@ -16,14 +16,18 @@
 
 package ninja.servlet;
 
+import com.google.inject.AbstractModule;
 import ninja.Bootstrap;
 import javax.servlet.ServletContextEvent;
-
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
-
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
+import javax.websocket.server.ServerContainer;
+import ninja.websockets.WebSockets;
+import ninja.websockets.jsr356.Jsr356WebSockets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * define in web.xml:
@@ -36,28 +40,29 @@ import com.google.inject.servlet.GuiceServletContextListener;
  * 
  */
 public class NinjaServletListener extends GuiceServletContextListener {
+    static private final Logger log = LoggerFactory.getLogger(NinjaServletListener.class);
     
     private volatile Bootstrap ninjaBootstrap;
     NinjaPropertiesImpl ninjaProperties = null;
     String contextPath;
+    private ServerContainer webSocketServerContainer;
 
     public synchronized void setNinjaProperties(NinjaPropertiesImpl ninjaPropertiesImpl) {
-        
         if (this.ninjaProperties != null) {
-            
             throw new IllegalStateException("NinjaProperties already set.");
-        
-        } else {
-        
-            this.ninjaProperties = ninjaPropertiesImpl;
-            
         }
-        
+        this.ninjaProperties = ninjaPropertiesImpl;
     }
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) { 
         contextPath = servletContextEvent.getServletContext().getContextPath();
+        
+        // websocket enabled servlet containers populate this attribute with JSR 356
+        // we save it here so we can inject it later into guice
+        this.webSocketServerContainer = (ServerContainer)servletContextEvent.getServletContext()
+            .getAttribute("javax.websocket.server.ServerContainer");
+        
         super.contextInitialized(servletContextEvent);
     }
    
@@ -127,6 +132,20 @@ public class NinjaServletListener extends GuiceServletContextListener {
         ninjaProperties.setContextPath(contextPath);
         
         ninjaBootstrap = new NinjaServletBootstrap(ninjaProperties);
+        
+        // if websocket container present then enable jsr-356 websockets
+        if (webSocketServerContainer != null) {
+            log.info("Using JSR-356 websocket container {}",
+                webSocketServerContainer.getClass().getCanonicalName());
+            
+            ninjaBootstrap.addModule(new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bind(ServerContainer.class).toInstance(webSocketServerContainer);
+                    bind(WebSockets.class).to(Jsr356WebSockets.class);
+                }
+            });
+        }
         
         ninjaBootstrap.boot();
         

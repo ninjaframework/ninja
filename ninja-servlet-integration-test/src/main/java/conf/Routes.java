@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import controllers.ApplicationController;
 import controllers.AsyncController;
 import controllers.AuthenticityController;
+import controllers.ChatWebSocket;
 import controllers.FilterController;
 import controllers.I18nController;
 import controllers.InjectionExampleController;
@@ -67,6 +68,8 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         // render a page
         router.GET().route("/").with(ApplicationController::index);
+        
+        router.WS().route("/chat").with(ChatWebSocket::handshake);
 
         // with static result (not recommended w/ new lambda feature)
         router.GET().route("/route_with_result")

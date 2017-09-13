@@ -33,6 +33,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
+import java.lang.reflect.Method;
+import ninja.websockets.WebSockets;
 
 public class RouterImpl implements Router {
     static private final Logger logger = LoggerFactory.getLogger(RouterImpl.class);
@@ -40,19 +42,20 @@ public class RouterImpl implements Router {
     private final NinjaProperties ninjaProperties;
     private final List<RouteBuilderImpl> allRouteBuilders = new ArrayList<>();
     private final Injector injector;
+    private final WebSockets webSockets;
     private List<Route> routes;
     // for fast reverse route lookups
     private Map<MethodReference,Route> reverseRoutes;
-    // This regex works for both {myParam} AND {myParam: .*} (with regex)
-    private final String VARIABLE_PART_PATTERN_WITH_PLACEHOLDER = "\\{(%s)(:\\s([^}]*))?\\}"; 
     private final Provider<RouteBuilderImpl> routeBuilderImplProvider;
 
     @Inject
     public RouterImpl(Injector injector,
                       NinjaProperties ninjaProperties,
+                      WebSockets webSockets,
                       Provider<RouteBuilderImpl> routeBuilderImplProvider) {
         this.injector = injector;
         this.ninjaProperties = ninjaProperties;
+        this.webSockets = webSockets;
         this.routeBuilderImplProvider = routeBuilderImplProvider;
     }
 
@@ -185,30 +188,41 @@ public class RouterImpl implements Router {
         }
         List<Route> routesLocal = new ArrayList<>();
         
-        for (RouteBuilderImpl routeBuilder : allRouteBuilders) {
+        allRouteBuilders.forEach(routeBuilder -> {
             routesLocal.add(routeBuilder.buildRoute(injector));
-        }
+        });
         
         this.routes = ImmutableList.copyOf(routesLocal);
         
         // compile reverse routes for O(1) lookups
         this.reverseRoutes = new HashMap<>(this.routes.size());
         
-        for (Route route : this.routes) {
-            // its possible this route is a Result instead of a controller method
-            if (route.getControllerClass() != null) {
-                MethodReference controllerMethodRef
-                    = new MethodReference(
-                        route.getControllerClass(),
-                        route.getControllerMethod().getName());
-                
-                if (this.reverseRoutes.containsKey(controllerMethodRef)) {
-                    // the first one wins with reverse routing so we ignore this route
-                } else {
-                    this.reverseRoutes.put(controllerMethodRef, route);
-                }
+        this.routes.forEach(route -> {
+            Class<?> methodClass = route.getControllerClass();
+            String methodName = route.getControllerMethod().getName();
+
+            MethodReference controllerMethodRef
+                = new MethodReference(methodClass, methodName);
+
+            if (this.reverseRoutes.containsKey(controllerMethodRef)) {
+                // the first one wins with reverse routing so we ignore this route
+            } else {
+                this.reverseRoutes.put(controllerMethodRef, route);
             }
-        }
+            
+            if (route.isHttpMethodWebSocket()) {
+                if (this.webSockets == null) {
+                    throw new IllegalStateException(
+                        "WebSockets instance was null. Unable to configure route " + route.getUri() + ".");
+                }
+                if (!this.webSockets.isEnabled()) {
+                    throw new IllegalStateException(
+                        "WebSockets are not enabled. Unable to configure route " + route.getUri() + "."
+                            + " Using implementation " + this.webSockets.getClass().getCanonicalName());
+                }
+                webSockets.compileRoute(route);
+            }
+        });
 
         logRoutes();
     }
@@ -267,6 +281,14 @@ public class RouterImpl implements Router {
 
         return routeBuilder;
     }
+    
+    @Override
+    public RouteBuilder WS() {
+        RouteBuilderImpl routeBuilder = routeBuilderImplProvider.get().WS();
+        allRouteBuilders.add(routeBuilder);
+
+        return routeBuilder;
+    }
 
     @Override
     public RouteBuilder METHOD(String method) {
@@ -278,8 +300,7 @@ public class RouterImpl implements Router {
     
     private void verifyRoutesCompiled() {
         if (routes == null) {
-            throw new IllegalStateException(
-                "Routes not compiled!");
+            throw new IllegalStateException("Routes not compiled!");
         }
     }
 
@@ -310,13 +331,12 @@ public class RouterImpl implements Router {
             maxPathLen = Math.max(maxPathLen, route.getUri().length());
 
             if (route.getControllerClass() != null) {
-
+                
                 int controllerLen = route.getControllerClass().getName().length()
-                    + route.getControllerMethod().getName().length();
+-                    + route.getControllerMethod().getName().length();
+                
                 maxControllerLen = Math.max(maxControllerLen, controllerLen);
-
             }
-
         }
 
         // log the routing table
@@ -328,21 +348,19 @@ public class RouterImpl implements Router {
         logger.info(border);
 
         for (Route route : getRoutes()) {
-
             if (route.getControllerClass() != null) {
-
-                logger.info("{} {}  =>  {}.{}()",
-                    Strings.padEnd(route.getHttpMethod(), maxMethodLen, ' '),
-                    Strings.padEnd(route.getUri(), maxPathLen, ' '),
-                    route.getControllerClass().getName(),
-                    route.getControllerMethod().getName());
-
+                
+                logger.info("{} {}  =>  {}::{}",
+                Strings.padEnd(route.getHttpMethod(), maxMethodLen, ' '),
+                Strings.padEnd(route.getUri(), maxPathLen, ' '),
+                route.getControllerClass().getName(),
+                route.getControllerMethod().getName());
+                
             } else {
-
-              logger.info("{} {}", route.getHttpMethod(), route.getUri());
-
+                
+                logger.info("{} {}", route.getHttpMethod(), route.getUri());
+              
             }
-
         }
 
     }

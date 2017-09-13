@@ -31,7 +31,6 @@ import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import ninja.ControllerMethods.ControllerMethod;
 import ninja.utils.LambdaRoute;
 import ninja.utils.MethodReference;
@@ -47,7 +46,7 @@ public class RouteBuilderImpl implements RouteBuilder {
 
     private String httpMethod;
     private String uri;
-    private Method functionalMethod;
+    private Method functionalMethod;                // lamda routes can have this + maybe impl and targets
     private Optional<Method> implementationMethod;  // method to use for parameter/annotation extraction
     private Optional<Object> targetObject;          // instance to invoke
     private final NinjaProperties ninjaProperties;
@@ -68,32 +67,37 @@ public class RouteBuilderImpl implements RouteBuilder {
     }
     
     public RouteBuilderImpl GET() {
-        httpMethod = "GET";
+        httpMethod = Route.HTTP_METHOD_GET;
         return this;
     }
 
     public RouteBuilderImpl POST() {
-        httpMethod = "POST";
+        httpMethod = Route.HTTP_METHOD_POST;
         return this;
     }
 
     public RouteBuilderImpl PUT() {
-        httpMethod = "PUT";
+        httpMethod = Route.HTTP_METHOD_PUT;
         return this;
     }
 
     public RouteBuilderImpl DELETE() {
-        httpMethod = "DELETE";
+        httpMethod = Route.HTTP_METHOD_DELETE;
         return this;
     }
 
     public RouteBuilderImpl OPTIONS() {
-        httpMethod = "OPTIONS";
+        httpMethod = Route.HTTP_METHOD_OPTIONS;
         return this;
     }
     
     public RouteBuilderImpl HEAD() {
-        httpMethod = "HEAD";
+        httpMethod = Route.HTTP_METHOD_HEAD;
+        return this;
+    }
+    
+    public RouteBuilderImpl WS() {
+        httpMethod = Route.HTTP_METHOD_WEBSOCKET;
         return this;
     }
         
@@ -103,7 +107,7 @@ public class RouteBuilderImpl implements RouteBuilder {
     }
 
     @Override
-    public void with(Class controllerClass, String controllerMethod) {
+    public void with(Class<?> controllerClass, String controllerMethod) {
         this.functionalMethod
             = verifyControllerMethod(controllerClass, controllerMethod);
     }
@@ -229,7 +233,7 @@ public class RouteBuilderImpl implements RouteBuilder {
             log.error("Error in route configuration for {}", uri);
             throw new IllegalStateException("Route missing a controller method");
         }
-
+        
         // Calculate filters
         LinkedList<Class<? extends Filter>> allFilters = new LinkedList<>();
         
@@ -244,7 +248,7 @@ public class RouteBuilderImpl implements RouteBuilder {
         }
         
         FilterChain filterChain = buildFilterChain(injector, allFilters);
-
+        
         return new Route(httpMethod, uri, functionalMethod, filterChain);
     }
     
@@ -278,9 +282,6 @@ public class RouteBuilderImpl implements RouteBuilder {
     private FilterChain buildFilterChain(Injector injector,
                                          LinkedList<Class<? extends Filter>> filters) {
 
-                
-       
-         
         if (filters.isEmpty()) {
             
             // either target object (functional method) or guice will create new instance

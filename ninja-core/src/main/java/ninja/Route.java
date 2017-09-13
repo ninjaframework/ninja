@@ -22,12 +22,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.common.collect.Maps;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * A route
  */
 public class Route {
+    
+    static public final String HTTP_METHOD_GET = "GET";
+    static public final String HTTP_METHOD_POST = "POST";
+    static public final String HTTP_METHOD_PUT = "PUT";
+    static public final String HTTP_METHOD_HEAD = "HEAD";
+    static public final String HTTP_METHOD_DELETE = "DELETE";
+    static public final String HTTP_METHOD_OPTIONS = "OPTIONS";
+    static public final String HTTP_METHOD_WEBSOCKET = "WS";
 
     //Matches: {id} AND {id: .*?}
     // group(1) extracts the name of the group (in that case "id").
@@ -40,7 +48,6 @@ public class Route {
      */
     final static String VARIABLE_ROUTES_DEFAULT_REGEX = "([^/]*)";
     
-    //private static final String PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = "\\{.*?:\\s(.*?)\\}";
     private final String httpMethod;
     private final String uri;
     private final Method controllerMethod;
@@ -71,6 +78,38 @@ public class Route {
         return httpMethod;
     }
 
+    public boolean isHttpMethod(String method) {
+        return StringUtils.equalsIgnoreCase(method, this.httpMethod);
+    }
+    
+    public boolean isHttpMethodGet() {
+        return this.isHttpMethod(Route.HTTP_METHOD_GET);
+    }
+    
+    public boolean isHttpMethodPost() {
+        return this.isHttpMethod(Route.HTTP_METHOD_POST);
+    }
+    
+    public boolean isHttpMethodPut() {
+        return this.isHttpMethod(Route.HTTP_METHOD_PUT);
+    }
+    
+    public boolean isHttpMethodDelete() {
+        return this.isHttpMethod(Route.HTTP_METHOD_DELETE);
+    }
+    
+    public boolean isHttpMethodHead() {
+        return this.isHttpMethod(Route.HTTP_METHOD_HEAD);
+    }
+    
+    public boolean isHttpMethodOptions() {
+        return this.isHttpMethod(Route.HTTP_METHOD_OPTIONS);
+    }
+    
+    public boolean isHttpMethodWebSocket() {
+        return this.isHttpMethod(Route.HTTP_METHOD_WEBSOCKET);
+    }
+    
     public String getUri() {
         return uri;
     }
@@ -79,14 +118,14 @@ public class Route {
         return controllerMethod != null ? controllerMethod.getDeclaringClass() : null;
     }
 
-    public FilterChain getFilterChain() {
-        return filterChain;
-    }
-
     public Method getControllerMethod() {
         return controllerMethod;
     }
 
+    public FilterChain getFilterChain() {
+        return filterChain;
+    }
+    
     public Map<String,RouteParameter> getParameters() {
         return parameters;
     }

@@ -1,11 +1,11 @@
-/*
- * Copyright 2016 ninjaframework.
+/**
+ * Copyright (C) 2012-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package ninja;
 
 import java.io.UnsupportedEncodingException;
@@ -46,6 +47,8 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
         
         private final String contextPath;
         private final Route route;
+        private String scheme;
+        private String hostname;
         private Map<String,String> pathParams;
         private Map<String,String> queryParams;
         
@@ -54,6 +57,46 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
             this.route = route;
         }
 
+        public Builder scheme(String scheme) {
+            this.scheme = scheme;
+            return this;
+        }
+        
+        /**
+         * Make this an absolute route by including the current scheme (e.g. http)
+         * and hostname (e.g. www.example.com).
+         * @param scheme The scheme such as "http" or "https"
+         * @param hostname The hostname such as "www.example.com" or "www.example.com:8080"
+         * @return This builder
+         */
+        public Builder absolute(String scheme, String hostname) {
+            this.scheme = scheme;
+            this.hostname = hostname;
+            return this;
+        }
+        
+        /**
+         * Make this an absolute route by including the current scheme (e.g. http)
+         * and hostname (e.g. www.example.com).  If the route is to a websocket
+         * then this will then return "ws" or "wss" if TLS is detected.
+         * @param context The current context
+         * @return This builder
+         */
+        public Builder absolute(Context context) {
+            String s = context.getScheme();
+            String h = context.getHostname();
+            
+            if (this.route.isHttpMethodWebSocket()) {
+                if ("https".equalsIgnoreCase(s)) {
+                    s = "wss";
+                } else {
+                    s = "ws";
+                }
+            }
+            
+            return this.absolute(s, h);
+        }
+        
         public Route getRoute() {
             return route;
         }
@@ -180,6 +223,13 @@ public class ReverseRouter implements WithControllerMethod<Builder> {
             
             StringBuilder buffer = new StringBuilder(rawUri.length());
 
+            // append scheme + hostname?
+            if (this.scheme != null && this.hostname != null) {
+                buffer.append(this.scheme);
+                buffer.append("://");
+                buffer.append(this.hostname);
+            }
+            
             // append contextPath
             if (this.contextPath != null && this.contextPath.length() > 0) {
                 buffer.append(this.contextPath);

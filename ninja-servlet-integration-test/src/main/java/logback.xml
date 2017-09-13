@@ -26,6 +26,8 @@
     </encoder>
   </appender>
 
+  <logger name="ninja" level="trace"/>
+
   <root level="info">
     <appender-ref ref="STDOUT" />
   </root>

@@ -1,6 +1,12 @@
-Version 6.1.x
+Version 6.2.x
 =============
 
+ * 2017-08-30 WebSockets support across Jetty standalone and any JSR-356
+              compatible servlet container such as Jetty 9.3.15+, Tomcat 7+,
+              Wildfly, WebLogic, Undertow, etc. (jjlauer)
+ * 2017-08-30 Automatic Ninja initialization for servlet containers.  You can
+              now omit a `web.xml` (jjlauer)
+ * 2017-08-30 ReverseRouter supports building absolute urls (jjlauer)
  * 2017-08-22 System properties (as well as prefixed system properties) can override any configuration keys (jjlauer)
 
 Version 6.1.0
