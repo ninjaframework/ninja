@@ -199,10 +199,7 @@ public class RouterImpl implements Router {
         
         this.routes.forEach(route -> {
             Class<?> methodClass = route.getControllerClass();
-            
-            String methodName = Optional.ofNullable(route.getControllerMethod())
-                .map(Method::getName)
-                .orElse("");
+            String methodName = route.getControllerMethod().getName();
 
             MethodReference controllerMethodRef
                 = new MethodReference(methodClass, methodName);

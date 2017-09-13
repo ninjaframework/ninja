@@ -38,14 +38,9 @@ public class WebSocketUtils {
      * @return A set of values or null if value was null or empty
      */
     static public Set<String> parseProtocolRequestHeader(String value) {
-        if (StringUtils.isEmpty(value)) {
-            return null;
-        }
-        
         Set<String> subprotocols = new LinkedHashSet<>();
         
         if (!StringUtils.isEmpty(value)) {
-            
             String[] values = value.split(",");
             for (String v : values) {
                 subprotocols.add(v.trim());
