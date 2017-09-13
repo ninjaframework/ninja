@@ -317,6 +317,17 @@
                                 <exclude>**/WEB-INF/classes/**</exclude>
                                 <exclude>**/site/**</exclude>
                                 <exclude>**/.DS_Store</exclude>
+                                <exclude>**/*.xml</exclude>
+                                <exclude>**/*.properties</exclude>
+                                <exclude>**/*.css</exclude>
+                                <exclude>**/*.js</exclude>
+                                <exclude>**/*.keystore</exclude>
+                                <exclude>**/*.truststore</exclude>
+                                <exclude>**/*.sql</exclude>
+                                <exclude>**/*.html</exclude>
+                                <exclude>**/*.conf</exclude>
+                                <exclude>**/*.txt</exclude>
+                                <exclude>**/META-INF/**</exclude>
 
                                 <!-- ignore binary files -->
                                 <exclude>**/assets/**</exclude>
