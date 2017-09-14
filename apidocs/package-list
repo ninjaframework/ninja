@@ -24,3 +24,4 @@ ninja.template.directives
 ninja.uploads
 ninja.utils
 ninja.validation
+ninja.websockets
