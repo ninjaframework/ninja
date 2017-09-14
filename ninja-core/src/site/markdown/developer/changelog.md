@@ -1,4 +1,4 @@
-Version 6.2.x
+Version 6.2.0
 =============
 
  * 2017-08-30 WebSockets support across Jetty standalone and any JSR-356
