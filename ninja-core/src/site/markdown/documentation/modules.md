@@ -44,6 +44,7 @@ Rocker templates
 Pebble templates
 
  * https://github.com/jjfidalgo/ninja-pebble
+ * https://github.com/bordereast/ninja-pebble-module
  
 
 Databases and ORM
