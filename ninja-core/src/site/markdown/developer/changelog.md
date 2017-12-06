@@ -209,6 +209,7 @@ Version 5.1.2
 Version 5.1.1
 =============
 
+ * 2015-04-07 Changed generic exception in postoffice to specific ones (2) (svenkubiak)
  * 2015-03-31 Improved SuperDevMode (jjlauer)
  * 2015-03-29 Tiny fix for a test that did not work with summertime (ra)
  * 2015-03-27 Upgrade of external libraries to latest versions (ra)
