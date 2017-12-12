@@ -62,28 +62,23 @@ public class NinjaGraphiteTest {
 
     @Test
     public void testWithoutCustomPrefix() {
-        mockPrefix(null);
+        Mockito.when(ninjaProperties.get(Mockito.eq("metrics.graphite.prefix"))).thenReturn(null);
         ninjaGraphite.start();
         Mockito.verify(builder, Mockito.times(1)).prefixedWith(TEST_HOSTNAME);
     }
 
     @Test
     public void testWithEmptyCustomPrefix() {
-        mockPrefix("");
+        Mockito.when(ninjaProperties.get(Mockito.eq("metrics.graphite.prefix"))).thenReturn("");
         ninjaGraphite.start();
         Mockito.verify(builder, Mockito.times(1)).prefixedWith(TEST_HOSTNAME);
     }
 
     @Test
-
     public void testWithCustomPrefix() {
-        mockPrefix(TEST_PREFIX);
+        Mockito.when(ninjaProperties.get(Mockito.eq("metrics.graphite.prefix"))).thenReturn(TEST_PREFIX);
         ninjaGraphite.start();
         Mockito.verify(builder, Mockito.times(1)).prefixedWith(TEST_PREFIX);
-    }
-
-    private void mockPrefix(String prefix) {
-        Mockito.when(ninjaProperties.get(Mockito.eq("metrics.graphite.prefix"))).thenReturn(prefix);
     }
 
     @After
