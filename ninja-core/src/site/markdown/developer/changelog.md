@@ -1,6 +1,7 @@
 Version 6.2.0
 =============
 
+ * 2017-12-13 Fixed duplicate count for timed metrics (christiangroth)
  * 2017-08-30 WebSockets support across Jetty standalone and any JSR-356
               compatible servlet container such as Jetty 9.3.15+, Tomcat 7+,
               Wildfly, WebLogic, Undertow, etc. (jjlauer)
