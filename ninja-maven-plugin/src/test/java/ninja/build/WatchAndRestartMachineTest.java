@@ -101,7 +101,7 @@ public class WatchAndRestartMachineTest {
             os.close();
 
             // indicates exclusion rule for new files didn't work
-            verify(restartTrigger, timeout(10000).never()).trigger();
+            verify(restartTrigger, Mockito.after(10000).never()).trigger();
             
             // modify the file
             os = new FileOutputStream(newPngFile);
@@ -109,7 +109,7 @@ public class WatchAndRestartMachineTest {
             os.close();
 
             // indicates exclusion rule for modified files didn't work
-            verify(restartTrigger, timeout(10000).never()).trigger();
+            verify(restartTrigger, Mockito.after(10000).never()).trigger();
             
             // add a new file
             os = new FileOutputStream(newIncludedTxtFile);
