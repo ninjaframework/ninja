@@ -25,6 +25,7 @@ import ninja.metrics.MetricsService;
 import ninja.utils.NinjaProperties;
 import ninja.utils.TimeUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,10 @@ public class NinjaGraphite {
         if (ninjaProperties.getBooleanWithDefault("metrics.graphite.enabled",
                 false)) {
 
+            final String customPrefix = ninjaProperties.get("metrics.graphite.prefix");
             final String hostname = metricsService.getHostname();
+            final String prefix = StringUtils.isNotBlank(customPrefix) ? customPrefix : hostname;
+
             final String address = ninjaProperties
                     .getOrDie("metrics.graphite.address");
             final int port = ninjaProperties.getIntegerWithDefault(
@@ -87,7 +91,7 @@ public class NinjaGraphite {
 
             reporter = GraphiteReporter
                     .forRegistry(metricsService.getMetricRegistry())
-                    .prefixedWith(hostname).convertRatesTo(TimeUnit.SECONDS)
+                    .prefixedWith(prefix).convertRatesTo(TimeUnit.SECONDS)
                     .convertDurationsTo(TimeUnit.MILLISECONDS)
                     .filter(MetricFilter.ALL).build(sender);
 
@@ -95,7 +99,7 @@ public class NinjaGraphite {
 
             log.info(
                     "Started Graphite Metrics reporter for '{}', updating every {}",
-                    hostname, period);
+                    prefix, period);
 
         }
     }

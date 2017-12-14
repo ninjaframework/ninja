@@ -143,6 +143,10 @@ Add the following settings to your `application.conf`.
     metrics.graphite.pickled = false
     metrics.graphite.period = 60s
 
+By default all metrics will be prefixed with the hostname. To specify a custom prefix add the following setting.
+
+    metrics.graphite.prefix = my.custom.prefix
+    
 ### Reporting Metrics to Ganglia
 
 Ninja Metrics supports reporting to [Ganglia](http://ganglia.info).
