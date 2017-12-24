@@ -57,7 +57,6 @@ public class TimedInterceptor implements MethodInterceptor {
             return invocation.proceed();
         } finally {
             timerContext.stop();
-            timerContext.close();
         }
     }
 
