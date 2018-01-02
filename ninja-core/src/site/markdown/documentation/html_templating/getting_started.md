@@ -61,7 +61,7 @@ And including other templates can be accomplished via <code>&lt;#include &quot;f
 <pre class="prettyprint">
 &lt;hr&gt;
 &lt;footer&gt;
-    &lt;p&gt;Company 2017&lt;/p&gt;
+    &lt;p&gt;Company &lt;/p&gt;
 &lt;/footer&gt;
 </pre>
 
