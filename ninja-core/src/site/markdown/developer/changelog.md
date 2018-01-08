@@ -1,9 +1,13 @@
+Version 6.2.2
+=============
+
+ * 2018-01-08 Fix issue where servlet container without websocket support crashes. (ra)
+
 Version 6.2.1
 =============
 
  * 2017-12-13 Fixed duplicate count for timed metrics (christiangroth)
  * 2017-12-12 Added `metrics.graphite.prefix` property for custom graphite prefix (christiangroth)
-
 
 Version 6.2.0
 =============
