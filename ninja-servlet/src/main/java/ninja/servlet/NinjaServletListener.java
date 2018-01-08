@@ -22,8 +22,12 @@ import javax.servlet.ServletContextEvent;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.servlet.GuiceServletContextListener;
+import java.util.Optional;
+import javax.servlet.ServletContext;
 import javax.websocket.server.ServerContainer;
+import ninja.utils.SwissKnife;
 import ninja.websockets.WebSockets;
 import ninja.websockets.jsr356.Jsr356WebSockets;
 import org.slf4j.Logger;
@@ -40,12 +44,12 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class NinjaServletListener extends GuiceServletContextListener {
-    static private final Logger log = LoggerFactory.getLogger(NinjaServletListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(NinjaServletListener.class);
     
     private volatile Bootstrap ninjaBootstrap;
-    NinjaPropertiesImpl ninjaProperties = null;
-    String contextPath;
-    private ServerContainer webSocketServerContainer;
+    private NinjaPropertiesImpl ninjaProperties = null;
+    private String contextPath;
+    private Optional<Module> webSocketModule = Optional.empty();
 
     public synchronized void setNinjaProperties(NinjaPropertiesImpl ninjaPropertiesImpl) {
         if (this.ninjaProperties != null) {
@@ -60,9 +64,14 @@ public class NinjaServletListener extends GuiceServletContextListener {
         
         // websocket enabled servlet containers populate this attribute with JSR 356
         // we save it here so we can inject it later into guice
-        this.webSocketServerContainer = (ServerContainer)servletContextEvent.getServletContext()
-            .getAttribute("javax.websocket.server.ServerContainer");
-        
+        if (SwissKnife.doesClassExist(
+                WebsocketGuiceModuleCreator.WEBSOCKET_SERVER_CONTAINER_CLASSNAME, 
+                this)) {
+            
+            this.webSocketModule = WebsocketGuiceModuleCreator.getWebsocketServerContainerIfPossible(
+                    servletContextEvent.getServletContext()); 
+        }
+
         super.contextInitialized(servletContextEvent);
     }
    
@@ -124,9 +133,11 @@ public class NinjaServletListener extends GuiceServletContextListener {
 
     }
     
+
+    
     private Bootstrap createNinjaBootstrap(
-        NinjaPropertiesImpl ninjaProperties,
-        String contextPath) {
+            NinjaPropertiesImpl ninjaProperties,
+            String contextPath) {
     
         // we set the contextpath.
         ninjaProperties.setContextPath(contextPath);
@@ -134,22 +145,61 @@ public class NinjaServletListener extends GuiceServletContextListener {
         ninjaBootstrap = new NinjaServletBootstrap(ninjaProperties);
         
         // if websocket container present then enable jsr-356 websockets
-        if (webSocketServerContainer != null) {
-            log.info("Using JSR-356 websocket container {}",
-                webSocketServerContainer.getClass().getCanonicalName());
-            
-            ninjaBootstrap.addModule(new AbstractModule() {
-                @Override
-                protected void configure() {
-                    bind(ServerContainer.class).toInstance(webSocketServerContainer);
-                    bind(WebSockets.class).to(Jsr356WebSockets.class);
-                }
-            });
-        }
+        webSocketModule.ifPresent(module -> {
+            ninjaBootstrap.addModule(module);
+        });
         
         ninjaBootstrap.boot();
         
         return ninjaBootstrap;
+    }
+    
+    
+    /**
+     * Huh. Why is there a separate class like this. Couldn't we not just do
+     * everything directly in NinjaServletListener? No.
+     *
+     * Problem: 
+     * When we'd use javax.websocket.server.ServerContainer inside
+     * NinjaServletListener, then some ServletContainers will explode with a
+     * ClassNotFoundException. For instance the Jetty bundled with the AppEngine
+     * explodes like that.
+     *
+     * Solution: 
+     * NinjaServletListener checks if the class exists on the
+     * classpath and only then calls this class/method that then causes the
+     * classloader to actually load it.
+     */
+    static class WebsocketGuiceModuleCreator {
+        
+        public static final String WEBSOCKET_SERVER_CONTAINER_CLASSNAME 
+                = "javax.websocket.server.ServerContainer";
+
+        public static Optional<Module> getWebsocketServerContainerIfPossible(
+                ServletContext servletContext) {
+
+            ServerContainer websocketServerContainer
+                    = (ServerContainer) servletContext.getAttribute(WEBSOCKET_SERVER_CONTAINER_CLASSNAME);
+            
+            logger.info(
+                "Using JSR-356 websocket container {}",
+                websocketServerContainer
+            );
+
+            if (websocketServerContainer != null) {
+                Module websocketsModule = new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(ServerContainer.class).toInstance(websocketServerContainer);
+                        bind(WebSockets.class).to(Jsr356WebSockets.class);
+                    }
+                };
+                return Optional.of(websocketsModule);
+
+            } else {
+                return Optional.empty();
+            }
+        }
 
     }
 
