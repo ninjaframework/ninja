@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package controller;
+package ninja.metrics;
 
-import ninja.Result;
-import ninja.Results;
+import ninja.cache.Cache;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 
-public class DummyControllerForTesting {
+public class InstrumentedCacheTest {
     
-    public Result dummyMethod() {
-        return Results.html();
+    @Mock
+    Cache Cache;
+    
+    @Mock
+    
+    
+    @InjectMocks
+    InstrumentedCache instrumentedCache;
+
+    public void teatAddKeyValueExpiration() {
+    
+    
     }
-    
+  
 }

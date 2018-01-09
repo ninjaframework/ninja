@@ -2,6 +2,7 @@ Version 6.2.2
 =============
 
  * 2018-01-08 Fix issue where servlet container without websocket support crashes. (ra)
+ * 2017-01-08 Fix copyright year issue (ra)
 
 Version 6.2.1
 =============
