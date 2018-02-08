@@ -25,40 +25,40 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class NinjaStandaloneTest {
+public class NinjaConsoleTest {
     
     @Test
     public void ninjaPropertiesThrowsExceptionUntilConfigured() throws Exception {
-        NinjaConsole standalone = new NinjaConsole();
+        NinjaConsole console = new NinjaConsole();
         
         try {
-            standalone.getNinjaProperties();
+            console.getNinjaProperties();
             fail("exception expected");
         } catch (IllegalStateException e) {
             assertThat(e.getMessage(), containsString("configure() not called"));
         }
         
-        standalone.configure();
+        console.configure();
         
-        assertThat(standalone.getNinjaProperties(), is(not(nullValue())));
+        assertThat(console.getNinjaProperties(), is(not(nullValue())));
     }
     
     @Test
     public void start() throws Exception {
-        NinjaConsole standalone = new NinjaConsole();
+        NinjaConsole console = new NinjaConsole();
 
         try {
-            standalone.getInjector();
+            console.getInjector();
             fail("exception expected");
         } catch (IllegalStateException e) {
             assertThat(e.getMessage(), containsString("start() not called"));
         }
         
-        standalone.start();
+        console.start();
         try {
-            assertThat(standalone.getInjector(), is(not(nullValue())));
+            assertThat(console.getInjector(), is(not(nullValue())));
         } finally {
-            standalone.shutdown();
+            console.shutdown();
         }
     }
     
