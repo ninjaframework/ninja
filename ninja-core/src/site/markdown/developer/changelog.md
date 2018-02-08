@@ -1,3 +1,8 @@
+Version 6.3.x
+=============
+
+ * 2018-01-29 Feature to run Ninja as console (server-less) application
+
 Version 6.2.2
 =============
 

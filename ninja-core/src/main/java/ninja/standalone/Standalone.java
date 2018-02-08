@@ -16,11 +16,8 @@
 
 package ninja.standalone;
 
-import com.google.inject.Injector;
 import java.net.URI;
 import java.util.List;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaPropertiesImpl;
 
 /**
  * Interface for wrapping an underlying server (e.g. Jetty) to bootstrap Ninja
@@ -28,7 +25,7 @@ import ninja.utils.NinjaPropertiesImpl;
  * @param <T> The concrete standalone implementation (to make the builder
  *      pattern work correctly during compilation)
  */
-public interface Standalone<T extends Standalone> {
+public interface Standalone<T extends Standalone> extends Console<T> {
     
     String KEY_NINJA_STANDALONE_CLASS                   = "ninja.standalone.class";
     String KEY_NINJA_CONTEXT_PATH                       = "ninja.context";
@@ -55,13 +52,6 @@ public interface Standalone<T extends Standalone> {
     String DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_PASSWORD    = "password";
 
     /**
-     * Configures the standalone to prepare for being started.
-     * @return This standalone
-     * @throws Exception Thrown if an exception occurs during configuration
-     */
-    T configure() throws Exception;
-    
-    /**
      * Configure, start, add shutdown hook, and join.  Since this
      * method joins the underlying server (e.g. Jetty), it does not exit until
      * interrupted.
@@ -69,39 +59,11 @@ public interface Standalone<T extends Standalone> {
     void run();
 
     /**
-     * Configures (if not yet done), boots Ninja application and starts the
-     * underlying server.
-     * @return This standalone
-     * @throws Exception Thrown if an exception occurs during Ninja boot or
-     *      server start
-     */
-    T start() throws Exception;
-    
-    /**
      * Joins the underlying server to wait until its finished.
      * @return This standalone
      * @throws Exception Thrown if an exception occurs while waiting
      */
-    T join() throws Exception;
-    
-    /**
-     * Shutdown Ninja and underlying server as safely as possible (tries not
-     * to cause exceptions to be thrown).
-     * @return This standalone
-     */
-    T shutdown();
-
-    NinjaMode getNinjaMode();
-    
-    T ninjaMode(NinjaMode ninjaMode);
-    
-    String getExternalConfigurationPath();
-    
-    T externalConfigurationPath(String externalConfigurationPath);
-    
-    String getName();
-    
-    T name(String name);
+    T join() throws Exception;    
     
     String getHost();
     
@@ -147,23 +109,6 @@ public interface Standalone<T extends Standalone> {
 
     T sslTruststorePassword(String truststorePassword);
     
-    /**
-     * Gets the NinjaProperties that were used to configure Ninja. This value
-     * is only accessible after configure() is successfully called.
-     * @return The NinjaProperties implementation
-     * @throws IllegalStateException Thrown if attempting to access this variable
-     *      before configure() is successfully called.
-     */
-    NinjaPropertiesImpl getNinjaProperties();
-    
-    /**
-     * Gets the Guice injector that booted the Ninja application. This value
-     * is only accessible after start() is successfully called.
-     * @return The guice injector
-     * @throws IllegalStateException Thrown if attempting to access this variable
-     *      before start() is successfully called.
-     */
-    Injector getInjector();
     
     /**
      * Get the urls for the servers that are configured to start. This value
