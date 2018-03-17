@@ -31,6 +31,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import java.util.UUID;
 
 import ninja.Context;
 import ninja.Result;
@@ -298,6 +299,40 @@ public class Validators {
                             new ConstraintViolation(this.isDate.key(),
                                     fieldKey(field, this.isDate.fieldKey()),
                                     this.isDate.message(), value));
+                }
+            }
+        }
+
+        @Override
+        public Class<String> getValidatedType() {
+            return String.class;
+        }
+    }
+    
+    public static class UUIDValidator implements Validator<String> {
+
+        private final IsUUID isUUID;
+
+        public UUIDValidator(IsUUID isUUID) {
+            this.isUUID = isUUID;
+        }
+
+        /**
+         * Validate the given value
+         *
+         * @param value   The value, may be null
+         * @param field   The name of the field being validated, if applicable
+         * @param context The Ninja request context
+         */
+        @Override
+        public void validate(String value, String field, Context context) {
+            if (value != null) {
+                try {
+                    UUID.fromString(value);
+                } catch (IllegalArgumentException e) {
+                    context.getValidation().addViolation(new ConstraintViolation(this.isUUID.key(),
+                                    fieldKey(field, this.isUUID.fieldKey()),
+                                    this.isUUID.message(), value));
                 }
             }
         }

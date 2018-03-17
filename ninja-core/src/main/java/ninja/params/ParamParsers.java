@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.UUID;
 
 import ninja.validation.ConstraintViolation;
 import ninja.validation.IsDate;
@@ -64,6 +65,7 @@ public class ParamParsers {
                     .put(Character.class, new CharacterParamParser())
                     .put(char.class, new PrimitiveCharacterParamParser())
                     .put(Date.class, new DateParamParser())
+                    .put(UUID.class, new UUIDParamParser())
                     .build();
 
     private final Set<ParamParser> customParsers;
@@ -504,6 +506,27 @@ public class ParamParsers {
         }
     }
 
+    public static class UUIDParamParser implements ParamParser<UUID> {
+        @Override
+        public UUID parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || parameterValue.isEmpty() || validation.hasViolation(field)) {
+                return null;
+            } else {
+                try {
+                    return UUID.fromString(parameterValue);
+                } catch (IllegalArgumentException e) {
+                    validation.addViolation(new ConstraintViolation(
+                            IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
+                    return null;
+                }
+            }
+        }
+
+        @Override
+        public Class<UUID> getParsedType() {
+            return UUID.class;
+        }
+    }
     
     public static class GenericEnumParamParser<E extends Enum<E>> implements ParamParser<E> {
 
