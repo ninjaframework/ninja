@@ -15,6 +15,7 @@
  */
 package ninja.params;
 
+import java.util.UUID;
 import static org.junit.Assert.assertThat;
 
 import org.hamcrest.Matchers;
@@ -24,6 +25,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ninja.validation.Validation;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParamParsersTest {
@@ -261,4 +264,17 @@ public class ParamParsersTest {
         assertThat(doubleParamParser.parseParameter("param1", "123.1", validation), Matchers.is(new Double(123.1)));
         assertThat(doubleParamParser.parseParameter("param1", "-123.1", validation), Matchers.is(new Double(-123.1)));
     }
+    
+    @Test
+    public void testUUIDParamParser() {
+        ParamParsers.UUIDParamParser uuidParamParser = new ParamParsers.UUIDParamParser();
+
+        assertThat(uuidParamParser.getParsedType(), Matchers.is(UUID.class));
+        assertThat(uuidParamParser.parseParameter("param1", null, validation), is(nullValue()));
+        assertThat(uuidParamParser.parseParameter("param1", "", validation), is(nullValue()));
+        assertThat(uuidParamParser.parseParameter("param1", "asdfasdf", validation), is(nullValue()));
+        assertThat(uuidParamParser.parseParameter("param1", "fe45481f-ed31-40e4-9bca-9cec383302c2", validation),
+            is(UUID.fromString("fe45481f-ed31-40e4-9bca-9cec383302c2")));
+    }
+    
 }
