@@ -43,6 +43,11 @@
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-classic-jpa</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
             <scope>compile</scope>
         </dependency>

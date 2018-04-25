@@ -26,12 +26,15 @@ import ninja.utils.NinjaProperties;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.persist.jpa.JpaPersistModule;
+import ninja.migrations.MigrationEngine;
+import ninja.migrations.MigrationInitializer;
+import ninja.migrations.flyway.MigrationEngineFlyway;
 
-public class JpaModule extends AbstractModule {
+public class NinjaClassicJpaModule extends AbstractModule {
     
     NinjaProperties ninjaProperties;
     
-    public JpaModule(NinjaProperties ninjaProperties) {
+    public NinjaClassicJpaModule(NinjaProperties ninjaProperties) {
         this.ninjaProperties = ninjaProperties;
     }
 
@@ -45,6 +48,8 @@ public class JpaModule extends AbstractModule {
                 NinjaConstant.PERSISTENCE_UNIT_NAME);
         
         if (persistenceUnitName != null) {
+            
+            bindMigrationsModule();
         
             // Get the connection credentials from application.conf
             String connectionUrl = ninjaProperties.get(NinjaConstant.DB_CONNECTION_URL);
@@ -91,12 +96,17 @@ public class JpaModule extends AbstractModule {
             
             
             bind(JpaInitializer.class).asEagerSingleton();
-            
-            
-            
         }
         
         
+    }
+    
+    private void bindMigrationsModule() {
+        // Migrations are stared as part of the JPA startup process due to 
+        // historical reasons.
+        // There is a new ninja-db module that can run migrations standalone.
+        bind(MigrationEngine.class).to(MigrationEngineFlyway.class);
+        bind(MigrationInitializer.class).asEagerSingleton();
     }
 
 }

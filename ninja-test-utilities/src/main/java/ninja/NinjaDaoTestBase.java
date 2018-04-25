@@ -16,10 +16,10 @@
 
 package ninja;
 
+import ninja.jpa.NinjaClassicJpaModule;
 import java.util.Optional;
 
 import ninja.jpa.JpaInitializer;
-import ninja.jpa.JpaModule;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
@@ -75,7 +75,7 @@ public abstract class NinjaDaoTestBase {
     @Before
     public final void initialize() {
         NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
-        injector = Guice.createInjector(new JpaModule(ninjaProperties));
+        injector = Guice.createInjector(new NinjaClassicJpaModule(ninjaProperties));
         jpaInitializer = injector.getInstance(JpaInitializer.class);
         jpaInitializer.start();
     }

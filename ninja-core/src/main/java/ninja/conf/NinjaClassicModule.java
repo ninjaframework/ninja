@@ -18,8 +18,6 @@ package ninja.conf;
 
 import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
-import ninja.jpa.JpaModule;
-import ninja.migrations.MigrationInitializer;
 import ninja.postoffice.Postoffice;
 import ninja.postoffice.PostofficeProvider;
 import ninja.utils.ObjectMapperProvider;
@@ -33,8 +31,6 @@ import com.google.inject.multibindings.OptionalBinder;
 import ninja.bodyparser.BodyParserEngineJson;
 import ninja.bodyparser.BodyParserEnginePost;
 import ninja.bodyparser.BodyParserEngineXml;
-import ninja.migrations.MigrationEngine;
-import ninja.migrations.MigrationEngineProvider;
 import ninja.template.TemplateEngineFreemarker;
 import ninja.template.TemplateEngineJson;
 import ninja.template.TemplateEngineJsonP;
@@ -55,8 +51,6 @@ public class NinjaClassicModule extends AbstractModule {
     private boolean xml;
     private boolean postoffice;
     private boolean cache;
-    private boolean migrations;
-    private boolean jpa;
     private boolean scheduler;
 
     public NinjaClassicModule(NinjaProperties ninjaProperties) {
@@ -70,8 +64,6 @@ public class NinjaClassicModule extends AbstractModule {
         this.xml = defaultEnabled;
         this.postoffice = defaultEnabled;
         this.cache = defaultEnabled;
-        this.migrations = defaultEnabled;
-        this.jpa = defaultEnabled;
         this.scheduler = defaultEnabled;
     }
 
@@ -99,17 +91,7 @@ public class NinjaClassicModule extends AbstractModule {
         this.cache = enabled;
         return this;
     }
-    
-    public NinjaClassicModule migrations(boolean enabled) {
-        this.migrations = enabled;
-        return this;
-    }
-    
-    public NinjaClassicModule jpa(boolean enabled) {
-        this.jpa = enabled;
-        return this;
-    }
-    
+
     public NinjaClassicModule scheduler(boolean scheduler) {
         this.scheduler = scheduler;
         return this;
@@ -156,17 +138,6 @@ public class NinjaClassicModule extends AbstractModule {
         // Cache
         if (cache) {
             bind(Cache.class).toProvider(CacheProvider.class);
-        }
-        
-        // Migrations
-        if (migrations) {
-            bind(MigrationEngine.class).toProvider(MigrationEngineProvider.class);
-            bind(MigrationInitializer.class).asEagerSingleton();
-        }
-        
-        // JPA
-        if (jpa) {
-            install(new JpaModule(ninjaProperties));
         }
 
         // Scheduler

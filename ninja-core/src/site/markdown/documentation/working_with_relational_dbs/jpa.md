@@ -30,6 +30,44 @@ Note: The application works out-of-the-box with an in-memory db (h2). If you lik
 
 At this point you could use the existent Entities as an example to create your own ones, extending this way the Model and the Application.
 
+
+Adding support manually
+=======================
+
+Support for JPA is provided by the ninja-classic-jpa module.
+
+Make sure to add the dependency to your pom.xml:
+
+<pre class="prettyprint">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
+    &lt;artifactId&gt;ninja-classic-jpa&lt;/artifactId&gt;
+    &lt;version&gt;NINJA_VERSION_YOU_ARE_USING&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+
+and start the module in your Module.java file of your Ninja application:
+
+<pre class="prettyprint">
+@Singleton
+public class Module extends AbstractModule {
+    
+    NinjaProperties ninjaProperties;
+    
+    public Module(NinjaProperties ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+    }
+    
+
+    @Override
+    protected void configure() { 
+        
+        install(new NinjaClassicJpaModule(ninjaProperties));
+    }
+
+}
+</pre>
+
 Models
 ======
 

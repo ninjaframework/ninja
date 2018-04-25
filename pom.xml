@@ -50,6 +50,7 @@
 
     <modules>
         <module>ninja-core</module>
+        <module>ninja-classic-jpa</module>
         <module>ninja-jaxy-routes</module>
         <module>ninja-websockets-jsr356</module>
         <module>ninja-metrics</module>
@@ -427,6 +428,12 @@
             
             <dependency>
                 <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-classic-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
                 <artifactId>ninja-metrics</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -626,12 +633,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>4.3.1.Final</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>jboss-logging</artifactId>
-                        <groupId>org.jboss.logging</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
         
             <!-- ehcache implementation -->
