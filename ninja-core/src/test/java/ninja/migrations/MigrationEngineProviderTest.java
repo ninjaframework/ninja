@@ -16,7 +16,6 @@
 
 package ninja.migrations;
 
-import ninja.postoffice.*;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 
@@ -29,7 +28,6 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import ninja.BaseAndClassicModules;
 import ninja.migrations.flyway.MigrationEngineFlyway;
-import ninja.postoffice.mock.PostofficeMockImpl;
 import ninja.utils.NinjaConstant;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.sameInstance;

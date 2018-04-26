@@ -50,6 +50,7 @@
 
     <modules>
         <module>ninja-core</module>
+        <module>ninja-postoffice</module>
         <module>ninja-jaxy-routes</module>
         <module>ninja-websockets-jsr356</module>
         <module>ninja-metrics</module>

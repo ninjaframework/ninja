@@ -20,8 +20,6 @@ import ninja.cache.Cache;
 import ninja.cache.CacheProvider;
 import ninja.jpa.JpaModule;
 import ninja.migrations.MigrationInitializer;
-import ninja.postoffice.Postoffice;
-import ninja.postoffice.PostofficeProvider;
 import ninja.utils.ObjectMapperProvider;
 import ninja.utils.XmlMapperProvider;
 
@@ -53,7 +51,6 @@ public class NinjaClassicModule extends AbstractModule {
     private boolean freemarker;
     private boolean json;
     private boolean xml;
-    private boolean postoffice;
     private boolean cache;
     private boolean migrations;
     private boolean jpa;
@@ -68,7 +65,6 @@ public class NinjaClassicModule extends AbstractModule {
         this.freemarker = defaultEnabled;
         this.json = defaultEnabled;
         this.xml = defaultEnabled;
-        this.postoffice = defaultEnabled;
         this.cache = defaultEnabled;
         this.migrations = defaultEnabled;
         this.jpa = defaultEnabled;
@@ -87,11 +83,6 @@ public class NinjaClassicModule extends AbstractModule {
 
     public NinjaClassicModule xml(boolean enabled) {
         this.xml = enabled;
-        return this;
-    }
-    
-    public NinjaClassicModule postoffice(boolean enabled) {
-        this.postoffice = enabled;
         return this;
     }
     
@@ -146,11 +137,6 @@ public class NinjaClassicModule extends AbstractModule {
 
             bind(TemplateEngineXml.class);
             bind(BodyParserEngineXml.class);
-        }
-        
-        // Postoffice
-        if (postoffice) {
-            bind(Postoffice.class).toProvider(PostofficeProvider.class);
         }
 
         // Cache
