@@ -5,17 +5,52 @@ Introduction
 ------------
 
 Ninja allows you to send mails in a really simple and straightforward manner.
-All you have to do is to configure your SMTP server in 
-<code>application.conf</code>. Then
-you can inject <code>Postoffice</code> and <code>Mail</code> in your application. 
+All you have to do is to add the dependency to ninja-postoffice and 
+configure your SMTP server in <code>application.conf</code>. 
+
+Then you can inject <code>Postoffice</code> and <code>Mail</code> in your application. 
 This allows you to create a new <code>Mail</code> instance and send 
 it via the <code>Postoffice</code>.
 
-Basic usage and configuration
+Adding the dependency and installing the module
+-----------------------------------------------
+
+First - add the dependency to your pom.xml:
+
+<pre class="prettyprint">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.ninjaframework&lt;/groupId&gt;
+    &lt;artifactId&gt;ninja-postoffice&lt;/artifactId&gt;
+    &lt;version&gt;NINJA_VERSION_YOU_ARE_USING&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+
+and start the module in your Module.java file of your Ninja application via 
+install(new NinjaPostofficeModule(ninjaProperties)).
+
+<pre class="prettyprint">
+@Singleton
+public class Module extends AbstractModule {
+    
+    NinjaProperties ninjaProperties;
+    
+    public Module(NinjaProperties ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+    }
+    
+
+    @Override
+    protected void configure() { 
+        install(new NinjaPostofficeModule(ninjaProperties));
+    }
+
+}
+</pre>
+
+Configuration and basic usage
 -----------------------------
 
-The first step is to configure your mail server in application.conf. You 
-can do so by using the following parameters:
+onfigure your mail server in application.conf via the following parameters:
 
 <pre class="prettyprint">
 smtp.host=...     // Hostname of the smtp server (e.g. smtp.mycompany.com)
