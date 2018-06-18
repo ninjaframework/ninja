@@ -6,6 +6,14 @@ into Ninja's behavior. This document describes which steps are needed to upgrade
 your application to the latest Ninja version. Simply start with your current 
 version and then work your way up to the top of the document.
 
+
+to 6.3.0
+--------
+
+Postoffice is now a separate dependency. Make sure to add the dependency to 
+your pom.xml file and add the module to Modules.java.
+See details in http://www.ninjaframework.org/documentation/sending_mail.html
+
 to 6.0.1
 --------
 
