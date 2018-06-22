@@ -13,10 +13,6 @@ ninja.lifecycle
 ninja.logging
 ninja.migrations
 ninja.params
-ninja.postoffice
-ninja.postoffice.common
-ninja.postoffice.commonsmail
-ninja.postoffice.mock
 ninja.scheduler
 ninja.session
 ninja.standalone
