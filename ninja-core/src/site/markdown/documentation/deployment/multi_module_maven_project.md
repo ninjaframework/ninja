@@ -10,49 +10,49 @@ So we need to create an additional distribution module just for the purpose of c
 
 Create a Maven module with an arbitrary name say 'distribution'. The only file you need in that module is a pom.xml that has a dependency defined to all modules.
 
-```xml
-<modelVersion>4.0.0</modelVersion>
-<artifactId>distribution</artifactId>
-<packaging>pom</packaging>
-<name>Distribution</name>
-<parent>
-    <groupId>com.company</groupId>
-    <artifactId>project-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-</parent>
-<dependencies>
-    <dependency>
-        <groupId>com.company</groupId>
-        <artifactId>proj-module-1</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>com.company</groupId>
-        <artifactId>proj-module-2</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-</dependencies>
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.5.2</version>
-            <configuration>
-                <descriptorRefs>
-                    <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
-                <archive>
-                    <manifest>
-                        <mainClass>ninja.standalone.NinjaJetty</mainClass>
-                    </manifest>
-                </archive>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>    
-```
+<pre class="prettyprint">
+&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+&lt;artifactId&gt;distribution&lt;/artifactId&gt;
+&lt;packaging&gt;pom&lt;/packaging&gt;
+&lt;name&gt;Distribution&lt;/name&gt;
+&lt;parent&gt;
+    &lt;groupId&gt;com.company&lt;/groupId&gt;
+    &lt;artifactId&gt;project-parent&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;relativePath&gt;../pom.xml&lt;/relativePath&gt;
+&lt;/parent&gt;
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.company&lt;/groupId&gt;
+        &lt;artifactId&gt;proj-module-1&lt;/artifactId&gt;
+        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.company&lt;/groupId&gt;
+        &lt;artifactId&gt;proj-module-2&lt;/artifactId&gt;
+        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+            &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+            &lt;version&gt;2.5.2&lt;/version&gt;
+            &lt;configuration&gt;
+                &lt;descriptorRefs&gt;
+                    &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
+                &lt;/descriptorRefs&gt;
+                &lt;archive&gt;
+                    &lt;manifest&gt;
+                        &lt;mainClass&gt;ninja.standalone.NinjaJetty&lt;/mainClass&gt;
+                    &lt;/manifest&gt;
+                &lt;/archive&gt;
+            &lt;/configuration&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;
+</pre>
 
 Now `cd` to distribution and fire `mvn assembly:single`. This will generate an MY-APPLICATION-jar-with-dependencies.jar in the target dir.
 Now you can follow the instruction in the "Ninja standalone" page.
