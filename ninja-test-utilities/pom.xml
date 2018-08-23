@@ -67,6 +67,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- A very nice abstraction for making selenum tests: -->
         <dependency>
             <groupId>org.fluentlenium</groupId>
@@ -108,6 +114,12 @@
             <groupId>org.doctester</groupId>
             <artifactId>doctester-core</artifactId>
             <scope>compile</scope>
+            <exclusions>
+            	<exclusion>
+        			<groupId>com.google.guava</groupId>
+            		<artifactId>guava</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         
         <!-- devbliss doctester should be removed at some point 
@@ -129,10 +141,12 @@
                     <artifactId>junit-dep</artifactId>
                     <groupId>junit</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>com.google.code.gson</artifactId>
+                    <groupId>gson</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
-
-
 
     </dependencies>
     
