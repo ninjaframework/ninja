@@ -20,7 +20,6 @@ import org.fluentlenium.adapter.junit.FluentTest;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import com.google.inject.Injector;
 
@@ -28,7 +27,13 @@ import ninja.utils.NinjaTestServer;
 
 public abstract class NinjaFluentLeniumTest extends FluentTest {
 
-	public WebDriver webDriver = new HtmlUnitDriver();
+  /**
+   * @deprecated The driver should be access via {@link #getDriver()}.
+   * Null variable left for deprecation notice only.
+   * @see #getDriver()
+   */
+  @Deprecated
+	public WebDriver webDriver;
 	
 	public NinjaTestServer ninjaTestServer;
 	
@@ -47,6 +52,11 @@ public abstract class NinjaFluentLeniumTest extends FluentTest {
 	  @Deprecated
     public WebDriver getDefaultDriver() {
         return webDriver;
+    }
+	  
+    @Override
+    public String getWebDriver() {
+        return "htmlunit";
     }
     
     /**
