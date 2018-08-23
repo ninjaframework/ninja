@@ -801,7 +801,7 @@
             <dependency>
                 <groupId>org.fluentlenium</groupId>
                 <artifactId>fluentlenium-junit</artifactId>
-                <version>3.2.0</version>
+                <version>3.4.1</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
