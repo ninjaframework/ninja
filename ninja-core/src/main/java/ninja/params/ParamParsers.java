@@ -35,6 +35,7 @@ import ninja.validation.IsDate;
 import ninja.validation.IsEnum;
 import ninja.validation.IsFloat;
 import ninja.validation.IsInteger;
+import ninja.validation.IsUUID;
 import ninja.validation.Validation;
 
 /**
@@ -516,7 +517,7 @@ public class ParamParsers {
                     return UUID.fromString(parameterValue);
                 } catch (IllegalArgumentException e) {
                     validation.addViolation(new ConstraintViolation(
-                            IsInteger.KEY, field, IsInteger.MESSAGE, parameterValue));
+                            IsUUID.KEY, field, IsUUID.MESSAGE, parameterValue));
                     return null;
                 }
             }
