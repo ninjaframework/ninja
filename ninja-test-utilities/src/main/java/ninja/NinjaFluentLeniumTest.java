@@ -50,14 +50,6 @@ public abstract class NinjaFluentLeniumTest extends FluentTest {
     }
     
     /**
-     * @see org.fluentlenium.adapter.FluentAdapter#newWebDriver()
-     */
-    @Override
-    public WebDriver newWebDriver() {
-        return getDefaultDriver();
-    }
-    
-    /**
      * @see #getBaseUrl()
      */
     @Deprecated
