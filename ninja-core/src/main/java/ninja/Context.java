@@ -131,7 +131,7 @@ public interface Context {
      * value of the CGI variable <code>REMOTE_ADDR</code>.
      * 
      * To honour the X-Forwarded-For flag make sure you set 
-     * "ninja.ninja.x_forwarded_for_enabled=true" in your application.conf. Default
+     * "ninja.x_forwarded_for_enabled=true" in your application.conf. Default
      * behavior is NOT to take X-Forwarded-For flag into account.
      *
      * @return a <code>String</code> containing the
