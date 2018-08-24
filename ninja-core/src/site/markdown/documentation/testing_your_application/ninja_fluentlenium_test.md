@@ -46,16 +46,16 @@ of older tests. If you are facing this case, you can either follow the migration
 the older version of FluentLenium by setting up that version in your project <code>pom.xml</code> dependencies.
 
 <pre class="prettyprint">
-<dependency>
-    <groupId>org.fluentlenium</groupId>
-    <artifactId>fluentlenium-core</artifactId>
-    <version>0.10.3</version>
-    <scope>test</scope>
-    <exclusions>
-        <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
+&lt;dependency&gt;
+    &lt;groupId>org.fluentlenium&lt;/groupId&gt;
+    &lt;artifactId>fluentlenium-core&lt;/artifactId&gt;
+    &lt;version>0.10.3&lt;/version&gt;
+    &lt;scope>test&lt;/scope&gt;
+    &lt;exclusions&gt;
+        &lt;exclusion&gt;
+            &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+            &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+&lt;/dependency&gt;
 </pre>
