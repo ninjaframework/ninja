@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
@@ -55,6 +56,7 @@ import ninja.validation.ConstraintViolation;
 import ninja.validation.IsDate;
 import ninja.validation.IsFloat;
 import ninja.validation.IsInteger;
+import ninja.validation.IsUUID;
 import ninja.validation.Validation;
 import ninja.validation.ValidationImpl;
 
@@ -155,6 +157,7 @@ public class BodyParserEnginePostTest {
         map.put("characterObject", new String [] {null});
         map.put("date", new String[]{"cc"});
         map.put("timestamp", new String[]{"dd"});
+        map.put("uuid", new String[]{"ee"});
         map.put("somethingElseWhatShouldBeSkipped", new String [] {"somethingElseWhatShouldBeSkipped"});
 
         Mockito.when(context.getParameters()).thenReturn(map);
@@ -186,6 +189,9 @@ public class BodyParserEnginePostTest {
         assertNull(testObject.date);
         assertViolation("timestamp", IsDate.KEY);
         assertNull(testObject.timestamp);
+        
+        assertViolation("uuid", IsUUID.KEY);
+        assertNull(testObject.uuid);
         
         assertNull(testObject.string);
         assertThat(testObject.characterPrimitive, equalTo('\0'));
@@ -378,6 +384,7 @@ public class BodyParserEnginePostTest {
         public Character characterObject;
         public Date date;
         public Date timestamp;
+        public UUID uuid;
         @NotNull
         public Object requiredObject;
 
