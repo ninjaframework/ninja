@@ -171,6 +171,7 @@ public class ExampleFilter implements Filter {
 In another filter or your controller, you can fetch the value of "foo" by
 getting the attribute.
 
+<pre class="prettyprint">
 public MyController {
 
     @FilterWith(ExampleFilter.class)
@@ -182,6 +183,7 @@ public MyController {
 
     }
 }
+</pre>
 
 Alternatively, an even more powerful design pattern is to write your own
 <code>ArgumentExtractor</code> that extracts the attribute value and have it
