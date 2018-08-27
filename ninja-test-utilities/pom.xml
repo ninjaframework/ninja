@@ -67,12 +67,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- A very nice abstraction for making selenum tests: -->
         <dependency>
             <groupId>org.fluentlenium</groupId>
@@ -115,10 +109,10 @@
             <artifactId>doctester-core</artifactId>
             <scope>compile</scope>
             <exclusions>
-            	<exclusion>
-        			<groupId>com.google.guava</groupId>
-            		<artifactId>guava</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         
@@ -142,8 +136,8 @@
                     <groupId>junit</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>com.google.code.gson</artifactId>
-                    <groupId>gson</groupId>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
