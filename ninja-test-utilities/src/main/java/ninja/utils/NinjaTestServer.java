@@ -30,7 +30,6 @@ import ninja.standalone.StandaloneHelper;
  */
 public class NinjaTestServer implements Closeable {
 
-    private final int port;
     private final Standalone<Standalone> standalone;
 
     public NinjaTestServer() {
@@ -41,14 +40,21 @@ public class NinjaTestServer implements Closeable {
         this(ninjaMode, StandaloneHelper.resolveStandaloneClass());
     }
     
+    public NinjaTestServer(NinjaMode ninjaMode, int port) {
+        this(ninjaMode, StandaloneHelper.resolveStandaloneClass(), port);
+    }
+    
     public NinjaTestServer(NinjaMode ninjaMode, Class<? extends Standalone> standaloneClass) {
-        this.port = StandaloneHelper.findAvailablePort(1000, 10000);
+        this(ninjaMode, standaloneClass, StandaloneHelper.findAvailablePort(1000, 10000));
+    }
+    
+    public NinjaTestServer(NinjaMode ninjaMode, Class<? extends Standalone> standaloneClass, int port) {
         this.standalone = StandaloneHelper.create(standaloneClass);
         
         try {
             // configure then start
             this.standalone
-                .port(this.port)
+                .port(port)
                 .ninjaMode(ninjaMode);
             
             standalone.start();

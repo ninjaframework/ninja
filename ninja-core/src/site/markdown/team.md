@@ -64,7 +64,7 @@ contributed to Ninja. In some random order:
  * Pedro Sena Tanaka (pedro-stanaka)
  * Azilet Beishenaliev (bazi)
  * Andrew Berglund (t3hc13h)
- * Jonathan Lannoy
+ * Jonathan Lannoy (jlannoy)
  * Matthias Lemmer (raptaml)
  * Lukas Eichler (lukaseichler)
  * Sven Kubiak (svenkubiak)
