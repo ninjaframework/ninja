@@ -106,7 +106,10 @@ Keys and default values are defined in <code>ninja.NinjaConstant</code>.
 
 Exception messages can also be defined as keys in your 
 <code>conf/messages.properties</code>, while the localized exception 
-message will be used if no translation exists.
+message will be used if no translation exists. So for 
+example <code>throw new BadRequestException("error.invalidData");</code> 
+will result in a translation of `error.invalidData` in your error page 
+rendering context.
 
 More
 ----
