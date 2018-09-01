@@ -1,3 +1,4 @@
+* 2018-09-01 `ForbiddenRequestException` and i18n exception message keys (jlannoy)
 * 2018-08-23 Updated libraries (jlannoy)
     * com.fasterxml.jackson.core:jackson-* ...................... 2.8.1 -> 2.9.6
     * com.google.guava:guava .................................... 19.0 -> 26.0-jre

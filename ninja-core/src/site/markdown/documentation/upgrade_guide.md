@@ -7,6 +7,14 @@ your application to the latest Ninja version. Simply start with your current
 version and then work your way up to the top of the document.
 
 
+to 6.3.X
+--------
+
+Some inner methods of the `Ninja` base class have a new signature, with more 
+precise exception types. If you overrided some of them, or if you implemented 
+your own `Ninja` class without extending the `NinjaDefault` one, you should be 
+able to fix them easily.
+
 to 6.3.0
 --------
 
