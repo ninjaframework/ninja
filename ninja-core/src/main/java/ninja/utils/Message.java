@@ -24,11 +24,17 @@ public  class Message {
 
     public String text;
     
+    public String error;
+    
     // Default constructor needed by Jackson.
     public Message() {}
 
     public Message(String text) {
-        this.text = text;
+        this(text, null);
     }
 
+    public Message(String text, String error) {
+        this.text = text;
+        this.error = error;
+    }
 }

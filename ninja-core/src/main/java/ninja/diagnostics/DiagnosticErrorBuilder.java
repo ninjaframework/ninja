@@ -63,6 +63,16 @@ public class DiagnosticErrorBuilder {
             null, false, null);
     }
     
+    static public DiagnosticError build403ForbiddenDiagnosticError(
+            Throwable cause,
+            boolean tryToReadLinesFromSourceCode) {
+
+        return buildDiagnosticError(
+                "Forbidden",
+                cause,
+                tryToReadLinesFromSourceCode, null);
+        }
+    
     static public DiagnosticError build401UnauthorizedDiagnosticError() {
         return buildDiagnosticError(
             "Not authorized",

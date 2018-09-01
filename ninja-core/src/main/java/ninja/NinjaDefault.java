@@ -25,6 +25,7 @@ import javax.management.RuntimeErrorException;
 import ninja.diagnostics.DiagnosticError;
 import ninja.diagnostics.DiagnosticErrorBuilder;
 import ninja.exceptions.BadRequestException;
+import ninja.exceptions.ForbiddenRequestException;
 import ninja.exceptions.RenderingException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
@@ -174,13 +175,15 @@ public class NinjaDefault implements Ninja {
         
         if (exception instanceof BadRequestException) {
             
-            result = getBadRequestResult(context, exception);
-        
+            result = getBadRequestResult(context, (BadRequestException) exception);
+
+        } else if (exception instanceof ForbiddenRequestException) {
+
+            result = getForbiddenResult(context, (ForbiddenRequestException) exception);
+
         } else if (exception instanceof RenderingException) {
             
-            RenderingException renderingException = (RenderingException)exception;
-            
-            result = getRenderingExceptionResult(context, renderingException, underlyingResult);
+            result = getRenderingExceptionResult(context, (RenderingException) exception, underlyingResult);
             
         } else {
             
@@ -209,15 +212,19 @@ public class NinjaDefault implements Ninja {
             
         }
         
-        return getInternalServerErrorResult(context, exception);
+        return getInternalServerErrorResult(context, exception, underlyingResult);
 
     }
     
-    @Override
+    /**
+     * Deprecated. Check {@link Ninja#getInternalServerErrorResult(Context, Exception, Result)}.
+     */
+    @Deprecated
     public Result getInternalServerErrorResult(Context context, Exception exception) {
         return getInternalServerErrorResult(context, exception, null);
     }
     
+    @Override
     public Result getInternalServerErrorResult(Context context, Exception exception, Result underlyingResult) {
         
         if (isDiagnosticsEnabled()) {
@@ -243,7 +250,16 @@ public class NinjaDefault implements Ninja {
                         context,
                         Optional.<Result>empty());
         
-        Message message = new Message(messageI18n);
+        String errorI18n 
+                = exception == null
+                    ? null 
+                    : messages.getWithDefault(
+                        exception.getMessage(),
+                        exception.getLocalizedMessage(),
+                        context,
+                        Optional.<Result>empty());
+        
+        Message message = new Message(messageI18n, errorI18n);
 
         Result result = Results
                 .internalServerError()
@@ -278,7 +294,7 @@ public class NinjaDefault implements Ninja {
                         context,
                         Optional.<Result>empty());
         
-        Message message = new Message(messageI18n); 
+        Message message = new Message(messageI18n);
         
         Result result = Results
                         .notFound()
@@ -295,7 +311,7 @@ public class NinjaDefault implements Ninja {
     }
     
     @Override
-    public Result getBadRequestResult(Context context, Exception exception) {
+    public Result getBadRequestResult(Context context, BadRequestException exception) {
         
         if (isDiagnosticsEnabled()) {
             
@@ -313,7 +329,16 @@ public class NinjaDefault implements Ninja {
                         context,
                         Optional.<Result>empty());
         
-        Message message = new Message(messageI18n); 
+        String errorI18n 
+                = exception == null
+                    ? null 
+                    : messages.getWithDefault(
+                        exception.getMessage(),
+                        exception.getLocalizedMessage(),
+                        context,
+                        Optional.<Result>empty());
+        
+        Message message = new Message(messageI18n, errorI18n);
            
         Result result = Results
                         .badRequest()
@@ -366,15 +391,22 @@ public class NinjaDefault implements Ninja {
         return result;
 
     }
-
+    
     @Override
     public Result getForbiddenResult(Context context) {
+        return getForbiddenResult(context, null);
+    }
+
+    @Override
+    public Result getForbiddenResult(Context context, ForbiddenRequestException exception) {
         
         // diagnostic mode
         if (isDiagnosticsEnabled()) {
             
             DiagnosticError diagnosticError =
-                DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
+                exception != null
+                ? DiagnosticErrorBuilder.build403ForbiddenDiagnosticError(exception, true)
+                : DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
             
             return Results.forbidden().render(diagnosticError);
             
@@ -387,7 +419,16 @@ public class NinjaDefault implements Ninja {
                         context,
                         Optional.<Result>empty());
         
-        Message message = new Message(messageI18n); 
+        String errorI18n 
+                = exception == null
+                    ? null 
+                    : messages.getWithDefault(
+                        exception.getMessage(),
+                        exception.getLocalizedMessage(),
+                        context,
+                        Optional.<Result>empty());
+        
+        Message message = new Message(messageI18n, errorI18n);
            
         Result result = Results
                         .forbidden()

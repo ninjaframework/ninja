@@ -80,7 +80,7 @@ public class DiagnosticErrorRendererTest {
         when(context.getContextPath()).thenReturn("/");
         when(context.getAttributes()).thenReturn(ImmutableMap.of("TEST-ATTR", (Object)"Attribute with < > & entities"));
         
-        Result testResult = ninja.getInternalServerErrorResult(context, new Exception("Exception message with < > & entities"));
+        Result testResult = ninja.getInternalServerErrorResult(context, new Exception("Exception message with < > & entities"), null);
         
         // renderable in testResult is the DiagnosticError
         
