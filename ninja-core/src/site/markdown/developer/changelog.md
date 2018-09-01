@@ -1,3 +1,18 @@
+* 2018-08-23 Updated libraries (jlannoy)
+    * com.fasterxml.jackson.core:jackson-* ...................... 2.8.1 -> 2.9.6
+    * com.google.guava:guava .................................... 19.0 -> 26.0-jre
+    * com.google.inject.extensions:guice-* ...................... 4.1.0 -> 4.2.0
+    * io.dropwizard.metrics:metrics-* ........................... 3.1.1 -> 3.2.6
+    * org.slf4j:* ............................................... 1.7.21 -> 1.7.25
+    * org.reflections:reflections ............................... 0.9.9 -> 0.9.11
+    * org.mindrot:jbcrypt ....................................... 0.3m -> 0.4
+    * ch.qos.logback:logback-classic ............................ 1.1.3 -> 1.2.3
+    * org.apache.httpcomponents:httpclient ...................... 4.5.2 -> 4.5.6
+    * org.apache.httpcomponents:httpmime ........................ 4.4 -> 4.5.6
+    * org.doctester:doctester-core .............................. 1.1.6 -> 1.1.8
+    * org.fluentlenium:fluentlenium-junit ....................... 3.2.0 -> 3.4.1
+    * org.seleniumhq.selenium:htmlunit-driver ................... 2.26 -> 2.31.0
+
 Version 6.3.x
 =============
 

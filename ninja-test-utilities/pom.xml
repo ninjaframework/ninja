@@ -108,6 +108,12 @@
             <groupId>org.doctester</groupId>
             <artifactId>doctester-core</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <!-- devbliss doctester should be removed at some point 
@@ -129,10 +135,12 @@
                     <artifactId>junit-dep</artifactId>
                     <groupId>junit</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-
-
 
     </dependencies>
     
