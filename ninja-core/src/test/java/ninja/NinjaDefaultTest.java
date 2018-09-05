@@ -29,6 +29,7 @@ import ninja.diagnostics.DiagnosticError;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.ForbiddenRequestException;
 import ninja.exceptions.InternalServerErrorException;
+import ninja.exceptions.RequestNotFoundException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
@@ -129,6 +130,7 @@ public class NinjaDefaultTest {
         verify(ninjaDefault, Mockito.never()).getInternalServerErrorResult(any(Context.class), any(Exception.class), any(Result.class));
         verify(ninjaDefault, Mockito.never()).getBadRequestResult(any(Context.class), any(BadRequestException.class));
         verify(ninjaDefault, Mockito.never()).getForbiddenResult(any(Context.class), any(ForbiddenRequestException.class));
+        verify(ninjaDefault, Mockito.never()).getNotFoundResult(any(Context.class), any(RequestNotFoundException.class));
         verify(ninjaDefault, Mockito.never()).getNotFoundResult(any(Context.class));
     }
     
@@ -319,6 +321,44 @@ public class NinjaDefaultTest {
         assertThat(localResult.getRenderable(), CoreMatchers.instanceOf(DiagnosticError.class));
     }
     
+
+    @Test
+    public void testOnRouteRequestWhenOnNotFoundException() throws Exception {
+    
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
+        Mockito.when(route.getFilterChain()).thenReturn(filterChain);
+          
+        RequestNotFoundException notFoundRequest 
+                = new RequestNotFoundException("That's a RequestNotFoundException that should be handled by onNotFound");
+        
+        Mockito.when(filterChain.next(contextImpl)).thenThrow(notFoundRequest);
+        
+        ninjaDefault.onRouteRequest(contextImpl);
+        
+        verify(ninjaDefault).getNotFoundResult(contextImpl, notFoundRequest);
+    
+    }
+    
+    @Test
+    public void testOnRouteRequestWhenOnNotFoundExceptionInDiagnosticMode() throws Exception {
+
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
+        Mockito.when(route.getFilterChain()).thenReturn(filterChain);
+          
+        RequestNotFoundException notFoundRequest 
+                = new RequestNotFoundException("That's a RequestNotFoundException that should be handled by onNotFound");
+        
+        Mockito.when(filterChain.next(contextImpl)).thenThrow(notFoundRequest);
+        when(ninjaProperties.isDev()).thenReturn(true);
+        when(ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, true)).thenReturn(true);
+        
+        ninjaDefault.onRouteRequest(contextImpl);
+        
+        Result localResult = ninjaDefault.getNotFoundResult(contextImpl, notFoundRequest);
+        
+        assertThat(localResult.getRenderable(), CoreMatchers.instanceOf(DiagnosticError.class));
+    }
+    
     @Test
     public void testOnExceptionBadRequest() {
         
@@ -340,6 +380,18 @@ public class NinjaDefaultTest {
         
         verify(ninjaDefault).getForbiddenResult(contextImpl, forbiddenRequestException);
         assertThat(result.getStatusCode(), equalTo(Result.SC_403_FORBIDDEN));
+    
+    }
+    
+    @Test
+    public void testOnExceptionRequestNotFound() {
+        
+        RequestNotFoundException notFoundRequestException = new RequestNotFoundException();
+    
+        Result result = ninjaDefault.onException(contextImpl, notFoundRequestException);
+        
+        verify(ninjaDefault).getNotFoundResult(contextImpl, notFoundRequestException);
+        assertThat(result.getStatusCode(), equalTo(Result.SC_404_NOT_FOUND));
     
     }
     
@@ -462,7 +514,6 @@ public class NinjaDefaultTest {
                 
     }
     
-
     @Test
     public void testThatGetForbiddenRequestContentNegotiation() throws Exception {
        Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
@@ -552,6 +603,59 @@ public class NinjaDefaultTest {
             Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT), 
             Matchers.eq(contextImpl),
             any(Optional.class));
+        
+        verify(ninjaProperties).getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
+                
+    }
+    
+    @Test
+    public void testThatGetOnNotFoundExceptionDoesContentNegotiation() throws Exception {
+       Mockito.when(contextImpl.getAcceptContentType()).thenReturn(Result.APPLICATION_JSON);
+       Result result = ninjaDefault.getNotFoundResult(contextImpl, new RequestNotFoundException("not important"));
+       assertThat(result.getContentType(), equalTo(null));
+       assertThat(result.supportedContentTypes().size(), equalTo(3));
+
+    }
+        
+    @Test
+    public void testThatGetOnNotFoundExceptionDoesFallsBackToHtml() throws Exception {
+        Mockito.when(contextImpl.getAcceptContentType()).thenReturn("not_supported");
+        Result result = ninjaDefault.getNotFoundResult(contextImpl, new RequestNotFoundException("not important"));
+        assertThat(result.fallbackContentType().get(), equalTo(Result.TEXT_HTML));
+    }
+    
+    @Test
+    public void testGetOnNotFoundExceptionResultWorks() throws Exception {
+        
+        when(ninjaProperties.getWithDefault(
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 
+                Matchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND);
+
+        RequestNotFoundException exception = new RequestNotFoundException("not important");
+        
+        // real test:
+        Result result = ninjaDefault.getNotFoundResult(
+                contextImpl,
+                exception);
+        
+        assertThat(result.getStatusCode(), equalTo(Result.SC_404_NOT_FOUND));
+        assertThat(result.getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
+        assertTrue(result.getRenderable() instanceof Message);
+
+        verify(messages).getWithDefault(
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY), 
+            Matchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT), 
+            Matchers.eq(contextImpl),
+            any(Optional.class));
+        
+        verify(messages).getWithDefault(
+                Matchers.eq(exception.getMessage()), 
+                Matchers.eq(exception.getLocalizedMessage()), 
+                Matchers.eq(contextImpl),
+                any(Optional.class));
         
         verify(ninjaProperties).getWithDefault(
                 Matchers.eq(NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY), 

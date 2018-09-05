@@ -19,6 +19,7 @@ package ninja;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.ForbiddenRequestException;
 import ninja.exceptions.RenderingException;
+import ninja.exceptions.RequestNotFoundException;
 
 public interface Ninja {
 
@@ -80,6 +81,16 @@ public interface Ninja {
      * Usually used by onRouteRequest(...).
      */
     Result getNotFoundResult(Context context);
+    
+    /**
+     * Should handle cases where no route can be found for a given request.
+     * 
+     * Should lead to a html error 404 - not found
+     * (and be used with the same mindset).
+     * 
+     * Usually used by onRouteRequest(...).
+     */
+    Result getNotFoundResult(Context context, RequestNotFoundException exception);
     
     /**
      * Should handle cases where access is unauthorized

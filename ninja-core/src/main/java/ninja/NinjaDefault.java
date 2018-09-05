@@ -27,6 +27,7 @@ import ninja.diagnostics.DiagnosticErrorBuilder;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.ForbiddenRequestException;
 import ninja.exceptions.RenderingException;
+import ninja.exceptions.RequestNotFoundException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
@@ -180,6 +181,10 @@ public class NinjaDefault implements Ninja {
         } else if (exception instanceof ForbiddenRequestException) {
 
             result = getForbiddenResult(context, (ForbiddenRequestException) exception);
+            
+        } else if (exception instanceof RequestNotFoundException) {
+
+            result = getNotFoundResult(context, (RequestNotFoundException) exception);
 
         } else if (exception instanceof RenderingException) {
             
@@ -243,23 +248,12 @@ public class NinjaDefault implements Ninja {
                 context.getRoute().getControllerMethod(), 
                 exception);
         
-        String messageI18n 
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        String errorI18n 
-                = exception == null
-                    ? null 
-                    : messages.getWithDefault(
-                        exception.getMessage(),
-                        exception.getLocalizedMessage(),
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n, errorI18n);
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
 
         Result result = Results
                 .internalServerError()
@@ -277,24 +271,29 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getNotFoundResult(Context context) {
+        return getNotFoundResult(context, null);
+    }
+    
+    @Override
+    public Result getNotFoundResult(Context context, RequestNotFoundException exception) {
         
         if (isDiagnosticsEnabled()) {
-            
+
             DiagnosticError diagnosticError =
-                DiagnosticErrorBuilder.build404NotFoundDiagnosticError(true);
-            
+                    exception != null
+                    ? DiagnosticErrorBuilder.build404NotFoundDiagnosticError(exception, true)
+                    : DiagnosticErrorBuilder.build404NotFoundDiagnosticError(true);
+                    
             return Results.notFound().render(diagnosticError);
             
         }
         
-        String messageI18n
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n);
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
         
         Result result = Results
                         .notFound()
@@ -322,23 +321,12 @@ public class NinjaDefault implements Ninja {
             
         }
         
-        String messageI18n 
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        String errorI18n 
-                = exception == null
-                    ? null 
-                    : messages.getWithDefault(
-                        exception.getMessage(),
-                        exception.getLocalizedMessage(),
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n, errorI18n);
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
            
         Result result = Results
                         .badRequest()
@@ -366,14 +354,12 @@ public class NinjaDefault implements Ninja {
             
         }
         
-        String messageI18n
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-
-        Message message = new Message(messageI18n);
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_DEFAULT, 
+                Optional.<Throwable>empty(), 
+                Optional.<Result>empty());
 
         // WWW-Authenticate must be included per the spec
         // http://www.ietf.org/rfc/rfc2617.txt 3.2.1 The WWW-Authenticate Response Header
@@ -412,23 +398,12 @@ public class NinjaDefault implements Ninja {
             
         }
         
-        String messageI18n 
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        String errorI18n 
-                = exception == null
-                    ? null 
-                    : messages.getWithDefault(
-                        exception.getMessage(),
-                        exception.getLocalizedMessage(),
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n, errorI18n);
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
            
         Result result = Results
                         .forbidden()
@@ -442,6 +417,31 @@ public class NinjaDefault implements Ninja {
         
         return result;
 
+    }
+    
+    protected Message buildErrorMessage(Context context,
+                                        String errorTextKey,
+                                        String errorTextDefault,
+                                        Optional<Throwable> exception,
+                                        Optional<Result> underlyingResult) {
+
+        String messageI18n 
+                = messages.getWithDefault(
+                        errorTextKey,
+                        errorTextDefault,
+                        context,
+                        underlyingResult);
+
+        String errorI18n 
+                = !exception.isPresent()
+                    ? null 
+                    : messages.getWithDefault(
+                        exception.get().getMessage(),
+                        exception.get().getLocalizedMessage(),
+                        context,
+                        underlyingResult);
+        
+        return new Message(messageI18n, errorI18n);
     }
     
     /**

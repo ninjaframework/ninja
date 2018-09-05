@@ -8,10 +8,11 @@ handle them via HTML views.
 Ninja's exceptions
 ------------------
 
-Ninja provides three types of exceptions: 
+Ninja provides four types of exceptions: 
 
  * <code>BadRequestException</code> 
  * <code>ForbiddenRequestException</code> 
+ * <code>RequestNotFoundException</code> 
  * <code>InternalServerErrorException</code>
 
 A <code>BadRequestException</code> should signal a faulty request by the user. It is
@@ -19,6 +20,9 @@ similar in mindset as the HTTP error 400.
 
 A <code>ForbiddenRequestException</code> should signal a unauthorized request by the user. It is
 similar in mindset as the HTTP error 403.
+
+A <code>RequestNotFoundException</code> should signal a unauthorized request by the user. It is
+similar in mindset as the HTTP error 404.
 
 An <code>InternalServerErrorException</code> signals that something went wrong
 inside your application - pretty much like the HTTP error 500.
@@ -44,8 +48,8 @@ HTML error representation
 The default HTML views for errors can be found here:
 
  * <code>views/system/400badRequest.ftl.html</code>
- * <code>views/system/404notFound.ftl.html</code> (If a route cannot be found).
- * <code>views/system/403forbidden.ftl.html</code> (If a route cannot be found).
+ * <code>views/system/404notFound.ftl.html</code>
+ * <code>views/system/403forbidden.ftl.html</code>
  * <code>views/system/500internalServerError.ftl.html</code>
  * <code>views/system/401unauthorized.ftl.html</code> (if an authorization is required)
 
