@@ -179,6 +179,7 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/upload").with(UploadController::upload);
         router.POST().route("/uploadFinish").with(UploadController::uploadFinish);
         router.POST().route("/uploadFinishAuto").with(UploadControllerAuto::uploadFinishAuto);
+        router.POST().route("/uploadWithForm").with(UploadControllerAuto::postFormWithFile);
         
         // /////////////////////////////////////////////////////////////////////
         // Authenticity
