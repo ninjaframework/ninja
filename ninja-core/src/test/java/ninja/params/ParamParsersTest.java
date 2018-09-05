@@ -85,6 +85,17 @@ public class ParamParsersTest {
     }
 
     @Test
+    public void testEmptyStringParamParser() {
+        ParamParsers.EmptyStringParamParser stringParamParser = new ParamParsers.EmptyStringParamParser();
+
+        assertThat(stringParamParser.getParsedType(), Matchers.is(String.class));
+
+        assertThat(stringParamParser.parseParameter("param1", null, validation), Matchers.nullValue());
+        assertThat(stringParamParser.parseParameter("param1", "", validation), Matchers.emptyString());
+        assertThat(stringParamParser.parseParameter("param1", "asdfasdf", validation), Matchers.is(new String("asdfasdf")));
+    }
+    
+    @Test
     public void testIntegerParamParser() {
         ParamParsers.IntegerParamParser integerParamParser = new ParamParsers.IntegerParamParser();
 
