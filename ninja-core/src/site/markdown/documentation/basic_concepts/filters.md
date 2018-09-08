@@ -208,7 +208,7 @@ public class Module extends AbstractModule {
 
 			@Override
 			public boolean validateCredentials(String username, String password) {
-				return "user".equals(username) && "password".equals(password);
+				return "user".equals(username) &amp;&amp; "password".equals(password);
 			}
 		});
     }

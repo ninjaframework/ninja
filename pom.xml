@@ -194,9 +194,9 @@
 
                     <dependencies>
                         <dependency>
-                            <groupId>net.ju-n.maven.doxia</groupId>
+                            <groupId>org.apache.maven.doxia</groupId>
                             <artifactId>doxia-module-markdown</artifactId>
-                            <version>1.0.0</version>
+                            <version>1.5</version>
                         </dependency>
                     </dependencies>
                 </plugin>
