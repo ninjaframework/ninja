@@ -42,7 +42,7 @@ explicitely need empty strings for empty given parameters, register the
 `ParamParsers.EmptyStringParamParser` in your conf.Module <code>configure()</code> method:
 
 <pre class="prettyprint">
-Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+Multibinder&lt;ParamParser&gt; parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
 parsersBinder.addBinding().to(ParamParsers.EmptyStringParamParser.class);
 </pre>
 
