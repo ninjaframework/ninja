@@ -1,3 +1,4 @@
+* 2018-09-09 JPA Blog archetype cleaned up (jlannoy)
 * 2018-08-23 Updated libraries (jlannoy)
     * com.fasterxml.jackson.core:jackson-* ...................... 2.8.1 -> 2.9.6
     * com.google.guava:guava .................................... 19.0 -> 26.0-jre
