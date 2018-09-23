@@ -80,7 +80,7 @@ can then accept/reject the handshake request or save any variables you'll want
 to access later once the WebSocket session is established.
 
 <pre class="prettyprint">
-public class ChatWebSocket extends Endpoint implements MessageHandler.Whole<String> {
+public class ChatWebSocket extends Endpoint implements MessageHandler.Whole&lt;String&gt; {
     
     public Result handshake(Context context, WebSocketHandshake handshake) {
         // negotiate the protocol (not always used by clients)

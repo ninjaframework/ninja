@@ -109,7 +109,7 @@ also be set in code using <code>setExpiryTime()</code>:
 public Result login(@Param("rememberMe") Boolean rememberMe,
                     Session session) {
 
-    if (rememberMe != null && rememberMe) {
+    if (rememberMe != null &amp;&amp; rememberMe) {
         // Set the expiry time 30 days (in milliseconds) in the future
         session.setExpiryTime(30 * 24 * 60 * 60 * 1000L);
     } else {
