@@ -12,14 +12,17 @@ files.
 
 
 Usually you render a form that links to the controller that will handle the
-upload. In the following case we are using a route to <code>/uploadFinish</code>.
+upload. In the following case we are using a route to <code>/upload</code>.
 
 <pre class="prettyprint">
-&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/uploadFinish&quot;&gt;
+&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/upload&quot;&gt;
     Please specify file to upload: &lt;input type=&quot;file&quot; name=&quot;upfile&quot;&gt;&lt;br /&gt;
     &lt;input type=&quot;submit&quot; value=&quot;submit&quot;&gt;
 &lt;/form&gt;
 </pre>
+
+Note that you'll be able to still get your other form values inside a proper DTO : 
+<code>public Result upload(Context context, MyDto formObject, @Param("file") File file) { ... }</code>.
 
 The manual default way
 --------------

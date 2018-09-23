@@ -23,7 +23,6 @@ public class AppController {
         return Results.html();
     }
 
-
 }
 </pre>
 
@@ -56,7 +55,7 @@ in the routing section).
 Let's say and the user visits the following URL...
 
 <pre class="prettyprint">
-/user/12345/my@email.com/userDashboard?debug=false&filters=new&filters=urgent
+/user/12345/my@email.com/userDashboard?debug=false&amp;filters=new&amp;filters=urgent
 </pre>
 
 ... and we got a route definition like that:
@@ -180,8 +179,8 @@ ninja.strict_argument_extractors=true         # redirects to Bad Request page if
 
 Then
 
-* use Optional (eg Optional&lt;String&gt; debug) when the parameter may be supplied by the user - or not.
-* don't use Optional (eg Boolean isAdmin) if you expect the parameter to be there.
+* use Optional (eg `Optional<String> debug`) when the parameter may be supplied by the user - or not.
+* don't use Optional (eg `Boolean isAdmin`) if you expect the parameter to be there.
   If the parameter is not supplied by a user request then Ninja issues a Bad Request. Your controller method
   code will never be executed.
 

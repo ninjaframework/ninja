@@ -46,6 +46,9 @@ import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import models.FormObject;
+import models.FormWithFile;
+
 @Singleton
 public class UploadControllerAuto {
 
@@ -102,6 +105,16 @@ public class UploadControllerAuto {
 
         return Results.ok().renderRaw(sb.toString().getBytes());
 
+    }
+    
+    /**
+     * This upload method expects a form with one file and simply sends back the form as a json object,
+     * with the fact that a file have been received too.
+     */
+    @FileProvider(DiskFileItemProvider.class)
+    public Result postFormWithFile(Context context, FormWithFile formObject, @Param("file") File file) {
+        formObject.fileReceived = file != null ? file.exists() : Boolean.FALSE;
+        return Results.json().render(formObject);
     }
 
 }

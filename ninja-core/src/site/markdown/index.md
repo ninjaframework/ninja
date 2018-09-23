@@ -1,3 +1,5 @@
+Java web framework
+==================
 
 <div class="hero-unit">
 	<p><b>Ninja</b> is a <b>full stack web framework</b> for <b>Java</b>.</p>

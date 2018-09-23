@@ -1,4 +1,7 @@
 * 2018-09-01 `ForbiddenRequestException`, `RequestNotFoundException` and i18n message keys (jlannoy)
+* 2018-09-05 Added `BodyParserEngineMultipartPost` (jlannoy)
+* 2018-09-09 JPA Blog archetype cleaned up (jlannoy)
+* 2018-09-09 Jetty context configuration fixed (jlannoy)
 * 2018-08-23 Updated libraries (jlannoy)
     * com.fasterxml.jackson.core:jackson-* ...................... 2.8.1 -> 2.9.6
     * com.google.guava:guava .................................... 19.0 -> 26.0-jre
@@ -180,7 +183,7 @@ Version 5.2.2
 Version 5.2.1
 =============
 
- * 2015-10-16 Context.getParameterFileItems() now returns Map<String, List<FileItem>> (jjlauer)
+ * 2015-10-16 Context.getParameterFileItems() now returns `Map<String, List<FileItem>>` (jjlauer)
 
 Version 5.2.0
 =============

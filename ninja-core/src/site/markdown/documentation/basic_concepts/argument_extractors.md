@@ -31,10 +31,20 @@ This allows you to process a request, extract things
 - Arrays of all these types (e.g. String[], int[], Enum[])
 
 **NOTES:**
+
 Enums do not require anymore a registration in conf.Module. Values are 
 converted automatically, ignoring case. Collections and generics are not 
 supported for parameter injection. Types must be explicitly declared 
 and basic arrays must be used to ensure runtime type-safety.
+
+By default, empty String parameters will be treated as null values. If you 
+explicitely need empty strings for empty given parameters, register the 
+`ParamParsers.EmptyStringParamParser` in your conf.Module <code>configure()</code> method:
+
+<pre class="prettyprint">
+Multibinder&lt;ParamParser&gt; parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+parsersBinder.addBinding().to(ParamParsers.EmptyStringParamParser.class);
+</pre>
 
 ### Custom Parameter Types
 
@@ -43,7 +53,7 @@ simply by implementing the <code>ParamParser</code> interface and binding it
 with Guice in your conf.Module <code>configure()</code> method:
 
 <pre class="prettyprint">
-Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+Multibinder&lt;ParamParser&gt; parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
 parsersBinder.addBinding().to(MyParamParser.class);
 </pre>
  
