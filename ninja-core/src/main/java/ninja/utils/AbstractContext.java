@@ -273,7 +273,7 @@ abstract public class AbstractContext implements Context.Impl {
                 .getBodyParserEngineForContentType(contentTypeOnly);
 
         if (bodyParserEngine == null) {
-            logger.debug("No BodyParserEngine found for Content-Type {} at route {}", CONTENT_TYPE, getRequestPath());
+            logger.debug("No BodyParserEngine found for Content-Type {} at route {}", contentTypeOnly, getRequestPath());
             return null;
         }
 

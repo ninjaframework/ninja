@@ -1,3 +1,4 @@
+* 2018-09-05 Added `BodyParserEngineMultipartPost` (jlannoy)
 * 2018-09-09 JPA Blog archetype cleaned up (jlannoy)
 * 2018-09-09 Jetty context configuration fixed (jlannoy)
 * 2018-08-23 Updated libraries (jlannoy)
