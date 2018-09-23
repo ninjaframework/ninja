@@ -66,7 +66,7 @@ public class LoginLogoutController {
 
             // something is wrong with the input or password not found.
             context.getFlashScope().put("username", username);
-            context.getFlashScope().put("rememberMe", rememberMe);
+            context.getFlashScope().put("rememberMe", String.valueOf(rememberMe));
             context.getFlashScope().error("login.errorLogin");
 
             return Results.redirect("/login");

@@ -85,7 +85,7 @@ public class LoginLogoutController {
 
             // something is wrong with the input or password not found.
             context.getFlashScope().put("username", username);
-            context.getFlashScope().put("rememberMe", rememberMe);
+            context.getFlashScope().put("rememberMe", String.valueOf(rememberMe));
             context.getFlashScope().error("login.errorLogin");
 
             return Results.redirect("/login");
@@ -100,8 +100,8 @@ public class LoginLogoutController {
     public Result logout(Context context) {
 
         // remove any user dependent information
-        context.getSessionCookie().clear();
-        context.getFlashCookie().success("login.logoutSuccessful");
+        context.getSession().clear();
+        context.getFlashScope().success("login.logoutSuccessful");
 
         return Results.redirect("/");
 
