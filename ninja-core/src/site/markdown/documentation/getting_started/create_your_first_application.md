@@ -36,3 +36,8 @@ We think that fast and responsive development cycles are a key success factor
 for software projects. SuperDevMode is our answer to that challenge. Say goodbye
 to long and time consuming deployment cycles while developing.
 </div>
+
+**NOTE:**
+There is a second archetype available, more advanced, that provides you quite a simple 
+blog application. Please refer to the 
+[Working with relational DBs](/documentation/working_with_relational_dbs/jpa.html) for more information.

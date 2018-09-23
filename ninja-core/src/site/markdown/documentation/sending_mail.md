@@ -31,17 +31,9 @@ install(new NinjaPostofficeModule(ninjaProperties)).
 <pre class="prettyprint">
 @Singleton
 public class Module extends AbstractModule {
-    
-    NinjaProperties ninjaProperties;
-    
-    public Module(NinjaProperties ninjaProperties) {
-        this.ninjaProperties = ninjaProperties;
-    }
-    
-
     @Override
     protected void configure() { 
-        install(new NinjaPostofficeModule(ninjaProperties));
+        install(new NinjaPostofficeModule());
     }
 
 }

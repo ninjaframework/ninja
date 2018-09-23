@@ -24,7 +24,7 @@ import java.util.List;
 
 import com.google.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import models.Article;
 import models.User;
@@ -43,8 +43,8 @@ public class SetupDao {
         
         EntityManager entityManager = entityManagerProvider.get();
         
-        Query q = entityManager.createQuery("SELECT x FROM User x");
-        List<User> users = (List<User>) q.getResultList();        
+        TypedQuery<User> q = entityManager.createQuery("SELECT x FROM User x", User.class);
+        List<User> users = q.getResultList();        
         
         if (users.size() == 0) {
 

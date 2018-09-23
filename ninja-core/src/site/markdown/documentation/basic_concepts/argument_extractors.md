@@ -43,7 +43,7 @@ simply by implementing the <code>ParamParser</code> interface and binding it
 with Guice in your conf.Module <code>configure()</code> method:
 
 <pre class="prettyprint">
-Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
+Multibinder&lt;ParamParser&gt; parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
 parsersBinder.addBinding().to(MyParamParser.class);
 </pre>
  
