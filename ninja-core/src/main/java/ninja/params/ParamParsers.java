@@ -386,6 +386,22 @@ public class ParamParsers {
             return String.class;
         }
     }
+    
+    public static class EmptyStringParamParser implements ParamParser<String> {
+        @Override
+        public String parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || validation.hasViolation(field)) {
+                return null;
+            } else {
+                return parameterValue;
+            }
+        }
+
+        @Override
+        public Class<String> getParsedType() {
+            return String.class;
+        }
+    }
 
     public static class ByteParamParser implements ParamParser<Byte> {
         @Override
