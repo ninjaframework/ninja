@@ -1,3 +1,6 @@
+Version 6.4.0
+=============
+
 * 2018-09-01 `ForbiddenRequestException`, `RequestNotFoundException` and i18n message keys (jlannoy)
 * 2018-09-05 Added `BodyParserEngineMultipartPost` (jlannoy)
 * 2018-09-09 JPA Blog archetype cleaned up (jlannoy)
@@ -17,7 +20,7 @@
     * org.fluentlenium:fluentlenium-junit ....................... 3.2.0 -> 3.4.1
     * org.seleniumhq.selenium:htmlunit-driver ................... 2.26 -> 2.31.0
 
-Version 6.3.x
+Version 6.3.0
 =============
 
  * 2018-01-29 Feature to run Ninja as console (server-less) application
