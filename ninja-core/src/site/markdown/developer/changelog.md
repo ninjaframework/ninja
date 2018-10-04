@@ -1,3 +1,4 @@
+* 2018-09-01 `ForbiddenRequestException`, `RequestNotFoundException` and i18n message keys (jlannoy)
 * 2018-09-05 Added `BodyParserEngineMultipartPost` (jlannoy)
 * 2018-09-09 JPA Blog archetype cleaned up (jlannoy)
 * 2018-09-09 Jetty context configuration fixed (jlannoy)

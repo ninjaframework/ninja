@@ -16,6 +16,11 @@
 
 package ninja;
 
+import ninja.exceptions.BadRequestException;
+import ninja.exceptions.ForbiddenRequestException;
+import ninja.exceptions.RenderingException;
+import ninja.exceptions.RequestNotFoundException;
+
 public interface Ninja {
 
 	/**
@@ -40,12 +45,10 @@ public interface Ninja {
      * handling is required, simply:
      * 
      * <code>
-     *   return getInternalServerErrorResult(context, exception);
+     *   return getInternalServerErrorResult(context, exception, underlyingResult);
      * </code>
      */
-    /** NOT REQUIRED YET IN ORDER TO NOT BREAK COMPATIBILITY...
-    Result getRenderingExceptionResult(Context context, RenderingException exception);
-    */
+    Result getRenderingExceptionResult(Context context, RenderingException exception, Result underlyingResult);
     
     /**
      * Should handle cases where an exception is thrown
@@ -56,7 +59,7 @@ public interface Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    Result getInternalServerErrorResult(Context context, Exception exception);
+    Result getInternalServerErrorResult(Context context, Exception exception, Result underlyingResult);
     
     /**
      * Should handle cases where the client sent strange date that
@@ -67,7 +70,7 @@ public interface Ninja {
      * 
      * Usually used by onRouteRequest(...).
      */
-    Result getBadRequestResult(Context context, Exception exception);
+    Result getBadRequestResult(Context context, BadRequestException exception);
     
     /**
      * Should handle cases where no route can be found for a given request.
@@ -78,6 +81,16 @@ public interface Ninja {
      * Usually used by onRouteRequest(...).
      */
     Result getNotFoundResult(Context context);
+    
+    /**
+     * Should handle cases where no route can be found for a given request.
+     * 
+     * Should lead to a html error 404 - not found
+     * (and be used with the same mindset).
+     * 
+     * Usually used by onRouteRequest(...).
+     */
+    Result getNotFoundResult(Context context, RequestNotFoundException exception);
     
     /**
      * Should handle cases where access is unauthorized
@@ -100,6 +113,17 @@ public interface Ninja {
      * Usually used by SecureFilter for instance(...).
      */
     Result getForbiddenResult(Context context);
+    
+    /**
+     * Should handle cases where access is forbidden
+     *
+     * Should lead to a html error 403 - forbidden
+     * (and be used with the same mindset).
+     * 
+     * Usually used by onRouteRequest(...).
+     */
+    Result getForbiddenResult(Context context, ForbiddenRequestException exception);
+
 
     /**
      * Invoked when the framework starts. Usually inits stuff like the scheduler

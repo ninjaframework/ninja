@@ -57,10 +57,30 @@ public class DiagnosticErrorBuilder {
             null);
     }
     
+    static public DiagnosticError build404NotFoundDiagnosticError(
+            Throwable cause,
+            boolean tryToReadLinesFromSourceCode) {
+
+        return buildDiagnosticError(
+            "Route not found",
+            cause,
+            tryToReadLinesFromSourceCode, null);
+    }
+    
     static public DiagnosticError build403ForbiddenDiagnosticError() {
         return buildDiagnosticError(
             "Forbidden",
             null, false, null);
+    }
+    
+    static public DiagnosticError build403ForbiddenDiagnosticError(
+            Throwable cause,
+            boolean tryToReadLinesFromSourceCode) {
+
+        return buildDiagnosticError(
+            "Forbidden",
+            cause,
+            tryToReadLinesFromSourceCode, null);
     }
     
     static public DiagnosticError build401UnauthorizedDiagnosticError() {
