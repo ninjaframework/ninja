@@ -12,7 +12,15 @@ Runtime Platforms
 Google AppEngine Support
 
  * https://github.com/ninjaframework/ninja-appengine
- 
+
+
+Authentication
+--------------
+
+Auth0 (authentication SaaS) integration
+
+ * https://github.com/zileo-net/ninja-auth0
+
 
 Server Engines
 --------------
@@ -45,7 +53,7 @@ Pebble templates
 
  * https://github.com/jjfidalgo/ninja-pebble
  * https://github.com/bordereast/ninja-pebble-module
- 
+
 
 Databases and ORM
 -----------------
