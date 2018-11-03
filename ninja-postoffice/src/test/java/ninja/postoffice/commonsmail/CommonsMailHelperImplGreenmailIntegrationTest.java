@@ -53,7 +53,7 @@ public class CommonsMailHelperImplGreenmailIntegrationTest {
     @Before
     public void setUp() throws Exception {
 
-        SMTP_TEST_PORT = findAvailablePort(1000, 10000);
+        SMTP_TEST_PORT = findAvailablePort(2000, 10000);
 
         greenMail = new GreenMail(new ServerSetup(SMTP_TEST_PORT, null, "smtp"));
         greenMail.start();

@@ -1,3 +1,8 @@
+Version 6.4.1
+=============
+
+* Tiny fix to allow compilation and tests to work on Mac OS X Mojave (smtp port too low)
+
 Version 6.4.0
 =============
 
