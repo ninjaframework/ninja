@@ -1,6 +1,7 @@
 Version 6.4.1
 =============
 
+* Bumping Jetty to latest version (See CVE-2017-7658)
 * Tiny fix to allow compilation and tests to work on Mac OS X Mojave (smtp port too low)
 
 Version 6.4.0
