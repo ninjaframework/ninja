@@ -35,6 +35,8 @@ public class PostofficeCommonsmailImpl implements Postoffice {
     private final String smtpHost;
     private final int smtpPort;
     private final boolean smtpSsl;
+    private final boolean smtpStartTLS;
+    private final boolean smtpStartTLSRequired;
     private final String smtpUser;
     private final String smtpPassword;
     private final boolean smtpDebug;
@@ -60,6 +62,9 @@ public class PostofficeCommonsmailImpl implements Postoffice {
             this.smtpSsl = smtpSsl;
         }
 
+        this.smtpStartTLS = props.getBooleanWithDefault(PostofficeConstant.smtpStartTLS, false);
+        this.smtpStartTLSRequired = props.getBooleanWithDefault(PostofficeConstant.smtpStartTLSRequired, false);
+
         this.smtpUser = props.get(PostofficeConstant.smtpUser);
         this.smtpPassword = props.get(PostofficeConstant.smtpPassword);
 
@@ -73,12 +78,15 @@ public class PostofficeCommonsmailImpl implements Postoffice {
 
     // May be used for testing
     PostofficeCommonsmailImpl(CommonsmailHelper commonsmailHelper, String smtpHost,
-            int smtpPort, boolean smtpSsl, String smtpUser, String smtpPassword,
+            int smtpPort, boolean smtpSsl, boolean smtpStartTLS, boolean smtpStartTLSRequired,
+            String smtpUser, String smtpPassword,
             boolean smtpDebug) {
         this.commonsmailHelper = commonsmailHelper;
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
         this.smtpSsl = smtpSsl;
+        this.smtpStartTLS = smtpStartTLS;
+        this.smtpStartTLSRequired = smtpStartTLSRequired;
         this.smtpUser = smtpUser;
         this.smtpPassword = smtpPassword;
         this.smtpDebug = smtpDebug;
@@ -95,6 +103,7 @@ public class PostofficeCommonsmailImpl implements Postoffice {
 
         // set server parameters so we can send the MultiPartEmail:
         commonsmailHelper.doSetServerParameter(multiPartEmail, smtpHost, smtpPort, smtpSsl,
+                smtpStartTLS, smtpStartTLSRequired,
                 smtpUser, smtpPassword, smtpDebug);
 
         // And send it:

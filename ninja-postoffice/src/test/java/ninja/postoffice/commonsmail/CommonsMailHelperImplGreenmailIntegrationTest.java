@@ -72,8 +72,8 @@ public class CommonsMailHelperImplGreenmailIntegrationTest {
         // setup the postoffice:
         CommonsmailHelper commonsmailHelper = new CommonsmailHelperImpl();
         Postoffice postoffice =
-                new PostofficeCommonsmailImpl(commonsmailHelper, "localhost", SMTP_TEST_PORT, false, null, null,
-                        false);
+                new PostofficeCommonsmailImpl(commonsmailHelper, "localhost", SMTP_TEST_PORT, false, false, false,
+                        null, null, false);
 
         postoffice.send(mail);
 

@@ -44,7 +44,8 @@ public interface CommonsmailHelper {
     public MultiPartEmail createMultiPartEmailWithContent(Mail mail) throws EmailException;
 
     public void doSetServerParameter(MultiPartEmail multiPartEmail, String smtpHost,
-            Integer smtpPort, Boolean smtpSsl, String smtpUser, String smtpPassword,
+            Integer smtpPort, Boolean smtpSsl, Boolean smtpStartTLS, Boolean smtpStartTLSRequired,
+            String smtpUser, String smtpPassword,
             Boolean smtpDebug);
 
     public List<Tuple<String, String>> createListOfAddresses(Collection<String> emails)
