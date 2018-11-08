@@ -77,6 +77,7 @@ contributed to Ninja. In some random order:
  * Nate Kingsley (nate-kingsley)
  * Jens Fendler (jfendler)
  * Christian Groth (christiangroth)
+ * Piotr Kuciapski (pi0tr)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen
