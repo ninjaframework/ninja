@@ -143,13 +143,16 @@ public class CommonsmailHelperImpl implements CommonsmailHelper {
 
     @Override
     public void doSetServerParameter(MultiPartEmail multiPartEmail, String smtpHost,
-            Integer smtpPort, Boolean smtpSsl, String smtpUser, String smtpPassword,
+            Integer smtpPort, Boolean smtpSsl, Boolean smtpStartTLS, Boolean smtpStartTLSRequired,
+            String smtpUser, String smtpPassword,
             Boolean smtpDebug) {
 
         // /set config params:
         multiPartEmail.setHostName(smtpHost);
         multiPartEmail.setSmtpPort(smtpPort);
         multiPartEmail.setSSLOnConnect(smtpSsl);
+        multiPartEmail.setStartTLSEnabled(smtpStartTLS);
+        multiPartEmail.setStartTLSRequired(smtpStartTLSRequired);
 
         if (smtpUser != null) {
             multiPartEmail.setAuthentication(smtpUser, smtpPassword);

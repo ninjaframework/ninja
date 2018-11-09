@@ -27,6 +27,10 @@ public interface PostofficeConstant {
 
     public static final String smtpSsl = "smtp.ssl";
 
+    public static final String smtpStartTLS = "smtp.starttls";
+
+    public static final String smtpStartTLSRequired = "smtp.starttls.required";
+
     public static final String smtpUser = "smtp.user";
 
     public static final String smtpPassword = "smtp.password";

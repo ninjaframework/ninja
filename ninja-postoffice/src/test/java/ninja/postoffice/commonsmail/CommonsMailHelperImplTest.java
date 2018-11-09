@@ -148,6 +148,8 @@ public class CommonsMailHelperImplTest {
                 "mail.superserver.com",
                 33,
                 true,
+                false,
+                false,
                 "username",
                 "password",
                 true);
@@ -156,6 +158,28 @@ public class CommonsMailHelperImplTest {
         assertEquals("mail.superserver.com", multiPartEmail.getHostName());
         assertEquals(true, multiPartEmail.getMailSession().getDebug());
 
+    }
+
+    @Test
+    public void testDoSetServerParameterStartTLSEnabled() throws Exception {
+
+        Mail mail = MailImplTestHelper.getMailImplWithDemoContent();
+
+        MultiPartEmail multiPartEmail = commonsmailHelper.createMultiPartEmailWithContent(mail);
+
+        commonsmailHelper.doSetServerParameter(
+                multiPartEmail,
+                "mail.superserver.com",
+                33,
+                true,
+                true,
+                true,
+                "username",
+                "password",
+                true);
+
+        assertEquals(true, multiPartEmail.isStartTLSEnabled());
+        assertEquals(true, multiPartEmail.isStartTLSRequired());
 
     }
 
