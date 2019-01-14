@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.OptionalBinder;
 import ninja.bodyparser.BodyParserEngineJson;
+import ninja.bodyparser.BodyParserEngineMultipartPost;
 import ninja.bodyparser.BodyParserEnginePost;
 import ninja.bodyparser.BodyParserEngineXml;
 import ninja.migrations.MigrationEngine;
@@ -114,6 +115,7 @@ public class NinjaClassicModule extends AbstractModule {
         // Text & post require no 3rd party libs
         bind(TemplateEngineText.class);
         bind(BodyParserEnginePost.class);
+        bind(BodyParserEngineMultipartPost.class);
         
         // Freemarker
         if (freemarker) {

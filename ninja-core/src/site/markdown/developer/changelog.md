@@ -1,3 +1,17 @@
+Version 6.4.1
+=============
+
+* Bumping Jetty to latest version (See CVE-2017-7658)
+* Tiny fix to allow compilation and tests to work on Mac OS X Mojave (smtp port too low)
+* 2018-11-08 Added STARTTLS support to the default Postoffice implementation (pi0tr)
+
+Version 6.4.0
+=============
+
+* 2018-09-01 `ForbiddenRequestException`, `RequestNotFoundException` and i18n message keys (jlannoy)
+* 2018-09-05 Added `BodyParserEngineMultipartPost` (jlannoy)
+* 2018-09-09 JPA Blog archetype cleaned up (jlannoy)
+* 2018-09-09 Jetty context configuration fixed (jlannoy)
 * 2018-08-23 Updated libraries (jlannoy)
     * com.fasterxml.jackson.core:jackson-* ...................... 2.8.1 -> 2.9.6
     * com.google.guava:guava .................................... 19.0 -> 26.0-jre
@@ -13,7 +27,7 @@
     * org.fluentlenium:fluentlenium-junit ....................... 3.2.0 -> 3.4.1
     * org.seleniumhq.selenium:htmlunit-driver ................... 2.26 -> 2.31.0
 
-Version 6.3.x
+Version 6.3.0
 =============
 
  * 2018-01-29 Feature to run Ninja as console (server-less) application
@@ -179,7 +193,7 @@ Version 5.2.2
 Version 5.2.1
 =============
 
- * 2015-10-16 Context.getParameterFileItems() now returns Map<String, List<FileItem>> (jjlauer)
+ * 2015-10-16 Context.getParameterFileItems() now returns `Map<String, List<FileItem>>` (jjlauer)
 
 Version 5.2.0
 =============

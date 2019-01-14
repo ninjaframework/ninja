@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,13 +143,16 @@ public class CommonsmailHelperImpl implements CommonsmailHelper {
 
     @Override
     public void doSetServerParameter(MultiPartEmail multiPartEmail, String smtpHost,
-            Integer smtpPort, Boolean smtpSsl, String smtpUser, String smtpPassword,
+            Integer smtpPort, Boolean smtpSsl, Boolean smtpStartTLS, Boolean smtpStartTLSRequired,
+            String smtpUser, String smtpPassword,
             Boolean smtpDebug) {
 
         // /set config params:
         multiPartEmail.setHostName(smtpHost);
         multiPartEmail.setSmtpPort(smtpPort);
         multiPartEmail.setSSLOnConnect(smtpSsl);
+        multiPartEmail.setStartTLSEnabled(smtpStartTLS);
+        multiPartEmail.setStartTLSRequired(smtpStartTLSRequired);
 
         if (smtpUser != null) {
             multiPartEmail.setAuthentication(smtpUser, smtpPassword);

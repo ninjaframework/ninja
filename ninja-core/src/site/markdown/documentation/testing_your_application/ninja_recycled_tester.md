@@ -31,5 +31,3 @@ public class MyControllerTest extends RecycledNinjaServerTester {
 
 If you want to revert back to a single Ninja test server for each test method,
 you can simply extend your class from FreshNinjaServerTester.
-
-</pre>

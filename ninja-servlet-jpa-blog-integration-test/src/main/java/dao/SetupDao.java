@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import models.Article;
 import models.User;
@@ -40,8 +40,8 @@ public class SetupDao {
         
         EntityManager entityManager = entityManagerProvider.get();
         
-        Query q = entityManager.createQuery("SELECT x FROM User x");
-        List<User> users = (List<User>) q.getResultList();        
+        TypedQuery<User> q = entityManager.createQuery("SELECT x FROM User x", User.class);
+        List<User> users = q.getResultList();        
         
         if (users.size() == 0) {
 

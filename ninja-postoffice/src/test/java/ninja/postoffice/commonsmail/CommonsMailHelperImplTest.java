@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,6 +148,8 @@ public class CommonsMailHelperImplTest {
                 "mail.superserver.com",
                 33,
                 true,
+                false,
+                false,
                 "username",
                 "password",
                 true);
@@ -156,6 +158,28 @@ public class CommonsMailHelperImplTest {
         assertEquals("mail.superserver.com", multiPartEmail.getHostName());
         assertEquals(true, multiPartEmail.getMailSession().getDebug());
 
+    }
+
+    @Test
+    public void testDoSetServerParameterStartTLSEnabled() throws Exception {
+
+        Mail mail = MailImplTestHelper.getMailImplWithDemoContent();
+
+        MultiPartEmail multiPartEmail = commonsmailHelper.createMultiPartEmailWithContent(mail);
+
+        commonsmailHelper.doSetServerParameter(
+                multiPartEmail,
+                "mail.superserver.com",
+                33,
+                true,
+                true,
+                true,
+                "username",
+                "password",
+                true);
+
+        assertEquals(true, multiPartEmail.isStartTLSEnabled());
+        assertEquals(true, multiPartEmail.isStartTLSRequired());
 
     }
 

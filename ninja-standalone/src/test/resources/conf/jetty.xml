@@ -89,9 +89,6 @@
                 <Set name="acceptorPriorityDelta">
                     <Property name="http.acceptorPriorityDelta" default="0"/>
                 </Set>
-                <Set name="selectorPriorityDelta">
-                    <Property name="http.selectorPriorityDelta" default="0"/>
-                </Set>
                 <Set name="acceptQueueSize">
                     <Property name="http.acceptQueueSize" default="0"/>
                 </Set>

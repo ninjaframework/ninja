@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -375,6 +375,22 @@ public class ParamParsers {
         @Override
         public String parseParameter(String field, String parameterValue, Validation validation) {
             if (parameterValue == null || parameterValue.isEmpty() || validation.hasViolation(field)) {
+                return null;
+            } else {
+                return parameterValue;
+            }
+        }
+
+        @Override
+        public Class<String> getParsedType() {
+            return String.class;
+        }
+    }
+    
+    public static class EmptyStringParamParser implements ParamParser<String> {
+        @Override
+        public String parseParameter(String field, String parameterValue, Validation validation) {
+            if (parameterValue == null || validation.hasViolation(field)) {
                 return null;
             } else {
                 return parameterValue;

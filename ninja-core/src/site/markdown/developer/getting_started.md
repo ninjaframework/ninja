@@ -54,12 +54,31 @@ Making a Ninja release
 
 2) Release to central maven repo
 
+Make sure you got the credentials properly set up in your .m2/settings.xml:
+<pre>
+&lt;server&gt;
+    &lt;id&gt;ossrh&lt;/id&gt;
+    &lt;username&gt;sonatype username&lt;/username&gt;
+    &lt;password&gt;sonatype password&lt;/password&gt;
+&lt;/server&gt;
+</pre>
+
+
 - mvn release:clean
 - mvn release:prepare
 - mvn release:perform
 - Log into http://oss.sonatype.org and release the packages
 
 3) Publish website
+
+Make sure you got the credentials properly set up in your .m2/settings.xml:
+
+<pre>
+&lt;server&gt;
+    &lt;id&gt;github-project-site&lt;/id&gt;
+    &lt;username&gt;git&lt;/username&gt;
+&lt;/server&gt;
+</pre>
 
 - git checkout TAG
 - cd ninja-core
