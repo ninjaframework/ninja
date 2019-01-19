@@ -1,3 +1,5 @@
+* 2019-01-19 Fixing JaxyRoutes reflections scan, restricted to your `application.modules.package`
+
 Version 6.4.1
 =============
 
