@@ -219,9 +219,9 @@ public class JaxyRoutes implements ApplicationRoutes {
      * Configures the set of packages to scan for annotated controller methods.
      */
     private void configureReflections() {
-        Optional<String> basePackage = Optional.of(ninjaProperties.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
+        Optional<String> basePackage = Optional.ofNullable(ninjaProperties.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
         
-        if(basePackage.isPresent()) {
+        if (basePackage.isPresent()) {
             reflections = new Reflections(
                     basePackage.get() + "." + NinjaConstant.CONTROLLERS_DIR, 
                     new MethodAnnotationsScanner());
