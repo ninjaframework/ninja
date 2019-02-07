@@ -312,4 +312,24 @@ public class ApplicationControllerTest extends NinjaDocTester {
                 testServerUrl().path("/base/middle/app/")));
         Assert.assertThat(response.payload, CoreMatchers.equalTo("route without method path works."));
     }
+    
+    @Test
+    public void testShouldNotExistRoute() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/not/get")));
+
+        Assert.assertThat(response.httpStatus, CoreMatchers.equalTo(404));
+
+    }
+    
+    @Test
+    public void testSubPackageControllerGet() {
+
+        Response response = makeRequest(Request.GET().url(
+                testServerUrl().path("/sub/get")));
+
+        Assert.assertThat(response.payload, CoreMatchers.equalTo("sub get works."));
+
+    }
 }
