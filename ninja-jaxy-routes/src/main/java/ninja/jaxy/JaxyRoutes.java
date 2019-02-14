@@ -55,7 +55,7 @@ import ninja.utils.NinjaProperties;
 @Singleton
 public class JaxyRoutes implements ApplicationRoutes {
 
-    String NINJA_CUSTOM_HTTP_METHODS = "ninja.jaxy.custom_http_methods";
+    final static String NINJA_CUSTOM_HTTP_METHODS = "ninja.jaxy.custom_http_methods";
     
     final static Logger logger = LoggerFactory.getLogger(JaxyRoutes.class);
 
