@@ -511,7 +511,7 @@ The following common HTTP method annotations are available:
 
 If the built-in methods are insufficient :
 
-1. Sets the key `ninja.jaxy.custom_http_methods` to `true` in your `conf/application.conf`.
+1. Set the key `ninja.jaxy.custom_http_methods` to `true` in your `conf/application.conf`.
 2. Then implement your own custom HTTP method:
 
     @Target(ElementType.METHOD)
