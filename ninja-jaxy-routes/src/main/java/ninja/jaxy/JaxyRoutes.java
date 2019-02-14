@@ -211,12 +211,24 @@ public class JaxyRoutes implements ApplicationRoutes {
         boolean enableCustomHttpMethods = ninjaProperties.getBooleanWithDefault(NINJA_CUSTOM_HTTP_METHODS, false);
         
         if (enableCustomHttpMethods) {
+            
             Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
             for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
                 if (httpMethod.isAnnotation()) {
                     methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
                 }
             }
+            
+        } else {
+            
+            // Only look for standard HTTP methods annotations
+            Reflections annotationReflections = new Reflections("ninja.jaxy", new TypeAnnotationsScanner(), new SubTypesScanner());
+            for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
+                if (httpMethod.isAnnotation()) {
+                    methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+                }
+            }
+            
         }
 
         return methods;
