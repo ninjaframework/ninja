@@ -1,3 +1,5 @@
+* 2019-02-15 Added `application.webjars.prefer_cdn` conf property to use JSDeliver for WebJars (jlannoy)
+
 Version 6.4.2
 =============
 
