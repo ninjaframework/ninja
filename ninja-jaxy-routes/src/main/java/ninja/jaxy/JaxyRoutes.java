@@ -55,6 +55,8 @@ import ninja.utils.NinjaProperties;
 @Singleton
 public class JaxyRoutes implements ApplicationRoutes {
 
+    final static String NINJA_CUSTOM_HTTP_METHODS = "ninja.jaxy.custom_http_methods";
+    
     final static Logger logger = LoggerFactory.getLogger(JaxyRoutes.class);
 
     final NinjaProperties ninjaProperties;
@@ -205,11 +207,28 @@ public class JaxyRoutes implements ApplicationRoutes {
         Set<Method> methods = Sets.newLinkedHashSet();
 
         methods.addAll(reflections.getMethodsAnnotatedWith(Path.class));
-        Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
-        for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
-            if (httpMethod.isAnnotation()) {
-                methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+        
+        boolean enableCustomHttpMethods = ninjaProperties.getBooleanWithDefault(NINJA_CUSTOM_HTTP_METHODS, false);
+        
+        if (enableCustomHttpMethods) {
+            
+            Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
+            for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
+                if (httpMethod.isAnnotation()) {
+                    methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+                }
             }
+            
+        } else {
+            
+            // Only look for standard HTTP methods annotations
+            Reflections annotationReflections = new Reflections("ninja.jaxy", new TypeAnnotationsScanner(), new SubTypesScanner());
+            for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
+                if (httpMethod.isAnnotation()) {
+                    methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+                }
+            }
+            
         }
 
         return methods;
