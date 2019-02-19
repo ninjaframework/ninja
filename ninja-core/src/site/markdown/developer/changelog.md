@@ -1,3 +1,5 @@
+* 2019-02-19 Exclusion of `jetty-annotations` from `ninja-standalone` (jlannoy)
+
 Version 6.4.2
 =============
 
