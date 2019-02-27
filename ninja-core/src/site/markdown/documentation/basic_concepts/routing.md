@@ -509,7 +509,10 @@ The following common HTTP method annotations are available:
 - `@POST`
 - `@PUT`
 
-If the built-in methods are insufficient, you may implement your own custom HTTP methods:
+If the built-in methods are insufficient :
+
+1. Set the key `ninja.jaxy.custom_http_methods` to `true` in your `conf/application.conf`.
+2. Then implement your own custom HTTP method:
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
