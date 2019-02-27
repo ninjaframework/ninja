@@ -78,7 +78,11 @@ You can reference Bootstrap from your HTML pages via the following URL:
 And Bootstrap is only an example. There are a lot more WebJars available at your
 disposal: jQuery, Ember.js, AngularJS and much more. 
 And everything without the need for downloading and updating stuff inside 
-your assets directory.
+your assets directory. 
+Furthermore, all classic WebJars are hosted on a public CDN via [jsDeliver](http://www.jsdelivr.com/). 
+Following [WebJars documentation](https://www.webjars.org/documentation), simply prefix your asset URL with 
+<code>//cdn.jsdelivr.net/webjars/</code> to use it. If you are using the Freemarker template engine, 
+the implicit function <code>webJarsAt</code> will manage both URL types creation based on a configuration property.
 
 <div class="alert alert-info">
 Actually WebJars do nothing magic. 
