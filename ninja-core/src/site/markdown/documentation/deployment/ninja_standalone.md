@@ -88,6 +88,13 @@ Running the fat jar (and your app) is as simple as calling:
 java -Dninja.port=9000 -jar MY-APPLICATION-jar-with-dependencies.jar
 </pre>
 
+**Incompatibility notice**
+
+Please be aware that since Ninja 6.4.3, alongside with Jetty 9.4.12, the dependency allowing Jetty servlets annotations (that should not be 
+useful for your Ninja Framework project) have been excluded from the stack. This was caused by an incompatibility between the version 
+of the java bytecode handler `ASM` used by this module (6.2) and the java bytecode handler `javassist` used by Hibernate.
+
+
 Option 2 - Packaged using Stork Maven Plugin
 --------------------------------------------
 

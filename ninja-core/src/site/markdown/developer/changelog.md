@@ -1,3 +1,4 @@
+* 2019-02-19 Exclusion of `jetty-annotations` from `ninja-standalone` (jlannoy)
 * 2019-02-14 Configuration property `ninja.jaxy.custom_http_methods` is now required to use custom HTTP methods annotations (jlannoy)
 
 Version 6.4.2
