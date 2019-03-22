@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,9 @@ import javax.management.RuntimeErrorException;
 import ninja.diagnostics.DiagnosticError;
 import ninja.diagnostics.DiagnosticErrorBuilder;
 import ninja.exceptions.BadRequestException;
+import ninja.exceptions.ForbiddenRequestException;
 import ninja.exceptions.RenderingException;
+import ninja.exceptions.RequestNotFoundException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
 import ninja.utils.Message;
@@ -174,13 +176,19 @@ public class NinjaDefault implements Ninja {
         
         if (exception instanceof BadRequestException) {
             
-            result = getBadRequestResult(context, exception);
-        
+            result = getBadRequestResult(context, (BadRequestException) exception);
+
+        } else if (exception instanceof ForbiddenRequestException) {
+
+            result = getForbiddenResult(context, (ForbiddenRequestException) exception);
+            
+        } else if (exception instanceof RequestNotFoundException) {
+
+            result = getNotFoundResult(context, (RequestNotFoundException) exception);
+
         } else if (exception instanceof RenderingException) {
             
-            RenderingException renderingException = (RenderingException)exception;
-            
-            result = getRenderingExceptionResult(context, renderingException, underlyingResult);
+            result = getRenderingExceptionResult(context, (RenderingException) exception, underlyingResult);
             
         } else {
             
@@ -209,15 +217,19 @@ public class NinjaDefault implements Ninja {
             
         }
         
-        return getInternalServerErrorResult(context, exception);
+        return getInternalServerErrorResult(context, exception, underlyingResult);
 
     }
     
-    @Override
+    /**
+     * Deprecated. Check {@link Ninja#getInternalServerErrorResult(Context, Exception, Result)}.
+     */
+    @Deprecated
     public Result getInternalServerErrorResult(Context context, Exception exception) {
         return getInternalServerErrorResult(context, exception, null);
     }
     
+    @Override
     public Result getInternalServerErrorResult(Context context, Exception exception, Result underlyingResult) {
         
         if (isDiagnosticsEnabled()) {
@@ -236,14 +248,12 @@ public class NinjaDefault implements Ninja {
                 context.getRoute().getControllerMethod(), 
                 exception);
         
-        String messageI18n 
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n);
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
 
         Result result = Results
                 .internalServerError()
@@ -261,24 +271,29 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public Result getNotFoundResult(Context context) {
+        return getNotFoundResult(context, null);
+    }
+    
+    @Override
+    public Result getNotFoundResult(Context context, RequestNotFoundException exception) {
         
         if (isDiagnosticsEnabled()) {
-            
+
             DiagnosticError diagnosticError =
-                DiagnosticErrorBuilder.build404NotFoundDiagnosticError(true);
-            
+                    exception != null
+                    ? DiagnosticErrorBuilder.build404NotFoundDiagnosticError(exception, true)
+                    : DiagnosticErrorBuilder.build404NotFoundDiagnosticError(true);
+                    
             return Results.notFound().render(diagnosticError);
             
         }
         
-        String messageI18n
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n); 
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
         
         Result result = Results
                         .notFound()
@@ -295,7 +310,7 @@ public class NinjaDefault implements Ninja {
     }
     
     @Override
-    public Result getBadRequestResult(Context context, Exception exception) {
+    public Result getBadRequestResult(Context context, BadRequestException exception) {
         
         if (isDiagnosticsEnabled()) {
             
@@ -306,14 +321,12 @@ public class NinjaDefault implements Ninja {
             
         }
         
-        String messageI18n 
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n); 
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
            
         Result result = Results
                         .badRequest()
@@ -341,14 +354,12 @@ public class NinjaDefault implements Ninja {
             
         }
         
-        String messageI18n
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-
-        Message message = new Message(messageI18n);
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_DEFAULT, 
+                Optional.<Throwable>empty(), 
+                Optional.<Result>empty());
 
         // WWW-Authenticate must be included per the spec
         // http://www.ietf.org/rfc/rfc2617.txt 3.2.1 The WWW-Authenticate Response Header
@@ -366,28 +377,33 @@ public class NinjaDefault implements Ninja {
         return result;
 
     }
-
+    
     @Override
     public Result getForbiddenResult(Context context) {
+        return getForbiddenResult(context, null);
+    }
+
+    @Override
+    public Result getForbiddenResult(Context context, ForbiddenRequestException exception) {
         
         // diagnostic mode
         if (isDiagnosticsEnabled()) {
             
             DiagnosticError diagnosticError =
-                DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
+                exception != null
+                ? DiagnosticErrorBuilder.build403ForbiddenDiagnosticError(exception, true)
+                : DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
             
             return Results.forbidden().render(diagnosticError);
             
         }
         
-        String messageI18n 
-                = messages.getWithDefault(
-                        NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY,
-                        NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT,
-                        context,
-                        Optional.<Result>empty());
-        
-        Message message = new Message(messageI18n); 
+        Message message = buildErrorMessage(
+                context, 
+                NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY, 
+                NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT, 
+                Optional.ofNullable(exception), 
+                Optional.<Result>empty());
            
         Result result = Results
                         .forbidden()
@@ -401,6 +417,31 @@ public class NinjaDefault implements Ninja {
         
         return result;
 
+    }
+    
+    protected Message buildErrorMessage(Context context,
+                                        String errorTextKey,
+                                        String errorTextDefault,
+                                        Optional<Throwable> exception,
+                                        Optional<Result> underlyingResult) {
+
+        String messageI18n 
+                = messages.getWithDefault(
+                        errorTextKey,
+                        errorTextDefault,
+                        context,
+                        underlyingResult);
+
+        String errorI18n 
+                = !exception.isPresent()
+                    ? null 
+                    : messages.getWithDefault(
+                        exception.get().getMessage(),
+                        exception.get().getLocalizedMessage(),
+                        context,
+                        underlyingResult);
+        
+        return new Message(messageI18n, errorI18n);
     }
     
     /**

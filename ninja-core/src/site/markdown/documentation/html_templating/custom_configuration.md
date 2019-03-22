@@ -33,8 +33,9 @@ Custom functions - The Java way
 ---------------------------------
 
 While you can access the Freemarker <code>Configuration</code> object, you can add your own custom functions using Java code:
+
 <pre class="prettyprint">
-freemarkerConfiguration.setSharedVariable("upper", new TemplateMethodModelEx() {
+freemarkerConfiguration.setSharedVariable(&quot;upper&quot;, new TemplateMethodModelEx() {
 
 	@Override
 	public Object exec(List args) throws TemplateModelException {
@@ -42,7 +43,9 @@ freemarkerConfiguration.setSharedVariable("upper", new TemplateMethodModelEx() {
 	}
 });
 </pre>
-And in your template :
+
+And in your template:
+
 <pre class="prettyprint">
 ${upper('Make me upper case.')}
 </pre>
@@ -51,14 +54,18 @@ Custom functions - The Ftl way
 ------------------------------
 
 But for templating purpose, you can also do it by defining sets of <code>macro</code> functions in separate .ftl.html files.
+
 <pre class="prettyprint">
-<#macro bold>
-	<b><#nested /></b>
-</#macro>
+&lt;#macro bold&gt;
+	&lt;b&gt;&lt;#nested /&gt;&lt;/b&gt;
+&lt;/#macro&gt;
 </pre>
+
 And in your template :
+
 <pre class="prettyprint">
-<#import "../layout/functions.ftl.html" as f> 
-<@f.bold>Make me bold</@f.bold>
+&lt;#import &quot;../layout/functions.ftl.html&quot; as f&gt; 
+&lt;@f.bold&gt;Make me bold&lt;/@f.bold&gt;
+
 </pre>
 This last way should help you making reusable macros when using one or another HTML/CSS framework.

@@ -248,6 +248,7 @@ will be handled by the second route.
 Values of variable parts of a route are injected into our controller (explained above)
 and are implicitly validated with regular expressions.
 So our controller for routes above would be like that (look at <code>@PathParam</code> argument types):
+
 <pre class="prettyprint">
 package controllers;
 

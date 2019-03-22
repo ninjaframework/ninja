@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class LoginLogoutController {
 
             // something is wrong with the input or password not found.
             context.getFlashScope().put("username", username);
-            context.getFlashScope().put("rememberMe", rememberMe);
+            context.getFlashScope().put("rememberMe", String.valueOf(rememberMe));
             context.getFlashScope().error("login.errorLogin");
 
             return Results.redirect("/login");

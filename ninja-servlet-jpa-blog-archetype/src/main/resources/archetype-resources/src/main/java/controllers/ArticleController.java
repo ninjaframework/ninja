@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,9 +77,9 @@ public class ArticleController {
 
         if (validation.hasViolations()) {
 
-            context.getFlashCookie().error("Please correct field.");
-            context.getFlashCookie().put("title", articleDto.title);
-            context.getFlashCookie().put("content", articleDto.content);
+            context.getFlashScope().error("Please correct field.");
+            context.getFlashScope().put("title", articleDto.title);
+            context.getFlashScope().put("content", articleDto.content);
 
             return Results.redirect("/article/new");
 
@@ -87,7 +87,7 @@ public class ArticleController {
             
             articleDao.postArticle(username, articleDto);
             
-            context.getFlashCookie().success("New article created.");
+            context.getFlashScope().success("New article created.");
             
             return Results.redirect("/");
 

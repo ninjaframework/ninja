@@ -20,7 +20,7 @@ Server Engines
 Undertow standalone - alternative to Jetty
 
  * https://github.com/fizzed/ninja-undertow
-
+ 
 
 Template Engines 
 ----------------
@@ -61,6 +61,14 @@ EBean RDBMS ORM support (for EBean versions > 7.2.3)
 MongoDB/Morphia Integration
 
  * https://github.com/bihe/ninja-mongodb
+
+
+Authentication
+--------------
+
+ Auth0 (authentication SaaS) integration
+
+  * https://github.com/zileo-net/ninja-auth0
 
 
 Process Engines

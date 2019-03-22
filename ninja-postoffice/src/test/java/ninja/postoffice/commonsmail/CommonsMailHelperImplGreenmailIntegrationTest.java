@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class CommonsMailHelperImplGreenmailIntegrationTest {
     @Before
     public void setUp() throws Exception {
 
-        SMTP_TEST_PORT = findAvailablePort(1000, 10000);
+        SMTP_TEST_PORT = findAvailablePort(2000, 10000);
 
         greenMail = new GreenMail(new ServerSetup(SMTP_TEST_PORT, null, "smtp"));
         greenMail.start();
@@ -72,8 +72,8 @@ public class CommonsMailHelperImplGreenmailIntegrationTest {
         // setup the postoffice:
         CommonsmailHelper commonsmailHelper = new CommonsmailHelperImpl();
         Postoffice postoffice =
-                new PostofficeCommonsmailImpl(commonsmailHelper, "localhost", SMTP_TEST_PORT, false, null, null,
-                        false);
+                new PostofficeCommonsmailImpl(commonsmailHelper, "localhost", SMTP_TEST_PORT, false, false, false,
+                        null, null, false);
 
         postoffice.send(mail);
 

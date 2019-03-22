@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.FormBodyPart;
+import org.apache.http.entity.mime.FormBodyPartBuilder;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
@@ -249,6 +252,48 @@ public class NinjaTestBrowser {
             // For File parameters
             entity.addPart(paramName, new FileBody((File) fileToUpload));
 
+            post.setEntity(entity);
+
+            // Here we go!
+            response = EntityUtils.toString(httpClient.execute(post)
+                    .getEntity(), "UTF-8");
+            post.releaseConnection();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return response;
+
+    }
+    
+    public String uploadFileWithForm(String url, String paramName, File fileToUpload, Map<String, String> formParameters) {
+
+        String response = null;
+
+        try {
+
+            httpClient.getParams().setParameter(
+                    CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+            HttpPost post = new HttpPost(url);
+
+            MultipartEntity entity = new MultipartEntity(
+                    HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            // For File parameters
+            entity.addPart(paramName, new FileBody((File) fileToUpload));
+
+            // add form parameters:
+            if (formParameters != null) {
+
+                for (Entry<String, String> parameter : formParameters
+                        .entrySet()) {
+                    entity.addPart(parameter.getKey(), new StringBody(parameter.getValue()));
+                }
+
+            }
+            
             post.setEntity(entity);
 
             // Here we go!

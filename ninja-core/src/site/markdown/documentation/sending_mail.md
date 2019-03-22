@@ -31,17 +31,9 @@ install(new NinjaPostofficeModule(ninjaProperties)).
 <pre class="prettyprint">
 @Singleton
 public class Module extends AbstractModule {
-    
-    NinjaProperties ninjaProperties;
-    
-    public Module(NinjaProperties ninjaProperties) {
-        this.ninjaProperties = ninjaProperties;
-    }
-    
-
     @Override
     protected void configure() { 
-        install(new NinjaPostofficeModule(ninjaProperties));
+        install(new NinjaPostofficeModule());
     }
 
 }
@@ -53,12 +45,14 @@ Configuration and basic usage
 onfigure your mail server in application.conf via the following parameters:
 
 <pre class="prettyprint">
-smtp.host=...     // Hostname of the smtp server (e.g. smtp.mycompany.com)
-smtp.port=...     // Port of the smtp server  (e.g. 465).
-smtp.ssl=...      // Whether to enable ssl (true or false)
-smtp.user=...     // Username to access the smtp server
-smtp.password=... // The password
-smtp.debug=...    // Enable logging of a huge amount of debug information (true or false)
+smtp.host=...               // Hostname of the smtp server (e.g. smtp.mycompany.com)
+smtp.port=...               // Port of the smtp server  (e.g. 465).
+smtp.ssl=...                // Whether to enable SSL (true or false, default is false)
+smtp.starttls=...           // Whether to enable STARTTLS (true or false, default is false)
+smtp.starttls.required=...  // Whether to enforce using STARTTLS (true or false, default is false)
+smtp.user=...               // Username to access the smtp server
+smtp.password=...           // The password
+smtp.debug=...              // Enable logging of a huge amount of debug information (true or false)
 </pre>
 
 

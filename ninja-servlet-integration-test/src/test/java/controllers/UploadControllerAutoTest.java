@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2018 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,34 +17,42 @@
 package controllers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 
 import test.NinjaTest;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
+
+import models.FormWithFile;
+
 public class UploadControllerAutoTest extends NinjaTest {
-	
-	@Test
-	public void testThatUploadWorks() throws FileNotFoundException, IOException {
-		
+
+    @Test
+    public void testThatUploadWorks()
+            throws FileNotFoundException, IOException {
+
         File file = new File("src/test/resources/test_for_upload.txt");
         File file2 = new File("src/test/resources/test_for_upload_2.txt");
-		
-		// Let's upload a simple txt file...
-		String result = ninjaTestBrowser
-				.uploadFiles(getServerAddress() + "uploadFinishAuto",
-				        new String[] {"file","file","file2"},
-				        new File[] { file, file2, file2 } );
 
-		// compute excepted result
+        // Let's upload a simple txt file...
+        String result = ninjaTestBrowser.uploadFiles(
+                getServerAddress() + "uploadFinishAuto",
+                new String[] { "file", "file", "file2" },
+                new File[] { file, file2, file2 });
+
+        // compute excepted result
         StringBuilder sb = new StringBuilder();
-        
+
         String strFile = IOUtils.toString(new FileInputStream(file));
         String strFile2 = IOUtils.toString(new FileInputStream(file2));
         // file
@@ -67,11 +75,38 @@ public class UploadControllerAutoTest extends NinjaTest {
         // file2
         sb.append("file2\n").append(strFile2).append("\n");
 
-		// The upload simply displays back the file we uploaded.
-		// Let's see if that has worked...
-        
-		assertEquals(sb.toString(), result);
+        // The upload simply displays back the file we uploaded.
+        // Let's see if that has worked...
 
-	}
-	
+        assertEquals(sb.toString(), result);
+
+    }
+
+
+    @Test
+    public void testPostFormWithFile() throws IOException {
+
+        File file = new File("src/test/resources/test_for_upload.txt");
+
+        Map<String, String> formParameters = Maps.newHashMap();
+
+        formParameters.put("name", "tester");
+        formParameters.put("email", "test@email.com");
+        
+        // Let's upload a simple txt file...
+        String result = ninjaTestBrowser
+                .uploadFileWithForm(getServerAddress() + "uploadWithForm", 
+                        "file", file, formParameters);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        FormWithFile returnedObject = objectMapper.readValue(result, FormWithFile.class);
+
+        // And assert that returned object has same values
+        assertEquals("tester", returnedObject.name);
+        assertEquals("test@email.com", returnedObject.email);
+        assertTrue(returnedObject.fileReceived);
+        
+    }
+
+
 }

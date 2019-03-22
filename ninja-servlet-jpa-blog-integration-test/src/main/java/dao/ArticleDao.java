@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2017 the original author or authors.
+ * Copyright (C) 2012-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import models.Article;
@@ -42,8 +41,8 @@ public class ArticleDao {
         
         EntityManager entityManager = entitiyManagerProvider.get();
         
-        TypedQuery<Article> query= entityManager.createQuery("SELECT x FROM Article x", Article.class);
-        List<Article> articles = query.getResultList();        
+        TypedQuery<Article> q = entityManager.createQuery("SELECT x FROM Article x", Article.class);
+        List<Article> articles = q.getResultList();        
 
         ArticlesDto articlesDto = new ArticlesDto();
         articlesDto.articles = articles;
@@ -57,8 +56,8 @@ public class ArticleDao {
         
         EntityManager entityManager = entitiyManagerProvider.get();
         
-        Query q = entityManager.createQuery("SELECT x FROM Article x ORDER BY x.postedAt DESC");
-        Article article = (Article) q.setMaxResults(1).getSingleResult();      
+        TypedQuery<Article> q = entityManager.createQuery("SELECT x FROM Article x ORDER BY x.postedAt DESC", Article.class);
+        Article article = q.setMaxResults(1).getSingleResult();      
         
         return article;
         
@@ -70,8 +69,8 @@ public class ArticleDao {
         
         EntityManager entityManager = entitiyManagerProvider.get();
         
-        Query q = entityManager.createQuery("SELECT x FROM Article x ORDER BY x.postedAt DESC");
-        List<Article> articles = (List<Article>) q.setFirstResult(1).setMaxResults(10).getResultList();        
+        TypedQuery<Article> q = entityManager.createQuery("SELECT x FROM Article x ORDER BY x.postedAt DESC", Article.class);
+        List<Article> articles = q.setFirstResult(1).setMaxResults(10).getResultList();            
         
         return articles;
         
@@ -83,8 +82,8 @@ public class ArticleDao {
         
         EntityManager entityManager = entitiyManagerProvider.get();
         
-        Query q = entityManager.createQuery("SELECT x FROM Article x WHERE x.id = :idParam");
-        Article article = (Article) q.setParameter("idParam", id).getSingleResult();        
+        TypedQuery<Article> q = entityManager.createQuery("SELECT x FROM Article x WHERE x.id = :idParam", Article.class);
+        Article article = q.setParameter("idParam", id).getSingleResult();        
         
         return article;
         
@@ -99,8 +98,8 @@ public class ArticleDao {
         
         EntityManager entityManager = entitiyManagerProvider.get();
         
-        Query query = entityManager.createQuery("SELECT x FROM User x WHERE username = :usernameParam");
-        User user = (User) query.setParameter("usernameParam", username).getSingleResult();
+        TypedQuery<User> q = entityManager.createQuery("SELECT x FROM User x WHERE username = :usernameParam", User.class);
+        User user = q.setParameter("usernameParam", username).getSingleResult();
         
         if (user == null) {
             return false;
