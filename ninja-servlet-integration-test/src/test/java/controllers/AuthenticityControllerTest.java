@@ -24,7 +24,7 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import java.util.UUID;
 
-import ninja.NinjaTest;
+import test.NinjaTest;
 import ninja.Result;
 
 import org.apache.http.HttpResponse;

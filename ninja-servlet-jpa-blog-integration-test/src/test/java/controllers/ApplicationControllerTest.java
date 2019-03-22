@@ -18,7 +18,7 @@ package controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import ninja.NinjaTest;
+import test.NinjaTest;
 
 import org.junit.Test;
 

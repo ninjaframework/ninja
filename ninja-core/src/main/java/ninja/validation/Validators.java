@@ -16,26 +16,20 @@
 
 package ninja.validation;
 
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Pattern;
+import com.google.inject.Inject;
+import ninja.Context;
+import ninja.Result;
+import ninja.i18n.Lang;
 
 import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 import javax.validation.metadata.ConstraintDescriptor;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
+import java.io.Serializable;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-
-import ninja.Context;
-import ninja.Result;
-import ninja.i18n.Lang;
+import java.util.regex.Pattern;
 
 /**
  * Built in validators.

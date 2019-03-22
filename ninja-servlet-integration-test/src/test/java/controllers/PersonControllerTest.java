@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Map;
 
 import models.Person;
-import ninja.NinjaTest;
+import test.NinjaTest;
 
 import org.junit.Test;
 

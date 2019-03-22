@@ -64,7 +64,7 @@ to your pom.xml.
         &lt;transformers&gt;
           &lt;transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/&gt;
           &lt;transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"&gt;
-            &lt;mainClass&gt;ninja.standalone.NinjaJetty&lt;/mainClass&gt;
+            &lt;mainClass&gt;NinjaJetty&lt;/mainClass&gt;
           &lt;/transformer&gt;
         &lt;/transformers&gt;
       &lt;/configuration&gt;

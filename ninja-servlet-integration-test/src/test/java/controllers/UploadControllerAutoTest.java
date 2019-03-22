@@ -23,7 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import ninja.NinjaTest;
+import test.NinjaTest;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;

@@ -115,7 +115,7 @@ Version 5.5.0
 Version 5.4.0
 =============
 
- * 2016-02-29 New ninja.standalone.AutoStandalone class locates standalone to use based on
+ * 2016-02-29 New AutoStandalone class locates standalone to use based on
               System property, then META-INF/services, then default value of Jetty (jjlauer)
  * 2016-02-29 Reverse routing is now O(1) from O(N) by using a pre-calculated hashmap (jjlauer)
  * 2016-02-28 More flexible Ninja guice configuration! Your `conf.Module` can optionally extend 

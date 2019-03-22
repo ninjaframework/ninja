@@ -45,7 +45,7 @@ Create a Maven module with an arbitrary name say 'distribution'. The only file y
                 </descriptorRefs>
                 <archive>
                     <manifest>
-                        <mainClass>ninja.standalone.NinjaJetty</mainClass>
+                        <mainClass>NinjaJetty</mainClass>
                     </manifest>
                 </archive>
             </configuration>

@@ -31,9 +31,8 @@ import java.util.List;
 import java.util.Set;
 import ninja.build.ArgumentTokenizer;
 
-import ninja.standalone.NinjaJetty;
-import ninja.standalone.AutoStandalone;
-import ninja.standalone.Standalone;
+import ninja.standalone.console.AutoStandalone;
+import ninja.standalone.console.Standalone;
 import ninja.utils.NinjaConstant;
 
 import org.apache.maven.artifact.Artifact;

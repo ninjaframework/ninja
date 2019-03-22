@@ -5,7 +5,7 @@ Console Application
 
 Ninja is designed to be a web framework, but if you want to leverage its 
 excellent dependency injection or configuration for running a webserver-less
-console application, Ninja v6.3.0+ added support for `ninja.standalone.NinjaConsole`
+console application, Ninja v6.3.0+ added support for `NinjaConsole`
 as a main entry point.
 
 Your application will start like it normally would if running in a web server
@@ -15,19 +15,19 @@ be started as they normally would if running as a standard Ninja web application
 
 ## Usage
 
-You can either start the JVM directly or customize `ninja.standalone.NinjaConsole`.
+You can either start the JVM directly or customize `NinjaConsole`.
 Since it includes a main method, the following would start your console-based
 Ninja application:
 
 <pre class="prettyprint">
-java -cp &lt;classpath-here&gt; ninja.standalone.NinjaConsole
+java -cp &lt;classpath-here&gt; NinjaConsole
 </pre>
 
 Or you can write your own main method and customize `NinjaConsole` as much
 as you need:
 
 <pre class="prettyprint">
-import ninja.standalone.NinjaConsole;
+import NinjaConsole;
 import ninja.utils.NinjaMode;
 
 public class MyMain {

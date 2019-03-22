@@ -26,7 +26,7 @@ import java.util.Map;
 
 import models.ArticleDto;
 import models.ArticlesDto;
-import ninja.NinjaTest;
+import test.NinjaTest;
 
 import org.junit.Test;
 

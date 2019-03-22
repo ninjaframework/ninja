@@ -17,7 +17,7 @@
 package example;
 
 import static org.junit.Assert.assertTrue;
-import ninja.NinjaFluentLeniumTest;
+import test.NinjaFluentLeniumTest;
 
 import org.junit.Test;
 

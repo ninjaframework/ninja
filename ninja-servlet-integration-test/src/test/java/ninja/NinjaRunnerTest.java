@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import com.google.inject.Inject;
 
 import etc.GreetingService;
+import test.NinjaRunner;
 
 /**
  *

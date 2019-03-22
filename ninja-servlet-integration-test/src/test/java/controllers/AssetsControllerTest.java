@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
-import ninja.NinjaTest;
+import test.NinjaTest;
 
 import org.apache.http.HttpResponse;
 import org.junit.Test;

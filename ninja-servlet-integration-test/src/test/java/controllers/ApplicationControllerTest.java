@@ -30,8 +30,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
-import ninja.RecycledNinjaServerTester;
-import ninja.utils.NinjaTestBrowser;
+import test.RecycledNinjaServerTester;
+import test.utils.NinjaTestBrowser;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;

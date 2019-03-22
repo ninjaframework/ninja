@@ -122,7 +122,7 @@ mvn ninja:run -Dninja.jvmArgs="-Dninja.host=localhost -Djavax.net.debug=all"
 ### mainClass
 
 Allows you to set the main class that SuperDevMode will run. Defaults to Ninja
-default standalone class which is `ninja.standalone.NinjaJetty`.
+default standalone class which is `NinjaJetty`.
 
 <pre class="prettyprint">
 mvn ninja:run -Dninja.mainClass="com.example.MyClass"

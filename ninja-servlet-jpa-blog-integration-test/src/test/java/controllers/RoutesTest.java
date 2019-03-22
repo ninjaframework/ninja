@@ -16,7 +16,7 @@
 
 package controllers;
 
-import ninja.NinjaRouterTest;
+import test.NinjaRouterTest;
 
 import org.junit.Test;
 

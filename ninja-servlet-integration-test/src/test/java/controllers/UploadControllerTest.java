@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Map;
 
-import ninja.NinjaTest;
+import test.NinjaTest;
 
 import org.junit.Test;
 

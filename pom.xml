@@ -73,7 +73,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
         <jetty.version>9.3.15.v20161220</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
@@ -95,11 +95,30 @@
 
     <!-- Fix version 1.8 of java compiler in all submodules: -->
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>11</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+        </plugins>
 
         <pluginManagement>
-        
             <plugins>
-                
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5</version>
@@ -118,8 +137,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.8.0</version>
                     <configuration>
+                        <release>${java.version}</release>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                     </configuration>

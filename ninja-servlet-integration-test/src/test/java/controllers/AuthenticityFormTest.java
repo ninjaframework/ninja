@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import ninja.NinjaFluentLeniumTest;
+import test.NinjaFluentLeniumTest;
 
 public class AuthenticityFormTest extends NinjaFluentLeniumTest {
     

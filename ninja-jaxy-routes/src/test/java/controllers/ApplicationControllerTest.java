@@ -16,7 +16,7 @@
 
 package controllers;
 
-import ninja.NinjaDocTester;
+import test.NinjaDocTester;
 import ninja.Result;
 import ninja.Route;
 import ninja.RouterImpl;

@@ -19,6 +19,8 @@ package ninja.standalone;
 import com.google.inject.Injector;
 import ninja.servlet.NinjaServletListener;
 
+import ninja.standalone.console.AbstractStandalone;
+import ninja.standalone.console.StandaloneHelper;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;

@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.regex.Pattern;
 import ninja.AssetsController;
 
-import ninja.standalone.NinjaJetty;
+import ninja.standalone.console.NinjaJetty;
 import ninja.utils.NinjaConstant;
 
 /**

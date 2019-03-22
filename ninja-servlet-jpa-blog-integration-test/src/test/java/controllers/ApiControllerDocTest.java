@@ -22,7 +22,7 @@ import java.util.Map;
 
 import models.ArticleDto;
 import models.ArticlesDto;
-import ninja.NinjaApiDocTest;
+import test.NinjaApiDocTest;
 
 import org.junit.Test;
 

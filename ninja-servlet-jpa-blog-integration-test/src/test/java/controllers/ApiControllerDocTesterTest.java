@@ -23,7 +23,7 @@ import java.util.Map;
 import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
-import ninja.NinjaDocTester;
+import test.NinjaDocTester;
 
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;

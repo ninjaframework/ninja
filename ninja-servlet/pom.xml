@@ -77,6 +77,11 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-websockets-jsr356</artifactId>
+            <version>6.3.0</version>
+        </dependency>
 
     </dependencies>
     
