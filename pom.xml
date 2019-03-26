@@ -244,7 +244,7 @@
                     <version>2.2</version>
                 </plugin>
                 
-                <plugin>
+                    <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>1.0</version>
@@ -521,7 +521,8 @@
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-            
+
+
             <!-- XML parsing -->
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -905,7 +906,6 @@
                 <version>6.0</version>
                 <scope>test</scope>
             </dependency>
-            
         </dependencies>
         
         

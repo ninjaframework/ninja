@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.codehaus.jackson.map.JsonMappingException;
 import test.NinjaTest;
 
 import org.apache.http.HttpResponse;
@@ -369,8 +370,7 @@ public class NinjaTestBrowser {
                     CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
             HttpPost post = new HttpPost(url);
-            StringEntity entity = new StringEntity(
-                    new ObjectMapper().writeValueAsString(object), "utf-8");
+            StringEntity entity = new StringEntity(new ObjectMapper().writeValueAsString(object), "utf-8");
             entity.setContentType("application/json; charset=utf-8");
             post.setEntity(entity);
             post.releaseConnection();

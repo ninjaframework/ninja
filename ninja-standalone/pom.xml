@@ -53,6 +53,11 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-websockets-jsr356</artifactId>
+        </dependency>
         
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -78,6 +83,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
         
         <dependency>

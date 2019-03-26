@@ -31,13 +31,18 @@
     <url>http://www.ninjaframework.org</url>
 
     <dependencies>
-        
         <!-- ninja-core is needed so that correct dependencies are on classpath.  -->
         <!-- with ninja-standalone alone it is one level too deep and other dependencies -->
         <!-- get higher priority. -->
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
             <scope>compile</scope>
         </dependency>
         
@@ -71,12 +76,21 @@
         <dependency>
             <groupId>org.fluentlenium</groupId>
             <artifactId>fluentlenium-junit</artifactId>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.fluentlenium</groupId>
+            <artifactId>fluentlenium-core</artifactId>
+            <version>3.4.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>htmlunit-driver</artifactId>
-            <scope>compile</scope>
         </dependency>
         <!-- selenium uses jetty-client and has a version conflict with ours.
           We must declare these to force the version to ours or websockets will break -->

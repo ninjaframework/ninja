@@ -10,4 +10,9 @@ module ninja.standalone {
 	requires jetty.xml;
 	requires slf4j.api;
 	requires ninja.core;
+	requires commons.lang3;
+	requires java.xml;
+
+	exports standalone;
+	exports standalone.console;
 }

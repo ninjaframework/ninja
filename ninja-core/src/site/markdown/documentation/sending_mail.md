@@ -138,5 +138,5 @@ If you want to use the real SMTP Postoffice in dev mode (and not the mocked
 Postoffice by default) you can override that behavior with the parameter:
 
 <pre class="prettyprint">
-%dev.postoffice.implementation=ninja.postoffice.commonsmail.PostofficeCommonsmailImpl
+%dev.postoffice.implementation=PostofficeCommonsmailImpl
 </pre>

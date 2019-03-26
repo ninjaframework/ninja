@@ -37,9 +37,9 @@ module ninja.core {
 	exports ninja.uploads;
 	exports ninja.validation;
 	exports ninja.jpa;
-	exports ninja.standalone.console;
 	exports ninja.application;
 	exports ninja.lifecycle;
 	exports ninja.exceptions;
 	exports ninja.cache;
+	exports ninja.conf;
 }

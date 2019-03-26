@@ -21,8 +21,8 @@ import java.net.URISyntaxException;
 import com.google.inject.Injector;
 import java.io.Closeable;
 import java.io.IOException;
-import ninja.standalone.console.Standalone;
-import ninja.standalone.console.StandaloneHelper;
+import standalone.console.Standalone;
+import standalone.console.StandaloneHelper;
 import ninja.utils.NinjaMode;
 
 /**

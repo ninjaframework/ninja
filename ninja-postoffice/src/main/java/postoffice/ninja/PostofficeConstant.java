@@ -1,0 +1,40 @@
+/**
+ * Copyright (C) 2012-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package postoffice.ninja;
+
+
+public interface PostofficeConstant {
+    
+    public static final String postofficeImplementation = "postoffice.implementation";
+
+    public static final String smtpHost = "smtp.host";
+
+    public static final String smtpPort = "smtp.port";
+
+    public static final String smtpSsl = "smtp.ssl";
+
+    public static final String smtpStartTLS = "smtp.starttls";
+
+    public static final String smtpStartTLSRequired = "smtp.starttls.required";
+
+    public static final String smtpUser = "smtp.user";
+
+    public static final String smtpPassword = "smtp.password";
+
+    public static final String smtpDebug = "smtp.debug";
+
+}
