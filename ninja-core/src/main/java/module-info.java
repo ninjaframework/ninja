@@ -42,4 +42,5 @@ module ninja.core {
 	exports ninja.exceptions;
 	exports ninja.cache;
 	exports ninja.conf;
+	exports ninja.scheduler;
 }

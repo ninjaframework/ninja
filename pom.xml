@@ -22,7 +22,7 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>6.4.2-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <url>http://www.ninjaframework.org</url>
     <name>${project.artifactId}</name>
     <description>Ninja is a full stack web framework for Java.
@@ -75,7 +75,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.4.12.v20180830</jetty.version>
+        <jetty.version>9.4.15.v20190215</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.9.6</jackson.version>
         <guice.version>4.2.0</guice.version>
