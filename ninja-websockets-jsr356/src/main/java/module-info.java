@@ -4,4 +4,6 @@ module ninja.websockets.jsr356 {
 	requires slf4j.api;
 	requires com.google.guice;
 	requires javax.inject;
+
+	exports ninja.websockets.jsr356;
 }
