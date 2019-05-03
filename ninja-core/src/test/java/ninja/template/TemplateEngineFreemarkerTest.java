@@ -182,7 +182,6 @@ public class TemplateEngineFreemarkerTest {
     @Test(expected = RuntimeException.class)
     public void testThatProdModeThrowsTemplateException() throws RuntimeException {
         when(templateEngineHelper.getTemplateForResult(any(Route.class), any(Result.class), Mockito.anyString())).thenReturn("views/broken.ftl.html");
-        when(ninjaProperties.isProd()).thenReturn(true);
         templateEngineFreemarker.invoke(context, Results.ok());
     }
 }

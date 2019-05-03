@@ -191,7 +191,6 @@ public class HttpCacheToolkitImplTest {
     
         // test lastmodified not added when stuff does not match
         // => but Last-Modified header is added
-        when(context.getMethod()).thenReturn("GET");
         when(context.getHeader(HttpHeaderConstants.IF_NONE_MATCH)).thenReturn("\"12___34\"");
         
         reset(result);
