@@ -12,7 +12,7 @@ You'll need just 3 things to develop with Ninja:
 
 If you already have the JDK and Maven installed you can safely skip the following sections.
 
-**Note:** Ninja is compatible with Java 11 and we'll target all upcoming Java versions
+**Note:** Ninja is compatible with Java 11 and we'll support future Java versions
 with long term support.
  
 Installing Java
