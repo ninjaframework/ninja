@@ -1,3 +1,9 @@
+Version x.x.x
+=============
+
+* 2019-05-05 Website now compatible with new maven site / doxia plugins
+
+
 Version 6.5.0
 =============
 
