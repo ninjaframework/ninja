@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>org.ninjaframework</groupId>
 		<artifactId>ninja</artifactId>
-		<version>6.4.3-SNAPSHOT</version>
+		<version>6.5.0</version>
 	</parent>
 
 	<dependencies>
