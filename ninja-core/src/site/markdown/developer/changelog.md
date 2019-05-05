@@ -1,4 +1,4 @@
-Version X.X.X
+Version 6.5.0
 =============
 
 * 2019-05-03 Support for Java 11 (ra)
