@@ -190,7 +190,6 @@ public class ControllerMethodInvokerWithDeprecatedValidationTest {
 
     @Test
     public void headersAnnotatedArgumentShouldHandleNull() throws Exception {
-        when(context.getHeader("param1")).thenReturn(null);
         create("headers").invoke(mockController, context);
         verify(mockController).headers(null);
     }
@@ -691,7 +690,6 @@ public class ControllerMethodInvokerWithDeprecatedValidationTest {
     
     @Test(expected = RoutingException.class)
     public void needingInjectionParamParserNotBinded() throws Exception {
-        when(context.getParameter("param1")).thenReturn("hello");
         create("needingInjectionParamParser").invoke(mockController, context);
         verify(mockController).needingInjectionParamParser(new Dep("hello_hello"));
     }
@@ -948,7 +946,6 @@ public class ControllerMethodInvokerWithDeprecatedValidationTest {
     @Test(expected = BadRequestException.class)
     public void rainbowArrayParamEmptyStrictModeWorks() {
         when(ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_STRICT_ARGUMENT_EXTRACTORS, false)).thenReturn(true);
-        when(context.getParameter("param1")).thenReturn(null);
         create("enumArrayParam").invoke(mockController, context);
     }
     

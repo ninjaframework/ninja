@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+* 2019-05-03 Support for Java 11 (ra)
 * 2019-02-15 Added `application.webjars.prefer_cdn` conf property to use JSDeliver for WebJars (jlannoy)
 * 2019-02-19 Exclusion of `jetty-annotations` from `ninja-standalone` (jlannoy)
 * 2019-02-14 Configuration property `ninja.jaxy.custom_http_methods` is now required to use custom HTTP methods annotations (jlannoy)

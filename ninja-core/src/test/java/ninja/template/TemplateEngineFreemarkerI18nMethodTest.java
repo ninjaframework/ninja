@@ -89,7 +89,6 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         mockAppender = Mockito.mock(Appender.class);
-        Mockito.when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
         
     }

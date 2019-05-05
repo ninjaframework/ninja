@@ -248,13 +248,20 @@
         
         <dependency>
             <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
+            <artifactId>powermock-api-mockito2</artifactId>
         </dependency>  
         
          <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-multibindings</artifactId>
         </dependency> 
+        
+        <!-- Jaxb was removed from Java 9 and onwards. So we add the dependency explicitly -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
          
     </dependencies>
     

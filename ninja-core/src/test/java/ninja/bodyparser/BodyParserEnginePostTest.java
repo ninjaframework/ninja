@@ -308,11 +308,6 @@ public class BodyParserEnginePostTest {
         map.put("object2.integerPrimitive", new String [] {"3000"});
         map.put("object2.integerObject", new String [] {"4000"});
         
-        Mockito.when(context.getParameter("object1.integerPrimitive")).thenReturn("1000");
-        Mockito.when(context.getParameter("object1.integerObject")).thenReturn("2000");
-        Mockito.when(context.getParameter("object2.integerPrimitive")).thenReturn("3000");
-        Mockito.when(context.getParameter("object2.integerObject")).thenReturn("4000");
-        
         Mockito.when(context.getParameters()).thenReturn(map);
         Mockito.when(context.getValidation()).thenReturn(validation);
 
@@ -340,13 +335,7 @@ public class BodyParserEnginePostTest {
         map.put("object2.integerPrimitive", new String [] {null});
         map.put("object2.integerObject", new String [] {null});
         
-        Mockito.when(context.getParameter("object1.integerPrimitive")).thenReturn("");
-        Mockito.when(context.getParameter("object1.integerObject")).thenReturn("");
-        Mockito.when(context.getParameter("object2.integerPrimitive")).thenReturn(null);
-        Mockito.when(context.getParameter("object2.integerObject")).thenReturn(null);
-        
         Mockito.when(context.getParameters()).thenReturn(map);
-        Mockito.when(context.getValidation()).thenReturn(validation);
 
         // do
         TestObjectWithInnerObjects testObject = bodyParserEnginePost.invoke(context, TestObjectWithInnerObjects.class);

@@ -157,7 +157,6 @@ public class NinjaServletContextTest {
 
         //say the httpServletRequest to return a certain value:
         when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
-        when(httpServletRequest.getHeader(Context.X_FORWARD_HEADER)).thenReturn("x-forwarded-for-mockedRemoteAddr");
 
         //init the context from a (mocked) servlet
         context.init(servletContext, httpServletRequest, httpServletResponse);
@@ -170,7 +169,6 @@ public class NinjaServletContextTest {
     public void testGetRemoteAddrParsesXForwardedForIfSetInApplicationConf() {
 
         //say the httpServletRequest to return a certain value:
-        when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
         when(httpServletRequest.getHeader(Context.X_FORWARD_HEADER)).thenReturn("192.168.1.44");
 
         when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false))
@@ -187,7 +185,6 @@ public class NinjaServletContextTest {
     public void testGetRemoteAddrParsesXForwardedForIfMoreThanOneHostPresent() {
 
         //say the httpServletRequest to return a certain value:
-        when(httpServletRequest.getRemoteAddr()).thenReturn("mockedRemoteAddr");
         when(httpServletRequest.getHeader(Context.X_FORWARD_HEADER)).thenReturn("192.168.1.1, 192.168.1.2, 192.168.1.3");
 
         when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false))
