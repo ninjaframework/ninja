@@ -123,7 +123,7 @@ code {
     color: #333;
 }
 
-/* search bar => fix that search bar does not become bigger than sidebar */
+/* search bar => fix that search bar does not become bigger thatn sidebar */
 input.search-query {
     padding-right: 0px;
 }
