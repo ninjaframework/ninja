@@ -6,7 +6,6 @@ module ninja.standalone {
 	requires javax.servlet.api;
 	requires jetty.http;
 	requires jetty.util;
-	requires javax.websocket.server.impl;
 	requires jetty.xml;
 	requires slf4j.api;
 	requires ninja.core;

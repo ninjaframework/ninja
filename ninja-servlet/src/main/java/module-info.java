@@ -4,7 +4,7 @@ open module ninja.servlet {
 	requires ninja.core;
 	requires com.google.guice;
 	requires com.google.guice.extensions.servlet;
-	requires javax.websocket.api;
+	requires jakarta.websocket.server;
 	requires slf4j.api;
 	requires ninja.websockets.jsr356;
 	requires commons.fileupload;
