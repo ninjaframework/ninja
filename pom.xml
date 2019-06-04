@@ -75,7 +75,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.4.15.v20190215</jetty.version>
+        <jetty.version>9.4.18.v20190429</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.9.6</jackson.version>
         <guice.version>4.2.0</guice.version>
@@ -724,7 +724,13 @@
                 <artifactId>jetty-server</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
-        
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-servlet</artifactId>
