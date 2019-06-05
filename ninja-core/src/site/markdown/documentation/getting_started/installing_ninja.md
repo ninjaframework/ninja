@@ -6,11 +6,14 @@ Prerequisites
 
 You'll need just 3 things to develop with Ninja:
 
-* **JDK**  (Java Development Kit), version **1.8** and above
+* **JDK** (Java Development Kit), version **1.8** and above
 * **Maven** (Project Management Tool), version **3.1.1** and above
 * **Internet** connection (to fetch libraries)
 
 If you already have the JDK and Maven installed you can safely skip the following sections.
+
+**Note:** Ninja is compatible with Java 11 and we'll support future Java versions
+with long term support.
  
 Installing Java
 ---------------

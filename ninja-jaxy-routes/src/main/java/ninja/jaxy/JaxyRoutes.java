@@ -18,7 +18,6 @@ package ninja.jaxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,20 +25,13 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-
-import ninja.Router;
-import ninja.application.ApplicationRoutes;
-import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaProperties;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +39,12 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import ninja.Router;
+import ninja.application.ApplicationRoutes;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
 
 /**
  * Implementation of a JAX-RS style route builder.
@@ -57,6 +55,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class JaxyRoutes implements ApplicationRoutes {
 
+    final static String NINJA_CUSTOM_HTTP_METHODS = "ninja.jaxy.custom_http_methods";
+    
     final static Logger logger = LoggerFactory.getLogger(JaxyRoutes.class);
 
     final NinjaProperties ninjaProperties;
@@ -207,24 +207,48 @@ public class JaxyRoutes implements ApplicationRoutes {
         Set<Method> methods = Sets.newLinkedHashSet();
 
         methods.addAll(reflections.getMethodsAnnotatedWith(Path.class));
-        Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
-        for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
-            if (httpMethod.isAnnotation()) {
-                methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+        
+        boolean enableCustomHttpMethods = ninjaProperties.getBooleanWithDefault(NINJA_CUSTOM_HTTP_METHODS, false);
+        
+        if (enableCustomHttpMethods) {
+            
+            Reflections annotationReflections = new Reflections("", new TypeAnnotationsScanner(), new SubTypesScanner());
+            for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
+                if (httpMethod.isAnnotation()) {
+                    methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+                }
             }
+            
+        } else {
+            
+            // Only look for standard HTTP methods annotations
+            Reflections annotationReflections = new Reflections("ninja.jaxy", new TypeAnnotationsScanner(), new SubTypesScanner());
+            for (Class<?> httpMethod : annotationReflections.getTypesAnnotatedWith(HttpMethod.class)) {
+                if (httpMethod.isAnnotation()) {
+                    methods.addAll(reflections.getMethodsAnnotatedWith((Class<? extends Annotation>) httpMethod));
+                }
+            }
+            
         }
 
         return methods;
     }
 
+    /**
+     * Configures the set of packages to scan for annotated controller methods.
+     */
     private void configureReflections() {
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-
-        Set<URL> packagesToScan = getPackagesToScanForRoutes();
-        builder.addUrls(packagesToScan);
-
-        builder.addScanners(new MethodAnnotationsScanner());
-        reflections = new Reflections(builder);
+        Optional<String> basePackage = Optional.ofNullable(ninjaProperties.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE));
+        
+        if (basePackage.isPresent()) {
+            reflections = new Reflections(
+                    basePackage.get() + "." + NinjaConstant.CONTROLLERS_DIR, 
+                    new MethodAnnotationsScanner());
+        } else {
+            reflections = new Reflections(
+                    NinjaConstant.CONTROLLERS_DIR, 
+                    new MethodAnnotationsScanner()); 
+        }
     }
 
     /**
@@ -265,22 +289,6 @@ public class JaxyRoutes implements ApplicationRoutes {
         }
 
         return paths;
-    }
-
-    /**
-     * Returns the set of packages to scan for annotated controller methods.
-     *
-     * @return the set of packages to scan
-     */
-    public Set<URL> getPackagesToScanForRoutes() {
-
-        Set<URL> packagesToScanForRoutes = Sets.newHashSet();
-
-        packagesToScanForRoutes.addAll(ClasspathHelper
-                .forPackage(NinjaConstant.CONTROLLERS_DIR));
-
-        return packagesToScanForRoutes;
-
     }
 
     /**

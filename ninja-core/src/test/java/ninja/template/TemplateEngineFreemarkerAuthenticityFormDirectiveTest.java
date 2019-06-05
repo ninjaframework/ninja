@@ -34,14 +34,18 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
 
 import freemarker.core.Environment;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
+import freemarker.template.Version;
+import freemarker.template._TemplateAPI;
+import org.mockito.Answers;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * 
@@ -50,7 +54,7 @@ import freemarker.template.TemplateModel;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineFreemarkerAuthenticityFormDirectiveTest {
-       @Rule
+    @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
@@ -61,16 +65,25 @@ public class TemplateEngineFreemarkerAuthenticityFormDirectiveTest {
 
     StringWriter stringWriter = new StringWriter();
 
-    Environment environment = new Environment(Mockito.mock(Template.class), null, stringWriter);
+    Environment environment;
 
     TemplateEngineFreemarkerAuthenticityFormDirective templateEngineFreemarkerAuthenticityFormDirective;
 
     Map<String, String> parameters = Maps.newHashMap();
 
     @Before
-    public void before() {
+    public void before() throws Exception {
+        Template template = Mockito.mock(Template.class);
+        Configuration configuration = Mockito.mock(Configuration.class);
+        Version version = new Version(2, 3, 28);
+        Mockito.when(template.getConfiguration()).thenReturn(configuration);
+        Mockito.when(configuration.getIncompatibleImprovements()).thenReturn(version);               
+        environment = new Environment(template, null, stringWriter);
+        
         when(context.getSession()).thenReturn(session);
         when(session.getAuthenticityToken()).thenReturn("12345");
+         
+
 
         templateEngineFreemarkerAuthenticityFormDirective = new TemplateEngineFreemarkerAuthenticityFormDirective(context);
     }

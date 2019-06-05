@@ -76,9 +76,7 @@ public class BasicAuthFilterTest {
                 });
 
         when(ninja.getUnauthorizedResult(context)).thenReturn(result);
-        when(result.status(Result.SC_401_UNAUTHORIZED)).thenReturn(result);
-        when(result.addHeader(Result.WWW_AUTHENTICATE, challenge)).thenReturn(
-                result);
+        when(result.addHeader(Result.WWW_AUTHENTICATE, challenge)).thenReturn(result);
 
     }
 

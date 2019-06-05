@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -105,7 +105,6 @@ public class AbstractContextTest {
         
         when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false)).thenReturn(Boolean.FALSE);
         doReturn("1.1.1.1").when(context).getRealRemoteAddr();
-        doReturn("2.2.2.2").when(context).getHeader(Context.X_FORWARD_HEADER);
 
         assertThat(context.getRemoteAddr(), is("1.1.1.1"));
     }
@@ -115,7 +114,6 @@ public class AbstractContextTest {
         AbstractContextImpl context = spy(abstractContext);
         
         when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false)).thenReturn(Boolean.TRUE);
-        doReturn("1.1.1.1").when(context).getRealRemoteAddr();
         doReturn("2.2.2.2").when(context).getHeader(Context.X_FORWARD_HEADER);
 
         assertThat(context.getRemoteAddr(), is("2.2.2.2"));
@@ -126,7 +124,6 @@ public class AbstractContextTest {
         AbstractContextImpl context = spy(abstractContext);
 
         when(ninjaProperties.getBooleanWithDefault(Context.NINJA_PROPERTIES_X_FORWARDED_FOR, false)).thenReturn(Boolean.TRUE);
-        doReturn("1.1.1.1").when(context).getRealRemoteAddr();
         doReturn("192.168.1.1, 192.168.1.2, 192.168.1.3").when(context).getHeader(Context.X_FORWARD_HEADER);
 
         //make sure this is correct
@@ -190,7 +187,7 @@ public class AbstractContextTest {
         parameterMap.put("parameter", "parameter");
 
         //and return the parameter map when any parameter is called...
-        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);
+        when(route.getPathParametersEncoded(ArgumentMatchers.anyString())).thenReturn(parameterMap);
 
         context.setRoute(route);
 
@@ -209,7 +206,7 @@ public class AbstractContextTest {
         parameterMap.put("parameter", "blue%2Fred%3Fand+green%E2%82%AC%2f");
 
         //and return the parameter map when any parameter is called...
-        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);
+        when(route.getPathParametersEncoded(ArgumentMatchers.anyString())).thenReturn(parameterMap);
 
         context.setRoute(route);
 
@@ -226,7 +223,7 @@ public class AbstractContextTest {
         parameterMap.put("parameter", "parameter");
 
         //and return the parameter map when any parameter is called...
-        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);
+        when(route.getPathParametersEncoded(ArgumentMatchers.anyString())).thenReturn(parameterMap);
 
         context.setRoute(route);
 

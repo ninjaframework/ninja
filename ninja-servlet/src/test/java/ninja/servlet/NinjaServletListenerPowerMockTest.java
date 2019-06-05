@@ -31,11 +31,14 @@ import org.mockito.Mockito;
 import javax.websocket.server.ServerContainer;
 import static org.junit.Assert.*;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @PrepareForTest(Class.class)
 @RunWith(PowerMockRunner.class)
+// PowerMockIgnore needed to deal with https://github.com/powermock/powermock/issues/864
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*"})
 public class NinjaServletListenerPowerMockTest {
 
     @Mock

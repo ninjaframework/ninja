@@ -21,10 +21,13 @@ import java.util.List;
 
 import ninja.AssetsController;
 import ninja.Router;
+import ninja.utils.NinjaProperties;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import freemarker.template.SimpleScalar;
+import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -33,13 +36,21 @@ import freemarker.template.TemplateModelException;
 public class TemplateEngineFreemarkerWebJarsAtMethod implements
         TemplateMethodModelEx {
 
+    final static String APPLICATION_WEBJARS_PREFER_CDN = "application.webjars.prefer_cdn";
+
+    final static String JSDELIVER_CDN = "//cdn.jsdelivr.net/webjars/";
+
+    final boolean useCDN;
     final Router router;
     final TemplateEngineFreemarkerReverseRouteHelper templateEngineFreemarkerReverseRouteHelper;
 
     @Inject
     public TemplateEngineFreemarkerWebJarsAtMethod(
+            NinjaProperties ninjaProperties,
             Router router,
             TemplateEngineFreemarkerReverseRouteHelper templateEngineFreemarkerReverseRouteHelper) {
+        
+        this.useCDN = ninjaProperties.getBooleanWithDefault(APPLICATION_WEBJARS_PREFER_CDN, false);
         this.router = router;
         this.templateEngineFreemarkerReverseRouteHelper = templateEngineFreemarkerReverseRouteHelper;
 
@@ -47,14 +58,28 @@ public class TemplateEngineFreemarkerWebJarsAtMethod implements
 
     public TemplateModel exec(List args) throws TemplateModelException {
 
-       List argsWithControllerAndMethod = new ArrayList();
-       argsWithControllerAndMethod.add(AssetsController.class.getName());
-       argsWithControllerAndMethod.add("serveWebJars");
-       argsWithControllerAndMethod.add("fileName");
-       argsWithControllerAndMethod.addAll(args);
+        if (args.size() == 0) {
+            throw new TemplateModelException("Error. You must specify a webjars asset URL.");
+        }
+
+        // Allow a boolean as second argument to force webjars usage
+        if (useCDN && (args.size() == 1 || !((TemplateBooleanModel) args.get(1)).getAsBoolean())) {
+
+            String filename = ((SimpleScalar) args.get(0)).getAsString();
+            return new SimpleScalar(JSDELIVER_CDN + filename);
+
+        } else {
+
+            List argsWithControllerAndMethod = new ArrayList();
+            argsWithControllerAndMethod.add(AssetsController.class.getName());
+            argsWithControllerAndMethod.add("serveWebJars");
+            argsWithControllerAndMethod.add("fileName");
+            argsWithControllerAndMethod.addAll(args);
+
+            return templateEngineFreemarkerReverseRouteHelper.computeReverseRoute(
+                    argsWithControllerAndMethod);
        
-       return templateEngineFreemarkerReverseRouteHelper.computeReverseRoute(
-               argsWithControllerAndMethod);
+        }
 
     }
 }

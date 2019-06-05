@@ -110,12 +110,17 @@ This would then result in the following output: <code>/assets/css/custom.css</co
 
 ### webJarsAt(...)
 
-webJarsAt allows you to render webjar contents. For instance
+webJarsAt allows you to render webjar contents (see [Static assets](/documentation/static_assets.html) 
+for more information about WebJars. For instance 
 <code>${webJarsAt("bootstrap/3.3.4/css/bootstrap.min.css")}</code> would render
 a css file from a webJars jar. The corresponding route could be 
 <code>router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController.class, "serveWebJars");</code>.
 
-This would then result in the following output: <code>/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css</code>.
+This would then result in the following output: <code>/assets/webjars/bootstrap/3.3.4/css/bootstrap.min.css</code> 
+or <code>//cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css</code> ; depending on your 
+<code>application.webjars.prefer_cdn</code> configuration property. You can always pass <code>true</code> as 
+a second argument of <code>webJarsAt</code> to force usage of a local webjar content. 
+
 
 ### i18n(...)
 
