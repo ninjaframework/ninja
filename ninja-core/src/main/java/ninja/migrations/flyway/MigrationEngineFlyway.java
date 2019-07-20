@@ -41,11 +41,18 @@ public class MigrationEngineFlyway implements MigrationEngine {
         String connectionUrl = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_URL);
         String connectionUsername = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_USERNAME);
         String connectionPassword = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_PASSWORD);
+        String locations = ninjaProperties.get(NinjaConstant.NINJA_MIGRATION_LOCATIONS);
+        String schemas = this.ninjaProperties.get(NinjaConstant.NINJA_MIGRATION_SCHEMAS);
 
         // We migrate automatically => if you do not want that (eg in production)
         // set ninja.migration.run=false in application.conf
         Flyway flyway = new Flyway();
         flyway.setDataSource(connectionUrl, connectionUsername, connectionPassword);
+
+        if (locations != null)
+            flyway.setLocations(locations);
+        if (schemas != null)
+            flyway.setSchemas(schemas);
 
         // In testmode we are cleaning the database so that subsequent testcases
         // get a fresh database.

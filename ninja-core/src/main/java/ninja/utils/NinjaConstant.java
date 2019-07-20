@@ -225,6 +225,12 @@ public interface NinjaConstant {
     
     /** boolean flag to determine if Flyway should drop the existing DB schema */
     final String NINJA_MIGRATION_DROP_SCHEMA = "ninja.migration.drop";
+
+    /** Comma-separated list of locations to scan recursively for migrations */
+    final String NINJA_MIGRATION_LOCATIONS = "ninja.migration.locations";
+
+    /** Comma-separated list of schemas managed by Flyway */
+    final String NINJA_MIGRATION_SCHEMAS = "ninja.migration.schemas";
     
     /** The name of the persistence unit to use */
     String PERSISTENCE_UNIT_NAME = "ninja.jpa.persistence_unit_name";
