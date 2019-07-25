@@ -49,10 +49,12 @@ public class MigrationEngineFlyway implements MigrationEngine {
         Flyway flyway = new Flyway();
         flyway.setDataSource(connectionUrl, connectionUsername, connectionPassword);
 
-        if (locations != null)
+        if (locations != null) {
             flyway.setLocations(locations);
-        if (schemas != null)
+        }
+        if (schemas != null) {
             flyway.setSchemas(schemas);
+        }
 
         // In testmode we are cleaning the database so that subsequent testcases
         // get a fresh database.
