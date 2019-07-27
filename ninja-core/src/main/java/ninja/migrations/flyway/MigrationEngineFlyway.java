@@ -16,6 +16,7 @@
 
 package ninja.migrations.flyway;
 
+import com.google.inject.Provider;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 
@@ -29,10 +30,13 @@ import ninja.migrations.MigrationEngine;
 public class MigrationEngineFlyway implements MigrationEngine {
 
     private final NinjaProperties ninjaProperties;
+    private final Provider<Flyway> flywayProvider;
 
     @Inject
-    public MigrationEngineFlyway(NinjaProperties ninjaProperties) {
+    public MigrationEngineFlyway(NinjaProperties ninjaProperties,
+                                 Provider<Flyway> flywayProvider) {
         this.ninjaProperties = ninjaProperties;
+        this.flywayProvider = flywayProvider;
     }
     
     @Override
@@ -41,11 +45,20 @@ public class MigrationEngineFlyway implements MigrationEngine {
         String connectionUrl = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_URL);
         String connectionUsername = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_USERNAME);
         String connectionPassword = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_PASSWORD);
+        String locations = ninjaProperties.get(NinjaConstant.NINJA_MIGRATION_LOCATIONS);
+        String schemas = ninjaProperties.get(NinjaConstant.NINJA_MIGRATION_SCHEMAS);
 
         // We migrate automatically => if you do not want that (eg in production)
         // set ninja.migration.run=false in application.conf
-        Flyway flyway = new Flyway();
+        Flyway flyway = flywayProvider.get();
         flyway.setDataSource(connectionUrl, connectionUsername, connectionPassword);
+
+        if (locations != null) {
+            flyway.setLocations(locations);
+        }
+        if (schemas != null) {
+            flyway.setSchemas(schemas);
+        }
 
         // In testmode we are cleaning the database so that subsequent testcases
         // get a fresh database.
