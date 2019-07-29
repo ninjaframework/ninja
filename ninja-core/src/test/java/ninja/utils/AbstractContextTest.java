@@ -203,7 +203,8 @@ public class AbstractContextTest {
 
         //mock a parametermap:
         Map<String, String> parameterMap = Maps.newHashMap();
-        parameterMap.put("parameter", "blue%2Fred%3Fand+green%E2%82%AC%2f");
+
+        parameterMap.put("parameter", "blue%3a:%2Fred%3Fand+green%E2%82%AC%2f");
 
         //and return the parameter map when any parameter is called...
         when(route.getPathParametersEncoded(ArgumentMatchers.anyString())).thenReturn(parameterMap);
@@ -211,7 +212,7 @@ public class AbstractContextTest {
         context.setRoute(route);
 
         //that is how the above parameter looks decoded correctly:
-        assertEquals("blue/red?and+green€/", context.getPathParameter("parameter"));
+        assertEquals("blue::/red?and+green€/", context.getPathParameter("parameter"));
     }
 
     @Test

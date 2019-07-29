@@ -192,7 +192,10 @@ abstract public class AbstractContext implements Context.Impl {
         if (encodedParameter == null) {
             return null;
         } else {
-            return URI.create(encodedParameter).getPath();
+            // some servers already decode the %3a part of the url - therefore it is possible
+            // that an already decoded ":" is in the url. This will cause issues during the decoding
+            // therefore we revert back the decoding
+            return URI.create(encodedParameter.replace(":", "%3a")).getPath();
         }
     }
 
