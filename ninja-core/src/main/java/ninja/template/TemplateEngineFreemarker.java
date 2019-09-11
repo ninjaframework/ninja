@@ -48,6 +48,8 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
+import freemarker.core.HTMLOutputFormat;
+import freemarker.core.OutputFormat;
 import freemarker.core.ParseException;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
@@ -188,11 +190,13 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         }
         
-        // we are going to enable html escaping by default using this template
+     //   // we are going to enable html escaping by default using this template
         // loader:
-        cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
-                .getTemplateLoader()));
+     //   cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
+     //           .getTemplateLoader()));
         
+        cfg.setOutputFormat(HTMLOutputFormat.INSTANCE);
+     //   
         
         // We also do not want Freemarker to chose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"
