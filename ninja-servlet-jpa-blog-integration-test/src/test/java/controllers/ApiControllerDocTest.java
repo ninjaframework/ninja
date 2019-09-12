@@ -70,8 +70,8 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
         say("Please note that you have to be authenticated in order to be allowed to post.");
         
         ArticleDto articleDto = new ArticleDto();
-        articleDto.content = "contentcontent";
-        articleDto.title = "new title new title";
+        articleDto.content = "contentsanitised <script>alert(1);</script>";
+        articleDto.title = "new title new title <script>alert(1);</script>";
 
         apiResponse = makePostRequest(buildUri(POST_ARTICLE_URL.replace("{username}", USER)), articleDto);
         assertEqualsAndSay(403, apiResponse.httpStatus, "You have to be authenticated in order to post articles");
@@ -92,11 +92,12 @@ public class ApiControllerDocTest extends NinjaApiDocTest {
         articlesDto = getGsonWithLongToDateParsing().fromJson(apiResponse.payload, ArticlesDto.class);
         // one new result:
         assertEqualsAndSay(4, articlesDto.articles.size(), "We are now getting 4 articles.");
+        
+        assertEqualsAndSay("contentsanitised ", articlesDto.articles.get(3).content,  "We have sanitised article.");   
 
     }
 
-
-
+   
     private Gson getGsonWithLongToDateParsing() {
         // Creates the json object which will manage the information received
         GsonBuilder builder = new GsonBuilder();

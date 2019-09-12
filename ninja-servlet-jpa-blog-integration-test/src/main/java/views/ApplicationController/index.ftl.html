@@ -10,13 +10,13 @@
             <a href="/article/${frontArticle.id}">${frontArticle.title}</a>    
         </h1>  
         <p>${frontArticle.postedAt?date}</p>  
-        <p><#noescape>${frontArticle.content}</#noescape></p>
+        <p>${frontArticle.content?no_esc}</p>
     </div>
 </#if>
 
 <hr/>
 
-<#if olderArticles??>
+<#if olderArticles??> 
     
     <#list olderArticles as article>
         <h3>
