@@ -67,6 +67,23 @@ After resolving the issues and running your tests you can be confident
 that your production upgrade will also work fine.
 
 
+Custom migration scripts location or schema name
+================================================
+If you want to store your migration scripts in a non-default directory (or directories), set the following optional
+property with a comma-separated list of locations.
+
+<pre class="prettyprint">
+ninja.migration.locations=classpath:com.example.migration,filesystem:/sql-migrations
+</pre>
+
+You can also set a custom schema list using the following property. The first schema in the list will be automatically
+set as the default one during the migration.
+
+<pre class="prettyprint">
+ninja.migration.schemas=schema1,schema2,schema3
+</pre>
+
+
 Migrations in test, dev and prod
 ================================
 
