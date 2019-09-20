@@ -341,6 +341,9 @@ public class AbstractContextTest {
         doReturn("application/protobuf;q=1, application/json;q=0.7").when(context).getHeader("accept");
         assertEquals("application/protobuf", context.getAcceptContentType());
 
+        doReturn("application/protobuf;q=0, application/json;q=0.7").when(context).getHeader("accept");
+        assertNotEquals("application/protobuf", context.getAcceptContentType());
+
         doReturn("text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5").when(context).getHeader("accept");
         assertEquals("text/html", context.getAcceptContentType());
 

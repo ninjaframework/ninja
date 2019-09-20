@@ -57,8 +57,12 @@ import javax.print.attribute.standard.Media;
  * it should be fully or partially implemented here or in the concrete implementation.
  */
 abstract public class AbstractContext implements Context.Impl {
+
+    private static final Splitter splitter = Splitter.on(',')
+            .trimResults()
+            .omitEmptyStrings();
     static final private Logger logger = LoggerFactory.getLogger(AbstractContext.class);
-    
+
     // subclasses need to access these
     final protected BodyParserEngineManager bodyParserEngineManager;
     final protected FlashScope flashScope;
@@ -66,6 +70,7 @@ abstract public class AbstractContext implements Context.Impl {
     final protected Session session;
     final protected Validation validation;
     final protected Injector injector;
+
     final protected ParamParsers paramParsers;
 
     protected Route route;
@@ -73,7 +78,7 @@ abstract public class AbstractContext implements Context.Impl {
     // are saved when a context is initialized
     private String requestPath;
     private String contextPath;
-    
+
     @Inject
     public AbstractContext(
             BodyParserEngineManager bodyParserEngineManager,
@@ -344,13 +349,13 @@ abstract public class AbstractContext implements Context.Impl {
             return Result.TEXT_HTML;
         }
 
-        Splitter s = Splitter.on(',').trimResults().omitEmptyStrings();
-        List<String> mediaRanges= s.splitToList(contentType);
-        List<MediaRange> ranges = mediaRanges.stream().map(MediaRange::new).collect(Collectors.toList());
-        Collections.sort(ranges);
-
-        String bestMatch = ranges.get(0).mediaRange;
-
+        String bestMatch = splitter.splitToList(contentType).stream()
+                .map(MediaRange::new)
+                .filter(mediaRange -> mediaRange.weight != 0.0)
+                .sorted()
+                .findFirst()
+                .flatMap(mediaRange -> Optional.of(mediaRange.mediaRange))
+                .orElse("text/html"); // fall back to text/html, if there are no good media ranges
 
         if (bestMatch.contains("application/xhtml")
                 || bestMatch.contains("text/html")
@@ -439,12 +444,15 @@ abstract public class AbstractContext implements Context.Impl {
             return 0;
         }
 
+        private static final Splitter splitter = Splitter.on(';').trimResults();
+
         private String mediaRange;
+
         private double weight;
         private List<String> extensions;
 
         public MediaRange(String value) {
-            List<String> parts = Splitter.on(';').trimResults().splitToList(value);
+            List<String> parts = splitter.splitToList(value);
             this.mediaRange = parts.get(0);
             Optional<String> weight = parts.stream().filter(part -> part.startsWith("q=")).findFirst();
             this.weight = Double.parseDouble(weight.orElse("q=1").replace("q=", ""));
