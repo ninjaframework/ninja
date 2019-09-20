@@ -18,7 +18,12 @@ package ninja.utils;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
@@ -38,6 +43,8 @@ import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
+
+import javax.print.attribute.standard.Media;
 
 /**
  * Abstract Context.Impl that implements features that are not reliant
@@ -337,35 +344,43 @@ abstract public class AbstractContext implements Context.Impl {
             return Result.TEXT_HTML;
         }
 
-        if (contentType.contains("application/xhtml")
-                || contentType.contains("text/html")
-                || contentType.startsWith("*/*")) {
+        Splitter s = Splitter.on(',').trimResults().omitEmptyStrings();
+        List<String> mediaRanges= s.splitToList(contentType);
+        List<MediaRange> ranges = mediaRanges.stream().map(MediaRange::new).collect(Collectors.toList());
+        Collections.sort(ranges);
+
+        String bestMatch = ranges.get(0).mediaRange;
+
+
+        if (bestMatch.contains("application/xhtml")
+                || bestMatch.contains("text/html")
+                || bestMatch.startsWith("*/*")) {
             return Result.TEXT_HTML;
         }
 
-        if (contentType.contains("application/xml")
-                || contentType.contains("text/xml")) {
+        if (bestMatch.contains("application/xml")
+                || bestMatch.contains("text/xml")) {
             return Result.APPLICATION_XML;
         }
 
-        if (contentType.contains("application/json")
-                || contentType.contains("text/javascript")) {
+        if (bestMatch.contains("application/json")
+                || bestMatch.contains("text/javascript")) {
             return Result.APPLICATION_JSON;
         }
 
-        if (contentType.contains("text/plain")) {
+        if (bestMatch.contains("text/plain")) {
             return Result.TEXT_PLAIN;
         }
 
-        if (contentType.contains("application/octet-stream")) {
+        if (bestMatch.contains("application/octet-stream")) {
             return Result.APPLICATION_OCTET_STREAM;
         }
 
-        if (contentType.endsWith("*/*")) {
+        if (bestMatch.endsWith("*/*")) {
             return Result.TEXT_HTML;
         }
 
-        return contentType;
+        return bestMatch;
     }
 
     @Override
@@ -401,5 +416,39 @@ abstract public class AbstractContext implements Context.Impl {
         }
 
         return contentType.startsWith(ContentTypes.APPLICATION_XML);
+    }
+
+    private static final class MediaRange implements Comparable {
+        @Override
+        public int compareTo(Object o) {
+            MediaRange other = (MediaRange) o;
+
+            // Compare the ranges for specificity
+            if (this.extensions.size() < other.extensions.size()) {
+                // this media range is more specific and should be assigned higher priority
+                return 1;
+            } else if (this.extensions.size() > other.extensions.size()) {
+                // the other range is more specific and should be used
+                return -1;
+            }
+
+            if (this.extensions.size() == other.extensions.size()) {
+                // these two ranges are equally specific and the weights are the deciding factor
+                return Double.compare(other.weight, this.weight);
+            }
+            return 0;
+        }
+
+        private String mediaRange;
+        private double weight;
+        private List<String> extensions;
+
+        public MediaRange(String value) {
+            List<String> parts = Splitter.on(';').trimResults().splitToList(value);
+            this.mediaRange = parts.get(0);
+            Optional<String> weight = parts.stream().filter(part -> part.startsWith("q=")).findFirst();
+            this.weight = Double.parseDouble(weight.orElse("q=1").replace("q=", ""));
+            this.extensions = parts.stream().filter(part -> !part.startsWith("q=")).filter(part -> part.contains("=")).collect(Collectors.toList());
+        }
     }
 }

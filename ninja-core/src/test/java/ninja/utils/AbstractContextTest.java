@@ -297,9 +297,15 @@ public class AbstractContextTest {
     }
 
     @Test
-    public void getAcceptContentType() {
+    public void getAcceptContentTypeLegacy() {
         AbstractContextImpl context = spy(abstractContext);
-        
+
+        doReturn("application/protobuf;q=1, application/json;q=0.7").when(context).getHeader("accept");
+        assertEquals("application/protobuf", context.getAcceptContentType());
+
+        doReturn("text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5").when(context).getHeader("accept");
+        assertEquals("text/html", context.getAcceptContentType());
+
         doReturn(null).when(context).getHeader("accept");
         assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
 
@@ -324,7 +330,45 @@ public class AbstractContextTest {
         doReturn("text/plain").when(context).getHeader("accept");
         assertEquals(Result.TEXT_PLAIN, context.getAcceptContentType());
 
-        doReturn("text/plain, application/json").when(context).getHeader("accept");
+        doReturn("application/json, text/plain").when(context).getHeader("accept");
+        assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
+    }
+
+    @Test
+    public void getAcceptContentType() {
+        AbstractContextImpl context = spy(abstractContext);
+
+        doReturn("application/protobuf;q=1, application/json;q=0.7").when(context).getHeader("accept");
+        assertEquals("application/protobuf", context.getAcceptContentType());
+
+        doReturn("text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5").when(context).getHeader("accept");
+        assertEquals("text/html", context.getAcceptContentType());
+
+        doReturn(null).when(context).getHeader("accept");
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        doReturn("").when(context).getHeader("accept");
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        doReturn("totally_unknown").when(context).getHeader("accept");
+        assertEquals("totally_unknown", context.getAcceptContentType());
+
+        doReturn("application/protobuf").when(context).getHeader("accept");
+        assertEquals("application/protobuf", context.getAcceptContentType());
+
+        doReturn("application/json").when(context).getHeader("accept");
+        assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
+
+        doReturn("text/html;q=1, application/json;q=0.9").when(context).getHeader("accept");
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        doReturn("application/xhtml;q=1, application/json;q=0.9").when(context).getHeader("accept");
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        doReturn("text/plain").when(context).getHeader("accept");
+        assertEquals(Result.TEXT_PLAIN, context.getAcceptContentType());
+
+        doReturn("text/plain;q=0.5, application/json;q=0.9").when(context).getHeader("accept");
         assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
     }
 

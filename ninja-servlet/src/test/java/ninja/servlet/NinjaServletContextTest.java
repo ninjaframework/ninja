@@ -585,6 +585,53 @@ public class NinjaServletContextTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals("totally_unknown", context.getAcceptContentType());
 
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/protobuf");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals("application/protobuf", context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/protobuf;q=1, application/json;q=0.7");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals("application/protobuf", context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/json");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("text/html;q=1, application/json;q=0.9");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/xhtml;q=1, application/json;q=0.9");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("text/plain");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_PLAIN, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/json;q=0.9, text/plain;q=0.5");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
+    }
+
+    @Test
+    public void testGetAcceptContentTypeLegacy() {
+        when(httpServletRequest.getHeader("accept")).thenReturn(null);
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+
+        when(httpServletRequest.getHeader("accept")).thenReturn("totally_unknown");
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+        assertEquals("totally_unknown", context.getAcceptContentType());
+
         when(httpServletRequest.getHeader("accept")).thenReturn("application/json");
         context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
@@ -601,7 +648,7 @@ public class NinjaServletContextTest {
         context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.TEXT_PLAIN, context.getAcceptContentType());
 
-        when(httpServletRequest.getHeader("accept")).thenReturn("text/plain, application/json");
+        when(httpServletRequest.getHeader("accept")).thenReturn("application/json, text/plain");
         context.init(servletContext, httpServletRequest, httpServletResponse);
         assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
     }
