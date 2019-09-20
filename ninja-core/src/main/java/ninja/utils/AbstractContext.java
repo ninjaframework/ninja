@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 
+import com.google.common.base.Strings;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.params.ParamParsers;
@@ -332,7 +333,7 @@ abstract public class AbstractContext implements Context.Impl {
     public String getAcceptContentType() {
         String contentType = getHeader("accept");
 
-        if (contentType == null) {
+        if (Strings.isNullOrEmpty(contentType)) {
             return Result.TEXT_HTML;
         }
 
@@ -364,7 +365,7 @@ abstract public class AbstractContext implements Context.Impl {
             return Result.TEXT_HTML;
         }
 
-        return Result.TEXT_HTML;
+        return contentType;
     }
 
     @Override

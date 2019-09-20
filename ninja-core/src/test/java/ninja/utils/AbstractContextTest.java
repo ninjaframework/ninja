@@ -307,7 +307,10 @@ public class AbstractContextTest {
         assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
 
         doReturn("totally_unknown").when(context).getHeader("accept");
-        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+        assertEquals("totally_unknown", context.getAcceptContentType());
+
+        doReturn("application/protobuf").when(context).getHeader("accept");
+        assertEquals("application/protobuf", context.getAcceptContentType());
 
         doReturn("application/json").when(context).getHeader("accept");
         assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
