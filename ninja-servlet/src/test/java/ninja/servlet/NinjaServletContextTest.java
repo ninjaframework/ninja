@@ -583,7 +583,7 @@ public class NinjaServletContextTest {
 
         when(httpServletRequest.getHeader("accept")).thenReturn("totally_unknown");
         context.init(servletContext, httpServletRequest, httpServletResponse);
-        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
+        assertEquals("totally_unknown", context.getAcceptContentType());
 
         when(httpServletRequest.getHeader("accept")).thenReturn("application/json");
         context.init(servletContext, httpServletRequest, httpServletResponse);
