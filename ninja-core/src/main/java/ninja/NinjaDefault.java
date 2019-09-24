@@ -145,9 +145,9 @@ public class NinjaDefault implements Ninja {
     
     @Override
     public void onFrameworkStart() {
-
-        showSplashScreenViaLogger();
-                
+        if (ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_SPLASH_DISPLAY, true)) {
+            showSplashScreenViaLogger();
+        }
         lifecycleService.start();
     }
 

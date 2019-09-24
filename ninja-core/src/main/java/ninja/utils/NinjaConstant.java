@@ -128,6 +128,11 @@ public interface NinjaConstant {
     final String serverName = "application.server.name";
 
     /**
+     * Whether to display logo at startup. Defaults to true if missing.
+     */
+    final String NINJA_SPLASH_DISPLAY = "ninja.splash.display";
+
+    /**
      * Time until session expires.
      */
     final String sessionExpireTimeInSeconds = "application.session.expire_time_in_seconds";
