@@ -44,8 +44,6 @@ import ninja.Cookie;
 import ninja.Result;
 import ninja.Route;
 
-import javax.print.attribute.standard.Media;
-
 /**
  * Abstract Context.Impl that implements features that are not reliant
  * on the concrete Context implementation.  For example, a concrete implementation
