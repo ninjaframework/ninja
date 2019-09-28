@@ -78,6 +78,7 @@ contributed to Ninja. In some random order:
  * Jens Fendler (jfendler)
  * Christian Groth (christiangroth)
  * Piotr Kuciapski (pi0tr)
+ * Zalan Meggyesi (zmeggyesi)
  
 <div class="alert alert-info">
 Do you feel you are missing from that list? Please let us know - this did not happen

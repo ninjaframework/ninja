@@ -18,7 +18,13 @@ package ninja.utils;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.params.ParamParsers;
@@ -49,8 +55,12 @@ import ninja.Route;
  * it should be fully or partially implemented here or in the concrete implementation.
  */
 abstract public class AbstractContext implements Context.Impl {
+
+    private static final Splitter splitter = Splitter.on(',')
+            .trimResults()
+            .omitEmptyStrings();
     static final private Logger logger = LoggerFactory.getLogger(AbstractContext.class);
-    
+
     // subclasses need to access these
     final protected BodyParserEngineManager bodyParserEngineManager;
     final protected FlashScope flashScope;
@@ -58,6 +68,7 @@ abstract public class AbstractContext implements Context.Impl {
     final protected Session session;
     final protected Validation validation;
     final protected Injector injector;
+
     final protected ParamParsers paramParsers;
 
     protected Route route;
@@ -65,7 +76,7 @@ abstract public class AbstractContext implements Context.Impl {
     // are saved when a context is initialized
     private String requestPath;
     private String contextPath;
-    
+
     @Inject
     public AbstractContext(
             BodyParserEngineManager bodyParserEngineManager,
@@ -332,39 +343,47 @@ abstract public class AbstractContext implements Context.Impl {
     public String getAcceptContentType() {
         String contentType = getHeader("accept");
 
-        if (contentType == null) {
+        if (Strings.isNullOrEmpty(contentType)) {
             return Result.TEXT_HTML;
         }
 
-        if (contentType.contains("application/xhtml")
-                || contentType.contains("text/html")
-                || contentType.startsWith("*/*")) {
+        String bestMatch = splitter.splitToList(contentType).stream()
+                .map(MediaRange::new)
+                .filter(mediaRange -> mediaRange.weight != 0.0)
+                .sorted()
+                .findFirst()
+                .flatMap(mediaRange -> Optional.of(mediaRange.mediaRange))
+                .orElse("text/html"); // fall back to text/html, if there are no good media ranges
+
+        if (bestMatch.contains("application/xhtml")
+                || bestMatch.contains("text/html")
+                || bestMatch.startsWith("*/*")) {
             return Result.TEXT_HTML;
         }
 
-        if (contentType.contains("application/xml")
-                || contentType.contains("text/xml")) {
+        if (bestMatch.contains("application/xml")
+                || bestMatch.contains("text/xml")) {
             return Result.APPLICATION_XML;
         }
 
-        if (contentType.contains("application/json")
-                || contentType.contains("text/javascript")) {
+        if (bestMatch.contains("application/json")
+                || bestMatch.contains("text/javascript")) {
             return Result.APPLICATION_JSON;
         }
 
-        if (contentType.contains("text/plain")) {
+        if (bestMatch.contains("text/plain")) {
             return Result.TEXT_PLAIN;
         }
 
-        if (contentType.contains("application/octet-stream")) {
+        if (bestMatch.contains("application/octet-stream")) {
             return Result.APPLICATION_OCTET_STREAM;
         }
 
-        if (contentType.endsWith("*/*")) {
+        if (bestMatch.endsWith("*/*")) {
             return Result.TEXT_HTML;
         }
 
-        return Result.TEXT_HTML;
+        return bestMatch;
     }
 
     @Override
@@ -400,5 +419,42 @@ abstract public class AbstractContext implements Context.Impl {
         }
 
         return contentType.startsWith(ContentTypes.APPLICATION_XML);
+    }
+
+    private static final class MediaRange implements Comparable {
+        @Override
+        public int compareTo(Object o) {
+            MediaRange other = (MediaRange) o;
+
+            // Compare the ranges for specificity
+            if (this.extensions.size() < other.extensions.size()) {
+                // this media range is more specific and should be assigned higher priority
+                return 1;
+            } else if (this.extensions.size() > other.extensions.size()) {
+                // the other range is more specific and should be used
+                return -1;
+            }
+
+            if (this.extensions.size() == other.extensions.size()) {
+                // these two ranges are equally specific and the weights are the deciding factor
+                return Double.compare(other.weight, this.weight);
+            }
+            return 0;
+        }
+
+        private static final Splitter splitter = Splitter.on(';').trimResults();
+
+        private String mediaRange;
+
+        private double weight;
+        private List<String> extensions;
+
+        public MediaRange(String value) {
+            List<String> parts = splitter.splitToList(value);
+            this.mediaRange = parts.get(0);
+            Optional<String> weight = parts.stream().filter(part -> part.startsWith("q=")).findFirst();
+            this.weight = Double.parseDouble(weight.orElse("q=1").replace("q=", ""));
+            this.extensions = parts.stream().filter(part -> !part.startsWith("q=")).filter(part -> part.contains("=")).collect(Collectors.toList());
+        }
     }
 }
