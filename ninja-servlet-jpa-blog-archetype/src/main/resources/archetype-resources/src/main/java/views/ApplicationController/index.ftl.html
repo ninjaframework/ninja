@@ -13,7 +13,7 @@
             <a href="/article/${symbol_dollar}{frontArticle.id}">${symbol_dollar}{frontArticle.title}</a>    
         </h1>  
         <p>${symbol_dollar}{frontArticle.postedAt?date}</p>  
-        <p><${symbol_pound}noescape>${symbol_dollar}{frontArticle.content}</${symbol_pound}noescape></p>
+        <p>${symbol_dollar}{frontArticle.content?no_esc}</p>
     </div>
 </${symbol_pound}if>
 

@@ -9,7 +9,7 @@
 
     <h1>${symbol_dollar}{article.title}</h1>  
     <p>${symbol_dollar}{article.postedAt?date}</p>  
-    <p><${symbol_pound}noescape>${symbol_dollar}{article.content}</${symbol_pound}noescape></p>
+    <p>${symbol_dollar}{article.content?no_esc}</p>
     
 <${symbol_pound}else>
     
