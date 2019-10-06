@@ -36,7 +36,6 @@ import com.google.inject.persist.Transactional;
 
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ArticleDao {
    
@@ -113,8 +112,8 @@ public class ArticleDao {
         if (user == null) {
             return false;
         }
-        String title  = sanitizer.sanitize(StringEscapeUtils.unescapeHtml4(articleDto.title));
-        String content  = sanitizer.sanitize(StringEscapeUtils.unescapeHtml4(articleDto.content));
+        String title  = sanitizer.sanitize(articleDto.title);
+        String content  = sanitizer.sanitize(articleDto.content);
         Article article = new Article(user, title, content);
         entityManager.persist(article);
         

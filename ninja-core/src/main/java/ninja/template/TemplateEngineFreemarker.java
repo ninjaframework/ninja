@@ -75,9 +75,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         }
     }
     // end
-    
-    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 22);
-    private final Version IMPROVED_VERSION = new Version(2, 3, 28);
+    private final Version FREEMARKER_VERSION = new Version(2, 3, 29);
 
     private final String FILE_SUFFIX = ".ftl.html";
 
@@ -100,7 +98,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
     
     private final String fileSuffix;
-    private final Version freemarkerVersion;
    
     @Inject
     public TemplateEngineFreemarker(Messages messages,
@@ -122,16 +119,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
         this.fileSuffix = this.ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, FILE_SUFFIX);
         
-        if(  ninjaProperties.getBooleanWithDefault(FREEMARKER_CONFIGURATION_OLDVERSION, false) )
-        {
-        	freemarkerVersion = INCOMPATIBLE_IMPROVEMENTS_VERSION;
-        }
-        else
-        {
-        	freemarkerVersion = IMPROVED_VERSION;
-        }
-        
-        cfg = new Configuration(freemarkerVersion);
+        cfg = new Configuration(FREEMARKER_VERSION);
         
         // Set your preferred charset template files are stored in. UTF-8 is
         // a good choice in most applications:
@@ -201,19 +189,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         }
         
-        if ( freemarkerVersion.equals(INCOMPATIBLE_IMPROVEMENTS_VERSION))
-        {
-	        // we are going to enable html escaping by default using this template
-	        // loader:
-	        cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
-	              .getTemplateLoader()));
-        }
-        else
-        {
+        // Escape html by default or use '{yourvariable?no_esc}' to not escape anything
         	cfg.setOutputFormat(HTMLOutputFormat.INSTANCE);
-          	logger.info("Set output format");
-        }
-        
         
         // We also do not want Freemarker to chose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"
@@ -420,7 +397,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     
     private BeansWrapper createBeansWrapperWithExposedFields() {
         DefaultObjectWrapperBuilder defaultObjectWrapperBuilder 
-            = new DefaultObjectWrapperBuilder(freemarkerVersion);
+            = new DefaultObjectWrapperBuilder(FREEMARKER_VERSION);
         defaultObjectWrapperBuilder.setExposeFields(true);
         DefaultObjectWrapper defaultObjectWrapper = defaultObjectWrapperBuilder.build();
         return defaultObjectWrapper;
