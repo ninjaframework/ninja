@@ -186,6 +186,13 @@
             <version>${ninja.version}</version>
         </dependency>
         -->
+        
+        <!--  to sanitise input so no XSS -->
+        <dependency>
+		    <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+		    <artifactId>owasp-java-html-sanitizer</artifactId>
+		    <version>20190610.1</version>
+		</dependency>
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>

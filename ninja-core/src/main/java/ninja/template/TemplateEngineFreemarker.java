@@ -48,6 +48,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
+import freemarker.core.HTMLOutputFormat;
 import freemarker.core.ParseException;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
@@ -62,6 +63,7 @@ import freemarker.template.Version;
 public class TemplateEngineFreemarker implements TemplateEngine {
 	
     public final static String FREEMARKER_CONFIGURATION_FILE_SUFFIX = "freemarker.suffix";
+    public final static String FREEMARKER_CONFIGURATION_OLDVERSION = "freemarker.oldversion";
     
     // Selection of logging library has to be done manually until Freemarker 2.4
     // more: http://freemarker.org/docs/api/freemarker/log/Logger.html
@@ -73,8 +75,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         }
     }
     // end
-    
-    private final Version INCOMPATIBLE_IMPROVEMENTS_VERSION = new Version(2, 3, 22);
+    private final Version FREEMARKER_VERSION = new Version(2, 3, 29);
 
     private final String FILE_SUFFIX = ".ftl.html";
 
@@ -97,7 +98,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     private final TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
     
     private final String fileSuffix;
-    
+   
     @Inject
     public TemplateEngineFreemarker(Messages messages,
                                     Lang lang,
@@ -116,9 +117,9 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         this.templateEngineFreemarkerReverseRouteMethod = templateEngineFreemarkerReverseRouteMethod;
         this.templateEngineFreemarkerAssetsAtMethod = templateEngineFreemarkerAssetsAtMethod;
         this.templateEngineFreemarkerWebJarsAtMethod = templateEngineFreemarkerWebJarsAtMethod;
-        this.fileSuffix = ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, FILE_SUFFIX);
+        this.fileSuffix = this.ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, FILE_SUFFIX);
         
-        cfg = new Configuration(INCOMPATIBLE_IMPROVEMENTS_VERSION);
+        cfg = new Configuration(FREEMARKER_VERSION);
         
         // Set your preferred charset template files are stored in. UTF-8 is
         // a good choice in most applications:
@@ -172,7 +173,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             }
             
             // check for updates each second
-            cfg.setTemplateUpdateDelay(1);
+            cfg.setTemplateUpdateDelayMilliseconds(1000);
 
 
         } else {
@@ -180,7 +181,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
             cfg.setClassForTemplateLoading(this.getClass(), "/");
             
             // never update the templates in production or while testing...
-            cfg.setTemplateUpdateDelay(Integer.MAX_VALUE);
+            cfg.setTemplateUpdateDelayMilliseconds(Integer.MAX_VALUE);
             
             // Hold 20 templates as strong references as recommended by:
             // http://freemarker.sourceforge.net/docs/pgui_config_templateloading.html
@@ -188,11 +189,8 @@ public class TemplateEngineFreemarker implements TemplateEngine {
 
         }
         
-        // we are going to enable html escaping by default using this template
-        // loader:
-        cfg.setTemplateLoader(new TemplateEngineFreemarkerEscapedLoader(cfg
-                .getTemplateLoader()));
-        
+        // Escape html by default or use '{yourvariable?no_esc}' to not escape anything
+        	cfg.setOutputFormat(HTMLOutputFormat.INSTANCE);
         
         // We also do not want Freemarker to chose a platform dependent
         // number formatting. Eg "1000" could be printed out by FTL as "1,000"
@@ -200,8 +198,6 @@ public class TemplateEngineFreemarker implements TemplateEngine {
         // break stuff really badly sometimes.
         // See also: http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping
         cfg.setNumberFormat("0.######");  // now it will print 1000000
-        
-
         cfg.setObjectWrapper(createBeansWrapperWithExposedFields());
         
     }
@@ -401,7 +397,7 @@ public class TemplateEngineFreemarker implements TemplateEngine {
     
     private BeansWrapper createBeansWrapperWithExposedFields() {
         DefaultObjectWrapperBuilder defaultObjectWrapperBuilder 
-            = new DefaultObjectWrapperBuilder(INCOMPATIBLE_IMPROVEMENTS_VERSION);
+            = new DefaultObjectWrapperBuilder(FREEMARKER_VERSION);
         defaultObjectWrapperBuilder.setExposeFields(true);
         DefaultObjectWrapper defaultObjectWrapper = defaultObjectWrapperBuilder.build();
         return defaultObjectWrapper;

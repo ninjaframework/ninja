@@ -1,6 +1,7 @@
-Version x.x.x
+Version 6.6.0
 =============
 
+* 2019-10-06 Switch to Freemarker's build in-html escaping + improved escaping showcase in jpa blog (llenrup)
 * 2019-09-20 Use customized content types in Accept header (fallback to text/html preserved for null and empty string)
 * 2019-07-20 New migration properties: `ninja.migration.locations` and `ninja.migration.schemas` (pi0tr)
 * 2019-05-05 Website now compatible with new maven site / doxia plugins

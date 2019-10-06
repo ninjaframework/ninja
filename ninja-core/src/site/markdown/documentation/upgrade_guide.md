@@ -6,6 +6,14 @@ into Ninja's behavior. This document describes which steps are needed to upgrade
 your application to the latest Ninja version. Simply start with your current 
 version and then work your way up to the top of the document.
 
+to 6.6.0
+--------
+
+- Use ?no_enc instead of noescape. Due to changes in our html templating engine
+  we changed the way how to render unescaped content. Make sure to use something like
+  ${yourVariableThatShouldNotBeEscaped?no_esc} instead of &lt;#noescape&gt;${yourVariableThatShouldNotBeEscaped}&lt;/#noescape&gt;.
+
+
 
 to 6.3.X
 --------

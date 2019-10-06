@@ -5,10 +5,14 @@ Security and templating
 -----------------------
 
 Ninja is HTML escaping all variables that you render by default. If you don't want to do that you
-can use the "noescape" directive around that particular variable.
+can use "no_esc":
+
 <pre class="prettyprint">
-&lt;#noescape&gt;${yourVariableThatShouldNotBeEscaped}&lt;/#noescape&gt;
+${yourVariableThatShouldNotBeEscaped?no_esc}
 </pre>
+
+More: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_no_esc
+
 
 i18n and the view
 ----------------
