@@ -3,6 +3,7 @@ Version x.x.x
 
 * 2019-07-20 New migration properties: `ninja.migration.locations` and `ninja.migration.schemas` (pi0tr)
 * 2019-05-05 Website now compatible with new maven site / doxia plugins
+* 2019-10-11 Configuration property `ninja.splash.display` can turn off boot logo; logo overridable with `ninja/logo.txt`
 
 
 Version 6.5.0
