@@ -1,3 +1,9 @@
+Version x.x.x
+=============
+
+* 2019-10-11 Configuration property `ninja.splash.display` can turn off boot logo; logo overridable with `ninja/logo.txt`
+
+
 Version 6.6.0
 =============
 
