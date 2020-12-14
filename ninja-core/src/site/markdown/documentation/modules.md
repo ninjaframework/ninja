@@ -86,6 +86,10 @@ Camunda BPMN Integration - Camunda Workflow, Business Process, and Decision Mana
 Miscellaneous
 -------------
 
+Prometheus Implementation
+
+  * https://github.com/fizzed/ninja-prometheus
+
 Hazelcast Cache Implementation
 
  * https://github.com/raptaml/ninja-hazelcast-embedded
