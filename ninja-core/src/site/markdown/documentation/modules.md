@@ -62,6 +62,9 @@ MongoDB/Morphia Integration
 
  * https://github.com/bihe/ninja-mongodb
 
+Cassandra
+
+ * https://github.com/fizzed/cassandra-plus
 
 Authentication
 --------------
@@ -82,13 +85,25 @@ Camunda BPMN Integration - Camunda Workflow, Business Process, and Decision Mana
 
  * http://github.com/FendlerConsulting/ninja-camunda
 
+Executors and critical long lived tasks
+
+ * https://github.com/fizzed/executors
+
 
 Miscellaneous
 -------------
 
-Prometheus Implementation
+Prometheus (metrics and exporter)
 
-  * https://github.com/fizzed/ninja-prometheus
+  * https://github.com/fizzed/prometheus-plus
+
+Redis (cache and pooling)
+
+  * https://github.com/fizzed/redis-plus
+
+RabbitMQ (pooling and sessions)
+
+  * https://github.com/fizzed/rabbitmq-plus
 
 Hazelcast Cache Implementation
 
