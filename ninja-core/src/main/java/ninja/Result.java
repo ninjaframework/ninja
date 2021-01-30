@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteStreams;
+import java.io.InputStream;
 
 public class Result {
     
@@ -442,6 +444,45 @@ public class Result {
 
    }
 
+    /**
+     * Renders all bytes from the input stream to the output stream. Does not
+     * close or flush either stream unless you explicitly tell this method to.
+     * Will set the content type to application/octet-stream, unless the content-type
+     * was already set. If any exception is thrown during the render, and internal
+     * server error exception will be thrown.
+     * 
+     * @param input The input stream to read from
+     * @param close If true this method will close the input stream after copying
+     *      all the bytes, otherwise that is up to the caller.
+     * @return This result
+     */
+    public Result render(final InputStream input, boolean close) {
+
+        this.render((Context context, Result result) -> {
+            if (result.getContentType() == null) {
+                result.contentType(Result.APPLICATION_OCTET_STREAM);
+            }
+            
+            final ResponseStreams responseStreams = context.finalizeHeaders(result);
+            
+            try (OutputStream output = responseStreams.getOutputStream()) {
+                ByteStreams.copy(input, output);
+            } catch (IOException e) {
+                throw new InternalServerErrorException(e);
+            } finally {
+                if (close) {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        // should be safe to ignore
+                    }
+                }
+            }
+        });
+        
+        return this;
+    }
+    
     public String getContentType() {
         return contentType;
     }
