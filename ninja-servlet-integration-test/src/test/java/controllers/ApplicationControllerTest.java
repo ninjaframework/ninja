@@ -29,10 +29,15 @@ import org.apache.http.cookie.Cookie;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import models.Person;
+import models.PersonWithParameters;
 import ninja.RecycledNinjaServerTester;
 import ninja.utils.NinjaTestBrowser;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
 
@@ -206,17 +211,17 @@ public class ApplicationControllerTest extends RecycledNinjaServerTester {
         assertEquals(593765, returnedObject.primInt);
         assertEquals(593766, returnedObject.objInt.intValue());
         
-        assertEquals(-3957393, returnedObject.primLong);
-        assertEquals(-3957394, returnedObject.objLong.longValue());
+        assertEquals(-3957393L, returnedObject.primLong);
+        assertEquals(-3957394L, returnedObject.objLong.longValue());
         
         assertEquals(78.12, returnedObject.primFloat, 0.001);
-        assertEquals(79.22, returnedObject.objFloat.floatValue(), 0.001);
+        assertEquals(79.22, returnedObject.objFloat, 0.001f);
         
         assertEquals(694.56, returnedObject.primDouble, 0.001);
-        assertEquals(696.76, returnedObject.objDouble.doubleValue(), 0.001);
+        assertEquals(696.76, returnedObject.objDouble, 0.001d);
         
         assertEquals(false, returnedObject.isPrimBoolean());
-        assertEquals(true, returnedObject.getObjBoolean().booleanValue());
+        assertEquals(true, returnedObject.getObjBoolean());
         
         assertEquals(111, returnedObject.getPrimByte());
         assertEquals(112, returnedObject.getObjByte().byteValue());
@@ -228,6 +233,47 @@ public class ApplicationControllerTest extends RecycledNinjaServerTester {
         assertEquals('X', returnedObject.getObjChar().charValue());
     }
 
+    @Test
+    public void testThatPostEntityWithQueryParametersWorks() throws IOException {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        
+        final String formRequestResponse = ninjaTestBrowser.makePostRequestWithFormParameters(
+            withBaseUrl("/form_with_parameters?a=1&b=hello&c=%E2%82%AC"),
+            null,
+            ImmutableMap.of("name", "Joe"));
+
+        
+        // parse response with object mapper
+        final PersonWithParameters person1 = objectMapper.readValue(formRequestResponse, PersonWithParameters.class);
+        
+        assertThat(person1.getName(), is("Joe"));
+        assertThat(person1.getParameters(), hasEntry("a", "1"));
+        assertThat(person1.getParameters(), hasEntry("b", "hello"));
+        assertThat(person1.getParameters(), hasEntry("c", "\u20AC"));
+        assertThat(person1.getA(), is(1L));
+        assertThat(person1.getB(), is("hello"));
+        
+        
+        // post json request now
+        final Person person2 = new Person();
+        person2.name = "Joe";
+        
+        final String jsonRequestResponse = ninjaTestBrowser.postJson(
+            withBaseUrl("/form_with_parameters?a=1&b=hello&c=%E2%82%AC"),
+            person2);
+
+        
+        // parse response with object mapper
+        final PersonWithParameters person3 = objectMapper.readValue(jsonRequestResponse, PersonWithParameters.class);
+        
+        assertThat(person3.getName(), is("Joe"));
+        assertThat(person3.getParameters(), hasEntry("a", "1"));
+        assertThat(person3.getParameters(), hasEntry("b", "hello"));
+        assertThat(person3.getParameters(), hasEntry("c", "\u20AC"));
+        assertThat(person3.getA(), is(1L));
+        assertThat(person3.getB(), is("hello"));
+    }
+    
     @Test
     public void testDirectObjectRenderingWorks() {
         String response =

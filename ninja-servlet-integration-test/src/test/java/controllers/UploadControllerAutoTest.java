@@ -34,6 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 
 import models.FormWithFile;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertThat;
 
 public class UploadControllerAutoTest extends NinjaTest {
 
@@ -106,6 +109,35 @@ public class UploadControllerAutoTest extends NinjaTest {
         assertEquals("test@email.com", returnedObject.email);
         assertTrue(returnedObject.fileReceived);
         
+    }
+
+    @Test
+    public void testPostFormWithFileAndQueryString() throws IOException {
+
+        File file = new File("src/test/resources/test_for_upload.txt");
+
+        Map<String, String> formParameters = Maps.newHashMap();
+
+        formParameters.put("name", "tester");
+        formParameters.put("email", "test@email.com");
+        
+        // Let's upload a simple txt file...
+        String result = ninjaTestBrowser
+                .uploadFileWithForm(getServerAddress() + "uploadWithForm?a=1&b=hello&c=%E2%82%AC", 
+                        "file", file, formParameters);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        FormWithFile returnedObject = objectMapper.readValue(result, FormWithFile.class);
+
+        // And assert that returned object has same values
+        assertEquals("tester", returnedObject.name);
+        assertEquals("test@email.com", returnedObject.email);
+        assertTrue(returnedObject.fileReceived);
+        assertThat(returnedObject.parameters, hasEntry("a", "1"));
+        assertThat(returnedObject.parameters, hasEntry("b", "hello"));
+        assertThat(returnedObject.parameters, hasEntry("c", "\u20AC"));
+        assertThat(returnedObject.a, is(1L));
+        assertThat(returnedObject.b, is("hello"));
     }
 
 

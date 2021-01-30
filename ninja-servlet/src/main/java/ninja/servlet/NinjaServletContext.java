@@ -529,6 +529,15 @@ public class NinjaServletContext extends AbstractContext {
         ArrayListMultimap<String, String> formMap = ArrayListMultimap.create();
         ArrayListMultimap<String, FileItem> fileMap = ArrayListMultimap.create();
         
+        // Include any query string parameters as part of "formMap"
+        final Map<String,String[]> parameterMap = this.httpServletRequest.getParameterMap();
+        if (parameterMap != null) {
+            parameterMap.forEach((parameter, values) -> {
+                for (String value : values) {
+                    formMap.put(parameter, value);
+                }
+            });
+        }
         
         // This is the iterator we can use to iterate over the contents of the request.
         try {
