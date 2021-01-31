@@ -341,19 +341,21 @@ abstract public class AbstractContext implements Context.Impl {
 
     @Override
     public String getAcceptContentType() {
-        String contentType = getHeader("accept");
+        final String contentType = getHeader("accept");
 
         if (Strings.isNullOrEmpty(contentType)) {
             return Result.TEXT_HTML;
         }
 
-        String bestMatch = splitter.splitToList(contentType).stream()
-                .map(MediaRange::new)
-                .filter(mediaRange -> mediaRange.weight != 0.0)
-                .sorted()
-                .findFirst()
-                .flatMap(mediaRange -> Optional.of(mediaRange.mediaRange))
-                .orElse("text/html"); // fall back to text/html, if there are no good media ranges
+        final String bestMatch = splitter.splitToList(contentType).stream()
+            .map(MediaRange::new)
+            .filter(mediaRange -> mediaRange.weight != 0.0)
+            .sorted()
+            // 2021 chrome, android, etc. make a signed exchange the highest weight
+            .filter(v -> v.mediaRange != null && !v.mediaRange.contains("application/signed-exchange"))
+            .findFirst()
+            .flatMap(mediaRange -> Optional.of(mediaRange.mediaRange))
+            .orElse("text/html"); // fall back to text/html, if there are no good media ranges
 
         if (bestMatch.contains("application/xhtml")
                 || bestMatch.contains("text/html")

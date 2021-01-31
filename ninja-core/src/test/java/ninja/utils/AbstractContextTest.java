@@ -373,6 +373,10 @@ public class AbstractContextTest {
 
         doReturn("text/plain;q=0.5, application/json;q=0.9").when(context).getHeader("accept");
         assertEquals(Result.APPLICATION_JSON, context.getAcceptContentType());
+
+        // 2021 versions of chrome, samsung, and a few others
+        doReturn("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9").when(context).getHeader("accept");
+        assertEquals(Result.TEXT_HTML, context.getAcceptContentType());
     }
 
     @Test
