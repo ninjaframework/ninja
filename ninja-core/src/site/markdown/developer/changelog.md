@@ -9,6 +9,7 @@ Version x.x.x
 * 2021-01-30 Updated servlet-api dependency to v4.0.1
 * 2021-01-30 Fix for Chrome, Android, etc. browsers setting signed-exchange Accept header as highest precedence (jjlauer)
 * 2021-01-30 Update development cert and keystore to .p12 format, new expiration date of 2031
+* 2019-05-19 Fix width of sidebar in website
 
 Version 6.6.1
 =============
@@ -24,7 +25,6 @@ Version 6.6.0
 * 2019-09-20 Use customized content types in Accept header (fallback to text/html preserved for null and empty string)
 * 2019-07-20 New migration properties: `ninja.migration.locations` and `ninja.migration.schemas` (pi0tr)
 * 2019-05-05 Website now compatible with new maven site / doxia plugins
-
 
 Version 6.5.0
 =============
