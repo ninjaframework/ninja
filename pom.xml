@@ -75,10 +75,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.4.18.v20190429</jetty.version>
+        <jetty.version>9.4.35.v20201120</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.9.8</jackson.version>
-        <guice.version>4.2.2</guice.version>
+        <guice.version>4.2.3</guice.version>
         <metrics.version>3.2.6</metrics.version>
         <slf4j.version>1.7.26</slf4j.version>
         <powermock.version>2.0.2</powermock.version>
@@ -536,7 +536,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>27.1-jre</version>
+                <version>30.1-jre</version>
             </dependency>
 
             <!-- reflections is used for classpath scanning -->
@@ -591,7 +591,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.9</version>
+                <version>3.11</version>
             </dependency>
 
             <dependency>
@@ -689,7 +689,7 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>3.1.0</version>
+                <version>4.0.1</version>
             </dependency>
             
             <dependency>
