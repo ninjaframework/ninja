@@ -2,6 +2,11 @@ Version x.x.x
 =============
 
 * 2021-01-30 Include query string parameters if multi-part file upload logic is used (jjlauer)
+* 2021-01-30 Updated Guava dependency to v30.1
+* 2021-01-30 Updated Guice dependency to v4.2.3
+* 2021-01-30 Updated Jetty dependency to v9.4.35
+* 2021-01-30 Updated commons-lang3 dependency to v3.11
+* 2021-01-30 Updated servlet-api dependency to v4.0.1
 
 Version 6.6.1
 =============
