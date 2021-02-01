@@ -2,6 +2,7 @@ Version x.x.x
 =============
 
 * 2021-01-30 Include query string parameters if multi-part file upload logic is used (jjlauer)
+* 2021-01-30 Fix for Chrome, Android, etc. browsers setting signed-exchange Accept header as highest precedence (jjlauer)
 
 Version 6.6.1
 =============
