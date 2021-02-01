@@ -181,7 +181,8 @@
     <custom>
         Custom content
         <fluidoSkin>
-            <googlePlusOne />
+            <leftColumnClass>span3</leftColumnClass>
+            <bodyColumnClass>span9</bodyColumnClass>
             <googleSearch>
                 <sitesearch>
                     http://www.ninjaframework.org
