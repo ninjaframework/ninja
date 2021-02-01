@@ -2,6 +2,7 @@ Version x.x.x
 =============
 
 * 2021-01-30 Include query string parameters if multi-part file upload logic is used (jjlauer)
+* 2021-01-30 Update development cert and keystore to .p12 format, new expiration date of 2031
 
 Version 6.6.1
 =============
