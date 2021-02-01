@@ -46,9 +46,9 @@ public interface Standalone<T extends Standalone> extends Console<T> {
     Integer DEFAULT_SSL_PORT                            = -1;                   // disabled by default
     
     // only defaults in dev & test mode
-    String DEFAULT_DEV_NINJA_SSL_KEYSTORE_URI           = "classpath:/ninja/standalone/ninja-development.keystore";
+    String DEFAULT_DEV_NINJA_SSL_KEYSTORE_URI           = "classpath:/ninja/standalone/ninja-development.p12";
     String DEFAULT_DEV_NINJA_SSL_KEYSTORE_PASSWORD      = "password";
-    String DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_URI         = "classpath:/ninja/standalone/ninja-development.truststore";
+    String DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_URI         = "classpath:/ninja/standalone/ninja-development.p12";
     String DEFAULT_DEV_NINJA_SSL_TRUSTSTORE_PASSWORD    = "password";
 
     /**
