@@ -35,6 +35,17 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultTest {
@@ -251,6 +262,28 @@ public class ResultTest {
         
         assertEquals(testObject, result.getRenderable());
         
+    }
+    
+    @Test
+    public void testRenderInputStream() throws IOException {  
+        
+        final ResponseStreams responseStreams = mock(ResponseStreams.class);
+        final OutputStream output = new ByteArrayOutputStream();
+        final InputStream input = spy(new ByteArrayInputStream(new byte[0]));
+        
+        doReturn(output).when(responseStreams).getOutputStream();
+        doReturn(responseStreams).when(context).finalizeHeaders(any(Result.class));
+        
+        Result result = Results.ok();
+        result.render(input, true);
+        
+        final Renderable renderable = (Renderable)result.getRenderable();
+        
+        renderable.render(context, result);
+        
+        verify(context, times(1)).finalizeHeaders(any(Result.class));
+        verify(input, times(1)).read(any(byte[].class));
+        verify(input, times(1)).close();
     }
     
     @Test
