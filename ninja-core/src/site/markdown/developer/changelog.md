@@ -8,6 +8,7 @@ Version x.x.x
 * 2021-01-30 Updated commons-lang3 dependency to v3.11
 * 2021-01-30 Updated servlet-api dependency to v4.0.1
 * 2021-01-30 Fix for Chrome, Android, etc. browsers setting signed-exchange Accept header as highest precedence (jjlauer)
+* 2021-01-30 Update development cert and keystore to .p12 format, new expiration date of 2031
 
 Version 6.6.1
 =============
