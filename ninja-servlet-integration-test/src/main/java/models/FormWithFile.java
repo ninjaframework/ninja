@@ -16,6 +16,8 @@
 
 package models;
 
+import java.util.Map;
+
 public class FormWithFile {
 
     public String name;
@@ -23,5 +25,11 @@ public class FormWithFile {
     public String email;
 
     public boolean fileReceived;
+    
+    public Map<String,String> parameters;
+    
+    public Long a;
+    
+    public String b;
 
 }

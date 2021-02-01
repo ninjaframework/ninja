@@ -129,6 +129,9 @@ public class Routes implements ApplicationRoutes {
         // /////////////////////////////////////////////////////////////////////
         router.POST().route("/form").with(ApplicationController::postForm);
 
+        // query string, along with POST
+        router.POST().route("/form_with_parameters").with(ApplicationController::postFormWithQueryParameters);
+        
         // /////////////////////////////////////////////////////////////////////
         // Direct object rendering with template test
         // /////////////////////////////////////////////////////////////////////

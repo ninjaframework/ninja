@@ -1,3 +1,8 @@
+Version x.x.x
+=============
+
+* 2021-01-30 Include query string parameters if multi-part file upload logic is used (jjlauer)
+
 Version 6.6.1
 =============
 
