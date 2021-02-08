@@ -20,11 +20,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import ninja.BaseAndClassicModules;
 import ninja.migrations.flyway.MigrationEngineFlyway;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
-import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import org.flywaydb.core.Flyway;
 import org.junit.Test;
@@ -33,6 +31,7 @@ import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.Map;
+import ninja.utils.NinjaProperties;
 
 import static org.mockito.Mockito.*;
 
@@ -51,7 +50,8 @@ public class MigrationEngineFlywayTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                install(new BaseAndClassicModules(ninjaProperties));
+                bind(NinjaProperties.class).toInstance(ninjaProperties);
+                install(new MigrationClassicModule());
                 bind(Flyway.class).toInstance(flywayInstance);
             }
         });
