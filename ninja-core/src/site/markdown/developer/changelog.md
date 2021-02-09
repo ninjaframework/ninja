@@ -1,6 +1,7 @@
-Version x.x.x
+Version 6.7.0
 =============
 
+* 2021-02-09 Flyway and JPA now separate module (ninja-db-classic). Makes ninja-core smaller. (ra)
 * 2021-01-30 Include query string parameters if multi-part file upload logic is used (jjlauer)
 * 2021-01-30 Updated Guava dependency to v30.1
 * 2021-01-30 Updated Guice dependency to v4.2.3
