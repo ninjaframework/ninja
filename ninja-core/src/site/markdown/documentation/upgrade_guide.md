@@ -12,7 +12,7 @@ to 6.7.0
 JPA and Flyway have been migrated to a separate maven module. You can 
 check the configuration inside https://github.com/ninjaframework/ninja/tree/develop/ninja-servlet-jpa-blog-integration-test
 
-But in general you have to do three things:
+But in general you have to do the following:
 
 ```java
 
