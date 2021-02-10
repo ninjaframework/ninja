@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import com.google.common.base.Preconditions;
 import java.io.File;
 import java.util.Properties;
 
@@ -32,6 +33,8 @@ import com.google.common.collect.Iterables;
 import com.google.inject.Binder;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.configuration.SystemConfiguration;
 
 @Singleton
@@ -55,14 +58,50 @@ public class NinjaPropertiesImpl implements NinjaProperties {
      *    by a system property and on the classpath.
      */
     private CompositeConfiguration compositeConfiguration;
-
-    public NinjaPropertiesImpl(
-            NinjaMode ninjaMode) {
-        this(ninjaMode, null);
-    }
     
-    public NinjaPropertiesImpl(
-            NinjaMode ninjaMode, String externalConfigurationPath) {
+    
+    public static class Builder {
+        
+        NinjaMode ninjaMode;
+        Optional<String> externalConfigurationOpt = Optional.empty();
+        Optional<Map<String, String>> propertiesOpt = Optional.empty();
+        
+        public Builder withMode(NinjaMode ninjaMode) {
+            Preconditions.checkNotNull(ninjaMode);
+            this.ninjaMode = ninjaMode;      
+            return this;
+        }
+        
+        /**
+         * A path pointing to the location of an external configuration.
+         */
+        public Builder withExternalConfiguration(String externalConfiguration) {
+            Preconditions.checkNotNull(externalConfiguration);
+            this.externalConfigurationOpt = Optional.of(externalConfiguration);
+            return this;
+        }
+        
+        /**
+         * This is useful in tests.
+         * 
+         * This allows to overwrite certain properties in a test programmatically.
+         */
+        public Builder withProperties(Map<String, String> properties) {
+            Preconditions.checkNotNull(properties);
+            this.propertiesOpt = Optional.of(properties);
+            return this;
+        }
+    
+        public NinjaPropertiesImpl build() {
+            return new NinjaPropertiesImpl(ninjaMode, externalConfigurationOpt, propertiesOpt);
+        }
+    
+    }
+
+    private NinjaPropertiesImpl(
+            NinjaMode ninjaMode, 
+            Optional<String> externalConfigurationPath,
+            Optional<Map<String, String>> propertiesOpt) {
         
         this.ninjaMode = ninjaMode;
 
@@ -124,7 +163,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         }
 
         // third step => load external configuration when a system property is defined.
-        String ninjaExternalConf = externalConfigurationPath;
+        String ninjaExternalConf = externalConfigurationPath.orElse(null); // workaround...
         
         if (ninjaExternalConf == null) {
             // if not set fallback to system property
@@ -209,6 +248,12 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         if (defaultConfiguration != null) {
             compositeConfiguration.addConfiguration(defaultConfiguration);
         }
+        
+        // Finally override any configuration with properties that are set
+        // programmatically (often coming from a testcase
+        propertiesOpt.ifPresent(props -> {
+            props.entrySet().forEach(entry ->  compositeConfiguration.addProperty(entry.getKey(), entry.getValue()));
+        });
         
         // /////////////////////////////////////////////////////////////////////
         // Check that the secret is set or generate a new one if the property

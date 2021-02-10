@@ -16,7 +16,10 @@
 
 package ninja.standalone;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.CreationException;
+import java.util.Map;
+import java.util.Optional;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
@@ -35,13 +38,16 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
     
     // can all be changed prior to configure()
     protected NinjaMode ninjaMode;
-    protected String externalConfigurationPath;
+    protected Optional<String> externalConfigurationPath = Optional.empty();
     protected String name;
     // internal state
     protected boolean configured;
     protected boolean started;
     protected NinjaPropertiesImpl ninjaProperties; // after configure()
     protected OverlayedNinjaProperties overlayedNinjaProperties; // after configure()
+    
+    protected Optional<Map<String, String>> overridesProperties = Optional.empty();
+    protected Optional<com.google.inject.Module> overridesModule = Optional.empty();
 
     public AbstractConsole(String name) {
         // set mode as quickly as possible (can still be changed before configure())
@@ -56,7 +62,17 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
         checkNotConfigured();
         
         // create ninja properties & overlayed view
-        this.ninjaProperties = new NinjaPropertiesImpl(this.ninjaMode, this.externalConfigurationPath);
+        
+        NinjaPropertiesImpl.Builder builder = new NinjaPropertiesImpl.Builder()
+                .withMode(this.ninjaMode);
+        if (externalConfigurationPath.isPresent()) {
+            builder.withExternalConfiguration(this.externalConfigurationPath.get());
+        }
+        if (overridesProperties.isPresent()) {
+            builder.withProperties(this.overridesProperties.get());
+        }
+        this.ninjaProperties = builder.build();
+        
         this.overlayedNinjaProperties = new OverlayedNinjaProperties(this.ninjaProperties);
         
         this.doPreConfigure();
@@ -141,13 +157,14 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
     }
 
     @Override
-    public String getExternalConfigurationPath() {
+    public Optional<String> getExternalConfigurationPath() {
         return this.externalConfigurationPath;
     }
 
     @Override
     public T externalConfigurationPath(String externalConfigurationPath) {
-        this.externalConfigurationPath = externalConfigurationPath;
+        Preconditions.checkNotNull(externalConfigurationPath);
+        this.externalConfigurationPath = Optional.of(externalConfigurationPath);
         return (T) this;
     }
 
@@ -167,6 +184,22 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
         // only available after configure()
         checkConfigured();
         return ninjaProperties;
+    }
+    
+    @Override
+    public T overridesModules(com.google.inject.Module module) {
+        Preconditions.checkNotNull(module);
+        this.overridesModule = Optional.of(module);
+        
+        return (T) this;
+    }
+
+    @Override
+    public T overrideNinjaProperties(Map<String, String> properties) {
+        Preconditions.checkNotNull(properties);
+        this.overridesProperties = Optional.of(properties);
+
+        return (T) this;    
     }
 
     protected Exception tryToUnwrapInjectorException(Exception exception) {

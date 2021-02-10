@@ -49,7 +49,7 @@ public abstract class NinjaApiDocTest extends DocTest {
 
     @Before
     public void startServerInTestMode() {
-        ninjaTestServer = new NinjaTestServer();
+        ninjaTestServer = new NinjaTestServer.Builder().build();
     }
 
     @After

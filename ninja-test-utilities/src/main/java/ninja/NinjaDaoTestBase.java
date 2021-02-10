@@ -74,7 +74,7 @@ public abstract class NinjaDaoTestBase {
 
     @Before
     public final void initialize() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(ninjaMode).build();
         injector = Guice.createInjector(new JpaModule(ninjaProperties));
         jpaInitializer = injector.getInstance(JpaInitializer.class);
         jpaInitializer.start();

@@ -17,6 +17,8 @@
 package ninja.standalone;
 
 import com.google.inject.Injector;
+import java.util.Map;
+import java.util.Optional;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 
@@ -35,7 +37,7 @@ public interface Console<T extends Console> {
 
     T externalConfigurationPath(String externalConfigurationPath);
 
-    String getExternalConfigurationPath();
+    Optional<String> getExternalConfigurationPath();
 
     /**
      * Gets the Guice injector that booted the Ninja application. This value
@@ -62,6 +64,21 @@ public interface Console<T extends Console> {
     T name(String name);
 
     T ninjaMode(NinjaMode ninjaMode);
+    
+    /**
+     * Useful in tests. 
+     * 
+     * You can override module bindings as described 
+     * here: https://publicobject.com/2008/05/overriding-bindings-in-guice.html
+     */
+    T overridesModules(com.google.inject.Module module);
+    
+    /**
+     * Useful in tests.
+     * 
+     * Allows to override specific properties programmatically.
+     */
+    T overrideNinjaProperties(Map<String, String> properties);
 
     /**
      * Shutdown Ninja and underlying server as safely as possible (tries not

@@ -16,11 +16,14 @@
 
 package ninja.utils;
 
+import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.net.URISyntaxException;
 import com.google.inject.Injector;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
 import ninja.standalone.Standalone;
 import ninja.standalone.StandaloneHelper;
 
@@ -31,24 +34,67 @@ import ninja.standalone.StandaloneHelper;
 public class NinjaTestServer implements Closeable {
 
     private final Standalone<Standalone> standalone;
+    
+    public static class Builder {
+        private Optional<NinjaMode> ninjaModeOpt = Optional.empty();
+        private Optional<Integer> portOpt = Optional.empty();
+        private Optional<Class<? extends Standalone>> standaloneClassOpt = Optional.empty();
+        private Optional<com.google.inject.Module> moduleOverride = Optional.empty();
+        private Optional<Map<String, String>> propertiesOverride = Optional.empty();
+        
+        public Builder ninjaMode(NinjaMode ninjaMode) {
+            Preconditions.checkNotNull(ninjaMode);
+            this.ninjaModeOpt = Optional.of(ninjaMode);
+            
+            return this;
+        }
+        
+        public Builder port(Integer port) {
+            Preconditions.checkNotNull(port);
+            this.portOpt = Optional.of(port);
+            
+            return this;
+        }
+        
+        public Builder standaloneClass(Class<? extends Standalone> standaloneClass) {
+            Preconditions.checkNotNull(standaloneClass);
+            this.standaloneClassOpt = Optional.of(standaloneClass);
+            
+            return this;
+        }
+        
+        public Builder moduleOverride(com.google.inject.Module module) {
+            Preconditions.checkNotNull(module);
+            this.moduleOverride = Optional.of(module);
+            
+            return this;
+        }
+        
+         public Builder propertiesOverride(Map<String, String> propertiesOverride) {
+            Preconditions.checkNotNull(propertiesOverride);
+            this.propertiesOverride = Optional.of(propertiesOverride);
+            
+            return this;
+        }
+        
+        public NinjaTestServer build() {
+            Class<? extends Standalone> standaloneClass = this.standaloneClassOpt
+                    .orElseGet(() -> StandaloneHelper.resolveStandaloneClass());
+            Integer port = this.portOpt.orElseGet(() -> StandaloneHelper.findAvailablePort(1000, 10000));
+            NinjaMode ninjaMode = ninjaModeOpt.orElseGet(() -> NinjaMode.test);
+            
+            return new NinjaTestServer(ninjaMode, standaloneClass, port, this.moduleOverride, this.propertiesOverride);
+        }
 
-    public NinjaTestServer() {
-        this(NinjaMode.test);
     }
     
-    public NinjaTestServer(NinjaMode ninjaMode) {
-        this(ninjaMode, StandaloneHelper.resolveStandaloneClass());
-    }
-    
-    public NinjaTestServer(NinjaMode ninjaMode, int port) {
-        this(ninjaMode, StandaloneHelper.resolveStandaloneClass(), port);
-    }
-    
-    public NinjaTestServer(NinjaMode ninjaMode, Class<? extends Standalone> standaloneClass) {
-        this(ninjaMode, standaloneClass, StandaloneHelper.findAvailablePort(1000, 10000));
-    }
-    
-    public NinjaTestServer(NinjaMode ninjaMode, Class<? extends Standalone> standaloneClass, int port) {
+    private NinjaTestServer(
+            NinjaMode ninjaMode, 
+            Class<? extends Standalone> standaloneClass, 
+            int port,
+            Optional<com.google.inject.Module> overrideModuleOpt,
+            Optional<Map<String, String>> overridePropertiesOpt) {
+        
         this.standalone = StandaloneHelper.create(standaloneClass);
         
         try {
@@ -56,6 +102,14 @@ public class NinjaTestServer implements Closeable {
             this.standalone
                 .port(port)
                 .ninjaMode(ninjaMode);
+            
+            if (overrideModuleOpt.isPresent()) {
+                this.standalone.overridesModules(overrideModuleOpt.get());
+            }
+            
+            if (overridePropertiesOpt.isPresent()) {
+                this.standalone.overrideNinjaProperties(overridePropertiesOpt.get());
+            }
             
             standalone.start();
         } catch (Exception e) {

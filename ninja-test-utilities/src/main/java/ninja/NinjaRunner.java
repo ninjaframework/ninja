@@ -70,7 +70,7 @@ public class NinjaRunner extends BlockJUnit4ClassRunner {
 
     public NinjaRunner(Class<?> klass) throws InitializationError {
         super(klass);
-        NinjaTestServer ninjaTestServer = new NinjaTestServer();
+        NinjaTestServer ninjaTestServer = new NinjaTestServer.Builder().build();
         injector = ninjaTestServer.getInjector();
     }
 

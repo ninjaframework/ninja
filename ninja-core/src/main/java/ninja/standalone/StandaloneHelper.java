@@ -18,6 +18,7 @@ package ninja.standalone;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URL;
@@ -116,8 +117,8 @@ public class StandaloneHelper {
     
     static public Standalone create(Class<? extends Standalone> standaloneClass) {
         try {
-            return standaloneClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return standaloneClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException("Unable to create " + standaloneClass.getCanonicalName() + " (either not on classpath or invalid class name)");
         }
     }

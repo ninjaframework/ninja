@@ -85,7 +85,7 @@ public class NinjaServletListenerTest {
     public void testCreatingInjectorWithCustomNinjaPropertiesWorks() {
 
         // setup stuff
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
         ninjaProperties.setProperty("key!", "value!");
 
         NinjaServletListener ninjaServletListener = new NinjaServletListener();
@@ -109,7 +109,7 @@ public class NinjaServletListenerTest {
     public void testCreatingInjectorWithCustomModulesPackageWorks() {
 
         // setup stuff
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
         ninjaProperties.setProperty(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE, "ninja.servlet");
 
         NinjaServletListener ninjaServletListener = new NinjaServletListener();
@@ -169,7 +169,7 @@ public class NinjaServletListenerTest {
     public void testThatSettingNinjaPropertiesTwiceDoesNotWork() {
 
         NinjaServletListener ninjaServletListener = new NinjaServletListener();
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
 
         // first setting works
         ninjaServletListener.setNinjaProperties(ninjaProperties);

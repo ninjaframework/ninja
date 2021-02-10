@@ -45,7 +45,7 @@ public class NinjaServletBootstrapTest {
     @Test
     public void userSuppliedServletModuleInConfDirectory() {
 
-        ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.test);
+        ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
         
         Bootstrap bootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
         
@@ -70,7 +70,7 @@ public class NinjaServletBootstrapTest {
     @Test
     public void userSuppliedServletModuleInShiftedConfDirectory() {
         
-        ninjaPropertiesImpl = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
+        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
         
         Mockito.when(
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))

@@ -39,7 +39,7 @@ public abstract class NinjaFluentLeniumTest extends FluentTest {
 
     @Before
     public void startupServer() {
-        ninjaTestServer = new NinjaTestServer();
+        ninjaTestServer = new NinjaTestServer.Builder().build();
     }
 
     /**

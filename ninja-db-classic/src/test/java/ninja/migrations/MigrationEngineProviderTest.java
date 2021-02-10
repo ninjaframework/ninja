@@ -40,7 +40,9 @@ public class MigrationEngineProviderTest {
     
     @Test
     public void defaultImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+                .withMode(NinjaMode.test)
+                .build();   
         
         ninjaProperties.setProperty(NinjaConstant.MIGRATION_ENGINE_IMPLEMENTATION, null);
         
@@ -61,7 +63,9 @@ public class MigrationEngineProviderTest {
     
     @Test
     public void missingImplementationThrowsExceptionOnUseNotCreate() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+                .withMode(NinjaMode.test)
+                .build();     
         
         ninjaProperties.setProperty(NinjaConstant.MIGRATION_ENGINE_IMPLEMENTATION, "not_existing_implementation");
         
