@@ -59,6 +59,7 @@
         <module>ninja-metrics-librato</module>
         <module>ninja-metrics-influxdb</module>
         <module>ninja-servlet</module>
+        <module>ninja-db-classic</module>
         <module>ninja-standalone</module>
         <module>ninja-test-utilities</module>
         <module>ninja-servlet-integration-test</module>
@@ -447,6 +448,12 @@
             <dependency>
                 <groupId>org.ninjaframework</groupId>
                 <artifactId>ninja-servlet</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-db-classic</artifactId>
                 <version>${project.version}</version>
             </dependency>
         

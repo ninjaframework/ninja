@@ -6,6 +6,48 @@ into Ninja's behavior. This document describes which steps are needed to upgrade
 your application to the latest Ninja version. Simply start with your current 
 version and then work your way up to the top of the document.
 
+to 6.7.0
+--------
+
+JPA and Flyway have been migrated to a separate maven module. You can 
+check the configuration inside https://github.com/ninjaframework/ninja/tree/develop/ninja-servlet-jpa-blog-integration-test
+
+But in general you have to do the following:
+
+```java
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-db-classic</artifactId>
+            <version>${ninja.version}</version>
+        </dependency>
+```
+
+Modify your Module java to start-up the database support:
+
+
+```java
+@Singleton
+public class Module extends AbstractModule {
+    
+    private final NinjaProperties ninjaProperties;
+    
+    public Module(NinjaProperties ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+    }
+    
+    @Override
+    protected void configure() { 
+        
+        install(new JpaModule(ninjaProperties));
+        install(new MigrationClassicModule());
+
+        // ... likely more modules...
+    }
+}
+```
+
+
 to 6.6.0
 --------
 

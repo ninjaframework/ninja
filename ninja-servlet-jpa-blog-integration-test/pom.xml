@@ -177,6 +177,11 @@
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-db-classic</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.ninjaframework</groupId>

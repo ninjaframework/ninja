@@ -46,6 +46,12 @@
             <artifactId>ninja-standalone</artifactId>
             <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-db-classic</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Testing is mainly done by mockito: -->
         <!-- Order of hamcrest first then junit is important -->
