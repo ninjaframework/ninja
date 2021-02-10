@@ -1,5 +1,21 @@
-JPA
-===
+Foreword
+========
+
+Ninja provides two principal ways on how to access relational databases.
+  
+The classic way is to use ninja-db-classic. A module that bundles migrations and
+JPA. 
+
+The upcoming and new way to access relational databases is via [ninja-db](https://github.com/ninjaframework/ninja-db).
+
+Ninja-db has certain advantages over ninja-db-classic: It is more modular and supports
+multiple databases.
+
+But there's nothing wrong with using ninja-db-classic.
+
+
+JPA via ninja-db-classic
+=======================
 
 JPA is the de-facto standard for persistence in Java and Ninja provides out-of-the box support for JPA 2.0. 
 JPA support is implemented by Hibernate and transaction handling is facilitated by Guice Persist.
