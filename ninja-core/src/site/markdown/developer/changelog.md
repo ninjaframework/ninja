@@ -1,6 +1,7 @@
 Version x.x.x
 =============
 
+* 2021-02-09 Upgrade license headers (ra)
 * 2021-02-09 Upgrade junit (ra)
 * 2021-01-30 Include query string parameters if multi-part file upload logic is used (jjlauer)
 * 2021-01-30 Updated Guava dependency to v30.1
