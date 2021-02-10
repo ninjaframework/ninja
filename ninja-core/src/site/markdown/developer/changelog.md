@@ -1,6 +1,7 @@
 Version 6.7.0
 =============
 
+* 2021-02-10 Upgrade license headers (ra)
 * 2021-02-09 Flyway and JPA now separate module (ninja-db-classic). Makes ninja-core smaller. (ra)
 * 2021-02-09 Upgrade junit (ra)
 * 2021-01-30 Include query string parameters if multi-part file upload logic is used (jjlauer)
