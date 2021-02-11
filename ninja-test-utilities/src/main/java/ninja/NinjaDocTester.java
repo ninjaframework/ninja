@@ -40,7 +40,7 @@ public abstract class NinjaDocTester extends DocTester {
 
     @Before
     public void startServerInTestMode() {
-        ninjaTestServer = new NinjaTestServer.Builder().build();
+        ninjaTestServer = NinjaTestServer.builder().build();
     }
 
     @After

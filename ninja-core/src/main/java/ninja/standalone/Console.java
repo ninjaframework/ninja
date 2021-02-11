@@ -66,19 +66,23 @@ public interface Console<T extends Console> {
     T ninjaMode(NinjaMode ninjaMode);
     
     /**
-     * Useful in tests. 
-     * 
-     * You can override module bindings as described 
+     * Override module bindings as described 
      * here: https://publicobject.com/2008/05/overriding-bindings-in-guice.html
+     * 
+     * @param module Any bindings in this bindings will override all other bindings.
+     *               This is very useful in tests.
+     * @return this instance for chaining
      */
-    T overridesModules(com.google.inject.Module module);
+    T overrideModule(com.google.inject.Module module);
     
     /**
-     * Useful in tests.
+     * Override specific properties programmatically.
      * 
-     * Allows to override specific properties programmatically.
+     * @param properties Any properties in this map will override properties in any configuration file.
+     *               This is very useful in tests.
+     * @return this instance for chaining
      */
-    T overrideNinjaProperties(Map<String, String> properties);
+    T overrideProperties(Map<String, String> properties);
 
     /**
      * Shutdown Ninja and underlying server as safely as possible (tries not

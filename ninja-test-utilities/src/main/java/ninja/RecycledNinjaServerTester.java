@@ -50,7 +50,7 @@ public class RecycledNinjaServerTester extends BaseNinjaServerTester {
     static public ExternalResource ninjaTestServerResource = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
-            ninjaTestServer = new NinjaTestServer.Builder().ninjaMode(NinjaMode.test).build();
+            ninjaTestServer = NinjaTestServer.builder().ninjaMode(NinjaMode.test).build();
         }
 
         @Override

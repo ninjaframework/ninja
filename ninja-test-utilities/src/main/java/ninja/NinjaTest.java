@@ -48,7 +48,7 @@ public class NinjaTest {
 
     @Before
     public void startupServerAndBrowser() {
-        ninjaTestServer = new NinjaTestServer.Builder().build();
+        ninjaTestServer = NinjaTestServer.builder().build();
         ninjaTestBrowser = new NinjaTestBrowser();
     }
 

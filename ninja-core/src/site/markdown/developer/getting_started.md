@@ -33,6 +33,19 @@ send us a pull request to become a happy member of the Ninja family :)
 
 ### Code style
 
+- **Don't use null**
+-- This is not yet the case across the whole codebase.
+-- For new code the rule of thumb is: Never use null. Consider using Optional instead.
+-- More: https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained
+- **Make things immutable** (ImmutableMap etc)
+-- This is not yet the case across the whole codebase.
+-- New code should use immutability where possible.
+-- Makes it easy to reason about state of variables and makes multithreading a breeze.
+- **New tests should use AssertJ** (and no longer hamcrest or Junit equals).
+-- AssertJ makes tests easier to read and understand + it gives better error messages
+- Consider using the **builder pattern**
+-- Constructors with many parameters are hard to read. A builder can help.
+-- A builder has to work like MyNewClass.builder(). ... .build(). (Notice the static builder() - no "new" is needed).
 - Default Sun Java / Eclipse code style (a default config for eclipse can be found at the project root eclipse-ninja-format.xml.
 - If you change only tiny things only reformat stuff you actually changed. Otherwise reviewing is really hard.
 - We use spaces / 4 spaces as a tab in all files (java, xml...).

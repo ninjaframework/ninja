@@ -16,6 +16,7 @@
 
 package ninja.servlet;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import ninja.Bootstrap;
 import javax.servlet.ServletContextEvent;
@@ -49,6 +50,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
     
     private volatile Bootstrap ninjaBootstrap;
     private NinjaPropertiesImpl ninjaProperties = null;
+    private Optional<com.google.inject.Module> overrideModuleOpt = Optional.empty();
     private String contextPath;
     private Optional<Module> webSocketModule = Optional.empty();
 
@@ -57,6 +59,14 @@ public class NinjaServletListener extends GuiceServletContextListener {
             throw new IllegalStateException("NinjaProperties already set.");
         }
         this.ninjaProperties = ninjaPropertiesImpl;
+    }
+    
+    public synchronized void setOverrideModule(com.google.inject.Module overrideModule) {
+        Preconditions.checkNotNull(overrideModule);
+        if (this.overrideModuleOpt.isPresent()) {
+            throw new IllegalStateException("overrideModule already set.");
+        }
+        this.overrideModuleOpt = Optional.of(overrideModule);
     }
 
     @Override
@@ -122,7 +132,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
                     }
                 
                     ninjaBootstrap 
-                            = createNinjaBootstrap(ninjaProperties, contextPath);
+                            = createNinjaBootstrap(ninjaProperties, overrideModuleOpt, contextPath);
                     ninjaBootstrapLocal = ninjaBootstrap;
 
                 }
@@ -139,12 +149,13 @@ public class NinjaServletListener extends GuiceServletContextListener {
     
     private Bootstrap createNinjaBootstrap(
             NinjaPropertiesImpl ninjaProperties,
+            Optional<com.google.inject.Module> overrideModuleOpt,
             String contextPath) {
     
         // we set the contextpath.
         ninjaProperties.setContextPath(contextPath);
         
-        ninjaBootstrap = new NinjaServletBootstrap(ninjaProperties);
+        ninjaBootstrap = new NinjaServletBootstrap(ninjaProperties, overrideModuleOpt);
         
         // if websocket container present then enable jsr-356 websockets
         webSocketModule.ifPresent(module -> {

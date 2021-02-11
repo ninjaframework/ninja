@@ -35,12 +35,18 @@ public class NinjaTestServer implements Closeable {
 
     private final Standalone<Standalone> standalone;
     
+    public static Builder builder() {
+        return new Builder();
+    }
+    
     public static class Builder {
         private Optional<NinjaMode> ninjaModeOpt = Optional.empty();
         private Optional<Integer> portOpt = Optional.empty();
         private Optional<Class<? extends Standalone>> standaloneClassOpt = Optional.empty();
-        private Optional<com.google.inject.Module> moduleOverride = Optional.empty();
-        private Optional<Map<String, String>> propertiesOverride = Optional.empty();
+        private Optional<com.google.inject.Module> overrideModuleOpt = Optional.empty();
+        private Optional<Map<String, String>> propertiesOverrideOpt = Optional.empty();
+        
+        private Builder() {}
         
         public Builder ninjaMode(NinjaMode ninjaMode) {
             Preconditions.checkNotNull(ninjaMode);
@@ -63,16 +69,16 @@ public class NinjaTestServer implements Closeable {
             return this;
         }
         
-        public Builder moduleOverride(com.google.inject.Module module) {
-            Preconditions.checkNotNull(module);
-            this.moduleOverride = Optional.of(module);
+        public Builder overrideModule(com.google.inject.Module overrideModule) {
+            Preconditions.checkNotNull(overrideModule);
+            this.overrideModuleOpt = Optional.of(overrideModule);
             
             return this;
         }
         
-         public Builder propertiesOverride(Map<String, String> propertiesOverride) {
+         public Builder overrideProperties(Map<String, String> propertiesOverride) {
             Preconditions.checkNotNull(propertiesOverride);
-            this.propertiesOverride = Optional.of(propertiesOverride);
+            this.propertiesOverrideOpt = Optional.of(propertiesOverride);
             
             return this;
         }
@@ -83,7 +89,7 @@ public class NinjaTestServer implements Closeable {
             Integer port = this.portOpt.orElseGet(() -> StandaloneHelper.findAvailablePort(1000, 10000));
             NinjaMode ninjaMode = ninjaModeOpt.orElseGet(() -> NinjaMode.test);
             
-            return new NinjaTestServer(ninjaMode, standaloneClass, port, this.moduleOverride, this.propertiesOverride);
+            return new NinjaTestServer(ninjaMode, standaloneClass, port, this.overrideModuleOpt, this.propertiesOverrideOpt);
         }
 
     }
@@ -104,11 +110,11 @@ public class NinjaTestServer implements Closeable {
                 .ninjaMode(ninjaMode);
             
             if (overrideModuleOpt.isPresent()) {
-                this.standalone.overridesModules(overrideModuleOpt.get());
+                this.standalone.overrideModule(overrideModuleOpt.get());
             }
             
             if (overridePropertiesOpt.isPresent()) {
-                this.standalone.overrideNinjaProperties(overridePropertiesOpt.get());
+                this.standalone.overrideProperties(overridePropertiesOpt.get());
             }
             
             standalone.start();

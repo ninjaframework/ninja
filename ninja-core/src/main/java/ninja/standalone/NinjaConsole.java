@@ -17,6 +17,7 @@
 package ninja.standalone;
 
 import com.google.inject.Injector;
+import java.util.Optional;
 import ninja.Bootstrap;
 import ninja.utils.NinjaPropertiesImpl;
 
@@ -65,7 +66,7 @@ public class NinjaConsole extends AbstractConsole<NinjaConsole> {
     static public class ConsoleBootstrap extends Bootstrap {
 
         public ConsoleBootstrap(NinjaPropertiesImpl ninjaProperties) {
-            super(ninjaProperties);
+            super(ninjaProperties, Optional.empty());
         }
 
         @Override

@@ -16,6 +16,7 @@
 
 package ninja;
 
+import java.util.Optional;
 import ninja.cache.Cache;
 import static org.junit.Assert.assertTrue;
 import ninja.utils.NinjaConstant;
@@ -48,7 +49,7 @@ public class BootstrapTest {
 
         ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
 
@@ -83,7 +84,7 @@ public class BootstrapTest {
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("com.doesnotexist");
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
 
@@ -107,7 +108,7 @@ public class BootstrapTest {
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("com.example");
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
         
@@ -138,7 +139,7 @@ public class BootstrapTest {
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("com.example.frameworkmodule");
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
 

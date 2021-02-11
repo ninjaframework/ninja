@@ -16,6 +16,7 @@
 
 package ninja.servlet;
 
+import java.util.Optional;
 import ninja.Bootstrap;
 import ninja.Context;
 import static org.junit.Assert.assertTrue;
@@ -47,7 +48,7 @@ public class NinjaServletBootstrapTest {
 
         ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
         
-        Bootstrap bootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
         
@@ -76,7 +77,7 @@ public class NinjaServletBootstrapTest {
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("custom_base_package");
         
-        Bootstrap bootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new NinjaServletBootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
         

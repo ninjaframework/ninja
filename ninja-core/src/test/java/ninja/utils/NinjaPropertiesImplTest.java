@@ -25,7 +25,6 @@ import org.junit.Test;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

@@ -46,7 +46,7 @@ public class FreshNinjaServerTester extends BaseNinjaServerTester {
     
     @Before
     public void startNinjaServer() {
-        ninjaTestServer = new NinjaTestServer.Builder().build();
+        ninjaTestServer = NinjaTestServer.builder().build();
     }
 
     @After

@@ -46,8 +46,8 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
     protected NinjaPropertiesImpl ninjaProperties; // after configure()
     protected OverlayedNinjaProperties overlayedNinjaProperties; // after configure()
     
-    protected Optional<Map<String, String>> overridesProperties = Optional.empty();
-    protected Optional<com.google.inject.Module> overridesModule = Optional.empty();
+    protected Optional<Map<String, String>> overridePropertiesOpt = Optional.empty();
+    protected Optional<com.google.inject.Module> overrideModuleOpt = Optional.empty();
 
     public AbstractConsole(String name) {
         // set mode as quickly as possible (can still be changed before configure())
@@ -68,8 +68,8 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
         if (externalConfigurationPath.isPresent()) {
             builder.withExternalConfiguration(this.externalConfigurationPath.get());
         }
-        if (overridesProperties.isPresent()) {
-            builder.withProperties(this.overridesProperties.get());
+        if (overridePropertiesOpt.isPresent()) {
+            builder.withProperties(this.overridePropertiesOpt.get());
         }
         this.ninjaProperties = builder.build();
         
@@ -187,17 +187,17 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
     }
     
     @Override
-    public T overridesModules(com.google.inject.Module module) {
-        Preconditions.checkNotNull(module);
-        this.overridesModule = Optional.of(module);
+    public T overrideModule(com.google.inject.Module overrideModule) {
+        Preconditions.checkNotNull(overrideModule);
+        this.overrideModuleOpt = Optional.of(overrideModule);
         
         return (T) this;
     }
 
     @Override
-    public T overrideNinjaProperties(Map<String, String> properties) {
-        Preconditions.checkNotNull(properties);
-        this.overridesProperties = Optional.of(properties);
+    public T overrideProperties(Map<String, String> overrideProperties) {
+        Preconditions.checkNotNull(overrideProperties);
+        this.overridePropertiesOpt = Optional.of(overrideProperties);
 
         return (T) this;    
     }

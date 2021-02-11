@@ -22,6 +22,7 @@ import ninja.utils.NinjaPropertiesImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
+import java.util.Optional;
 import ninja.utils.SwissKnife;
 
 /**
@@ -30,8 +31,10 @@ import ninja.utils.SwissKnife;
  */
 public class NinjaServletBootstrap extends Bootstrap {
     
-    public NinjaServletBootstrap(NinjaPropertiesImpl ninjaProperties) {
-        super(ninjaProperties);
+    public NinjaServletBootstrap(
+            NinjaPropertiesImpl ninjaProperties,
+            Optional<com.google.inject.Module> overrideModule) {
+        super(ninjaProperties, overrideModule);
     }
 
     @Override
