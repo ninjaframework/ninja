@@ -120,7 +120,7 @@ public void testCase() {
     CacheRepository cacheRepositoryMock = Mockito.mock(CacheRepository.class);
 
     // We create a module. All bindings inside this module will later
-    // override any other bindings that Ninja would setup "normally".
+    // override any other bindings that Ninja would setup &quot;normally&quot;.
     AbstractModule module = new AbstractModule() {
         @Override
         protected void configure() {
