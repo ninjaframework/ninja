@@ -66,8 +66,8 @@ public interface Console<T extends Console> {
     T ninjaMode(NinjaMode ninjaMode);
     
     /**
-     * Override module bindings as described 
-     * here: https://publicobject.com/2008/05/overriding-bindings-in-guice.html
+     * Override Guice module bindings as described 
+     * here: https://google.github.io/guice/api-docs/3.0/javadoc/com/google/inject/util/Modules.html
      * 
      * @param module Any bindings in this bindings will override all other bindings.
      *               This is very useful in tests.
