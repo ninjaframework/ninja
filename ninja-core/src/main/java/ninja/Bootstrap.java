@@ -228,7 +228,7 @@ public class Bootstrap {
     private void initInjector() throws Exception {
         Module combinedModules;
         if (overrideModuleOpt.isPresent()) {
-            // OverrideModule is for instnace useful in tests. You can mock certain
+            // OverrideModule is for instance useful in tests. You can mock certain
             // classes and verify against them.
             // In real applications you do not want to use them.
             combinedModules = Modules.override(modulesToLoad).with(overrideModuleOpt.get());

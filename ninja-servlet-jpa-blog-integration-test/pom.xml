@@ -189,6 +189,11 @@
             <scope>test</scope>
         </dependency>
         
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        
                 <!--  to sanitise input so no XSS -->
         <dependency>
 		    <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
