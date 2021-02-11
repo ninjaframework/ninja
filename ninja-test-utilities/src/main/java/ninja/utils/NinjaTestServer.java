@@ -107,9 +107,8 @@ public class NinjaTestServer implements Closeable {
         }
         
         /**
-         * These properties will overwrite any other properties. It overwrites
-         * properties in conf/application.conf or anything set via 
-         * withExternalConfiguration(..).
+         * These properties will overwrite any other properties. 
+         * It for instance overwrites properties in conf/application.conf.
          * 
          * This is very useful in tests where you want to set certain properties
          * like a jdbc connection based on a url that gets defined when the
@@ -122,7 +121,7 @@ public class NinjaTestServer implements Closeable {
          *                            any previously set properties. These properties will
          *                            have the highest priority and will be present when
          *                            the server is running.
-         * @return this instance for chaining
+         * @return this builder for chaining
          */
         public Builder overrideProperties(Map<String, String> overrideProperties) {
             Preconditions.checkNotNull(overrideProperties);
