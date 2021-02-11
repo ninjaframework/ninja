@@ -33,8 +33,10 @@ import com.google.common.collect.Iterables;
 import com.google.inject.Binder;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.configuration.MapConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 
 @Singleton
@@ -62,9 +64,9 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     
     public static class Builder {
         
-        NinjaMode ninjaMode;
-        Optional<String> externalConfigurationOpt = Optional.empty();
-        Optional<Map<String, String>> propertiesOpt = Optional.empty();
+        private NinjaMode ninjaMode;
+        private Optional<String> externalConfigurationOpt = Optional.empty();
+        private Optional<Map<String, String>> propertiesOpt = Optional.empty();
         
         public Builder withMode(NinjaMode ninjaMode) {
             Preconditions.checkNotNull(ninjaMode);
@@ -93,6 +95,9 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         }
     
         public NinjaPropertiesImpl build() {
+            if (ninjaMode == null) {
+                throw new RuntimeException("NinjaMode is not set. Please set it before calling build()");
+            }
             return new NinjaPropertiesImpl(ninjaMode, externalConfigurationOpt, propertiesOpt);
         }
     
@@ -220,7 +225,17 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         // Note: Configurations added earlier will overwrite configurations
         // added later.
         // /////////////////////////////////////////////////////////////////////
-        
+
+        // Properties that are set programmatically have a higher 
+        // priority than all other properties
+        propertiesOpt.ifPresent(properties -> {
+            // Note: We copy the properties into a modifieable HashMap.
+            // This is currently used in parts of Ninja to configure some properties
+            // after the start. But likely it is better to keep things immutable...
+            MapConfiguration mapConiguration = new MapConfiguration(new HashMap(properties));
+            compositeConfiguration.addConfiguration(mapConiguration);
+        });
+
         if (prefixedSystemPropertiesConfiguration != null) {
             compositeConfiguration
                     .addConfiguration(prefixedSystemPropertiesConfiguration);
@@ -247,14 +262,8 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
         if (defaultConfiguration != null) {
             compositeConfiguration.addConfiguration(defaultConfiguration);
-        }
-        
-        // Finally override any configuration with properties that are set
-        // programmatically (often coming from a testcase
-        propertiesOpt.ifPresent(props -> {
-            props.entrySet().forEach(entry ->  compositeConfiguration.addProperty(entry.getKey(), entry.getValue()));
-        });
-        
+        }       
+                
         // /////////////////////////////////////////////////////////////////////
         // Check that the secret is set or generate a new one if the property
         // does not exist

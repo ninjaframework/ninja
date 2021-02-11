@@ -16,9 +16,7 @@
 
 package ninja.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import com.google.common.collect.ImmutableMap;
 import javax.inject.Named;
 
 import org.junit.After;
@@ -27,8 +25,9 @@ import org.junit.Test;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class NinjaPropertiesImplTest {
 
@@ -44,23 +43,18 @@ public class NinjaPropertiesImplTest {
 
         // check that mode tests works:
         NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
-        assertEquals("test_testproperty",
-                ninjaPropertiesImpl.get("testproperty"));
+        assertThat(ninjaPropertiesImpl.get("testproperty")).isEqualTo("test_testproperty");
 
         // check that mode dev works:
         ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
-        assertEquals("dev_testproperty",
-                ninjaPropertiesImpl.get("testproperty"));
-        assertEquals("secret",
-                ninjaPropertiesImpl.get(NinjaConstant.applicationSecret));
+        assertThat(ninjaPropertiesImpl.get("testproperty")).isEqualTo("dev_testproperty");
+        assertThat(ninjaPropertiesImpl.get(NinjaConstant.applicationSecret)).isEqualTo("secret");
 
         // and in a completely different mode with no "%"-prefixed key the
         // default value use used
         ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.prod).build();
-        assertEquals("testproperty_without_prefix",
-                ninjaPropertiesImpl.get("testproperty"));
-        assertEquals("secret",
-                ninjaPropertiesImpl.get(NinjaConstant.applicationSecret));
+        assertThat(ninjaPropertiesImpl.get("testproperty")).isEqualTo("testproperty_without_prefix");
+        assertThat(ninjaPropertiesImpl.get(NinjaConstant.applicationSecret)).isEqualTo("secret");
 
         // tear down
         System.clearProperty(NinjaConstant.MODE_KEY_NAME);
@@ -72,22 +66,20 @@ public class NinjaPropertiesImplTest {
 
         NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
-        assertEquals("dev_testproperty",
-                ninjaPropertiesImpl.getOrDie("testproperty"));
+        assertThat(ninjaPropertiesImpl.getOrDie("testproperty")).isEqualTo("dev_testproperty");
 
         ninjaPropertiesImpl.getOrDie("a_propert_that_is_not_in_the_file");
-
     }
 
     @Test
     public void testGetBooleanParsing() {
 
         NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
-        assertEquals(true, ninjaPropertiesImpl.getBoolean("booleanTestTrue"));
+        assertThat(ninjaPropertiesImpl.getBoolean("booleanTestTrue")).isTrue();
 
-        assertEquals(false, ninjaPropertiesImpl.getBoolean("booleanTestFalse"));
+        assertThat(ninjaPropertiesImpl.getBoolean("booleanTestFalse")).isFalse();
 
-        assertEquals(null, ninjaPropertiesImpl.getBoolean("booleanNotValid"));
+        assertThat(ninjaPropertiesImpl.getBoolean("booleanNotValid")).isNull();
 
     }
 
@@ -96,8 +88,7 @@ public class NinjaPropertiesImplTest {
 
         NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
-        assertEquals(true,
-                ninjaPropertiesImpl.getBooleanOrDie("booleanTestTrue"));
+        assertThat(ninjaPropertiesImpl.getBooleanOrDie("booleanTestTrue")).isTrue();
 
         ninjaPropertiesImpl.getBooleanOrDie("booleanNotValid");
 
@@ -108,10 +99,9 @@ public class NinjaPropertiesImplTest {
 
         NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
-        assertEquals(new Integer(123456789),
-                ninjaPropertiesImpl.getInteger("integerTest"));
+        assertThat(ninjaPropertiesImpl.getInteger("integerTest")).isEqualTo(new Integer(123456789));
 
-        assertEquals(null, ninjaPropertiesImpl.getInteger("integerNotValid"));
+        assertThat(ninjaPropertiesImpl.getInteger("integerNotValid")).isNull();
 
     }
 
@@ -120,8 +110,7 @@ public class NinjaPropertiesImplTest {
 
         NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
-        assertEquals(new Integer(123456789),
-                ninjaPropertiesImpl.getIntegerOrDie("integerTest"));
+        assertThat(ninjaPropertiesImpl.getIntegerOrDie("integerTest")).isEqualTo(new Integer(123456789));
 
         ninjaPropertiesImpl.getIntegerOrDie("integerNotValid");
 
@@ -136,9 +125,8 @@ public class NinjaPropertiesImplTest {
                 props.bindProperties(binder());
             }
         }).getInstance(MockService.class);
-        assertNotNull("Application secret not set by Guice",
-                service.applicationSecret);
-        assertEquals("secret", service.applicationSecret);
+        assertThat(service.applicationSecret).isNotNull();
+        assertThat(service.applicationSecret).isEqualTo("secret");
     }
 
     public static class MockService {
@@ -156,8 +144,7 @@ public class NinjaPropertiesImplTest {
         // this is testing if referencing of properties works with external
         // configurations
         // and application.conf: (fullServerName=${serverName}:${serverPort})
-        assertEquals("http://myserver.com:80",
-                ninjaProperties.get("fullServerName"));
+        assertThat(ninjaProperties.get("fullServerName")).isEqualTo("http://myserver.com:80");
 
     }
 
@@ -173,18 +160,15 @@ public class NinjaPropertiesImplTest {
         NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
         // we expect that the original application secret gets overwritten:
-        assertEquals("secretForHeroku",
-                ninjaProperties.get(NinjaConstant.applicationSecret));
+        assertThat(ninjaProperties.get(NinjaConstant.applicationSecret)).isEqualTo("secretForHeroku");
 
         // and make sure other properties of heroku.conf get loaded as well:
-        assertEquals("some special parameter",
-                ninjaProperties.get("heroku.special.property"));
+        assertThat(ninjaProperties.get("heroku.special.property")).isEqualTo("some special parameter");
 
         // this is testing if referencing of properties works with external
         // configurations
         // and application.conf (fullServerName=${serverName}:${serverPort})
-        assertEquals("http://myapp.herokuapp.com:80",
-                ninjaProperties.get("fullServerName"));
+        assertThat(ninjaProperties.get("fullServerName")).isEqualTo("http://myapp.herokuapp.com:80");
 
     }
     
@@ -202,18 +186,15 @@ public class NinjaPropertiesImplTest {
                 .build();
 
         // we expect that the original application secret gets overwritten:
-        assertEquals("secretForHeroku",
-                ninjaProperties.get(NinjaConstant.applicationSecret));
+        assertThat(ninjaProperties.get(NinjaConstant.applicationSecret)).isEqualTo("secretForHeroku");
 
         // and make sure other properties of heroku.conf get loaded as well:
-        assertEquals("some special parameter",
-                ninjaProperties.get("heroku.special.property"));
+        assertThat(ninjaProperties.get("heroku.special.property")).isEqualTo("some special parameter");
 
         // this is testing if referencing of properties works with external
         // configurations
         // and application.conf (fullServerName=${serverName}:${serverPort})
-        assertEquals("http://myapp.herokuapp.com:80",
-                ninjaProperties.get("fullServerName"));
+        assertThat(ninjaProperties.get("fullServerName")).isEqualTo("http://myapp.herokuapp.com:80");
 
     }
 
@@ -233,8 +214,7 @@ public class NinjaPropertiesImplTest {
         // and application.conf (fullServerName=${serverName}:${serverPort})
         // It also will be different as we are in "test" mode:
         // "myapp-test" is the important thing here.
-        assertEquals("http://myapp-test.herokuapp.com:80",
-                ninjaProperties.get("fullServerName"));
+        assertThat(ninjaProperties.get("fullServerName")).isEqualTo("http://myapp-test.herokuapp.com:80");
 
     }
 
@@ -243,7 +223,7 @@ public class NinjaPropertiesImplTest {
 
         NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
         // We test this: utf8Test=this is utf8: öäü
-        assertEquals("this is utf8: öäü", ninjaProperties.get("utf8Test"));
+        assertThat(ninjaProperties.get("utf8Test")).isEqualTo("this is utf8: öäü");
 
     }
 
@@ -252,8 +232,7 @@ public class NinjaPropertiesImplTest {
 
         // we can set an external conf file by setting the following system
         // property:
-        System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF,
-                "conf/non_existing.conf");
+        System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/non_existing.conf");
 
         // instantiate the properties:
         NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
@@ -268,12 +247,10 @@ public class NinjaPropertiesImplTest {
         NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
-        assertEquals("default", ninjaProperties.getWithDefault(
-                "non_existsing_property_to_check_defaults", "default"));
+        assertThat(ninjaProperties.getWithDefault("non_existsing_property_to_check_defaults", "default")).isEqualTo("default");
 
         // test default works when property is there: => we are int dev mode...
-        assertEquals("dev_testproperty",
-                ninjaProperties.getWithDefault("testproperty", "default"));
+        assertThat(ninjaProperties.getWithDefault("testproperty", "default")).isEqualTo("dev_testproperty");
 
     }
 
@@ -284,12 +261,10 @@ public class NinjaPropertiesImplTest {
         NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
-        assertEquals(Integer.valueOf(1), ninjaProperties.getIntegerWithDefault(
-                "non_existsing_property_to_check_defaults", 1));
+        assertThat(ninjaProperties.getIntegerWithDefault("non_existsing_property_to_check_defaults", 1)).isEqualTo(Integer.valueOf(1));
 
         // test default works when property is there:
-        assertEquals(Integer.valueOf(123456789),
-                ninjaProperties.getIntegerWithDefault("integerTest", 1));
+        assertThat(ninjaProperties.getIntegerWithDefault("integerTest", 1)).isEqualTo(Integer.valueOf(123456789));
 
     }
 
@@ -300,13 +275,10 @@ public class NinjaPropertiesImplTest {
         NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
-        assertEquals(Boolean.valueOf(true),
-                ninjaProperties.getBooleanWithDefault(
-                        "non_existsing_property_to_check_defaults", true));
+        assertThat(ninjaProperties.getBooleanWithDefault("non_existsing_property_to_check_defaults", true)).isTrue();
 
         // test default works when property is there:
-        assertEquals(Boolean.valueOf(true),
-                ninjaProperties.getBooleanWithDefault("booleanTestTrue", false));
+        assertThat(ninjaProperties.getBooleanWithDefault("booleanTestTrue", false)).isTrue();
 
     }
 
@@ -317,32 +289,14 @@ public class NinjaPropertiesImplTest {
         NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
-        assertEquals("one", ninjaProperties.get("getOneElementStringArray"));
-        assertEquals("one",
-                ninjaProperties.getStringArray("getOneElementStringArray")[0]);
-
-        assertEquals("one , me",
-                ninjaProperties.get("getMultipleElementStringArrayWithSpaces"));
-        assertEquals(
-                "one",
-                ninjaProperties
-                        .getStringArray("getMultipleElementStringArrayWithSpaces")[0]);
-        assertEquals(
-                "me",
-                ninjaProperties
-                        .getStringArray("getMultipleElementStringArrayWithSpaces")[1]);
-
-        assertEquals("one,me",
-                ninjaProperties
-                        .get("getMultipleElementStringArrayWithoutSpaces"));
-        assertEquals(
-                "one",
-                ninjaProperties
-                        .getStringArray("getMultipleElementStringArrayWithoutSpaces")[0]);
-        assertEquals(
-                "me",
-                ninjaProperties
-                        .getStringArray("getMultipleElementStringArrayWithoutSpaces")[1]);
+        assertThat(ninjaProperties.get("getOneElementStringArray")).isEqualTo("one");
+        assertThat(ninjaProperties.getStringArray("getOneElementStringArray")[0]).isEqualTo("one");
+        assertThat(ninjaProperties.get("getMultipleElementStringArrayWithSpaces")).isEqualTo("one , me");
+        assertThat(ninjaProperties.getStringArray("getMultipleElementStringArrayWithSpaces")[0]).isEqualTo("one");      
+        assertThat(ninjaProperties.getStringArray("getMultipleElementStringArrayWithSpaces")[1]).isEqualTo( "me");
+        assertThat(ninjaProperties.get("getMultipleElementStringArrayWithoutSpaces")).isEqualTo("one,me");
+        assertThat(ninjaProperties.getStringArray("getMultipleElementStringArrayWithoutSpaces")[0]).isEqualTo("one");
+        assertThat(ninjaProperties.getStringArray("getMultipleElementStringArrayWithoutSpaces")[1]).isEqualTo("me");
 
     }
     
@@ -354,7 +308,7 @@ public class NinjaPropertiesImplTest {
                 .withExternalConfiguration("conf/system_property.conf")
                 .build();
         
-        assertThat(ninjaProperties.get("unit.test.123"), is("123-value-via-external-conf"));
+        assertThat(ninjaProperties.get("unit.test.123")).isEqualTo("123-value-via-external-conf");
         
         // verify system property overrides it
         System.setProperty("unit.test.123", "123-value-via-system-property");
@@ -363,7 +317,7 @@ public class NinjaPropertiesImplTest {
                 .withMode(NinjaMode.dev)
                 .withExternalConfiguration("conf/system_property.conf")
                 .build();
-            assertThat(ninjaProperties.get("unit.test.123"), is("123-value-via-system-property"));
+            assertThat(ninjaProperties.get("unit.test.123")).isEqualTo("123-value-via-system-property");
         } finally {
             System.clearProperty("unit.test.123");
         }
@@ -376,10 +330,27 @@ public class NinjaPropertiesImplTest {
                 .withMode(NinjaMode.dev)
                 .withExternalConfiguration( "conf/system_property.conf")
                 .build();
-            assertThat(ninjaProperties.get("unit.test.123"), is("123-value-via-prefixed-system-property"));
+            assertThat(ninjaProperties.get("unit.test.123")).isEqualTo("123-value-via-prefixed-system-property");
         } finally {
             System.clearProperty("unit.test.123");
         }
+    }
+    
+    @Test
+    public void programmaticallyOverridingProperties_works() {
+        // given initially serverPort=80...
+        NinjaProperties originalNinjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        assertThat(originalNinjaProperties.getInteger("serverPort")).isEqualTo(80);
+        
+        // when
+        NinjaProperties actualProperties = new NinjaPropertiesImpl.Builder()
+                .withMode(NinjaMode.dev)
+                .withProperties(ImmutableMap.of("serverPort", "1001"))
+                .build();
+        
+        // then
+        assertThat(actualProperties.getInteger("serverPort")).isEqualTo(1001);
+    
     }
 
 }
