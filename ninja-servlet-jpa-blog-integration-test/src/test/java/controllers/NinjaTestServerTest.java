@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 
 public class NinjaTestServerTest {
     
+    
     @Test
     public void testThatOverrideOfPropertiesWorks() {
         // given

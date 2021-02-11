@@ -79,7 +79,7 @@ public interface Console<T extends Console> {
      * Override specific properties programmatically.
      * 
      * @param properties Any properties in this map will override properties in any configuration file.
-     *               This is very useful in tests.
+     *                   This is very useful in tests.
      * @return this instance for chaining
      */
     T overrideProperties(Map<String, String> properties);

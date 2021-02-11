@@ -17,7 +17,6 @@
 package ninja.standalone;
 
 import com.google.inject.Injector;
-import java.util.Optional;
 import ninja.Bootstrap;
 import ninja.utils.NinjaPropertiesImpl;
 

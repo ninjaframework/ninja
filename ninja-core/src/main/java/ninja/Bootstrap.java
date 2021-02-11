@@ -53,6 +53,7 @@ import ninja.utils.SwissKnife;
  * adds modules specific to the subclassed Bootstrap.  See ninja-servlet
  * and NinjaServletContext for an example of a subclass.
  */
+
 public class Bootstrap {
     static private final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
@@ -228,9 +229,12 @@ public class Bootstrap {
     private void initInjector() throws Exception {
         Module combinedModules;
         if (overrideModuleOpt.isPresent()) {
-            // OverrideModule is for instance useful in tests. You can mock certain
-            // classes and verify against them.
-            // In real applications you do not want to use them.
+            // This is for instance useful in tests. 
+            // You can override bindings using mocks.
+            // These mocks are then being injected across 
+            // your Ninja app and can be used to verify behavior.
+            // 
+            // In production applications you likely do not want to use this functionality.
             combinedModules = Modules.override(modulesToLoad).with(overrideModuleOpt.get());
         } else {
             combinedModules = Modules.combine(modulesToLoad);
