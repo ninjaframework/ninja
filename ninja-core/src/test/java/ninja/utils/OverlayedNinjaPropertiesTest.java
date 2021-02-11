@@ -80,7 +80,7 @@ public class OverlayedNinjaPropertiesTest {
     
     @Test
     public void badValues() {
-                NinjaProperties ninjaPropertiesForOverlay = NinjaPropertiesImpl.builder()
+        NinjaProperties ninjaPropertiesForOverlay = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
                 .externalConfiguration("conf/overlayed.bad.conf")
                 .build();

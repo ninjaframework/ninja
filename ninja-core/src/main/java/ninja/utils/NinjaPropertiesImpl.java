@@ -69,7 +69,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         
         private NinjaMode ninjaMode;
         private Optional<String> externalConfigurationOpt = Optional.empty();
-        private Optional<Map<String, String>> overwritePropertiesOpt = Optional.empty();
+        private Optional<Map<String, String>> overridePropertiesOpt = Optional.empty();
         
         private Builder() {}
         
@@ -82,9 +82,9 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         /**
          * A path pointing to the location of an external configuration.
          * 
-         * This external configuration will overwrite any other properties
-         * like for instance conf/application.conf. Only properties
-         * set in overwriteProperties(..) have higher priority and will not
+         * This external configuration will override any other properties
+         * like for instance conf/application.conf. ONLY properties
+         * set in overrideProperties(..) have higher priority and will NOT
          * be overwritten.
          * 
          * @param externalConfiguration The path of an external configuration. For instance "conf/heroku.conf".
@@ -97,7 +97,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         }
         
         /**
-         * These properties will overwrite any other properties. It overwrites
+         * These properties will override any other properties. It overwrites
          * properties in conf/application.conf or anything set via 
          * withExternalConfiguration(..).
          * 
@@ -108,15 +108,15 @@ public class NinjaPropertiesImpl implements NinjaProperties {
          * The key should be written in a dot-separated format. 
          * Eg "application.server.url".
          * 
-         * @param overwriteProperties A map with keys and values that will overwrite 
+         * @param overrideProperties A map with keys and values that will overwrite 
          *                            any previously set properties. These properties will
          *                            have the highest priority and will be present when
          *                            the server is running.
          * @return this instance for chaining
          */
-        public Builder overwriteProperties(Map<String, String> overwriteProperties) {
-            Preconditions.checkNotNull(overwriteProperties);
-            this.overwritePropertiesOpt = Optional.of(overwriteProperties);
+        public Builder overrideProperties(Map<String, String> overrideProperties) {
+            Preconditions.checkNotNull(overrideProperties);
+            this.overridePropertiesOpt = Optional.of(overrideProperties);
             return this;
         }
     
@@ -124,7 +124,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             if (ninjaMode == null) {
                 throw new RuntimeException("NinjaMode is not set. Please set it before calling build()");
             }
-            return new NinjaPropertiesImpl(ninjaMode, externalConfigurationOpt, overwritePropertiesOpt);
+            return new NinjaPropertiesImpl(ninjaMode, externalConfigurationOpt, overridePropertiesOpt);
         }
     
     }
@@ -132,7 +132,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
     private NinjaPropertiesImpl(
             NinjaMode ninjaMode, 
             Optional<String> externalConfigurationPath,
-            Optional<Map<String, String>> propertiesOpt) {
+            Optional<Map<String, String>> overridePropertiesOpt) {
         
         this.ninjaMode = ninjaMode;
 
@@ -254,7 +254,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
         // Properties that are set programmatically have a higher 
         // priority than all other properties
-        propertiesOpt.ifPresent(properties -> {
+        overridePropertiesOpt.ifPresent(properties -> {
             // Note: We copy the properties into a modifieable HashMap.
             // This is currently used in parts of Ninja to configure some properties
             // after the start. But likely it is better to keep things immutable...

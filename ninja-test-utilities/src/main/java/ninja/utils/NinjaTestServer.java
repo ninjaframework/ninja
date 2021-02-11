@@ -44,10 +44,15 @@ public class NinjaTestServer implements Closeable {
         private Optional<Integer> portOpt = Optional.empty();
         private Optional<Class<? extends Standalone>> standaloneClassOpt = Optional.empty();
         private Optional<com.google.inject.Module> overrideModuleOpt = Optional.empty();
-        private Optional<Map<String, String>> propertiesOverrideOpt = Optional.empty();
+        private Optional<Map<String, String>> overrideProperties = Optional.empty();
         
         private Builder() {}
         
+        /**
+         * 
+         * @param ninjaMode The mode to start this server in.
+         * @return this builder for chaining
+         */
         public Builder ninjaMode(NinjaMode ninjaMode) {
             Preconditions.checkNotNull(ninjaMode);
             this.ninjaModeOpt = Optional.of(ninjaMode);
@@ -55,6 +60,14 @@ public class NinjaTestServer implements Closeable {
             return this;
         }
         
+        /**
+         * The port where this server will listen.
+         * 
+         * If not set it will pick an available port in range 1000 to 10000.
+         * 
+         * @param port The port where this server will listen.
+         * @return this builder for chaining
+         */
         public Builder port(Integer port) {
             Preconditions.checkNotNull(port);
             this.portOpt = Optional.of(port);
@@ -62,6 +75,14 @@ public class NinjaTestServer implements Closeable {
             return this;
         }
         
+        /**
+         * Specify the class to use for starting the server.
+         * 
+         * Will fallback to NinjaJetty if not used.
+         * 
+         * @param standaloneClass The standalone class to use for starting the server. 
+         * @return this builder for chaining
+         */
         public Builder standaloneClass(Class<? extends Standalone> standaloneClass) {
             Preconditions.checkNotNull(standaloneClass);
             this.standaloneClassOpt = Optional.of(standaloneClass);
@@ -69,6 +90,15 @@ public class NinjaTestServer implements Closeable {
             return this;
         }
         
+        /**
+         * All bindings defined in this module will override any other bindings.
+         * 
+         * This is very useful in tests, where certain bindings can be replaced
+         * with mocked versions. 
+         * 
+         * @param overrideModule The module with bindings - all its bindings will override any other bindings.
+         * @return this builder for chaining 
+         */
         public Builder overrideModule(com.google.inject.Module overrideModule) {
             Preconditions.checkNotNull(overrideModule);
             this.overrideModuleOpt = Optional.of(overrideModule);
@@ -76,9 +106,27 @@ public class NinjaTestServer implements Closeable {
             return this;
         }
         
-         public Builder overrideProperties(Map<String, String> propertiesOverride) {
-            Preconditions.checkNotNull(propertiesOverride);
-            this.propertiesOverrideOpt = Optional.of(propertiesOverride);
+        /**
+         * These properties will overwrite any other properties. It overwrites
+         * properties in conf/application.conf or anything set via 
+         * withExternalConfiguration(..).
+         * 
+         * This is very useful in tests where you want to set certain properties
+         * like a jdbc connection based on a url that gets defined when the
+         * testcontainer gets started.
+         * 
+         * The key should be written in a dot-separated format. 
+         * Eg "application.server.url".
+         * 
+         * @param overrideProperties A map with keys and values that will overwrite 
+         *                            any previously set properties. These properties will
+         *                            have the highest priority and will be present when
+         *                            the server is running.
+         * @return this instance for chaining
+         */
+        public Builder overrideProperties(Map<String, String> overrideProperties) {
+            Preconditions.checkNotNull(overrideProperties);
+            this.overrideProperties = Optional.of(overrideProperties);
             
             return this;
         }
@@ -89,7 +137,7 @@ public class NinjaTestServer implements Closeable {
             Integer port = this.portOpt.orElseGet(() -> StandaloneHelper.findAvailablePort(1000, 10000));
             NinjaMode ninjaMode = ninjaModeOpt.orElseGet(() -> NinjaMode.test);
             
-            return new NinjaTestServer(ninjaMode, standaloneClass, port, this.overrideModuleOpt, this.propertiesOverrideOpt);
+            return new NinjaTestServer(ninjaMode, standaloneClass, port, this.overrideModuleOpt, this.overrideProperties);
         }
 
     }

@@ -344,7 +344,7 @@ public class NinjaPropertiesImplTest {
         // when
         NinjaProperties actualProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
-                .overwriteProperties(ImmutableMap.of("serverPort", "1001"))
+                .overrideProperties(ImmutableMap.of("serverPort", "1001"))
                 .build();
         
         // then
