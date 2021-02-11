@@ -16,6 +16,7 @@
 
 package ninja.utils;
 
+import com.google.common.base.Preconditions;
 import java.io.File;
 import java.util.Properties;
 
@@ -32,6 +33,10 @@ import com.google.common.collect.Iterables;
 import com.google.inject.Binder;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.configuration.MapConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 
 @Singleton
@@ -55,14 +60,79 @@ public class NinjaPropertiesImpl implements NinjaProperties {
      *    by a system property and on the classpath.
      */
     private CompositeConfiguration compositeConfiguration;
-
-    public NinjaPropertiesImpl(
-            NinjaMode ninjaMode) {
-        this(ninjaMode, null);
+    
+    public static Builder builder() {
+        return new Builder();
     }
     
-    public NinjaPropertiesImpl(
-            NinjaMode ninjaMode, String externalConfigurationPath) {
+    public static class Builder {
+        
+        private NinjaMode ninjaMode;
+        private Optional<String> externalConfigurationOpt = Optional.empty();
+        private Optional<Map<String, String>> overridePropertiesOpt = Optional.empty();
+        
+        private Builder() {}
+        
+        public Builder withMode(NinjaMode ninjaMode) {
+            Preconditions.checkNotNull(ninjaMode);
+            this.ninjaMode = ninjaMode;      
+            return this;
+        }
+        
+        /**
+         * A path pointing to the location of an external configuration.
+         * 
+         * This external configuration will override any other properties
+         * like for instance conf/application.conf. ONLY properties
+         * set in overrideProperties(..) have higher priority and will NOT
+         * be overwritten.
+         * 
+         * @param externalConfiguration The path of an external configuration. For instance "conf/heroku.conf".
+         * @return this instance for chaining
+         */
+        public Builder externalConfiguration(String externalConfiguration) {
+            Preconditions.checkNotNull(externalConfiguration);
+            this.externalConfigurationOpt = Optional.of(externalConfiguration);
+            return this;
+        }
+        
+        /**
+         * These properties will override any other properties. It overwrites
+         * properties in conf/application.conf or anything set via 
+         * withExternalConfiguration(..).
+         * 
+         * This is very useful in tests where you want to set certain properties
+         * like a jdbc connection based on a url that gets defined when the
+         * testcontainer gets started.
+         * 
+         * The key should be written in a dot-separated format. 
+         * Eg "application.server.url".
+         * 
+         * @param overrideProperties A map with keys and values that will overwrite 
+         *                            any previously set properties. These properties will
+         *                            have the highest priority and will be present when
+         *                            the server is running.
+         * @return this instance for chaining
+         */
+        public Builder overrideProperties(Map<String, String> overrideProperties) {
+            Preconditions.checkNotNull(overrideProperties);
+            this.overridePropertiesOpt = Optional.of(overrideProperties);
+            return this;
+        }
+    
+        public NinjaPropertiesImpl build() {
+            if (ninjaMode == null) {
+                throw new RuntimeException("NinjaMode is not set. Please set it before calling build()");
+            }
+            return new NinjaPropertiesImpl(ninjaMode, externalConfigurationOpt, overridePropertiesOpt);
+        }
+    
+    }
+
+    private NinjaPropertiesImpl(
+            NinjaMode ninjaMode, 
+            Optional<String> externalConfigurationPath,
+            Optional<Map<String, String>> overridePropertiesOpt) {
         
         this.ninjaMode = ninjaMode;
 
@@ -124,7 +194,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         }
 
         // third step => load external configuration when a system property is defined.
-        String ninjaExternalConf = externalConfigurationPath;
+        String ninjaExternalConf = externalConfigurationPath.orElse(null); // workaround...
         
         if (ninjaExternalConf == null) {
             // if not set fallback to system property
@@ -181,7 +251,17 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         // Note: Configurations added earlier will overwrite configurations
         // added later.
         // /////////////////////////////////////////////////////////////////////
-        
+
+        // Properties that are set programmatically have a higher 
+        // priority than all other properties
+        overridePropertiesOpt.ifPresent(properties -> {
+            // Note: We copy the properties into a modifieable HashMap.
+            // This is currently used in parts of Ninja to configure some properties
+            // after the start. But likely it is better to keep things immutable...
+            MapConfiguration mapConiguration = new MapConfiguration(new HashMap(properties));
+            compositeConfiguration.addConfiguration(mapConiguration);
+        });
+
         if (prefixedSystemPropertiesConfiguration != null) {
             compositeConfiguration
                     .addConfiguration(prefixedSystemPropertiesConfiguration);
@@ -208,8 +288,8 @@ public class NinjaPropertiesImpl implements NinjaProperties {
 
         if (defaultConfiguration != null) {
             compositeConfiguration.addConfiguration(defaultConfiguration);
-        }
-        
+        }       
+                
         // /////////////////////////////////////////////////////////////////////
         // Check that the secret is set or generate a new one if the property
         // does not exist

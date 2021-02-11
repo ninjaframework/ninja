@@ -41,7 +41,7 @@ public class CacheProviderTest {
 
     @Test
     public void defaultImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         
         ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, null);
         
@@ -54,7 +54,7 @@ public class CacheProviderTest {
     
     @Test
     public void configuredImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();  
         
         ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, CacheMemcachedImpl.class.getName());
         // just a dummy to test that loading works
@@ -69,7 +69,7 @@ public class CacheProviderTest {
     
     @Test
     public void missingImplementationThrowsExceptionOnUseNotCreate() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();   
         
         ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, "not_existing_implementation");
         
@@ -84,7 +84,7 @@ public class CacheProviderTest {
     
     @Test
     public void verifySingletonProviderAndInstance() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build(); 
         
         ninjaProperties.setProperty(NinjaConstant.CACHE_IMPLEMENTATION, CacheMockImpl.class.getCanonicalName());
         

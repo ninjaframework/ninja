@@ -1,3 +1,9 @@
+Version 6.8.0
+=============
+
+* 2021-02-12 Allow to override modules and properties in NinjaTestServer (ra)
+
+
 Version 6.7.0
 =============
 

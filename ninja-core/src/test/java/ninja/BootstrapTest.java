@@ -16,10 +16,12 @@
 
 package ninja;
 
+import java.util.Optional;
 import ninja.cache.Cache;
 import static org.junit.Assert.assertTrue;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -45,9 +47,9 @@ public class BootstrapTest {
     @Test
     public void testInitializeWithAllUserSpecifiedThingsInConfDirectory() {
 
-        ninjaPropertiesImpl = new NinjaPropertiesImpl(NinjaMode.test);
+        ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
 
@@ -76,13 +78,13 @@ public class BootstrapTest {
         // test a user NOT supplying these by configuring the application base package
         // a bit of a hack, but will work to force NOT finding anything
         
-        ninjaPropertiesImpl = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
+        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
         
         Mockito.when(
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("com.doesnotexist");
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
 
@@ -100,13 +102,13 @@ public class BootstrapTest {
     @Test
     public void testInitializeWithAllUserSpecifiedThingsInShiftedConfDirectory() {
         
-        ninjaPropertiesImpl = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
+        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
         
         Mockito.when(
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("com.example");
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
         
@@ -131,13 +133,13 @@ public class BootstrapTest {
     
     @Test
     public void frameworkModuleSkipsNinjaClassicModule() {
-        ninjaPropertiesImpl = Mockito.spy(new NinjaPropertiesImpl(NinjaMode.test));
+        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
         
         Mockito.when(
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
                 .thenReturn("com.example.frameworkmodule");
         
-        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl);
+        Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
         bootstrap.boot();
 

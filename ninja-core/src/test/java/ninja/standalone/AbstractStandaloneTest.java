@@ -16,6 +16,7 @@
 
 package ninja.standalone;
 
+import java.util.Optional;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -65,7 +66,7 @@ public class AbstractStandaloneTest {
         
         // defaultValue
         assertThat(standalone.getNinjaMode(), is(NinjaMode.prod));
-        assertThat(standalone.getExternalConfigurationPath(), is(nullValue()));
+        assertThat(standalone.getExternalConfigurationPath(), is(Optional.empty()));
         assertThat(standalone.getContextPath(), is(Standalone.DEFAULT_CONTEXT_PATH));
         assertThat(standalone.getHost(), is(Standalone.DEFAULT_HOST));
         assertThat(standalone.getPort(), is(Standalone.DEFAULT_PORT));
@@ -78,7 +79,7 @@ public class AbstractStandaloneTest {
                 .configure();
         
         assertThat(standalone.getNinjaMode(), is(NinjaMode.prod));
-        assertThat(standalone.getExternalConfigurationPath(), is("conf/standalone.conf"));
+        assertThat(standalone.getExternalConfigurationPath().get(), is("conf/standalone.conf"));
         assertThat(standalone.getContextPath(), is("/mycontext"));
         assertThat(standalone.getHost(), is("1.1.1.1"));
         assertThat(standalone.getPort(), is(9000));
@@ -98,7 +99,7 @@ public class AbstractStandaloneTest {
                     .configure();
             
             assertThat(standalone.getNinjaMode(), is(NinjaMode.dev));
-            assertThat(standalone.getExternalConfigurationPath(), is("conf/standalone.conf"));
+            assertThat(standalone.getExternalConfigurationPath().get(), is("conf/standalone.conf"));
             assertThat(standalone.getContextPath(), is("/yourcontext"));
             assertThat(standalone.getHost(), is("2.2.2.2"));
             assertThat(standalone.getPort(), is(9001));
@@ -118,7 +119,7 @@ public class AbstractStandaloneTest {
         
             
             assertThat(standalone.getNinjaMode(), is(NinjaMode.test));
-            assertThat(standalone.getExternalConfigurationPath(), is("conf/standalone.conf"));
+            assertThat(standalone.getExternalConfigurationPath().get(), is("conf/standalone.conf"));
             assertThat(standalone.getContextPath(), is("/othercontext"));
             assertThat(standalone.getHost(), is("3.3.3.3"));
             assertThat(standalone.getPort(), is(9002));

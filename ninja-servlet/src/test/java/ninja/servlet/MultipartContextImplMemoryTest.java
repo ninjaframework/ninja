@@ -67,6 +67,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import ninja.utils.NinjaModeHelper;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MultipartContextImplMemoryTest {
@@ -126,7 +127,7 @@ public class MultipartContextImplMemoryTest {
         when(httpServletRequest.getContentType()).thenReturn("multipart/form-data");
         when(httpServletRequest.getMethod()).thenReturn("POST");
         
-        NinjaPropertiesImpl properties = new NinjaPropertiesImpl(NinjaMode.test);
+        NinjaPropertiesImpl properties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         this.ninjaProperties = properties;
         
         final FileItemIterator fileItemIterator = makeFileItemsIterator();

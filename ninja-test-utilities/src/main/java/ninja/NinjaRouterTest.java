@@ -48,15 +48,16 @@ public class NinjaRouterTest {
     public void startServer(NinjaMode ninjaMode) {
         
         if (ninjaMode == null) {
-            
-            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(
-                    NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
+
+            NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
+                    .withMode(NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet())
+                    .build();
             
             ninjaBootup = new Bootstrap(
                     ninjaProperties);
         } else {
             // in this case servletContext can be null
-            NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
+            NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(ninjaMode).build();
             
             ninjaBootup = new Bootstrap(ninjaProperties);
         }

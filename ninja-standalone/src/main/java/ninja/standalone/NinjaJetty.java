@@ -140,6 +140,10 @@ public class NinjaJetty extends AbstractStandalone<NinjaJetty> {
         }
         
         this.ninjaServletListener.setNinjaProperties(ninjaProperties);
+        if (overrideModuleOpt.isPresent()) {
+            this.ninjaServletListener.setOverrideModule(overrideModuleOpt.get());
+        }
+        
         
         this.contextHandler = new ServletContextHandler(jetty, getContextPath());
         

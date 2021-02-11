@@ -16,11 +16,14 @@
 
 package ninja.utils;
 
+import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.net.URISyntaxException;
 import com.google.inject.Injector;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
 import ninja.standalone.Standalone;
 import ninja.standalone.StandaloneHelper;
 
@@ -31,24 +34,120 @@ import ninja.standalone.StandaloneHelper;
 public class NinjaTestServer implements Closeable {
 
     private final Standalone<Standalone> standalone;
+    
+    public static Builder builder() {
+        return new Builder();
+    }
+    
+    public static class Builder {
+        private Optional<NinjaMode> ninjaModeOpt = Optional.empty();
+        private Optional<Integer> portOpt = Optional.empty();
+        private Optional<Class<? extends Standalone>> standaloneClassOpt = Optional.empty();
+        private Optional<com.google.inject.Module> overrideModuleOpt = Optional.empty();
+        private Optional<Map<String, String>> overrideProperties = Optional.empty();
+        
+        private Builder() {}
+        
+        /**
+         * 
+         * @param ninjaMode The mode to start this server in.
+         * @return this builder for chaining
+         */
+        public Builder ninjaMode(NinjaMode ninjaMode) {
+            Preconditions.checkNotNull(ninjaMode);
+            this.ninjaModeOpt = Optional.of(ninjaMode);
+            
+            return this;
+        }
+        
+        /**
+         * The port where this server will listen.
+         * 
+         * If not set it will pick an available port in range 1000 to 10000.
+         * 
+         * @param port The port where this server will listen.
+         * @return this builder for chaining
+         */
+        public Builder port(Integer port) {
+            Preconditions.checkNotNull(port);
+            this.portOpt = Optional.of(port);
+            
+            return this;
+        }
+        
+        /**
+         * Specify the class to use for starting the server.
+         * 
+         * Will fallback to NinjaJetty if not used.
+         * 
+         * @param standaloneClass The standalone class to use for starting the server. 
+         * @return this builder for chaining
+         */
+        public Builder standaloneClass(Class<? extends Standalone> standaloneClass) {
+            Preconditions.checkNotNull(standaloneClass);
+            this.standaloneClassOpt = Optional.of(standaloneClass);
+            
+            return this;
+        }
+        
+        /**
+         * All bindings defined in this module will override any other bindings.
+         * 
+         * This is very useful in tests, where certain bindings can be replaced
+         * with mocked versions. 
+         * 
+         * @param overrideModule The module with bindings - all its bindings will override any other bindings.
+         * @return this builder for chaining 
+         */
+        public Builder overrideModule(com.google.inject.Module overrideModule) {
+            Preconditions.checkNotNull(overrideModule);
+            this.overrideModuleOpt = Optional.of(overrideModule);
+            
+            return this;
+        }
+        
+        /**
+         * These properties will overwrite any other properties. 
+         * It for instance overwrites properties in conf/application.conf.
+         * 
+         * This is very useful in tests where you want to set certain properties
+         * like a jdbc connection based on a url that gets defined when the
+         * testcontainer gets started.
+         * 
+         * The key should be written in a dot-separated format. 
+         * Eg "application.server.url".
+         * 
+         * @param overrideProperties A map with keys and values that will overwrite 
+         *                            any previously set properties. These properties will
+         *                            have the highest priority and will be present when
+         *                            the server is running.
+         * @return this builder for chaining
+         */
+        public Builder overrideProperties(Map<String, String> overrideProperties) {
+            Preconditions.checkNotNull(overrideProperties);
+            this.overrideProperties = Optional.of(overrideProperties);
+            
+            return this;
+        }
+        
+        public NinjaTestServer build() {
+            Class<? extends Standalone> standaloneClass = this.standaloneClassOpt
+                    .orElseGet(() -> StandaloneHelper.resolveStandaloneClass());
+            Integer port = this.portOpt.orElseGet(() -> StandaloneHelper.findAvailablePort(1000, 10000));
+            NinjaMode ninjaMode = ninjaModeOpt.orElseGet(() -> NinjaMode.test);
+            
+            return new NinjaTestServer(ninjaMode, standaloneClass, port, this.overrideModuleOpt, this.overrideProperties);
+        }
 
-    public NinjaTestServer() {
-        this(NinjaMode.test);
     }
     
-    public NinjaTestServer(NinjaMode ninjaMode) {
-        this(ninjaMode, StandaloneHelper.resolveStandaloneClass());
-    }
-    
-    public NinjaTestServer(NinjaMode ninjaMode, int port) {
-        this(ninjaMode, StandaloneHelper.resolveStandaloneClass(), port);
-    }
-    
-    public NinjaTestServer(NinjaMode ninjaMode, Class<? extends Standalone> standaloneClass) {
-        this(ninjaMode, standaloneClass, StandaloneHelper.findAvailablePort(1000, 10000));
-    }
-    
-    public NinjaTestServer(NinjaMode ninjaMode, Class<? extends Standalone> standaloneClass, int port) {
+    private NinjaTestServer(
+            NinjaMode ninjaMode, 
+            Class<? extends Standalone> standaloneClass, 
+            int port,
+            Optional<com.google.inject.Module> overrideModuleOpt,
+            Optional<Map<String, String>> overridePropertiesOpt) {
+        
         this.standalone = StandaloneHelper.create(standaloneClass);
         
         try {
@@ -56,6 +155,14 @@ public class NinjaTestServer implements Closeable {
             this.standalone
                 .port(port)
                 .ninjaMode(ninjaMode);
+            
+            if (overrideModuleOpt.isPresent()) {
+                this.standalone.overrideModule(overrideModuleOpt.get());
+            }
+            
+            if (overridePropertiesOpt.isPresent()) {
+                this.standalone.overrideProperties(overridePropertiesOpt.get());
+            }
             
             standalone.start();
         } catch (Exception e) {

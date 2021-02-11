@@ -36,6 +36,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
+import com.google.inject.util.Modules;
 
 import ninja.conf.FrameworkModule;
 import ninja.conf.NinjaBaseModule;
@@ -52,6 +53,7 @@ import ninja.utils.SwissKnife;
  * adds modules specific to the subclassed Bootstrap.  See ninja-servlet
  * and NinjaServletContext for an example of a subclass.
  */
+
 public class Bootstrap {
     static private final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
@@ -61,14 +63,22 @@ public class Bootstrap {
     static public final String NINJA_CONVENTION_LOCATION = "conf.Ninja";
 
     private final NinjaPropertiesImpl ninjaProperties;
+    private final Optional<com.google.inject.Module> overrideModuleOpt;
     protected final NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
     private final List<Module> modulesToLoad;
     private final Optional<String> applicationModulesBasePackage;
     private Injector injector = null;
-
+    
     public Bootstrap(NinjaPropertiesImpl ninjaProperties) {
+        this(ninjaProperties, Optional.empty());
+    }
+
+    public Bootstrap(NinjaPropertiesImpl ninjaProperties, Optional<com.google.inject.Module> overrideModuleOpt) {
         Preconditions.checkNotNull(ninjaProperties);
+        Preconditions.checkNotNull(overrideModuleOpt);
         this.ninjaProperties = ninjaProperties;
+        this.overrideModuleOpt = overrideModuleOpt;
+        
         this.modulesToLoad =  new ArrayList<>();
         
         // custom base package for application modules (e.g. com.example.conf.Routes)
@@ -217,8 +227,19 @@ public class Bootstrap {
     }
     
     private void initInjector() throws Exception {
-        // Let the injector generate all instances and stuff
-        this.injector = Guice.createInjector(Stage.PRODUCTION, modulesToLoad);
+        Module combinedModules;
+        if (overrideModuleOpt.isPresent()) {
+            // This is for instance useful in tests. 
+            // You can override bindings using mocks.
+            // These mocks are then being injected across 
+            // your Ninja app and can be used to verify behavior.
+            // 
+            // In production applications you likely do not want to use this functionality.
+            combinedModules = Modules.override(modulesToLoad).with(overrideModuleOpt.get());
+        } else {
+            combinedModules = Modules.combine(modulesToLoad);
+        }
+        this.injector = Guice.createInjector(Stage.PRODUCTION, combinedModules);
     }
     
     public void initRoutes() throws Exception {

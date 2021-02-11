@@ -45,7 +45,7 @@ public class ImplFromPropertiesFactoryTest {
     
     @Test
     public void defaultImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();  
         
         //ninjaProperties.setProperty("i.am.a.test.implementation", null);
         
@@ -63,7 +63,7 @@ public class ImplFromPropertiesFactoryTest {
     
     @Test
     public void missingImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         
         ninjaProperties.setProperty("i.am.a.test.implementation", "does_not_exist");
         
@@ -78,7 +78,7 @@ public class ImplFromPropertiesFactoryTest {
     
     @Test
     public void missingImplementationDeferredUntilGet() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();  
         
         ninjaProperties.setProperty("i.am.a.test.implementation", "does_not_exist");
         
@@ -96,7 +96,7 @@ public class ImplFromPropertiesFactoryTest {
     
     @Test
     public void configuredImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();   
         
         ninjaProperties.setProperty("i.am.a.test.implementation", "ninja.utils.ImplFromPropertiesFactoryTest$MockInterfaceImpl");
         
@@ -113,7 +113,7 @@ public class ImplFromPropertiesFactoryTest {
     
     @Test
     public void implementationNotAnInstanceOfTarget() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(NinjaMode.test);   
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();  
         
         ninjaProperties.setProperty("i.am.a.test.implementation", "java.lang.Object");
         
