@@ -69,7 +69,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         
         private NinjaMode ninjaMode;
         private Optional<String> externalConfigurationOpt = Optional.empty();
-        private Optional<Map<String, String>> propertiesOpt = Optional.empty();
+        private Optional<Map<String, String>> overwritePropertiesOpt = Optional.empty();
         
         private Builder() {}
         
@@ -81,23 +81,42 @@ public class NinjaPropertiesImpl implements NinjaProperties {
         
         /**
          * A path pointing to the location of an external configuration.
+         * 
+         * This external configuration will overwrite any other properties
+         * like for instance conf/application.conf. Only properties
+         * set in overwriteProperties(..) have higher priority and will not
+         * be overwritten.
+         * 
+         * @param externalConfiguration The path of an external configuration. For instance "conf/heroku.conf".
+         * @return this instance for chaining
          */
-        public Builder withExternalConfiguration(String externalConfiguration) {
+        public Builder externalConfiguration(String externalConfiguration) {
             Preconditions.checkNotNull(externalConfiguration);
             this.externalConfigurationOpt = Optional.of(externalConfiguration);
             return this;
         }
         
         /**
-         * This is useful in tests.
+         * These properties will overwrite any other properties. It overwrites
+         * properties in conf/application.conf or anything set via 
+         * withExternalConfiguration(..).
          * 
-         * This allows to overwrite certain properties in a test programmatically.
+         * This is very useful in tests where you want to set certain properties
+         * like a jdbc connection based on a url that gets defined when the
+         * testcontainer gets started.
          * 
-         * @returns this builder for chaining
+         * The key should be written in a dot-separated format. 
+         * Eg "application.server.url".
+         * 
+         * @param overwriteProperties A map with keys and values that will overwrite 
+         *                            any previously set properties. These properties will
+         *                            have the highest priority and will be present when
+         *                            the server is running.
+         * @return this instance for chaining
          */
-        public Builder withProperties(Map<String, String> properties) {
-            Preconditions.checkNotNull(properties);
-            this.propertiesOpt = Optional.of(properties);
+        public Builder overwriteProperties(Map<String, String> overwriteProperties) {
+            Preconditions.checkNotNull(overwriteProperties);
+            this.overwritePropertiesOpt = Optional.of(overwriteProperties);
             return this;
         }
     
@@ -105,7 +124,7 @@ public class NinjaPropertiesImpl implements NinjaProperties {
             if (ninjaMode == null) {
                 throw new RuntimeException("NinjaMode is not set. Please set it before calling build()");
             }
-            return new NinjaPropertiesImpl(ninjaMode, externalConfigurationOpt, propertiesOpt);
+            return new NinjaPropertiesImpl(ninjaMode, externalConfigurationOpt, overwritePropertiesOpt);
         }
     
     }

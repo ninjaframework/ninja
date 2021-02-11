@@ -181,7 +181,7 @@ public class NinjaPropertiesImplTest {
         // instantiate the properties, but provide a different one
         NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
-                .withExternalConfiguration( "conf/heroku.conf")
+                .externalConfiguration("conf/heroku.conf")
                 .build();
 
         // we expect that the original application secret gets overwritten:
@@ -304,7 +304,7 @@ public class NinjaPropertiesImplTest {
         // verify property in external conf is set
         NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
-                .withExternalConfiguration("conf/system_property.conf")
+                .externalConfiguration("conf/system_property.conf")
                 .build();
         
         assertThat(ninjaProperties.get("unit.test.123")).isEqualTo("123-value-via-external-conf");
@@ -314,7 +314,7 @@ public class NinjaPropertiesImplTest {
         try {
             ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
-                .withExternalConfiguration("conf/system_property.conf")
+                .externalConfiguration("conf/system_property.conf")
                 .build();
             assertThat(ninjaProperties.get("unit.test.123")).isEqualTo("123-value-via-system-property");
         } finally {
@@ -327,7 +327,7 @@ public class NinjaPropertiesImplTest {
         try {
             ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
-                .withExternalConfiguration( "conf/system_property.conf")
+                .externalConfiguration( "conf/system_property.conf")
                 .build();
             assertThat(ninjaProperties.get("unit.test.123")).isEqualTo("123-value-via-prefixed-system-property");
         } finally {
@@ -344,7 +344,7 @@ public class NinjaPropertiesImplTest {
         // when
         NinjaProperties actualProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
-                .withProperties(ImmutableMap.of("serverPort", "1001"))
+                .overwriteProperties(ImmutableMap.of("serverPort", "1001"))
                 .build();
         
         // then
