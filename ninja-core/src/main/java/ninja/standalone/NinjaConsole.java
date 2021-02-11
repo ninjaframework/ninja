@@ -66,7 +66,7 @@ public class NinjaConsole extends AbstractConsole<NinjaConsole> {
     static public class ConsoleBootstrap extends Bootstrap {
 
         public ConsoleBootstrap(NinjaPropertiesImpl ninjaProperties) {
-            super(ninjaProperties, Optional.empty());
+            super(ninjaProperties);
         }
 
         @Override

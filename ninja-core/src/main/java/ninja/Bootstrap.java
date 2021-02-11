@@ -62,7 +62,7 @@ public class Bootstrap {
     static public final String NINJA_CONVENTION_LOCATION = "conf.Ninja";
 
     private final NinjaPropertiesImpl ninjaProperties;
-    private final Optional<com.google.inject.Module> overrideModule;
+    private final Optional<com.google.inject.Module> overrideModuleOpt;
     protected final NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
     private final List<Module> modulesToLoad;
     private final Optional<String> applicationModulesBasePackage;
@@ -72,11 +72,11 @@ public class Bootstrap {
         this(ninjaProperties, Optional.empty());
     }
 
-    public Bootstrap(NinjaPropertiesImpl ninjaProperties, Optional<com.google.inject.Module> overrideModule) {
+    public Bootstrap(NinjaPropertiesImpl ninjaProperties, Optional<com.google.inject.Module> overrideModuleOpt) {
         Preconditions.checkNotNull(ninjaProperties);
-        Preconditions.checkNotNull(overrideModule);
+        Preconditions.checkNotNull(overrideModuleOpt);
         this.ninjaProperties = ninjaProperties;
-        this.overrideModule = overrideModule;
+        this.overrideModuleOpt = overrideModuleOpt;
         
         this.modulesToLoad =  new ArrayList<>();
         
@@ -227,11 +227,11 @@ public class Bootstrap {
     
     private void initInjector() throws Exception {
         Module combinedModules;
-        if (overrideModule.isPresent()) {
+        if (overrideModuleOpt.isPresent()) {
             // OverrideModule is for instnace useful in tests. You can mock certain
             // classes and verify against them.
             // In real applications you do not want to use them.
-            combinedModules = Modules.override(modulesToLoad).with(overrideModule.get());
+            combinedModules = Modules.override(modulesToLoad).with(overrideModuleOpt.get());
         } else {
             combinedModules = Modules.combine(modulesToLoad);
         }

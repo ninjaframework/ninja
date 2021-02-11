@@ -61,12 +61,17 @@ public class NinjaPropertiesImpl implements NinjaProperties {
      */
     private CompositeConfiguration compositeConfiguration;
     
+    public static Builder builder() {
+        return new Builder();
+    }
     
     public static class Builder {
         
         private NinjaMode ninjaMode;
         private Optional<String> externalConfigurationOpt = Optional.empty();
         private Optional<Map<String, String>> propertiesOpt = Optional.empty();
+        
+        private Builder() {}
         
         public Builder withMode(NinjaMode ninjaMode) {
             Preconditions.checkNotNull(ninjaMode);
@@ -87,6 +92,8 @@ public class NinjaPropertiesImpl implements NinjaProperties {
          * This is useful in tests.
          * 
          * This allows to overwrite certain properties in a test programmatically.
+         * 
+         * @returns this builder for chaining
          */
         public Builder withProperties(Map<String, String> properties) {
             Preconditions.checkNotNull(properties);

@@ -96,7 +96,7 @@ public class ControllerMethodInvokerTest {
 
     @Before
     public void setUp() throws Exception {
-        this.ninjaProperties = Mockito.spy(new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
+        this.ninjaProperties = Mockito.spy(NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
         this.lang = new LangImpl(this.ninjaProperties);
         this.validation = new ValidationImpl();
 

@@ -245,7 +245,7 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     @Test
     public void testRouteOrdering() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.test)
                 .build();
         Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
@@ -272,7 +272,7 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     @Test
     public void testMissingKeyedRoute() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.test)
                 .build();
         Provider<RouteBuilderImpl> routeBuilderImplProvider = Mockito.mock(Provider.class);
@@ -292,7 +292,7 @@ public class ApplicationControllerTest extends NinjaDocTester {
 
     @Test
     public void testHasKeyedRoute() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.test)
                 .build();
         ninjaProperties.setProperty("testkey", "true");

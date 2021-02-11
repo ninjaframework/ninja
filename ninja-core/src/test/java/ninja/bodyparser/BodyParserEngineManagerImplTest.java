@@ -70,7 +70,7 @@ public class BodyParserEngineManagerImplTest {
                 bind(BodyParserEngineJson.class);
                 bind(BodyParserEngineXml.class);
                 
-                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
+                bind(NinjaProperties.class).toInstance(NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
 
                 for (Class<?> clazz : toBind) {
 

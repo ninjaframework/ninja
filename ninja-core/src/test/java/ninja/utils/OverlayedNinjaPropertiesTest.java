@@ -26,7 +26,7 @@ public class OverlayedNinjaPropertiesTest {
 
     @Test
     public void precedence() {
-        NinjaProperties ninjaPropertiesForOverlay = new NinjaPropertiesImpl.Builder()
+        NinjaProperties ninjaPropertiesForOverlay = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.prod)
                 .withExternalConfiguration("conf/overlayed.empty.conf")
                 .build();
@@ -45,7 +45,7 @@ public class OverlayedNinjaPropertiesTest {
         
         
         // configProperty > defaultValue
-        ninjaPropertiesForOverlay = new NinjaPropertiesImpl.Builder()
+        ninjaPropertiesForOverlay = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.prod)
                 .withExternalConfiguration("conf/overlayed.conf")
                 .build();
@@ -80,7 +80,7 @@ public class OverlayedNinjaPropertiesTest {
     
     @Test
     public void badValues() {
-                NinjaProperties ninjaPropertiesForOverlay = new NinjaPropertiesImpl.Builder()
+                NinjaProperties ninjaPropertiesForOverlay = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
                 .withExternalConfiguration("conf/overlayed.bad.conf")
                 .build();

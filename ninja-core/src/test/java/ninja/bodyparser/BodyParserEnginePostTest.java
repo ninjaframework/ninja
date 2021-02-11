@@ -79,7 +79,7 @@ public class BodyParserEnginePostTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
+                bind(NinjaProperties.class).toInstance(NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
                 
                 Multibinder<ParamParser> parsersBinder = Multibinder.newSetBinder(binder(), ParamParser.class);
                 parsersBinder.addBinding().to(NeedingInjectionParamParser.class);

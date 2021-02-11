@@ -175,7 +175,7 @@ public class TemplateEngineManagerImplTest {
                 bind(TemplateEngineJsonP.class);
                 bind(TemplateEngineXml.class);
 
-                bind(NinjaProperties.class).toInstance(new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
+                bind(NinjaProperties.class).toInstance(NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
 
                 for (Class<?> clazz : toBind) {
 

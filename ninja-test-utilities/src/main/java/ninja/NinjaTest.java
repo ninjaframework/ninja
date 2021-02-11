@@ -55,6 +55,10 @@ public class NinjaTest {
     public Injector getInjector(){
         return ninjaTestServer.getInjector();
     }
+    
+    public <T> T getInstance(Class<T> type){
+        return ninjaTestServer.getInjector().getInstance(type);
+    }
 
     public String to(String path) {
         if (path == null) {

@@ -125,7 +125,7 @@ public class NinjaServletListener extends GuiceServletContextListener {
                     if (ninjaProperties == null) {
                         
                         NinjaMode ninjaMode = NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet();      
-                        ninjaProperties = new NinjaPropertiesImpl.Builder()
+                        ninjaProperties = NinjaPropertiesImpl.builder()
                             .withMode(ninjaMode)
                             .build();   
                     

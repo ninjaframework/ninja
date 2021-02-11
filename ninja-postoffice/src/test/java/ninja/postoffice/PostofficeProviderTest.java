@@ -40,7 +40,7 @@ public class PostofficeProviderTest {
     
     @Test
     public void defaultImplementation() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.test)
                 .build();     
         
@@ -55,7 +55,7 @@ public class PostofficeProviderTest {
     
     @Test
     public void missingImplementationThrowsExceptionOnUseNotCreate() {
-                NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+                NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.test)
                 .build();     
         
@@ -72,7 +72,7 @@ public class PostofficeProviderTest {
     
     @Test
     public void verifySingletonProviderAndInstance() {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.test)
                 .build();     
         

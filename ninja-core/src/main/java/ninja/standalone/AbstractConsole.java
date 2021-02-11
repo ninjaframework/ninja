@@ -63,14 +63,11 @@ public abstract class AbstractConsole<T extends AbstractConsole> implements Cons
         
         // create ninja properties & overlayed view
         
-        NinjaPropertiesImpl.Builder builder = new NinjaPropertiesImpl.Builder()
+        NinjaPropertiesImpl.Builder builder = NinjaPropertiesImpl
+                .builder()
                 .withMode(this.ninjaMode);
-        if (externalConfigurationPath.isPresent()) {
-            builder.withExternalConfiguration(this.externalConfigurationPath.get());
-        }
-        if (overridePropertiesOpt.isPresent()) {
-            builder.withProperties(this.overridePropertiesOpt.get());
-        }
+        externalConfigurationPath.ifPresent(e -> builder.withExternalConfiguration(e));
+        overridePropertiesOpt.ifPresent(o -> builder.withProperties(o));  
         this.ninjaProperties = builder.build();
         
         this.overlayedNinjaProperties = new OverlayedNinjaProperties(this.ninjaProperties);

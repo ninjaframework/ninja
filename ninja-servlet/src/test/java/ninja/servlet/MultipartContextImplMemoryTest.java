@@ -127,7 +127,7 @@ public class MultipartContextImplMemoryTest {
         when(httpServletRequest.getContentType()).thenReturn("multipart/form-data");
         when(httpServletRequest.getMethod()).thenReturn("POST");
         
-        NinjaPropertiesImpl properties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
+        NinjaPropertiesImpl properties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         this.ninjaProperties = properties;
         
         final FileItemIterator fileItemIterator = makeFileItemsIterator();

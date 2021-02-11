@@ -41,17 +41,17 @@ public class NinjaPropertiesImplTest {
     public void testSkippingThroughModesWorks() {
 
         // check that mode tests works:
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
+        NinjaPropertiesImpl ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         assertThat(ninjaPropertiesImpl.get("testproperty")).isEqualTo("test_testproperty");
 
         // check that mode dev works:
-        ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
         assertThat(ninjaPropertiesImpl.get("testproperty")).isEqualTo("dev_testproperty");
         assertThat(ninjaPropertiesImpl.get(NinjaConstant.applicationSecret)).isEqualTo("secret");
 
         // and in a completely different mode with no "%"-prefixed key the
         // default value use used
-        ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.prod).build();
+        ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.prod).build();
         assertThat(ninjaPropertiesImpl.get("testproperty")).isEqualTo("testproperty_without_prefix");
         assertThat(ninjaPropertiesImpl.get(NinjaConstant.applicationSecret)).isEqualTo("secret");
 
@@ -63,7 +63,7 @@ public class NinjaPropertiesImplTest {
     @Test(expected = RuntimeException.class)
     public void testGetOrDie() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaPropertiesImpl ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         assertThat(ninjaPropertiesImpl.getOrDie("testproperty")).isEqualTo("dev_testproperty");
 
@@ -73,7 +73,7 @@ public class NinjaPropertiesImplTest {
     @Test
     public void testGetBooleanParsing() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaPropertiesImpl ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
         assertThat(ninjaPropertiesImpl.getBoolean("booleanTestTrue")).isTrue();
 
         assertThat(ninjaPropertiesImpl.getBoolean("booleanTestFalse")).isFalse();
@@ -85,7 +85,7 @@ public class NinjaPropertiesImplTest {
     @Test(expected = RuntimeException.class)
     public void testGetBooleanOrDie() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaPropertiesImpl ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         assertThat(ninjaPropertiesImpl.getBooleanOrDie("booleanTestTrue")).isTrue();
 
@@ -96,7 +96,7 @@ public class NinjaPropertiesImplTest {
     @Test
     public void testGetIntegerParsing() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaPropertiesImpl ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         assertThat(ninjaPropertiesImpl.getInteger("integerTest")).isEqualTo(new Integer(123456789));
 
@@ -107,7 +107,7 @@ public class NinjaPropertiesImplTest {
     @Test(expected = RuntimeException.class)
     public void testGetIntegerDie() {
 
-        NinjaPropertiesImpl ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaPropertiesImpl ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         assertThat(ninjaPropertiesImpl.getIntegerOrDie("integerTest")).isEqualTo(new Integer(123456789));
 
@@ -117,7 +117,7 @@ public class NinjaPropertiesImplTest {
 
     @Test
     public void testPropertiesBoundInGuice() {
-        final NinjaPropertiesImpl props = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        final NinjaPropertiesImpl props = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
         MockService service = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -138,7 +138,7 @@ public class NinjaPropertiesImplTest {
     public void testReferenciningOfPropertiesWorks() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         // this is testing if referencing of properties works with external
         // configurations
@@ -156,7 +156,7 @@ public class NinjaPropertiesImplTest {
                 "conf/heroku.conf");
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         // we expect that the original application secret gets overwritten:
         assertThat(ninjaProperties.get(NinjaConstant.applicationSecret)).isEqualTo("secretForHeroku");
@@ -179,7 +179,7 @@ public class NinjaPropertiesImplTest {
                 "conf/filedoesnotexist.conf");
 
         // instantiate the properties, but provide a different one
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
                 .withExternalConfiguration( "conf/heroku.conf")
                 .build();
@@ -206,7 +206,7 @@ public class NinjaPropertiesImplTest {
                 "conf/heroku.conf");
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
 
         // this is testing if referencing of properties works with external
         // configurations
@@ -220,7 +220,7 @@ public class NinjaPropertiesImplTest {
     @Test
     public void testUft8Works() {
 
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
         // We test this: utf8Test=this is utf8: öäü
         assertThat(ninjaProperties.get("utf8Test")).isEqualTo("this is utf8: öäü");
 
@@ -234,7 +234,7 @@ public class NinjaPropertiesImplTest {
         System.setProperty(NinjaProperties.NINJA_EXTERNAL_CONF, "conf/non_existing.conf");
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         // now a runtime exception must be thrown.
     }
@@ -243,7 +243,7 @@ public class NinjaPropertiesImplTest {
     public void testGetWithDefault() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
         assertThat(ninjaProperties.getWithDefault("non_existsing_property_to_check_defaults", "default")).isEqualTo("default");
@@ -257,7 +257,7 @@ public class NinjaPropertiesImplTest {
     public void testGetIntegerWithDefault() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
         assertThat(ninjaProperties.getIntegerWithDefault("non_existsing_property_to_check_defaults", 1)).isEqualTo(Integer.valueOf(1));
@@ -271,7 +271,7 @@ public class NinjaPropertiesImplTest {
     public void testGetBooleanWithDefault() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
         assertThat(ninjaProperties.getBooleanWithDefault("non_existsing_property_to_check_defaults", true)).isTrue();
@@ -285,7 +285,7 @@ public class NinjaPropertiesImplTest {
     public void testGetStringArrayWorks() {
 
         // instantiate the properties:
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
 
         // test default works when property not there:
         assertThat(ninjaProperties.get("getOneElementStringArray")).isEqualTo("one");
@@ -302,7 +302,7 @@ public class NinjaPropertiesImplTest {
     @Test
     public void systemProperties() {
         // verify property in external conf is set
-        NinjaProperties ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaProperties ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
                 .withExternalConfiguration("conf/system_property.conf")
                 .build();
@@ -312,7 +312,7 @@ public class NinjaPropertiesImplTest {
         // verify system property overrides it
         System.setProperty("unit.test.123", "123-value-via-system-property");
         try {
-            ninjaProperties = new NinjaPropertiesImpl.Builder()
+            ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
                 .withExternalConfiguration("conf/system_property.conf")
                 .build();
@@ -325,7 +325,7 @@ public class NinjaPropertiesImplTest {
         System.setProperty("unit.test.123", "123-value-via-system-property");
         System.setProperty("%dev.unit.test.123", "123-value-via-prefixed-system-property");
         try {
-            ninjaProperties = new NinjaPropertiesImpl.Builder()
+            ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
                 .withExternalConfiguration( "conf/system_property.conf")
                 .build();
@@ -338,11 +338,11 @@ public class NinjaPropertiesImplTest {
     @Test
     public void programmaticallyOverridingProperties_works() {
         // given initially serverPort=80...
-        NinjaProperties originalNinjaProperties = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.dev).build();
+        NinjaProperties originalNinjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.dev).build();
         assertThat(originalNinjaProperties.getInteger("serverPort")).isEqualTo(80);
         
         // when
-        NinjaProperties actualProperties = new NinjaPropertiesImpl.Builder()
+        NinjaProperties actualProperties = NinjaPropertiesImpl.builder()
                 .withMode(NinjaMode.dev)
                 .withProperties(ImmutableMap.of("serverPort", "1001"))
                 .build();

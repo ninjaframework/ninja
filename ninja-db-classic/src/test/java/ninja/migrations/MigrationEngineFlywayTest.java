@@ -40,7 +40,7 @@ public class MigrationEngineFlywayTest {
     private MigrationEngineFlyway getTestInstance(Flyway flywayInstance,
                                                   NinjaMode ninjaMode,
                                                   Map<String, String> customProperties) {
-        NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl.Builder()
+        NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
                 .withMode(ninjaMode)
                 .build();
         ninjaProperties.setProperty(NinjaConstant.DB_CONNECTION_URL, "testurl");

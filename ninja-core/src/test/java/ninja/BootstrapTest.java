@@ -47,7 +47,7 @@ public class BootstrapTest {
     @Test
     public void testInitializeWithAllUserSpecifiedThingsInConfDirectory() {
 
-        ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build();
+        ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         
         Bootstrap bootstrap = new Bootstrap(ninjaPropertiesImpl, Optional.empty());
         
@@ -78,7 +78,7 @@ public class BootstrapTest {
         // test a user NOT supplying these by configuring the application base package
         // a bit of a hack, but will work to force NOT finding anything
         
-        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
+        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
         
         Mockito.when(
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
@@ -102,7 +102,7 @@ public class BootstrapTest {
     @Test
     public void testInitializeWithAllUserSpecifiedThingsInShiftedConfDirectory() {
         
-        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
+        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
         
         Mockito.when(
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
@@ -133,7 +133,7 @@ public class BootstrapTest {
     
     @Test
     public void frameworkModuleSkipsNinjaClassicModule() {
-        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = new NinjaPropertiesImpl.Builder().withMode(NinjaMode.test).build());
+        ninjaPropertiesImpl = Mockito.spy(ninjaPropertiesImpl = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
         
         Mockito.when(
                 ninjaPropertiesImpl.get(NinjaConstant.APPLICATION_MODULES_BASE_PACKAGE))
