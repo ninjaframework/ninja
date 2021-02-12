@@ -58,7 +58,7 @@
         </dc:creator>
         <dc:publisher>
           <cc:Agent>
-            <dc:title>http://www.ninjaframework.org</dc:title>
+            <dc:title>https://www.ninjaframework.org</dc:title>
           </cc:Agent>
         </dc:publisher>
         <dc:description>Singular N from the Ninja Web Framework logo</dc:description>
