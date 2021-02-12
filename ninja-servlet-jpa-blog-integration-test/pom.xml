@@ -36,7 +36,7 @@
         <version>6.8.1-SNAPSHOT</version>
     </parent>
 
-    <url>http://www.ninjaframework.org</url>
+    <url>https://www.ninjaframework.org</url>
 
     <build>
         <plugins>

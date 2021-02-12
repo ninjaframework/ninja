@@ -1,3 +1,8 @@
+Version 6.8.1
+=============
+
+* 2021-02-13 Move to https for ninjaframework.org. Replace all old occurrences.
+
 Version 6.8.0
 =============
 

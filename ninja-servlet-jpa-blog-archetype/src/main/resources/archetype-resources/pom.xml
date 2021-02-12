@@ -12,7 +12,7 @@
     <groupId>${groupId}</groupId>
     <version>${version}</version>
 
-    <url>http://www.ninjaframework.org</url>
+    <url>https://www.ninjaframework.org</url>
 
     <properties>
         <ninja.version>@project.version@</ninja.version>

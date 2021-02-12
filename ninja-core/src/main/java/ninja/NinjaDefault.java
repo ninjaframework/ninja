@@ -55,7 +55,7 @@ public class NinjaDefault implements Ninja {
             + " _______  .___ _______        ____.  _____   \n"
             + " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
             + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
-            + "/    |    \\   /    |    \\/\\__|    /    |    \\  http://www.ninjaframework.org\n"
+            + "/    |    \\   /    |    \\/\\__|    /    |    \\  https://www.ninjaframework.org\n"
             + "\\____|__  /___\\____|__  /\\________\\____|__  /  @ninjaframework\n"
             + "     web\\/framework   \\/                  \\/   {}\n";
     

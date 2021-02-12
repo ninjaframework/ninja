@@ -89,6 +89,6 @@ public class SetupDao {
             + "<li>... and much much more.</li>"
             + "</ul>" 
             + "<p>We are always happy to see you on our mailing list! "
-            + "Check out <a href=${symbol_escape}"http://www.ninjaframework.org${symbol_escape}">our website for more</a>.</p>";
+            + "Check out <a href=${symbol_escape}"https://www.ninjaframework.org${symbol_escape}">our website for more</a>.</p>";
 
 }
