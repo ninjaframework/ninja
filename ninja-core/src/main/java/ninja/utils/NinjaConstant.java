@@ -72,7 +72,7 @@ public interface NinjaConstant {
      * 
      * Note: Default is false, but will change to true in the future (breaking change).
      * 
-     * More: http://www.ninjaframework.org/documentation/basic_concepts/controllers.html
+     * More: https://www.ninjaframework.org/documentation/basic_concepts/controllers.html
      */
     String NINJA_STRICT_ARGUMENT_EXTRACTORS = "ninja.strict_argument_extractors";
 

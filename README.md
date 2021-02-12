@@ -15,7 +15,7 @@ Rock solid, fast and super productive.
 
 Getting started
 ---------------
-- Website with docs: http://www.ninjaframework.org
+- Website with docs: https://www.ninjaframework.org
 - Source: https://github.com/ninjaframework/ninja
 - Continuous integration: [![Build Status](https://api.travis-ci.org/ninjaframework/ninja.svg)](https://travis-ci.org/ninjaframework/ninja)
 

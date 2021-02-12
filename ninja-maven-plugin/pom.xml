@@ -28,7 +28,7 @@
     <artifactId>ninja-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     
-    <url>http://www.ninjaframework.org</url>
+    <url>https://www.ninjaframework.org</url>
     
     <prerequisites>
         <maven>3.3.9</maven>

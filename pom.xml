@@ -23,7 +23,7 @@
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
     <version>6.8.1-SNAPSHOT</version>
-    <url>http://www.ninjaframework.org</url>
+    <url>https://www.ninjaframework.org</url>
     <name>${project.artifactId}</name>
     <description>Ninja is a full stack web framework for Java.
         Rock solid, fast, and super productive.</description>

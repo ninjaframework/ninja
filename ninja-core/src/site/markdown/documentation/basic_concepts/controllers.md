@@ -124,7 +124,7 @@ In the above case MyObject will be automatically parsed by Ninja. The way
 it will parsed (JSON, XML, POST form) will be determined via the "Content-Type" request header.
 
 If you are using the POST form way, this object can contains any parameter type listed in the 
-<a href="http://www.ninjaframework.org/documentation/basic_concepts/argument_extractors.html">Argument extractors</a> 
+<a href="https://www.ninjaframework.org/documentation/basic_concepts/argument_extractors.html">Argument extractors</a> 
 chapter (or custom ones, as described in the same chapter). Custom objects contained in this 
 arbitrary object can also be parsed if they have a constructor without arguments.
 

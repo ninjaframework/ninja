@@ -10,7 +10,7 @@
         <src>ninja_logo.png</src>
         <alt>Ninja web framework</alt>
         <name>Ninja web framework</name>
-        <href>http://www.ninjaframework.org</href>
+        <href>https://www.ninjaframework.org</href>
     </bannerLeft>
     <body>
 
@@ -185,7 +185,7 @@
             <bodyColumnClass>span9</bodyColumnClass>
             <googleSearch>
                 <sitesearch>
-                    http://www.ninjaframework.org
+                    https://www.ninjaframework.org
                 </sitesearch>
             </googleSearch>
             <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>

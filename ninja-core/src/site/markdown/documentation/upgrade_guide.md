@@ -70,7 +70,7 @@ to 6.3.0
 
 Postoffice is now a separate dependency. Make sure to add the dependency to 
 your pom.xml file and add the module to Modules.java.
-See details in http://www.ninjaframework.org/documentation/sending_mail.html
+See details in https://www.ninjaframework.org/documentation/sending_mail.html
 
 to 6.0.1
 --------
