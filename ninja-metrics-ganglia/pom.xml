@@ -16,7 +16,7 @@ and limitations under the License. -->
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja</artifactId>
-        <version>6.8.1-SNAPSHOT</version>
+        <version>6.8.1</version>
     </parent>
 
     <url>https://www.ninjaframework.org</url>
