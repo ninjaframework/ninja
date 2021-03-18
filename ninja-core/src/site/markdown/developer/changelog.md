@@ -321,7 +321,7 @@ Version 5.1.0
 =============
 
  * 2015-03-25 Bump to Jetty 9.2.10.v20150310 (ra) 
- * 2015-03-19 (PR #329) ninja-core supports new "Diagnostics" extension for DEV mode. See http://www.ninjaframework.org/documentation/configuration_and_modes.html for more info (jjlauer)
+ * 2015-03-19 (PR #329) ninja-core supports new "Diagnostics" extension for DEV mode. See https://www.ninjaframework.org/documentation/configuration_and_modes.html for more info (jjlauer)
  * 2015-03-16 (PR #333) ninja-standalone will System.exit on any startup exception (previously it only exited in some cases, kept running in failed state for others) (jjlauer)
  * 2015-03-16 (PR #333) ninja-standalone support for binding to specific host/address (e.g. -Dninja.host=localhost) (jjlauer)
  * 2015-03-16 (PR #333) ninja-standalone support for advanced/power-user jetty configuration(s) (e.g. -Dninja.jetty.configuration=jetty.xml,jetty-ssl.xml) (jjlauer)
@@ -843,7 +843,7 @@ Version 1.4
  * Added Optional (guava) support to Messages and Lang
  * Added modules documentation page (ra).
  * Replaced potentially harmful SimpleDateFormatter with JodaTime. SDF is not thread safe... (ra)
- * Better printing of numbers in Freemarker Templating Engine (See also: http://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping)
+ * Better printing of numbers in Freemarker Templating Engine (See also: https://freemarker.sourceforge.net/docs/app_faq.html#faq_number_grouping)
  * Better error handling for templating exceptions (ra)
  * Brand new maven archetype ninja-core-demo-archetype for really simple project generation... (ra)
 

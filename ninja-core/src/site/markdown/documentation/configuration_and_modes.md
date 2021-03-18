@@ -54,7 +54,7 @@ ApplicationController(@Named("fullServerName") String fullServerName) {
 </pre>
 
 By the way. And this is really important: Properties are read and managed by the excellent Apache Configurations library. Please
-refer to [their manual](http://commons.apache.org/configuration/) for even more information on advanced usage.
+refer to [their manual](https://commons.apache.org/configuration/) for even more information on advanced usage.
 
 
 Configuring the modes
@@ -244,7 +244,7 @@ It tries to load in the following order:
 * From the classpath.
 
 Ninja uses the excellent Apache Configurations library to do the loading. Please refer to
-[their manual](http://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
+[their manual](https://commons.apache.org/configuration/userguide/howto_filebased.html#Loading) for more information.
 
 
 System properties to override

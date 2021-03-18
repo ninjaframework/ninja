@@ -53,7 +53,7 @@ registrationPendingSuccess=Success confirming email.
 
 
 Internally we use MessageFormat.format(text, values) to format the messages. Therefore 
-all the information from http://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html does apply.
+all the information from https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html does apply.
 
 <div class="alert alert-info">
 MessageFormat is really cool, but there is one thing to keep in mind:
