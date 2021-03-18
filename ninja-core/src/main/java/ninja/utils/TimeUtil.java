@@ -16,9 +16,11 @@
 
 package ninja.utils;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@ParametersAreNonnullByDefault
 public class TimeUtil {
 
     private static final Pattern days = Pattern.compile("^([0-9]+)d$");
@@ -36,7 +38,7 @@ public class TimeUtil {
      */
     public static int parseDuration(String duration) {
         if (duration == null) {
-            return 60 * 60 * 24 * 30;
+            throw new IllegalArgumentException("duration cannot be null");
         }
         int toAdd = -1;
         if (days.matcher(duration).matches()) {

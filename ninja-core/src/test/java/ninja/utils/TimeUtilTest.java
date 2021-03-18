@@ -16,30 +16,35 @@
 
 package ninja.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
 
 public class TimeUtilTest {
 
     @Test
-    public void test() {
+    public void durationInDays() {
         assertEquals(86400, TimeUtil.parseDuration("1d"));
-        assertEquals(10, TimeUtil.parseDuration("10s"));
         assertEquals(2592000, TimeUtil.parseDuration("30d"));
-        assertEquals(2592000, TimeUtil.parseDuration(null));
-        
-        boolean catchedException = false;
-        try {
-            TimeUtil.parseDuration("NOT_A_VALID_INPUT");
-            
-        } catch (IllegalArgumentException e) {
-                catchedException = true;
-        }
-
-        assertTrue(catchedException); 
-        
     }
 
+    @Test
+    public void durationInSeconds() {
+        assertEquals(10, TimeUtil.parseDuration("10s"));
+    }
+
+    @Test
+    public void durationCannotBeNull() {
+        assertThatThrownBy(() -> TimeUtil.parseDuration(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("duration cannot be null");
+    }
+
+    @Test
+    public void invalidDurationFormat() {
+      assertThatThrownBy(() -> TimeUtil.parseDuration("NOT_A_VALID_INPUT"))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("Invalid duration pattern : NOT_A_VALID_INPUT");
+    }
 }

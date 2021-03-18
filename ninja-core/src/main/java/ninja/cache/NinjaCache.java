@@ -16,14 +16,14 @@
 
 package ninja.cache;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import java.io.NotSerializableException;
 import java.io.Serializable;
 import java.util.Map;
 
-import ninja.utils.TimeUtil;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import static ninja.utils.TimeUtil.parseDuration;
 
 /**
  * A convenience class to access the underlying cache implementation.
@@ -37,9 +37,10 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class NinjaCache {
-    
-    final Cache cache;
-    
+
+    private static final int ETERNITY = Integer.MAX_VALUE;
+    private final Cache cache;
+
     @Inject
     public NinjaCache(Cache cache) {
         this.cache = cache;
@@ -53,7 +54,7 @@ public class NinjaCache {
      */
     public void add(String key, Object value, String expiration) {
         checkSerializable(value);
-        cache.add(key, value, TimeUtil.parseDuration(expiration));
+        cache.add(key, value, parseDuration(expiration));
     }
 
     /**
@@ -66,7 +67,7 @@ public class NinjaCache {
      */
     public boolean safeAdd(String key, Object value, String expiration) {
         checkSerializable(value);
-        return cache.safeAdd(key, value, TimeUtil.parseDuration(expiration));
+        return cache.safeAdd(key, value, parseDuration(expiration));
     }
 
     /**
@@ -76,7 +77,7 @@ public class NinjaCache {
      */
     public void add(String key, Object value) {
         checkSerializable(value);
-        cache.add(key, value, TimeUtil.parseDuration(null));
+        cache.add(key, value, ETERNITY);
     }
 
     /**
@@ -87,7 +88,7 @@ public class NinjaCache {
      */
     public void set(String key, Object value, String expiration) {
         checkSerializable(value);
-        cache.set(key, value, TimeUtil.parseDuration(expiration));
+        cache.set(key, value, parseDuration(expiration));
     }
 
     /**
@@ -99,7 +100,7 @@ public class NinjaCache {
      */
     public boolean safeSet(String key, Object value, String expiration) {
         checkSerializable(value);
-        return cache.safeSet(key, value, TimeUtil.parseDuration(expiration));
+        return cache.safeSet(key, value, parseDuration(expiration));
     }
 
     /**
@@ -109,7 +110,7 @@ public class NinjaCache {
      */
     public void set(String key, Object value) {
         checkSerializable(value);
-        cache.set(key, value, TimeUtil.parseDuration(null));
+        cache.set(key, value, ETERNITY);
     }
 
     /**
@@ -120,7 +121,7 @@ public class NinjaCache {
      */
     public void replace(String key, Object value, String expiration) {
         checkSerializable(value);
-        cache.replace(key, value, TimeUtil.parseDuration(expiration));
+        cache.replace(key, value, parseDuration(expiration));
     }
 
     /**
@@ -133,7 +134,7 @@ public class NinjaCache {
      */
     public boolean safeReplace(String key, Object value, String expiration) {
         checkSerializable(value);
-        return cache.safeReplace(key, value, TimeUtil.parseDuration(expiration));
+        return cache.safeReplace(key, value, parseDuration(expiration));
     }
 
     /**
@@ -143,7 +144,7 @@ public class NinjaCache {
      */
     public void replace(String key, Object value) {
         checkSerializable(value);
-        cache.replace(key, value, TimeUtil.parseDuration(null));
+        cache.replace(key, value, ETERNITY);
     }
 
     /**
