@@ -15,7 +15,7 @@ That means that one route like myserver.com/api/person can return the result
 in different representations. And that's what content negotiation is all about.
 
 By the way - in reality content negotiation can become quite complex. There is 
-a good article on Wikipedia about it: http://en.wikipedia.org/wiki/Content_negotiation
+a good article on Wikipedia about it: https://en.wikipedia.org/wiki/Content_negotiation
 
 <div class="alert alert-info">
 Content negotiation is very cool - but sometimes it adds more problems than

@@ -6,7 +6,7 @@ Introduction
 ------------
 
 Ninja supports Memcached (http://www.danga.com/memcached/) as primary caching layer. 
-In standalone mode Ninja uses EhCache (http://ehcache.org/) as default implementation.
+In standalone mode Ninja uses EhCache (https://www.ehcache.org/) as default implementation.
 
 In production on multiple machines always use Memcached. On a single machine and when developing 
 your application it is fine to use EhCache. 

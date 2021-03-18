@@ -35,7 +35,7 @@ import com.google.inject.Singleton;
  * offload the database and simplify scalability. Ehcache is robust, proven and
  * full-featured and this has made it the most widely-used Java-based cache.</p>
  *
- * @see http://ehcache.org/
+ * See https://www.ehcache.org/
  *
  * expiration is specified in seconds
  * 

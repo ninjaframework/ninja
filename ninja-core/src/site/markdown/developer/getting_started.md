@@ -59,7 +59,7 @@ Making a Ninja release
  
 1) Preparations
 
-- Make sure you are using http://semver.org/ for versioning.
+- Make sure you are using https://semver.org/ for versioning.
 - Make sure changelog.md is updated
 - Make sure upgrade-guide top version is updated
 - Make sure the archetypes are up-to-date (Ninja version must match release version)
@@ -80,7 +80,7 @@ Make sure you got the credentials properly set up in your .m2/settings.xml:
 - mvn release:clean
 - mvn release:prepare
 - mvn release:perform
-- Log into http://oss.sonatype.org and release the packages
+- Log into https://oss.sonatype.org and release the packages
 
 3) Publish website
 
