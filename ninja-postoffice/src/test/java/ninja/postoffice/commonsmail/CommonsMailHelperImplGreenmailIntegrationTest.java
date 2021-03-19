@@ -60,8 +60,10 @@ public class CommonsMailHelperImplGreenmailIntegrationTest {
     }
 
     @After
-    public void tearDown() throws Exception {
-        greenMail.stop();
+    public final void tearDown() {
+        if (greenMail != null) {
+            greenMail.stop();
+        }
     }
 
     @Test

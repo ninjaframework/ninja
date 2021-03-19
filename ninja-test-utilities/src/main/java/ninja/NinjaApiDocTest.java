@@ -53,8 +53,10 @@ public abstract class NinjaApiDocTest extends DocTest {
     }
 
     @After
-    public void shutdownServer() {
-        ninjaTestServer.shutdown();
+    public final void shutdownServer() {
+        if (ninjaTestServer != null) {
+            ninjaTestServer.shutdown();
+        }
     }
 
     public URI buildUri(String relativePath, Map<String, String> parameters) throws URISyntaxException {

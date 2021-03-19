@@ -98,7 +98,9 @@ public class NinjaGraphiteTest {
     }
 
     @After
-    public void teardown() {
-        ninjaGraphite.stop();
+    public final void teardown() {
+        if (ninjaGraphite != null) {
+            ninjaGraphite.stop();
+        }
     }
 }

@@ -83,8 +83,10 @@ public abstract class NinjaFluentLeniumTest extends FluentTest {
     }
 
     @After
-    public void shutdownServer() {
-        ninjaTestServer.shutdown();
+    public final void shutdownServer() {
+        if (ninjaTestServer != null) {
+            ninjaTestServer.shutdown();
+        }
     }
 
     public Injector getInjector() {

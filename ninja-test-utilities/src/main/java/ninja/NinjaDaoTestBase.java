@@ -80,7 +80,9 @@ public abstract class NinjaDaoTestBase {
 
     @After
     public final void stop() {
-        jpaInitializer.stop();
+        if (jpaInitializer != null) {
+            jpaInitializer.stop();
+        }
     }
 
     /**

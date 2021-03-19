@@ -85,8 +85,12 @@ public class NinjaTest {
     }
 
     @After
-    public void shutdownServerAndBrowser() {
-        ninjaTestServer.shutdown();
-        ninjaTestBrowser.shutdown();
+    public final void shutdownServerAndBrowser() {
+        if (ninjaTestServer != null) {
+            ninjaTestServer.shutdown();
+        }
+        if (ninjaTestBrowser != null) {
+            ninjaTestBrowser.shutdown();
+        }
     }
 }

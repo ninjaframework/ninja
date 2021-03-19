@@ -51,7 +51,9 @@ public class FreshNinjaServerTester extends BaseNinjaServerTester {
 
     @After
     public final void shutdownNinjaServer() {
-        ninjaTestServer.shutdown();
+        if (ninjaTestServer != null) {
+            ninjaTestServer.shutdown();
+        }
     }
 
     @Override
