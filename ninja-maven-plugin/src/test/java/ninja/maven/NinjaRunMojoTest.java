@@ -16,15 +16,24 @@
 
 package ninja.maven;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import ninja.build.DelayedRestartTrigger;
 import ninja.build.RunClassInSeparateJvmMachine;
 import ninja.build.WatchAndRestartMachine;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
 import org.apache.maven.project.MavenProject;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import static org.codehaus.plexus.PlexusTestCase.getTestFile;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -32,21 +41,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
-import org.mockito.Mock;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Unit test a Maven plugin in a modern way.
@@ -57,7 +58,7 @@ public class NinjaRunMojoTest {
     @Rule
     public MojoRule rule = new MojoRule() {
         @Override
-        protected void before() throws Throwable {
+        protected void before() {
         }
 
         @Override
@@ -66,29 +67,28 @@ public class NinjaRunMojoTest {
     };
 
     @Mock
-    MavenProject project;
+    private MavenProject project;
     
     @Mock
-    RunClassInSeparateJvmMachine machine;
+    private RunClassInSeparateJvmMachine machine;
     
     @Mock
-    WatchAndRestartMachine watcher;
+    private WatchAndRestartMachine watcher;
     
     @Captor
-    ArgumentCaptor<String> classNameWithMainToRunCaptor;
+    private ArgumentCaptor<String> classNameWithMainToRunCaptor;
     
     @Captor
-    ArgumentCaptor<ArrayList<String>> classpathCaptor;
+    private ArgumentCaptor<ArrayList<String>> classpathCaptor;
     
     @Captor
-    ArgumentCaptor<ArrayList<String>> jvmArgumentsCaptor;
-    
-    File pom;
-    NinjaRunMojo ninjaRunMojo;
+    private ArgumentCaptor<ArrayList<String>> jvmArgumentsCaptor;
+
+    private NinjaRunMojo ninjaRunMojo;
     
     @Before
-    public void before() throws Exception {
-        pom = getTestFile("src/test/resources/projects/minimal/pom.xml");
+    public final void before() throws Exception {
+        File pom = getTestFile("src/test/resources/projects/minimal/pom.xml");
         assertNotNull(pom);
         assertTrue(pom.exists());
         
@@ -101,15 +101,15 @@ public class NinjaRunMojoTest {
     private void setupMachineAndWatcherStubs() throws IOException {
         doReturn(machine)
             .when(ninjaRunMojo)
-            .buildRunClassInSeparateJvmMachine(anyString(), classNameWithMainToRunCaptor.capture(), classpathCaptor.capture(), jvmArgumentsCaptor.capture(), (File) any());
+            .buildRunClassInSeparateJvmMachine(anyString(), classNameWithMainToRunCaptor.capture(), classpathCaptor.capture(), jvmArgumentsCaptor.capture(), any());
             
         doReturn(watcher)
             .when(ninjaRunMojo)
-            .buildWatchAndRestartMachine(anySet(), anySet(), anySet(), (DelayedRestartTrigger)any());
+            .buildWatchAndRestartMachine(anySet(), anySet(), anySet(), any());
     }
     
     @Test
-    public void alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist() throws Exception {
+    public void alertAndStopExecutionIfDirectoryWithCompiledClassesOfThisProjectDoesNotExist() {
         ninjaRunMojo.buildOutputDirectory = "target/doesnotexist";
         
         try {

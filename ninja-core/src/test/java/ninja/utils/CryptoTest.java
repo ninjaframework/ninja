@@ -32,7 +32,7 @@ public class CryptoTest {
     private Crypto crypto;
 
     @Before
-    public void setup() {
+    public final void setup() {
         MockitoAnnotations.initMocks(this);
 
         when(ninjaProperties.getOrDie(NinjaConstant.applicationSecret))

@@ -46,17 +46,17 @@ import static org.mockito.Mockito.mock;
 public class RouteBuilderImplTest {
 
     @Mock
-    Injector injector;
+    private Injector injector;
     
     @Mock
-    NinjaProperties ninjaProperties;
-    
-    NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
-    
-    RouteBuilderImpl routeBuilder;
+    private NinjaProperties ninjaProperties;
+
+    private NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
+
+    private RouteBuilderImpl routeBuilder;
     
     @Before
-    public void before() {
+    public final void before() {
         this.ninjaBaseDirectoryResolver = new NinjaBaseDirectoryResolver(ninjaProperties);
         this.routeBuilder = new RouteBuilderImpl(ninjaProperties, ninjaBaseDirectoryResolver);
     }

@@ -16,17 +16,16 @@
 
 package ninja.template;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.io.StringWriter;
-import java.util.Map;
-
+import com.google.common.collect.Maps;
+import freemarker.core.Environment;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import freemarker.template.Version;
 import ninja.Context;
 import ninja.session.Session;
 import ninja.template.directives.TemplateEngineFreemarkerAuthenticityTokenDirective;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,37 +35,35 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.collect.Maps;
+import java.io.StringWriter;
+import java.util.Map;
 
-import freemarker.core.Environment;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
-import freemarker.template.Version;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineFreemarkerAuthenticityTokenDirectiveTest {
 
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public final ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    Context context;
+    private Context context;
 
     @Mock
-    Session session;
+    private Session session;
 
-    StringWriter stringWriter = new StringWriter();
+    private final StringWriter stringWriter = new StringWriter();
 
-    Environment environment;
+    private Environment environment;
 
-    TemplateEngineFreemarkerAuthenticityTokenDirective templateEngineFreemarkerAuthenticityTokenDirective;
+    private TemplateEngineFreemarkerAuthenticityTokenDirective templateEngineFreemarkerAuthenticityTokenDirective;
 
-    Map<String, String> parameters = Maps.newHashMap();
+    private final Map<String, String> parameters = Maps.newHashMap();
 
     @Before
-    public void before() {
+    public final void before() {
         Template template = Mockito.mock(Template.class);
         Configuration configuration = Mockito.mock(Configuration.class);
         Version version = new Version(2, 3, 28);
@@ -81,7 +78,7 @@ public class TemplateEngineFreemarkerAuthenticityTokenDirectiveTest {
     }
 
     @Test
-    public void testThatAuthenticityTokenIsNotCalledInConstructor() throws Exception {
+    public void testThatAuthenticityTokenIsNotCalledInConstructor() {
         Mockito.verify(session, Mockito.never()).getAuthenticityToken();
     }
     

@@ -16,25 +16,9 @@
 
 package ninja.servlet;
 
-import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.params.ParamParser;
@@ -50,7 +34,6 @@ import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import ninja.utils.ResultHandler;
 import ninja.validation.Validation;
-
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
@@ -64,10 +47,23 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import ninja.utils.NinjaModeHelper;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MultipartContextImplMemoryTest {
@@ -126,9 +122,8 @@ public class MultipartContextImplMemoryTest {
         when(httpServletRequest.getRequestURI()).thenReturn("/");
         when(httpServletRequest.getContentType()).thenReturn("multipart/form-data");
         when(httpServletRequest.getMethod()).thenReturn("POST");
-        
-        NinjaPropertiesImpl properties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
-        this.ninjaProperties = properties;
+
+        ninjaProperties = NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build();
         
         final FileItemIterator fileItemIterator = makeFileItemsIterator();
         
@@ -158,7 +153,7 @@ public class MultipartContextImplMemoryTest {
     }
     
     @After
-    public void tearDown() {
+    public final void tearDown() {
         context.cleanup();
     }
 

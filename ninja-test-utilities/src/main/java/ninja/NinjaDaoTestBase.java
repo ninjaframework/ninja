@@ -16,19 +16,17 @@
 
 package ninja;
 
-import java.util.Optional;
-
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import ninja.jpa.JpaInitializer;
 import ninja.jpa.JpaModule;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaPropertiesImpl;
-
 import org.junit.After;
 import org.junit.Before;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.util.Optional;
 
 /**
  * Base class for testing JPA-based DAOs
@@ -50,7 +48,7 @@ public abstract class NinjaDaoTestBase {
      */
     private Injector injector;
 
-    private NinjaMode ninjaMode;
+    private final NinjaMode ninjaMode;
 
     /**
      * Constructor checks if NinjaMode was set in System properties, if not,
@@ -59,7 +57,7 @@ public abstract class NinjaDaoTestBase {
     public NinjaDaoTestBase() {
         Optional<NinjaMode> mode = NinjaModeHelper
                 .determineModeFromSystemProperties();
-        ninjaMode = mode.isPresent() ? mode.get() : NinjaMode.test;
+        ninjaMode = mode.orElse(NinjaMode.test);
 
     }
 

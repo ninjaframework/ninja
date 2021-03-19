@@ -34,7 +34,7 @@ public class MimeTypesTest {
 	private NinjaProperties ninjaProperties;
 
 	@Before
-	public void setup() {
+	public final void setup() {
 
 		// mock some mime types
 		Properties properties = new Properties();

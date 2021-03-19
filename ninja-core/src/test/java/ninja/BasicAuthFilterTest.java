@@ -16,12 +16,14 @@
 
 package ninja;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import ninja.session.Session;
 import ninja.utils.NinjaConstant;
@@ -50,15 +52,15 @@ public class BasicAuthFilterTest {
     private FilterChain filterChain;
 
     @Mock
-    Ninja ninja;
+    private Ninja ninja;
 
     @Mock
-    Result result;
+    private Result result;
 
-    BasicAuthFilter basicAuthFilter;
+    private BasicAuthFilter basicAuthFilter;
 
     @Before
-    public void setup() {
+    public final void setup() {
         String app = "Ninja";
         String challenge = "Basic realm=\"" + app + "\"";
 
@@ -155,7 +157,7 @@ public class BasicAuthFilterTest {
     private String auth(String username, String password) {
         return "Basic "
                 + Base64.encodeBase64String((username + ":" + password)
-                        .getBytes(Charset.forName("UTF-8")));
+                        .getBytes(UTF_8));
     }
 
 }

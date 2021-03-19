@@ -18,43 +18,36 @@ package ninja.template;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.ByteArrayOutputStream;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-
 import ninja.Context;
 import ninja.Result;
 import ninja.utils.ResponseStreams;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for application/json render.
  */
 public class TemplateEngineJsonTest {
 
-    Context context;
-    ResponseStreams responseStreams;
-    Result result;
-    ObjectMapper objectMapper;
-    ByteArrayOutputStream outputStream;
+    private final Context context = mock(Context.class);
+    private final ResponseStreams responseStreams = mock(ResponseStreams.class);
+    private final Result result = mock(Result.class);
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
     @Before
-    public void setUp() throws IOException {
-        context = mock(Context.class);
-        responseStreams = mock(ResponseStreams.class);
-        result = mock(Result.class);
-
-        objectMapper = new ObjectMapper();
-        outputStream = new ByteArrayOutputStream();
-
+    public final void setUp() throws IOException {
         TestObject testObj = new TestObject();
         testObj.field1 = "field_one";
         testObj.field2 = "field_two";
@@ -65,13 +58,13 @@ public class TemplateEngineJsonTest {
     }
 
     @Test
-    public void testJsonViewWorks() throws IOException {
+    public void testJsonViewWorks() {
         Mockito.<Class<?>>when(result.getJsonView()).thenReturn(View.Public.class);
 
         TemplateEngineJson jsonEngine = new TemplateEngineJson(objectMapper);
         jsonEngine.invoke(context, result);
 
-        String json = new String(outputStream.toByteArray(), "UTF-8");
+        String json = new String(outputStream.toByteArray(), UTF_8);
         assertTrue(json.contains("field_one"));
         assertFalse(json.contains("field_two"));
 

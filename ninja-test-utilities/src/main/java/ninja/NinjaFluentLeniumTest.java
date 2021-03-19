@@ -38,7 +38,7 @@ public abstract class NinjaFluentLeniumTest extends FluentTest {
     public NinjaTestServer ninjaTestServer;
 
     @Before
-    public void startupServer() {
+    public final void startupServer() {
         ninjaTestServer = NinjaTestServer.builder().build();
     }
 

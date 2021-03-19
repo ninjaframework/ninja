@@ -60,27 +60,26 @@ import freemarker.template.TemplateModelException;
 public class TemplateEngineFreemarkerI18nMethodTest {
 
     @Mock
-    Context context;
+    private Context context;
     
     @Mock
-    Result result;
+    private Result result;
     
     @Mock
-    Messages messages;
+    private Messages messages;
     
     @Rule 
-    public ExpectedException thrown= ExpectedException.none();
+    public final ExpectedException thrown= ExpectedException.none();
     
     @Captor
-    public ArgumentCaptor<List<String>> listCaptor;
-    
-    TemplateEngineFreemarkerI18nMethod templateEngineFreemarkerI18nMethod;
-    
-    Appender mockAppender;
+    private ArgumentCaptor<List<String>> listCaptor;
+
+    private TemplateEngineFreemarkerI18nMethod templateEngineFreemarkerI18nMethod;
+
+    private Appender mockAppender;
     
     @Before
-    public void before() {
-    
+    public final void before() {
         templateEngineFreemarkerI18nMethod
                 = Mockito.spy(new TemplateEngineFreemarkerI18nMethod(
                         messages, 
@@ -90,7 +89,6 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         mockAppender = Mockito.mock(Appender.class);
         root.addAppender(mockAppender);
-        
     }
     
     

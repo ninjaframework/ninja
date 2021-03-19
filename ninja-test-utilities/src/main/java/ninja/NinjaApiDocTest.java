@@ -42,13 +42,13 @@ import com.devbliss.doctest.DocTest;
  */
 @Deprecated
 public abstract class NinjaApiDocTest extends DocTest {
-    private static NinjaTestServer ninjaTestServer;
+    private NinjaTestServer ninjaTestServer;
 
     public NinjaApiDocTest() {
     }
 
     @Before
-    public void startServerInTestMode() {
+    public final void startServerInTestMode() {
         ninjaTestServer = NinjaTestServer.builder().build();
     }
 

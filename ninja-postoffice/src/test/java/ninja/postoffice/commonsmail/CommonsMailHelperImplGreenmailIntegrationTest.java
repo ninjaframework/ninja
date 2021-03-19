@@ -46,12 +46,12 @@ import com.icegreen.greenmail.util.ServerSetup;
  */
 public class CommonsMailHelperImplGreenmailIntegrationTest {
 
-    GreenMail greenMail;
+    private GreenMail greenMail;
 
-    int SMTP_TEST_PORT;
+    private int SMTP_TEST_PORT;
 
     @Before
-    public void setUp() throws Exception {
+    public final void setUp() {
 
         SMTP_TEST_PORT = findAvailablePort(2000, 10000);
 

@@ -36,7 +36,7 @@ import com.google.inject.Singleton;
 public class LifecycleSupportTest {
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         MockSingletonService.started = 0;
         MockService.started = 0;
     }

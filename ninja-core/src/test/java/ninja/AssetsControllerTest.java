@@ -16,20 +16,11 @@
 
 package ninja;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayOutputStream;
-
 import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -38,31 +29,39 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.ByteArrayOutputStream;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AssetsControllerTest {
 
     @Mock
-    MimeTypes mimeTypes;
+    private MimeTypes mimeTypes;
 
     @Mock
-    HttpCacheToolkit httpCacheToolkit;
+    private HttpCacheToolkit httpCacheToolkit;
 
     @Mock
-    Context contextRenderable;
+    private Context contextRenderable;
 
     @Captor
-    ArgumentCaptor<Result> resultCaptor;
+    private ArgumentCaptor<Result> resultCaptor;
 
     @Mock
-    ResponseStreams responseStreams;
+    private ResponseStreams responseStreams;
     
-    @Mock 
-    NinjaProperties ninjaProperties;
-    
-    AssetsController assetsController;
+    @Mock
+    private NinjaProperties ninjaProperties;
+
+    private AssetsController assetsController;
     
     @Before
-    public void before() {
+    public final void before() {
         assetsController = new AssetsController(
                 new AssetsControllerHelper(),
                 httpCacheToolkit, 
@@ -73,7 +72,7 @@ public class AssetsControllerTest {
     
     
     @Test
-    public void testServeStatic404() throws Exception {
+    public void testServeStatic404() {
         when(contextRenderable.getRequestPath()).thenReturn("notAvailable");
         Result result2 = assetsController.serveStatic();
 
@@ -89,7 +88,7 @@ public class AssetsControllerTest {
     }
     
     @Test
-    public void testServeStaticSecurityClassesWithoutSlash() throws Exception {
+    public void testServeStaticSecurityClassesWithoutSlash() {
         when(contextRenderable.getRequestPath()).thenReturn("ninja/Ninja.class");
         Result result2 = assetsController.serveStatic();
 
@@ -105,7 +104,7 @@ public class AssetsControllerTest {
     }
     
     @Test
-    public void testServeStaticSecurityClassesAbsolute() throws Exception {
+    public void testServeStaticSecurityClassesAbsolute() {
 
         when(contextRenderable.getRequestPath()).thenReturn("/ninja/Ninja.class");
         Result result2 = assetsController.serveStatic();
@@ -122,7 +121,7 @@ public class AssetsControllerTest {
     }
     
     @Test
-    public void testServeStaticSecurityNoRelativPathWorks() throws Exception {
+    public void testServeStaticSecurityNoRelativePathWorks() {
         //This theoretically could work as robots.txt is there..
         // But it should
         when(contextRenderable.getRequestPath()).thenReturn("/assets/../../conf/heroku.conf");
@@ -140,7 +139,7 @@ public class AssetsControllerTest {
     }
 
     @Test
-    public void testServeStaticDirectory() throws Exception {
+    public void testServeStaticDirectory() {
         AssetsControllerHelper assetsControllerHelper = Mockito.mock(AssetsControllerHelper.class, Mockito.CALLS_REAL_METHODS);
 
         assetsController = new AssetsController(
@@ -164,7 +163,7 @@ public class AssetsControllerTest {
     }
 
     @Test
-    public void testServeStatic304NotModified() throws Exception {
+    public void testServeStatic304NotModified() {
 
         when(contextRenderable.getRequestPath()).thenReturn(
                 "/assets/testasset.txt");
@@ -194,7 +193,7 @@ public class AssetsControllerTest {
     }
     
     @Test
-    public void testStaticDirectoryIsFileSystemInDevMode() throws Exception {
+    public void testStaticDirectoryIsFileSystemInDevMode() {
         
         // some more setup needed:
         Mockito.when(ninjaProperties.isDev()).thenReturn(true);
