@@ -147,7 +147,7 @@ public class BootstrapTest {
             Cache cache = bootstrap.getInjector().getInstance(Cache.class);
             fail("cache should not have been found");
         } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("No implementation for ninja.cache.Cache was bound"));
+            assertThat(e.getMessage(), containsString("No implementation for Cache was bound"));
         }
     }
 }
