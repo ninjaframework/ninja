@@ -567,7 +567,12 @@
                 <artifactId>logback-classic</artifactId>
                 <version>1.2.3</version>
             </dependency>
-		
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
             <!-- Replace commons-logging with slf4j bridge (that will use logback)-->
             <dependency>
                 <groupId>org.slf4j</groupId>
