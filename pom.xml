@@ -807,7 +807,7 @@
             <dependency>
                 <groupId>org.fluentlenium</groupId>
                 <artifactId>fluentlenium-junit</artifactId>
-                <version>3.4.1</version>
+                <version>4.6.1</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>
@@ -818,7 +818,7 @@
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>htmlunit-driver</artifactId>
-                <version>2.31.0</version>
+                <version>2.47.1</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>

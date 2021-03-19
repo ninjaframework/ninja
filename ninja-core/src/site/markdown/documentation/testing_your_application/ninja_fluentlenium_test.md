@@ -48,7 +48,7 @@ the older version of FluentLenium by setting up that version in your project <co
 &lt;dependency&gt;
     &lt;groupId>org.fluentlenium&lt;/groupId&gt;
     &lt;artifactId>fluentlenium-core&lt;/artifactId&gt;
-    &lt;version>0.10.3&lt;/version&gt;
+    &lt;version>4.6.1&lt;/version&gt;
     &lt;scope>test&lt;/scope&gt;
     &lt;exclusions&gt;
         &lt;exclusion&gt;
