@@ -44,17 +44,17 @@ public class SecureFilterTest {
     private FilterChain filterChain;
     
     @Mock
-    Ninja ninja;
+    private Ninja ninja;
 
     @Mock
-    Result result;
-    
-    SecureFilter secureFilter;
+    private Result result;
+
+    private SecureFilter secureFilter;
     
     
 
     @Before
-    public void setup() {
+    public final void setup() {
         secureFilter = new SecureFilter(ninja);
         
         when(result.getTemplate()).thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);

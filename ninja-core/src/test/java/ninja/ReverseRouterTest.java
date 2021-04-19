@@ -34,17 +34,16 @@ import static org.mockito.Mockito.when;
 
 public class ReverseRouterTest {
 
-    Router router;
-    ReverseRouter reverseRouter;
-    NinjaProperties ninjaProperties;
-    WebSockets webSockets;
-    NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
-    Injector injector;
-    Provider<TestController> testControllerProvider;
+    private Router router;
+    private ReverseRouter reverseRouter;
+    private NinjaProperties ninjaProperties;
+    private WebSockets webSockets;
+    private NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
+    private Injector injector;
+    private Provider<TestController> testControllerProvider;
 
     @Before
-    @SuppressWarnings("Convert2Lambda")
-    public void before() {
+    public final void before() {
         this.ninjaProperties = mock(NinjaProperties.class);
         this.injector = mock(Injector.class);
         this.webSockets = mock(WebSockets.class);

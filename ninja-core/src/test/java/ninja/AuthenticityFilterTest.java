@@ -45,7 +45,7 @@ public class AuthenticityFilterTest {
     private AuthenticityFilter authenticityFilter;
 
     @Before
-    public void init() {
+    public final void init() {
         authenticityFilter = new AuthenticityFilter(ninjaDefault);        
     }
     

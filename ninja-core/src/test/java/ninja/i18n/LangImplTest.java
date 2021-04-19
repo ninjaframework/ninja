@@ -49,10 +49,10 @@ public class LangImplTest {
     private Context context;
     
     @Captor
-    ArgumentCaptor<Cookie> captor = ArgumentCaptor.forClass(Cookie.class);
+    private ArgumentCaptor<Cookie> captor = ArgumentCaptor.forClass(Cookie.class);
     
     @Before
-    public void before() {
+    public final void before() {
          when(ninjaProperties.getStringArray(NinjaConstant.applicationLanguages)).thenReturn(new String[] {"en"});
     }
     

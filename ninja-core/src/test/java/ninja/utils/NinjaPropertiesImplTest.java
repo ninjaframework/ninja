@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NinjaPropertiesImplTest {
 
     @After
-    public void tearDown() {
+    public final void tearDown() {
         // make sure the external conf property is removed after the test.
         System.clearProperty(NinjaProperties.NINJA_EXTERNAL_CONF);
         System.clearProperty(NinjaConstant.MODE_KEY_NAME);

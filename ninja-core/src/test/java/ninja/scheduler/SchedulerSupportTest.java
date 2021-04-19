@@ -16,23 +16,6 @@
 
 package ninja.scheduler;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import ninja.lifecycle.FailedStartException;
-import ninja.lifecycle.LifecycleService;
-import ninja.lifecycle.LifecycleSupport;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -40,19 +23,34 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import ninja.lifecycle.FailedStartException;
+import ninja.lifecycle.LifecycleService;
+import ninja.lifecycle.LifecycleSupport;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class SchedulerSupportTest {
 
     private Injector injector;
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         MockScheduled.countDownLatch = new CountDownLatch(1);
         MockPropertyScheduled.countDownLatch = new CountDownLatch(1);
     }
 
     @After
-    public void tearDown() {
+    public final void tearDown() {
         if (injector != null) {
             stop(injector);
         }
@@ -100,14 +98,14 @@ public class SchedulerSupportTest {
     }
 
     @Test(expected = FailedStartException.class)
-    public void schedulableShouldThrowExceptionWhenNoPropertyFound() throws Exception {
+    public void schedulableShouldThrowExceptionWhenNoPropertyFound() {
         injector = createInjector();
         injector.getInstance(MockPropertyScheduled.class);
         start(injector);
     }
 
     private Injector createInjector(Module... modules) {
-        List<Module> ms = new ArrayList<Module>(Arrays.asList(modules));
+        List<Module> ms = new ArrayList<>(asList(modules));
         ms.add(LifecycleSupport.getModule());
         ms.add(SchedulerSupport.getModule());
         return Guice.createInjector(ms);

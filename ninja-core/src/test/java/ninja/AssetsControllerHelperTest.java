@@ -28,15 +28,10 @@ import org.junit.rules.TemporaryFolder;
 
 public class AssetsControllerHelperTest {
 
-    AssetsControllerHelper assetsControllerHelper;
+    private final AssetsControllerHelper assetsControllerHelper = new AssetsControllerHelper();
 
     @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
-
-    @Before
-    public void setup() {
-        assetsControllerHelper = new AssetsControllerHelper();
-    }
+    public final TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Test
     public void testNormalizePathWithoutLeadingSlash() {

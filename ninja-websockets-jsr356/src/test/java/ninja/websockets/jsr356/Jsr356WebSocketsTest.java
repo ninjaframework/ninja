@@ -16,16 +16,18 @@
 
 package ninja.websockets.jsr356;
 
+import ninja.Route;
+import org.junit.Before;
+import org.junit.Test;
+
 import javax.websocket.DeploymentException;
 import javax.websocket.Endpoint;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
-import ninja.Route;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -35,16 +37,13 @@ import static org.mockito.Mockito.when;
 
 public class Jsr356WebSocketsTest {
     
-    private ServerContainer serverContainer;
-    private Route route;
-    private Jsr356WebSockets webSockets;
+    private final ServerContainer serverContainer = mock(ServerContainer.class);
+    private final Route route = mock(Route.class);
+    private final Jsr356WebSockets webSockets = new Jsr356WebSockets(serverContainer);
     
     @Before
-    public void before() {
-        serverContainer = mock(ServerContainer.class);
-        route = mock(Route.class);
+    public final void before() {
         when(route.getUri()).thenReturn("/test");
-        webSockets = new Jsr356WebSockets(serverContainer);
     }
     
     @Test

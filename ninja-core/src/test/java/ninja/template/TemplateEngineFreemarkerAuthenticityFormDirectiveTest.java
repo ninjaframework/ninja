@@ -16,17 +16,16 @@
 
 package ninja.template;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.io.StringWriter;
-import java.util.Map;
-
+import com.google.common.collect.Maps;
+import freemarker.core.Environment;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import freemarker.template.Version;
 import ninja.Context;
 import ninja.session.Session;
 import ninja.template.directives.TemplateEngineFreemarkerAuthenticityFormDirective;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,18 +33,14 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import com.google.common.collect.Maps;
-
-import freemarker.core.Environment;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
-import freemarker.template.Version;
-import freemarker.template._TemplateAPI;
-import org.mockito.Answers;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.io.StringWriter;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * 
@@ -72,7 +67,7 @@ public class TemplateEngineFreemarkerAuthenticityFormDirectiveTest {
     Map<String, String> parameters = Maps.newHashMap();
 
     @Before
-    public void before() throws Exception {
+    public final void before() {
         Template template = Mockito.mock(Template.class);
         Configuration configuration = Mockito.mock(Configuration.class);
         Version version = new Version(2, 3, 28);
@@ -89,7 +84,7 @@ public class TemplateEngineFreemarkerAuthenticityFormDirectiveTest {
     }
 
     @Test
-    public void testThatAuthenticityTokenIsNotCalledInConstructor() throws Exception {
+    public void testThatAuthenticityTokenIsNotCalledInConstructor() {
         Mockito.verify(session, Mockito.never()).getAuthenticityToken();
     }
     

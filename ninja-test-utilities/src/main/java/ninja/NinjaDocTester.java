@@ -39,13 +39,15 @@ public abstract class NinjaDocTester extends DocTester {
     }
 
     @Before
-    public void startServerInTestMode() {
+    public final void startServerInTestMode() {
         ninjaTestServer = NinjaTestServer.builder().build();
     }
 
     @After
-    public void shutdownServer() {
-        ninjaTestServer.shutdown();
+    public final void shutdownServer() {
+        if (ninjaTestServer != null) {
+            ninjaTestServer.shutdown();
+        }
     }
 
     @Override

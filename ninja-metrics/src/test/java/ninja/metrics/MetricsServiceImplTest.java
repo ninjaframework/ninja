@@ -27,15 +27,15 @@ import com.codahale.metrics.MetricRegistry;
 public class MetricsServiceImplTest {
     
     @Mock
-    NinjaProperties ninjaProperties;
-    
-    MetricsServiceImpl metricsServiceImpl;
+    private NinjaProperties ninjaProperties;
+
+    private MetricsServiceImpl metricsServiceImpl;
     
     @Mock
-    MetricRegistry metricRegistry;
+    private MetricRegistry metricRegistry;
 
     @Before
-    public void before() {
+    public final void before() {
         metricsServiceImpl = new MetricsServiceImpl(metricRegistry, ninjaProperties);
     }
     

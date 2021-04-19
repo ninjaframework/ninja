@@ -36,13 +36,7 @@ import org.junit.Test;
 
 public class CommonsMailHelperImplTest {
 
-    CommonsmailHelper commonsmailHelper;
-
-    @Before
-    public void setUp() {
-
-        commonsmailHelper = new CommonsmailHelperImpl();
-    }
+    private final CommonsmailHelper commonsmailHelper = new CommonsmailHelperImpl();
 
     @Test
     public void testCreateMultiPartEmailWithContent() throws Exception {

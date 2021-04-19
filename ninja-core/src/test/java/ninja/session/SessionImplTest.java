@@ -16,12 +16,6 @@
 
 package ninja.session;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import ninja.Context;
 import ninja.Cookie;
 import ninja.Result;
@@ -32,9 +26,6 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.SecretGenerator;
 import org.hamcrest.CoreMatchers;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +38,21 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class SessionImplTest {
@@ -85,7 +91,7 @@ public class SessionImplTest {
     }
 
     @Before
-    public void setUp() {
+    public final void setUp() {
 
         MockitoAnnotations.initMocks(this);
 
@@ -138,7 +144,7 @@ public class SessionImplTest {
     }
 
     @Test
-    public void testSessionCookieSettingWorks() throws Exception {
+    public void testSessionCookieSettingWorks() {
 
         Session sessionCookie = createNewSession();
 
@@ -175,7 +181,7 @@ public class SessionImplTest {
     }
 
     @Test
-    public void testHttpsOnlyWorks() throws Exception {
+    public void testHttpsOnlyWorks() {
 
         Session sessionCookie = createNewSession();
 
@@ -195,7 +201,7 @@ public class SessionImplTest {
     }
 
     @Test
-    public void testNoHttpsOnlyWorks() throws Exception {
+    public void testNoHttpsOnlyWorks() {
         // setup this testmethod
         when(
                 ninjaProperties.getBooleanWithDefault(
@@ -221,7 +227,7 @@ public class SessionImplTest {
     }
 
     @Test
-    public void testHttpOnlyWorks() throws Exception {
+    public void testHttpOnlyWorks() {
 
         Session sessionCookie = createNewSession();
 
@@ -242,7 +248,7 @@ public class SessionImplTest {
     }
 
     @Test
-    public void testNoHttpOnlyWorks() throws Exception {
+    public void testNoHttpOnlyWorks() {
         // setup this testmethod
         when(
                 ninjaProperties.getBooleanWithDefault(
