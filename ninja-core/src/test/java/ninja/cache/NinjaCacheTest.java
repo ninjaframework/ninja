@@ -16,17 +16,17 @@
 
 package ninja.cache;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import ninja.utils.TimeUtil;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NinjaCacheTest{
@@ -78,7 +78,7 @@ public class NinjaCacheTest{
         
         ninjaCache.add(key, value);  
         
-        verify(cache).add(key, value, TimeUtil.parseDuration(null));
+        verify(cache).add(key, value, Integer.MAX_VALUE);
     }
     
     @Test(expected = CacheException.class)
@@ -128,7 +128,7 @@ public class NinjaCacheTest{
         
         ninjaCache.set(key, value);  
         
-        verify(cache).set(key, value, TimeUtil.parseDuration(null));
+        verify(cache).set(key, value, Integer.MAX_VALUE);
     }
     
     @Test(expected = CacheException.class)
@@ -178,7 +178,7 @@ public class NinjaCacheTest{
         
         ninjaCache.replace(key, value);  
         
-        verify(cache).replace(key, value, TimeUtil.parseDuration(null));
+        verify(cache).replace(key, value, Integer.MAX_VALUE);
     }
     
     @Test(expected = CacheException.class)

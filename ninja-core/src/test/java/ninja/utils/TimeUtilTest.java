@@ -16,30 +16,61 @@
 
 package ninja.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static ninja.utils.TimeUtil.parseDuration;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
 
 public class TimeUtilTest {
 
     @Test
-    public void test() {
-        assertEquals(86400, TimeUtil.parseDuration("1d"));
-        assertEquals(10, TimeUtil.parseDuration("10s"));
-        assertEquals(2592000, TimeUtil.parseDuration("30d"));
-        assertEquals(2592000, TimeUtil.parseDuration(null));
-        
-        boolean catchedException = false;
-        try {
-            TimeUtil.parseDuration("NOT_A_VALID_INPUT");
-            
-        } catch (IllegalArgumentException e) {
-                catchedException = true;
-        }
-
-        assertTrue(catchedException); 
-        
+    public void durationInDays() {
+        assertEquals(0, parseDuration("0d"));
+        assertEquals(86400, parseDuration("1d"));
+        assertEquals(2592000, parseDuration("30d"));
     }
 
+    @Test
+    public void durationInHours() {
+        assertEquals(0, parseDuration("0h"));
+        assertEquals(3600, parseDuration("1h"));
+        assertEquals(3600 * 24, parseDuration("24h"));
+    }
+
+    @Test
+    public void durationInMinutes() {
+        assertEquals(0, parseDuration("0mn"));
+        assertEquals(0, parseDuration("0min"));
+        assertEquals(60, parseDuration("1mn"));
+        assertEquals(60, parseDuration("1min"));
+        assertEquals(60 * 59, parseDuration("59mn"));
+        assertEquals(60 * 59, parseDuration("59min"));
+    }
+
+    @Test
+    public void durationInSeconds() {
+        assertEquals(0, parseDuration("0s"));
+        assertEquals(1, parseDuration("1s"));
+        assertEquals(10, parseDuration("10s"));
+        assertEquals(1234567890, parseDuration("1234567890s"));
+    }
+
+    @Test
+    public void durationCannotBeNull() {
+        assertThatThrownBy(() -> parseDuration(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("duration cannot be null");
+    }
+
+    @Test
+    public void invalidDurationFormat() {
+      assertThatThrownBy(() -> parseDuration("NOT_A_VALID_INPUT"))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("Invalid duration pattern : NOT_A_VALID_INPUT");
+
+      assertThatThrownBy(() -> parseDuration("24x"))
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessage("Invalid duration pattern : 24x");
+    }
 }

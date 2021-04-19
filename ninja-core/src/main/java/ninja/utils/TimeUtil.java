@@ -16,50 +16,50 @@
 
 package ninja.utils;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
+@ParametersAreNonnullByDefault
 public class TimeUtil {
 
-    private static final Pattern days = Pattern.compile("^([0-9]+)d$");
-    private static final Pattern hours = Pattern.compile("^([0-9]+)h$");
-    private static final Pattern minutes = Pattern.compile("^([0-9]+)mi?n$");
-    private static final Pattern seconds = Pattern.compile("^([0-9]+)s$");
+    private static final Pattern REGEX = Pattern.compile("^([0-9]+)(d|h|min|mn|s)$");
 
     /**
      * Parse a duration from String to seconds. 
      * Eg. "10s" will result in 10.
      * 
-     * @param duration "3h" or "2mn" or "7s" or null.
+     * @param duration "3h" or "2mn" or "2min" or "7s" or "1d".
      * 
      * @return The number of seconds OR 30days (2592000) if null is entered.
+     *
+     * @throws IllegalArgumentException if parameter is null or has other format
      */
     public static int parseDuration(String duration) {
         if (duration == null) {
-            return 60 * 60 * 24 * 30;
+            throw new IllegalArgumentException("duration cannot be null");
         }
-        int toAdd = -1;
-        if (days.matcher(duration).matches()) {
-            Matcher matcher = days.matcher(duration);
-            matcher.matches();
-            toAdd = Integer.parseInt(matcher.group(1)) * (60 * 60) * 24;
-        } else if (hours.matcher(duration).matches()) {
-            Matcher matcher = hours.matcher(duration);
-            matcher.matches();
-            toAdd = Integer.parseInt(matcher.group(1)) * (60 * 60);
-        } else if (minutes.matcher(duration).matches()) {
-            Matcher matcher = minutes.matcher(duration);
-            matcher.matches();
-            toAdd = Integer.parseInt(matcher.group(1)) * (60);
-        } else if (seconds.matcher(duration).matches()) {
-            Matcher matcher = seconds.matcher(duration);
-            matcher.matches();
-            toAdd = Integer.parseInt(matcher.group(1));
-        }
-        if (toAdd == -1) {
+
+        Matcher m = REGEX.matcher(duration);
+        if (!m.matches()) {
             throw new IllegalArgumentException("Invalid duration pattern : " + duration);
         }
-        return toAdd;
+        int value = parseInt(m.group(1));
+        String units = m.group(2);
+        switch (units) {
+            case "d":
+                return value * 60 * 60 * 24;
+            case "h":
+                return value * 60 * 60;
+            case "min":
+            case "mn":
+                return value * 60;
+            case "s":
+                return value;
+            default:
+                throw new IllegalArgumentException("Unsupported time unit: " + units);
+        }
     }
-
 }
