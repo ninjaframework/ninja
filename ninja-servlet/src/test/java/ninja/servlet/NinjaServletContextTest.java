@@ -109,7 +109,7 @@ public class NinjaServletContextTest {
     private NinjaServletContext context;
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         //default setup for httpServlet request.
         //According to servlet spec the following will be returned:
         when(httpServletRequest.getContextPath()).thenReturn("");

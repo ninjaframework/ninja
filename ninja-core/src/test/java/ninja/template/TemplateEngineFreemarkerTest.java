@@ -16,26 +16,7 @@
 
 package ninja.template;
 
-import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Singleton;
-
+import freemarker.template.Configuration;
 import ninja.Context;
 import ninja.Result;
 import ninja.Results;
@@ -47,7 +28,6 @@ import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,53 +37,70 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
-import freemarker.template.Configuration;
+import javax.inject.Singleton;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+
+import static ninja.template.TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineFreemarkerTest {
 
     @Mock
-    Lang lang;
+    private Lang lang;
 
     @Mock
-    Logger logger;
+    private Logger logger;
 
     @Mock
-    TemplateEngineHelper templateEngineHelper;
+    private TemplateEngineHelper templateEngineHelper;
 
     @Mock
-    TemplateEngineManager templateEngineManager;
+    private TemplateEngineManager templateEngineManager;
 
     @Mock
-    TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod;
+    private TemplateEngineFreemarkerReverseRouteMethod templateEngineFreemarkerReverseRouteMethod;
 
     @Mock
-    TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod;
+    private TemplateEngineFreemarkerAssetsAtMethod templateEngineFreemarkerAssetsAtMethod;
 
     @Mock
-    TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
+    private TemplateEngineFreemarkerWebJarsAtMethod templateEngineFreemarkerWebJarsAtMethod;
 
     @Mock
-    NinjaProperties ninjaProperties;
+    private NinjaProperties ninjaProperties;
 
     @Mock
-    Messages messages;
+    private Messages messages;
 
     @Mock
-    Context context;
+    private Context context;
 
     @Mock
-    Result result;
+    private Result result;
     
     @Mock
-    Route route;
+    private Route route;
 
-    TemplateEngineFreemarker templateEngineFreemarker;
+    private TemplateEngineFreemarker templateEngineFreemarker;
 
-    Writer writer;
+    private Writer writer;
 
     @Before
-    public void before() throws Exception {
+    public final void before() throws Exception {
         //Setup that allows to to execute invoke(...) in a very minimal version.
         when(ninjaProperties.getWithDefault(FREEMARKER_CONFIGURATION_FILE_SUFFIX, ".ftl.html")).thenReturn(".ftl.html");
        
@@ -150,7 +147,7 @@ public class TemplateEngineFreemarkerTest {
     }
 
     @Test
-    public void testBasicInvocation() throws Exception {
+    public void testBasicInvocation() {
         templateEngineFreemarker.invoke(context, Results.ok());
         verify(ninjaProperties).getWithDefault(TemplateEngineFreemarker.FREEMARKER_CONFIGURATION_FILE_SUFFIX, ".ftl.html");
         assertThat(templateEngineFreemarker.getSuffixOfTemplatingEngine(), equalTo(".ftl.html"));
@@ -159,7 +156,7 @@ public class TemplateEngineFreemarkerTest {
     }
     
     @Test
-    public void testThatConfigurationCanBeRetrieved() throws Exception {
+    public void testThatConfigurationCanBeRetrieved() {
         templateEngineFreemarker.invoke(context, Results.ok());
         assertThat(templateEngineFreemarker.getConfiguration(), CoreMatchers.notNullValue(Configuration.class));
     }

@@ -27,10 +27,10 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MultipartContextImplDiskTest extends MultipartContextImplMemoryTest {
+public class MultipartContextImplDiskTest extends AbstractMultipartContextImplTest {
 
     @Before
-    public void setUp() throws IOException, ServletException {
+    public final void setUp() throws IOException, ServletException {
         init(DiskFileItemProvider.class);
     }
     

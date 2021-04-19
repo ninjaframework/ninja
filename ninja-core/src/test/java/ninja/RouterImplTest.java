@@ -51,27 +51,27 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RouterImplTest {
 
-    Router router;
+    private Router router;
 
     @Mock
-    NinjaProperties ninjaProperties;
-    
-    NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
+    private NinjaProperties ninjaProperties;
+
+    private NinjaBaseDirectoryResolver ninjaBaseDirectoryResolver;
 
     @Mock
-    Injector injector;
+    private Injector injector;
 
     @Mock
-    Provider<TestController> testControllerProvider;
+    private Provider<TestController> testControllerProvider;
     
     @Mock
-    WebSockets webSockets;
-    
-    ArgumentCaptor<Route> webSocketsCompileRouteCaptor;
+    private WebSockets webSockets;
+
+    private ArgumentCaptor<Route> webSocketsCompileRouteCaptor;
 
     @Before
     @SuppressWarnings("Convert2Lambda")
-    public void before() {
+    public final void before() {
         webSocketsCompileRouteCaptor = ArgumentCaptor.forClass(Route.class);
         this.ninjaBaseDirectoryResolver = new NinjaBaseDirectoryResolver(ninjaProperties);
         when(webSockets.isEnabled()).thenReturn(true);

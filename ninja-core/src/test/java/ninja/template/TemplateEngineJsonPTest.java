@@ -16,28 +16,27 @@
 
 package ninja.template;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ninja.Context;
+import ninja.Result;
+import ninja.Results;
+import ninja.utils.NinjaProperties;
+import ninja.utils.ResponseStreams;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Collections;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Collections;
-
-import ninja.Context;
-import ninja.Result;
-import ninja.Results;
-import ninja.utils.NinjaProperties;
-import ninja.utils.ResponseStreams;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests for JSONP render.
@@ -53,7 +52,7 @@ public class TemplateEngineJsonPTest {
     ByteArrayOutputStream outputStream;
 
     @Before
-    public void setUp() throws IOException {
+    public final void setUp() throws IOException {
         logger = mock(Logger.class);
         properties = mock(NinjaProperties.class);
         context = mock(Context.class);
@@ -68,35 +67,35 @@ public class TemplateEngineJsonPTest {
     }
 
     @Test
-    public void testCorrectFlow() throws IOException {
+    public void testCorrectFlow() {
         when(context.getParameter("callback", TemplateEngineJsonP.DEFAULT_CALLBACK_PARAMETER_VALUE)).thenReturn("App.callback");
 
         TemplateEngineJsonP jsonpEngine = new TemplateEngineJsonP(objectMapper, properties);
         jsonpEngine.invoke(context, result);
 
-        String jsonp = new String(outputStream.toByteArray(), "UTF-8");
+        String jsonp = new String(outputStream.toByteArray(), UTF_8);
         assertEquals("App.callback([123])", jsonp);
         verify(context).finalizeHeaders(result);
     }
 
     @Test
-    public void testMissingCallbackVariableFlow() throws IOException {
+    public void testMissingCallbackVariableFlow() {
         TemplateEngineJsonP jsonpEngine = new TemplateEngineJsonP(objectMapper, properties);
         jsonpEngine.invoke(context, result);
 
-        String jsonp = new String(outputStream.toByteArray(), "UTF-8");
+        String jsonp = new String(outputStream.toByteArray(), UTF_8);
         assertEquals(TemplateEngineJsonP.DEFAULT_CALLBACK_PARAMETER_VALUE + "([123])", jsonp);
         verify(context).finalizeHeaders(result);
     }
 
     @Test
-    public void testBadCallbackNameFlow() throws IOException {
+    public void testBadCallbackNameFlow() {
         when(context.getParameter("callback", TemplateEngineJsonP.DEFAULT_CALLBACK_PARAMETER_VALUE)).thenReturn(".callback");
 
         TemplateEngineJsonP jsonpEngine = new TemplateEngineJsonP(objectMapper, properties);
         jsonpEngine.invoke(context, result);
 
-        String jsonp = new String(outputStream.toByteArray(), "UTF-8");
+        String jsonp = new String(outputStream.toByteArray(), UTF_8);
         assertEquals(TemplateEngineJsonP.DEFAULT_CALLBACK_PARAMETER_VALUE + "([123])", jsonp);
         verify(context).finalizeHeaders(result);
     }

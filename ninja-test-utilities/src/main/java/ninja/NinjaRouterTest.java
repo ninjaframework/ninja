@@ -38,14 +38,14 @@ import org.junit.After;
 public class NinjaRouterTest {
 
     /** The router - initiated from a real server. Routes are verified with this router */
-    public Router router;
+    private Router router;
     
-    Bootstrap ninjaBootup;
+    private Bootstrap ninjaBootup;
     
     /**
      * Start the server and load the routes.
      */
-    public void startServer(NinjaMode ninjaMode) {
+    public final void startServer(NinjaMode ninjaMode) {
         
         if (ninjaMode == null) {
 
@@ -69,7 +69,7 @@ public class NinjaRouterTest {
     }
     
     @After
-    public void stopServer() {
+    public final void stopServer() {
         
         if (ninjaBootup != null) {
             ninjaBootup.shutdown();
@@ -83,7 +83,7 @@ public class NinjaRouterTest {
      * 
      * No special mode is set. By default the mode "dev" is then used by the server.
      */
-    public void startServer() {
+    public final void startServer() {
         startServer(null);
     }
 

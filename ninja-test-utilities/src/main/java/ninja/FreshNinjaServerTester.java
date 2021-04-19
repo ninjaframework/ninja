@@ -45,13 +45,15 @@ public class FreshNinjaServerTester extends BaseNinjaServerTester {
     private NinjaTestServer ninjaTestServer;
     
     @Before
-    public void startNinjaServer() {
+    public final void startNinjaServer() {
         ninjaTestServer = NinjaTestServer.builder().build();
     }
 
     @After
-    public void shutdownNinjaServer() {
-        ninjaTestServer.shutdown();
+    public final void shutdownNinjaServer() {
+        if (ninjaTestServer != null) {
+            ninjaTestServer.shutdown();
+        }
     }
 
     @Override

@@ -53,7 +53,7 @@ public class FlashScopeTest {
     private NinjaProperties ninjaProperties;
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         when(ninjaProperties.getOrDie(NinjaConstant.applicationCookiePrefix))
                 .thenReturn("NINJA");
     }

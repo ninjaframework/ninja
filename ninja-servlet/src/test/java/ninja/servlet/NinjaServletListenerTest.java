@@ -59,7 +59,7 @@ public class NinjaServletListenerTest {
     String CONTEXT_PATH = "/contextpath";
 
     @Before
-    public void before() {
+    public final void before() {
 
         Mockito.when(servletContextEvent.getServletContext()).thenReturn(servletContext);
         Mockito.when(servletContext.getContextPath()).thenReturn(CONTEXT_PATH);

@@ -17,9 +17,6 @@
 package ninja.utils;
 
 import com.google.common.collect.Maps;
-
-import java.util.HashSet;
-import java.util.Map;
 import ninja.ContentTypes;
 import ninja.Context;
 import ninja.Cookie;
@@ -28,27 +25,34 @@ import ninja.Results;
 import ninja.Route;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
-import ninja.params.ParamParser;
 import ninja.params.ParamParsers;
 import ninja.session.FlashScope;
 import ninja.session.Session;
 import ninja.validation.Validation;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.HashSet;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractContextTest {
@@ -77,7 +81,7 @@ public class AbstractContextTest {
     private AbstractContextImpl abstractContext;
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         abstractContext = new AbstractContextImpl(
                 bodyParserEngineManager, 
                 flashCookie, 
@@ -85,7 +89,7 @@ public class AbstractContextTest {
                 sessionCookie,
                 validation,
                 null,
-                new ParamParsers(new HashSet<ParamParser>()));
+                new ParamParsers(new HashSet<>()));
         
         abstractContext.init("", "/");
     }

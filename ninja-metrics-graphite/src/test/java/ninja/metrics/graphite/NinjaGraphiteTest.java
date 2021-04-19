@@ -53,7 +53,7 @@ public class NinjaGraphiteTest {
     private NinjaGraphite ninjaGraphite;
 
     @Before
-    public void setup() {
+    public final void setup() {
 
         // configure mocks
         MockitoAnnotations.initMocks(this);
@@ -98,7 +98,9 @@ public class NinjaGraphiteTest {
     }
 
     @After
-    public void teardown() {
-        ninjaGraphite.stop();
+    public final void teardown() {
+        if (ninjaGraphite != null) {
+            ninjaGraphite.stop();
+        }
     }
 }

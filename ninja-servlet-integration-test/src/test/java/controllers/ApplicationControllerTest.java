@@ -46,7 +46,7 @@ public class ApplicationControllerTest extends RecycledNinjaServerTester {
     private NinjaTestBrowser ninjaTestBrowser;
     
     @Before
-    public void freshNinjaTestBrowser() {
+    public final void freshNinjaTestBrowser() {
         this.ninjaTestBrowser = new NinjaTestBrowser();
     }
     

@@ -68,11 +68,10 @@ public class ResultHandlerTest {
     private Context context;
 
     @Mock
-    Logger logger;
+    private Logger logger;
 
     @Before
-    public void init() throws Exception {
-
+    public final void init() throws Exception {
         resultHandler = new ResultHandler(logger, templateEngineManager);
         when(responseStreams.getOutputStream()).thenReturn(outputStream);
         when(responseStreams.getWriter()).thenReturn(writer);
@@ -83,7 +82,6 @@ public class ResultHandlerTest {
             .thenReturn(templateEngine);
         when(templateEngineManager.getTemplateEngineForContentType(Result.TEXT_HTML))
             .thenReturn(templateEngineHtml);
-
     }
 
     /**

@@ -16,39 +16,34 @@
 
 package ninja.template;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import ninja.Context;
+import ninja.Result;
+import ninja.utils.ResponseStreams;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ninja.Context;
-import ninja.Result;
-import ninja.utils.ResponseStreams;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for text/plain render.
  */
 public class TemplateEngineTextTest {
 
-    Context context;
-    ResponseStreams responseStreams;
-    Result result;
-    StringWriter writer;
+    private final Context context = mock(Context.class);
+    private final ResponseStreams responseStreams = mock(ResponseStreams.class);
+    private final Result result = mock(Result.class);
+    private final StringWriter writer = new StringWriter();
 
     @Before
-    public void setUp() throws IOException {
-        context = mock(Context.class);
-        responseStreams = mock(ResponseStreams.class);
-        result = mock(Result.class);
-
+    public final void setUp() throws IOException {
         Map<String, String> map = new TreeMap<String, String>() {
             {
                 put("apples", "oranges");
@@ -57,13 +52,12 @@ public class TemplateEngineTextTest {
         };
 
         when(result.getRenderable()).thenReturn(map);
-        writer = new StringWriter();
         when(context.finalizeHeaders(result)).thenReturn(responseStreams);
         when(responseStreams.getWriter()).thenReturn(writer);
     }
 
     @Test
-    public void testTextRendering() throws IOException {
+    public void testTextRendering() {
 
         TemplateEngineText textEngine = new TemplateEngineText();
         textEngine.invoke(context, result);

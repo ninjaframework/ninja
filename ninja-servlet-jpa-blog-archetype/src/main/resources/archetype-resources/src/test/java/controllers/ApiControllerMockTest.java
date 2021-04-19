@@ -51,15 +51,14 @@ import dao.ArticleDao;
 public class ApiControllerMockTest {
 
     @Mock
-    ArticleDao articleDao;
+    private ArticleDao articleDao;
     
-    ApiController apiController;
+    private ApiController apiController;
     
     @Before
-    public void setupTest() {
+    public final void setupTest() {
         apiController = new ApiController();
         apiController.articleDao = articleDao;
-        
     }
     
 

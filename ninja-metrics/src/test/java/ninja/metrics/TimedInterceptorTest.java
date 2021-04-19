@@ -59,7 +59,7 @@ public class TimedInterceptorTest {
     private TimedInterceptor timedInterceptor;
 
     @Before
-    public void setup() throws NoSuchMethodException, SecurityException {
+    public final void setup() throws NoSuchMethodException, SecurityException {
 
         // configure mocks
         MockitoAnnotations.initMocks(this);

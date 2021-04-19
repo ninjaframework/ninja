@@ -68,14 +68,14 @@ import ninja.validation.ValidationImpl;
 public class BodyParserEnginePostTest {
     
     @Mock
-    Context context;
-    
-    Validation validation;
-    
-    BodyParserEnginePost bodyParserEnginePost; 
+    private Context context;
+
+    private Validation validation;
+
+    private BodyParserEnginePost bodyParserEnginePost;
     
     @Before
-    public void setUp() {
+    public final void setUp() {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {

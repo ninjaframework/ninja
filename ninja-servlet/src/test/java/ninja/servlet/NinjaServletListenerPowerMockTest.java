@@ -18,22 +18,22 @@ package ninja.servlet;
 
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import ninja.websockets.jsr356.Jsr356WebSockets;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import javax.websocket.server.ServerContainer;
-import static org.junit.Assert.*;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.websocket.server.ServerContainer;
+
+import static org.junit.Assert.assertFalse;
 
 @PrepareForTest(Class.class)
 @RunWith(PowerMockRunner.class)
@@ -42,17 +42,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class NinjaServletListenerPowerMockTest {
 
     @Mock
-    ServletContextEvent servletContextEvent;
+    private ServletContextEvent servletContextEvent;
 
     @Mock
-    ServletContext servletContext;
-
-    String CONTEXT_PATH = "/contextpath";
+    private ServletContext servletContext;
 
     @Before
-    public void before() {
+    public final void before() {
         Mockito.when(servletContextEvent.getServletContext()).thenReturn(servletContext);
-        Mockito.when(servletContext.getContextPath()).thenReturn(CONTEXT_PATH);
+        Mockito.when(servletContext.getContextPath()).thenReturn("/contextpath");
     }
 
     @Test
