@@ -93,6 +93,19 @@
         <org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>none</org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>
         <!-- end formatting options for Netbeans -->
     </properties>
+    
+    	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+        <repository>
+            <id>myMavenRepoWrite</id>
+            <url>https://mymavenrepo.com/repo/an7ttlyZzM79wMfuiNzQ</url>
+        </repository>
+        <snapshotRepository>
+            <id>myMavenRepoWrite</id>
+            <url>https://mymavenrepo.com/repo/an7ttlyZzM79wMfuiNzQ</url>
+        </snapshotRepository>
+        
+	</distributionManagement>
 
     <!-- Fix version 1.8 of java compiler in all submodules: -->
     <build>
@@ -273,16 +286,6 @@
         </mailingList>
     </mailingLists>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
 
     <licenses>
@@ -660,7 +663,7 @@
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
-                <version>5.2.4</version>
+                <version>7.11.4</version>
             </dependency>
 
             <!-- JPA dependencies -->
@@ -904,5 +907,12 @@
         
         
     </dependencyManagement>
+    
+    	<repositories>
+		<repository>
+			<id>myMavenRepoRead</id>
+			<url>https://mymavenrepo.com/repo/qaP7aiiii80W5OxIczYg/</url>
+		</repository>
+	</repositories>
     
 </project>
