@@ -1,6 +1,7 @@
 Version 6.8.2
 =============
 
+* 2021-07-27 Updated Flyway dependency to 7.11.4 (llenrup)
 * 2021-03-19 Streamline tests (asolntsev)
 * 2021-03-19 Updated Guice dependency to 5.0.1 (asolntsev)
 * 2021-03-19 Updated dependencies: slf4j:1.7.30, jackson:2.12.2, httpclient:4.5.13, commons-codec:1.15 (asolntsev)

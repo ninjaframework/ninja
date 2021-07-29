@@ -16,6 +16,8 @@
 
 package ninja.migrations;
 
+import org.flywaydb.core.api.configuration.FluentConfiguration;
+
 import com.google.inject.AbstractModule;
 
 
@@ -24,6 +26,7 @@ public class MigrationClassicModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(MigrationEngine.class).toProvider(MigrationEngineProvider.class);
+        //bind(FluentConfiguration.class).toProvider(FluentConfigurationProvider.class);
         bind(MigrationInitializer.class).asEagerSingleton();
     }
     

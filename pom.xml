@@ -94,19 +94,6 @@
         <!-- end formatting options for Netbeans -->
     </properties>
     
-    	<distributionManagement>
-		<!-- use the following if you're not using a snapshot version. -->
-        <repository>
-            <id>myMavenRepoWrite</id>
-            <url>https://mymavenrepo.com/repo/an7ttlyZzM79wMfuiNzQ</url>
-        </repository>
-        <snapshotRepository>
-            <id>myMavenRepoWrite</id>
-            <url>https://mymavenrepo.com/repo/an7ttlyZzM79wMfuiNzQ</url>
-        </snapshotRepository>
-        
-	</distributionManagement>
-
     <!-- Fix version 1.8 of java compiler in all submodules: -->
     <build>
 
@@ -286,6 +273,16 @@
         </mailingList>
     </mailingLists>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 
     <licenses>
@@ -907,12 +904,5 @@
         
         
     </dependencyManagement>
-    
-    	<repositories>
-		<repository>
-			<id>myMavenRepoRead</id>
-			<url>https://mymavenrepo.com/repo/qaP7aiiii80W5OxIczYg/</url>
-		</repository>
-	</repositories>
     
 </project>

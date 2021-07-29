@@ -31,10 +31,13 @@ import ninja.migrations.MigrationEngine;
 public class MigrationEngineFlyway implements MigrationEngine {
 
     private final NinjaProperties ninjaProperties;
+    private final Provider<FluentConfiguration> fluentProvider;
 
     @Inject
-    public MigrationEngineFlyway(NinjaProperties ninjaProperties) {
+    public MigrationEngineFlyway(NinjaProperties ninjaProperties, 
+     		                     Provider<FluentConfiguration> fluentProvider) {
         this.ninjaProperties = ninjaProperties;
+        this.fluentProvider = fluentProvider;
      }
     
     @Override
@@ -48,13 +51,15 @@ public class MigrationEngineFlyway implements MigrationEngine {
 
         // We migrate automatically => if you do not want that (eg in production)
         // set ninja.migration.run=false in application.conf
-        FluentConfiguration configure = Flyway.configure();
+        FluentConfiguration configure = fluentProvider.get();
         if (schemas != null) {
         	configure.schemas(schemas);
         }
         if (locations != null) {
         	configure.locations(locations);
         }
+        
+        
 		Flyway flyway = configure.dataSource(connectionUrl, connectionUsername, connectionPassword).load();
 
         // In testmode we are cleaning the database so that subsequent testcases
