@@ -26,7 +26,6 @@ public class MigrationClassicModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(MigrationEngine.class).toProvider(MigrationEngineProvider.class);
-        //bind(FluentConfiguration.class).toProvider(FluentConfigurationProvider.class);
         bind(MigrationInitializer.class).asEagerSingleton();
     }
     
