@@ -41,11 +41,7 @@
             <scope>compile</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.ninjaframework</groupId>
-            <artifactId>ninja-standalone</artifactId>
-            <scope>compile</scope>
-        </dependency>
+        
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
@@ -55,11 +51,7 @@
 
         <!-- Testing is mainly done by mockito: -->
         <!-- Order of hamcrest first then junit is important -->
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>java-hamcrest</artifactId>
-            <scope>compile</scope>
-        </dependency>
+        
         
         <dependency>
             <groupId>org.assertj</groupId>
@@ -84,25 +76,9 @@
             <artifactId>fluentlenium-junit</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>htmlunit-driver</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <!-- selenium uses jetty-client and has a version conflict with ours.
-          We must declare these to force the version to ours or websockets will break -->
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-client</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-client</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
         
-        <!--HttpCient is used to mainly test low level Json Apis -->
+        
+        
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

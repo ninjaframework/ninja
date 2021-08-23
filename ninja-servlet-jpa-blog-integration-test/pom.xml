@@ -158,25 +158,13 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>tinymce-jquery</artifactId>
-        </dependency>
+        
 
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-        </dependency>
+        
 
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
+        
 
-        <dependency>
-            <groupId>org.ninjaframework</groupId>
-            <artifactId>ninja-servlet</artifactId>
-        </dependency>
+        
         
         <dependency>
             <groupId>org.ninjaframework</groupId>

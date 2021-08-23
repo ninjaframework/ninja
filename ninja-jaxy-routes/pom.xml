@@ -31,11 +31,7 @@
 			<artifactId>reflections</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.ninjaframework</groupId>
-			<artifactId>ninja-test-utilities</artifactId>
-			<scope>test</scope>
-		</dependency>
+		
 
 	</dependencies>
 
