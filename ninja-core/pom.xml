@@ -117,6 +117,23 @@
             <artifactId>jackson-module-afterburner</artifactId>
         </dependency>
 
+        <!-- Jackson: handle new Java 8 data type -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+        </dependency>
+
+        <!-- Jackson: handle Joda data type -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+        </dependency>
+
         <!-- freemarker is our templating engine: -->
         <dependency>
             <groupId>org.freemarker</groupId>

@@ -6,6 +6,36 @@ into Ninja's behavior. This document describes which steps are needed to upgrade
 your application to the latest Ninja version. Simply start with your current 
 version and then work your way up to the top of the document.
 
+
+to 6.8.2
+--------
+
+Flyway has been updated to prior version 8.2.2. As mentioned in the Flyway
+documentation there is a small change with MySQL. Since the version 8.2.x,
+MySQL Driver is not included any more in Flyway distribution due to License.
+MariaDB will be used as fallback driver if no MySQL driver is present on the
+Classpath.
+
+If you still want to use a MySQL with MySQL Driver, you have to add new 
+dependencies on your project.
+
+```java
+    <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-mysql</artifactId>
+        <version>8.2.2</version>
+    </dependency>
+```
+
+```java
+   <dependency>
+       <groupId>mysql</groupId>
+       <artifactId>mysql-connector-java</artifactId>
+       <version>8.0.27</version>
+   </dependency>
+```
+
+
 to 6.7.0
 --------
 
