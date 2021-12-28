@@ -46,36 +46,40 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 public class NinjaDefault implements Ninja {
+
     private static final Logger logger = LoggerFactory.getLogger(NinjaDefault.class);
 
     /**
      * The most important thing: A cool logo.
      */
-    private final String NINJA_LOGO = "\n"
+    private static final String NINJA_LOGO = "\n"
             + " _______  .___ _______        ____.  _____   \n"
             + " \\      \\ |   |\\      \\      |    | /  _  \\  \n"
             + " /   |   \\|   |/   |   \\     |    |/  /_\\  \\ \n"
             + "/    |    \\   /    |    \\/\\__|    /    |    \\  https://www.ninjaframework.org\n"
             + "\\____|__  /___\\____|__  /\\________\\____|__  /  @ninjaframework\n"
             + "     web\\/framework   \\/                  \\/   {}\n";
-    
+
+    private static final String NINJA_LOGO_LOCATION = "ninja/logo.txt";
+
+    private static final String NINJA_BUILTIN_PROPERTIES_FILE = "ninja/ninja-builtin.properties";
+    private static final String NINJA_BUILTIN_PROPERTIES_NINJA_VERSION_KEY = "ninja.version";
 
     @Inject
     protected LifecycleService lifecycleService;
-    
+
     @Inject
     protected Router router;
-    
+
     @Inject
     protected ResultHandler resultHandler;
-    
+
     @Inject
-    Messages messages;
-    
+    protected Messages messages;
+
     @Inject
-    NinjaProperties ninjaProperties;
-    
-    
+    protected NinjaProperties ninjaProperties;
+
     /**
      * Whether diagnostics are enabled. If enabled then the default system/views
      * will be skipped and a detailed diagnostic error result will be returned
@@ -90,10 +94,9 @@ public class NinjaDefault implements Ninja {
         return ninjaProperties.isDev() && ninjaProperties.getBooleanWithDefault(NinjaConstant.DIAGNOSTICS_KEY_NAME, Boolean.TRUE);
     }
 
-    
     @Override
     public void onRouteRequest(Context.Impl context) {
-        
+
         String httpMethod = context.getMethod();
 
         Route route = router.getRouteFor(httpMethod, context.getRequestPath());
@@ -103,39 +106,39 @@ public class NinjaDefault implements Ninja {
         if (route != null) {
 
             Result underlyingResult = null;
-            
+
             try {
-                
+
                 underlyingResult = route.getFilterChain().next(context);
-                
+
                 resultHandler.handleResult(underlyingResult, context);
-                
+
             } catch (Exception exception) {
-                
+
                 // call special handler to capture the underlying result if there is one
                 Result result = onException(context, exception, underlyingResult);
                 renderErrorResultAndCatchAndLogExceptions(result, context);
-                            
+
             } finally {
-                
+
                 context.cleanup();
-                
+
             }
 
         } else {
-            
+
             // throw a 404 "not found" because we did not find the route
             Result result = getNotFoundResult(context);
             renderErrorResultAndCatchAndLogExceptions(result, context);
 
         }
-        
+
     }
-    
+
     @Override
     public void renderErrorResultAndCatchAndLogExceptions(
             Result result, Context context) {
-    
+
         try {
             if (context.isAsync()) {
                 context.returnResultAsync(result);
@@ -147,7 +150,7 @@ public class NinjaDefault implements Ninja {
                     exceptionCausingRenderError);
         }
     }
-    
+
     @Override
     public void onFrameworkStart() {
         if (ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_SPLASH_DISPLAY, true)) {
@@ -160,55 +163,55 @@ public class NinjaDefault implements Ninja {
     public void onFrameworkShutdown() {
         lifecycleService.stop();
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Results for exceptions (404, 500 etc)
     ////////////////////////////////////////////////////////////////////////////
-    
+
     @Override
     public Result onException(Context context, Exception exception) {
-        
+
         return onException(context, exception, null);
-        
+
     }
-    
+
     public Result onException(Context context, Exception exception, Result underlyingResult) {
-        
+
         Result result;
-        
+
         // log the exception as debug
         logger.debug("Unable to process request", exception);
-        
+
         if (exception instanceof BadRequestException) {
-            
+
             result = getBadRequestResult(context, (BadRequestException) exception);
 
         } else if (exception instanceof ForbiddenRequestException) {
 
             result = getForbiddenResult(context, (ForbiddenRequestException) exception);
-            
+
         } else if (exception instanceof RequestNotFoundException) {
 
             result = getNotFoundResult(context, (RequestNotFoundException) exception);
 
         } else if (exception instanceof RenderingException) {
-            
+
             result = getRenderingExceptionResult(context, (RenderingException) exception, underlyingResult);
-            
+
         } else {
-            
+
             result = getInternalServerErrorResult(context, exception, underlyingResult);
 
         }
-        
+
         return result;
-        
+
     }
-    
+
     public Result getRenderingExceptionResult(Context context, RenderingException exception, Result underlyingResult) {
-        
+
         if (isDiagnosticsEnabled()) {
-            
+
             // prefer provided title and underlying cause
             DiagnosticError diagnosticError = DiagnosticErrorBuilder
                 .buildDiagnosticError(
@@ -219,13 +222,13 @@ public class NinjaDefault implements Ninja {
                     underlyingResult);
 
             return Results.internalServerError().render(diagnosticError);
-            
+
         }
-        
+
         return getInternalServerErrorResult(context, exception, underlyingResult);
 
     }
-    
+
     /**
      * Deprecated. Check {@link Ninja#getInternalServerErrorResult(Context, Exception, Result)}.
      */
@@ -233,26 +236,26 @@ public class NinjaDefault implements Ninja {
     public Result getInternalServerErrorResult(Context context, Exception exception) {
         return getInternalServerErrorResult(context, exception, null);
     }
-    
+
     @Override
     public Result getInternalServerErrorResult(Context context, Exception exception, Result underlyingResult) {
-        
+
         if (isDiagnosticsEnabled()) {
-            
+
             DiagnosticError diagnosticError =
                 DiagnosticErrorBuilder.build500InternalServerErrorDiagnosticError(exception, true, underlyingResult);
-            
+
             return Results.internalServerError().render(diagnosticError);
-            
+
         }
-        
+
         logger.error(
                 "Emitting bad request 500. Something really wrong when calling route: {} (class: {} method: {})",
                 context.getRequestPath(), 
                 context.getRoute().getControllerClass(), 
                 context.getRoute().getControllerMethod(), 
                 exception);
-        
+
         Message message = buildErrorMessage(
                 context, 
                 NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY, 
@@ -260,7 +263,7 @@ public class NinjaDefault implements Ninja {
                 Optional.ofNullable(exception), 
                 Optional.<Result>empty());
 
-        Result result = Results
+        return Results
                 .internalServerError()
                 .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
                 .fallbackContentType(Result.TEXT_HTML)
@@ -269,96 +272,89 @@ public class NinjaDefault implements Ninja {
                         ninjaProperties.getWithDefault(
                                 NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY,
                                 NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
-        
-
-        return result;
     }
-    
+
     @Override
     public Result getNotFoundResult(Context context) {
         return getNotFoundResult(context, null);
     }
-    
+
     @Override
     public Result getNotFoundResult(Context context, RequestNotFoundException exception) {
-        
+
         if (isDiagnosticsEnabled()) {
 
             DiagnosticError diagnosticError =
                     exception != null
                     ? DiagnosticErrorBuilder.build404NotFoundDiagnosticError(exception, true)
                     : DiagnosticErrorBuilder.build404NotFoundDiagnosticError(true);
-                    
+
             return Results.notFound().render(diagnosticError);
-            
+
         }
-        
+
         Message message = buildErrorMessage(
                 context, 
                 NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_KEY, 
                 NinjaConstant.I18N_NINJA_SYSTEM_NOT_FOUND_TEXT_DEFAULT, 
                 Optional.ofNullable(exception), 
                 Optional.<Result>empty());
-        
-        Result result = Results
-                        .notFound()
-                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
-                        .fallbackContentType(Result.TEXT_HTML)
-                        .render(message)
-                        .template(
-                                ninjaProperties.getWithDefault(
-                                        NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY,
-                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
-          
-        return result;
+
+        return Results
+                .notFound()
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
+                .fallbackContentType(Result.TEXT_HTML)
+                .render(message)
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_NOT_FOUND_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_NOT_FOUND));
 
     }
-    
+
     @Override
     public Result getBadRequestResult(Context context, BadRequestException exception) {
-        
+
         if (isDiagnosticsEnabled()) {
-            
+
             DiagnosticError diagnosticError =
                 DiagnosticErrorBuilder.build400BadRequestDiagnosticError(exception, true);
-            
+
             return Results.badRequest().render(diagnosticError);
-            
+
         }
-        
+
         Message message = buildErrorMessage(
                 context, 
                 NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_KEY, 
                 NinjaConstant.I18N_NINJA_SYSTEM_BAD_REQUEST_TEXT_DEFAULT, 
                 Optional.ofNullable(exception), 
                 Optional.<Result>empty());
-           
-        Result result = Results
-                        .badRequest()
-                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
-                        .fallbackContentType(Result.TEXT_HTML)
-                        .render(message)
-                        .template(
-                                ninjaProperties.getWithDefault(
-                                        NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY,
-                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
-        
-        return result;
+
+        return Results
+                .badRequest()
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
+                .fallbackContentType(Result.TEXT_HTML)
+                .render(message)
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_BAD_REQUEST_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_BAD_REQUEST));
 
     }
-    
+
     @Override
     public Result getUnauthorizedResult(Context context) {
 
         if (isDiagnosticsEnabled()) {
-            
+
             DiagnosticError diagnosticError =
                 DiagnosticErrorBuilder.build401UnauthorizedDiagnosticError();
-            
+
             return Results.unauthorized().render(diagnosticError);
-            
+
         }
-        
+
         Message message = buildErrorMessage(
                 context, 
                 NinjaConstant.I18N_NINJA_SYSTEM_UNAUTHORIZED_REQUEST_TEXT_KEY, 
@@ -368,21 +364,19 @@ public class NinjaDefault implements Ninja {
 
         // WWW-Authenticate must be included per the spec
         // http://www.ietf.org/rfc/rfc2617.txt 3.2.1 The WWW-Authenticate Response Header
-        Result result = Results
-                        .unauthorized()
-                        .addHeader(Result.WWW_AUTHENTICATE, "None")
-                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
-                        .fallbackContentType(Result.TEXT_HTML)
-                        .render(message)
-                        .template(
-                                ninjaProperties.getWithDefault(
-                                        NinjaConstant.LOCATION_VIEW_HTML_UNAUTHORIZED_KEY,
-                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED));
-
-        return result;
+        return Results
+                .unauthorized()
+                .addHeader(Result.WWW_AUTHENTICATE, "None")
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
+                .fallbackContentType(Result.TEXT_HTML)
+                .render(message)
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_UNAUTHORIZED_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED));
 
     }
-    
+
     @Override
     public Result getForbiddenResult(Context context) {
         return getForbiddenResult(context, null);
@@ -390,40 +384,38 @@ public class NinjaDefault implements Ninja {
 
     @Override
     public Result getForbiddenResult(Context context, ForbiddenRequestException exception) {
-        
+
         // diagnostic mode
         if (isDiagnosticsEnabled()) {
-            
+
             DiagnosticError diagnosticError =
                 exception != null
                 ? DiagnosticErrorBuilder.build403ForbiddenDiagnosticError(exception, true)
                 : DiagnosticErrorBuilder.build403ForbiddenDiagnosticError();
-            
+
             return Results.forbidden().render(diagnosticError);
-            
+
         }
-        
+
         Message message = buildErrorMessage(
                 context, 
                 NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_KEY, 
                 NinjaConstant.I18N_NINJA_SYSTEM_FORBIDDEN_REQUEST_TEXT_DEFAULT, 
                 Optional.ofNullable(exception), 
                 Optional.<Result>empty());
-           
-        Result result = Results
-                        .forbidden()
-                        .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
-                        .fallbackContentType(Result.TEXT_HTML)
-                        .render(message)
-                        .template(
-                                ninjaProperties.getWithDefault(
-                                        NinjaConstant.LOCATION_VIEW_HTML_FORBIDDEN_KEY,
-                                        NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN));
-        
-        return result;
+
+        return Results
+                .forbidden()
+                .supportedContentTypes(Result.TEXT_HTML, Result.APPLICATION_JSON, Result.APPLICATION_XML)
+                .fallbackContentType(Result.TEXT_HTML)
+                .render(message)
+                .template(
+                        ninjaProperties.getWithDefault(
+                                NinjaConstant.LOCATION_VIEW_HTML_FORBIDDEN_KEY,
+                                NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN));
 
     }
-    
+
     protected Message buildErrorMessage(Context context,
                                         String errorTextKey,
                                         String errorTextDefault,
@@ -445,54 +437,48 @@ public class NinjaDefault implements Ninja {
                         exception.get().getLocalizedMessage(),
                         context,
                         underlyingResult);
-        
+
         return new Message(messageI18n, errorI18n);
     }
-    
+
     /**
      * Simply reads a property resource file that contains the version of this
      * Ninja build. Helps to identify the Ninja version currently running.
      * 
      * @return The version of Ninja. Eg. "1.6-SNAPSHOT" while developing of "1.6" when released.
      */
-    private final String readNinjaVersion() {
-        
-        // location of the properties file
-        String LOCATION_OF_NINJA_BUILTIN_PROPERTIES = "ninja/ninja-builtin.properties";
-        // and the key inside the properties file.
-        String NINJA_VERSION_PROPERTY_KEY = "ninja.version";
-        
+    private String readNinjaVersion() {
+
         String ninjaVersion;
-        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_OF_NINJA_BUILTIN_PROPERTIES)){
+        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(NINJA_BUILTIN_PROPERTIES_FILE)){
 
             Properties prop = new Properties();
             prop.load(stream);
-            
-            ninjaVersion = prop.getProperty(NINJA_VERSION_PROPERTY_KEY);
-        
+
+            ninjaVersion = prop.getProperty(NINJA_BUILTIN_PROPERTIES_NINJA_VERSION_KEY);
+
         } catch (Exception e) {
             //this should not happen. Never.
-            throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + LOCATION_OF_NINJA_BUILTIN_PROPERTIES));
+            throw new RuntimeErrorException(new Error("Something is wrong with your build. Cannot find resource " + NINJA_BUILTIN_PROPERTIES_FILE));
         }
-        
+
         return ninjaVersion;
-        
+
     }
-    
-    private final void showSplashScreenViaLogger() {
-        
+
+    private void showSplashScreenViaLogger() {
+
         String ninjaVersion = readNinjaVersion();
 
         // log Ninja splash screen, from resources if available (so it can be overridden)
-        String NINJA_LOGO_LOCATION = "ninja/logo.txt";
-        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(NINJA_LOGO_LOCATION);) {
-            InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(is), Charsets.UTF_8);
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(NINJA_LOGO_LOCATION);
+             InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(is), Charsets.UTF_8)) {
             logger.info(CharStreams.toString(reader), ninjaVersion);
         } catch (IOException | NullPointerException e) {
             // if anything happens, use the old one
             logger.info(NINJA_LOGO, ninjaVersion);
         }
-        
+
     }
 
 }
