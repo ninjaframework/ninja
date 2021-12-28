@@ -121,7 +121,7 @@ public class SessionImpl implements Session {
                 // If an expiry time was set previously use that instead of the
                 // default session expire time.
                 if (data.containsKey(EXPIRY_TIME_KEY)) {
-                    Long expiryTime = Long.parseLong(data.get(EXPIRY_TIME_KEY));
+                    long expiryTime = Long.parseLong(data.get(EXPIRY_TIME_KEY));
                     if (expiryTime >= 0) {
                         sessionExpireTimeInMs = expiryTime;
                     }
@@ -142,7 +142,7 @@ public class SessionImpl implements Session {
                 return true;
             }
 
-            Long timestamp = Long.parseLong(data.get(TIMESTAMP_KEY));
+            long timestamp = Long.parseLong(data.get(TIMESTAMP_KEY));
 
             return (timestamp + sessionExpireTimeInMs < time.currentTimeMillis());
         }
