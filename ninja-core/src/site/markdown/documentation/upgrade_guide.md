@@ -16,7 +16,7 @@ MySQL Driver is not included any more in Flyway distribution due to License.
 MariaDB will be used as fallback driver if no MySQL driver is present on the
 Classpath.
 
-If you still want to use a MySQL with MySQL Driver, you have to add new
+If you still want to use a MySQL with MySQL Driver, you have to add new 
 dependencies on your project.
 
 ```java

@@ -17,6 +17,9 @@
 package ninja.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import com.google.inject.Provider;
 
@@ -28,18 +31,25 @@ import com.google.inject.Provider;
  * This provider makes it simple to configure the ObjectMapper in one place
  * for all places where it is used.
  */
-public class ObjectMapperProvider implements Provider<ObjectMapper>{
+public class ObjectMapperProvider implements Provider<ObjectMapper> {
 
     @Override
     public ObjectMapper get() {
-        
+
         ObjectMapper objectMapper = new ObjectMapper();
-        
+
         // Afterburner optimizes performance of Pojo to Json mapper
         objectMapper.registerModule(new AfterburnerModule());
-        
+
+        // Java 8 data type
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new Jdk8Module());
+
+        // Joda
+        objectMapper.registerModule(new JodaModule());
+
         return objectMapper;
-        
+
     }
-    
+
 }

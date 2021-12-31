@@ -1,6 +1,7 @@
 Version 6.8.2
 =============
 
+* 2021-12-18 Added Jackson Module to handle Java8 and Joda data types (thibaultmeyer)
 * 2021-12-24 Fixed NullPointerException on "Message::getWithDefault" when value and default value are both null
   (thibaultmeyer)
 * 2021-12-17 Updated Flyway dependency to 8.2.2 (asolntsev, thibaultmeyer)
