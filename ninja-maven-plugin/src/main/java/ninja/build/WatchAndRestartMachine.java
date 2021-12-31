@@ -219,7 +219,7 @@ public class WatchAndRestartMachine implements Runnable {
         log.debug(" matched rule: type={}, pattern={}, proceed={}", match.type, match.pattern, match.proceed);
         
         if (match.proceed) {
-            log.debug(" will trigger restart", newOrMod, f);
+            log.debug(" will trigger restart");
             restartTrigger.trigger();
         }
         else {
