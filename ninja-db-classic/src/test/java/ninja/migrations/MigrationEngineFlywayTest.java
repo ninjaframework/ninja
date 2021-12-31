@@ -25,6 +25,7 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -37,7 +38,9 @@ import static org.mockito.Mockito.*;
 
 public class MigrationEngineFlywayTest {
 
-    private MigrationEngineFlyway getTestInstance(Flyway flywayInstance,
+    private Flyway mockedFlyway;
+
+    private MigrationEngineFlyway getTestInstance(FluentConfiguration fluentConfiguration,
                                                   NinjaMode ninjaMode,
                                                   Map<String, String> customProperties) {
         NinjaPropertiesImpl ninjaProperties = NinjaPropertiesImpl.builder()
@@ -54,65 +57,78 @@ public class MigrationEngineFlywayTest {
             protected void configure() {
                 bind(NinjaProperties.class).toInstance(ninjaProperties);
                 install(new MigrationClassicModule());
-                bind(Flyway.class).toInstance(flywayInstance);
+                bind(FluentConfiguration.class).toInstance(fluentConfiguration);
             }
         });
         return injector.getInstance(MigrationEngineFlyway.class);
     }
 
-    private Flyway testMockedMigrate(NinjaMode ninjaMode, Map<String, String> customProperties) {
-        Flyway mockedFlyway = mock(Flyway.class);
-        MigrationEngineFlyway migrationEngineFlyway = getTestInstance(mockedFlyway, ninjaMode, customProperties);
+    private FluentConfiguration testMockedMigrate(NinjaMode ninjaMode, Map<String, String> customProperties) {
+        FluentConfiguration mockedFluentConfiguration = mock(FluentConfiguration.class);
+        mockedFlyway = mock(Flyway.class);
+        when(mockedFluentConfiguration.load()).thenReturn(mockedFlyway);
+        when(mockedFluentConfiguration.dataSource("testurl", "testuser", "testpassword")).thenReturn(mockedFluentConfiguration);
+        MigrationEngineFlyway migrationEngineFlyway = getTestInstance(mockedFluentConfiguration, ninjaMode, customProperties);
         migrationEngineFlyway.migrate();
-        return mockedFlyway;
+        return mockedFluentConfiguration;
     }
 
-    private Flyway testMockedMigrate(NinjaMode ninjaMode) {
+    private FluentConfiguration  testMockedMigrate(NinjaMode ninjaMode) {
         return testMockedMigrate(ninjaMode, Collections.emptyMap());
     }
 
     @Test
     public void testModeDefault() {
-        Flyway mock = testMockedMigrate(NinjaMode.test);
-        InOrder inOrder = Mockito.inOrder(mock);
-        inOrder.verify(mock).setDataSource("testurl", "testuser", "testpassword");
-        inOrder.verify(mock).clean();
-        inOrder.verify(mock).migrate();
+        FluentConfiguration mock = testMockedMigrate(NinjaMode.test);
+        InOrder inOrder = Mockito.inOrder(mock, mockedFlyway);
+
+        inOrder.verify(mock).dataSource("testurl", "testuser", "testpassword");
+        inOrder.verify(mock).load();
+
+        inOrder.verify(mockedFlyway).clean();
+        inOrder.verify(mockedFlyway).migrate();
     }
 
     @Test
     public void testModeNoDrop() {
-        Flyway mock = testMockedMigrate(NinjaMode.test,
+        FluentConfiguration mock = testMockedMigrate(NinjaMode.test,
                 ImmutableMap.of(NinjaConstant.NINJA_MIGRATION_DROP_SCHEMA, String.valueOf(false)));
-        InOrder inOrder = Mockito.inOrder(mock);
-        inOrder.verify(mock).migrate();
-        verify(mock, never()).clean();
+        InOrder inOrder = Mockito.inOrder(mock, mockedFlyway);
+
+        inOrder.verify(mock).dataSource("testurl", "testuser", "testpassword");
+        inOrder.verify(mock).load();
+
+        inOrder.verify(mockedFlyway).migrate();
+        verify(mockedFlyway, never()).clean();
     }
 
     @Test
     public void prodModeDefault() {
-        Flyway mock = testMockedMigrate(NinjaMode.prod);
-        InOrder inOrder = Mockito.inOrder(mock);
-        inOrder.verify(mock).setDataSource("testurl", "testuser", "testpassword");
-        inOrder.verify(mock).migrate();
-        verify(mock, never()).clean();
+        FluentConfiguration mock = testMockedMigrate(NinjaMode.prod);
+        InOrder inOrder = Mockito.inOrder(mock, mockedFlyway);
+
+        inOrder.verify(mock).dataSource("testurl", "testuser", "testpassword");
+        inOrder.verify(mock).load();
+
+        inOrder.verify(mockedFlyway).migrate();
+        verify(mockedFlyway, never()).clean();
     }
 
     @Test
     public void prodModeCustomLocation() {
-        Flyway mock = testMockedMigrate(NinjaMode.prod,
+        FluentConfiguration mock = testMockedMigrate(NinjaMode.prod,
                 ImmutableMap.of(NinjaConstant.NINJA_MIGRATION_LOCATIONS, "location"));
-        InOrder inOrder = Mockito.inOrder(mock);
-        inOrder.verify(mock).setLocations("location");
-        inOrder.verify(mock).migrate();
+        InOrder inOrder = Mockito.inOrder(mock, mockedFlyway);
+        inOrder.verify(mock).locations("location");
+        inOrder.verify(mockedFlyway).migrate();
     }
 
     @Test
     public void prodModeCustomSchema() {
-        Flyway mock = testMockedMigrate(NinjaMode.prod,
+        FluentConfiguration mock = testMockedMigrate(NinjaMode.prod,
                 ImmutableMap.of(NinjaConstant.NINJA_MIGRATION_SCHEMAS, "schema"));
-        InOrder inOrder = Mockito.inOrder(mock);
-        inOrder.verify(mock).setSchemas("schema");
-        inOrder.verify(mock).migrate();
+        InOrder inOrder = Mockito.inOrder(mock, mockedFlyway);
+        inOrder.verify(mock).schemas("schema");
+        inOrder.verify(mockedFlyway).migrate();
     }
 }
