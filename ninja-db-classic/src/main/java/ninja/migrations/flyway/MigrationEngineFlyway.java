@@ -25,18 +25,19 @@ import org.flywaydb.core.Flyway;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import ninja.migrations.MigrationEngine;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 @Singleton
 public class MigrationEngineFlyway implements MigrationEngine {
 
     private final NinjaProperties ninjaProperties;
-    private final Provider<Flyway> flywayProvider;
+    private final Provider<FluentConfiguration> fluentConfigurationProvider;
 
     @Inject
     public MigrationEngineFlyway(NinjaProperties ninjaProperties,
-                                 Provider<Flyway> flywayProvider) {
+                                 Provider<FluentConfiguration> fluentConfigurationProvider) {
         this.ninjaProperties = ninjaProperties;
-        this.flywayProvider = flywayProvider;
+        this.fluentConfigurationProvider = fluentConfigurationProvider;
     }
     
     @Override
@@ -50,20 +51,20 @@ public class MigrationEngineFlyway implements MigrationEngine {
 
         // We migrate automatically => if you do not want that (eg in production)
         // set ninja.migration.run=false in application.conf
-        Flyway flyway = flywayProvider.get();
-        flyway.setDataSource(connectionUrl, connectionUsername, connectionPassword);
-
-        if (locations != null) {
-            flyway.setLocations(locations);
-        }
+        FluentConfiguration fluentConfiguration = fluentConfigurationProvider.get();
         if (schemas != null) {
-            flyway.setSchemas(schemas);
+            fluentConfiguration.schemas(schemas);
         }
+        if (locations != null) {
+            fluentConfiguration.locations(locations);
+        }
+
+        Flyway flyway = fluentConfiguration.dataSource(connectionUrl, connectionUsername, connectionPassword).load();
 
         // In testmode we are cleaning the database so that subsequent testcases
         // get a fresh database.
         if (ninjaProperties.getBooleanWithDefault(NinjaConstant.NINJA_MIGRATION_DROP_SCHEMA,
-                ninjaProperties.isTest() ? true : false )) {
+                ninjaProperties.isTest())) {
             flyway.clean();
         }
 
