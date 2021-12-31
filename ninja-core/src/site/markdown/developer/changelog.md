@@ -2,6 +2,9 @@ Version 6.8.2
 =============
 
 * 2021-12-18 Added Jackson Module to handle Java8 and Joda data types (thibaultmeyer)
+* 2021-12-24 Fixed NullPointerException on "Message::getWithDefault" when value and default value are both null
+  (thibaultmeyer)
+* 2021-12-17 Updated Flyway dependency to 8.2.2 (asolntsev, thibaultmeyer)
 * 2021-03-19 Streamline tests (asolntsev)
 * 2021-03-19 Updated Guice dependency to 5.0.1 (asolntsev)
 * 2021-03-19 Updated dependencies: slf4j:1.7.30, jackson:2.12.2, httpclient:4.5.13, commons-codec:1.15 (asolntsev)

@@ -674,12 +674,12 @@
                 <artifactId>spymemcached</artifactId>
                 <version>2.12.3</version>
             </dependency>
-	
+
             <!-- Migration framework -->
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
-                <version>5.2.4</version>
+                <version>8.2.2</version>
             </dependency>
 
             <!-- JPA dependencies -->
