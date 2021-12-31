@@ -121,9 +121,11 @@ public class MessagesImpl implements Messages {
         Optional<String> value = get(key, language, params);
         if (value.isPresent()) {
             return value.get();
-        } else {
+        } else if (defaultMessage != null) {
             MessageFormat messageFormat = getMessageFormatForLocale(defaultMessage, language);
             return messageFormat.format(params);
+        } else {
+            return null;
         }
     }
 
