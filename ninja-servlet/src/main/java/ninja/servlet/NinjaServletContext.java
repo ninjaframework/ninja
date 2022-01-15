@@ -141,6 +141,11 @@ public class NinjaServletContext extends AbstractContext {
     }
 
     @Override
+    public String getRequestParameterString() {
+        return httpServletRequest.getQueryString();
+    }
+
+    @Override
     public String getHostname() {
         return httpServletRequest.getHeader("host");
     }

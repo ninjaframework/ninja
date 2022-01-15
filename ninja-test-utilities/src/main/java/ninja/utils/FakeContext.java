@@ -60,6 +60,7 @@ public class FakeContext implements Context {
     /** please use the requestPath stuff */
     @Deprecated
     private String requestUri;
+    private String requestParameterString;
     private String hostname;
     private String remoteAddr;
     private String scheme;
@@ -116,6 +117,17 @@ public class FakeContext implements Context {
     @Deprecated
     public String getRequestUri() {
         return requestUri;
+    }
+
+    @Deprecated
+    public FakeContext setRequestParameterString(String requestParameterString) {
+        this.requestParameterString = requestParameterString;
+        return this;
+    }
+
+    @Override
+    public String getRequestParameterString() {
+        return requestParameterString;
     }
 
     @Override
