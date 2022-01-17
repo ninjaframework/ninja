@@ -1,6 +1,7 @@
 Version 6.8.2
 =============
 
+* 2022-01-20 Can use @Schedule annotation with @UnitOfWork or @Transactional (thibaultmeyer)
 * 2022-01-10 Updated Maven Archetype plugin to 3.2.1 (thibaultmeyer)
 * 2021-12-18 Added Jackson Module to handle Java8 and Joda data types (thibaultmeyer)
 * 2021-12-24 Fixed NullPointerException on "Message::getWithDefault" when value and default value are both null
