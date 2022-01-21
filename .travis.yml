@@ -1,6 +1,0 @@
-language: java
-before_install:
-  - unset _JAVA_OPTIONS
-jdk:
-  - openjdk8
-  - openjdk11
