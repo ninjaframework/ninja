@@ -49,6 +49,11 @@ public class WrappedContext implements Context {
     }
 
     @Override
+    public String getRequestParameterString() {
+        return wrapped.getRequestParameterString();
+    }
+
+    @Override
     public String getHostname() {
         return wrapped.getHostname();
     }

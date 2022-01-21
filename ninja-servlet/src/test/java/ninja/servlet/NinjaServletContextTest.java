@@ -482,6 +482,19 @@ public class NinjaServletContextTest {
     }
 
     @Test
+    public void testGetRequestParameterString() {
+        // we got a context
+        when(httpServletRequest.getContextPath()).thenReturn("/");
+
+        // we got a request uri
+        when(httpServletRequest.getQueryString()).thenReturn("key=private&hash=%93%af%f2%3b");
+
+        context.init(servletContext, httpServletRequest, httpServletResponse);
+
+        assertEquals("key=private&hash=%93%af%f2%3b", context.getRequestParameterString());
+    }
+
+    @Test
     public void testContentTypeGetsConvertedProperlyUponFinalize() {
 
         //init the context
@@ -513,7 +526,6 @@ public class NinjaServletContextTest {
         //make sure utf-8 is used under all circumstances:
         verify(httpServletResponse).setCharacterEncoding(NinjaConstant.UTF_8);
     }
-
 
     @Test
     public void testGetRequestPathWorksAsExpectedWithContext() {
