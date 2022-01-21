@@ -31,6 +31,7 @@ import ninja.diagnostics.DiagnosticError;
 import ninja.diagnostics.DiagnosticErrorBuilder;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.ForbiddenRequestException;
+import ninja.exceptions.NinjaException;
 import ninja.exceptions.RenderingException;
 import ninja.exceptions.RequestNotFoundException;
 import ninja.i18n.Messages;
@@ -422,15 +423,15 @@ public class NinjaDefault implements Ninja {
                                         Optional<Throwable> exception,
                                         Optional<Result> underlyingResult) {
 
-        String messageI18n 
+        String messageI18n
                 = messages.getWithDefault(
                         errorTextKey,
                         errorTextDefault,
                         context,
                         underlyingResult);
 
-        String errorI18n 
-                = !exception.isPresent()
+        String errorI18n
+                = !exception.filter(NinjaException.class::isInstance).isPresent()
                     ? null 
                     : messages.getWithDefault(
                         exception.get().getMessage(),
