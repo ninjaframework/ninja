@@ -108,6 +108,17 @@ public interface Context {
     String getRequestUri();
 
     /**
+     * Returns the parameter string that is contained in the request URL after the path.
+     * <br/>
+     * <b>Example:</b>
+     * For the URL <em>"http://domain.local/?key=private&hash=%93%af%f2%3b"</em>, this method
+     * will return <em>"key=private&hash=%93%af%f2%3b"</em>
+     *
+     * @return The parameter string
+     */
+    String getRequestParameterString();
+
+    /**
      * Returns the hostname as seen by the server.
      *
      * http://example.com/index would return "example.com".

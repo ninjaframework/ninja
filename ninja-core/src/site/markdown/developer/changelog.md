@@ -1,6 +1,7 @@
 Version 6.8.2
 =============
 
+* 2022-01-19 Allow raw access to the parameter string (thibaultmeyer)
 * 2022-02-07 Added CRON like support on the annotation @Schedule (thibaultmeyer)
 * 2022-01-19 "assets" folder can be located either in "resources" or "src" (thibaultmeyer)
 * 2022-01-19 Fix Maven file structure: Reporting configuration should be done in <reporting> section (thibaultmeyer)

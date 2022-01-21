@@ -57,6 +57,11 @@ public class AbstractContextImpl extends AbstractContext {
     }
 
     @Override
+    public String getRequestParameterString() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public String getHostname() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
