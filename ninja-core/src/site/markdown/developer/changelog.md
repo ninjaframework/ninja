@@ -5,7 +5,7 @@ Version 6.9.0
 * 2022-01-19 Allow raw access to the parameter string (thibaultmeyer)
 * 2022-02-07 Added CRON like support on the annotation @Schedule (thibaultmeyer)
 * 2022-01-19 "assets" folder can be located either in "resources" or "src" (thibaultmeyer)
-* 2022-01-19 Fix Maven file structure: Reporting configuration should be done in <reporting> section (thibaultmeyer)
+* 2022-01-19 Fix Maven file structure: Reporting configuration should be done in reporting section (thibaultmeyer)
 * 2022-01-10 Updated Maven Archetype plugin to 3.2.1 (thibaultmeyer)
 * 2021-12-18 Added Jackson Module to handle Java8 and Joda data types (thibaultmeyer)
 * 2021-12-24 Fixed NullPointerException on "Message::getWithDefault" when value and default value are both null
