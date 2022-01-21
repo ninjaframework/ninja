@@ -170,7 +170,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.186</version>
+            <version>2.0.206</version>
         </dependency>
         <!-- If you want to deploy to a war please -->
         <!-- comment ninja-standalone dependency and  -->
