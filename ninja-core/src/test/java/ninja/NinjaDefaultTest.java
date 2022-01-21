@@ -20,6 +20,7 @@ import ninja.diagnostics.DiagnosticError;
 import ninja.exceptions.BadRequestException;
 import ninja.exceptions.ForbiddenRequestException;
 import ninja.exceptions.InternalServerErrorException;
+import ninja.exceptions.NinjaException;
 import ninja.exceptions.RequestNotFoundException;
 import ninja.i18n.Messages;
 import ninja.lifecycle.LifecycleService;
@@ -388,7 +389,7 @@ public class NinjaDefaultTest {
     }
 
     @Test
-    public void getInternalServerErrorResult() {
+    public void getInternalServerErrorResultCustomException() {
 
         when(ninjaProperties.getWithDefault(
                 ArgumentMatchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY),
@@ -396,6 +397,38 @@ public class NinjaDefaultTest {
                 .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
 
         Exception exception = new Exception("not important");
+
+        // real test:
+        Result result = ninjaDefault.getInternalServerErrorResult(
+                contextImpl,
+                exception, null);
+
+        assertThat(result.getStatusCode(), equalTo(Result.SC_500_INTERNAL_SERVER_ERROR));
+        assertThat(result.getTemplate(), equalTo(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
+        assertTrue(result.getRenderable() instanceof Message);
+
+        verify(messages).getWithDefault(
+                ArgumentMatchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_KEY),
+                ArgumentMatchers.eq(NinjaConstant.I18N_NINJA_SYSTEM_INTERNAL_SERVER_ERROR_TEXT_DEFAULT),
+                ArgumentMatchers.eq(contextImpl),
+                any(Optional.class));
+
+        verify(ninjaProperties).getWithDefault(
+                ArgumentMatchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY),
+                ArgumentMatchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR));
+
+    }
+
+    @Test
+    public void getInternalServerErrorResultWithNinjaException() {
+
+        when(ninjaProperties.getWithDefault(
+                ArgumentMatchers.eq(NinjaConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR_KEY),
+                ArgumentMatchers.eq(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR)))
+                .thenReturn(NinjaConstant.LOCATION_VIEW_FTL_HTML_INTERNAL_SERVER_ERROR);
+
+        Exception exception = new NinjaException(418, "I'm a teapot") {{
+        }};
 
         // real test:
         Result result = ninjaDefault.getInternalServerErrorResult(

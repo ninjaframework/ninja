@@ -1,3 +1,9 @@
+Version 6.9.1
+=============
+
+* 2022-01-21 Fix error during the error message generation on "buildErrorMessage" (thibaultmeyer)
+
+
 Version 6.9.0
 =============
 
