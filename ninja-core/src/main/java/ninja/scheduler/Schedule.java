@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Schedule {
+
     /**
      * The delay between executions. Is used as the default if no delay property is found.
      *
@@ -63,7 +64,6 @@ public @interface Schedule {
      */
     long initialDelay() default -1;
 
-
     /**
      * The property to read the initial delay from.  If not specified, initialDelay is used.
      *
@@ -71,5 +71,20 @@ public @interface Schedule {
      */
     String initialDelayProperty() default NO_PROPERTY;
 
-    static String NO_PROPERTY = "_no-property";
+    /**
+     * A CRON-like expression containing the second, minute, hour, day of month, month, and day of week.
+     *
+     * @return The CRON expression
+     */
+    String cron() default NO_PROPERTY;
+
+    /**
+     * A time zone for which the CRON expression will be resolved. If not specified, the server's local time
+     * zone will be used.
+     *
+     * @return A zone id accepted by {@code TimeZone.getTimeZone(String)}
+     */
+    String cronZone() default NO_PROPERTY;
+
+    String NO_PROPERTY = "_no-property";
 }

@@ -16,10 +16,13 @@
 
 package ninja.scheduler;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 
+import ninja.scheduler.cron.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,6 +97,46 @@ public class Scheduler {
     }
 
     private void schedule(final Object target, final Method method, Schedule schedule) {
+        if (!schedule.cron().equals(Schedule.NO_PROPERTY)) {
+            scheduleCron(target, method, schedule);
+        } else {
+            scheduleDelay(target, method, schedule);
+        }
+    }
+
+    private void scheduleCron(final Object target, final Method method, Schedule schedule) {
+        final CronExpression cronExpression = new CronExpression(schedule.cron().trim());
+        final ZoneId zoneId = schedule.cronZone().equals(Schedule.NO_PROPERTY)
+                ? ZoneId.systemDefault()
+                : ZoneId.of(schedule.cronZone());
+
+        log.info("Scheduling method " + method.getName() + " on " + target
+                + " using CRON expression " + schedule.cron()
+                + " (TimeZone: " + zoneId + ")");
+
+        final Callable<Void> callable = new Callable<Void>() {
+
+            @Override
+            public Void call() {
+                executor.schedule(this, cronExpression.getNextDelayMilliseconds(zoneId), TimeUnit.MILLISECONDS);
+
+                try {
+                    method.invoke(target);
+                } catch (final Exception exception) {
+                    log.error("An error occurred during the execution of scheduled method {}::{}",
+                            target.getClass().getName(),
+                            method.getName(),
+                            exception);
+                }
+
+                return null;
+            }
+        };
+
+        executor.schedule(callable, cronExpression.getNextDelayMilliseconds(zoneId), TimeUnit.MILLISECONDS);
+    }
+
+    private void scheduleDelay(final Object target, final Method method, Schedule schedule) {
         long delay = schedule.delay();
         if (!schedule.delayProperty().equals(Schedule.NO_PROPERTY)) {
             String delayString = getProperty(schedule.delayProperty());
@@ -146,6 +190,5 @@ public class Scheduler {
             return null;
         }
     }
-
 
 }
