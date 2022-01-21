@@ -1,4 +1,4 @@
-Version 6.8.2
+Version 6.9.0
 =============
 
 * 2022-01-20 Can use @Schedule annotation with @UnitOfWork or @Transactional (thibaultmeyer)
