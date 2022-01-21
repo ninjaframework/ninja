@@ -23,6 +23,8 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import com.google.inject.persist.Transactional;
+import javassist.util.proxy.ProxyFactory;
 import ninja.lifecycle.FailedStartException;
 import ninja.lifecycle.LifecycleService;
 import ninja.lifecycle.LifecycleSupport;
@@ -46,6 +48,7 @@ public class SchedulerSupportTest {
     @Before
     public final void setUp() {
         MockScheduled.countDownLatch = new CountDownLatch(1);
+        MockScheduledWithProxy.countDownLatch = new CountDownLatch(1);
         MockPropertyScheduled.countDownLatch = new CountDownLatch(1);
     }
 
@@ -104,6 +107,26 @@ public class SchedulerSupportTest {
         start(injector);
     }
 
+    @Test(timeout = 5000)
+    public void schedulableShouldBeScheduledAfterStartWithProxyClass() throws Exception {
+        injector = createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                // Simulate clazz proxy
+                final ProxyFactory factory = new ProxyFactory();
+                factory.setSuperclass(MockScheduledWithProxy.class);
+
+                factory.createClass();
+                    bind(MockScheduledWithProxy.class).to(factory.createClass());
+            }
+        });
+
+        injector.getInstance(MockScheduledWithProxy.class);
+        start(injector);
+
+        MockScheduledWithProxy.countDownLatch.await(5000, TimeUnit.MILLISECONDS);
+    }
+
     private Injector createInjector(Module... modules) {
         List<Module> ms = new ArrayList<>(asList(modules));
         ms.add(LifecycleSupport.getModule());
@@ -125,6 +148,17 @@ public class SchedulerSupportTest {
     public static class MockScheduled {
         static CountDownLatch countDownLatch;
 
+        @Schedule(initialDelay = 10, delay = 1000000000)
+        public void doSomething() {
+            countDownLatch.countDown();
+        }
+    }
+
+    @Singleton
+    public static class MockScheduledWithProxy {
+        static CountDownLatch countDownLatch;
+
+        @Transactional
         @Schedule(initialDelay = 10, delay = 1000000000)
         public void doSomething() {
             countDownLatch.countDown();

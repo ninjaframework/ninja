@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
 
+import ninja.utils.AopUtils;
 import ninja.scheduler.cron.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,10 @@ public class Scheduler {
     }
 
     public boolean hasScheduledMethod(Class<?> clazz) {
-        for (Method method : clazz.getMethods()) {
+
+        for (final Method method : AopUtils.isAopProxy(clazz)
+                ? clazz.getSuperclass().getMethods()
+                : clazz.getMethods()) {
             Schedule schedule = method.getAnnotation(Schedule.class);
             if (schedule != null) {
                 return true;
@@ -79,7 +83,9 @@ public class Scheduler {
         if (executor == null) {
             objectsToSchedule.add(target);
         } else {
-            for (final Method method : target.getClass().getMethods()) {
+            for (final Method method : AopUtils.isAopProxy(target)
+                    ? target.getClass().getSuperclass().getMethods()
+                    : target.getClass().getMethods()) {
                 Schedule schedule = method.getAnnotation(Schedule.class);
                 if (schedule != null) {
                     schedule(target, method, schedule);
@@ -167,8 +173,12 @@ public class Scheduler {
             initialDelay = delay;
         }
 
-        log.info("Scheduling method " + method.getName() + " on " + target + " to be run every " + delay
+        final String targetName = AopUtils.isAopProxy(target)
+                ? target.getClass().getSuperclass().getName()
+                : target.getClass().getName();
+        log.info("Scheduling method " + method.getName() + " on " + targetName + " to be run every " + delay
                 + " " + timeUnit + " after " + initialDelay + " " + timeUnit);
+
         executor.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {

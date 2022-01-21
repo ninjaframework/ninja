@@ -1,6 +1,7 @@
 Version 6.8.2
 =============
 
+* 2022-01-20 Can use @Schedule annotation with @UnitOfWork or @Transactional (thibaultmeyer)
 * 2022-01-19 Allow raw access to the parameter string (thibaultmeyer)
 * 2022-02-07 Added CRON like support on the annotation @Schedule (thibaultmeyer)
 * 2022-01-19 "assets" folder can be located either in "resources" or "src" (thibaultmeyer)
