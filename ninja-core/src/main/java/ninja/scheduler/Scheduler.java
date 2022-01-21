@@ -116,7 +116,10 @@ public class Scheduler {
                 ? ZoneId.systemDefault()
                 : ZoneId.of(schedule.cronZone());
 
-        log.info("Scheduling method " + method.getName() + " on " + target
+        final String targetName = AopUtils.isAopProxy(target)
+                ? target.getClass().getSuperclass().getName()
+                : target.getClass().getName();
+        log.info("Scheduling method " + method.getName() + " on " + targetName
                 + " using CRON expression " + schedule.cron()
                 + " (TimeZone: " + zoneId + ")");
 
