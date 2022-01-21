@@ -1,3 +1,9 @@
+Version 6.9.1
+=============
+
+* 2022-01-22 Display the right target name when using CRON scheduler and Proxy class (thibaultmeyer)
+
+
 Version 6.9.0
 =============
 
