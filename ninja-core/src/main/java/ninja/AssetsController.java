@@ -23,6 +23,10 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import ninja.utils.HttpCacheToolkit;
 import ninja.utils.MimeTypes;
@@ -232,17 +236,17 @@ public class AssetsController {
     }
 
     /**
-     * Used in dev mode: Streaming directly from src dir without jetty reload.
+     * Retrieves the "assets" directory in develop mode without trailing slash.
+     * Dev mode: Streaming directly from src dir without jetty reload
+     *
+     * @return The "assets" directory without trailing slash
      */
     private String assetsDirInDevModeWithoutTrailingSlash() {
-        String srcDir  = System.
-                getProperty("user.dir")
-                + File.separator
-                + "src"
-                + File.separator
-                + "main"
-                + File.separator
-                + "java";
-        return srcDir + File.separator + ASSETS_DIR;
+        Path assetsPath = Paths.get(System.getProperty("user.dir"), "src", "main", "resources", ASSETS_DIR);
+        if (Files.exists(assetsPath, LinkOption.NOFOLLOW_LINKS)) {
+            return assetsPath.toString();
+        }
+
+        return Paths.get(System.getProperty("user.dir"), "src", "main", "java", ASSETS_DIR).toString();
     }
 }
