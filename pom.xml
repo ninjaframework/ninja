@@ -159,7 +159,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
+                        <doclint>none</doclint>
                     </configuration>
                 </plugin>
                 
@@ -181,16 +181,6 @@
                     <version>3.7.1</version>
 
                     <configuration>
-                        <reportPlugins>
-                            <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-javadoc-plugin</artifactId>
-                                <version>2.9.1</version>
-                                <configuration>
-                                    <additionalparam>-Xdoclint:none</additionalparam>
-                                </configuration>
-                            </plugin>
-                        </reportPlugins>
                     </configuration>
 
                     <dependencies>
@@ -253,6 +243,19 @@
         </pluginManagement>
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <scm>
         <url>https://github.com/ninjaframework/ninja</url>
         <connection>scm:git://github.com/ninjaframework/ninja.git</connection>
@@ -269,7 +272,7 @@
         <mailingList>
             <name>Ninja Web Framework Users</name>
             <post>ninja-framework@googlegroups.com</post>
-            <archive>http://groups.google.com/group/ninja-framework</archive>
+            <archive>https://groups.google.com/group/ninja-framework</archive>
         </mailingList>
     </mailingLists>
 
@@ -288,7 +291,7 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -496,7 +499,7 @@
                 <version>${guice.version}</version>
             </dependency>
 
-            <!-- We use Jackson for rendering jsons: -->
+            <!-- We use Jackson for rendering JSON: -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
@@ -573,7 +576,7 @@
                 <version>1.15</version>
             </dependency>
 
-            <!-- Enrcyption library providing support for blowfish -->
+            <!-- Encryption library providing support for blowfish -->
             <dependency>
                 <groupId>org.mindrot</groupId>
                 <artifactId>jbcrypt</artifactId>
