@@ -28,6 +28,9 @@ import javassist.util.proxy.ProxyFactory;
 import ninja.lifecycle.FailedStartException;
 import ninja.lifecycle.LifecycleService;
 import ninja.lifecycle.LifecycleSupport;
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -129,6 +132,12 @@ public class SchedulerSupportTest {
 
     private Injector createInjector(Module... modules) {
         List<Module> ms = new ArrayList<>(asList(modules));
+        ms.add(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(NinjaProperties.class).toInstance(NinjaPropertiesImpl.builder().withMode(NinjaMode.test).build());
+            }
+        });
         ms.add(LifecycleSupport.getModule());
         ms.add(SchedulerSupport.getModule());
         return Guice.createInjector(ms);
