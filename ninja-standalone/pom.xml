@@ -76,10 +76,7 @@
             <scope>compile</scope>
         </dependency>
         
-        <dependency>
-            <groupId>javax.websocket</groupId>
-            <artifactId>javax.websocket-api</artifactId>
-        </dependency>
+        
         
         <dependency>
             <groupId>junit</groupId>
