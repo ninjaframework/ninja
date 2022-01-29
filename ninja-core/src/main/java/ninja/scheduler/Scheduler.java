@@ -32,6 +32,8 @@ import ninja.lifecycle.Start;
 
 import ninja.utils.AopUtils;
 import ninja.scheduler.cron.CronExpression;
+import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,12 +53,20 @@ public class Scheduler {
 
     @Inject
     private Injector injector;
+
+    @Inject
+    private NinjaProperties ninjaProperties;
+
     private volatile ScheduledExecutorService executor;
     private final List<Object> objectsToSchedule = Collections.synchronizedList(new ArrayList<Object>());
 
     @Start(order = 90)
     public void start() {
-        executor = Executors.newSingleThreadScheduledExecutor();
+        final int threadPoolSize = ninjaProperties.getIntegerWithDefault(
+                NinjaConstant.SCHEDULER_THREAD_POOL_SIZE_CONFIG_KEY,
+                NinjaConstant.SCHEDULER_THREAD_POOL_SIZE_DEFAULT);
+
+        executor = Executors.newScheduledThreadPool(threadPoolSize);
         scheduleCachedObjects();
     }
 

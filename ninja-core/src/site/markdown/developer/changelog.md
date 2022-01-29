@@ -1,3 +1,9 @@
+Version 6.9.1
+=============
+
+* 2022-02-01 Can configure @Schedule thread pool size (thibaultmeyer)
+
+
 Version 6.9.0
 =============
 

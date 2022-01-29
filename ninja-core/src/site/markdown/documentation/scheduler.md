@@ -126,3 +126,16 @@ public class ScheduledAction {
     }
 }
 </pre>
+
+
+Execution thread pool
+---------------------
+
+By default, scheduled tasks run on a single thread, which can be sufficient
+for most cases. However, if you need to run several tasks at the same time
+or if the execution of your tasks takes too much time and delays the others,
+you can change the size of the thread pool allocated to scheduled tasks.
+
+To change the size of the thread pool used by scheduled tasks, you must use
+the <code>scheduler.thread_pool_size</code> configuration key in the
+configuration file.

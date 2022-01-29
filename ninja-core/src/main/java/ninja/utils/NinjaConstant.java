@@ -252,7 +252,11 @@ public interface NinjaConstant {
     String NINJA_JSONP_CALLBACK_PARAMETER = "ninja.jsonp.callbackParameter";
     
     String AUTHENTICITY_TOKEN = "authenticityToken";
-    
+
+    /** Scheduler Thread pool configuration */
+    String SCHEDULER_THREAD_POOL_SIZE_CONFIG_KEY = "scheduler.thread_pool_size";
+    int SCHEDULER_THREAD_POOL_SIZE_DEFAULT = 1;
+
     ///////////////////////////////////////////////////////////////////////////
     // File uploads constants used by FileProvider implementations.
     ///////////////////////////////////////////////////////////////////////////
