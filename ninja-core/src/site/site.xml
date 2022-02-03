@@ -116,6 +116,8 @@
 
             <item name="Logging" href="./documentation/logging.html"/>
 
+            <item name="Type Conversion" href="./documentation/conversion.html"/>
+
             <item name="Custom routing" href="./documentation/custom_routing.html"/>
 
             <item name="Servlet bridge" href="./documentation/servlet_bridge.html"/>

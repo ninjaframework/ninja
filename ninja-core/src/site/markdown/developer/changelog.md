@@ -1,3 +1,9 @@
+Versuib 6.9.1
+=============
+
+* 2022-03-04 Added type conversion (thibaultmeyer)
+
+
 Version 6.9.0
 =============
 
