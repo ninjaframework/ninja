@@ -50,6 +50,7 @@
 
     <modules>
         <module>ninja-core</module>
+        <module>ninja-conversion</module>
         <module>ninja-postoffice</module>
         <module>ninja-jaxy-routes</module>
         <module>ninja-websockets-jsr356</module>
@@ -430,6 +431,12 @@
             <dependency>
                 <groupId>org.ninjaframework</groupId>
                 <artifactId>ninja-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-conversion</artifactId>
                 <version>${project.version}</version>
             </dependency>
             
