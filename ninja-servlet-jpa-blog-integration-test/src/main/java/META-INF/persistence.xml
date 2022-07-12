@@ -51,9 +51,9 @@
     
      <!-- h2 is a simple database - in reality you may want to switch to postgres or so... -->
     <persistence-unit name="h2_test" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
-            <property name="javax.persistence.provider" value="org.hibernate.ejb.HibernatePersistence" />
+            <property name="javax.persistence.provider" value="org.hibernate.jpa.HibernatePersistenceProvider" />
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
             <!-- you may want to enable the ddl if you do not use migrations. -->
@@ -76,11 +76,11 @@
 
     <!-- The following config is an example config for postgresql -->
     <persistence-unit name="postgresql" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect" />
 
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" /> 
@@ -101,11 +101,11 @@
     <!-- And another persistence unit that you can set and use on your production servers.
             Quite handy because in production you may want to tune the connection pooling and so on. -->
     <persistence-unit name="production" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect" />
 
              <!-- Connection Pooling settings -->
             <property name="hibernate.connection.provider_class"
