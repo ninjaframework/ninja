@@ -34,7 +34,6 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -49,6 +48,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -140,7 +140,7 @@ public class SessionImplTest {
         sessionCookie.save(context);
 
         // no cookie should be set as the flash scope is empty...:
-        verify(context, never()).addCookie(Matchers.any(Cookie.class));
+        verify(context, never()).addCookie(any(Cookie.class));
     }
 
     @Test

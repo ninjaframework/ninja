@@ -79,7 +79,7 @@
         <jetty.version>9.4.44.v20210927</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.12.2</jackson.version>
-        <guice.version>5.0.1</guice.version>
+        <guice.version>6.0.0</guice.version>
         <metrics.version>3.2.6</metrics.version>
         <slf4j.version>1.7.30</slf4j.version>
         <powermock.version>2.0.9</powermock.version>
@@ -562,7 +562,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>30.1-jre</version>
+                <version>32.1.3-jre</version>
             </dependency>
 
             <!-- reflections is used for classpath scanning -->
@@ -877,7 +877,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.8.0</version>
+                <version>5.4.0</version>
                 <scope>test</scope>
             </dependency>
             

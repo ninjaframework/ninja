@@ -16,41 +16,33 @@
 
 package ninja.template;
 
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import ninja.Context;
-import ninja.Result;
-import ninja.i18n.Lang;
-import ninja.i18n.Messages;
-import ninja.validation.ConstraintViolation;
-import ninja.validation.IsInteger;
-import ninja.validation.Validators.JSRValidator;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.core.Appender;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import ninja.Context;
+import ninja.Result;
+import ninja.i18n.Messages;
+import ninja.validation.ConstraintViolation;
+import ninja.validation.IsInteger;
+import org.hamcrest.CoreMatchers;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertThat;
 
 /**
  *
@@ -121,7 +113,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         assertThat(((SimpleScalar) returnValue).getAsString(), CoreMatchers.equalTo("This simulates the translated message!"));
         
-        Mockito.verify(mockAppender, Mockito.never()).doAppend(Matchers.anyObject());
+        Mockito.verify(mockAppender, Mockito.never()).doAppend(ArgumentMatchers.any());
 
     }
     
@@ -145,7 +137,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         // There must have been logged something because we did not find
         // the value for the key...
-        Mockito.verify(mockAppender).doAppend(Matchers.anyObject());
+        Mockito.verify(mockAppender).doAppend(ArgumentMatchers.any());
     }
     
     @Test
@@ -159,10 +151,10 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         Mockito.when(
                 messages.get(
-                        Matchers.eq("my.message.key"), 
-                        Matchers.eq(context), 
-                        Matchers.eq(resultOptional),
-                        Matchers.any(Object.class)))
+                        ArgumentMatchers.eq("my.message.key"),
+                        ArgumentMatchers.eq(context),
+                        ArgumentMatchers.eq(resultOptional),
+                        ArgumentMatchers.any(Object.class)))
                 .thenReturn(Optional.of("This simulates the translated message number 1000!"));
         
         
@@ -171,7 +163,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         assertThat(((SimpleScalar) returnValue).getAsString(), CoreMatchers.equalTo("This simulates the translated message number 1000!"));
         
-        Mockito.verify(mockAppender, Mockito.never()).doAppend(Matchers.anyObject());
+        Mockito.verify(mockAppender, Mockito.never()).doAppend(ArgumentMatchers.any());
     }
     
     @Test
@@ -185,10 +177,10 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         Mockito.when(
                 messages.get(
-                        Matchers.eq("my.message.key"), 
-                        Matchers.eq(context), 
-                        Matchers.eq(resultOptional),
-                        Matchers.any(Object.class)))
+                        ArgumentMatchers.eq("my.message.key"),
+                        ArgumentMatchers.eq(context),
+                        ArgumentMatchers.eq(resultOptional),
+                        ArgumentMatchers.any()))
                 .thenReturn(Optional.<String>empty());
         
         TemplateModel returnValue 
@@ -198,7 +190,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         // There must have been logged something because we did not find
         // the value for the key...
-        Mockito.verify(mockAppender).doAppend(Matchers.anyObject());
+        Mockito.verify(mockAppender).doAppend(ArgumentMatchers.any());
         
     }
     
@@ -221,7 +213,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         assertThat(((SimpleScalar) returnValue).getAsString(), CoreMatchers.equalTo("This simulates the translated message!"));
         
-        Mockito.verify(mockAppender, Mockito.never()).doAppend(Matchers.anyObject());
+        Mockito.verify(mockAppender, Mockito.never()).doAppend(ArgumentMatchers.any());
 
     }
     
@@ -244,7 +236,7 @@ public class TemplateEngineFreemarkerI18nMethodTest {
         
         assertThat(((SimpleScalar) returnValue).getAsString(), CoreMatchers.equalTo("theField must be an integer"));
         
-        Mockito.verify(mockAppender, Mockito.never()).doAppend(Matchers.anyObject());
+        Mockito.verify(mockAppender, Mockito.never()).doAppend(ArgumentMatchers.any());
 
     }
 }

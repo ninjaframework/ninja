@@ -20,10 +20,10 @@ import ninja.utils.NinjaProperties;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LogbackConfiguratorTest {
@@ -41,7 +41,7 @@ public class LogbackConfiguratorTest {
         
         LogbackConfigurator.initConfiguration(ninjaProperties);
         
-        Mockito.verify(ninjaProperties, Mockito.never()).get(Matchers.anyString());
+        Mockito.verify(ninjaProperties, Mockito.never()).get(anyString());
         
         //clean up
         System.clearProperty(LogbackConfigurator.LOGBACK_CONFIGURATION_FILE_PROPERTY);  

@@ -17,6 +17,8 @@
 package ninja;
 
 import com.google.common.collect.Lists;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +28,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -34,8 +36,6 @@ import ninja.utils.MethodReference;
 import ninja.utils.NinjaBaseDirectoryResolver;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 import org.hamcrest.Matchers;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
@@ -404,7 +404,7 @@ public class RouteBuilderImplTest {
         Route route = routeBuilder.buildRoute(injector);
         
         assertTrue(route.matches("GET", "/execute"));
-        assertThat(route.getControllerClass().getCanonicalName(), startsWith(this.getClass().getCanonicalName()));
+        assertThat(route.getControllerMethod().toString(), containsString(this.getClass().getCanonicalName()));
         assertThat(route.getControllerMethod().getName(), is("apply"));
     }
     
@@ -443,7 +443,7 @@ public class RouteBuilderImplTest {
         
         assertTrue(route.matches("GET", "/execute"));
         // should be a class within this test class as a real lambda
-        assertThat(route.getControllerClass().getCanonicalName(), startsWith(this.getClass().getCanonicalName()));
+        assertThat(route.getControllerMethod().toString(), containsString(this.getClass().getCanonicalName()));
         assertThat(route.getControllerMethod().getName(), is("apply"));
     }
     
