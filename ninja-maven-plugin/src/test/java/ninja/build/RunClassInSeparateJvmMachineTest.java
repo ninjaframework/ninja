@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.StartedProcess;
 

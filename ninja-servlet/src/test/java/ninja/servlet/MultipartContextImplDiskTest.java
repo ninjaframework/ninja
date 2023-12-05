@@ -24,7 +24,7 @@ import ninja.uploads.DiskFileItemProvider;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MultipartContextImplDiskTest extends AbstractMultipartContextImplTest {

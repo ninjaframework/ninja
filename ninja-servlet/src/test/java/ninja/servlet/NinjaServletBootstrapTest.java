@@ -16,23 +16,23 @@
 
 package ninja.servlet;
 
-import java.util.Optional;
 import ninja.Bootstrap;
 import ninja.Context;
-import static org.junit.Assert.assertTrue;
 import ninja.Route;
 import ninja.Router;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  *
