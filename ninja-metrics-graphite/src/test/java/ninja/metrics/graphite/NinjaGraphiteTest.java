@@ -24,9 +24,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+//import org.powermock.api.mockito.PowerMockito;
+//import org.powermock.core.classloader.annotations.PrepareForTest;
+//import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.graphite.GraphiteReporter.Builder;
@@ -37,8 +37,8 @@ import ninja.utils.NinjaPropertiesImpl;
 
 // TODO: PowerMock IS OLD AND UNSUPPORTED
 @Ignore
-@PrepareForTest(GraphiteReporter.class)
-@RunWith(PowerMockRunner.class)
+//@PrepareForTest(GraphiteReporter.class)
+//@RunWith(PowerMockRunner.class)
 public class NinjaGraphiteTest {
 
     private static final String TEST_HOSTNAME = "test.hostname";
@@ -67,8 +67,8 @@ public class NinjaGraphiteTest {
         Mockito.when(ninjaProperties.getBooleanWithDefault(Mockito.eq("metrics.graphite.pickled"), Mockito.anyBoolean())).thenReturn(Boolean.FALSE);
         Mockito.when(ninjaProperties.getWithDefault(Mockito.eq("metrics.graphite.period"), Mockito.anyString())).thenReturn("60s");
 
-        PowerMockito.mockStatic(GraphiteReporter.class);
-        PowerMockito.when(GraphiteReporter.forRegistry(Mockito.any())).thenReturn(builder);
+//        PowerMockito.mockStatic(GraphiteReporter.class);
+//        PowerMockito.when(GraphiteReporter.forRegistry(Mockito.any())).thenReturn(builder);
         Mockito.when(builder.prefixedWith(Mockito.anyString())).thenCallRealMethod();
         Mockito.when(builder.convertRatesTo(Mockito.any())).thenCallRealMethod();
         Mockito.when(builder.convertDurationsTo(Mockito.any())).thenCallRealMethod();

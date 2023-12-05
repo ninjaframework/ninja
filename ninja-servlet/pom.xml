@@ -68,7 +68,7 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
         
-        <dependency>
+        <!--<dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito2</artifactId>
         </dependency>
@@ -76,16 +76,16 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
     
-    <build>
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 </project>

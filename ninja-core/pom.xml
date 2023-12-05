@@ -263,7 +263,7 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
         </dependency>
@@ -271,7 +271,7 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito2</artifactId>
-        </dependency>
+        </dependency>-->
         
         <!-- Jaxb was removed from Java 9 and onwards. So we add the dependency explicitly -->
         <dependency>
