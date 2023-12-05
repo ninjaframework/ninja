@@ -298,6 +298,26 @@
 
 
     <profiles>
+        <!-- for building on jdk8 vs. jdk11+ -->
+        <profile>
+            <id>java8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <properties>
+                <mockito.version>4.11.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>java9plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <mockito.version>5.4.0</mockito.version>
+            </properties>
+        </profile>
+
         <!-- Do a license check by running : mvn -P license license:check -->
         <!-- Update the license check by running : mvn -P license license:format -->
         <profile>
@@ -877,7 +897,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.4.0</version>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
             
