@@ -16,28 +16,21 @@
 
 package ninja.build;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
-
-import org.junit.Test;
-
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import static ninja.maven.NinjaMavenPluginConstants.DEFAULT_EXCLUDE_PATTERNS;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+import static ninja.maven.NinjaMavenPluginConstants.DEFAULT_EXCLUDE_PATTERNS;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
+
 public class WatchAndRestartMachineTest {
     
     @Test

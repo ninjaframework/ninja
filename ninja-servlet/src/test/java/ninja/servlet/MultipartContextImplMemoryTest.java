@@ -18,13 +18,11 @@ package ninja.servlet;
 
 import ninja.uploads.MemoryFileItemProvider;
 import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-@RunWith(MockitoJUnitRunner.class)
 public class MultipartContextImplMemoryTest extends AbstractMultipartContextImplTest {
 
     @Before

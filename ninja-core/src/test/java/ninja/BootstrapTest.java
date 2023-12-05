@@ -16,30 +16,19 @@
 
 package ninja;
 
-import java.util.Optional;
 import ninja.cache.Cache;
-import static org.junit.Assert.assertTrue;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
-import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-
-/**
- *
- * @author ra
- */
-@RunWith(MockitoJUnitRunner.class)
 public class BootstrapTest {
     
     NinjaPropertiesImpl ninjaPropertiesImpl;

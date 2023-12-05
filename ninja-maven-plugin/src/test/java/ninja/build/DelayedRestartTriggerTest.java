@@ -19,20 +19,14 @@ package ninja.build;
 
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Conditions;
-import static com.google.code.tempusfugit.temporal.Duration.millis;
 import com.google.code.tempusfugit.temporal.Timeout;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import org.junit.Test;
 
-import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-
-//@RunWith(MockitoJUnitRunner.class)
 public class DelayedRestartTriggerTest {
     
     @Test

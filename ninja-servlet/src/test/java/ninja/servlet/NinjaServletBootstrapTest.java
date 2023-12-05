@@ -24,9 +24,7 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
@@ -34,11 +32,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-/**
- *
- * @author ra
- */
-@RunWith(MockitoJUnitRunner.class)
 public class NinjaServletBootstrapTest {
     
     NinjaPropertiesImpl ninjaPropertiesImpl;

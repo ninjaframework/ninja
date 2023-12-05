@@ -19,7 +19,10 @@ package ninja.build;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Duration;
 import com.google.code.tempusfugit.temporal.Timeout;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import org.junit.Test;
+import org.zeroturnaround.exec.ProcessResult;
+import org.zeroturnaround.exec.StartedProcess;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -27,15 +30,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Test;
 
-import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.zeroturnaround.exec.ProcessResult;
-import org.zeroturnaround.exec.StartedProcess;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
 public class RunClassInSeparateJvmMachineTest {
     
     public List<String> getOurClassPath() throws IOException {
