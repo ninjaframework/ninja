@@ -101,9 +101,8 @@ public class DelayedRestartTriggerTest {
                     restartTrigger.interrupt();
                     return restartTrigger.getAccumulatedTriggerCount() <= 0;
                 }, Timeout.timeout(millis(10000)));
-            
-            // should have only called this exactly once
-            verify(machine, timeout(5000).atLeast(1)).restart();
+
+            verify(machine, atLeast(1)).restart();
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
