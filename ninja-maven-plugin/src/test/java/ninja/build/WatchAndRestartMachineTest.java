@@ -16,6 +16,7 @@
 
 package ninja.build;
 
+import com.google.code.tempusfugit.temporal.Timeout;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -26,6 +27,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static ninja.maven.NinjaMavenPluginConstants.DEFAULT_EXCLUDE_PATTERNS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -73,7 +76,7 @@ public class WatchAndRestartMachineTest {
 
             // trigger should have been called soon
             verify(restartTrigger, timeout(10000)).trigger();
-            
+
             Mockito.reset(restartTrigger);
             
             // modify the file
@@ -94,7 +97,7 @@ public class WatchAndRestartMachineTest {
             os.close();
 
             // indicates exclusion rule for new files didn't work
-            verify(restartTrigger, Mockito.after(10000).never()).trigger();
+            verify(restartTrigger, after(500).times(0)).trigger();
             
             // modify the file
             os = new FileOutputStream(newPngFile);
@@ -102,7 +105,7 @@ public class WatchAndRestartMachineTest {
             os.close();
 
             // indicates exclusion rule for modified files didn't work
-            verify(restartTrigger, Mockito.after(10000).never()).trigger();
+            verify(restartTrigger, after(500).times(0)).trigger();
             
             // add a new file
             os = new FileOutputStream(newIncludedTxtFile);
