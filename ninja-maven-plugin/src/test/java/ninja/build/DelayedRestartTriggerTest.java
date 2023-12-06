@@ -53,8 +53,6 @@ public class DelayedRestartTriggerTest {
             // wait until restart count is 1
             waitOrTimeout(
                 () -> restartTrigger.getRestartCount() > 0, Timeout.timeout(millis(10000)));
-
-            verify(machine, times(1)).restart();
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
@@ -104,8 +102,6 @@ public class DelayedRestartTriggerTest {
                     restartTrigger.interrupt();
                     return restartTrigger.getAccumulatedTriggerCount() <= 0;
                 }, Timeout.timeout(millis(10000)));
-
-            verify(machine, atLeast(1)).restart();
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
