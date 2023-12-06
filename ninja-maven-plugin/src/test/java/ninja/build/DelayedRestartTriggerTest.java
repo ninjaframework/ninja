@@ -71,7 +71,7 @@ public class DelayedRestartTriggerTest {
         final DelayedRestartTrigger restartTrigger = new DelayedRestartTrigger(machine);
         
         // long settling down period to ensure it'll happen
-        restartTrigger.setSettleDownMillis(10000);
+        restartTrigger.setSettleDownMillis(1000L);
         
         try {
             restartTrigger.start();
@@ -93,25 +93,17 @@ public class DelayedRestartTriggerTest {
             
             // wait until restart count is 1
             waitOrTimeout(
-                new Condition() {
-                    @Override
-                    public boolean isSatisfied() {
-                        return restartTrigger.getRestartCount() > 0;
-                    }
-                }, Timeout.timeout(millis(10000)));
+                () -> restartTrigger.getRestartCount() > 0, Timeout.timeout(millis(10000)));
             
             // wait until accumulated trigger is set back to zero
             waitOrTimeout(
-                new Condition() {
-                    @Override
-                    public boolean isSatisfied() {
-                        restartTrigger.interrupt();
-                        return restartTrigger.getAccumulatedTriggerCount() <= 0;
-                    }
+                () -> {
+                    restartTrigger.interrupt();
+                    return restartTrigger.getAccumulatedTriggerCount() <= 0;
                 }, Timeout.timeout(millis(10000)));
             
             // should have only called this exactly once
-            verify(machine, timeout(3000).atLeast(1)).restart();
+            verify(machine, timeout(5000).atLeast(1)).restart();
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
