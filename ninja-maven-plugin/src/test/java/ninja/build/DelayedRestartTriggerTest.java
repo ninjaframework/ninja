@@ -25,7 +25,7 @@ import org.junit.Test;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class DelayedRestartTriggerTest {
     
@@ -49,11 +49,12 @@ public class DelayedRestartTriggerTest {
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
 
             restartTrigger.trigger();
+
+            verify(machine, timeout(3000)).restart();
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
 
-            Thread.sleep(1000L);
             assertEquals(1, restartTrigger.getRestartCount());
             assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
         } finally {
@@ -110,12 +111,11 @@ public class DelayedRestartTriggerTest {
                 }, Timeout.timeout(millis(10000)));
             
             // should have only called this exactly once
-            //verify(machine, timeout(10000).atLeast(1)).restart();
+            verify(machine, timeout(3000).atLeast(1)).restart();
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
 
-            Thread.sleep(1000L);
             assertEquals(1, restartTrigger.getRestartCount());
             assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
         } finally {

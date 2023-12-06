@@ -94,7 +94,7 @@ public class RunClassInSeparateJvmMachine {
         this.activeProcess = activeProcess;
     }
 
-    public synchronized void restart() {
+    public void restart() {
         restarting.set(true);
         try {
         
