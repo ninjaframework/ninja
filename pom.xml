@@ -76,7 +76,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.4.44.v20210927</jetty.version>
+        <jetty.version>9.4.53.v20231009</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.12.2</jackson.version>
         <guice.version>6.0.0</guice.version>
