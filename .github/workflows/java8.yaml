@@ -1,0 +1,18 @@
+name: Java 8
+on:
+  - push
+  - workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Azul JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: 8
+          distribution: 'zulu'
+          cache: 'maven'
+      - name: Test in Maven
+        run: mvn install
