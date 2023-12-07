@@ -1,7 +1,8 @@
-Version 7.x.x
+Version 7.0.0
 =============
 
 * 2023-12-07 Full support for Java 21 (compiling, testing, etc.) (jjlauer)
+* 2023-12-07 Updated Guice dependency to v6.0.0 (jjlauer)
 * 2023-12-07 Updated Jetty dependency to v9.4.53.v20231009 (jjlauer)
 * 2023-12-07 Github workflow automated CI for Java 8, 11, 17, and 21 (jjlauer)
 * 2023-12-07 Updated Mockito dependency for testing to v4.11.0 for Java 8, v5.4.0 for Java 9+ (jjlauer)

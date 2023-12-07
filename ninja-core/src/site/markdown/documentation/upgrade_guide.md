@@ -6,6 +6,12 @@ into Ninja's behavior. This document describes which steps are needed to upgrade
 your application to the latest Ninja version. Simply start with your current 
 version and then work your way up to the top of the document.
 
+to 7.0.0
+--------
+
+Version should be a drop-in replacement if using v6.8.2, but with Google guice v6.0.0
+you may need to ensure any of your projects dependencies are not bringing in Guava version older
+than v31 (older versions will cause injection to fail)
 
 to 6.8.2
 --------

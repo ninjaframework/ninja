@@ -61,7 +61,7 @@ Making a Ninja release
 
 - Make sure you are using https://semver.org/ for versioning.
 - Make sure changelog.md is updated
-- Make sure upgrade-guide top version is updated
+- Make sure ninja-core/src/site/markdown/documentation/upgrade_guide.md top version is updated
 - Make sure the archetypes are up-to-date (Ninja version must match release version)
 - Make sure the archetypes version in docu (JPA + getting_started) matches release version
 
