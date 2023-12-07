@@ -16,25 +16,19 @@
 
 package ninja;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import ninja.session.Session;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaProperties;
-
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BasicAuthFilterTest {
@@ -91,7 +85,7 @@ public class BasicAuthFilterTest {
         // filter that
         basicAuthFilter.filter(filterChain, context);
 
-        verifyZeroInteractions(filterChain);
+        verifyNoInteractions(filterChain);
     }
 
     @Test
@@ -107,7 +101,7 @@ public class BasicAuthFilterTest {
 
         assertEquals(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED,
                 result.getTemplate());
-        verifyZeroInteractions(filterChain);
+        verifyNoInteractions(filterChain);
     }
 
     @Test
@@ -137,7 +131,7 @@ public class BasicAuthFilterTest {
 
         assertEquals(NinjaConstant.LOCATION_VIEW_FTL_HTML_UNAUTHORIZED,
                 result.getTemplate());
-        verifyZeroInteractions(filterChain);
+        verifyNoInteractions(filterChain);
     }
 
     @Test

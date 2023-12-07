@@ -17,6 +17,7 @@
 package ninja.session;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 import ninja.Context;
@@ -33,12 +34,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FlashScopeTest {
@@ -70,7 +70,7 @@ public class FlashScopeTest {
         flashCookie.save(context);
 
         // no cookie should be set as the flash scope is empty...:
-        verify(context, never()).addCookie(Matchers.any(Cookie.class));
+        verify(context, never()).addCookie(any(Cookie.class));
     }
 
     @Test

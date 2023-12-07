@@ -38,7 +38,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.nio.file.SensitivityWatchEventModifier;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -127,8 +126,7 @@ public class WatchAndRestartMachine implements Runnable {
                 StandardWatchEventKinds.ENTRY_CREATE,
                 StandardWatchEventKinds.ENTRY_MODIFY,
                 StandardWatchEventKinds.ENTRY_DELETE
-            }, 
-            SensitivityWatchEventModifier.HIGH);
+            });
         
         mapOfWatchKeysToPaths.put(watchKey, path);
     }

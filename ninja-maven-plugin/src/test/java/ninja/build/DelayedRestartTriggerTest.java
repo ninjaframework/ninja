@@ -19,19 +19,14 @@ package ninja.build;
 
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Conditions;
-import static com.google.code.tempusfugit.temporal.Duration.millis;
 import com.google.code.tempusfugit.temporal.Timeout;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import org.junit.Test;
 
-import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import org.mockito.runners.MockitoJUnitRunner;
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class DelayedRestartTriggerTest {
     
     @Test
@@ -52,15 +47,16 @@ public class DelayedRestartTriggerTest {
             
             // thread needs to be waiting after start
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
-            
+
             restartTrigger.trigger();
-            
-            verify(machine, timeout(10000)).restart();
+
+            // wait until restart count is 1
+            waitOrTimeout(
+                () -> restartTrigger.getRestartCount() > 0, Timeout.timeout(millis(10000)));
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
-            
-            assertEquals(1, restartTrigger.getRestartCount());
+
             assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
         } finally {
             restartTrigger.shutdown();
@@ -76,7 +72,7 @@ public class DelayedRestartTriggerTest {
         final DelayedRestartTrigger restartTrigger = new DelayedRestartTrigger(machine);
         
         // long settling down period to ensure it'll happen
-        restartTrigger.setSettleDownMillis(10000);
+        restartTrigger.setSettleDownMillis(1000L);
         
         try {
             restartTrigger.start();
@@ -98,29 +94,18 @@ public class DelayedRestartTriggerTest {
             
             // wait until restart count is 1
             waitOrTimeout(
-                new Condition() {
-                    @Override
-                    public boolean isSatisfied() {
-                        return restartTrigger.getRestartCount() > 0;
-                    }
-                }, Timeout.timeout(millis(10000)));
+                () -> restartTrigger.getRestartCount() > 0, Timeout.timeout(millis(10000)));
             
             // wait until accumulated trigger is set back to zero
             waitOrTimeout(
-                new Condition() {
-                    @Override
-                    public boolean isSatisfied() {
-                        restartTrigger.interrupt();
-                        return restartTrigger.getAccumulatedTriggerCount() <= 0;
-                    }
+                () -> {
+                    restartTrigger.interrupt();
+                    return restartTrigger.getAccumulatedTriggerCount() <= 0;
                 }, Timeout.timeout(millis(10000)));
-            
-            // should have only called this exactly once
-            verify(machine, timeout(10000).atLeast(1)).restart();
             
             // thread needs to be waiting after restart
             waitOrTimeout(Conditions.isWaiting(restartTrigger), Timeout.timeout(millis(10000)));
-            
+
             assertEquals(1, restartTrigger.getRestartCount());
             assertEquals(0, restartTrigger.getAccumulatedTriggerCount());
         } finally {

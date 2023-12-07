@@ -19,9 +19,8 @@ package ninja;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import ninja.session.Session;
 import ninja.utils.NinjaConstant;
 
@@ -29,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SecureFilterTest {
@@ -70,7 +69,7 @@ public class SecureFilterTest {
         // filter that
         secureFilter.filter(filterChain, context);
 
-        verifyZeroInteractions(filterChain);
+        verifyNoInteractions(filterChain);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class SecureFilterTest {
         Result result = secureFilter.filter(filterChain, context);
 
         assertEquals(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN, result.getTemplate());
-        verifyZeroInteractions(filterChain);
+        verifyNoInteractions(filterChain);
     }
 
     @Test

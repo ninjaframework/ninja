@@ -22,7 +22,7 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>6.9.1-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <url>https://www.ninjaframework.org</url>
     <name>${project.artifactId}</name>
     <description>Ninja is a full stack web framework for Java.
@@ -76,13 +76,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <jetty.version>9.4.44.v20210927</jetty.version>
+        <jetty.version>9.4.53.v20231009</jetty.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <jackson.version>2.12.2</jackson.version>
-        <guice.version>5.0.1</guice.version>
+        <guice.version>6.0.0</guice.version>
         <metrics.version>3.2.6</metrics.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <powermock.version>2.0.9</powermock.version>
+        <!--<powermock.version>2.0.9</powermock.version>-->
         <!-- Formatting options for Netbeans IDE -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
         <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
@@ -119,12 +119,24 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.9.0</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+
                 <!--
                         This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the
                         Maven build itself.
@@ -158,6 +170,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.5.0</version>
                     <configuration>
                         <doclint>none</doclint>
                     </configuration>
@@ -178,11 +191,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.7.1</version>
-
-                    <configuration>
-                    </configuration>
-
+                    <version>3.12.1</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.apache.maven.doxia</groupId>
@@ -248,7 +257,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.5.0</version>
                 <configuration>
                     <doclint>none</doclint>
                 </configuration>
@@ -298,6 +307,26 @@
 
 
     <profiles>
+        <!-- for building on jdk8 vs. jdk11+ -->
+        <profile>
+            <id>java8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <properties>
+                <mockito.version>4.11.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>java9plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <mockito.version>5.4.0</mockito.version>
+            </properties>
+        </profile>
+
         <!-- Do a license check by running : mvn -P license license:check -->
         <!-- Update the license check by running : mvn -P license license:format -->
         <profile>
@@ -562,7 +591,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>30.1-jre</version>
+                <version>32.1.3-jre</version>
             </dependency>
 
             <!-- reflections is used for classpath scanning -->
@@ -877,7 +906,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.8.0</version>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
             
@@ -895,7 +924,7 @@
                 <scope>test</scope>
             </dependency>
             
-            <dependency>
+            <!--<dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock.version}</version>
@@ -907,7 +936,7 @@
                 <artifactId>powermock-api-mockito2</artifactId>
                 <version>${powermock.version}</version>
                 <scope>test</scope>
-            </dependency>  
+            </dependency>  -->
             
             <!-- small websocket library for unit tests -->
             

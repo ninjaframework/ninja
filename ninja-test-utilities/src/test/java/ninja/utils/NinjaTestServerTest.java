@@ -18,18 +18,16 @@ package ninja.utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import ninja.standalone.Console;
 import ninja.standalone.Standalone;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 public class NinjaTestServerTest {

@@ -20,25 +20,29 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.multibindings.Multibinder;
-
 import ninja.Context;
 import ninja.Result;
 import ninja.RoutingException;
+import ninja.exceptions.BadRequestException;
 import ninja.i18n.Lang;
 import ninja.i18n.LangImpl;
 import ninja.session.FlashScope;
 import ninja.session.Session;
+import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 import ninja.validation.*;
-
+import org.hamcrest.Matchers;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -55,18 +59,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
-import ninja.exceptions.BadRequestException;
-import ninja.utils.NinjaConstant;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.hamcrest.Matchers;
 
 import static org.junit.Assert.*;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Captor;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

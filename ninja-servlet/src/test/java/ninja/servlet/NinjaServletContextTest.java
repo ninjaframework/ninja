@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,9 +60,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Injector;
@@ -364,7 +363,7 @@ public class NinjaServletContextTest {
         parameterMap.put("parameter", "parameter");
 
         //and return the parameter map when any parameter is called...
-        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);
+        when(route.getPathParametersEncoded(anyString())).thenReturn(parameterMap);
 
         context.setRoute(route);
 
@@ -385,7 +384,7 @@ public class NinjaServletContextTest {
         parameterMap.put("parameter", "blue%2Fred%3Fand+green%E2%82%AC%2f");
 
         //and return the parameter map when any parameter is called...
-        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);
+        when(route.getPathParametersEncoded(anyString())).thenReturn(parameterMap);
 
         context.setRoute(route);
 
@@ -405,7 +404,7 @@ public class NinjaServletContextTest {
         parameterMap.put("parameter", "parameter");
 
         //and return the parameter map when any parameter is called...
-        when(route.getPathParametersEncoded(Matchers.anyString())).thenReturn(parameterMap);
+        when(route.getPathParametersEncoded(anyString())).thenReturn(parameterMap);
 
         context.setRoute(route);
 
@@ -416,7 +415,7 @@ public class NinjaServletContextTest {
         parameterMap.put("parameter", "1");
 
         //this will work and return 1
-        assertEquals(new Integer(1), context.getPathParameterAsInteger("parameter"));
+        assertEquals(Integer.valueOf(1), context.getPathParameterAsInteger("parameter"));
 
     }
 
@@ -453,10 +452,10 @@ public class NinjaServletContextTest {
         assertEquals(null, context.getParameterAsInteger("key_not_there"));
 
         //this will return the default value:
-        assertEquals(new Integer(100), context.getParameterAsInteger("key_not_there", 100));
+        assertEquals(Integer.valueOf(100), context.getParameterAsInteger("key_not_there", 100));
 
         //this will work as the value is there...
-        assertEquals(new Integer(1), context.getParameterAsInteger("key"));
+        assertEquals(Integer.valueOf(1), context.getParameterAsInteger("key"));
 
     }
 
@@ -474,11 +473,11 @@ public class NinjaServletContextTest {
         //this will not work and return null
         assertEquals(null, context.getParameterAs("key", Long.class));
 
-        assertEquals(new Integer(100), context.getParameterAs("key1", Integer.class));
-        assertEquals(new Long(100), context.getParameterAs("key1", Long.class));
+        assertEquals(Integer.valueOf(100), context.getParameterAs("key1", Integer.class));
+        assertEquals(Long.valueOf(100), context.getParameterAs("key1", Long.class));
         assertEquals(Boolean.TRUE, context.getParameterAs("key2", Boolean.class));
-        assertEquals(new Float(10.1), context.getParameterAs("key3", Float.class));
-        assertEquals(new Character('x'), context.getParameterAs("key4", Character.class));
+        assertEquals(Float.valueOf(10.1f), context.getParameterAs("key3", Float.class));
+        assertEquals(Character.valueOf('x'), context.getParameterAs("key4", Character.class));
     }
 
     @Test

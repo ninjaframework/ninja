@@ -1,3 +1,14 @@
+Version 7.x.x
+=============
+
+* 2023-12-07 Full support for Java 21 (compiling, testing, etc.) (jjlauer)
+* 2023-12-07 Updated Jetty dependency to v9.4.53.v20231009 (jjlauer)
+* 2023-12-07 Github workflow automated CI for Java 8, 11, 17, and 21 (jjlauer)
+* 2023-12-07 Updated Mockito dependency for testing to v4.11.0 for Java 8, v5.4.0 for Java 9+ (jjlauer)
+* 2023-12-07 Improved 'mvn test' speed by roughly 100% through optimizing several unit tests (jjlauer)
+* 2023-12-07 Removed PowerMock dependency for testing (its old, no longer supported) (jjlauer)
+* 2023-12-07 Added maven central and CI badges to README (jjlauer)
+
 Version 6.9.0
 =============
 

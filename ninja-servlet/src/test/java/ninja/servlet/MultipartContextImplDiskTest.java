@@ -16,17 +16,12 @@
 
 package ninja.servlet;
 
-import java.io.IOException;
+import ninja.uploads.DiskFileItemProvider;
+import org.junit.Before;
 
 import javax.servlet.ServletException;
+import java.io.IOException;
 
-import ninja.uploads.DiskFileItemProvider;
-
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.class)
 public class MultipartContextImplDiskTest extends AbstractMultipartContextImplTest {
 
     @Before

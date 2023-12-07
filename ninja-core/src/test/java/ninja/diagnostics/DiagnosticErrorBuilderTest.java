@@ -16,20 +16,12 @@
 
 package ninja.diagnostics;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import static org.mockito.Mockito.when;
-import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- *
- * @author joelauer
- */
-@RunWith(MockitoJUnitRunner.class)
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class DiagnosticErrorBuilderTest {
     
     Path baseDir = Paths.get("src", "test", "java");
