@@ -22,7 +22,7 @@
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja</artifactId>
     <packaging>pom</packaging>
-    <version>6.9.1-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <url>https://www.ninjaframework.org</url>
     <name>${project.artifactId}</name>
     <description>Ninja is a full stack web framework for Java.
