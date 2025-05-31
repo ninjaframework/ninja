@@ -58,6 +58,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -1073,6 +1074,14 @@ public class ControllerMethodInvokerTest {
         verify(mockController).bodyWithOptional(Optional.empty());
     }
 
+    @Test
+    public void bodyWithGenericTypeShouldRun() {
+        List<String> body = Arrays.asList("value1", "value2");
+        when(context.parseBody(List.class)).thenReturn(body);
+        create("bodyWithGenericType").invoke(mockController, context);
+        verify(mockController).bodyWithGenericType(body);
+    }
+
     // JSR303Validation(@Pattern(regexp = "[a-z]*") String param1,
     // @Length(min = 5, max = 10) String param2, @Min(3) @Max(10) int param3);
     @Test
@@ -1426,6 +1435,8 @@ public class ControllerMethodInvokerTest {
         public Result badValidatorWithOptional(@Param("param1") @NumberValue(min = 10) Optional<String> param1);
 
         public Result body(Object body);
+
+        public Result bodyWithGenericType(List<String> myList);
         
         public Result bodyWithOptional(Optional<Object> body);
 
