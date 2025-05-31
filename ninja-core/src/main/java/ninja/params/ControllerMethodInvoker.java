@@ -417,6 +417,13 @@ public class ControllerMethodInvoker {
                     if (maybeOptional.isAssignableFrom(Optional.class)) {
                         isOptional = true;
                         parameterClass = getClass(parameterizedType.getActualTypeArguments()[0]);
+                    } else {
+                        // This case is necessary here for types like List<String>
+                        // because genericType is not a class in that case, so letting it fall through below throws an exception.
+                        // So we explicitly handle the case here and use parameterizedType.getRawType() as the parameterClass
+                        // (which would be List in the example above), and matches the behavior of older Ninja versions.
+                        isOptional = false;
+                        parameterClass = maybeOptional;
                     }
                 }
                 
