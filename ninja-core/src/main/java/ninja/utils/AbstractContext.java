@@ -16,9 +16,7 @@
 
 package ninja.utils;
 
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +24,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.net.InetAddresses;
 import ninja.bodyparser.BodyParserEngine;
 import ninja.bodyparser.BodyParserEngineManager;
 import ninja.params.ParamParsers;
@@ -177,12 +176,8 @@ abstract public class AbstractContext implements Context.Impl {
                     // we just want the client
                     forwardHeader = StringUtils.split(forwardHeader, ',')[0].trim();
                 }
-                try {
-                    // If ip4/6 address string handed over, simply does pattern validation.
-                    InetAddress.getByName(forwardHeader);
+                if (InetAddresses.isInetAddress(forwardHeader)) {
                     return forwardHeader;
-                } catch (UnknownHostException e) {
-                    // give up
                 }
             }
         }
