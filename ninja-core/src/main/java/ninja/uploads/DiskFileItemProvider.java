@@ -67,7 +67,7 @@ public class DiskFileItemProvider implements FileItemProvider {
         
         // do copy
         try (InputStream is = item.openStream()) {
-            tmpFile = File.createTempFile("nju", null, tmpFolder);
+            tmpFile = Files.createTempFile(tmpFolder.toPath(), "nju", null).toFile();
             Files.copy(is, tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException("Failed to create temporary uploaded file on disk", e);
